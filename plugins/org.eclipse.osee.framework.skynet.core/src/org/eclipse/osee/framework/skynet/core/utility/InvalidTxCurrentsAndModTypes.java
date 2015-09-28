@@ -37,10 +37,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private static final String UPDATE_ADDRESS =
       "update osee_txs%s set tx_current = ? where transaction_id = ? and gamma_id = ? and branch_id = ?";
 
-   private final List<Address> addresses = new ArrayList<Address>();
+   private final List<Address> addresses = new ArrayList<>();
 
-   private final List<Object[]> purgeData = new ArrayList<Object[]>();
-   private final List<Object[]> currentData = new ArrayList<Object[]>();
+   private final List<Object[]> purgeData = new ArrayList<>();
+   private final List<Object[]> currentData = new ArrayList<>();
    private final String tableName;
    private final String columnName;
    private final boolean isFixOperationEnabled;

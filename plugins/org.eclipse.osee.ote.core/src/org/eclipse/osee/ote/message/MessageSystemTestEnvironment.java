@@ -35,7 +35,7 @@ import org.eclipse.osee.ote.message.interfaces.ITestEnvironmentMessageSystemAcce
  */
 public abstract class MessageSystemTestEnvironment extends TestEnvironment implements ITestEnvironmentMessageSystemAccessor, IMessageTestContext {
    protected URL[] clientClasses;
-   private final List<IPreScriptInstantiation> preInstantiation = new ArrayList<IPreScriptInstantiation>();
+   private final List<IPreScriptInstantiation> preInstantiation = new ArrayList<>();
    protected boolean promptResponse = false;
    private IOInstrumentationDB ioInstrumentation;
 

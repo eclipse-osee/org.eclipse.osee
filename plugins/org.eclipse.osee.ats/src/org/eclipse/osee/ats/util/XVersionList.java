@@ -39,7 +39,7 @@ public class XVersionList extends XListViewer {
    }
 
    public void setInputAtsObjects(Collection<? extends IAtsVersion> arts) {
-      ArrayList<Object> objs = new ArrayList<Object>();
+      ArrayList<Object> objs = new ArrayList<>();
       objs.addAll(arts);
       setInput(objs);
    }

@@ -18,7 +18,7 @@ import java.util.List;
  * @author Ryan D. Brooks
  */
 public final class CompositeRule<T> extends AppendableRule<T> {
-   private final List<AppendableRule<T>> rules = new ArrayList<AppendableRule<T>>();
+   private final List<AppendableRule<T>> rules = new ArrayList<>();
 
    public CompositeRule(String ruleName) {
       super(ruleName);

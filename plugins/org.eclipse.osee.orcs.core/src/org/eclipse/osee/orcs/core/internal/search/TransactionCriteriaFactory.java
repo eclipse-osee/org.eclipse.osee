@@ -78,7 +78,7 @@ public class TransactionCriteriaFactory {
    }
 
    public Criteria newByArtifactId(Collection<ArtifactId> ids) {
-      ArrayList<String> theGuids = new ArrayList<String>(ids.size());
+      ArrayList<String> theGuids = new ArrayList<>(ids.size());
       for (ArtifactId id : ids) {
          theGuids.add(id.getGuid());
       }

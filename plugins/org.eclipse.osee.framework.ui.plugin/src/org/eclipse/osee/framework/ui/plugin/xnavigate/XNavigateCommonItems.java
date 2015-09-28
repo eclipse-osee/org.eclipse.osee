@@ -43,7 +43,7 @@ public class XNavigateCommonItems {
       if (items != null) {
          return items;
       }
-      items = new HashSet<IXNavigateCommonItem>();
+      items = new HashSet<>();
 
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.framework.ui.plugin.XCommonNavigateItem");

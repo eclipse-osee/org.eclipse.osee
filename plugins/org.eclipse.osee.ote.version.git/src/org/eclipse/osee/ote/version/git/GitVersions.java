@@ -36,8 +36,8 @@ public class GitVersions extends GitVersionBase {
 	
 	
 	public  Map<File, RevCommit> getLastCommits() {
-		Map<File, RevCommit> commits = new HashMap<File, RevCommit>();
-		Map<File, List<File>> gitToFiles = new HashMap<File,List<File>>();
+		Map<File, RevCommit> commits = new HashMap<>();
+		Map<File, List<File>> gitToFiles = new HashMap<>();
 		for(File file:files){
 			if(!file.exists()){
 				continue;
@@ -48,7 +48,7 @@ public class GitVersions extends GitVersionBase {
 			}	
 			List<File> gitfiles = gitToFiles.get(gitFolder);
 			if(gitfiles == null){
-				gitfiles = new ArrayList<File>();
+				gitfiles = new ArrayList<>();
 				gitToFiles.put(gitFolder, gitfiles);
 			}
 			gitfiles.add(file);

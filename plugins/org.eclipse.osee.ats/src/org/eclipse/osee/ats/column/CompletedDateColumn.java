@@ -87,7 +87,7 @@ public class CompletedDateColumn extends XViewerAtsColumn implements IXViewerVal
 
    public static String getDateStr(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         Set<String> strs = new HashSet<String>();
+         Set<String> strs = new HashSet<>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             String str = getDateStr(team);
             if (Strings.isValid(str)) {

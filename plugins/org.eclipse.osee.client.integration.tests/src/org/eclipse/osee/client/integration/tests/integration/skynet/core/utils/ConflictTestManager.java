@@ -72,7 +72,7 @@ public class ConflictTestManager {
    private static final int NUMBER_OF_ARTIFACTS = 32;
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
-   private static List<ArtifactModification> modifications = new LinkedList<ArtifactModification>();
+   private static List<ArtifactModification> modifications = new LinkedList<>();
 
    private static ConflictDefinition[] conflictDefs = new ConflictDefinition[NUMBER_OF_ARTIFACTS];
    public static int DELETION_TEST_QUERY = 1;
@@ -644,7 +644,7 @@ public class ConflictTestManager {
    }
 
    public static List<Artifact> getArtifacts(boolean sourceBranch, int queryId) {
-      List<Artifact> queriedArtifacts = new LinkedList<Artifact>();
+      List<Artifact> queriedArtifacts = new LinkedList<>();
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (conflictDefs[i].queryNumber == queryId) {
             if (sourceBranch) {
@@ -691,8 +691,8 @@ public class ConflictTestManager {
    }
 
    static final class ConflictDefinition {
-      final Collection<AttributeValue> values = new HashSet<AttributeValue>();
-      final Collection<AttributeValue> newAttributes = new HashSet<AttributeValue>();
+      final Collection<AttributeValue> values = new HashSet<>();
+      final Collection<AttributeValue> newAttributes = new HashSet<>();
       IArtifactType artifactType;
       boolean sourceDelete;
       boolean destDelete;

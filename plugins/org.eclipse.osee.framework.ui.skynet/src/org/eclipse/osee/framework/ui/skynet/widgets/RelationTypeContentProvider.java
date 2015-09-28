@@ -33,7 +33,7 @@ public class RelationTypeContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Branch) {
-         ArrayList<Object> descriptors = new ArrayList<Object>();
+         ArrayList<Object> descriptors = new ArrayList<>();
          try {
             for (RelationType descriptor : RelationTypeManager.getValidTypes((Branch) parentElement)) {
                descriptors.add(descriptor);

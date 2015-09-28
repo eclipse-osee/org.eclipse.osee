@@ -21,7 +21,7 @@ import org.eclipse.osee.jdbc.JdbcClient;
 public class OseeInfo {
    private static final String GET_VALUE_SQL = "Select OSEE_VALUE FROM osee_info where OSEE_KEY = ?";
    public static final String DB_ID_KEY = "osee.db.guid";
-   private static Map<String, String> cache = new HashMap<String, String>();
+   private static Map<String, String> cache = new HashMap<>();
 
    public static String getValue(JdbcClient jdbcClient, String key) {
       String toReturn = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);

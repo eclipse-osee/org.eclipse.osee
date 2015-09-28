@@ -83,7 +83,7 @@ public final class PublishLowHighReqTraceabilityResource {
    private Set<String> getTypes() {
       OrcsTypes orcsTypes = orcsApi.getOrcsTypes();
       ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
-      Set<String> toReturn = new HashSet<String>();
+      Set<String> toReturn = new HashSet<>();
 
       for (IArtifactType type : artifactTypes.getAll()) {
          toReturn.add(type.getName());

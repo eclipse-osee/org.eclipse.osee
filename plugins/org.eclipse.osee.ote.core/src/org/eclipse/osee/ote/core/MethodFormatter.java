@@ -30,7 +30,7 @@ import org.w3c.dom.Element;
  * @author Robert A. Fisher
  */
 public class MethodFormatter implements Xmlizable, XmlizableStream {
-    private final Collection<Argument> arguments = new ArrayList<Argument>();
+    private final Collection<Argument> arguments = new ArrayList<>();
 
     public final class Argument {
         public final String Class;

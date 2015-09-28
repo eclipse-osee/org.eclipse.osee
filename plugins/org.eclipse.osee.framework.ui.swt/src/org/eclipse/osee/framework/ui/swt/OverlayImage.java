@@ -54,7 +54,7 @@ public class OverlayImage extends CompositeImageDescriptor {
    public OverlayImage(Image baseImage, ImageDescriptor overlayImageDescriptor, Location location) {
       this.baseImage = baseImage;
       this.overlayImageDescriptor = overlayImageDescriptor;
-      this.imageInfo = new ArrayList<ImageInfo>(2);
+      this.imageInfo = new ArrayList<>(2);
       imageInfo.add(new ImageInfo(overlayImageDescriptor, location));
    }
 

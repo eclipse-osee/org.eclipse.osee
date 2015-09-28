@@ -38,8 +38,8 @@ public class TraceRecordEnd extends TestRecord implements Xmlizable {
    public TraceRecordEnd(ITestEnvironmentAccessor source, ReturnFormatter returnFormatter) {
       super(source, TestLevel.TRACE, "", true);
       this.returnFormatter = returnFormatter;
-      this.additionalElements = new ArrayList<Xmlizable>();
-      this.additionalStreamElements = new ArrayList<XmlizableStream>();
+      this.additionalElements = new ArrayList<>();
+      this.additionalStreamElements = new ArrayList<>();
    }
 
    public void addAdditionalElement(Xmlizable object) {

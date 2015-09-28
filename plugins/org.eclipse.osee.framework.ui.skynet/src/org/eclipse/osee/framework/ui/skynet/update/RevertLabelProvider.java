@@ -33,7 +33,7 @@ public class RevertLabelProvider extends LabelProvider implements IStyledLabelPr
    public RevertLabelProvider() {
       super();
 
-      this.disabledMap = new HashMap<Image, Image>();
+      this.disabledMap = new HashMap<>();
    }
 
    @Override

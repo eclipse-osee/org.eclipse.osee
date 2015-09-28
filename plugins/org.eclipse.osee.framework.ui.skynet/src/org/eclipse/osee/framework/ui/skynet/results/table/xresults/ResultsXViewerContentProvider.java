@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 
 public class ResultsXViewerContentProvider implements ITreeContentProvider {
 
-   protected Collection<IResultsXViewerRow> rootSet = new HashSet<IResultsXViewerRow>();
+   protected Collection<IResultsXViewerRow> rootSet = new HashSet<>();
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public ResultsXViewerContentProvider() {

@@ -53,7 +53,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
    public Artifact[] getArtifacts() {
       IStructuredSelection selection = (IStructuredSelection) worldComposite.getXViewer().getSelection();
       Iterator<?> i = selection.iterator();
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       while (i.hasNext()) {
          Object object = i.next();
          if (object instanceof Artifact) {
@@ -97,7 +97,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
             protected IStatus run(IProgressMonitor monitor) {
                try {
                   String name = "Dropped Artifacts";
-                  Set<Artifact> arts = new HashSet<Artifact>();
+                  Set<Artifact> arts = new HashSet<>();
                   if (artData != null) {
                      Artifact[] artifacts = artData.getArtifacts();
                      if (artifacts.length == 1) {

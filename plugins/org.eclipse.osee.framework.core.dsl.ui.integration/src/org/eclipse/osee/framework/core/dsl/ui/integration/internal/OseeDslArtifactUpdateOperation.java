@@ -54,7 +54,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
          double workPercentage = 0.80 * 1.0 / segments.size();
          int workAmount = calculateWork(workPercentage);
 
-         Map<Branch, SkynetTransaction> transactionMap = new HashMap<Branch, SkynetTransaction>();
+         Map<Branch, SkynetTransaction> transactionMap = new HashMap<>();
          for (OseeDslSegment segment : segments) {
             int startAt = segment.start();
             int endAt = segment.end();

@@ -107,7 +107,7 @@ public final class BranchExportCommand implements ConsoleCommand {
       }
 
       private List<IOseeBranch> getBranchesToExport() throws OseeCoreException {
-         List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
+         List<IOseeBranch> branches = new LinkedList<>();
          BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (includeBranchIds.isEmpty()) {
             ResultSet<BranchReadable> branchReadables = null;

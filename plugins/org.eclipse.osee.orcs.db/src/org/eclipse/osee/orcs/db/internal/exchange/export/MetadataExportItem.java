@@ -73,7 +73,7 @@ public class MetadataExportItem extends AbstractXmlExportItem {
    }
 
    private String[] getTypes(DatabaseMetaData metaData) throws SQLException {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       ResultSet resultSet = null;
       try {
          resultSet = metaData.getTableTypes();

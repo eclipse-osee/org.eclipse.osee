@@ -35,7 +35,7 @@ public class XCombo extends XButtonCommon {
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
    //
-   private final Map<String, Integer> displayDataStrings = new LinkedHashMap<String, Integer>();
+   private final Map<String, Integer> displayDataStrings = new LinkedHashMap<>();
    private String displayArray[];
    private boolean isDefaultSelectionAllowed;
 

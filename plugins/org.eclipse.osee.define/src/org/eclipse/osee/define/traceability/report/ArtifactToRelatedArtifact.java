@@ -30,7 +30,7 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
    }
 
    public String[] getHeader() {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       toReturn.add("Name");
       toReturn.add("Related By");
       toReturn.add("Requirement");
@@ -38,11 +38,11 @@ public class ArtifactToRelatedArtifact extends AbstractArtifactRelationReport {
    }
 
    public List<String[]> getRelatedRows(IRelationTypeSide[] relations, Artifact artifact) throws OseeCoreException {
-      List<String[]> toReturn = new ArrayList<String[]>();
+      List<String[]> toReturn = new ArrayList<>();
       int maxSize = 0;
-      List<List<String>> items = new ArrayList<List<String>>();
+      List<List<String>> items = new ArrayList<>();
       for (IRelationTypeSide relationEnum : relations) {
-         List<String> entries = new ArrayList<String>();
+         List<String> entries = new ArrayList<>();
          for (Artifact relArtifact : artifact.getRelatedArtifacts(relationEnum)) {
             entries.add(relArtifact.getName());
          }

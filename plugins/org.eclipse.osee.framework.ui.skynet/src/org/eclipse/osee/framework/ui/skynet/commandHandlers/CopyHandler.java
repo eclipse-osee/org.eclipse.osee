@@ -44,8 +44,8 @@ public class CopyHandler extends AbstractHandler {
          if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
             IStructuredSelection selection = (IStructuredSelection) selectionProvider.getSelection();
 
-            List<String> names = new LinkedList<String>();
-            List<Artifact> artifacts = new LinkedList<Artifact>();
+            List<String> names = new LinkedList<>();
+            List<Artifact> artifacts = new LinkedList<>();
             ArtifactClipboard clipboard = new ArtifactClipboard(view.getSite().getId());
             Iterator<?> iterator = selection.iterator();
             Object selectionObject = null;

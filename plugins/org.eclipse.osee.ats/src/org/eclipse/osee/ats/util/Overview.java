@@ -229,7 +229,7 @@ public class Overview {
       startBorderTable(TABLE_WIDTH, false, "Team Workflows");
       StringBuffer sb = new StringBuffer(AHTML.beginMultiColumnTable(100, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "State"}, new Integer[] {70, 150}));
-      ArrayList<CellItem> cells = new ArrayList<CellItem>();
+      ArrayList<CellItem> cells = new ArrayList<>();
       for (TeamWorkFlowArtifact team : teams) {
          cells.add(new AHTML.CellItem(Overview.getOpenHyperlinkHtml(team)));
          cells.add(new AHTML.CellItem(team.getStateMgr().getCurrentStateName()));

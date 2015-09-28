@@ -62,7 +62,7 @@ public class FilteredCheckboxAttributeTypeDialog extends FilteredCheckboxTreeDia
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IAttributeType> checked = new HashSet<IAttributeType>();
+      Set<IAttributeType> checked = new HashSet<>();
       for (Object obj : getResult()) {
          checked.add((IAttributeType) obj);
       }

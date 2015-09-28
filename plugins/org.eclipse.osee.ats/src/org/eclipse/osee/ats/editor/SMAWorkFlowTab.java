@@ -112,9 +112,9 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler {
    private final AbstractWorkflowArtifact awa;
-   private final List<SMAWorkFlowSection> sections = new ArrayList<SMAWorkFlowSection>();
-   private final List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
+   private final List<SMAWorkFlowSection> sections = new ArrayList<>();
+   private final List<StateXWidgetPage> statePages = new ArrayList<>();
+   private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
    private SMARelationsHyperlinkComposite smaRelationsComposite;
    private IManagedForm managedForm;
    private Composite bodyComp;
@@ -127,7 +127,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.workflow.tab";
    private final SMAEditor editor;
-   private final List<WEUndefinedStateSection> undefinedStateSections = new ArrayList<WEUndefinedStateSection>();
+   private final List<WEUndefinedStateSection> undefinedStateSections = new ArrayList<>();
 
    public SMAWorkFlowTab(SMAEditor editor, AbstractWorkflowArtifact awa) {
       super(editor, ID, "Workflow");
@@ -199,7 +199,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public void refreshData() {
-      List<IOperation> ops = new ArrayList<IOperation>();
+      List<IOperation> ops = new ArrayList<>();
       ops.addAll(AtsBulkLoad.getConfigLoadingOperations());
       IOperation operation = Operations.createBuilder("Load Workflow Tab").addAll(ops).build();
       Operations.executeAsJob(operation, false, Job.LONG, new ReloadJobChangeAdapter(editor));
@@ -522,7 +522,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
    }
 
    public void saveXWidgetToArtifact() throws OseeCoreException {
-      List<IArtifactStoredWidget> artWidgets = new ArrayList<IArtifactStoredWidget>();
+      List<IArtifactStoredWidget> artWidgets = new ArrayList<>();
       // Collect all dirty widgets first (so same attribute shown on different sections don't colide
       for (SMAWorkFlowSection section : sections) {
          section.getDirtyIArtifactWidgets(artWidgets);

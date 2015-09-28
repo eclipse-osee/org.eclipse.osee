@@ -249,7 +249,7 @@ public class XListViewer extends GenericXWidget {
    }
 
    public ArrayList<Object> getSelected() {
-      ArrayList<Object> selected = new ArrayList<Object>();
+      ArrayList<Object> selected = new ArrayList<>();
       IStructuredSelection selection = (IStructuredSelection) listViewer.getSelection();
       Iterator<?> i = selection.iterator();
       while (i.hasNext()) {

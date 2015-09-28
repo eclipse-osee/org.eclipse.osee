@@ -74,7 +74,7 @@ public class DataRightsImporter extends AbstractBlam {
             QueryBuilderArtifact builder = ArtifactQuery.createQueryBuilder(branch);
             builder.andIsOfType(CodeUnit);
             ResultSet<Artifact> results = builder.getResults();
-            nameToArtifact = new HashMap<String, Artifact>();
+            nameToArtifact = new HashMap<>();
             for (Artifact artifact : results) {
                nameToArtifact.put(artifact.getName(), artifact);
             }

@@ -32,10 +32,10 @@ public abstract class StateTypeAdapter implements IStateToken {
    private final StateType StateType;
    private static CompositeKeyHashMap<Class<?>, String, StateTypeAdapter> classAndNameToPage =
       new CompositeKeyHashMap<Class<?>, String, StateTypeAdapter>();
-   private static final Map<StateTypeAdapter, Integer> pageToOrdinal = new HashMap<StateTypeAdapter, Integer>(10);
+   private static final Map<StateTypeAdapter, Integer> pageToOrdinal = new HashMap<>(10);
    private static final Map<Class<?>, List<StateTypeAdapter>> classToPages =
       new HashMap<Class<?>, List<StateTypeAdapter>>();
-   private static final CountingMap<Class<?>> classToOrdinalCount = new CountingMap<Class<?>>(20);
+   private static final CountingMap<Class<?>> classToOrdinalCount = new CountingMap<>(20);
    private String description;
    private final String pageName;
 
@@ -58,13 +58,13 @@ public abstract class StateTypeAdapter implements IStateToken {
 
    public synchronized static <T> List<T> pages(Class<?> clazz) {
       if (classToPages.get(clazz) == null) {
-         Set<StateTypeAdapter> pages = new HashSet<StateTypeAdapter>();
+         Set<StateTypeAdapter> pages = new HashSet<>();
          for (StateTypeAdapter page : pageToOrdinal.keySet()) {
             if (page.getClass().isAssignableFrom(clazz)) {
                pages.add(page);
             }
          }
-         List<StateTypeAdapter> pagesOrdered = new ArrayList<StateTypeAdapter>();
+         List<StateTypeAdapter> pagesOrdered = new ArrayList<>();
          for (int x = 1; x <= pages.size(); x++) {
             for (StateTypeAdapter page : pages) {
                if (page.ordinal() == x) {

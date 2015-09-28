@@ -66,7 +66,7 @@ public class CheckBranchExchangeIntegrityCallable extends AbstractDatastoreCalla
 
    @Override
    public URI call() throws Exception {
-      List<ReferentialIntegrityConstraint> constraints = new ArrayList<ReferentialIntegrityConstraint>();
+      List<ReferentialIntegrityConstraint> constraints = new ArrayList<>();
       long startTime = System.currentTimeMillis();
 
       IResourceLocator resourceLocator = findResourceToCheck(fileToCheck);

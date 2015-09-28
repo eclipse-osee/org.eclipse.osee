@@ -78,7 +78,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    }
 
    public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
+      Set<String> strs = new HashSet<>();
       for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows(actionArt)) {
          strs.add(AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText(team));
       }
@@ -89,7 +89,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
       if (ActionManager.getTeams(actionArt).size() == 1) {
          return ActionManager.getTeams(actionArt);
       }
-      Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
+      Collection<TeamWorkFlowArtifact> results = new ArrayList<>();
       Date origDate = null;
       for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(actionArt)) {
          if (teamArt.isCancelled()) {

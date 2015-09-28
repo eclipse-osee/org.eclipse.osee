@@ -27,8 +27,8 @@ public class RoughArtifactCollector {
 
    public RoughArtifactCollector(RoughArtifact parentRoughArtifact) {
       this.parentRoughArtifact = parentRoughArtifact;
-      roughArtifacts = new ArrayList<RoughArtifact>();
-      roughRelations = new ArrayList<RoughRelation>();
+      roughArtifacts = new ArrayList<>();
+      roughRelations = new ArrayList<>();
    }
 
    public void reset() {

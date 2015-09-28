@@ -118,7 +118,7 @@ public class ValidateReviewManager {
    }
 
    public static Collection<IAtsUser> getValidateReviewFollowupUsers(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
-      Collection<IAtsUser> users = new HashSet<IAtsUser>();
+      Collection<IAtsUser> users = new HashSet<>();
       users.addAll(teamArt.getStateMgr().getAssignees(TeamState.Implement));
       if (users.size() > 0) {
          return users;

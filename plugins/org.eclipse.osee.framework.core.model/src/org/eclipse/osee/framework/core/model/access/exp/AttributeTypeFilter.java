@@ -24,7 +24,7 @@ public class AttributeTypeFilter implements IAcceptFilter<IAttributeType> {
 
    public AttributeTypeFilter(PermissionEnum toMatch, Collection<Pair<IBasicArtifact<?>, IAttributeType>> items) {
       this.toMatch = toMatch;
-      this.itemsToCheck = new HashMap<IBasicArtifact<?>, IAttributeType>();
+      this.itemsToCheck = new HashMap<>();
 
       for (Pair<IBasicArtifact<?>, IAttributeType> pair : items) {
          itemsToCheck.put(pair.getFirst(), pair.getSecond());

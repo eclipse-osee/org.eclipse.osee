@@ -21,7 +21,7 @@ public class TestException extends RuntimeException {
 
    private final String threadCauseName;
    private final Level level;
-   private List<IHealthStatus> status = new ArrayList<IHealthStatus>();
+   private List<IHealthStatus> status = new ArrayList<>();
 
    public TestException(String message, Level level) {
       this(message, level, null);

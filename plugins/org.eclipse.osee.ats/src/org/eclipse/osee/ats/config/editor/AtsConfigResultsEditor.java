@@ -44,7 +44,7 @@ public class AtsConfigResultsEditor extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      List<IResultsXViewerRow> artRows = new LinkedList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> artRows = new LinkedList<>();
       for (IAtsConfigObject obj : configObjects) {
          artRows.add(new ResultsXViewerRow(new String[] {obj.getName(), ""}, obj));
       }
@@ -53,7 +53,7 @@ public class AtsConfigResultsEditor extends AbstractOperation {
             new XViewerColumn("Name", "Name", 300, SWT.LEFT, true, SortDataType.String, false, "Name"),
             new XViewerColumn("Guid", "Guid", 150, SWT.LEFT, true, SortDataType.String, false, "Guid"));
 
-      final List<IResultsEditorTab> toReturn = new LinkedList<IResultsEditorTab>();
+      final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {
 
          @Override

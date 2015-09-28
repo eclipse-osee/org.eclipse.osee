@@ -45,7 +45,7 @@ public class OseeEnumTypeManager {
    }
 
    public static Collection<String> getAllTypeNames() throws OseeCoreException {
-      List<String> items = new ArrayList<String>();
+      List<String> items = new ArrayList<>();
       for (OseeEnumType types : getAllTypes()) {
          items.add(types.getName());
       }

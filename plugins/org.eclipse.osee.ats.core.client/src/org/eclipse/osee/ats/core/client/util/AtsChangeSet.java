@@ -135,7 +135,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       Conditions.checkNotNull(art, "artifact");
       Collection<Object> objects = relChange.getObjects();
       Conditions.checkNotNullOrEmpty(objects, "objects");
-      Set<Artifact> arts = new HashSet<Artifact>();
+      Set<Artifact> arts = new HashSet<>();
       for (Object obj2 : objects) {
          Artifact art2 = getArtifact(obj2);
          Conditions.checkNotNull(art2, "toArtifact");
@@ -293,7 +293,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
       Artifact artifact = getArtifact(object);
-      Set<Artifact> artifacts = new HashSet<Artifact>(objects.size());
+      Set<Artifact> artifacts = new HashSet<>(objects.size());
       for (Object obj : objects) {
          Artifact art = getArtifact(obj);
          if (art != null) {

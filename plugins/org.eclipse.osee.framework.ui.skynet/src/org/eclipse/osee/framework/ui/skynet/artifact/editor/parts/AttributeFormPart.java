@@ -72,7 +72,7 @@ public class AttributeFormPart extends AbstractFormPart {
    private final ArtifactEditor editor;
    private Composite composite;
    private final XWidgetDecorator decorator = new XWidgetDecorator();
-   private final Map<IAttributeType, Composite> xWidgetsMap = new HashMap<IAttributeType, Composite>();
+   private final Map<IAttributeType, Composite> xWidgetsMap = new HashMap<>();
 
    private final XModifiedListener widgetModifiedListener = new XModifiedListener() {
 

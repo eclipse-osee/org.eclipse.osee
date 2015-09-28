@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 public class EarnedValueReportResult {
 
-   private final Map<IColumn, String> values = new HashMap<IColumn, String>(9);
+   private final Map<IColumn, String> values = new HashMap<>(9);
    private Artifact artifact;
    private final IAtsWorkPackage workPackage;
 

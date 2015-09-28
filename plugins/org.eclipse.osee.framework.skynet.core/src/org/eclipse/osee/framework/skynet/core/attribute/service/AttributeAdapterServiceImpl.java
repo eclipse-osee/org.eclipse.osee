@@ -37,10 +37,10 @@ public class AttributeAdapterServiceImpl implements AttributeAdapterService {
    private Thread thread;
 
    public AttributeAdapterServiceImpl() {
-      registered = new ConcurrentHashMap<String, AttributeAdapter<?>>();
-      pending = new CopyOnWriteArrayList<ServiceReference<AttributeAdapter<?>>>();
+      registered = new ConcurrentHashMap<>();
+      pending = new CopyOnWriteArrayList<>();
 
-      adapterByType = new ConcurrentHashMap<IAttributeType, AttributeAdapter<?>>();
+      adapterByType = new ConcurrentHashMap<>();
    }
 
    public void start() {

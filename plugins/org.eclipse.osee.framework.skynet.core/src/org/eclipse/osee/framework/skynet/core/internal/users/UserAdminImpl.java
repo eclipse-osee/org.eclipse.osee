@@ -150,7 +150,7 @@ public class UserAdminImpl implements UserAdmin {
    @Override
    public List<User> getActiveUsers() throws OseeCoreException {
       Cache<String, User> cache = getCache();
-      List<User> activeUsers = new ArrayList<User>();
+      List<User> activeUsers = new ArrayList<>();
       Iterable<User> all = null;
       try {
          all = cache.getAll();
@@ -168,7 +168,7 @@ public class UserAdminImpl implements UserAdmin {
    @Override
    public List<User> getUsersAll() throws OseeCoreException {
       Cache<String, User> cache = getCache();
-      List<User> users = new ArrayList<User>();
+      List<User> users = new ArrayList<>();
       Iterable<User> all = null;
       try {
          all = cache.getAll();

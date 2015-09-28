@@ -81,7 +81,7 @@ public class Validator {
 
    public Iterable<FieldValidator> getOrdered() {
       if (ordered == null) {
-         List<FieldValidator> list = new LinkedList<FieldValidator>(validators.values());
+         List<FieldValidator> list = new LinkedList<>(validators.values());
          list.add(DEFAULT_VALIDATOR);
          Collections.sort(list, Validators.VALIDATOR_PRIORITY_ORDER_COMPARATOR);
          ordered = list;

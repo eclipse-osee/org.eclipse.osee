@@ -27,7 +27,7 @@ public class HttpRequestHandler implements Runnable {
 
    private static Map<HttpMethod, IHttpMethod> httpMethodHandlers;
    static {
-      httpMethodHandlers = new HashMap<HttpMethod, IHttpMethod>();
+      httpMethodHandlers = new HashMap<>();
       httpMethodHandlers.put(HttpMethod.RESOURCE_GET, HttpResourceRequest.getInstance());
       httpMethodHandlers.put(HttpMethod.GET, new HttpGetMethod());
    }

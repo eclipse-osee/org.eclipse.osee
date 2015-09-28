@@ -74,7 +74,7 @@ public class SkyWalkerView extends GenericViewPart {
    private String storedGuid;
    private String storedBrandId;
    private final SkyWalkerOptions options = new SkyWalkerOptions();
-   private final List<Artifact> history = new LinkedList<Artifact>();
+   private final List<Artifact> history = new LinkedList<>();
    private Action filterAction;
    private Composite viewerComp;
    protected SashForm sashForm;

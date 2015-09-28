@@ -36,7 +36,7 @@ public enum DoorsDataType {
 
    private final String _dataType;
    private final Boolean isSingle; // marks the type as single, that is, not to be combined during processing
-   private final static Map<String, DoorsDataType> rawStringToDataType = new HashMap<String, DoorsDataType>();
+   private final static Map<String, DoorsDataType> rawStringToDataType = new HashMap<>();
 
    static {
       for (DoorsDataType enumStatus : DoorsDataType.values()) {

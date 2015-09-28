@@ -50,7 +50,7 @@ public final class ChangeManager {
    }
 
    public static Collection<ArtifactDelta> getCompareArtifacts(Collection<Change> changes) {
-      Collection<ArtifactDelta> toReturn = new ArrayList<ArtifactDelta>(changes.size());
+      Collection<ArtifactDelta> toReturn = new ArrayList<>(changes.size());
       for (Change change : changes) {
          toReturn.add(change.getDelta());
       }
@@ -102,7 +102,7 @@ public final class ChangeManager {
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-      CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<Integer, Branch, Artifact>();
+      CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<>();
       for (Artifact artifact : artifacts) {
          Branch branch = artifact.getFullBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
@@ -117,7 +117,7 @@ public final class ChangeManager {
          }
       }
 
-      HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<Artifact, TransactionRecord>();
+      HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<>();
       try {
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -160,7 +160,7 @@ public final class ChangeManager {
          }
       }
 
-      HashCollection<Artifact, Branch> branchMap = new HashCollection<Artifact, Branch>();
+      HashCollection<Artifact, Branch> branchMap = new HashCollection<>();
       try {
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();

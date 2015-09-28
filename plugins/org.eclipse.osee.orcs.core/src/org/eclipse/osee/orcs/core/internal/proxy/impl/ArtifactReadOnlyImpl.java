@@ -224,7 +224,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
 
    @Override
    public List<ArtifactReadable> getDescendants() throws OseeCoreException {
-      List<ArtifactReadable> descendants = new LinkedList<ArtifactReadable>();
+      List<ArtifactReadable> descendants = new LinkedList<>();
       getDescendants(descendants);
       return descendants;
    }
@@ -239,7 +239,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
 
    @Override
    public List<ArtifactReadable> getAncestors() throws OseeCoreException {
-      List<ArtifactReadable> ancestors = new ArrayList<ArtifactReadable>();
+      List<ArtifactReadable> ancestors = new ArrayList<>();
       for (ArtifactReadable parent = getParent(); parent != null; parent = parent.getParent()) {
          ancestors.add(parent);
       }

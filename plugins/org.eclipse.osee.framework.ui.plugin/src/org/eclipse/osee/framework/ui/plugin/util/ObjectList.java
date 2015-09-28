@@ -23,7 +23,7 @@ public class ObjectList<A> extends List {
 
    public ObjectList(Composite parent, int style) {
       super(parent, style);
-      items = new ArrayList<A>();
+      items = new ArrayList<>();
    }
 
    @Override
@@ -67,7 +67,7 @@ public class ObjectList<A> extends List {
 
    public Collection<A> getSelectedItems() {
       int[] selected = super.getSelectionIndices();
-      ArrayList<A> selectedItems = new ArrayList<A>(selected.length);
+      ArrayList<A> selectedItems = new ArrayList<>(selected.length);
       for (int i : selected) {
          selectedItems.add(items.get(i));
       }

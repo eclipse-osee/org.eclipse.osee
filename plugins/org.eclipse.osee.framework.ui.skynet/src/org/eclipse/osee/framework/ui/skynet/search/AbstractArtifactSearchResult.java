@@ -35,7 +35,7 @@ public abstract class AbstractArtifactSearchResult extends AbstractTextSearchRes
    }
 
    public List<Artifact> getArtifactResults() {
-      List<Artifact> toReturn = new ArrayList<Artifact>();
+      List<Artifact> toReturn = new ArrayList<>();
       for (Object element : getElements()) {
          if (element instanceof Artifact) {
             toReturn.add((Artifact) element);

@@ -31,9 +31,9 @@ public class CommandDispatcher {
 
    private static final String CONSOLE_EXECUTOR_ID = "org.eclipse.osee.console.executor";
 
-   private final Map<String, ConsoleCommand> registered = new ConcurrentHashMap<String, ConsoleCommand>();
-   private final Map<String, Map<String, Future<?>>> futures = new ConcurrentHashMap<String, Map<String, Future<?>>>();
-   private final Map<String, String> commandNameToId = new ConcurrentHashMap<String, String>();
+   private final Map<String, ConsoleCommand> registered = new ConcurrentHashMap<>();
+   private final Map<String, Map<String, Future<?>>> futures = new ConcurrentHashMap<>();
+   private final Map<String, String> commandNameToId = new ConcurrentHashMap<>();
 
    private final Log logger;
    private final ExecutorAdmin executorAdmin;
@@ -114,7 +114,7 @@ public class CommandDispatcher {
 
       Map<String, Future<?>> items = futures.get(cmdId);
       if (items == null) {
-         items = new ConcurrentHashMap<String, Future<?>>();
+         items = new ConcurrentHashMap<>();
          futures.put(cmdId, items);
       }
       items.put(guid, future);

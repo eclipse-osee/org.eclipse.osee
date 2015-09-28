@@ -395,7 +395,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          return Collections.emptyList();
       }
 
-      Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+      Set<Artifact> artifacts = new LinkedHashSet<>();
       for (Object object : objects) {
          Artifact toAdd = null;
          if (object instanceof AttributeLineElement) {

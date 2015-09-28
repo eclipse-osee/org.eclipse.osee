@@ -52,18 +52,18 @@ public class WorkflowMetrics {
    long daysTillRel = 0;
    IAtsVersion version = null;
    String str = "";
-   Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
-   Set<Artifact> actionArts = new HashSet<Artifact>();
-   Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
-   Set<AbstractReviewArtifact> reviewArts = new HashSet<AbstractReviewArtifact>();
-   Set<GoalArtifact> goalArts = new HashSet<GoalArtifact>();
-   Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
-   Set<IAtsUser> assignees = new HashSet<IAtsUser>();
-   Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<IAtsUser>();
+   Set<TeamWorkFlowArtifact> teamArts = new HashSet<>();
+   Set<Artifact> actionArts = new HashSet<>();
+   Set<TaskArtifact> taskArts = new HashSet<>();
+   Set<AbstractReviewArtifact> reviewArts = new HashSet<>();
+   Set<GoalArtifact> goalArts = new HashSet<>();
+   Set<AbstractWorkflowArtifact> awas = new HashSet<>();
+   Set<IAtsUser> assignees = new HashSet<>();
+   Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<>();
 
-   private final HashCollection<IAtsUser, Artifact> userToAssignedSmas = new HashCollection<IAtsUser, Artifact>(true,
+   private final HashCollection<IAtsUser, Artifact> userToAssignedSmas = new HashCollection<>(true,
       HashSet.class, 100);
-   private final HashCollection<IAtsUser, Artifact> userToCompletedSmas = new HashCollection<IAtsUser, Artifact>(true,
+   private final HashCollection<IAtsUser, Artifact> userToCompletedSmas = new HashCollection<>(true,
       HashSet.class, 100);
    private final double manHoursPerDay;
 
@@ -88,7 +88,7 @@ public class WorkflowMetrics {
          }
          if (art instanceof AbstractWorkflowArtifact) {
             awas.add((AbstractWorkflowArtifact) art);
-            Collection<IAtsUser> users = new HashSet<IAtsUser>();
+            Collection<IAtsUser> users = new HashSet<>();
             users.addAll(((AbstractWorkflowArtifact) art).getStateMgr().getAssignees());
             assignees.addAll(users);
             assigneesAssignedOrCompleted.addAll(users);
@@ -162,7 +162,7 @@ public class WorkflowMetrics {
       if (!userToCompletedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
-      List<A> awas = new ArrayList<A>();
+      List<A> awas = new ArrayList<>();
       for (Artifact art : userToCompletedSmas.getValues(user)) {
          if (clazz == null || art.getClass().isInstance(clazz)) {
             awas.add((A) art);
@@ -176,7 +176,7 @@ public class WorkflowMetrics {
       if (!userToAssignedSmas.containsKey(user)) {
          return Collections.emptyList();
       }
-      List<A> awas = new ArrayList<A>();
+      List<A> awas = new ArrayList<>();
       for (Artifact art : userToAssignedSmas.getValues(user)) {
          if (clazz == null || art.getClass().equals(clazz)) {
             awas.add((A) art);
@@ -186,7 +186,7 @@ public class WorkflowMetrics {
    }
 
    public Collection<TeamWorkFlowArtifact> getCompletedTeamWorkflows() throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeamArts()) {
          if (team.isCompletedOrCancelled()) {
             teams.add(team);
@@ -196,7 +196,7 @@ public class WorkflowMetrics {
    }
 
    public Collection<AbstractWorkflowArtifact> getCompletedWorkflows() throws OseeCoreException {
-      Set<AbstractWorkflowArtifact> completed = new HashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> completed = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCompletedOrCancelled()) {
             completed.add(awa);
@@ -228,7 +228,7 @@ public class WorkflowMetrics {
    }
 
    public Collection<TaskArtifact> getCompletedTaskWorkflows() throws OseeCoreException {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      Set<TaskArtifact> tasks = new HashSet<>();
       for (TaskArtifact team : getTaskArts()) {
          if (team.isCompletedOrCancelled()) {
             tasks.add(team);

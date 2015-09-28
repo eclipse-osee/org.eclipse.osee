@@ -323,7 +323,7 @@ public class DispoApiImpl implements DispoApi {
 
    @Override
    public List<DispoAnnotationData> getDispoAnnotations(DispoProgram program, String itemId) {
-      List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> toReturn = new ArrayList<>();
       DispoItem dispoItem = getQuery().findDispoItemById(program, itemId);
       JSONArray annotationsList = dispoItem.getAnnotationsList();
       try {
@@ -384,8 +384,8 @@ public class DispoApiImpl implements DispoApi {
             List<DispoItem> itemsFromParse =
                importer.importDirectory(nameToItemMap, new File(setToEdit.getImportPath()), report);
 
-            List<DispoItem> itemsToCreate = new ArrayList<DispoItem>();
-            List<DispoItem> itemsToEdit = new ArrayList<DispoItem>();
+            List<DispoItem> itemsToCreate = new ArrayList<>();
+            List<DispoItem> itemsToEdit = new ArrayList<>();
 
             for (DispoItem item : itemsFromParse) {
                // if the ID is non-empty then we are updating an item instead of creating a new one
@@ -448,7 +448,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    private HashMap<String, DispoItem> getItemsMap(DispoProgram program, DispoSet set) {
-      HashMap<String, DispoItem> toReturn = new HashMap<String, DispoItem>();
+      HashMap<String, DispoItem> toReturn = new HashMap<>();
       List<DispoItem> dispoItems = getDispoItems(program, set.getGuid());
       for (DispoItem item : dispoItems) {
          toReturn.put(item.getName(), item);
@@ -511,12 +511,12 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params) {
       List<DispoItem> sourceItems = getDispoItems(program, source.getGuid());
-      Map<String, DispoItemData> namesToDestItems = new HashMap<String, DispoItemData>();
+      Map<String, DispoItemData> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
          DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
          namesToDestItems.put(itemData.getName(), itemData);
       }
-      Map<String, DispoItem> namesToToEditItems = new HashMap<String, DispoItem>();
+      Map<String, DispoItem> namesToToEditItems = new HashMap<>();
       OperationReport report = new OperationReport();
 
       DispoSetCopier copier = new DispoSetCopier(dispoConnector);

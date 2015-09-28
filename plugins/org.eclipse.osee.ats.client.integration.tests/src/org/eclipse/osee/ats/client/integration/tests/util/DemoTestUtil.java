@@ -144,7 +144,7 @@ public class DemoTestUtil {
     * Create tasks named title + <num>
     */
    public static Collection<TaskArtifact> createSimpleTasks(TeamWorkFlowArtifact teamArt, String title, int numTasks, String relatedToState) throws Exception {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       for (int x = 1; x < numTasks + 1; x++) {
          names.add(title + " " + x);
       }
@@ -169,7 +169,7 @@ public class DemoTestUtil {
 
    public static Artifact getUncommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
       if (unCommittedWorkflows == null) {
-         unCommittedWorkflows = new HashMap<DemoWorkType, Artifact>();
+         unCommittedWorkflows = new HashMap<>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName(
             "SAW (uncommitted) More Reqt Changes for Diagram View", AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {
@@ -188,7 +188,7 @@ public class DemoTestUtil {
 
    public static Artifact getCommittedActionWorkflow(DemoWorkType demoWorkType) throws OseeCoreException {
       if (committedWorkflows == null) {
-         committedWorkflows = new HashMap<DemoWorkType, Artifact>();
+         committedWorkflows = new HashMap<>();
          for (Artifact art : ArtifactQuery.getArtifactListFromName("SAW (committed) Reqt Changes for Diagram View",
             AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED)) {
             if (art.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow)) {

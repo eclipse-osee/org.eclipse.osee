@@ -35,7 +35,7 @@ public class WorkDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
    }
 
    public Collection<WorkDefinitionSheet> getSelection() {
-      ArrayList<WorkDefinitionSheet> arts = new ArrayList<WorkDefinitionSheet>();
+      ArrayList<WorkDefinitionSheet> arts = new ArrayList<>();
       for (Object obj : getResult()) {
          arts.add((WorkDefinitionSheet) obj);
       }

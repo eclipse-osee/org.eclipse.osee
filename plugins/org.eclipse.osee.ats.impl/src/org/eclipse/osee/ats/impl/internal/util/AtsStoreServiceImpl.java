@@ -57,7 +57,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows) {
-      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>(inWorkWorkflows.size());
+      List<IAtsWorkItem> workItems = new ArrayList<>(inWorkWorkflows.size());
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
       Iterator<ArtifactReadable> arts =
          atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andGuids(guids).getResults().iterator();
@@ -75,7 +75,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    @Override
    public Long getUuidFromGuid(String guid) {
       if (guidToUuid == null) {
-         guidToUuid = new HashMap<String, Long>(200);
+         guidToUuid = new HashMap<>(200);
       }
       Long result = null;
       if (guidToUuid.containsKey(guid)) {

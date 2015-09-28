@@ -65,7 +65,7 @@ public class CopyAtsConfigurationOperationTest {
    }
 
    public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {
-      Set<IAtsActionableItem> artifacts = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> artifacts = new HashSet<>();
       for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
          if (aia.getName().startsWith(prefix)) {
             artifacts.add(aia);

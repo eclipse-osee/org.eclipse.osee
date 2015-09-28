@@ -42,9 +42,9 @@ public class ModifyActionableItems {
    private final Collection<IAtsActionableItem> currWorkflowDesiredAIs;
    private final Collection<IAtsActionableItem> newAIs;
    private final IAtsUser modifiedBy;
-   private final List<CreateTeamData> teamDatas = new ArrayList<CreateTeamData>();
-   private final List<IAtsActionableItem> addAis = new ArrayList<IAtsActionableItem>();
-   private final List<IAtsActionableItem> removeAis = new ArrayList<IAtsActionableItem>();
+   private final List<CreateTeamData> teamDatas = new ArrayList<>();
+   private final List<IAtsActionableItem> addAis = new ArrayList<>();
+   private final List<IAtsActionableItem> removeAis = new ArrayList<>();
    private final Map<IAtsTeamDefinition, CreateTeamData> teamDefToTeamDataMap =
       new HashMap<IAtsTeamDefinition, CreateTeamData>();
    private final ITeamDefinitionUtility teamDefUtil;
@@ -70,8 +70,8 @@ public class ModifyActionableItems {
    }
 
    private void processAisAddedForNewWorkflows() throws OseeCoreException {
-      Set<IAtsActionableItem> allAIsForNewWorkflow = new HashSet<IAtsActionableItem>();
-      Set<IAtsActionableItem> duplicatedAIs = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> allAIsForNewWorkflow = new HashSet<>();
+      Set<IAtsActionableItem> duplicatedAIs = new HashSet<>();
       // determine AIs that already have a team workflow associated
       for (IAtsActionableItem checkAi : newAIs) {
          if (!checkAi.isActionable()) {

@@ -55,7 +55,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
          }
          if (xWidget.getLabel().equals(AtsAttributeTypes.Decision.getUnqualifiedName())) {
             XComboDam decisionComboDam = (XComboDam) xWidget;
-            List<String> options = new ArrayList<String>();
+            List<String> options = new ArrayList<>();
             XDecisionOptions xDecOptions = new XDecisionOptions(WorkflowManager.cast(art));
             for (DecisionOption opt : xDecOptions.getDecisionOptions()) {
                options.add(opt.getName());

@@ -54,7 +54,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.artifactResolver = artifactResolver;
       this.destinationArtifact = destinationArtifact;
       this.importArtifactOrder = RelationOrderBaseTypes.USER_DEFINED;
-      this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
+      this.roughToRealArtifact = new HashMap<>();
       this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       this.extractor = extractor;
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);

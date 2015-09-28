@@ -233,7 +233,7 @@ public class TestRunView extends GenericViewPart implements IDataChangedListener
    }
 
    private final class ShowOnlyLatestRuns extends ViewerFilter {
-      private final Map<String, ArtifactItem> latestMap = new HashMap<String, ArtifactItem>();
+      private final Map<String, ArtifactItem> latestMap = new HashMap<>();
 
       @Override
       public Object[] filter(Viewer viewer, Object parent, Object[] elements) {

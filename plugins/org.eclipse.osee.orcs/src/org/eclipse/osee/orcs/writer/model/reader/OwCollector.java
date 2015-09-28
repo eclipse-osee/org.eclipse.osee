@@ -40,7 +40,7 @@ public class OwCollector {
 
    public List<OwArtifact> getCreate() {
       if (create == null) {
-         create = new LinkedList<OwArtifact>();
+         create = new LinkedList<>();
       }
       return create;
    }
@@ -95,7 +95,7 @@ public class OwCollector {
 
    public List<OwArtifact> getUpdate() {
       if (update == null) {
-         update = new LinkedList<OwArtifact>();
+         update = new LinkedList<>();
       }
       return update;
    }

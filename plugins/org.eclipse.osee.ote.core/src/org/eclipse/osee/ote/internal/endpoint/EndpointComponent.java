@@ -18,8 +18,8 @@ import org.eclipse.osee.ote.properties.OtePropertiesCore;
 public class EndpointComponent implements OteUdpEndpoint {
    
    private OteUdpEndpointReceiverImpl receiver;
-   private HashMap<InetSocketAddress, OteUdpEndpointSender> senders = new HashMap<InetSocketAddress, OteUdpEndpointSender>();
-   private CopyOnWriteNoIteratorList<OteUdpEndpointSender> broadcastThreaded = new CopyOnWriteNoIteratorList<OteUdpEndpointSender>(OteUdpEndpointSender.class);//for backwards compatibility
+   private HashMap<InetSocketAddress, OteUdpEndpointSender> senders = new HashMap<>();
+   private CopyOnWriteNoIteratorList<OteUdpEndpointSender> broadcastThreaded = new CopyOnWriteNoIteratorList<>(OteUdpEndpointSender.class);//for backwards compatibility
    private boolean debug = false;
    
    public EndpointComponent(){

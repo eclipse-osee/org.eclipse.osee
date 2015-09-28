@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public final class AtsAttributeTypes {
 
-   public static final Map<String, IAttributeType> nameToTypeMap = new HashMap<String, IAttributeType>();
+   public static final Map<String, IAttributeType> nameToTypeMap = new HashMap<>();
    // @formatter:off
    public static final IAttributeType Actionable = createType(0x10000000000000B8L, "Actionable", "True if item can have Action written against or assigned to.");
    public static final IAttributeType ActionableItem = createType(0x10000000000000E0L, "Actionable Item", "Actionable Items that are impacted by this change.");

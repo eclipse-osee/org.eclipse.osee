@@ -31,7 +31,7 @@ public class AtsObjectsTest {
 
    @Test
    public void testToUuids() {
-      List<IAtsObject> objs = new ArrayList<IAtsObject>();
+      List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.GUEST_USER);
       Assert.assertEquals(Arrays.asList(AtsCoreUsers.SYSTEM_USER.getUuid(), AtsCoreUsers.GUEST_USER.getUuid()),
@@ -42,7 +42,7 @@ public class AtsObjectsTest {
    public void testToString() {
       Assert.assertEquals("", AtsObjects.toString("; ", Collections.emptyList()));
 
-      List<Object> objs = new ArrayList<Object>();
+      List<Object> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.GUEST_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);
@@ -54,7 +54,7 @@ public class AtsObjectsTest {
 
    @Test
    public void testGetNames() {
-      List<IAtsObject> objs = new ArrayList<IAtsObject>();
+      List<IAtsObject> objs = new ArrayList<>();
       objs.add(AtsCoreUsers.SYSTEM_USER);
       objs.add(AtsCoreUsers.GUEST_USER);
       objs.add(AtsCoreUsers.UNASSIGNED_USER);

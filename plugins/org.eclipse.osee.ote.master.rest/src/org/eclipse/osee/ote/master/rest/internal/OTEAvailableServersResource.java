@@ -38,7 +38,7 @@ public class OTEAvailableServersResource {
    public List<OTEServer> getOTEServers() throws MalformedURLException, IllegalArgumentException, UriBuilderException, InterruptedException, ExecutionException {
       OTELookup oteLookup = OTERestApplication.getOTELookup();
       List<OTELookupServerEntry> availableServers = oteLookup.getAvailableServers();
-      List<OTEServer> servers = new ArrayList<OTEServer>();
+      List<OTEServer> servers = new ArrayList<>();
       for (OTELookupServerEntry entry : availableServers) {
          servers.add(Util.convert(entry));
       }

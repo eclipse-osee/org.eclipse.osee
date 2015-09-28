@@ -213,7 +213,7 @@ public class NewActionPage1 extends WizardPage {
    }
 
    public Set<IAtsActionableItem> getSelectedIAtsActionableItems() {
-      Set<IAtsActionableItem> selected = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> selected = new HashSet<>();
       for (Object obj : treeViewer.getChecked()) {
          selected.add((IAtsActionableItem) obj);
       }

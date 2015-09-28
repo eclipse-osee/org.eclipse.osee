@@ -20,8 +20,8 @@ import java.util.Map;
 
 public class BundleCollection {
 
-	Map<String, List<BundleInfoLite>> bundleByName = new HashMap<String, List<BundleInfoLite>>();
-	Map<URL, BundleInfoLite> bundleByURL = new HashMap<URL, BundleInfoLite>();
+	Map<String, List<BundleInfoLite>> bundleByName = new HashMap<>();
+	Map<URL, BundleInfoLite> bundleByURL = new HashMap<>();
 
 	public BundleCollection(){
 		
@@ -30,7 +30,7 @@ public class BundleCollection {
 	public void add(BundleInfoLite bundle){
 		List<BundleInfoLite> bundles = bundleByName.get(bundle.getSymbolicName());
 		if(bundles == null){
-			bundles = new ArrayList<BundleInfoLite>();
+			bundles = new ArrayList<>();
 			bundleByName.put(bundle.getSymbolicName(), bundles);
 		}
 		bundles.add(bundle);
@@ -46,7 +46,7 @@ public class BundleCollection {
 	}
 
 	public List<BundleInfoLite> getInstalledBundles() {
-		List<BundleInfoLite> bundles = new ArrayList<BundleInfoLite>();
+		List<BundleInfoLite> bundles = new ArrayList<>();
 		for(BundleInfoLite info: bundleByURL.values()){
 			if(info.isInstalled()){
 				bundles.add(info);
@@ -56,7 +56,7 @@ public class BundleCollection {
 	}
 
 	public List<BundleInfoLite> getLatestBundles() {
-		List<BundleInfoLite> latest = new ArrayList<BundleInfoLite>();
+		List<BundleInfoLite> latest = new ArrayList<>();
 		for(List<BundleInfoLite> infolist:this.bundleByName.values()){
 			if(infolist.size() == 1){
 				latest.add(infolist.get(0));

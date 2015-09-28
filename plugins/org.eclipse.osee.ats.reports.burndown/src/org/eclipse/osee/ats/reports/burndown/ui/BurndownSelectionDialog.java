@@ -77,7 +77,7 @@ public class BurndownSelectionDialog extends SelectionDialog {
 
    @Override
    protected Control createDialogArea(final Composite container) {
-      List<Object> objs = new ArrayList<Object>();
+      List<Object> objs = new ArrayList<>();
       try {
          Set<IAtsTeamDefinition> teamReleaseableDefinitions =
             TeamDefinitions.getTeamReleaseableDefinitions(this.active, AtsClientService.get().getConfig());
@@ -110,7 +110,7 @@ public class BurndownSelectionDialog extends SelectionDialog {
 
             @Override
             public void widgetSelected(final SelectionEvent e) {
-               ArrayList<Object> objs1 = new ArrayList<Object>();
+               ArrayList<Object> objs1 = new ArrayList<>();
                try {
 
                   selectedTeamDef = (Artifact) teamCombo.getSelected();
@@ -155,7 +155,7 @@ public class BurndownSelectionDialog extends SelectionDialog {
          }
       });
       if (teamDef != null) {
-         objs = new ArrayList<Object>();
+         objs = new ArrayList<>();
          try {
             for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version =

@@ -145,7 +145,7 @@ public class RoleImpl extends MinimalEObjectImpl.Container implements Role
   {
     if (superRoles == null)
     {
-      superRoles = new EObjectResolvingEList<Role>(Role.class, this, OseeDslPackage.ROLE__SUPER_ROLES);
+      superRoles = new EObjectResolvingEList<>(Role.class, this, OseeDslPackage.ROLE__SUPER_ROLES);
     }
     return superRoles;
   }
@@ -159,7 +159,7 @@ public class RoleImpl extends MinimalEObjectImpl.Container implements Role
   {
     if (usersAndGroups == null)
     {
-      usersAndGroups = new EObjectContainmentEList<UsersAndGroups>(UsersAndGroups.class, this, OseeDslPackage.ROLE__USERS_AND_GROUPS);
+      usersAndGroups = new EObjectContainmentEList<>(UsersAndGroups.class, this, OseeDslPackage.ROLE__USERS_AND_GROUPS);
     }
     return usersAndGroups;
   }
@@ -173,7 +173,7 @@ public class RoleImpl extends MinimalEObjectImpl.Container implements Role
   {
     if (referencedContexts == null)
     {
-      referencedContexts = new EObjectContainmentEList<ReferencedContext>(ReferencedContext.class, this, OseeDslPackage.ROLE__REFERENCED_CONTEXTS);
+      referencedContexts = new EObjectContainmentEList<>(ReferencedContext.class, this, OseeDslPackage.ROLE__REFERENCED_CONTEXTS);
     }
     return referencedContexts;
   }

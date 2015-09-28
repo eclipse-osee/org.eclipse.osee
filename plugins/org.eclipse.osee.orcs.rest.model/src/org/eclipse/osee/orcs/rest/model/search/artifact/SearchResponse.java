@@ -30,10 +30,10 @@ public class SearchResponse implements SearchResult {
    private SearchRequest searchRequest;
 
    @XmlTransient
-   private List<Integer> ids = new LinkedList<Integer>();
+   private List<Integer> ids = new LinkedList<>();
 
    @XmlTransient
-   private List<SearchMatch> searchMatches = new LinkedList<SearchMatch>();
+   private List<SearchMatch> searchMatches = new LinkedList<>();
 
    public void setSearchRequest(SearchRequest searchRequest) {
       this.searchRequest = searchRequest;
@@ -75,7 +75,7 @@ public class SearchResponse implements SearchResult {
    @XmlElement(name = "id")
    public List<Integer> getIds() {
       if (ids == null) {
-         ids = new LinkedList<Integer>();
+         ids = new LinkedList<>();
       }
       return ids;
    }

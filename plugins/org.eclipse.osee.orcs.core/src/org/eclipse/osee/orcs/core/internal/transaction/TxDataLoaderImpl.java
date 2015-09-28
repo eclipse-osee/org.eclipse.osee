@@ -56,7 +56,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    private DataLoader createLoader(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
-      Set<String> ids = new LinkedHashSet<String>();
+      Set<String> ids = new LinkedHashSet<>();
       for (ArtifactId artifactId : artifactIds) {
          ids.add(artifactId.getGuid());
       }

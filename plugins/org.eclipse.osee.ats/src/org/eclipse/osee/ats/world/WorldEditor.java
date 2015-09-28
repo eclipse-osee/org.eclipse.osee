@@ -84,7 +84,7 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    }
 
    public static Collection<WorldEditor> getEditors() {
-      final List<WorldEditor> editors = new ArrayList<WorldEditor>();
+      final List<WorldEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {

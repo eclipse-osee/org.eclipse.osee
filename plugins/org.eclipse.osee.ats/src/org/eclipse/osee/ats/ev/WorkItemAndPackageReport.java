@@ -69,7 +69,7 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
-               tabs = new LinkedList<IResultsEditorTab>();
+               tabs = new LinkedList<>();
                createWorkItemTab(tabs);
             }
             return tabs;
@@ -82,7 +82,7 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
       List<XViewerColumn> columns = getColumns();
       XResultData results = new XResultData(false);
 
-      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> rows = new ArrayList<>();
       WorkPackageConfigLoader loader = new WorkPackageConfigLoader();
       loader.load();
 

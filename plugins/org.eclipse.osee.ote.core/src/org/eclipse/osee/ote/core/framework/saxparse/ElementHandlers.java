@@ -21,7 +21,7 @@ import org.xml.sax.SAXException;
 public abstract class ElementHandlers {
 
    private final String name;
-   private final List<IBaseSaxElementListener> listeners = new ArrayList<IBaseSaxElementListener>();
+   private final List<IBaseSaxElementListener> listeners = new ArrayList<>();
 
    public ElementHandlers(String name) {
       this.name = name;

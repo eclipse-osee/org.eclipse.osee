@@ -56,7 +56,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider = getSelectionProvider();
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
+      ArrayList<IContributionItem> contributionItems = new ArrayList<>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
@@ -88,7 +88,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
    private CommandContributionItem createCommand(Branch branch, String commandId) throws OseeCoreException {
 
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getUuid()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
       CommandContributionItem contributionItem;

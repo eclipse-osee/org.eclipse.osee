@@ -26,7 +26,7 @@ public final class XWidgetUtility {
    }
 
    public static List<XWidget> findXWidgetsInControl(Widget parent) {
-      List<XWidget> xWidgets = new ArrayList<XWidget>();
+      List<XWidget> xWidgets = new ArrayList<>();
       XWidget xWidget = asXWidget(parent);
       if (xWidget != null) {
          xWidgets.add(xWidget);

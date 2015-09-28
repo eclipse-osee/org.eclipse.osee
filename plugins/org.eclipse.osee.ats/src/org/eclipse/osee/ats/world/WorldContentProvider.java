@@ -47,7 +47,7 @@ import org.eclipse.osee.framework.ui.swt.Widgets;
 public class WorldContentProvider implements ITreeContentProvider {
 
    // Store off relatedArts as they are discovered so they're not garbage collected
-   protected Set<Artifact> relatedArts = new HashSet<Artifact>();
+   protected Set<Artifact> relatedArts = new HashSet<>();
    private final WorldXViewer xViewer;
 
    public WorldContentProvider(WorldXViewer WorldXViewer) {
@@ -102,7 +102,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.cast(artifact);
-               List<Artifact> arts = new ArrayList<Artifact>();
+               List<Artifact> arts = new ArrayList<>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(ReviewManager.getReviews(teamArt));
                arts.addAll(teamArt.getTaskArtifactsSorted());

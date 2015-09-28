@@ -52,7 +52,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
    }
 
    private void processNotAddressedGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
-      List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
+      List<Object[]> notAddressedGammas = new LinkedList<>();
 
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
@@ -72,7 +72,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
    }
 
    private void processAddressedButNonexistentGammas(JdbcConnection connection, String tableName) throws OseeCoreException {
-      List<Object[]> nonexistentGammas = new LinkedList<Object[]>();
+      List<Object[]> nonexistentGammas = new LinkedList<>();
 
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
@@ -93,7 +93,7 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
    }
 
    private void processEmptyTransactions(JdbcConnection connection) throws OseeCoreException {
-      List<Object[]> emptyTransactions = new LinkedList<Object[]>();
+      List<Object[]> emptyTransactions = new LinkedList<>();
 
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {

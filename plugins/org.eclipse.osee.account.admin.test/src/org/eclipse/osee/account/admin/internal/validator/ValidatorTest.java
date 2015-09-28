@@ -63,7 +63,7 @@ public class ValidatorTest {
    public void testSetup() {
       initMocks(this);
 
-      Map<AccountField, FieldValidator> delegates = new HashMap<AccountField, FieldValidator>();
+      Map<AccountField, FieldValidator> delegates = new HashMap<>();
 
       delegates.put(FIELD_1, delegate1);
       delegates.put(FIELD_2, delegate2);

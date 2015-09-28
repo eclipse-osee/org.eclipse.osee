@@ -61,7 +61,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
       if (teamDefs.isEmpty()) {
          return;
       }
-      Set<String> emails = new HashSet<String>();
+      Set<String> emails = new HashSet<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
             for (IAtsUser user : teamDef.getMembers()) {
@@ -88,7 +88,7 @@ public class EmailTeamsItem extends XNavigateItemAction {
 
    public Collection<IAtsTeamDefinition> getTeamDefinitions() throws OseeCoreException {
       if (teamDef != null) {
-         Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+         Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          teamDefs.add(teamDef);
          teamDefs.addAll(TeamDefinitions.getChildren(teamDef, true));
          return teamDefs;

@@ -51,7 +51,7 @@ public class NoneAuthenticationProviderTest {
       NoneAuthenticationProvider provider = new NoneAuthenticationProvider();
       admin.addAuthenticationProvider(provider);
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED,
          NoneAuthenticationProvider.AUTHENTICATION_TYPE);
 

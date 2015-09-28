@@ -164,7 +164,7 @@ public class ClientRegistrationEndpoint extends AbstractClientService {
    private List<String> parseMultilined(String rawData) {
       List<String> toReturn = Collections.emptyList();
       if (Strings.isValid(rawData)) {
-         toReturn = new ArrayList<String>();
+         toReturn = new ArrayList<>();
          String[] entries = rawData.split("\\s+");
          for (String entry : entries) {
             entry = entry.trim();

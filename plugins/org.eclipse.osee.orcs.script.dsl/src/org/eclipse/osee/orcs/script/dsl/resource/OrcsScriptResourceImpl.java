@@ -57,7 +57,7 @@ public class OrcsScriptResourceImpl implements OrcsScriptDslResource {
       String error = builder.toString();
       if (Strings.isValid(error)) {
          if (additionalErrors == null) {
-            additionalErrors = new ArrayList<String>();
+            additionalErrors = new ArrayList<>();
          }
          additionalErrors.add(error);
       }
@@ -67,11 +67,11 @@ public class OrcsScriptResourceImpl implements OrcsScriptDslResource {
    public Collection<String> getErrors() {
       List<String> errors = null;
       if (additionalErrors != null && !additionalErrors.isEmpty()) {
-         errors = new LinkedList<String>(additionalErrors);
+         errors = new LinkedList<>(additionalErrors);
       }
       if (resource != null) {
          if (errors == null) {
-            errors = new LinkedList<String>();
+            errors = new LinkedList<>();
          }
          for (org.eclipse.emf.ecore.resource.Resource.Diagnostic diagnostic : resource.getErrors()) {
             errors.add(diagnostic.toString());

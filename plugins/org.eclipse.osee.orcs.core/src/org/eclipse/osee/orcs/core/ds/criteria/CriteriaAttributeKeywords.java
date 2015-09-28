@@ -85,7 +85,7 @@ public class CriteriaAttributeKeywords extends Criteria {
 
    public void checkNotTaggable() throws OseeCoreException {
       if (!includeAllTypes) {
-         ArrayList<String> notTaggable = new ArrayList<String>();
+         ArrayList<String> notTaggable = new ArrayList<>();
          if (attributeTypeCache != null) {
             for (IAttributeType type : attributeType) {
                if (!attributeTypeCache.isTaggable(type)) {

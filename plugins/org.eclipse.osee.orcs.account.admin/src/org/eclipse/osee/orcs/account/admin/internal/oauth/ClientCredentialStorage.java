@@ -121,7 +121,7 @@ public class ClientCredentialStorage extends AbstractDatabaseStorage<OAuthClient
    private List<String> fromCertString(String certs) {
       List<String> toReturn = null;
       if (Strings.isValid(certs)) {
-         toReturn = new ArrayList<String>();
+         toReturn = new ArrayList<>();
          String[] certArray = certs.split(";");
          for (String cert : certArray) {
             toReturn.add(cert);

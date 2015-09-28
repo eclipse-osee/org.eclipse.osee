@@ -40,7 +40,7 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> aias = new HashSet<>();
       for (TeamWorkFlowArtifact team : getTeams()) {
          aias.addAll(team.getActionableItemsDam().getActionableItems());
       }

@@ -35,7 +35,7 @@ public class TraceAccumulator {
 
    private final SetMultimap<CaseInsensitiveString, String> traceMarkToFiles = HashMultimap.create();
    private final SetMultimap<String, String> fileToMalformeddMarks = HashMultimap.create();
-   private final LinkedList<String> noTraceFiles = new LinkedList<String>();
+   private final LinkedList<String> noTraceFiles = new LinkedList<>();
    private final Pattern filePattern;
    private final Iterable<TraceMatch> traceMatches;
    private SetMultimap<String, CaseInsensitiveString> fileToTraceMarks;

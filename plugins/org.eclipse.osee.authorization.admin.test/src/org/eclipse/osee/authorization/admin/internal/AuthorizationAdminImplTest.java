@@ -149,7 +149,7 @@ public class AuthorizationAdminImplTest {
    public void testAuthorizeExceptionProviderReturnsNull() {
       admin.addAuthorizationProvider(provider1);
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_OVERRIDE, AuthorizationOverride.NONE);
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
@@ -174,7 +174,7 @@ public class AuthorizationAdminImplTest {
    public void testAuthorizeExceptionProviderWasNull() {
       Date date = new Date();
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_OVERRIDE, AuthorizationOverride.NONE);
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
@@ -198,7 +198,7 @@ public class AuthorizationAdminImplTest {
 
       Date date = new Date();
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_OVERRIDE, AuthorizationOverride.NONE);
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
@@ -235,7 +235,7 @@ public class AuthorizationAdminImplTest {
       iterator = admin.getAllowedSchemes().iterator();
       assertEquals(false, iterator.hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -262,7 +262,7 @@ public class AuthorizationAdminImplTest {
       actual = admin.isSchemeAllowed(SCHEME_2);
       assertEquals(false, actual);
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -290,7 +290,7 @@ public class AuthorizationAdminImplTest {
       assertEquals(DEFAULT_SCHEME, iterator.next());
       assertEquals(false, iterator.hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       admin.update(properties);
 
       iterator = admin.getAvailableSchemes().iterator();
@@ -310,7 +310,7 @@ public class AuthorizationAdminImplTest {
    public void testAuthorizeWithDefault() {
       Date date = new Date();
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, DEFAULT_SCHEME);
       admin.update(properties);
 
@@ -340,7 +340,7 @@ public class AuthorizationAdminImplTest {
 
       Date date = new Date();
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_OVERRIDE, AuthorizationOverride.NONE);
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);

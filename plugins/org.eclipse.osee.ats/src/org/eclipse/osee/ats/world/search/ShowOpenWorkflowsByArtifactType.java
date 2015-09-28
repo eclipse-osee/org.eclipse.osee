@@ -51,7 +51,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
       List<Artifact> artifacts = null;
       if (!showFinished) {
-         List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+         List<ArtifactSearchCriteria> criteria = new ArrayList<>();
          TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, showFinished, showFinished);
          artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactType, AtsUtilCore.getAtsBranch(), 500, criteria);
       } else {

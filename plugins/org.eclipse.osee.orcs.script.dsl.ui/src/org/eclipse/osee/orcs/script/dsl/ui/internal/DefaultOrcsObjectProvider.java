@@ -31,7 +31,7 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
 
    @Override
    public Iterable<? extends Identifiable<Long>> getBranches() {
-      List<Identifiable<Long>> toReturn = new ArrayList<Identifiable<Long>>();
+      List<Identifiable<Long>> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getBranches());
       }
@@ -40,7 +40,7 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
 
    @Override
    public Iterable<? extends Identifiable<Long>> getArtifactTypes() {
-      List<Identifiable<Long>> toReturn = new ArrayList<Identifiable<Long>>();
+      List<Identifiable<Long>> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getArtifactTypes());
       }
@@ -49,7 +49,7 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
 
    @Override
    public Iterable<? extends Identifiable<Long>> getAttributeTypes() {
-      List<Identifiable<Long>> toReturn = new ArrayList<Identifiable<Long>>();
+      List<Identifiable<Long>> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getAttributeTypes());
       }
@@ -58,7 +58,7 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
 
    @Override
    public Iterable<? extends Identifiable<Long>> getRelationTypes() {
-      List<Identifiable<Long>> toReturn = new ArrayList<Identifiable<Long>>();
+      List<Identifiable<Long>> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getRelationTypes());
       }

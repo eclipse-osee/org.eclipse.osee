@@ -40,7 +40,7 @@ public class XDecisionOptions {
    }
 
    public XDecisionOptions(AbstractWorkflowArtifact sma) {
-      this.smaRef = new WeakReference<AbstractWorkflowArtifact>(sma);
+      this.smaRef = new WeakReference<>(sma);
       this.attributeType = AtsAttributeTypes.DecisionReviewOptions;
    }
 
@@ -61,7 +61,7 @@ public class XDecisionOptions {
    }
 
    public static Set<DecisionOption> getDecisionOptions(String decisionOptions) {
-      Set<DecisionOption> decOptions = new LinkedHashSet<DecisionOption>();
+      Set<DecisionOption> decOptions = new LinkedHashSet<>();
       for (String decsionOpt : decisionOptions.split("[\n\r]+")) {
          DecisionOption state = new DecisionOption();
          Result result = state.setFromXml(decsionOpt);

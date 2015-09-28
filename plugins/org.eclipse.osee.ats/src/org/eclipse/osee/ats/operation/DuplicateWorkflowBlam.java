@@ -129,13 +129,13 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          // assignees == add in existing assignees, leads and originator (current user)
-         List<IAtsUser> assignees = new LinkedList<IAtsUser>();
+         List<IAtsUser> assignees = new LinkedList<>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
          IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
          assignees.addAll(teamDef.getLeads());
@@ -162,7 +162,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    }
 
    private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       AtsChangeSet changes = new AtsChangeSet("Duplicate Workflow");
 
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
@@ -178,7 +178,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          dupArt.getLog().addLog(LogType.Note, null, "Workflow duplicated from " + teamArt.getAtsId(), user.getUserId());
 
          // assignees == add in existing assignees, leads and originator (current user)
-         List<IAtsUser> assignees = new LinkedList<IAtsUser>();
+         List<IAtsUser> assignees = new LinkedList<>();
          assignees.addAll(teamArt.getStateMgr().getAssignees());
          assignees.addAll(teamArt.getTeamDefinition().getLeads());
          if (!assignees.contains(user)) {

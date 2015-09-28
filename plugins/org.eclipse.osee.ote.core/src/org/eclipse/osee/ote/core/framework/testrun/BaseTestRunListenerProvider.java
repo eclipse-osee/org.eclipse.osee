@@ -25,7 +25,7 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
    List<ITestRunListener> listeners;
 
    public BaseTestRunListenerProvider() {
-      listeners = new CopyOnWriteArrayList<ITestRunListener>();
+      listeners = new CopyOnWriteArrayList<>();
    }
 
    @Override

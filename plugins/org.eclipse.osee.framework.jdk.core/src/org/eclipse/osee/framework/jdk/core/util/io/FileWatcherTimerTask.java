@@ -33,7 +33,7 @@ final class FileWatcherTimerTask extends TimerTask {
    @Override
    public void run() {
       try {
-         LinkedList<FileChangeEvent> fileChangeEvents = new LinkedList<FileChangeEvent>();
+         LinkedList<FileChangeEvent> fileChangeEvents = new LinkedList<>();
          for (Map.Entry<File, Long> entry : filesToWatch.entrySet()) {
             Long latestLastModified = entry.getKey().lastModified();
             Long storedLastModified = entry.getValue();

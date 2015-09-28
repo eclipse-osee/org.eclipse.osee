@@ -176,7 +176,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> awas = new HashSet<>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {

@@ -86,7 +86,7 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
 
          private Set<IAttributeType> getTypes(String[] typesToPurge) throws OseeCoreException {
             AttributeTypes attributeTypes = orcsTypes.getAttributeTypes();
-            Set<IAttributeType> toReturn = new HashSet<IAttributeType>();
+            Set<IAttributeType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = -1L;

@@ -315,7 +315,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public <T extends IAtsConfigObject> Collection<T> getConfigObjects(Collection<? extends Artifact> artifacts, Class<T> clazz) throws OseeCoreException {
       IAtsConfig config = getConfig();
-      List<T> objects = new ArrayList<T>();
+      List<T> objects = new ArrayList<>();
       for (Artifact art : artifacts) {
          objects.addAll(config.getByTag(art.getGuid(), clazz));
       }
@@ -657,7 +657,7 @@ public class AtsClientImpl implements IAtsClient {
 
    @Override
    public Collection<IArtifactType> getArtifactTypes() {
-      List<IArtifactType> types = new ArrayList<IArtifactType>();
+      List<IArtifactType> types = new ArrayList<>();
       types.addAll(ArtifactTypeManager.getAllTypes());
       return types;
    }
@@ -750,7 +750,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<GoalArtifact> getGoalMembersCache() {
       if (goalMembersCache == null) {
-         goalMembersCache = new ArtifactCollectorsCache<GoalArtifact>(AtsRelationTypes.Goal_Member);
+         goalMembersCache = new ArtifactCollectorsCache<>(AtsRelationTypes.Goal_Member);
       }
       return goalMembersCache;
    }
@@ -758,7 +758,7 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public IArtifactMembersCache<SprintArtifact> getSprintItemsCache() {
       if (sprintItemsCache == null) {
-         sprintItemsCache = new ArtifactCollectorsCache<SprintArtifact>(AtsRelationTypes.AgileSprintToItem_AtsItem);
+         sprintItemsCache = new ArtifactCollectorsCache<>(AtsRelationTypes.AgileSprintToItem_AtsItem);
       }
       return sprintItemsCache;
    }

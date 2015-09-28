@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class ActionableItems {
 
    public static Collection<String> getNames(Collection<? extends IAtsActionableItem> ais) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (IAtsActionableItem ai : ais) {
          names.add(ai.getName());
       }
@@ -53,7 +53,7 @@ public class ActionableItems {
    }
 
    public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       ais.add(ai);
       for (IAtsActionableItem art : ai.getChildrenActionableItems()) {
          ais.addAll(getAIsFromItemAndChildren(art));
@@ -66,7 +66,7 @@ public class ActionableItems {
    }
 
    public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       getActionableItemsFromItemAndChildren(ai, ais);
       return ais;
    }
@@ -81,7 +81,7 @@ public class ActionableItems {
    }
 
    public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsConfig config) throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       for (String actionableItemName : actionableItemNames) {
          for (IAtsActionableItem ai : config.get(IAtsActionableItem.class)) {
             if (ai.getName().equals(actionableItemName)) {
@@ -121,7 +121,7 @@ public class ActionableItems {
    }
 
    public static List<IAtsActionableItem> getActive(Collection<IAtsActionableItem> ais, Active active) {
-      List<IAtsActionableItem> results = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> results = new ArrayList<>();
       for (IAtsActionableItem ai : ais) {
          if (active == Active.Both) {
             results.add(ai);
@@ -139,7 +139,7 @@ public class ActionableItems {
    }
 
    public static Set<IAtsActionableItem> getChildren(IAtsActionableItem topActionableItem, boolean recurse) throws OseeCoreException {
-      Set<IAtsActionableItem> children = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> children = new HashSet<>();
       for (IAtsActionableItem child : topActionableItem.getChildrenActionableItems()) {
          children.add(child);
          if (recurse) {

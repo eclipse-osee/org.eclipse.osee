@@ -171,7 +171,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    private static Set<IAgileSprint> getActiveSprints(Artifact agileTeamArt) {
-      Set<IAgileSprint> activeSprints = new HashSet<IAgileSprint>();
+      Set<IAgileSprint> activeSprints = new HashSet<>();
       for (Artifact sprintArt : agileTeamArt.getRelatedArtifacts(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          IAgileSprint agileSprint = AtsClientService.get().getWorkItemFactory().getAgileSprint(sprintArt);
          if (agileSprint.isActive()) {
@@ -197,7 +197,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {

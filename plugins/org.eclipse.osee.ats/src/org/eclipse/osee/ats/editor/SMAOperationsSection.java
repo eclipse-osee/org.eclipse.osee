@@ -71,7 +71,7 @@ public class SMAOperationsSection extends SectionPart {
 
    private synchronized void registerAdvancedSectionsFromExtensionPoints() {
       if (operationsSectionProviders == null) {
-         operationsSectionProviders = new ArrayList<ISMAOperationsSection>();
+         operationsSectionProviders = new ArrayList<>();
          ExtensionDefinedObjects<ISMAOperationsSection> extensions =
             new ExtensionDefinedObjects<ISMAOperationsSection>(Activator.PLUGIN_ID + ".AtsAdvancedOperationAction",
                "AtsAdvancedOperationAction", "classname", true);

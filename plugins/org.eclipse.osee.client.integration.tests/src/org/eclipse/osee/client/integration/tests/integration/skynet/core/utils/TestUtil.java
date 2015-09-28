@@ -62,7 +62,7 @@ public final class TestUtil {
    }
 
    public static Collection<Artifact> createSimpleArtifacts(IArtifactType artifactType, int numArts, String name, IOseeBranch branch) throws OseeCoreException {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       for (int x = 1; x < numArts + 1; x++) {
          arts.add(createSimpleArtifact(artifactType, name + " " + x, branch));
       }
@@ -70,7 +70,7 @@ public final class TestUtil {
    }
 
    public static Map<String, Integer> getTableRowCounts(String... tables) throws OseeCoreException {
-      Map<String, Integer> data = new HashMap<String, Integer>();
+      Map<String, Integer> data = new HashMap<>();
       for (String tableName : tables) {
          data.put(tableName, getTableRowCount(tableName));
       }
@@ -94,7 +94,7 @@ public final class TestUtil {
    }
 
    public static List<RelationLink> createLinks(int total, Branch branch) {
-      List<RelationLink> links = new ArrayList<RelationLink>();
+      List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
          RelationType relationType = createRelationType(index);
          RelationLink link = createRelationLink(index, index + 1, index + 2, branch, relationType);
@@ -104,7 +104,7 @@ public final class TestUtil {
    }
 
    public static List<RelationLink> createLinks(int total, Branch branch, RelationType relationType) {
-      List<RelationLink> links = new ArrayList<RelationLink>();
+      List<RelationLink> links = new ArrayList<>();
       for (int index = 0; index < total; index++) {
          RelationLink link = createRelationLink(index, index + 1, index + 2, branch, relationType);
          links.add(link);

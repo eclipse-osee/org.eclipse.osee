@@ -69,7 +69,7 @@ public class AuthorizationConfigurationBuilderTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthorizationConstants.AUTHORIZATION_OVERRIDE, AuthorizationOverride.DENY_ALL);
       properties.put(AuthorizationConstants.AUTHORIZATION_SCHEME_ALLOWED, SCHEME_2);
       builder.properties(properties);

@@ -28,11 +28,11 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 public class Matrix {
    private final String title;
    private final ArrayList<MatrixItem> items;
-   private final Map<String, MatrixItem> nameToItem = new HashMap<String, MatrixItem>();
-   private final Set<String> values = new HashSet<String>();
-   private final Map<String, Set<String>> nameToValues = new HashMap<String, Set<String>>();
+   private final Map<String, MatrixItem> nameToItem = new HashMap<>();
+   private final Set<String> values = new HashSet<>();
+   private final Map<String, Set<String>> nameToValues = new HashMap<>();
    // Names with no values will be listed at the bottom of the report so they don't take up space
-   private final Set<String> noValueNames = new HashSet<String>();
+   private final Set<String> noValueNames = new HashSet<>();
    private boolean useNameAsMark = false;
    private IProgressMonitor monitor;
 
@@ -68,7 +68,7 @@ public class Matrix {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.beginMultiColumnTable(100, 1));
       // Determine all the names to deal with
-      Set<String> names = new HashSet<String>();
+      Set<String> names = new HashSet<>();
       // Don't want to take up valuable table space with names that have no values; keep track
       // of them and print them at the end of the report
       for (String name : nameToItem.keySet()) {
@@ -98,7 +98,7 @@ public class Matrix {
          if (monitor != null) {
             monitor.subTask(str);
          }
-         List<String> marks = new ArrayList<String>();
+         List<String> marks = new ArrayList<>();
          marks.add(value);
          for (String name : sortedNames) {
             if (nameToValues.get(name) != null && nameToValues.get(name).contains(value)) {

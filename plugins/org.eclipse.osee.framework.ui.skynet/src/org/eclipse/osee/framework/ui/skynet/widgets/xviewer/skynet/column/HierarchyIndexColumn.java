@@ -33,7 +33,7 @@ import com.google.common.cache.CacheBuilder;
  * @author Ryan D. Brooks
  */
 public class HierarchyIndexColumn extends XViewerValueColumn {
-   private final Set<Artifact> strongArtifactRefs = new HashSet<Artifact>();
+   private final Set<Artifact> strongArtifactRefs = new HashSet<>();
 
    public static HierarchyIndexColumn instance = new HierarchyIndexColumn();
 

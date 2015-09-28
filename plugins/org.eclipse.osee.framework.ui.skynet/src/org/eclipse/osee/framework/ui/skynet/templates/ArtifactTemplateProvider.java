@@ -43,7 +43,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
 
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
-         templateMap = new HashMap<String, Artifact>();
+         templateMap = new HashMap<>();
          templates =
             ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
          for (Artifact art : templates) {
@@ -114,7 +114,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
          throw new OseeArgumentException("Invalid renderer[%s] or presentationType[%s]", renderer.toString(),
             presentationType.toString());
       }
-      List<String> list = new ArrayList<String>();
+      List<String> list = new ArrayList<>();
 
       String rendererId = renderer.getClass().getCanonicalName();
       if (artifact != null && option != null) {

@@ -130,7 +130,7 @@ public class AtsWorkDefinitionAdminImplTest {
     */
    @Test
    public void testGetWorkDefinitionForPeerToPeerReviewIAtsTeamWorkflowIAtsPeerToPeerReview__fromReview() throws Exception {
-      List<Object> attrValues = new ArrayList<Object>();
+      List<Object> attrValues = new ArrayList<>();
       attrValues.add(MyPeerToPeerWorkDefId);
       when(attributeResolver.getAttributeValues(peerReview, AtsAttributeTypes.WorkflowDefinition)).thenReturn(
          attrValues);
@@ -146,7 +146,7 @@ public class AtsWorkDefinitionAdminImplTest {
    @Test
    public void testGetWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone() throws Exception {
       when(teamWf.getTeamDefinition()).thenReturn(featureTeamDef);
-      List<Object> attrValues = new ArrayList<Object>();
+      List<Object> attrValues = new ArrayList<>();
       attrValues.add(MyPeerToPeerWorkDefId);
       when(
          attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(
@@ -186,7 +186,7 @@ public class AtsWorkDefinitionAdminImplTest {
          workDefAmin.getPeerToPeerWorkDefinitionFromTeamDefinitionAttributeValueRecurse(featureTeamDef).isMatched());
 
       // Setup that top team definition has WorkDefinition defined
-      List<Object> attrValues = new ArrayList<Object>();
+      List<Object> attrValues = new ArrayList<>();
       attrValues.add(MyPeerToPeerWorkDefId);
       when(
          attributeResolver.getAttributeValues(topTeamDef, AtsAttributeTypes.RelatedPeerWorkflowDefinition)).thenReturn(

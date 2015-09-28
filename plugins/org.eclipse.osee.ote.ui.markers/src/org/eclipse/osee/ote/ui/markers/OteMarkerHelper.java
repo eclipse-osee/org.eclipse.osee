@@ -32,14 +32,14 @@ public class OteMarkerHelper {
 
    private final List<MarkerInfo> markerInfo;
    private final List<IMarker> markersToDelete;
-   private final Map<CheckPointHelper, CheckPointHelper> count = new HashMap<CheckPointHelper, CheckPointHelper>();
+   private final Map<CheckPointHelper, CheckPointHelper> count = new HashMap<>();
    private final StringBuilder builder = new StringBuilder();
    private final List<TestPointData> testPonitDatas;
 
    public OteMarkerHelper(List<TestPointData> testPointDatas) {
       this.testPonitDatas = testPointDatas;
-      markerInfo = new ArrayList<MarkerInfo>();
-      markersToDelete = new ArrayList<IMarker>();
+      markerInfo = new ArrayList<>();
+      markersToDelete = new ArrayList<>();
 
       doWork();
    }
@@ -100,8 +100,8 @@ public class OteMarkerHelper {
 
    private void finish() {
 
-      Set<String> fileAlreadyLookedFor = new HashSet<String>();
-      Map<String, IResource> resources = new HashMap<String, IResource>();
+      Set<String> fileAlreadyLookedFor = new HashSet<>();
+      Map<String, IResource> resources = new HashMap<>();
 
       for (MarkerInfo marker : markerInfo) {
     	  if (!fileAlreadyLookedFor.contains(marker.getFile())) {
@@ -122,7 +122,7 @@ public class OteMarkerHelper {
          try {
             IResource resourceToMark = resources.get(marker.getFile());
             if (resourceToMark != null) {
-               Map<String, Object> scriptMarkerMap = new HashMap<String, Object>();
+               Map<String, Object> scriptMarkerMap = new HashMap<>();
                scriptMarkerMap.put(IMarker.MESSAGE, marker.getMessage());
                scriptMarkerMap.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_INFO));
                scriptMarkerMap.put(IMarker.LINE_NUMBER, marker.getLine());

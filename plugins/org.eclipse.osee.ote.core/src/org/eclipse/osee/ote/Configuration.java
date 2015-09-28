@@ -17,7 +17,7 @@ public class Configuration implements Serializable {
    private ArrayList<ConfigurationItem> items;
 
    public Configuration() {
-      items = new ArrayList<ConfigurationItem>();
+      items = new ArrayList<>();
    }
    
    public List<ConfigurationItem> getItems() {

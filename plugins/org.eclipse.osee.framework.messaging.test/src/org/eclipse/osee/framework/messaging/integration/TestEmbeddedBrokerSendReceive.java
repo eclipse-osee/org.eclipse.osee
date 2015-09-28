@@ -79,7 +79,7 @@ public class TestEmbeddedBrokerSendReceive {
    @Ignore("Intermittent failures")
    @Test
    public void testMultipleConsumers() throws Exception {
-      List<TestMessageListener> listeners = new ArrayList<TestMessageListener>();
+      List<TestMessageListener> listeners = new ArrayList<>();
       for (int index = 0; index < TOTAL_SUBSCRIBERS; index++) {
          TestMessageListener messageListener = new TestMessageListener(1);
          listeners.add(messageListener);
@@ -121,7 +121,7 @@ public class TestEmbeddedBrokerSendReceive {
    @Ignore("Intermittent failures")
    @Test
    public void testMultipleConsumersWithSelector() throws Exception {
-      List<TestMessageListener> listeners = new ArrayList<TestMessageListener>();
+      List<TestMessageListener> listeners = new ArrayList<>();
       for (int index = 0; index < TOTAL_SUBSCRIBERS; index++) {
          TestMessageListener messageListener = new TestMessageListener(1);
          listeners.add(messageListener);

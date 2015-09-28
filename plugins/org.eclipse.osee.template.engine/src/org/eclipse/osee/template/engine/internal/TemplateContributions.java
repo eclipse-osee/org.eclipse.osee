@@ -53,7 +53,7 @@ public class TemplateContributions {
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Collection<JaxRsTemplateContribution> getTemplateContributions(@Context final HttpHeaders httpHeaders, @Context final UriInfo uriInfo) {
-      final Map<String, JaxRsTemplateContribution> contribs = new HashMap<String, JaxRsTemplateContribution>();
+      final Map<String, JaxRsTemplateContribution> contribs = new HashMap<>();
       registry.accept(new TemplateVisitor() {
 
          @Override

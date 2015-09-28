@@ -42,7 +42,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private static final String SELECT_CHANGES_BETWEEN_TRANSACTIONS =
       "select gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
+   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<>();
 
    private final SqlJoinFactory joinFactory;
    private final TransactionReadableDelta txDelta;
@@ -69,7 +69,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    @Override
    public List<ChangeItem> call() throws Exception {
-      List<ChangeItem> changeData = new LinkedList<ChangeItem>();
+      List<ChangeItem> changeData = new LinkedList<>();
 
       Conditions.checkExpressionFailOnTrue(!txDelta.areOnTheSameBranch(),
          "Unable to compute deltas between transactions on different branches [%s]", txDelta);
@@ -116,7 +116,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
       IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
 
-      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
+      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<>();
       changeItemLoader.loadItemIdsBasedOnGammas(factory, txJoinId, changesByItemId, idJoin);
 
       idJoin.store();

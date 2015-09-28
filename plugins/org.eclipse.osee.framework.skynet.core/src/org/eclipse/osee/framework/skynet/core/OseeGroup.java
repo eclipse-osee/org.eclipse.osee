@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class OseeGroup {
 
    private Artifact groupArtifact;
-   private final Map<IArtifactToken, Boolean> temporaryOverride = new HashMap<IArtifactToken, Boolean>();
+   private final Map<IArtifactToken, Boolean> temporaryOverride = new HashMap<>();
    private final IArtifactToken token;
 
    public OseeGroup(IArtifactToken token) {

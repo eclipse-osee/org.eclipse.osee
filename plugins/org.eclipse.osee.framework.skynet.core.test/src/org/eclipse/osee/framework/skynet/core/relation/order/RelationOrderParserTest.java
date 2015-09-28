@@ -72,7 +72,7 @@ public class RelationOrderParserTest {
       Assert.assertTrue(data.hasEntries());
       Assert.assertEquals(1, data.size());
 
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
          "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
 
@@ -102,7 +102,7 @@ public class RelationOrderParserTest {
       Assert.assertTrue(data.hasEntries());
       Assert.assertEquals(2, data.size());
 
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       addData(expectedData, "Default Hierarchical", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA",
          "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_oQ8Bf8VXLX7U_g");
       addData(expectedData, "Some Type", RelationSide.SIDE_A, "AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_mIQXf8VXVtGqvA",
@@ -123,7 +123,7 @@ public class RelationOrderParserTest {
       Assert.assertTrue(data.hasEntries());
       Assert.assertEquals(1, data.size());
 
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       addData(expectedData, "X", RelationSide.SIDE_B, "AAT0xogoMjMBhARkBZQA");
       checkData(data, expectedData);
       Assert.assertEquals(oneEntryEmptyList, parser.toXml(data));
@@ -177,7 +177,7 @@ public class RelationOrderParserTest {
    }
 
    private void addData(List<Object[]> expectedData, String relationType, RelationSide side, String relationOrderIdGuid, String... guids) {
-      List<String> artGuids = new ArrayList<String>();
+      List<String> artGuids = new ArrayList<>();
       if (guids != null && guids.length > 0) {
          artGuids.addAll(Arrays.asList(guids));
       }

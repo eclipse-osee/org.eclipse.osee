@@ -291,7 +291,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
 
    protected Set<IAtsVersion> getSelectableVersionArtifacts() throws OseeCoreException {
       Collection<IAtsActionableItem> aias = getSelectedAIs();
-      Set<IAtsVersion> versions = new HashSet<IAtsVersion>();
+      Set<IAtsVersion> versions = new HashSet<>();
       if (!aias.isEmpty()) {
          for (IAtsTeamDefinition teamDef : TeamDefinitions.getImpactedTeamDefs(aias)) {
             IAtsTeamDefinition teamDefHoldingVersions = teamDef.getTeamDefinitionHoldingVersions();

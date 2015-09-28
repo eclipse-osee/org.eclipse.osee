@@ -35,7 +35,7 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
       };
 
    public CompositeKeyQuadHashMap() {
-      map = new HashMap<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value>();
+      map = new HashMap<>();
    }
 
    public CompositeKeyQuadHashMap(Map<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value> map) {
@@ -43,7 +43,7 @@ public class CompositeKeyQuadHashMap<KeyOne, KeyTwo, KeyThree, KeyFour, Value> i
    }
 
    public CompositeKeyQuadHashMap(int initialCapacity) {
-      map = new HashMap<Quad<KeyOne, KeyTwo, KeyThree, KeyFour>, Value>(initialCapacity);
+      map = new HashMap<>(initialCapacity);
    }
 
    @Override

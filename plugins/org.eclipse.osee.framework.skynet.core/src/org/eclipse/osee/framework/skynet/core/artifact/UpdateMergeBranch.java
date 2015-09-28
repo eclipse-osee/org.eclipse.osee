@@ -75,7 +75,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    protected void doTxWork(IProgressMonitor monitor, JdbcConnection connection) throws OseeCoreException {
       Collection<Integer> allMergeBranchArtifacts = getAllMergeArtifacts(mergeBranch);
       long time = System.currentTimeMillis();
-      Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<Integer>(allMergeBranchArtifacts);
+      Collection<Integer> allMergeBranchArtifactsCopy = new HashSet<>(allMergeBranchArtifacts);
       Collection<Artifact> goodMergeBranchArtifacts =
          ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
 
@@ -188,7 +188,7 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
    }
 
    private Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
-      Collection<Integer> artSet = new HashSet<Integer>();
+      Collection<Integer> artSet = new HashSet<>();
       long time = System.currentTimeMillis();
 
       JdbcStatement chStmt = getJdbcClient().getStatement();

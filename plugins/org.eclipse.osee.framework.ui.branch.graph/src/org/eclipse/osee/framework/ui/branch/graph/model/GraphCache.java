@@ -30,8 +30,8 @@ public class GraphCache {
    private final Map<Long, TxModel> txNumberToTxModelMap;
 
    public GraphCache(Branch rootBranch) throws OseeCoreException {
-      this.branchToBranchModelMap = new HashMap<Branch, BranchModel>();
-      this.txNumberToTxModelMap = new HashMap<Long, TxModel>();
+      this.branchToBranchModelMap = new HashMap<>();
+      this.txNumberToTxModelMap = new HashMap<>();
       this.rootModel = this.getOrCreateBranchModel(rootBranch);
       this.rootModel.setDepth(0);
    }
@@ -41,7 +41,7 @@ public class GraphCache {
    }
 
    public List<Node> getNodes() {
-      List<Node> nodes = new ArrayList<Node>();
+      List<Node> nodes = new ArrayList<>();
       nodes.addAll(branchToBranchModelMap.values());
       nodes.addAll(txNumberToTxModelMap.values());
       return nodes;

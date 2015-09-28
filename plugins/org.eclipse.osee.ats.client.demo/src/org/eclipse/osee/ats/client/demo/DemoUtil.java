@@ -77,7 +77,7 @@ public class DemoUtil {
    }
 
    public static Collection<TeamWorkFlowArtifact> getSawWfs(String name) {
-      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<TeamWorkFlowArtifact>();
+      List<TeamWorkFlowArtifact> teamWfs = new ArrayList<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromName(name, AtsUtilCore.getAtsBranch(),
          DeletionFlag.EXCLUDE_DELETED)) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {

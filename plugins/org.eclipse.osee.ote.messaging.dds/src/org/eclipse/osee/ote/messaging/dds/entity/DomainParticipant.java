@@ -73,9 +73,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
       super(enabled, listener, parentFactory);
 
       this.domainId = domainId;
-      this.publishers = new CopyOnWriteArrayList<Publisher>(); // Thread Safe
-      this.subscribers = new CopyOnWriteArrayList<Subscriber>(); // Thread Safe
-      this.topics = new CompositeKeyHashMap<String, String, Topic>(512, true);
+      this.publishers = new CopyOnWriteArrayList<>(); // Thread Safe
+      this.subscribers = new CopyOnWriteArrayList<>(); // Thread Safe
+      this.topics = new CompositeKeyHashMap<>(512, true);
       this.middlewarePublisher = null;
       this.typeRegistry = new TypeRegistry(typeCapacity, typeFactor);
 

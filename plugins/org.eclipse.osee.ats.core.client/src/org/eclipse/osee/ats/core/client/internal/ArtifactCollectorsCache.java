@@ -50,9 +50,9 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
    private void initializeStructures() {
       if (!initialized) {
          initialized = true;
-         cache = new HashMap<Integer, List<Artifact>>();
-         registered = new HashSet<Integer>();
-         collectorMemberOrderMap = new DoubleKeyHashMap<Integer, Integer, String>();
+         cache = new HashMap<>();
+         registered = new HashSet<>();
+         collectorMemberOrderMap = new DoubleKeyHashMap<>();
       }
    }
 
@@ -91,7 +91,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
             fillOrderCache(collector, members);
          }
       }
-      LinkedList<Artifact> linkedList = new LinkedList<Artifact>(members);
+      LinkedList<Artifact> linkedList = new LinkedList<>(members);
       return linkedList;
    }
 
@@ -142,7 +142,7 @@ public class ArtifactCollectorsCache<T extends CollectorArtifact> implements IAr
 
    private void clearOrderCache(T collectorArt) {
       if (initialized) {
-         List<Integer> memberIds = new ArrayList<Integer>();
+         List<Integer> memberIds = new ArrayList<>();
          Map<Integer, String> subHash = collectorMemberOrderMap.getSubHash(collectorArt.getArtId());
          if (subHash != null) {
             memberIds.addAll(subHash.keySet());

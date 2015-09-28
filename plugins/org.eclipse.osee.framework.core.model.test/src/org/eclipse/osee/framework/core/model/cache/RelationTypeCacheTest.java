@@ -29,7 +29,7 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
-      data = new ArrayList<RelationType>();
+      data = new ArrayList<>();
 
       cache = new RelationTypeCache();
       int typeId = 100;

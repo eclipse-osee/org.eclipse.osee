@@ -29,8 +29,8 @@ public class WorkDefinitionDiagram extends ModelElement {
    public static final String CHILD_ADDED_PROP = "WorkflowDiagram.ChildAdded";
    /** Property ID to use when a child is removed from this diagram. */
    public static final String CHILD_REMOVED_PROP = "WorkflowDiagram.ChildRemoved";
-   private final List<Shape> shapes = new ArrayList<Shape>();
-   private final List<Shape> deletedShapes = new ArrayList<Shape>();
+   private final List<Shape> shapes = new ArrayList<>();
+   private final List<Shape> deletedShapes = new ArrayList<>();
    private final IAtsWorkDefinition workDef;
 
    public WorkDefinitionDiagram(IAtsWorkDefinition workDef) {
@@ -85,7 +85,7 @@ public class WorkDefinitionDiagram extends ModelElement {
    }
 
    public Set<Connection> getConnections() {
-      Set<Connection> connections = new HashSet<Connection>();
+      Set<Connection> connections = new HashSet<>();
       for (Shape shape : getChildren()) {
          connections.addAll(shape.getSourceConnections());
          connections.addAll(shape.getTargetConnections());

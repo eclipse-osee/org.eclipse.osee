@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Shell;
 
 public class ModelessDialog extends MessageDialog {
-   private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
+   private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
 
    public ModelessDialog(Shell parentShell, String dialogTitle, Image dialogTitleImage, String dialogMessage, int dialogImageType, String[] dialogButtonLabels, int defaultIndex) {
       super(parentShell, dialogTitle, dialogTitleImage, dialogMessage, dialogImageType, dialogButtonLabels,

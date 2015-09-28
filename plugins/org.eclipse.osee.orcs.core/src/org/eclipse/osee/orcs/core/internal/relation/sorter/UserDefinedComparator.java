@@ -24,7 +24,7 @@ public class UserDefinedComparator implements Comparator<Identifiable<String>> {
    private final Map<String, Integer> value;
 
    public UserDefinedComparator(List<String> guidOrder) {
-      value = new HashMap<String, Integer>(guidOrder.size());
+      value = new HashMap<>(guidOrder.size());
       for (int i = 0; i < guidOrder.size(); i++) {
          value.put(guidOrder.get(i), i);
       }

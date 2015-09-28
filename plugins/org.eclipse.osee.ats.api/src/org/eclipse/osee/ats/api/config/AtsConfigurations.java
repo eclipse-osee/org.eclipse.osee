@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.util.ColorColumns;
 @XmlRootElement
 public class AtsConfigurations {
 
-   private final List<AtsConfiguration> configs = new ArrayList<AtsConfiguration>();
+   private final List<AtsConfiguration> configs = new ArrayList<>();
    private AtsViews views = new AtsViews();
    private ColorColumns colorColumns = new ColorColumns();
 

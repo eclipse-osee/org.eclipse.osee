@@ -42,7 +42,7 @@ public class OperationBuilderImpl implements OperationBuilder {
    private void reset() {
       behavior = OperationBehavior.TerminateOnError;
       logger = NullOperationLogger.getSingleton();
-      operations = new ArrayList<Pair<Double, ? extends IOperation>>();
+      operations = new ArrayList<>();
       runningTotal = 0;
       itemsWithHints = 0;
    }

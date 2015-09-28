@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
  * @author Ryan D. Brooks
  */
 public final class OseeTemplateTokens {
-   private static final List<ResourceToken> tokens = new ArrayList<ResourceToken>();
+   private static final List<ResourceToken> tokens = new ArrayList<>();
 
    // @formatter:off
    

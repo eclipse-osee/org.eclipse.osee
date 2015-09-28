@@ -26,8 +26,8 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphNode;
  */
 public class GraphDataImpl implements GraphData {
 
-   private final Map<Integer, GraphNode> nodesById = new ConcurrentHashMap<Integer, GraphNode>();
-   private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<Integer, GraphAdjacencies>();
+   private final Map<Integer, GraphNode> nodesById = new ConcurrentHashMap<>();
+   private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
 
    private final IOseeBranch branch;
    private final int txId;

@@ -114,7 +114,7 @@ public class WordsUtilTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       //***WORD***
       String dataWithSpecial = getSpecial(169, 174, 87, 79, 82, 68, 96, 8220, 34);
       data.add(new Object[] {dataWithSpecial, 5, true, new String[] {"WORD"}});

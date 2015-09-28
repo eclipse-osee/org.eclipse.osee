@@ -33,7 +33,7 @@ public class ConsoleAdminUtilsTest {
 
    @Test
    public void testParsingArguments() {
-      List<String> args = new ArrayList<String>();
+      List<String> args = new ArrayList<>();
       args.add("CoMMaND");
       args.add("hello=12345");
       args.add("var2=\"var1\"");
@@ -88,7 +88,7 @@ public class ConsoleAdminUtilsTest {
       ConsoleCommand cmd3 = new MockConsoleCommand("123 test");
       ConsoleCommand cmd4 = new MockConsoleCommand("abcdefg");
 
-      List<ConsoleCommand> list = new ArrayList<ConsoleCommand>();
+      List<ConsoleCommand> list = new ArrayList<>();
       list.add(cmd1);
       list.add(cmd2);
       list.add(cmd3);

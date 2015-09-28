@@ -106,7 +106,7 @@ public final class ActionUiResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getNewSource() throws Exception {
-      List<ArtifactReadable> sortedAis = new ArrayList<ArtifactReadable>();
+      List<ArtifactReadable> sortedAis = new ArrayList<>();
       for (ArtifactReadable ai : getAis()) {
          sortedAis.add(ai);
       }

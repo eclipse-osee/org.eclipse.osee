@@ -32,7 +32,7 @@ public class PropertyStoreControlContributions {
    }
 
    public static List<IPropertyStoreBasedControl> getContributions(String viewIdToMatch) {
-      List<IPropertyStoreBasedControl> toReturn = new ArrayList<IPropertyStoreBasedControl>();
+      List<IPropertyStoreBasedControl> toReturn = new ArrayList<>();
       List<IConfigurationElement> elements =
          ExtensionPoints.getExtensionElements(UiPluginConstants.PLUGIN_ID + ".PropertyStoreControl",
             "PropertyStoreControl");

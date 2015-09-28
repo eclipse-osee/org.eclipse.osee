@@ -63,7 +63,7 @@ public class ArtifactResolverImpl implements IArtifactResolver {
    @SuppressWarnings("unchecked")
    public <A extends ArtifactId> List<A> get(Collection<? extends IAtsWorkItem> workItems, Class<?> clazz) throws OseeCoreException {
       Assert.isNotNull(workItems, "Work Items can not be null");
-      List<A> arts = new ArrayList<A>();
+      List<A> arts = new ArrayList<>();
       for (IAtsWorkItem workItem : workItems) {
          ArtifactReadable artifact = get(workItem, clazz);
          if (artifact != null) {

@@ -144,7 +144,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       BranchManager.reloadBranch(sourceBranch.getUuid());
 
       if (!skipChecksAndEvents) {
-         Collection<Change> changes = new ArrayList<Change>();
+         Collection<Change> changes = new ArrayList<>();
          IOperation operation = ChangeManager.comparedToPreviousTx(newTransaction, changes);
          doSubWork(operation, monitor, 1.0);
          handleArtifactEvents(newTransaction, changes);
@@ -158,8 +158,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction.getBranch());
       artifactEvent.setTransactionId(newTransaction.getId());
 
-      Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<Integer, EventModifiedBasicGuidArtifact>();
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
+      Set<Artifact> artifacts = new HashSet<>();
 
       for (Change change : changes) {
          LoadChangeType changeType = change.getChangeType();

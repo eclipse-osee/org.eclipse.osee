@@ -12,7 +12,7 @@ public class AbstractOrcsScriptDslJavaValidator extends org.eclipse.xtext.valida
 
 	@Override
 	protected List<EPackage> getEPackages() {
-	    List<EPackage> result = new ArrayList<EPackage>();
+	    List<EPackage> result = new ArrayList<>();
 	    result.add(org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScriptDslPackage.eINSTANCE);
 		return result;
 	}

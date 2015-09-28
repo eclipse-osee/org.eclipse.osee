@@ -33,7 +33,7 @@ public class DialogPopupLoggerListener implements ILoggerListener {
          final IStatus status;
          final String realMessageText;
          if (th != null) {
-            List<IStatus> exc = new ArrayList<IStatus>();
+            List<IStatus> exc = new ArrayList<>();
             exceptionToString(true, loggerName, th, exc);
             status =
                new MultiStatus(loggerName, IStatus.ERROR, exc.toArray(new IStatus[exc.size()]), th.getMessage(), th);

@@ -78,7 +78,7 @@ public class AXml {
    }
 
    public static String[] getTagDataArray(String xmlStr, String xmlRoot) {
-      Vector<String> v = new Vector<String>();
+      Vector<String> v = new Vector<>();
       Matcher m;
       m =
          Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xmlStr);
@@ -89,7 +89,7 @@ public class AXml {
    }
 
    public static List<Integer> getTagIntegerDataArray(String xmlStr, String xmlRoot, String separator) {
-      List<Integer> results = new ArrayList<Integer>();
+      List<Integer> results = new ArrayList<>();
       Matcher m;
       m =
          Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xmlStr);

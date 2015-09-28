@@ -128,7 +128,7 @@ public class DataResourceTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {"application/zip", "ISO-8859-1", ".zip", "http://hello.com"});
       data.add(new Object[] {"txt/plain", "UTF-8", ".txt", "attr://123/1123/1231/hello.txt"});

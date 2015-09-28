@@ -75,7 +75,7 @@ public class JaxRsContributionsResource {
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Collection<JaxRsContributionInfo> getContributionDetails(final @Context UriInfo uriInfo) {
-      final Map<String, JaxRsContributionInfo> contribs = new HashMap<String, JaxRsContributionInfo>();
+      final Map<String, JaxRsContributionInfo> contribs = new HashMap<>();
       visitable.accept(new JaxRsVisitor() {
          @Override
          public void onApplication(String applicationContext, String componentName, Bundle bundle, Application application) {

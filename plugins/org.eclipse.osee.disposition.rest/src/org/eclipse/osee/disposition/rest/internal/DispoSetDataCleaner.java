@@ -26,7 +26,7 @@ import org.json.JSONException;
 public class DispoSetDataCleaner {
 
    public static List<DispoItem> cleanUpPcrTypes(List<DispoItem> items) {
-      List<DispoItem> toModify = new ArrayList<DispoItem>();
+      List<DispoItem> toModify = new ArrayList<>();
       for (DispoItem item : items) {
          JSONArray annotationsList = item.getAnnotationsList();
          if (checkForBadReqType(annotationsList)) {

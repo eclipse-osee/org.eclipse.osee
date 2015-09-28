@@ -32,7 +32,7 @@ public class GCHelper {
 
    public GCHelper() {
       super();
-      map = new ConcurrentHashMap<String, WeakReference<Object>>(1024);
+      map = new ConcurrentHashMap<>(1024);
    }
 
    public static GCHelper getGCHelper() {
@@ -60,7 +60,7 @@ public class GCHelper {
    }
 
    public void writeGCResults(StringBuilder builder) {
-      TreeSet<String> live = new TreeSet<String>();
+      TreeSet<String> live = new TreeSet<>();
       System.gc();
       for (Map.Entry<String, WeakReference<Object>> entry : map.entrySet()) {
          if (entry.getValue().get() != null) {
@@ -78,7 +78,7 @@ public class GCHelper {
    }
 
    public List getInstancesOfType(Class type) {
-      List<Object> listOfObjects = new ArrayList<Object>();
+      List<Object> listOfObjects = new ArrayList<>();
       System.gc();
       for (Map.Entry<String, WeakReference<Object>> entry : map.entrySet()) {
          if (entry.getValue().get() != null) {

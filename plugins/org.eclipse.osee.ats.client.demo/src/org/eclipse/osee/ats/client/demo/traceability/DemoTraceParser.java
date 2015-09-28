@@ -23,7 +23,7 @@ public class DemoTraceParser implements ITraceParser {
 
    @Override
    public Collection<TraceMark> getTraceMarks(CharBuffer fileBuffer) {
-      Collection<TraceMark> traceMarks = new HashSet<TraceMark>();
+      Collection<TraceMark> traceMarks = new HashSet<>();
       String type = "Uses";
       traceMarks.add(new TraceMark(type, "Collaborative Robot"));
       traceMarks.add(new TraceMark(type, "Robot Object"));

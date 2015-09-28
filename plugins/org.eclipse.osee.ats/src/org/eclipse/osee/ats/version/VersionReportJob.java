@@ -79,7 +79,7 @@ public class VersionReportJob extends Job {
 
    public static String getFullReleaseReport(IAtsTeamDefinition teamDef, IProgressMonitor monitor) throws OseeCoreException {
       // Sort by release date and estimated release date
-      Map<String, IAtsVersion> dateToVerArt = new HashMap<String, IAtsVersion>();
+      Map<String, IAtsVersion> dateToVerArt = new HashMap<>();
       for (IAtsVersion verArt : teamDef.getVersions()) {
          Date estRelDate = verArt.getEstimatedReleaseDate();
          Date relDate = verArt.getReleaseDate();
@@ -153,7 +153,7 @@ public class VersionReportJob extends Job {
       sb.append(AHTML.beginMultiColumnTable(100, 1, backgroundColor));
       sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Team", "Priority", "Change", "Title", "ID"}));
       int x = 1;
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (TeamWorkFlowArtifact team : teamArts) {
          teamDefs.add(team.getTeamDefinition());
       }

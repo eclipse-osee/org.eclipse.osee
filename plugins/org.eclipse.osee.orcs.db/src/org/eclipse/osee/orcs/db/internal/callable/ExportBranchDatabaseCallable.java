@@ -163,8 +163,8 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private void executeTasks(List<AbstractExportItem> taskList) throws Exception {
-      final List<Throwable> throwables = new LinkedList<Throwable>();
-      final List<Future<?>> futures = new CopyOnWriteArrayList<Future<?>>();
+      final List<Throwable> throwables = new LinkedList<>();
+      final List<Future<?>> futures = new CopyOnWriteArrayList<>();
 
       ExecutorAdmin executor = getExecutorAdmin();
       for (AbstractExportItem exportItem : taskList) {
@@ -191,7 +191,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       }
 
       if (!throwables.isEmpty()) {
-         List<StackTraceElement> trace = new LinkedList<StackTraceElement>();
+         List<StackTraceElement> trace = new LinkedList<>();
          for (Throwable th : throwables) {
             for (StackTraceElement element : th.getStackTrace()) {
                trace.add(element);

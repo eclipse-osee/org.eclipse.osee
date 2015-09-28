@@ -47,7 +47,7 @@ public class RelationOrderContributionItem extends ContributionItem {
    }
 
    private final ISelectionProvider selectionProvider;
-   private final Collection<SelectionListener> listeners = new CopyOnWriteArrayList<SelectionListener>();
+   private final Collection<SelectionListener> listeners = new CopyOnWriteArrayList<>();
 
    public RelationOrderContributionItem(ISelectionProvider selectionProvider) {
       super("relation.order.contribution.item");

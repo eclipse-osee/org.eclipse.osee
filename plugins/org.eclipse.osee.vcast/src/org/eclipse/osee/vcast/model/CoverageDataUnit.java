@@ -28,7 +28,7 @@ public class CoverageDataUnit {
    public String name;
    public int index;
    public CoverageDataType coverageType;
-   public List<CoverageDataSubProgram> subPrograms = new ArrayList<CoverageDataSubProgram>();
+   public List<CoverageDataSubProgram> subPrograms = new ArrayList<>();
 
    public CoverageDataUnit(String name) {
       super();

@@ -30,7 +30,7 @@ public class AtsHealthCheck {
 
    public static Set<IAtsHealthCheck> getAtsHealthCheckItems() {
       if (healthCheckItems == null) {
-         healthCheckItems = new HashSet<IAtsHealthCheck>();
+         healthCheckItems = new HashSet<>();
 
          IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsHealthCheck");

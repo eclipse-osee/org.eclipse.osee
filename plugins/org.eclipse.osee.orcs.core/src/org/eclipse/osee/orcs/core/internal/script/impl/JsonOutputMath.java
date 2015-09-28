@@ -52,7 +52,7 @@ public class JsonOutputMath {
       doMax = Boolean.parseBoolean(String.valueOf(max));
       Object min = context.getAttribute(OUTPUT_MIN);
       doMin = Boolean.parseBoolean(String.valueOf(min));
-      attributeValues = new LinkedList<Double>();
+      attributeValues = new LinkedList<>();
    }
 
    public boolean isUsed() {

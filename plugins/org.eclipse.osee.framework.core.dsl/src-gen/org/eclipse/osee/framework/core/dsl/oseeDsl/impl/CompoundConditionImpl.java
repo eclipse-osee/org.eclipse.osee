@@ -86,7 +86,7 @@ public class CompoundConditionImpl extends ConditionImpl implements CompoundCond
   {
     if (conditions == null)
     {
-      conditions = new EObjectContainmentEList<SimpleCondition>(SimpleCondition.class, this, OseeDslPackage.COMPOUND_CONDITION__CONDITIONS);
+      conditions = new EObjectContainmentEList<>(SimpleCondition.class, this, OseeDslPackage.COMPOUND_CONDITION__CONDITIONS);
     }
     return conditions;
   }
@@ -100,7 +100,7 @@ public class CompoundConditionImpl extends ConditionImpl implements CompoundCond
   {
     if (operators == null)
     {
-      operators = new EDataTypeEList<XLogicOperator>(XLogicOperator.class, this, OseeDslPackage.COMPOUND_CONDITION__OPERATORS);
+      operators = new EDataTypeEList<>(XLogicOperator.class, this, OseeDslPackage.COMPOUND_CONDITION__OPERATORS);
     }
     return operators;
   }

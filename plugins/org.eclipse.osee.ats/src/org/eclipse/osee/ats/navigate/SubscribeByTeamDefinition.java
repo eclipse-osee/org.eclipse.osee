@@ -46,7 +46,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
             "Select Team Definition\n\nEmail will be sent for every Action created against these Teams.",
             Active.Active, false);
       try {
-         List<IAtsTeamDefinition> objs = new ArrayList<IAtsTeamDefinition>();
+         List<IAtsTeamDefinition> objs = new ArrayList<>();
          for (Artifact art : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
             AtsRelationTypes.SubscribedUser_Artifact)) {
             if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {

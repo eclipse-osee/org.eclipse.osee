@@ -50,14 +50,14 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final OrcsTypes types;
    private final BranchReadable branch;
    private final Log logger;
-   private final Map<String, Integer> summarySubsystemCounter = new HashMap<String, Integer>();
-   private final Map<String, Integer> summaryTraceCounter = new HashMap<String, Integer>();
-   private final Map<String, Integer> summaryAllocationCounter = new HashMap<String, Integer>();
+   private final Map<String, Integer> summarySubsystemCounter = new HashMap<>();
+   private final Map<String, Integer> summaryTraceCounter = new HashMap<>();
+   private final Map<String, Integer> summaryAllocationCounter = new HashMap<>();
    private ExcelXmlWriter writer;
    private final Collection<IArtifactType> includeOnlyArtifactTypes;
    private final String REQUIREMENT_TRACE_TYPE = "Requirement Trace";
    private final String ALLOCATION_TRACE_TYPE = "Allocation Trace";
-   private final Map<String, IArtifactType> allTypesMap = new HashMap<String, IArtifactType>();
+   private final Map<String, IArtifactType> allTypesMap = new HashMap<>();
 
    public PublishLowHighReqStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String selectedTypes) {
       this.logger = logger;
@@ -353,7 +353,7 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
       }
       StringTokenizer parser = new StringTokenizer(csvTypes, ",");
 
-      ArrayList<IArtifactType> theReturn = new ArrayList<IArtifactType>();
+      ArrayList<IArtifactType> theReturn = new ArrayList<>();
       while (parser.hasMoreTokens()) {
          IArtifactType type = allTypesMap.get(parser.nextToken());
          if (type != null) {

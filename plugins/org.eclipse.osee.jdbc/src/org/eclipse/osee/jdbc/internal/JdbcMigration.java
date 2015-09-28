@@ -41,7 +41,7 @@ public class JdbcMigration {
 
    public void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> migrations) {
       try {
-         ArrayList<String> allPaths = new ArrayList<String>();
+         ArrayList<String> allPaths = new ArrayList<>();
          if (options.isBaselineOnMigration()) {
             baselineOnMigrate();
          }

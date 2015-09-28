@@ -76,13 +76,13 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          Set<Role> applicableRoles = getApplicableRoles(dsl.getRoleDeclarations(), applicableGuids);
 
          if (!applicableRoles.isEmpty()) {
-            Map<String, String> accessContextMap = new HashMap<String, String>();
+            Map<String, String> accessContextMap = new HashMap<>();
             for (AccessContext ac : dsl.getAccessDeclarations()) {
                accessContextMap.put(ac.getName(), ac.getGuid());
             }
 
             //now get the context id's
-            toReturn = new HashSet<IAccessContextId>();
+            toReturn = new HashSet<>();
             for (Role role : applicableRoles) {
                for (ReferencedContext ref : role.getReferencedContexts()) {
                   String contextName = ref.getAccessContextRef();
@@ -95,7 +95,7 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
    }
 
    private Set<Role> getApplicableRoles(List<Role> roles, List<String> applicableGuids) {
-      Queue<Role> applicableRoles = new LinkedList<Role>();
+      Queue<Role> applicableRoles = new LinkedList<>();
       for (Role role : roles) {
          for (UsersAndGroups uag : role.getUsersAndGroups()) {
             if (applicableGuids.contains(uag.getUserOrGroupGuid()) && !applicableRoles.contains(role)) {
@@ -105,13 +105,13 @@ public class OseeDslRoleContextProvider implements RoleContextProvider {
          }
       }
 
-      Set<Role> includesInherited = new HashSet<Role>();
+      Set<Role> includesInherited = new HashSet<>();
       getSuperRoles(includesInherited, applicableRoles);
       return includesInherited;
    }
 
    private List<String> getApplicableGuids(Artifact user) {
-      List<String> applicableGuids = new LinkedList<String>();
+      List<String> applicableGuids = new LinkedList<>();
       List<Artifact> groups = Collections.emptyList();
 
       try {

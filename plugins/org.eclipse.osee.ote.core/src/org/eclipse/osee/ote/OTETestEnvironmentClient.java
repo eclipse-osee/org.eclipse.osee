@@ -192,7 +192,7 @@ public class OTETestEnvironmentClient {
       HeadlessClassServer classServer = null;
       Configuration localConfiguration = new Configuration();
       try{
-         List<File> bundlesToSend = new ArrayList<File>();
+         List<File> bundlesToSend = new ArrayList<>();
          bundlesToSend.add(oteBuilderRootFolder);
          classServer = new HeadlessClassServer(PortUtil.getInstance().getValidPort(), InetAddress.getLocalHost(), bundlesToSend);
          File[] jars = oteBuilderRootFolder.listFiles(new FilenameFilter(){

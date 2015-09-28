@@ -67,7 +67,7 @@ public class TaskMetrics extends AbstractBlam {
    private AtsObjectMultiChoiceSelect versionsWidget;
 
    public TaskMetrics() {
-      metrics = new CountingMap<IAtsUser>();
+      metrics = new CountingMap<>();
    }
 
    @Override
@@ -91,7 +91,7 @@ public class TaskMetrics extends AbstractBlam {
          List<IAtsObject> versionArtifacts = versionsWidget.getSelected();
 
          if (!versionArtifacts.isEmpty()) {
-            Set<IAtsTeamWorkflow> teamWorkflows = new HashSet<IAtsTeamWorkflow>();
+            Set<IAtsTeamWorkflow> teamWorkflows = new HashSet<>();
             for (IAtsObject version : versionArtifacts) {
                teamWorkflows.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
                   (IAtsVersion) version));
@@ -189,7 +189,7 @@ public class TaskMetrics extends AbstractBlam {
       @Override
       public void widgetModified(XWidget widget) {
 
-         Collection<IAtsObject> versions = new HashSet<IAtsObject>();
+         Collection<IAtsObject> versions = new HashSet<>();
 
          versionsWidget.setSelectableItems(Collections.<IAtsObject> emptyList());
 

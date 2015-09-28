@@ -545,7 +545,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       IDialogSettings dialogSettings = Activator.getInstance().getDialogSettings();
       if (dialogSettings != null) {
 
-         List<String> filterString = new ArrayList<String>();
+         List<String> filterString = new ArrayList<>();
          FilterModelList filterList = filterviewer.getFilterList();
          for (FilterModel model : filterList.getFilters()) {
             filterString.add(asString(model));

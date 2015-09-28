@@ -116,7 +116,7 @@ public class AttrFullDefImpl extends AttrDefOptionsImpl implements AttrFullDef
   {
     if (values == null)
     {
-      values = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ATTR_FULL_DEF__VALUES);
+      values = new EDataTypeEList<>(String.class, this, AtsDslPackage.ATTR_FULL_DEF__VALUES);
     }
     return values;
   }

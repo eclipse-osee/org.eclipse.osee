@@ -526,7 +526,7 @@ public class ArtifactQuery {
       Collection<IAttributeType> typesToSearch = attributeTypes.length == 0 ? Collections.singleton(
          QueryBuilder.ANY_ATTRIBUTE_TYPE) : Arrays.asList(attributeTypes);
       queryBuilder.and(typesToSearch, queryString, matchCase, matchWordOrder);
-      List<Artifact> toReturn = new LinkedList<Artifact>();
+      List<Artifact> toReturn = new LinkedList<>();
       for (Artifact art : queryBuilder.getResults()) {
          toReturn.add(art);
       }
@@ -578,8 +578,8 @@ public class ArtifactQuery {
    }
 
    public static Collection<? extends Artifact> reloadArtifacts(Collection<? extends Artifact> artifacts, boolean sendRemoteEvent) throws OseeCoreException {
-      Collection<Artifact> reloadedArts = new ArrayList<Artifact>(artifacts.size());
-      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
+      Collection<Artifact> reloadedArts = new ArrayList<>(artifacts.size());
+      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<>();
       if (artifacts.isEmpty()) {
          return artifacts;
       }
@@ -587,7 +587,7 @@ public class ArtifactQuery {
          // separate/group artifacts by branch since ArtifactQueryBuilder only supports a single branch
          branchMap.put(artifact.getBranch(), artifact);
       }
-      Set<Integer> artIds = new HashSet<Integer>();
+      Set<Integer> artIds = new HashSet<>();
       for (Entry<IOseeBranch, Collection<Artifact>> entrySet : branchMap.entrySet()) {
 
          for (Artifact artifact : entrySet.getValue()) {
@@ -716,7 +716,7 @@ public class ArtifactQuery {
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
 
-         Map<Integer, Artifact> artIdToArtifact = new HashMap<Integer, Artifact>();
+         Map<Integer, Artifact> artIdToArtifact = new HashMap<>();
 
          List<Artifact> loadedArtifacts =
             ArtifactLoader.loadArtifacts(result.getIds(), branch, LoadLevel.ALL, INCLUDE_CACHE, deletionFlag, tx);
@@ -725,7 +725,7 @@ public class ArtifactQuery {
             artIdToArtifact.put(art.getArtId(), art);
          }
 
-         Map<Artifact, ArtifactMatch> matches = new HashMap<Artifact, ArtifactMatch>();
+         Map<Artifact, ArtifactMatch> matches = new HashMap<>();
          for (SearchMatch match : result.getSearchMatches()) {
             int artId = match.getArtId();
             int attrId = match.getAttrId();
@@ -746,7 +746,7 @@ public class ArtifactQuery {
 
    public static Long getUuidFromGuid(String guid, IOseeBranch branch) {
       if (guidToUuid == null) {
-         guidToUuid = new HashMap<String, Long>(200);
+         guidToUuid = new HashMap<>(200);
       }
       Long result = null;
       if (guidToUuid.containsKey(guid)) {
@@ -763,7 +763,7 @@ public class ArtifactQuery {
 
    public static String getGuidFromUuid(long uuid, IOseeBranch branch) {
       if (uuidToGuid == null) {
-         uuidToGuid = new HashMap<Long, String>(200);
+         uuidToGuid = new HashMap<>(200);
       }
       String result = null;
       if (uuidToGuid.containsKey(uuid)) {

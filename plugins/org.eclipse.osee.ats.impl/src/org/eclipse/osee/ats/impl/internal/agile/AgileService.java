@@ -118,7 +118,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileTeam> getTeams() {
-      List<IAgileTeam> teams = new ArrayList<IAgileTeam>();
+      List<IAgileTeam> teams = new ArrayList<>();
       for (ArtifactReadable teamArt : atsServer.getQuery().andTypeEquals(AtsArtifactTypes.AgileTeam).getResults()) {
          teams.add(getAgileTeam(teamArt));
       }
@@ -182,7 +182,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(IAgileTeam team) {
-      List<IAgileFeatureGroup> groups = new LinkedList<IAgileFeatureGroup>();
+      List<IAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactReadable artifact = (ArtifactReadable) team.getStoreObject();
       for (ArtifactReadable groupArt : artifact.getRelated(AtsRelationTypes.AgileTeamToFeatureGroup_FeatureGroup)) {
          groups.add(atsServer.getConfigItemFactory().getAgileFeatureGroup(groupArt));
@@ -223,7 +223,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileSprint> getSprintsForTeam(long teamUuid) {
-      List<IAgileSprint> sprints = new ArrayList<IAgileSprint>();
+      List<IAgileSprint> sprints = new ArrayList<>();
       ArtifactReadable team = getArtifact(teamUuid);
       for (ArtifactReadable sprintArt : team.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          sprints.add(getAgileSprint(sprintArt));
@@ -233,7 +233,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileSprint> getAgileSprints(IAgileTeam team) {
-      List<IAgileSprint> sprints = new LinkedList<IAgileSprint>();
+      List<IAgileSprint> sprints = new LinkedList<>();
       ArtifactReadable artifact = (ArtifactReadable) team.getStoreObject();
       for (ArtifactReadable groupArt : artifact.getRelated(AtsRelationTypes.AgileTeamToSprint_Sprint)) {
          sprints.add(atsServer.getWorkItemFactory().getAgileSprint(groupArt));
@@ -291,7 +291,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileFeatureGroup> getAgileFeatureGroups(List<Long> uuids) {
-      List<IAgileFeatureGroup> features = new LinkedList<IAgileFeatureGroup>();
+      List<IAgileFeatureGroup> features = new LinkedList<>();
       for (ArtifactReadable featureArt : atsServer.getArtifacts(uuids)) {
          features.add(atsServer.getConfigItemFactory().getAgileFeatureGroup(featureArt));
       }
@@ -300,7 +300,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileItem> getItems(IAgileBacklog backlog) {
-      List<IAgileItem> items = new LinkedList<IAgileItem>();
+      List<IAgileItem> items = new LinkedList<>();
       ArtifactReadable backlogArt = (ArtifactReadable) backlog.getStoreObject();
       for (ArtifactReadable art : backlogArt.getRelated(AtsRelationTypes.Goal_Member)) {
          if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
@@ -315,7 +315,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public Collection<IAgileFeatureGroup> getFeatureGroups(IAgileItem aItem) {
-      List<IAgileFeatureGroup> groups = new LinkedList<IAgileFeatureGroup>();
+      List<IAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactReadable itemArt = atsServer.getArtifact(aItem);
       for (ArtifactReadable featureGroup : itemArt.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
          groups.add(atsServer.getAgileService().getAgileFeatureGroup(featureGroup));

@@ -45,11 +45,11 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    public CompositeKeyHashMap(int initialCapacity, boolean isThreadSafe) {
       if (isThreadSafe) {
-         map = new ConcurrentHashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
+         map = new ConcurrentHashMap<>(initialCapacity);
       } else {
-         map = new HashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
+         map = new HashMap<>(initialCapacity);
       }
-      singleKeyMap = new HashCollection<KeyOne, KeyTwo>(isThreadSafe, HashSet.class);
+      singleKeyMap = new HashCollection<>(isThreadSafe, HashSet.class);
    }
 
    @Override
@@ -101,7 +101,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       if (key2s == null) {
          return Collections.emptyMap();
       }
-      Map<KeyTwo, Value> values = new HashMap<KeyTwo, Value>(key2s.size());
+      Map<KeyTwo, Value> values = new HashMap<>(key2s.size());
       for (KeyTwo key2 : key2s) {
          values.put(key2, get(key1, key2));
       }
@@ -113,7 +113,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       if (key2s == null) {
          return Collections.emptyList();
       }
-      ArrayList<Value> values = new ArrayList<Value>(key2s.size());
+      ArrayList<Value> values = new ArrayList<>(key2s.size());
       for (KeyTwo key2 : key2s) {
          values.add(get(key1, key2));
       }
@@ -125,7 +125,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    }
 
    public List<Pair<KeyOne, KeyTwo>> getEnumeratedKeys() {
-      List<Pair<KeyOne, KeyTwo>> toReturn = new ArrayList<Pair<KeyOne, KeyTwo>>();
+      List<Pair<KeyOne, KeyTwo>> toReturn = new ArrayList<>();
       for (KeyOne firstKey : singleKeyMap.keySet()) {
          for (KeyTwo secondKey : singleKeyMap.getValues(firstKey)) {
             toReturn.add(new Pair<KeyOne, KeyTwo>(firstKey, secondKey));
@@ -177,7 +177,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       if (key2s == null) {
          return null;
       }
-      ArrayList<Value> values = new ArrayList<Value>(key2s.size());
+      ArrayList<Value> values = new ArrayList<>(key2s.size());
       for (KeyTwo key2 : key2s) {
          values.add(map.remove(threadLocalKey.get().set(key1, key2)));
       }

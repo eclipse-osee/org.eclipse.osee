@@ -78,7 +78,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    public Object[] getBranchChildren(Branch branch) {
       try {
          if (showChildBranchesUnderParents) {
-            List<Object> items = new LinkedList<Object>();
+            List<Object> items = new LinkedList<>();
             Collection<Branch> childBrances =
                showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
 
@@ -97,7 +97,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
 
    protected Object[] getBranchManagerChildren() {
       BranchArchivedState branchState = BranchArchivedState.UNARCHIVED;
-      List<BranchType> branchTypes = new ArrayList<BranchType>(4);
+      List<BranchType> branchTypes = new ArrayList<>(4);
 
       try {
          boolean isAdmin = AccessControlManager.isOseeAdmin();
@@ -116,7 +116,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.WORKING);
          }
 
-         Set<Branch> branchesToReturn = new HashSet<Branch>();
+         Set<Branch> branchesToReturn = new HashSet<>();
          if (showOnlyWorkingBranches) {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
@@ -200,7 +200,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getAllElements(Object inputElement) {
-      ArrayList<Object> objects = new ArrayList<Object>();
+      ArrayList<Object> objects = new ArrayList<>();
 
       objects.addAll(recurseAllElements(inputElement));
 
@@ -212,7 +212,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    private ArrayList<Object> recurseAllElements(Object inputElement) {
-      ArrayList<Object> objects = new ArrayList<Object>();
+      ArrayList<Object> objects = new ArrayList<>();
 
       for (Object object : getChildren(inputElement)) {
          objects.add(object);

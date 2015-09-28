@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
  */
 public class SearchOptions {
 
-   private final Collection<IAttributeType> attributeTypeGuids = new HashSet<IAttributeType>();
-   private final Collection<IArtifactType> artifactTypeGuids = new HashSet<IArtifactType>();
+   private final Collection<IAttributeType> attributeTypeGuids = new HashSet<>();
+   private final Collection<IArtifactType> artifactTypeGuids = new HashSet<>();
    private DeletionFlag deletionFlag;
    private boolean isMatchWordOrder;
    private boolean isCaseSensive;

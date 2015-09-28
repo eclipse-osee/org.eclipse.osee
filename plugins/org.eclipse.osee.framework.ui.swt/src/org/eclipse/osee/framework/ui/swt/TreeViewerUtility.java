@@ -33,8 +33,8 @@ public class TreeViewerUtility {
     * @param treeViewer The tree to be traversed
     */
    public static <A extends Object> void getPreorderSelection(TreeViewer treeViewer, List<A> selectedTreeItems) {
-      Map<A, Object> expansionHash = new HashMap<A, Object>();
-      Map<A, Object> selectionHash = new HashMap<A, Object>();
+      Map<A, Object> expansionHash = new HashMap<>();
+      Map<A, Object> selectionHash = new HashMap<>();
       populateSelectionHash(treeViewer, selectionHash);
       populateExpansionHash(treeViewer, expansionHash);
       traverseTree(((ITreeContentProvider) treeViewer.getContentProvider()).getChildren(treeViewer.getInput()),

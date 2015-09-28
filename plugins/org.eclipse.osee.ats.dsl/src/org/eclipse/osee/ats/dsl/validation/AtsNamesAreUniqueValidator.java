@@ -39,7 +39,7 @@ public class AtsNamesAreUniqueValidator extends NamesAreUniqueValidator {
 
       @Override
       public void checkUniqueNames(Iterable<IEObjectDescription> descriptions, CancelIndicator cancelIndicator, ValidationMessageAcceptor acceptor) {
-         List<IEObjectDescription> validDescriptions = new ArrayList<IEObjectDescription>();
+         List<IEObjectDescription> validDescriptions = new ArrayList<>();
          for (IEObjectDescription description : descriptions) {
             if (!(description.getEObjectOrProxy() instanceof UserRef)) {
                validDescriptions.add(description);

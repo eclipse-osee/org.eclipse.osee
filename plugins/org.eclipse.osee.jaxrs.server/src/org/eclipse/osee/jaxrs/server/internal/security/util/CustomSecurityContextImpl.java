@@ -93,7 +93,7 @@ public class CustomSecurityContextImpl implements SecurityContext, Serializable 
       Set<String> roles;
       String allRoles = in.readUTF();
       if (Strings.isValid(allRoles)) {
-         roles = new LinkedHashSet<String>();
+         roles = new LinkedHashSet<>();
          for (String role : allRoles.split(",")) {
             roles.add(role);
          }
@@ -117,7 +117,7 @@ public class CustomSecurityContextImpl implements SecurityContext, Serializable 
       Map<String, String> props;
       String allProps = in.readUTF();
       if (Strings.isValid(allProps)) {
-         props = new LinkedHashMap<String, String>();
+         props = new LinkedHashMap<>();
          String key = null;
          for (String value : allProps.split(",")) {
             if (key == null) {

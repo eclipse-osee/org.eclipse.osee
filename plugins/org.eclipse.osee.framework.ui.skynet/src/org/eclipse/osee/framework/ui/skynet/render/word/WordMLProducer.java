@@ -63,7 +63,7 @@ public class WordMLProducer extends Producer {
       outlineLevel = 0;
       flattenedLevelCount = 0;
 
-      alphabetMap = new HashMap<String, Integer>();
+      alphabetMap = new HashMap<>();
 
       alphabetMap.put("A.0", 1);
       alphabetMap.put("B.0", 2);

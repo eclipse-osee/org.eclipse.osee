@@ -38,7 +38,7 @@ final class ArtifactFileMonitor implements IFileWatcherListener {
    private final ResourceAttributes readonlyfileAttributes;
    private final FileWatcher watcher;
    private final boolean firstTime;
-   private final Map<File, IOperation> fileMap = new ConcurrentHashMap<File, IOperation>(128);
+   private final Map<File, IOperation> fileMap = new ConcurrentHashMap<>(128);
 
    public ArtifactFileMonitor() {
       firstTime = true;

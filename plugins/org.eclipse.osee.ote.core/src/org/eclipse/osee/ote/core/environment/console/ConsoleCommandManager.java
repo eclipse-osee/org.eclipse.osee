@@ -15,7 +15,7 @@ import java.util.Hashtable;
 
 public class ConsoleCommandManager implements ICommandManager {
 
-   private final Hashtable<String, ConsoleCommand> cmdMap = new Hashtable<String, ConsoleCommand>(64);
+   private final Hashtable<String, ConsoleCommand> cmdMap = new Hashtable<>(64);
 
    private boolean isShutdown = false;
 

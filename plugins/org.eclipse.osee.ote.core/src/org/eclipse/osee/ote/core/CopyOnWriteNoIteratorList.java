@@ -17,7 +17,7 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CopyOnWriteNoIteratorList<E> {
    
    private ReentrantLock lock = new ReentrantLock(); 
-   private AtomicReference<E[]> data = new AtomicReference<E[]>();
+   private AtomicReference<E[]> data = new AtomicReference<>();
    private Class<E> type;
    
    public CopyOnWriteNoIteratorList(Class<E> type){

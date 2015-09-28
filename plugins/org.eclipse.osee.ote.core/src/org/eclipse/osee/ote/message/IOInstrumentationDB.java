@@ -22,7 +22,7 @@ import org.eclipse.osee.ote.message.instrumentation.IOInstrumentation;
  */
 public class IOInstrumentationDB {
 
-   private final Map<String, IOInstrumentation> ioInstrumentation = new ConcurrentHashMap<String, IOInstrumentation>();;
+   private final Map<String, IOInstrumentation> ioInstrumentation = new ConcurrentHashMap<>();;
    private final CopyOnWriteArraySet<IInstrumentationRegistrationListener> listeners =
       new CopyOnWriteArraySet<IInstrumentationRegistrationListener>();
 

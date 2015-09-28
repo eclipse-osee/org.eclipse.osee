@@ -104,7 +104,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
    }
 
    public static boolean promptChangeGoals(final Collection<? extends Artifact> awas, boolean persist) throws OseeCoreException {
-      Set<Artifact> selected = new HashSet<Artifact>();
+      Set<Artifact> selected = new HashSet<>();
       for (Artifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
@@ -137,7 +137,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {

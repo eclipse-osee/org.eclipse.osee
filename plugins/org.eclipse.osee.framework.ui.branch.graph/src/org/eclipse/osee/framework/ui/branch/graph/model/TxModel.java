@@ -65,7 +65,7 @@ public class TxModel extends Node implements Serializable, Comparable<TxModel> {
 
    public void addMergedTx(TxModel node) {
       if (mergedTxs == null) {
-         mergedTxs = new ArrayList<TxModel>();
+         mergedTxs = new ArrayList<>();
       }
       mergedTxs.add(node);
    }

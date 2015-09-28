@@ -45,7 +45,7 @@ import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
-   private final List<IAttributeType> wordAttributeType = new ArrayList<IAttributeType>();
+   private final List<IAttributeType> wordAttributeType = new ArrayList<>();
    private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
@@ -138,7 +138,7 @@ public abstract class AbstractWordCompare implements IComparator {
          compareFiles = converter.convertToFile(presentationType, artifactDelta);
       } else {
          // The artifactDelta is a 3 Way Merge
-         List<IFile> outputFiles = new ArrayList<IFile>();
+         List<IFile> outputFiles = new ArrayList<>();
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getStartArtifact());
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
          // this is where we are getting the exception that the length of outputFiles is 1
@@ -155,7 +155,7 @@ public abstract class AbstractWordCompare implements IComparator {
                throw new OseeCoreException(ex, "Empty file for comparison could not be created, [%s]", outputFileName);
             }
          }
-         compareFiles = new Pair<IFile, IFile>(outputFiles.get(0), outputFiles.get(1));
+         compareFiles = new Pair<>(outputFiles.get(0), outputFiles.get(1));
          data.addMerge(outputFiles.get(0).getLocation().toOSString());
       }
       WordImageChecker.restoreOriginalValue(baseContent, originalValue);

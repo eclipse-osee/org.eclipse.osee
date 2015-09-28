@@ -114,7 +114,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
@@ -166,7 +166,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
@@ -193,7 +193,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
@@ -202,7 +202,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 
-      final List<AccessDetail<?>> actualAccesses = new ArrayList<AccessDetail<?>>();
+      final List<AccessDetail<?>> actualAccesses = new ArrayList<>();
       AccessDetailCollector collector = new AccessDetailCollector() {
 
          @Override
@@ -238,7 +238,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 
@@ -247,7 +247,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       RelationTypeSide expectedObject1 = new RelationTypeSide(testRelationType, RelationSide.SIDE_A);
       RelationTypeSide expectedObject2 = new RelationTypeSide(testRelationType, RelationSide.SIDE_B);
 
-      final List<AccessDetail<?>> actualAccesses = new ArrayList<AccessDetail<?>>();
+      final List<AccessDetail<?>> actualAccesses = new ArrayList<>();
       AccessDetailCollector collector = new AccessDetailCollector() {
 
          @Override
@@ -291,7 +291,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.AbstractSoftwareRequirement.getGuid(),
          CoreArtifactTypes.AbstractSoftwareRequirement.getName(), false));
       artArtType.setSuperTypes(superTypes);
@@ -330,7 +330,7 @@ public class RelationTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
 
       IArtifactType artTypeToken1 = CoreArtifactTypes.SoftwareRequirement;
       ArtifactType artArtType = new ArtifactType(artTypeToken1.getGuid(), artTypeToken1.getName(), false);
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtType.setSuperTypes(superTypes);
 

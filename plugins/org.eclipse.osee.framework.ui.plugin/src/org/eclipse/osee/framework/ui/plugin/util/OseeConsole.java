@@ -216,7 +216,7 @@ public class OseeConsole {
       private final CopyOnWriteArrayList<IConsoleInputListener> listeners;
 
       public HandleInput() {
-         listeners = new CopyOnWriteArrayList<IConsoleInputListener>();
+         listeners = new CopyOnWriteArrayList<>();
       }
 
       public void addListener(IConsoleInputListener listener) {

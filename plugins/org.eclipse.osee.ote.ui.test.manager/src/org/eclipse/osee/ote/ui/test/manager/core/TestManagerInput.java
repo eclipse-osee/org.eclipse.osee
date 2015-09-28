@@ -34,7 +34,7 @@ public class TestManagerInput implements IEditorInput {
    private final HashMap<String, String> keyValue;
 
    public TestManagerInput() {
-      keyValue = new HashMap<String, String>();
+      keyValue = new HashMap<>();
       loadFromFile();
    }
 

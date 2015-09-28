@@ -24,7 +24,7 @@ public class OteClose {
 
 	public void start(){
 		BundleContext context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-		Dictionary<String, Object> dict = new Hashtable<String, Object>();
+		Dictionary<String, Object> dict = new Hashtable<>();
 		dict.put(CommandProcessor.COMMAND_SCOPE, "ote");
 		dict.put(CommandProcessor.COMMAND_FUNCTION, new String[]{"x"});
 		context.registerService(OteClose.class, this, dict);

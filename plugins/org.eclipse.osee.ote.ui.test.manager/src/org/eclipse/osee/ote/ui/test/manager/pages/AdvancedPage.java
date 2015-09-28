@@ -39,7 +39,7 @@ public class AdvancedPage extends TestManagerPage {
 
    public AdvancedPage(Composite parent, int style, TestManagerEditor parentTestManager) {
       super(parent, style, parentTestManager);
-      this.contributions = new ArrayList<IPropertyStoreBasedControl>();
+      this.contributions = new ArrayList<>();
       contributionsInitialized = false;
    }
 

@@ -20,7 +20,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public class IndexerCollectorNotifier implements IndexerCollector {
 
-   private final Set<IndexerCollector> listeners = new CopyOnWriteArraySet<IndexerCollector>();
+   private final Set<IndexerCollector> listeners = new CopyOnWriteArraySet<>();
 
    private final Log logger;
 

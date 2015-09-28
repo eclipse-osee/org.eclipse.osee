@@ -148,7 +148,7 @@ public class TransactionRecordTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
          int branchUuid = index * 9;

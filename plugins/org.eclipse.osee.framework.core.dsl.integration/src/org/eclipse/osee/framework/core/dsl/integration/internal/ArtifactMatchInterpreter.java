@@ -140,6 +140,6 @@ public class ArtifactMatchInterpreter {
       }
       return result;
    }
-   private final Map<String, Matcher> expressions = new ConcurrentHashMap<String, Matcher>();
+   private final Map<String, Matcher> expressions = new ConcurrentHashMap<>();
 
 }

@@ -68,7 +68,7 @@ public class AgileFactory {
             transaction.addChildren(topAgileFolder, agileTeamArt);
          }
 
-         Set<ArtifactReadable> atsTeamArts = new HashSet<ArtifactReadable>();
+         Set<ArtifactReadable> atsTeamArts = new HashSet<>();
          transaction.setRelations(agileTeamArt, AtsRelationTypes.AgileTeamToAtsTeam_AtsTeam, atsTeamArts);
 
          transaction.commit();
@@ -101,7 +101,7 @@ public class AgileFactory {
          transaction.addChildren(topAgileFolder, agileTeamArt);
       }
 
-      Set<ArtifactReadable> atsTeamArts = new HashSet<ArtifactReadable>();
+      Set<ArtifactReadable> atsTeamArts = new HashSet<>();
       for (long atsTeamUuid : team.getAtsTeamUuids()) {
          ArtifactReadable atsTeamArt = atsServer.getArtifactByUuid(atsTeamUuid);
          if (atsTeamArt != null && atsTeamArt.isOfType(AtsArtifactTypes.TeamDefinition)) {

@@ -38,7 +38,7 @@ public class DslFactory {
    }
 
    public static Map<SearchMethod, PredicateHandler> getHandlers() {
-      Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
+      Map<SearchMethod, PredicateHandler> handlers = new HashMap<>();
       handlers.put(SearchMethod.IDS, new IdsPredicateHandler());
       handlers.put(SearchMethod.GUIDS, new GuidsPredicateHandler());
       handlers.put(SearchMethod.IS_OF_TYPE, new IsOfTypePredicateHandler());

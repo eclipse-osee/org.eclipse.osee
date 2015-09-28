@@ -36,7 +36,7 @@ public class ExportMetricsOperation extends AbstractOperation {
    }
 
    private List<TaskArtifact> asTask(List<? extends Artifact> artifacts) {
-      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> tasks = new ArrayList<>();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TaskArtifact) {
             tasks.add((TaskArtifact) artifact);

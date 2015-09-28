@@ -27,7 +27,7 @@ public class DataRightInput implements Iterable<DataRightEntry> {
 
    public Set<DataRightEntry> getData() {
       if (data == null) {
-         data = new HashSet<DataRightEntry>();
+         data = new HashSet<>();
       }
       return data;
    }

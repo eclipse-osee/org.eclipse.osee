@@ -74,7 +74,7 @@ public class OperationalImpactWorkaroundColumn extends XViewerValueColumn {
          return ((TeamWorkFlowArtifact) art).getSoleAttributeValue(AtsAttributeTypes.OperationalImpactWorkaround, "");
       }
       if (art.isOfType(AtsArtifactTypes.Action)) {
-         Set<String> strs = new HashSet<String>();
+         Set<String> strs = new HashSet<>();
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
             strs.add(getOperationalImpact(team));
          }

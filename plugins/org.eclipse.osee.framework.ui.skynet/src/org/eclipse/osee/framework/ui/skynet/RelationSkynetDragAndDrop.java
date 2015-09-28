@@ -288,7 +288,7 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
                         @Override
                         protected void doWork(IProgressMonitor monitor) throws Exception {
-                           Collection<URI> resources = new LinkedList<URI>();
+                           Collection<URI> resources = new LinkedList<>();
                            for (String path : input) {
                               File file = new File(path);
                               if (file.exists()) {

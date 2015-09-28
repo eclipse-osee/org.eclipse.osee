@@ -112,9 +112,9 @@ public class ActionFactory implements IAtsActionFactory {
       }
 
       // Create team workflow artifacts
-      List<IAtsTeamWorkflow> teamWfs = new ArrayList<IAtsTeamWorkflow>();
+      List<IAtsTeamWorkflow> teamWfs = new ArrayList<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
-         List<IAtsUser> leads = new LinkedList<IAtsUser>(teamDef.getLeads(actionableItems));
+         List<IAtsUser> leads = new LinkedList<>(teamDef.getLeads(actionableItems));
          IAtsTeamWorkflow teamWf = createTeamWorkflow(action, teamDef, actionableItems, leads, changes, createdDate,
             createdBy, newActionListener);
          teamWfs.add(teamWf);
@@ -366,7 +366,7 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf) {
-      List<IAtsTeamWorkflow> teams = new LinkedList<IAtsTeamWorkflow>();
+      List<IAtsTeamWorkflow> teams = new LinkedList<>();
       IAtsAction action = getAction(teamWf);
       for (IAtsTeamWorkflow teamChild : atsServices.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {

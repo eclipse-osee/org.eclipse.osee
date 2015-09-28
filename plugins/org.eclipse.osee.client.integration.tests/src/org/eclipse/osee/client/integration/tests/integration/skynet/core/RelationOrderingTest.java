@@ -66,7 +66,7 @@ public class RelationOrderingTest {
 
    @Before
    public void setupArtifacts() throws Exception {
-      itemsToDelete = new HashSet<Artifact>();
+      itemsToDelete = new HashSet<>();
 
       parent = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "parent");
       addToCleanup(parent);
@@ -173,7 +173,7 @@ public class RelationOrderingTest {
    }
 
    private void checkUserDefined() throws OseeCoreException {
-      List<Artifact> children = new ArrayList<Artifact>();
+      List<Artifact> children = new ArrayList<>();
       children.add(child2);
       children.add(child3);
       children.add(child1);
@@ -217,7 +217,7 @@ public class RelationOrderingTest {
 
       mainFolder.setSingletonAttributeValue(CoreAttributeTypes.StaticId, method.getQualifiedTestName());
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch).addChild(mainFolder);
-      List<Artifact> children = new ArrayList<Artifact>();
+      List<Artifact> children = new ArrayList<>();
       for (int x = 0; x < 3; x++) {
          Artifact childArt =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "New Child " + x + " - " + guid);

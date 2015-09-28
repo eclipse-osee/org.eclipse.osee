@@ -25,7 +25,7 @@ public class ClearOteMarkerActionView implements IViewActionDelegate {
 	ArrayList<IResource> selections;
 	
 	public ClearOteMarkerActionView()  {
-		selections = new ArrayList<IResource>();
+		selections = new ArrayList<>();
 	}
 
 	@Override

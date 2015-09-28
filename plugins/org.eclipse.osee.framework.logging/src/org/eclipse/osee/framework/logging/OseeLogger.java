@@ -28,8 +28,8 @@ public class OseeLogger {
    private final Level defaultLevel;
 
    public OseeLogger() {
-      levelMap = new ConcurrentHashMap<String, Level>();
-      listeners = new CopyOnWriteArrayList<ILoggerListener>();
+      levelMap = new ConcurrentHashMap<>();
+      listeners = new CopyOnWriteArrayList<>();
       listeners.add(new ConsoleLogger());
 
       defaultLevel = OseeProperties.getOseeLogDefault();

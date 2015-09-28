@@ -73,7 +73,7 @@ public class OteArtifactFetcher<T extends Artifact> {
    @SuppressWarnings("unchecked")
    public Set<T> getAllArtifacts(IOseeBranch branch) throws OseeArgumentException {
       checkForNull(branch);
-      Set<T> toReturn = new HashSet<T>();
+      Set<T> toReturn = new HashSet<>();
       try {
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(oteArtifactType, branch);
          for (Artifact artifact : artifacts) {
@@ -94,7 +94,7 @@ public class OteArtifactFetcher<T extends Artifact> {
     * @return artifact instances indexed by descriptive name
     */
    public Map<String, T> getAllArtifactsIndexedByName(Branch branch) throws OseeArgumentException {
-      Map<String, T> toReturn = new HashMap<String, T>();
+      Map<String, T> toReturn = new HashMap<>();
       Set<T> testScripts = getAllArtifacts(branch);
       for (T artifact : testScripts) {
          toReturn.put(artifact.getName(), artifact);

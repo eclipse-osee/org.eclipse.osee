@@ -37,7 +37,7 @@ public class StateManagerUtility {
       stateMgr.createState(workPage.getName());
       stateMgr.setCurrentStateName(workPage.getName());
       if (assignees == null) {
-         assignees = new LinkedList<IAtsUser>();
+         assignees = new LinkedList<>();
       }
       if (workPage.getStateType().isWorkingState()) {
          if (assignees.isEmpty()) {

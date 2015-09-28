@@ -93,7 +93,7 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    @Override
    public QueryBuilder createQueryBuilder(IOseeBranch branch) {
       QueryOptions options = new QueryOptions();
-      List<Predicate> predicates = new ArrayList<Predicate>();
+      List<Predicate> predicates = new ArrayList<>();
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, this);
    }
 

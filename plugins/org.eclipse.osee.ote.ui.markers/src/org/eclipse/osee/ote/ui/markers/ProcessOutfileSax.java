@@ -45,7 +45,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
    private static final int _1_MB = 1048576;
    private static final int _20_MB = _1_MB * 20;
 
-   private final List<TestPointData> testPointDatas = new ArrayList<TestPointData>();
+   private final List<TestPointData> testPointDatas = new ArrayList<>();
    private TestPointData currentData = null;
    private CheckPointData currentCheckPoint = null;
    protected StackTraceCollection currentStackTrace;
@@ -107,7 +107,7 @@ public class ProcessOutfileSax implements IExceptionableRunnable {
       xmlReader.setContentHandler(handler);
       xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", handler); // This is the important part
 
-      final Stack<String> elementStack = new Stack<String>();
+      final Stack<String> elementStack = new Stack<>();
       handler.getHandler("*").addListener(new IBaseSaxElementListener() {
 
          @Override

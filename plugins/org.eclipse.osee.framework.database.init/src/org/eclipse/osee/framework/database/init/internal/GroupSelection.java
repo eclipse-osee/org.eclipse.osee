@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
  */
 public class GroupSelection implements IGroupSelector {
    private static final GroupSelection instance = new GroupSelection();
-   private final Map<String, IDatabaseInitConfiguration> initGroups = new HashMap<String, IDatabaseInitConfiguration>();
+   private final Map<String, IDatabaseInitConfiguration> initGroups = new HashMap<>();
 
    private boolean wasInitialized;
 
@@ -60,7 +60,7 @@ public class GroupSelection implements IGroupSelector {
    }
 
    public List<String> getChoices() {
-      List<String> choices = new ArrayList<String>(initGroups.keySet());
+      List<String> choices = new ArrayList<>(initGroups.keySet());
       Collections.sort(choices);
       return choices;
    }

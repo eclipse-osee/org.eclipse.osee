@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
  */
 public class CpaFactory {
 
-   private static final Map<String, Object> idToStoreObject = new HashMap<String, Object>(500);
+   private static final Map<String, Object> idToStoreObject = new HashMap<>(500);
    public static final String CPA_BASEPATH_KEY = "CpaBasepath";
 
    public static CpaProgram get(IAtsProgram program) {

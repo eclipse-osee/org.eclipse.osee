@@ -35,8 +35,8 @@ import org.eclipse.osee.logger.Log;
  */
 public class JdbcServiceImpl implements JdbcService {
 
-   private final AtomicReference<JdbcServer> serverRef = new AtomicReference<JdbcServer>();
-   private final AtomicReference<JdbcClient> clientRef = new AtomicReference<JdbcClient>();
+   private final AtomicReference<JdbcServer> serverRef = new AtomicReference<>();
+   private final AtomicReference<JdbcClient> clientRef = new AtomicReference<>();
 
    private final JdbcClient clientProxy = createClientProxy();
 

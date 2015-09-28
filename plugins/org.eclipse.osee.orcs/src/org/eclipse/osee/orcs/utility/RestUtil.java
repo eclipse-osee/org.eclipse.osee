@@ -101,7 +101,7 @@ public class RestUtil {
             if (!attributeVals.isEmpty()) {
                if (art.isAttributeTypeValid(attrType) && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
                   attrType) > 1) {
-                  List<String> attributeValues = new ArrayList<String>();
+                  List<String> attributeValues = new ArrayList<>();
                   for (AttributeReadable<?> attrRead : attributeVals) {
                      String valueStr = String.valueOf(attrRead.getValue());
                      attributeValues.add(valueStr);

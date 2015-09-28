@@ -45,7 +45,7 @@ public class ArtifactClipboard {
    }
 
    private List<Artifact> getArtifactsWithPermission(AccessPolicy accessService, PermissionEnum permission, List<Artifact> artifacts) throws OseeCoreException {
-      ArrayList<Artifact> toReturn = new ArrayList<Artifact>(artifacts);
+      ArrayList<Artifact> toReturn = new ArrayList<>(artifacts);
       Iterator<Artifact> artIterator = toReturn.iterator();
 
       // Remove Artifact that do not have write permission.
@@ -75,14 +75,14 @@ public class ArtifactClipboard {
          this.clipboard = new Clipboard(null);
       }
 
-      List<Artifact> authFailedList = new ArrayList<Artifact>(artifactTransferData);
+      List<Artifact> authFailedList = new ArrayList<>(artifactTransferData);
       List<Artifact> authorizedArtifacts =
          getArtifactsWithPermission(policyHandlerService, PermissionEnum.READ, artifactTransferData);
 
       authFailedList.removeAll(authorizedArtifacts);
 
       if (authorizedArtifacts.size() > 0) {
-         ArrayList<String> textTransferData = new ArrayList<String>();
+         ArrayList<String> textTransferData = new ArrayList<>();
          for (Artifact cur : authorizedArtifacts) {
             textTransferData.add(cur.getName());
          }

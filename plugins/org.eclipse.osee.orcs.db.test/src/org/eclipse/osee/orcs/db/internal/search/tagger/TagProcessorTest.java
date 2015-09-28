@@ -52,7 +52,7 @@ public class TagProcessorTest {
 
    @Test
    public void testCollectFromString() {
-      List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+      List<Pair<String, Long>> actual = new ArrayList<>();
       TagCollector tagCollector = new MockTagCollector(actual);
       tagProcessor.collectFromString(expectedParsed, tagCollector);
       SearchAsserts.assertTagsEqual(expected, actual);
@@ -63,7 +63,7 @@ public class TagProcessorTest {
       InputStream inputStream = null;
       try {
          inputStream = new XmlTextInputStream(rawData);
-         List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+         List<Pair<String, Long>> actual = new ArrayList<>();
          TagCollector tagCollector = new MockTagCollector(actual);
          tagProcessor.collectFromInputStream(inputStream, tagCollector);
          SearchAsserts.assertTagsEqual(expected, actual);
@@ -77,7 +77,7 @@ public class TagProcessorTest {
       Scanner sourceScanner = null;
       try {
          sourceScanner = new Scanner(new XmlTextInputStream(rawData), "UTF-8");
-         List<Pair<String, Long>> actual = new ArrayList<Pair<String, Long>>();
+         List<Pair<String, Long>> actual = new ArrayList<>();
          TagCollector tagCollector = new MockTagCollector(actual);
          tagProcessor.collectFromScanner(sourceScanner, tagCollector);
          SearchAsserts.assertTagsEqual(expected, actual);
@@ -90,7 +90,7 @@ public class TagProcessorTest {
 
    @Parameters
    public static Collection<Object[]> data() throws Exception {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
 
       TagProcessor tagProcess = new TagProcessor(new EnglishLanguage(new MockLog()), new TagEncoder());
       for (int index = 1; index <= 9; index++) {
@@ -104,7 +104,7 @@ public class TagProcessorTest {
    }
 
    private static List<Pair<String, Long>> loadExpected(String resourceName) throws IOException {
-      List<Pair<String, Long>> data = new ArrayList<Pair<String, Long>>();
+      List<Pair<String, Long>> data = new ArrayList<>();
       String rawData = getResource(resourceName);
       String[] entries = rawData.split("\r?\n");
       for (String entry : entries) {

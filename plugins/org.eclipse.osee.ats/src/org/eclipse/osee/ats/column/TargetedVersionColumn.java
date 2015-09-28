@@ -191,7 +191,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       String result = "";
       try {
          if (element instanceof IAtsAction) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = Versions.getTargetedVersionStr(team, AtsClientService.get().getVersionService());
                if (Strings.isValid(str)) {
@@ -212,8 +212,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<TeamWorkFlowArtifact> awas = new HashSet<TeamWorkFlowArtifact>();
-         List<Artifact> arts = new ArrayList<Artifact>();
+         Set<TeamWorkFlowArtifact> awas = new HashSet<>();
+         List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {

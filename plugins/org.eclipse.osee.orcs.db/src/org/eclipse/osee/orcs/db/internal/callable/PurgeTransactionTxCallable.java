@@ -71,7 +71,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    }
 
    private List<ITransaction> sortTxs(Collection<? extends ITransaction> txIdsToDelete) {
-      List<ITransaction> txs = new ArrayList<ITransaction>(txIdsToDelete);
+      List<ITransaction> txs = new ArrayList<>(txIdsToDelete);
       if (txs.size() > 1) {
          Collections.sort(txs, new Comparator<ITransaction>() {
 
@@ -95,7 +95,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          Integer txIdToDelete = tx.getGuid();
          getLogger().info("Purging Transaction: [%s]", txIdToDelete);
 
-         List<Object[]> txsToDelete = new ArrayList<Object[]>();
+         List<Object[]> txsToDelete = new ArrayList<>();
 
          long txBranchId =
             getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
@@ -127,7 +127,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          getJdbcClient().runBatchUpdate(connection, DELETE_TXS, txsToDelete);
 
          //Updating Previous txs to Current
-         List<Object[]> updateData = new ArrayList<Object[]>();
+         List<Object[]> updateData = new ArrayList<>();
          computeNewTxCurrents(connection, updateData, "art_id", "osee_artifact", arts);
          computeNewTxCurrents(connection, updateData, "attr_id", "osee_attribute", attrs);
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
@@ -173,7 +173,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    }
 
    private Map<Long, IdJoinQuery> findAffectedItems(JdbcConnection connection, String itemId, String itemTable, List<Object[]> bindDataList) throws OseeCoreException {
-      Map<Long, IdJoinQuery> items = new HashMap<Long, IdJoinQuery>();
+      Map<Long, IdJoinQuery> items = new HashMap<>();
       JdbcStatement statement = getJdbcClient().getStatement(connection);
 
       try {
@@ -198,7 +198,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
    }
 
    private void setChildBranchBaselineTxs(JdbcConnection connection, int toDeleteTransactionId, int previousTransactionId) throws OseeCoreException {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       if (RelationalConstants.TRANSACTION_SENTINEL != previousTransactionId) {
          data.add(new Object[] {
             String.valueOf(toDeleteTransactionId),

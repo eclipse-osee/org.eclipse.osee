@@ -291,7 +291,7 @@ public final class AtsUtil {
    }
 
    public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts) {
-      Set<Artifact> otherArts = new HashSet<Artifact>();
+      Set<Artifact> otherArts = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
@@ -364,7 +364,7 @@ public final class AtsUtil {
     * @param clazz to match or all if null
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
-      Set<Artifact> assigned = new HashSet<Artifact>();
+      Set<Artifact> assigned = new HashSet<>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(AtsAttributeTypes.CurrentState,
          "<" + userId + ">", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)) {
          if (clazz == null || clazz.isInstance(artifact)) {
@@ -386,7 +386,7 @@ public final class AtsUtil {
    }
 
    public static Image getImage(Collection<IAtsUser> atsUsers) {
-      Set<User> users = new HashSet<User>();
+      Set<User> users = new HashSet<>();
       for (IAtsUser user : atsUsers) {
          users.add((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
       }

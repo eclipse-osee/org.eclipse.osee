@@ -38,7 +38,7 @@ public abstract class Shape extends ModelElement {
     * @see #setPropertyValue(Object, Object)
     */
    private IPropertyDescriptor[] descriptors;
-   private final List<IPropertyDescriptor> descriptorList = new ArrayList<IPropertyDescriptor>();
+   private final List<IPropertyDescriptor> descriptorList = new ArrayList<>();
    /** ID for the Height property value (used for by the corresponding property descriptor). */
    private static final String HEIGHT_PROP = "Shape.Height";
    /** Property ID to use when the location of this shape is modified. */
@@ -66,9 +66,9 @@ public abstract class Shape extends ModelElement {
    /** Size of this shape. */
    private final Dimension size = new Dimension(50, 50);
    /** List of outgoing Connections. */
-   private final List<Connection> sourceConnections = new ArrayList<Connection>();
+   private final List<Connection> sourceConnections = new ArrayList<>();
    /** List of incoming Connections. */
-   private final List<Connection> targetConnections = new ArrayList<Connection>();
+   private final List<Connection> targetConnections = new ArrayList<>();
    private WorkDefinitionDiagram workflowDiagram;
 
    /**

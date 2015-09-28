@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class DefectContentProvider implements ITreeContentProvider {
 
-   protected Collection<ReviewDefectItem> rootSet = new HashSet<ReviewDefectItem>();
+   protected Collection<ReviewDefectItem> rootSet = new HashSet<>();
    private final DefectXViewer xViewer;
 
    public DefectContentProvider(DefectXViewer WorldXViewer) {

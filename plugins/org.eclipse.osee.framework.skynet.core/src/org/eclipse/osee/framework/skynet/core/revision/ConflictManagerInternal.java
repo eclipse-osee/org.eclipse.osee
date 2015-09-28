@@ -89,7 +89,7 @@ public class ConflictManagerInternal {
    public static List<Conflict> getConflictsPerBranch(TransactionRecord commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
-      ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
+      ArrayList<Conflict> conflicts = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
@@ -118,11 +118,11 @@ public class ConflictManagerInternal {
       @SuppressWarnings("unused")
       // This is for bulk loading so we do not lose our references
       Collection<Artifact> bulkLoadedArtifacts;
-      List<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
-      List<Conflict> conflicts = new ArrayList<Conflict>();
-      Set<Integer> artIdSet = new HashSet<Integer>();
-      Set<Integer> artIdSetDontShow = new HashSet<Integer>();
-      Set<Integer> artIdSetDontAdd = new HashSet<Integer>();
+      List<ConflictBuilder> conflictBuilders = new ArrayList<>();
+      List<Conflict> conflicts = new ArrayList<>();
+      Set<Integer> artIdSet = new HashSet<>();
+      Set<Integer> artIdSetDontShow = new HashSet<>();
+      Set<Integer> artIdSetDontAdd = new HashSet<>();
 
       // Check to see if the branch has already been committed, then use the
       // transaction version
@@ -208,7 +208,7 @@ public class ConflictManagerInternal {
    private static void loadMultiplicityConflicts(Collection<IAttributeType> types, Branch source, Branch dest, TransactionRecord baselineTransaction, List<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet) {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
-      List<Object[]> batchParams = new LinkedList<Object[]>();
+      List<Object[]> batchParams = new LinkedList<>();
       try {
          for (IAttributeType type : types) {
             joinQuery.add(type.getGuid());
@@ -391,7 +391,7 @@ public class ConflictManagerInternal {
    }
 
    public static Collection<Long> getDestinationBranchesMerged(long sourceBranchId) throws OseeCoreException {
-      List<Long> destinationBranches = new LinkedList<Long>();
+      List<Long> destinationBranches = new LinkedList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);

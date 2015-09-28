@@ -104,7 +104,7 @@ public class WorldXViewerEventManager {
          Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
          Collection<EventBasicGuidArtifact> deletedPurgedArts =
             artifactEvent.get(EventModType.Deleted, EventModType.Purged);
-         Collection<Artifact> goalMemberReordered = new HashSet<Artifact>();
+         Collection<Artifact> goalMemberReordered = new HashSet<>();
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.Goal_Member)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());
@@ -113,7 +113,7 @@ public class WorldXViewerEventManager {
                }
             }
          }
-         Collection<Artifact> sprintMemberReordered = new HashSet<Artifact>();
+         Collection<Artifact> sprintMemberReordered = new HashSet<>();
          for (DefaultBasicUuidRelationReorder reorder : artifactEvent.getRelationOrderRecords()) {
             if (reorder.is(AtsRelationTypes.AgileSprintToItem_AtsItem)) {
                Artifact cachedArt = ArtifactCache.getActive(reorder.getParentArt());

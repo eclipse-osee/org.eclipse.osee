@@ -22,7 +22,7 @@ public final class CreateAccountRequestBuilder {
    private String userName;
    private String email;
    private String displayName;
-   private final Map<String, String> preferences = new HashMap<String, String>();
+   private final Map<String, String> preferences = new HashMap<>();
 
    private CreateAccountRequestBuilder() {
       //
@@ -65,7 +65,7 @@ public final class CreateAccountRequestBuilder {
    }
 
    public CreateAccountRequest build() {
-      Map<String, String> prefs = new HashMap<String, String>(preferences);
+      Map<String, String> prefs = new HashMap<>(preferences);
       return new CreateAccountRequestImpl(active, userName, email, displayName, prefs);
    }
 

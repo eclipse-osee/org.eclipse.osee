@@ -137,7 +137,7 @@ public class OrcsScriptImpl extends MinimalEObjectImpl.Container implements Orcs
   {
     if (statements == null)
     {
-      statements = new EObjectContainmentEList<ScriptStatement>(ScriptStatement.class, this, OrcsScriptDslPackage.ORCS_SCRIPT__STATEMENTS);
+      statements = new EObjectContainmentEList<>(ScriptStatement.class, this, OrcsScriptDslPackage.ORCS_SCRIPT__STATEMENTS);
     }
     return statements;
   }

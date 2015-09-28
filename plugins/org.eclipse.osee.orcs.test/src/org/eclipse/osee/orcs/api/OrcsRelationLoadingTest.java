@@ -106,7 +106,7 @@ public class OrcsRelationLoadingTest {
    }
 
    private Map<Integer, ArtifactReadable> createLookup(Iterable<ArtifactReadable> arts) {
-      Map<Integer, ArtifactReadable> lookup = new HashMap<Integer, ArtifactReadable>();
+      Map<Integer, ArtifactReadable> lookup = new HashMap<>();
       for (ArtifactReadable artifact : arts) {
          lookup.put(artifact.getLocalId(), artifact);
       }

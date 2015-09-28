@@ -76,7 +76,7 @@ public class ActivityIdColumnTest {
    public void testGetWorkPackages_teamWf1() throws OseeCoreException {
       ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
-      Set<IAtsWorkPackage> workPackages = new HashSet<IAtsWorkPackage>();
+      Set<IAtsWorkPackage> workPackages = new HashSet<>();
       col.getWorkPackages(teamWf1, workPackages);
 
       Assert.assertEquals(1, workPackages.size());
@@ -87,7 +87,7 @@ public class ActivityIdColumnTest {
    public void testGetWorkPackages_task() throws OseeCoreException {
       ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
-      Set<IAtsWorkPackage> workPackages = new HashSet<IAtsWorkPackage>();
+      Set<IAtsWorkPackage> workPackages = new HashSet<>();
       col.getWorkPackages(task1, workPackages);
 
       // Each work flow stores it's own work package, so none should be returned

@@ -42,7 +42,7 @@ public class PresentationTypeTest {
 
    @Test
    public void testNoMatch() throws OseeCoreException {
-      Collection<PresentationType> toMatch = new ArrayList<PresentationType>();
+      Collection<PresentationType> toMatch = new ArrayList<>();
       for (PresentationType item : PresentationType.values()) {
          if (item != target) {
             toMatch.add(item);
@@ -61,7 +61,7 @@ public class PresentationTypeTest {
 
    @Test
    public void testMatch() throws OseeCoreException {
-      Collection<PresentationType> toMatch = new ArrayList<PresentationType>();
+      Collection<PresentationType> toMatch = new ArrayList<>();
       for (PresentationType item : PresentationType.values()) {
          toMatch.add(item);
          if (item != target) {
@@ -80,7 +80,7 @@ public class PresentationTypeTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       for (PresentationType underTest : PresentationType.values()) {
          data.add(new Object[] {underTest});
       }

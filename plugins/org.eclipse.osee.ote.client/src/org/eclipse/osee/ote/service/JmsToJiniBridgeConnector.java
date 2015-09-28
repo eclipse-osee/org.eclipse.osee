@@ -49,7 +49,7 @@ public class JmsToJiniBridgeConnector implements IServiceConnector {
    }
 
    private EnhancedProperties properties;
-   private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
+   private final HashMap<Object, ExportInfo> exports = new HashMap<>();
    private final ExportClassLoader exportClassLoader;
    private final Object service;
    private final List<IServicePropertyChangeListener> propertyChangeListeners =

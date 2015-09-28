@@ -75,8 +75,8 @@ import org.eclipse.swt.widgets.Control;
 public class WorldComposite extends ScrolledComposite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
 
    private final WorldXViewer worldXViewer;
-   private final Set<Artifact> worldArts = new HashSet<Artifact>(200);
-   private final Set<Artifact> otherArts = new HashSet<Artifact>(200);
+   private final Set<Artifact> worldArts = new HashSet<>(200);
+   private final Set<Artifact> otherArts = new HashSet<>(200);
    protected IWorldEditor iWorldEditor;
    private final String id;
 
@@ -362,7 +362,7 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
    @Override
    public Set<Artifact> getSelectedSMAArtifacts() {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
             artifacts.add(art);
@@ -373,7 +373,7 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       for (Artifact art : getSelectedArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
             artifacts.add(art);
@@ -384,7 +384,7 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
-      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> tasks = new ArrayList<>();
       for (Artifact art : getSelectedArtifacts()) {
          if (art instanceof TaskArtifact) {
             tasks.add((TaskArtifact) art);

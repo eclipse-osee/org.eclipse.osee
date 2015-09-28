@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
  */
 public class AtsConfigContentProvider implements ITreeContentProvider {
 
-   protected Collection<IResultsXViewerRow> rootSet = new HashSet<IResultsXViewerRow>();
+   protected Collection<IResultsXViewerRow> rootSet = new HashSet<>();
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public AtsConfigContentProvider() {
@@ -63,7 +63,7 @@ public class AtsConfigContentProvider implements ITreeContentProvider {
 
    private Object[] getActionableItemChildren(Object data) {
       IAtsActionableItem aia = (IAtsActionableItem) data;
-      List<Object> children = new LinkedList<Object>();
+      List<Object> children = new LinkedList<>();
       children.addAll(aia.getChildrenActionableItems());
       if (aia.getTeamDefinition() != null) {
          children.add(aia.getTeamDefinition());
@@ -73,7 +73,7 @@ public class AtsConfigContentProvider implements ITreeContentProvider {
 
    private Object[] getTeamDefChildren(Object data) {
       IAtsTeamDefinition teamDef = (IAtsTeamDefinition) data;
-      List<Object> children = new LinkedList<Object>();
+      List<Object> children = new LinkedList<>();
       children.addAll(teamDef.getChildrenTeamDefinitions());
       children.addAll(teamDef.getActionableItems());
       children.addAll(teamDef.getVersions());

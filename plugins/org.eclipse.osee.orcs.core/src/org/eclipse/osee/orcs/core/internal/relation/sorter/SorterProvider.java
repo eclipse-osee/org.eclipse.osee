@@ -32,8 +32,8 @@ import org.eclipse.osee.orcs.utility.SortOrder;
  */
 public class SorterProvider {
 
-   private final Map<IRelationSorterId, Sorter> orderMap = new HashMap<IRelationSorterId, Sorter>();
-   private final List<IRelationSorterId> ids = new ArrayList<IRelationSorterId>();
+   private final Map<IRelationSorterId, Sorter> orderMap = new HashMap<>();
+   private final List<IRelationSorterId> ids = new ArrayList<>();
 
    private final RelationTypes typeCache;
 

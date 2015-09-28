@@ -66,7 +66,7 @@ public class DaysInCurrentStateColumn extends XViewerAtsColumn implements IXView
             }
             return AtsUtilCore.doubleToI18nString(timeInCurrState / DateUtil.MILLISECONDS_IN_A_DAY);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {

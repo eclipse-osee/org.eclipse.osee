@@ -27,7 +27,7 @@ public class DataSample {
     * Create a data sample that is used for propogating data through the system.
     */
    public DataSample(Data data, SampleInfo sampleInfo) {
-      this.data = new WeakReference<Data>(data);
+      this.data = new WeakReference<>(data);
       this.sampleInfo = sampleInfo;
    }
 
@@ -36,7 +36,7 @@ public class DataSample {
     */
    public DataSample(Data data) {
       super();
-      this.data = new WeakReference<Data>(data);
+      this.data = new WeakReference<>(data);
       this.sampleInfo = new SampleInfo();
    }
 

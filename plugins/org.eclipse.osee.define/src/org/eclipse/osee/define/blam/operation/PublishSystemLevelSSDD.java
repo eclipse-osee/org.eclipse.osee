@@ -56,7 +56,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    }
 
    public PublishSystemLevelSSDD() {
-      subsystemToRequirements = new HashCollection<Artifact, Artifact>(false, LinkedList.class);
+      subsystemToRequirements = new HashCollection<>(false, LinkedList.class);
    }
 
    private void init() throws IOException {

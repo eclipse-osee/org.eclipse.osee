@@ -72,7 +72,7 @@ public class ExpressionTypeResolver<R> extends OrcsScriptDslSwitch<Object> {
       boolean result = false;
       if (isCycleProtected) {
          if (visited == null) {
-            visited = new HashSet<EObject>();
+            visited = new HashSet<>();
          }
          result = !visited.add(object);
       }
@@ -102,7 +102,7 @@ public class ExpressionTypeResolver<R> extends OrcsScriptDslSwitch<Object> {
 
    @Override
    public Object caseOsVariableDeclaration(OsVariableDeclaration object) {
-      List<Object> values = new ArrayList<Object>();
+      List<Object> values = new ArrayList<>();
       List<OsExpression> elements = object.getElements();
       for (OsExpression variable : elements) {
          values.add(doSwitch(variable));
@@ -112,7 +112,7 @@ public class ExpressionTypeResolver<R> extends OrcsScriptDslSwitch<Object> {
 
    @Override
    public Object caseOsListLiteral(OsListLiteral object) {
-      List<Object> values = new ArrayList<Object>();
+      List<Object> values = new ArrayList<>();
       List<OsExpression> elements = object.getElements();
       for (OsExpression expression : elements) {
          values.add(doSwitch(expression));

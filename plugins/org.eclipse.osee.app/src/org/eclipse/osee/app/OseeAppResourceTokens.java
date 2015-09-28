@@ -22,7 +22,7 @@ import org.eclipse.osee.template.engine.OseeTemplateTokens;
  * @author Ryan D. Brooks
  */
 public final class OseeAppResourceTokens {
-   private static final List<ResourceToken> tokens = new ArrayList<ResourceToken>();
+   private static final List<ResourceToken> tokens = new ArrayList<>();
 
    // @formatter:off
    public static final ResourceToken OseeAppHtml = createToken(0x405EE00000000003L, "oseeApplet.html");

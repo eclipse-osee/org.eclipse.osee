@@ -29,7 +29,7 @@ import org.eclipse.swt.SWT;
  */
 public class AuthorColumn extends XViewerValueColumn {
    private static AuthorColumn instance = new AuthorColumn();
-   private final Map<Integer, String> artIdToName = new HashMap<Integer, String>(40);
+   private final Map<Integer, String> artIdToName = new HashMap<>(40);
 
    public static AuthorColumn getInstance() {
       return instance;

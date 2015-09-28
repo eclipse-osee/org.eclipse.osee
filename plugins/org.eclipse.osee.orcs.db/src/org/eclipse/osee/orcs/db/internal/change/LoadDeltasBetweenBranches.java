@@ -45,7 +45,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    private static final String SELECT_BASE_TRANSACTION =
       "select baseline_transaction_id from osee_branch where branch_id = ?";
 
-   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<Long, ModificationType>();
+   private final HashMap<Long, ModificationType> changeByGammaId = new HashMap<>();
 
    private final Long sourceBranchId, destinationBranchId, mergeBranchId;
    private final Integer destinationHeadTxId, mergeTxId;
@@ -74,7 +74,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    @Override
    public List<ChangeItem> call() throws Exception {
-      List<ChangeItem> changeData = new LinkedList<ChangeItem>();
+      List<ChangeItem> changeData = new LinkedList<>();
 
       Conditions.checkExpressionFailOnTrue(sourceBranchId.equals(destinationBranchId),
          "Unable to compute deltas between transactions on the same branch [%s]", sourceBranchId);
@@ -119,7 +119,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    }
 
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory, int sourceBaselineTxId) throws OseeCoreException {
-      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<Integer, ChangeItem>();
+      HashMap<Integer, ChangeItem> changesByItemId = new HashMap<>();
 
       IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
       try {

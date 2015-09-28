@@ -38,8 +38,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    private final Long branchUuid;
    private int transactionId;
    private NetworkSender networkSender;
-   private final List<EventBasicGuidArtifact> artifacts = new ArrayList<EventBasicGuidArtifact>();
-   private final List<EventBasicGuidRelation> relations = new ArrayList<EventBasicGuidRelation>();
+   private final List<EventBasicGuidArtifact> artifacts = new ArrayList<>();
+   private final List<EventBasicGuidRelation> relations = new ArrayList<>();
    private final Set<DefaultBasicUuidRelationReorder> relationReorderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final ArtifactEventType reloadEvent;
@@ -152,7 +152,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private Collection<DefaultBasicGuidArtifact> getRelOrderChangedArtifacts(IRelationType... relationTypes) {
-      Set<DefaultBasicGuidArtifact> guidArts = new HashSet<DefaultBasicGuidArtifact>();
+      Set<DefaultBasicGuidArtifact> guidArts = new HashSet<>();
       for (DefaultBasicUuidRelationReorder record : relationReorderRecords) {
          if (relationTypes == null) {
             guidArts.add(record.getParentArt());
@@ -168,7 +168,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public Collection<EventBasicGuidArtifact> get(EventModType... eventModTypes) {
-      Set<EventBasicGuidArtifact> guidArts = new HashSet<EventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> guidArts = new HashSet<>();
       for (EventBasicGuidArtifact guidArt : artifacts) {
          for (EventModType modType : eventModTypes) {
             if (guidArt.getModType() == modType) {
@@ -180,7 +180,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private Collection<IBasicGuidArtifact> getRelationsArts(RelationEventType... eventModTypes) {
-      Set<IBasicGuidArtifact> guidArts = new HashSet<IBasicGuidArtifact>();
+      Set<IBasicGuidArtifact> guidArts = new HashSet<>();
       for (EventBasicGuidRelation guidRel : getRelations(eventModTypes)) {
          guidArts.add(guidRel.getArtA());
          guidArts.add(guidRel.getArtB());
@@ -189,7 +189,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private Collection<EventBasicGuidRelation> getRelations(RelationEventType... eventModTypes) {
-      Set<EventBasicGuidRelation> guidRels = new HashSet<EventBasicGuidRelation>();
+      Set<EventBasicGuidRelation> guidRels = new HashSet<>();
       for (EventBasicGuidRelation guidRel : relations) {
          for (RelationEventType modType : eventModTypes) {
             if (guidRel.getModType() == modType) {

@@ -61,14 +61,14 @@ public class Validator {
 
    public Validator(InputStream fileToRead) throws Exception {
       this.fileToRead = fileToRead;
-      this.validatorMap = new HashMap<String, List<IValidator>>();
+      this.validatorMap = new HashMap<>();
       parseFile();
    }
 
    private void storeValidator(String fieldName, IValidator validator) {
       List<IValidator> list = null;
       if (!validatorMap.containsKey(fieldName)) {
-         list = new ArrayList<IValidator>();
+         list = new ArrayList<>();
          validatorMap.put(fieldName, list);
       } else {
          list = validatorMap.get(fieldName);

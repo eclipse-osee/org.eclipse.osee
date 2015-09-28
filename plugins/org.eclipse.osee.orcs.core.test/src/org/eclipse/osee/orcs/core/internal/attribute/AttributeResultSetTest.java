@@ -54,9 +54,9 @@ public class AttributeResultSetTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      list = new ArrayList<Attribute<String>>();
-      rSetNoType = new AttributeResultSet<String>(null, list);
-      rSetWithType = new AttributeResultSet<String>(factory, type, list);
+      list = new ArrayList<>();
+      rSetNoType = new AttributeResultSet<>(null, list);
+      rSetWithType = new AttributeResultSet<>(factory, type, list);
    }
 
    @Test
@@ -74,7 +74,7 @@ public class AttributeResultSetTest {
    @Test
    public void testIterator() {
       List<Attribute<String>> spy = spy(list);
-      rSetNoType = new AttributeResultSet<String>(factory, spy);
+      rSetNoType = new AttributeResultSet<>(factory, spy);
       rSetNoType.iterator();
 
       verify(spy).iterator();

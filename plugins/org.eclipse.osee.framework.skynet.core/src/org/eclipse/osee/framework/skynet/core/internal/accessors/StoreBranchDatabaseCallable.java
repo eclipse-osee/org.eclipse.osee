@@ -39,9 +39,9 @@ public class StoreBranchDatabaseCallable {
    public IStatus handleTxWork() throws OseeCoreException {
       JdbcConnection connection = jdbcClient.getConnection();
       try {
-         List<Object[]> insertData = new ArrayList<Object[]>();
-         List<Object[]> updateData = new ArrayList<Object[]>();
-         List<Object[]> deleteData = new ArrayList<Object[]>();
+         List<Object[]> insertData = new ArrayList<>();
+         List<Object[]> updateData = new ArrayList<>();
+         List<Object[]> deleteData = new ArrayList<>();
 
          for (Branch branch : branches) {
             if (isDataDirty(branch)) {

@@ -93,7 +93,7 @@ public class WordUtil {
     */
    public static String reassignBinDataID(String content) {
       ChangeSet changeSet = new ChangeSet(content);
-      Map<String, String> guidMap = new HashMap<String, String>();
+      Map<String, String> guidMap = new HashMap<>();
 
       binIdMatcher.reset(content);
       boolean atLeastOneMatch = false;
@@ -132,7 +132,7 @@ public class WordUtil {
          chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, CoreAttributeTypes.WordTemplateContent.getGuid(),
             branch.getUuid());
 
-         List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
+         List<Pair<String, Integer>> values = new LinkedList<>();
          while (chStmt.next()) {
             String content;
             try {
@@ -153,7 +153,7 @@ public class WordUtil {
          if (iter.hasNext()) {
             Pair<String, Integer> newest;
             Pair<String, Integer> nextNewest = iter.next();
-            Collection<Integer> repeatGammas = new LinkedList<Integer>();
+            Collection<Integer> repeatGammas = new LinkedList<>();
             while (iter.hasNext()) {
                newest = nextNewest;
                nextNewest = iter.next();
@@ -217,7 +217,7 @@ public class WordUtil {
    }
 
    public static String referencesOnly(String content) {
-      List<String> references = new ArrayList<String>();
+      List<String> references = new ArrayList<>();
 
       Matcher referenceMatcher = referencePattern.matcher(content);
       while (referenceMatcher.find()) {

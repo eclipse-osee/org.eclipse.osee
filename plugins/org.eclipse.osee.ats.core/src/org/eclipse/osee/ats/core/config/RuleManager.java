@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.rule.IAtsRules;
  */
 public class RuleManager implements IAtsRules {
 
-   public List<String> rules = new ArrayList<String>();
+   public List<String> rules = new ArrayList<>();
 
    @Override
    public List<String> getRules() {

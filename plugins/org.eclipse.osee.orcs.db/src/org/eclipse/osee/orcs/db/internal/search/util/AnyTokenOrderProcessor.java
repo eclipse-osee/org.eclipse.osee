@@ -27,7 +27,7 @@ public class AnyTokenOrderProcessor implements TokenOrderProcessor {
    private int numTokensToMatch = 0;
 
    public AnyTokenOrderProcessor() {
-      locations = new LinkedList<MatchLocation>();
+      locations = new LinkedList<>();
       trackingSet = new TrackingMap();
    }
 
@@ -66,7 +66,7 @@ public class AnyTokenOrderProcessor implements TokenOrderProcessor {
 
    private static final class TrackingMap {
 
-      private final Map<String, MutableInteger> map = new LinkedHashMap<String, MutableInteger>();
+      private final Map<String, MutableInteger> map = new LinkedHashMap<>();
       private int total = 0;
 
       public void add(String value) {

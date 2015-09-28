@@ -23,7 +23,7 @@ public class QueryCapabilities extends DoorsArtifact {
    * Constructor to instantiate requirements list
    */
   public QueryCapabilities() {
-    this.requirements = new ArrayList<Requirement>();
+    this.requirements = new ArrayList<>();
   }
 
   /**

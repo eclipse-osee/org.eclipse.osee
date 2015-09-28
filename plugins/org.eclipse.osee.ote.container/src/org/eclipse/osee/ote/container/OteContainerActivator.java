@@ -43,7 +43,7 @@ public class OteContainerActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       plugin = this;
       this.context = context;
-      userLibListener = new LibraryChangeProvider<OteUserLibsNature>();
+      userLibListener = new LibraryChangeProvider<>();
       this.userLibResourceListener =
          new JarChangeResourceListener<OteUserLibsNature>(OteUserLibsNature.NATURE_ID, userLibListener);
 

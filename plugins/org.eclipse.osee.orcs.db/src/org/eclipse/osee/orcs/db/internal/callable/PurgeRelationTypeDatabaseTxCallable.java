@@ -58,7 +58,7 @@ public final class PurgeRelationTypeDatabaseTxCallable extends AbstractDatastore
    }
 
    private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IRelationType> types) throws OseeCoreException {
-      List<Object[]> gammas = new ArrayList<Object[]>(50000);
+      List<Object[]> gammas = new ArrayList<>(50000);
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          for (IRelationType type : types) {

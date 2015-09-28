@@ -30,7 +30,7 @@ public class OseeFieldTestData<T> {
       this.field = field;
       this.initExpectedValue = initExpectedValue;
       this.initExpectedDirty = initExpectedDirty;
-      this.testDatas = new ArrayList<FieldGetSetTestData<T>>();
+      this.testDatas = new ArrayList<>();
       if (testDatas != null && testDatas.length > 0) {
          this.testDatas.addAll(Arrays.asList(testDatas));
       }

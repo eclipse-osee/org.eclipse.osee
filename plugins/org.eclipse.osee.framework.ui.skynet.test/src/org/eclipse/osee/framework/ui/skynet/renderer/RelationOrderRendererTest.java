@@ -65,7 +65,7 @@ public class RelationOrderRendererTest {
    @Test
    public void testRenderingAllValid() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
 
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
          RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
@@ -82,7 +82,7 @@ public class RelationOrderRendererTest {
    @Test(expected = OseeCoreException.class)
    public void testRenderingOrderTypeNotFound() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A, GUID.create(), "0", "1", "2");
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
@@ -90,7 +90,7 @@ public class RelationOrderRendererTest {
    @Test
    public void testRenderingEmptyGuids() throws OseeCoreException {
       RelationOrderData orderData = new MockRelationOrderData();
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       addData(orderData, expectedData, "Relation 1", "Relation 1_A", RelationSide.SIDE_A,
          RelationOrderBaseTypes.USER_DEFINED.getGuid());
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
@@ -99,12 +99,12 @@ public class RelationOrderRendererTest {
    @Test
    public void testEmptyData() {
       RelationOrderData orderData = new MockRelationOrderData();
-      List<Object[]> expectedData = new ArrayList<Object[]>();
+      List<Object[]> expectedData = new ArrayList<>();
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
    }
 
    private void addData(RelationOrderData orderData, List<Object[]> expectedData, String relationType, String relationSideName, RelationSide side, String relationOrderIdGuid, String... guids) throws OseeCoreException {
-      List<String> artGuids = new ArrayList<String>();
+      List<String> artGuids = new ArrayList<>();
       if (guids != null && guids.length > 0) {
          artGuids.addAll(Arrays.asList(guids));
       }
@@ -223,7 +223,7 @@ public class RelationOrderRendererTest {
 
       @Override
       public List<String> resolveAsOseeLinks(IOseeBranch branch, List<String> artifactGuids) {
-         List<String> values = new ArrayList<String>();
+         List<String> values = new ArrayList<>();
          for (String guid : artifactGuids) {
             values.add(guid);
          }

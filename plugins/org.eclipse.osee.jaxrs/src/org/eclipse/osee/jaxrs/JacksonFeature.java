@@ -84,7 +84,7 @@ public class JacksonFeature implements Feature {
    }
 
    public static List<? extends Object> getProviders() {
-      List<Object> providers = new ArrayList<Object>();
+      List<Object> providers = new ArrayList<>();
       providers.add(JacksonFeature.newJacksonJsonProvider());
       providers.add(JsonParseExceptionMapper.class);
       providers.add(JsonMappingExceptionMapper.class);

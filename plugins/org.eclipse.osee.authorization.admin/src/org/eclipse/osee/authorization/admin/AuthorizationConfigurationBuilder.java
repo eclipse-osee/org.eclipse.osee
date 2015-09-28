@@ -59,7 +59,7 @@ public class AuthorizationConfigurationBuilder {
    private static final class AuthorizationConfigurationImpl implements AuthorizationConfiguration, Cloneable {
 
       private AuthorizationOverride override;
-      private final Set<String> schemes = new HashSet<String>();
+      private final Set<String> schemes = new HashSet<>();
       private String defaultScheme;
 
       @Override
@@ -129,7 +129,7 @@ public class AuthorizationConfigurationBuilder {
       }
 
       private Collection<String> getSet(Map<String, Object> props, String key, String defaultValue) {
-         Set<String> toReturn = new HashSet<String>();
+         Set<String> toReturn = new HashSet<>();
          String joinedArray = get(props, key, "");
          if (Strings.isValid(joinedArray)) {
             String[] split = joinedArray.split(",");

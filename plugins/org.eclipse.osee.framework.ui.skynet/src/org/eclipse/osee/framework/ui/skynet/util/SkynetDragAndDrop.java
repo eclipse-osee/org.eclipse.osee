@@ -156,7 +156,7 @@ public abstract class SkynetDragAndDrop {
       try {
          if (getArtifacts() != null && getArtifacts().length > 0) {
             Artifact[] artifacts = getArtifacts();
-            Collection<String> names = new ArrayList<String>(artifacts.length);
+            Collection<String> names = new ArrayList<>(artifacts.length);
 
             for (Artifact artifact : artifacts) {
                names.add(artifact.getName());

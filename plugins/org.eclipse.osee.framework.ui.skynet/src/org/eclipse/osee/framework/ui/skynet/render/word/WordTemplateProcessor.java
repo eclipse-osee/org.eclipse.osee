@@ -117,10 +117,10 @@ public class WordTemplateProcessor {
    private boolean recurseChildren;
    private String outlineNumber;
    private IAttributeType headingAttributeType;
-   private final List<AttributeElement> attributeElements = new LinkedList<AttributeElement>();
-   final List<Artifact> nonTemplateArtifacts = new LinkedList<Artifact>();
-   private final Set<String> ignoreAttributeExtensions = new HashSet<String>();
-   private final Set<Artifact> processedArtifacts = new HashSet<Artifact>();
+   private final List<AttributeElement> attributeElements = new LinkedList<>();
+   final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
+   private final Set<String> ignoreAttributeExtensions = new HashSet<>();
+   private final Set<Artifact> processedArtifacts = new HashSet<>();
    private final WordTemplateRenderer renderer;
    private boolean isDiff;
    private boolean excludeFolders;
@@ -468,7 +468,7 @@ public class WordTemplateProcessor {
 
    private void populateRequest(List<Artifact> artifacts, DataRightInput request) {
       if (request.isEmpty()) {
-         List<Artifact> allArtifacts = new ArrayList<Artifact>();
+         List<Artifact> allArtifacts = new ArrayList<>();
          if (recurseChildren) {
             for (Artifact art : artifacts) {
                allArtifacts.add(art);
@@ -603,7 +603,7 @@ public class WordTemplateProcessor {
 
             @Override
             public void run() {
-               ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
+               ArrayList<Artifact> nonTempArtifacts = new ArrayList<>(artifacts.size());
                nonTempArtifacts.addAll(artifacts);
                WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
             }

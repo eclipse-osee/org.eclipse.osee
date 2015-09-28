@@ -36,7 +36,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 	private final UUID MYID;
 	
 	public EventToJmsComponent(){
-		eventQueue = new CopyOnWriteArrayList<Event>();
+		eventQueue = new CopyOnWriteArrayList<>();
 		MYID = UUID.randomUUID();
 	}
 
@@ -101,7 +101,7 @@ public class EventToJmsComponent extends OseeMessagingListener implements EventH
 			UUID id = OteEventMessageUtil.getUUID(msg);
 			if(!id.equals(MYID)){
 				OteEventMessageUtil.setUUID(msg, MYID);
-				Map<String, Object> data = new HashMap<String, Object>();
+				Map<String, Object> data = new HashMap<>();
 				data.put(OteEventMessageUtil.BYTE_KEY, msg.getData());
 				Event newevent = new Event(msg.getHeader().TOPIC.getValue(), data);
 				eventAdmin.sendEvent(newevent);

@@ -117,7 +117,7 @@ public class ExistenceTypePredicateHandlerTest {
       handler.handle(builder, testPredicate);
       verify(builder).andExists(attrTypeSideCaptor.capture());
       Assert.assertEquals(1, attrTypeSideCaptor.getAllValues().size());
-      List<IAttributeType> attrTypes = new ArrayList<IAttributeType>(attrTypeSideCaptor.getValue());
+      List<IAttributeType> attrTypes = new ArrayList<>(attrTypeSideCaptor.getValue());
       Assert.assertTrue(12345L == attrTypes.get(0).getGuid());
    }
 

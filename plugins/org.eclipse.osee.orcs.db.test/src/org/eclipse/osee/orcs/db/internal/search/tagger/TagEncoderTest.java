@@ -41,14 +41,14 @@ public class TagEncoderTest {
 
    @Test
    public void testTagEncoder() {
-      List<Pair<String, Long>> actualTags = new ArrayList<Pair<String, Long>>();
+      List<Pair<String, Long>> actualTags = new ArrayList<>();
       encoder.encode(toEncode, new MockTagCollector(actualTags));
       SearchAsserts.assertTagsEqual(expected, actualTags);
    }
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       data.add(new Object[] {"hello", SearchAsserts.asTags("hello", 1520625)});
       data.add(new Object[] {
          "what happens when we have a long string",

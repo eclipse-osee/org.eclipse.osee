@@ -192,7 +192,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          @Override
          public void handleEvent(Event event) {
             TeamWorkFlowArtifact teamWf = getDroppedTeamWf();
-            List<TeamWorkFlowArtifact> teams = new ArrayList<TeamWorkFlowArtifact>();
+            List<TeamWorkFlowArtifact> teams = new ArrayList<>();
             if (teamWf != null) {
                teams.add(teamWf);
             }
@@ -235,7 +235,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
                   wfTree.setInitalChecked(Arrays.asList(actionableItems.toArray()));
 
-                  Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+                  Set<IAtsActionableItem> ais = new HashSet<>();
                   for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
                      if (!team.equals(teamWf)) {
                         ais.addAll(team.getActionableItems());
@@ -284,7 +284,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          return;
       }
       try {
-         currAIsForAllWfs = new HashSet<IAtsActionableItem>();
+         currAIsForAllWfs = new HashSet<>();
          for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
             currAIsForAllWfs.addAll(team.getActionableItems());
          }
@@ -333,7 +333,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    public class ModifyActionableItemOperation extends AbstractOperation {
 
       private final ModifyActionableItems job;
-      List<TeamWorkFlowArtifact> newTeamWfs = new ArrayList<TeamWorkFlowArtifact>();
+      List<TeamWorkFlowArtifact> newTeamWfs = new ArrayList<>();
       private final TeamWorkFlowArtifact teamWf;
 
       public TeamWorkFlowArtifact getTeamWf() {

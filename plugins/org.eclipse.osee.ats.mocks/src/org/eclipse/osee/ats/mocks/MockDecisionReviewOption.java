@@ -23,7 +23,7 @@ public class MockDecisionReviewOption implements IAtsDecisionReviewOption {
    public String name;
    public boolean followupRequired;
    public List<String> userIds;
-   public List<String> userNames = new LinkedList<String>();
+   public List<String> userNames = new LinkedList<>();
 
    public MockDecisionReviewOption(String name) {
       this(name, false, new ArrayList<String>());
@@ -33,7 +33,7 @@ public class MockDecisionReviewOption implements IAtsDecisionReviewOption {
       this.name = name;
       this.followupRequired = isFollowupRequired;
       if (userIds == null) {
-         this.userIds = new ArrayList<String>();
+         this.userIds = new ArrayList<>();
       } else {
          this.userIds = userIds;
       }

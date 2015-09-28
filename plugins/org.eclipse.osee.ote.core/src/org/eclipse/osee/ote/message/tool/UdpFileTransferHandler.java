@@ -41,7 +41,7 @@ public class UdpFileTransferHandler {
    private final Selector selector;
    private volatile boolean done = false;
 
-   private final HashMap<SelectionKey, Handle> handles = new HashMap<SelectionKey, Handle>();
+   private final HashMap<SelectionKey, Handle> handles = new HashMap<>();
    private final Object gate = new Object();
 
    private final class Handle implements IFileTransferHandle {

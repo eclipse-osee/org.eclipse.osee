@@ -113,7 +113,7 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      List<String> emailAddresses = new ArrayList<String>();
+      List<String> emailAddresses = new ArrayList<>();
       for (IAtsUser basicUser : activeEmailUsers) {
          if (EmailUtil.isEmailValid(basicUser.getEmail())) {
             emailAddresses.add(basicUser.getEmail());
@@ -141,7 +141,7 @@ public class EmailActionsBlam extends AbstractBlam {
    }
 
    private Collection<IAtsUser> getRecipients(EmailRecipient emailRecipient, AbstractWorkflowArtifact awa) {
-      List<IAtsUser> recipients = new ArrayList<IAtsUser>();
+      List<IAtsUser> recipients = new ArrayList<>();
       if (emailRecipient == EmailRecipient.Assignees) {
          try {
             recipients.addAll(awa.getAssignees());

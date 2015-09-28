@@ -78,7 +78,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    @SuppressWarnings("rawtypes")
    private synchronized void initialize(AbstractArtifactSearchResult result) {
       searchResult = result;
-      childrenMap = new HashMap<Object, Set>();
+      childrenMap = new HashMap<>();
       boolean showLineMatches = searchResult.hasAttributeMatches();
 
       if (result != null) {
@@ -133,7 +133,7 @@ public class ArtifactTreeContentProvider implements ITreeContentProvider, IArtif
    private boolean insertChild(Object parent, Object child) {
       Set<Object> children = childrenMap.get(parent);
       if (children == null) {
-         children = new HashSet<Object>();
+         children = new HashSet<>();
          childrenMap.put(parent, children);
       }
       return children.add(child);

@@ -34,8 +34,8 @@ public class BranchModel extends Node implements Serializable {
    public BranchModel(Branch branch) {
       super();
       this.branch = branch;
-      this.children = new ArrayList<BranchModel>();
-      this.txs = new LinkedList<TxModel>();
+      this.children = new ArrayList<>();
+      this.txs = new LinkedList<>();
       this.parent = null;
       this.isLoaded = false;
       this.depth = -1;
@@ -84,7 +84,7 @@ public class BranchModel extends Node implements Serializable {
    }
 
    public List<BranchModel> getAllChildrenBelow() {
-      List<BranchModel> children = new ArrayList<BranchModel>(getChildren());
+      List<BranchModel> children = new ArrayList<>(getChildren());
       for (BranchModel child : getChildren()) {
          children.addAll(child.getAllChildrenBelow());
       }

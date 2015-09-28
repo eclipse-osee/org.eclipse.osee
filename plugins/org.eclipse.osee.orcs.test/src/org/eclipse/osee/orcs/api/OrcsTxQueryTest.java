@@ -467,7 +467,7 @@ public class OrcsTxQueryTest {
       //@formatter:on
 
       query = factory.transactionQuery();
-      ArrayList<Integer> list = new ArrayList<Integer>(2);
+      ArrayList<Integer> list = new ArrayList<>(2);
       list.add(-1);
       list.add(17);
       query.andAuthorIds(list);
@@ -530,7 +530,7 @@ public class OrcsTxQueryTest {
       assertEquals(0, query.getCount());
 
       query = factory.transactionQuery();
-      ArrayList<Integer> list = new ArrayList<Integer>(2);
+      ArrayList<Integer> list = new ArrayList<>(2);
       list.add(1);
       list.add(2);
       query.andAuthorIds(list);

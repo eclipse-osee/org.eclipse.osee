@@ -138,7 +138,7 @@ public class MailConfigurationTest {
 
    @Test
    public void testDefaultProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       builder.properties(properties);
 
       MailConfiguration actual = builder.build();
@@ -157,7 +157,7 @@ public class MailConfigurationTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(MAIL_SERVER_ADMIN_EMAIL, ADMIN_EMAIL);
       properties.put(MAIL_SERVER_HOST, HOST);
       properties.put(MAIL_SERVER_PASSWORD, PASSWORD);

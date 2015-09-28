@@ -62,7 +62,7 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
          if (element instanceof AbstractWorkflowArtifact) {
             return ((AbstractWorkflowArtifact) element).getCurrentStateName();
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                strs.add(team.getCurrentStateName());
             }

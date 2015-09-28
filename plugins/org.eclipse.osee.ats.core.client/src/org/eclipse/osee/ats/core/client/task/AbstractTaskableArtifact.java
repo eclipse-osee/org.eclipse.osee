@@ -76,7 +76,7 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
    }
 
    public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
-      List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> arts = new ArrayList<>();
       for (TaskArtifact taskArt : getTaskArtifacts()) {
          if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
             arts.add(taskArt);
@@ -246,11 +246,11 @@ public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact 
     * @param relatedToState State name Tasks must be completed in or null
     */
    public Collection<TaskArtifact> createTasks(List<String> titles, List<IAtsUser> assignees, Date createdDate, IAtsUser createdBy, String relatedToState, IAtsChangeSet changes) throws OseeCoreException {
-      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> tasks = new ArrayList<>();
       for (String title : titles) {
          TaskArtifact taskArt = createNewTask(title, createdDate, createdBy, relatedToState, changes);
          if (assignees != null && !assignees.isEmpty()) {
-            Set<IAtsUser> users = new HashSet<IAtsUser>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
+            Set<IAtsUser> users = new HashSet<>(); // NOPMD by b0727536 on 9/29/10 8:51 AM
             for (IAtsUser art : assignees) {
                users.add(art);
             }

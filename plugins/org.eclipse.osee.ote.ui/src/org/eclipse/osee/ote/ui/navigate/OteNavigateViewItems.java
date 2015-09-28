@@ -36,7 +36,7 @@ public class OteNavigateViewItems implements XNavigateViewItems {
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+      List<XNavigateItem> items = new ArrayList<>();
       try {
          addExtensionPointItems(items);
       } catch (OseeCoreException ex) {
@@ -68,7 +68,7 @@ public class OteNavigateViewItems implements XNavigateViewItems {
    }
 
    private Map<String, XNavigateItem> createCategoriesAndAddToItems(List<XNavigateItem> items, Collection<XNavigateExtensionPointData> oteNavigateItemExtensions) {
-      Map<String, XNavigateItem> categoryToNavigateItem = new HashMap<String, XNavigateItem>();
+      Map<String, XNavigateItem> categoryToNavigateItem = new HashMap<>();
       for (XNavigateExtensionPointData data : oteNavigateItemExtensions) {
          if (!categoryToNavigateItem.containsKey(data.getCategory())) {
             String[] path = data.getItemPath();

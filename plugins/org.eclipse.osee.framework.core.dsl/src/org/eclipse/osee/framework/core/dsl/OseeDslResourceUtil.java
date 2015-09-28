@@ -94,7 +94,7 @@ public final class OseeDslResourceUtil {
    }
 
    private static void saveResource(Resource resource, OutputStream outputStream, boolean compressOnSave) throws Exception {
-      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      Map<String, Boolean> options = new HashMap<>();
       if (compressOnSave) {
          options.put(Resource.OPTION_ZIP, Boolean.TRUE);
       }

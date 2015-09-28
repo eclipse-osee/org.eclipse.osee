@@ -19,7 +19,7 @@ public class TransactionChange implements FrameworkEvent {
 
    private long branchUuid;
    private int transactionId;
-   private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<DefaultBasicGuidArtifact>();
+   private final Set<DefaultBasicGuidArtifact> artifacts = new HashSet<>();
 
    /**
     * Gets the value of the branchUuid property.

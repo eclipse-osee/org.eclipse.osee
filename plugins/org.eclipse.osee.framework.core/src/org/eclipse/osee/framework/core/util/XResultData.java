@@ -66,7 +66,7 @@ public class XResultData {
 
    public void clear() {
       sb = new StringBuilder();
-      count = new CountingMap<Type>();
+      count = new CountingMap<>();
    }
 
    public void addRaw(String str) {

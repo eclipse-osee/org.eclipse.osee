@@ -135,7 +135,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (userDef == null)
     {
-      userDef = new EObjectContainmentEList<UserDef>(UserDef.class, this, AtsDslPackage.ATS_DSL__USER_DEF);
+      userDef = new EObjectContainmentEList<>(UserDef.class, this, AtsDslPackage.ATS_DSL__USER_DEF);
     }
     return userDef;
   }
@@ -149,7 +149,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (teamDef == null)
     {
-      teamDef = new EObjectContainmentEList<TeamDef>(TeamDef.class, this, AtsDslPackage.ATS_DSL__TEAM_DEF);
+      teamDef = new EObjectContainmentEList<>(TeamDef.class, this, AtsDslPackage.ATS_DSL__TEAM_DEF);
     }
     return teamDef;
   }
@@ -163,7 +163,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (actionableItemDef == null)
     {
-      actionableItemDef = new EObjectContainmentEList<ActionableItemDef>(ActionableItemDef.class, this, AtsDslPackage.ATS_DSL__ACTIONABLE_ITEM_DEF);
+      actionableItemDef = new EObjectContainmentEList<>(ActionableItemDef.class, this, AtsDslPackage.ATS_DSL__ACTIONABLE_ITEM_DEF);
     }
     return actionableItemDef;
   }
@@ -177,7 +177,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (workDef == null)
     {
-      workDef = new EObjectContainmentEList<WorkDef>(WorkDef.class, this, AtsDslPackage.ATS_DSL__WORK_DEF);
+      workDef = new EObjectContainmentEList<>(WorkDef.class, this, AtsDslPackage.ATS_DSL__WORK_DEF);
     }
     return workDef;
   }
@@ -191,7 +191,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (program == null)
     {
-      program = new EObjectContainmentEList<ProgramDef>(ProgramDef.class, this, AtsDslPackage.ATS_DSL__PROGRAM);
+      program = new EObjectContainmentEList<>(ProgramDef.class, this, AtsDslPackage.ATS_DSL__PROGRAM);
     }
     return program;
   }
@@ -205,7 +205,7 @@ public class AtsDslImpl extends MinimalEObjectImpl.Container implements AtsDsl
   {
     if (rule == null)
     {
-      rule = new EObjectContainmentEList<Rule>(Rule.class, this, AtsDslPackage.ATS_DSL__RULE);
+      rule = new EObjectContainmentEList<>(Rule.class, this, AtsDslPackage.ATS_DSL__RULE);
     }
     return rule;
   }

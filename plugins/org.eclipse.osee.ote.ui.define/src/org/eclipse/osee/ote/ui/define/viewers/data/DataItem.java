@@ -24,7 +24,7 @@ public abstract class DataItem {
 
    public DataItem(DataItem parentItem) {
       this.parentItem = parentItem;
-      this.childrenMap = new HashMap<Object, DataItem>();
+      this.childrenMap = new HashMap<>();
    }
 
    public void addChild(Object key, DataItem child) {

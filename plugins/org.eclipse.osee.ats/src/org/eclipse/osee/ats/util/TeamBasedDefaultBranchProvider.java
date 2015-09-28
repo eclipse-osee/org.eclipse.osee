@@ -35,12 +35,12 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
    public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       try {
-         Collection<IAtsTeamDefinition> teams = new ArrayList<IAtsTeamDefinition>();
+         Collection<IAtsTeamDefinition> teams = new ArrayList<>();
          for (Artifact art : AtsClientService.get().getUserServiceClient().getOseeUser(user).getRelatedArtifacts(
             AtsRelationTypes.TeamMember_Team)) {
             teams.add(AtsClientService.get().getConfig().getSoleByUuid(art.getUuid(), IAtsTeamDefinition.class));
          }
-         Collection<Branch> branches = new LinkedList<Branch>();
+         Collection<Branch> branches = new LinkedList<>();
 
          Branch branch;
          for (IAtsTeamDefinition team : teams) {

@@ -75,7 +75,7 @@ public class ConvertAtsDslToRuleDefinition {
       newRule.setName(Strings.unquote(dslRule.getName()));
       newRule.setTitle(Strings.unquote(dslRule.getTitle()));
       newRule.setDescription(Strings.unquote(dslRule.getDescription()));
-      List<RuleLocations> ruleLocs = new ArrayList<RuleLocations>();
+      List<RuleLocations> ruleLocs = new ArrayList<>();
       for (RuleLocation loc : dslRule.getRuleLocation()) {
          ruleLocs.add(RuleLocations.valueOf(loc.getName()));
       }
@@ -86,7 +86,7 @@ public class ConvertAtsDslToRuleDefinition {
    private void convertCreateTaskRule(CreateTaskRuleDefinition newRule, CreateTaskRule dslRule) {
       newRule.setTaskWorkDef(Strings.unquote(dslRule.getTaskWorkDef()));
       newRule.setRelatedState(Strings.unquote(dslRule.getRelatedState()));
-      List<RuleEventType> ruleEvents = new ArrayList<RuleEventType>();
+      List<RuleEventType> ruleEvents = new ArrayList<>();
       for (OnEventType event : dslRule.getOnEvent()) {
          ruleEvents.add(RuleEventType.valueOf(event.getName()));
       }

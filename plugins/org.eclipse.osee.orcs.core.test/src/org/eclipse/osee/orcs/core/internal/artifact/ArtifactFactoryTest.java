@@ -97,7 +97,7 @@ public class ArtifactFactoryTest {
 
       guid = GUID.create();
 
-      types = new ArrayList<IAttributeType>();
+      types = new ArrayList<>();
       types.add(CoreAttributeTypes.RelationOrder);
       types.add(CoreAttributeTypes.City);
       types.add(CoreAttributeTypes.Annotation);

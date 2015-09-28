@@ -123,7 +123,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public List<IAtsUser> getImplementers() throws OseeCoreException {
-      List<IAtsUser> implementers = new ArrayList<IAtsUser>();
+      List<IAtsUser> implementers = new ArrayList<>();
       if (isCompleted()) {
          String completedFromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
          if (Strings.isValid(completedFromState)) {
@@ -196,7 +196,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    private List<Artifact> getBSideArtifacts() throws OseeCoreException {
-      List<Artifact> sideBArtifacts = new ArrayList<Artifact>();
+      List<Artifact> sideBArtifacts = new ArrayList<>();
       List<RelationLink> relatives = getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
       for (RelationLink link : relatives) {
          Artifact sideB = link.getArtifactB();
@@ -305,7 +305,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     */
    public Result isSMAEditorDirty() {
       try {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
+         Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
@@ -344,7 +344,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void saveSMA(IAtsChangeSet changes) {
       try {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
+         Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
@@ -358,7 +358,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void revertSMA() {
       try {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
+         Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
             artifact.reloadAttributesAndRelations();
@@ -748,7 +748,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public List<IAtsStateDefinition> getToStatesWithCompleteCancelReturnStates() throws OseeCoreException {
-      List<IAtsStateDefinition> allPages = new ArrayList<IAtsStateDefinition>();
+      List<IAtsStateDefinition> allPages = new ArrayList<>();
       IAtsStateDefinition currState = getStateDefinition();
       allPages.addAll(currState.getToStates());
       if (currState.getStateType().isCompletedState()) {

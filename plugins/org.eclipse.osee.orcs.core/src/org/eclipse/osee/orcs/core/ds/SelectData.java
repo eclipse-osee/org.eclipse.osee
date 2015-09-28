@@ -22,7 +22,7 @@ public class SelectData implements Cloneable {
    private final List<SelectSet> selects;
 
    public SelectData() {
-      this.selects = new ArrayList<SelectSet>();
+      this.selects = new ArrayList<>();
       this.selects.add(new SelectSet());
    }
 
@@ -66,7 +66,7 @@ public class SelectData implements Cloneable {
 
    @Override
    public SelectData clone() {
-      List<SelectSet> cloned = new ArrayList<SelectSet>(selects.size());
+      List<SelectSet> cloned = new ArrayList<>(selects.size());
       for (SelectSet select : selects) {
          cloned.add(select.clone());
       }

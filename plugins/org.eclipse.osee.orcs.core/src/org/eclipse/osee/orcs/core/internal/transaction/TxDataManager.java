@@ -105,9 +105,9 @@ public class TxDataManager {
 
    public Iterable<Artifact> getForWrite(TxData txData, Iterable<? extends ArtifactId> ids) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Set<ArtifactId> toLoad = new LinkedHashSet<ArtifactId>();
+      Set<ArtifactId> toLoad = new LinkedHashSet<>();
 
-      LinkedHashMap<String, Artifact> items = new LinkedHashMap<String, Artifact>();
+      LinkedHashMap<String, Artifact> items = new LinkedHashMap<>();
       for (ArtifactId artifactId : ids) {
          Artifact node = findArtifactLocallyForWrite(txData, artifactId);
          if (node == null) {

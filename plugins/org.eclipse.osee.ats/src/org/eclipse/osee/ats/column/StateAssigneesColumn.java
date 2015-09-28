@@ -57,11 +57,11 @@ public class StateAssigneesColumn extends XViewerAtsColumn implements IXViewerVa
       try {
          if (element instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) element;
-            Set<IAtsUser> users = new HashSet<IAtsUser>();
+            Set<IAtsUser> users = new HashSet<>();
             users.addAll(awa.getStateMgr().getAssignees(stateName));
             return AtsObjects.toString(";", users);
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<IAtsUser>();
+            Set<IAtsUser> users = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                users.addAll(team.getStateMgr().getAssignees(stateName));
             }

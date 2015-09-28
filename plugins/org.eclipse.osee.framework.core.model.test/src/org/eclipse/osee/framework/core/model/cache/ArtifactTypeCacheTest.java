@@ -29,7 +29,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeTypeCacheTest<ArtifactTyp
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
-      artifactTypes = new ArrayList<ArtifactType>();
+      artifactTypes = new ArrayList<>();
       artCache = new ArtifactTypeCache();
 
       int typeId = 100;

@@ -28,7 +28,7 @@ public class BranchAliasesFieldTest {
 
    @Test
    public void testSetGet() throws OseeCoreException {
-      Collection<String> aliases = new ArrayList<String>();
+      Collection<String> aliases = new ArrayList<>();
       BranchAliasesField field = new BranchAliasesField(aliases);
       Assert.assertEquals(false, field.isDirty());
 

@@ -84,7 +84,7 @@ public class RemoteBroadcastEvent1 extends RemoteEvent {
     */
    public List<String> getUserIds() {
       if (userIds == null) {
-         userIds = new ArrayList<String>();
+         userIds = new ArrayList<>();
       }
       return this.userIds;
    }

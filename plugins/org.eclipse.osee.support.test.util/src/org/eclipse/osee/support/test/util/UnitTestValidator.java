@@ -31,11 +31,11 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 public class UnitTestValidator {
 
    private static int suiteCount = 0;
-   private static List<File> testClassFiles = new ArrayList<File>();
-   private static List<File> notForSuiteFiles = new ArrayList<File>();
+   private static List<File> testClassFiles = new ArrayList<>();
+   private static List<File> notForSuiteFiles = new ArrayList<>();
    private static final Map<String, Collection<String>> testClassToSuites =
       new HashMap<String, Collection<String>>(100);
-   private static final List<File> suites = new ArrayList<File>();
+   private static final List<File> suites = new ArrayList<>();
    private static final String NOT_FOR_SUITE = "NOT_FOR_SUITE";
 
    public static void main(String[] args) {
@@ -68,7 +68,7 @@ public class UnitTestValidator {
                if (suiteFileText.contains(testClassName.replaceFirst(".java", ".class"))) {
                   Collection<String> collection = testClassToSuites.get(testClassName);
                   if (collection == null) {
-                     collection = new ArrayList<String>();
+                     collection = new ArrayList<>();
                      testClassToSuites.put(testClassName, collection);
                   }
                   collection.add(suiteFile.getName());

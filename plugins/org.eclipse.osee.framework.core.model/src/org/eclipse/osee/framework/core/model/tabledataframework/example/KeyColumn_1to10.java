@@ -49,7 +49,7 @@ public class KeyColumn_1to10 implements KeyColumn {
 
    @Override
    public List<Object> getAll() {
-      List<Object> allValues = new ArrayList<Object>();
+      List<Object> allValues = new ArrayList<>();
       allValues.add(1);
       allValues.add(2);
       allValues.add(3);

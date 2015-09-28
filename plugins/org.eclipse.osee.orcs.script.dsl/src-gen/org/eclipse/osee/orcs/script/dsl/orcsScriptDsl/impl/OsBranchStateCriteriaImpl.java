@@ -69,7 +69,7 @@ public class OsBranchStateCriteriaImpl extends OsBranchCriteriaImpl implements O
   {
     if (states == null)
     {
-      states = new EDataTypeEList<OsBranchState>(OsBranchState.class, this, OrcsScriptDslPackage.OS_BRANCH_STATE_CRITERIA__STATES);
+      states = new EDataTypeEList<>(OsBranchState.class, this, OrcsScriptDslPackage.OS_BRANCH_STATE_CRITERIA__STATES);
     }
     return states;
   }

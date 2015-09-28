@@ -49,7 +49,7 @@ public class AttributeLoader {
 
          Artifact currentArtifact = null;
          AttrData previousAttr = new AttrData();
-         List<AttrData> currentAttributes = new ArrayList<AttrData>();
+         List<AttrData> currentAttributes = new ArrayList<>();
 
          while (chStmt.next()) {
             AttrData nextAttr = new AttrData(chStmt, historical);
@@ -130,7 +130,7 @@ public class AttributeLoader {
       if (artifact == null) {
          return; // If the artifact is null, it means the attributes are orphaned.
       }
-      List<Integer> transactionNumbers = new ArrayList<Integer>();
+      List<Integer> transactionNumbers = new ArrayList<>();
       AttrData previous = new AttrData();
       synchronized (artifact) {
          if (!artifact.isAttributesLoaded()) {

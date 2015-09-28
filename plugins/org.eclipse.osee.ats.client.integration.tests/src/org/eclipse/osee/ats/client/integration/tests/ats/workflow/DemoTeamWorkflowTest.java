@@ -49,7 +49,7 @@ public class DemoTeamWorkflowTest {
 
    @Test
    public void testCreateSawTestWf() throws Exception {
-      Collection<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Collection<IAtsActionableItem> aias = new HashSet<>();
       aias.add(AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
          IAtsActionableItem.class));
       String title = getClass().getSimpleName() + " testCreateSawTestWf";

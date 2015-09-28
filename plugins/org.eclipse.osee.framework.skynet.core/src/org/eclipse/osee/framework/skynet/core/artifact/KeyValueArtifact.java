@@ -36,7 +36,7 @@ public class KeyValueArtifact {
       this.keyValueAttributeType = keyValueAttributeType;
       load();
    }
-   protected HashCollection<String, String> keyValueMap = new HashCollection<String, String>(20);
+   protected HashCollection<String, String> keyValueMap = new HashCollection<>(20);
    private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
 
    public HashCollection<String, String> getHashCollection() {
@@ -49,7 +49,7 @@ public class KeyValueArtifact {
 
    public void save() throws OseeCoreException {
       if (keyValueMap.size() > 0) {
-         Set<String> keyValues = new HashSet<String>();
+         Set<String> keyValues = new HashSet<>();
          for (String key : keyValueMap.keySet()) {
             for (String value : keyValueMap.getValues(key)) {
                keyValues.add(key + "=" + value);

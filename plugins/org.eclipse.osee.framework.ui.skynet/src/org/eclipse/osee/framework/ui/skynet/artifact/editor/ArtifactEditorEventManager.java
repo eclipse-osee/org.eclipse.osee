@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, IAccessControlEventListener {
 
-   List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<IArtifactEditorEventHandler>();
+   List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactEditorEventManager instance;
 
    public static void add(IArtifactEditorEventHandler iWorldEventHandler) {

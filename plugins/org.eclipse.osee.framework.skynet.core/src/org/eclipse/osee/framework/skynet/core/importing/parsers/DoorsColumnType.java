@@ -37,7 +37,7 @@ public enum DoorsColumnType {
    OTHER("");
 
    private final String columnType;
-   private final static Map<String, DoorsColumnType> rawStringToDataType = new HashMap<String, DoorsColumnType>();
+   private final static Map<String, DoorsColumnType> rawStringToDataType = new HashMap<>();
 
    static {
       for (DoorsColumnType enumStatus : DoorsColumnType.values()) {

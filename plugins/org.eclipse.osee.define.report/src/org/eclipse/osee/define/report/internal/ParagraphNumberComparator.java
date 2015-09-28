@@ -60,7 +60,7 @@ public final class ParagraphNumberComparator implements Comparator<ArtifactReada
    }
 
    private Integer[] getParagraphIndices(String paragraph) {
-      List<Integer> paragraphs = new ArrayList<Integer>();
+      List<Integer> paragraphs = new ArrayList<>();
       if (Strings.isValid(paragraph)) {
          String[] values = paragraph.split("\\.");
          for (int index = 0; index < values.length; index++) {

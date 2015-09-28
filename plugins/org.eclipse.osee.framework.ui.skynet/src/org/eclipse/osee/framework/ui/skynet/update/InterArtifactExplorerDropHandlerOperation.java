@@ -52,7 +52,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       super("Introduce Artifact(s)", Activator.PLUGIN_ID);
       this.destinationParentArtifact = destinationParentArtifact;
       this.prompt = prompt;
-      this.sourceArtifacts = new ArrayList<Artifact>(Arrays.asList(sourceArtifacts));
+      this.sourceArtifacts = new ArrayList<>(Arrays.asList(sourceArtifacts));
    }
 
    @Override
@@ -126,7 +126,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private Collection<Artifact> getRecurseChildren() throws OseeCoreException {
-      Collection<Artifact> allArtifacts = new ArrayList<Artifact>();
+      Collection<Artifact> allArtifacts = new ArrayList<>();
       for (Artifact art : sourceArtifacts) {
          allArtifacts.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));
       }

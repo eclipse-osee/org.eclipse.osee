@@ -40,7 +40,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    private Composite composite;
    private IOseeBranch defaultBranch;
 
-   private final List<Listener> listeners = new ArrayList<Listener>();
+   private final List<Listener> listeners = new ArrayList<>();
 
    public XBranchSelectWidget(String label) {
       super(label);

@@ -38,7 +38,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
     */
    public List<DefaultBasicGuidArtifact> getArtifacts() {
       if (artifacts == null) {
-         artifacts = new ArrayList<DefaultBasicGuidArtifact>();
+         artifacts = new ArrayList<>();
       }
       return this.artifacts;
    }

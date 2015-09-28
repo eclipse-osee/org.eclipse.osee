@@ -30,7 +30,7 @@ public class AddDemoUsers implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
-      List<User> admins = new ArrayList<User>();
+      List<User> admins = new ArrayList<>();
 
       SkynetTransaction transaction = TransactionManager.createTransaction(CoreBranches.COMMON, "Add Dev Users");
       for (IUserToken userEnum : DemoUsers.values()) {

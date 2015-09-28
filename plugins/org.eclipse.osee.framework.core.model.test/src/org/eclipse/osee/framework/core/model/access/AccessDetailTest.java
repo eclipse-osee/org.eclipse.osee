@@ -88,7 +88,7 @@ public class AccessDetailTest {
       Assert.assertFalse(target.equals(nulled));
       Assert.assertTrue(target.hashCode() != nulled.hashCode());
 
-      Collection<AccessDetail<?>> collect = new ArrayList<AccessDetail<?>>();
+      Collection<AccessDetail<?>> collect = new ArrayList<>();
       collect.add(target);
       Assert.assertEquals(1, collect.size());
       Assert.assertTrue(collect.contains(target));
@@ -105,7 +105,7 @@ public class AccessDetailTest {
 
    @Parameters
    public static Collection<Object[]> getData() throws OseeCoreException {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       addTest(data, "Hello", PermissionEnum.DENY, "A reason", new Scope().add("hello_scope"));
       addTest(data, 456, PermissionEnum.WRITE, null, new Scope().add("456_scope"));
       addTest(data, MockDataFactory.createArtifactType(4), PermissionEnum.FULLACCESS, "reason3", new Scope());

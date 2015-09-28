@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
  * @author Ryan D. Brooks
  */
 public final class OseeTemplateTestTokens {
-   private static final ArrayList<ResourceToken> tokens = new ArrayList<ResourceToken>();
+   private static final ArrayList<ResourceToken> tokens = new ArrayList<>();
 
    // @formatter:off
    public static final ResourceToken TestValues_IncludeHtml = createToken(0x40000000000000F0L, "testValues_Include.html");

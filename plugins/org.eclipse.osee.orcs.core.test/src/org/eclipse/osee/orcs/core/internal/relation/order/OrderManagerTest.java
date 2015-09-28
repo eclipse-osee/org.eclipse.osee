@@ -78,7 +78,7 @@ public class OrderManagerTest {
 
       orderManager = new OrderManager(new SorterProvider(relationTypeCache), accessor);
 
-      items = new ArrayList<Identifiable<String>>();
+      items = new ArrayList<>();
       items.add(mock1);
       items.add(mock2);
       items.add(mock3);

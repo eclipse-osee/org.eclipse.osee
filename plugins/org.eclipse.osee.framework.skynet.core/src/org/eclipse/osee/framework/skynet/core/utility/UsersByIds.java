@@ -39,7 +39,7 @@ public class UsersByIds {
    }
 
    public static List<User> getUsers(String sorageString) {
-      List<User> users = new ArrayList<User>();
+      List<User> users = new ArrayList<>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);

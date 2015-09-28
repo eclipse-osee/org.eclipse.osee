@@ -91,7 +91,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
    }
 
    private List<Object> rowsToData(ISelection selection) {
-      List<Object> datas = new LinkedList<Object>();
+      List<Object> datas = new LinkedList<>();
       if (selection instanceof IStructuredSelection) {
          IStructuredSelection selected = (IStructuredSelection) selection;
          Iterator<?> iterator = selected.iterator();
@@ -230,7 +230,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorHtmlTab(title, tabName, html));
             return tabs;
          }
@@ -247,7 +247,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorHtmlTab(XResultDataUI.getReport(data, name)));
             return tabs;
          }
@@ -265,7 +265,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorHtmlTab(xResultPage));
             return tabs;
          }
@@ -302,7 +302,7 @@ public class ResultsEditor extends AbstractArtifactEditor {
    }
 
    public static Collection<ResultsEditor> getEditors() {
-      final List<ResultsEditor> editors = new ArrayList<ResultsEditor>();
+      final List<ResultsEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {

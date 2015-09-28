@@ -31,7 +31,7 @@ public class DateUtil {
    public final static String HHMMSS = "hh:mm:ss";
    public final static String HHMMSSSS = "hh:mm:ss:SS";
    public final static String HHMM = "hh:mm";
-   public static final HashMap<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
+   public static final HashMap<String, DateFormat> dateFormats = new HashMap<>();
 
    public static Calendar getCalendar(Date date) {
       Calendar calendar = Calendar.getInstance();

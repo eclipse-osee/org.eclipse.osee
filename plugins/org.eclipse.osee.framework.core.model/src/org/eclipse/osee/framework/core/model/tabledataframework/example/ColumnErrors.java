@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.model.tabledataframework.ColumnAbstract;
 public class ColumnErrors extends ColumnAbstract {
 
    private final static String HEADER_STRING = "Errors (CSV)";
-   private final Collection<String> msgs = new ArrayList<String>();
+   private final Collection<String> msgs = new ArrayList<>();
 
    public ColumnErrors(boolean isVisible) {
       super(HEADER_STRING, isVisible);

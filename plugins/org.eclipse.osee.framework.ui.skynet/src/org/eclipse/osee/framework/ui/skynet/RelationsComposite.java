@@ -334,7 +334,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          public void widgetSelected(SelectionEvent e) {
             TreeViewerReport report =
                new TreeViewerReport("Relation View Report for " + artifact.getName(), treeViewer);
-            ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
+            ArrayList<Integer> ignoreCols = new ArrayList<>();
             ignoreCols.add(COLUMN_ORDER);
             report.setIgnoreColumns(ignoreCols);
             report.open();
@@ -380,7 +380,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    }
 
    private void openWordViewer(IStructuredSelection selection) {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
 
       for (Object object : selection.toArray()) {
          if (object instanceof WrapperForRelationLink) {
@@ -397,7 +397,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    }
 
    private Set<Artifact> getSelectedArtifacts(IStructuredSelection selection) {
-      Set<Artifact> selectedArtifacts = new HashSet<Artifact>();
+      Set<Artifact> selectedArtifacts = new HashSet<>();
       Iterator<?> iter = selection.iterator();
       while (iter.hasNext()) {
          Object object = iter.next();
@@ -452,8 +452,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       Collection<MenuItem> artEnabledOnlyitems;
 
       public NeedSelectedArtifactListener() {
-         accessControlitems = new LinkedList<MenuItem>();
-         artEnabledOnlyitems = new LinkedList<MenuItem>();
+         accessControlitems = new LinkedList<>();
+         artEnabledOnlyitems = new LinkedList<>();
       }
 
       public void addArtifactEnabled(MenuItem item) {
@@ -623,7 +623,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       boolean hasPermission = false;
       try {
          RelationTypeSide relationTypeSide = null;
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+         ArrayList<Artifact> artifacts = new ArrayList<>();
          if (object instanceof WrapperForRelationLink) {//used for ordering
             WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
             relationTypeSide = new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());

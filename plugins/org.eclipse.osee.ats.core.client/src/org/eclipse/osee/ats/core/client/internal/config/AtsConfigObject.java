@@ -102,7 +102,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
    }
 
    protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
-      Set<IAtsUser> results = new HashSet<IAtsUser>();
+      Set<IAtsUser> results = new HashSet<>();
       try {
          for (Artifact userArt : artifact.getRelatedArtifacts(relation)) {
             IAtsUser lead =

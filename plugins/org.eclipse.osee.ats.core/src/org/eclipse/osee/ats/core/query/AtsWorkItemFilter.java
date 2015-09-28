@@ -64,7 +64,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    @Override
    public IAtsWorkItemFilter union(IAtsWorkItemFilter... atsQuery) throws OseeCoreException {
-      Set<IAtsWorkItem> items = new HashSet<IAtsWorkItem>();
+      Set<IAtsWorkItem> items = new HashSet<>();
       for (IAtsWorkItemFilter query : atsQuery) {
          items.addAll(query.getItems());
       }
@@ -84,7 +84,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
 
    @Override
    public IAtsWorkItemFilter isStateType(StateType... stateType) throws OseeCoreException {
-      List<StateType> types = new ArrayList<StateType>();
+      List<StateType> types = new ArrayList<>();
       for (StateType type : stateType) {
          types.add(type);
       }
@@ -104,7 +104,7 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
    @SuppressWarnings("unchecked")
    @Override
    public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
-      Set<T> workItems = new HashSet<T>();
+      Set<T> workItems = new HashSet<>();
       Iterator<? extends IAtsWorkItem> iterator = items.iterator();
       while (iterator.hasNext()) {
          workItems.add((T) iterator.next());

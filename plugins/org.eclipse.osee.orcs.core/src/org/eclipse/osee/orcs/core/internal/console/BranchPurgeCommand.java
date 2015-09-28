@@ -86,7 +86,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
 
    @Override
    public Callable<?> createCallable(Console console, ConsoleParameters params) {
-      List<Long> branchUuids = new ArrayList<Long>();
+      List<Long> branchUuids = new ArrayList<>();
       for (String uuid : params.getArray("branchUuids")) {
          if (Strings.isNumeric(uuid)) {
             branchUuids.add(Long.parseLong(uuid));
@@ -150,7 +150,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       }
 
       private Collection<BranchReadable> getBranchesToPurge() throws OseeCoreException {
-         Set<BranchReadable> specifiedBranches = new HashSet<BranchReadable>();
+         Set<BranchReadable> specifiedBranches = new HashSet<>();
          for (Long uuid : branchUuids) {
             if (uuid <= 0) {
                console.writeln("UUID listed %s is not a valid UUID", uuid);
@@ -195,7 +195,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
             branchQuery.andStateIs(BranchState.DELETED);
          }
 
-         Set<BranchReadable> results = new HashSet<BranchReadable>();
+         Set<BranchReadable> results = new HashSet<>();
          for (BranchReadable parent : branches) {
             for (BranchReadable branch : branchQuery.andIsChildOf(parent).getResults()) {
                if (includeUnarchived || branch.getArchiveState() == BranchArchivedState.ARCHIVED) {
@@ -224,7 +224,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
                console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());
             }
 
-            List<IOseeBranch> purged = new LinkedList<IOseeBranch>();
+            List<IOseeBranch> purged = new LinkedList<>();
             if (runPurge) {
                int size = orderedBranches.size();
                int count = 0;

@@ -29,7 +29,7 @@ public class TraceUnit {
    public TraceUnit(IArtifactType traceUnitType, String name) {
       this.name = name;
       this.traceUnitType = traceUnitType;
-      this.traceMarks = new HashSet<TraceMark>();
+      this.traceMarks = new HashSet<>();
    }
 
    public URI getUriPath() {
@@ -63,7 +63,7 @@ public class TraceUnit {
    }
 
    public Set<String> getTraceMarkTypes() {
-      Set<String> toReturn = new HashSet<String>();
+      Set<String> toReturn = new HashSet<>();
       for (TraceMark traceMark : traceMarks) {
          toReturn.add(traceMark.getTraceType());
       }
@@ -71,7 +71,7 @@ public class TraceUnit {
    }
 
    public Collection<TraceMark> getTraceMarksByType(String type) {
-      Set<TraceMark> toReturn = new HashSet<TraceMark>();
+      Set<TraceMark> toReturn = new HashSet<>();
       for (TraceMark traceMark : traceMarks) {
          if (traceMark.getTraceType().equalsIgnoreCase(type)) {
             toReturn.add(traceMark);

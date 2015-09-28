@@ -54,12 +54,12 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Set<String> names = new HashSet<String>();
+      Set<String> names = new HashSet<>();
       for (RoughArtifact artifact : collector.getRoughArtifacts()) {
          names.addAll(artifact.getAttributeTypeNames());
       }
       selectedArtifactTypes.clear();
-      Set<IAttributeType> requiredTypes = new HashSet<IAttributeType>();
+      Set<IAttributeType> requiredTypes = new HashSet<>();
       for (String name : names) {
          requiredTypes.add(AttributeTypeManager.getType(name));
       }

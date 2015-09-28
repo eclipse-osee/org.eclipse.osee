@@ -147,7 +147,7 @@ public final class PageCreator {
          throw new OseeArgumentException("no rule was found for token %s", token);
       }
 
-      Map<String, String> attributes = new HashMap<String, String>();
+      Map<String, String> attributes = new HashMap<>();
       // parse the arguments
       parseArgumentList(token, attributes);
       try {
@@ -230,7 +230,7 @@ public final class PageCreator {
             if (rule == null) {
                throw new OseeArgumentException("no rule was found for token %s", token);
             }
-            Map<String, String> attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             // parse the arguments
             parseArgumentList(token, attributes);
             try {
@@ -243,7 +243,7 @@ public final class PageCreator {
             if (rule == null) {
                throw new OseeArgumentException("no substitution was found for token %s", token);
             }
-            Map<String, String> attributes = new HashMap<String, String>();
+            Map<String, String> attributes = new HashMap<>();
             // parse the arguments
             parseArgumentList(token, attributes);
             try {

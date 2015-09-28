@@ -36,7 +36,7 @@ public class OseeDslResourceImpl implements OseeDslResource {
 
    @Override
    public Collection<String> getErrors() {
-      List<String> errors = new LinkedList<String>();
+      List<String> errors = new LinkedList<>();
       for (org.eclipse.emf.ecore.resource.Resource.Diagnostic diagnostic : resource.getErrors()) {
          errors.add(diagnostic.toString());
       }

@@ -83,7 +83,7 @@ public class OrcsSubscriptionStorageTest {
       username = String.format("userName-%s", methodName);
       active = true;
 
-      prefs = new HashMap<String, String>();
+      prefs = new HashMap<>();
       prefs.put("a", "1");
       prefs.put("b", "2");
       prefs.put("c", "true");

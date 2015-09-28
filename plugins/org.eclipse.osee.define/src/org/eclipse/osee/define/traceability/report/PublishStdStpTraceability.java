@@ -89,7 +89,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
       builder.append(searchInheritedTypes);
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"===  For traceability stored in test scripts, select the following  ===\" />");
-      availableTraceHandlers = new LinkedList<String>();
+      availableTraceHandlers = new LinkedList<>();
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
       for (String handler : traceHandlers) {
@@ -103,7 +103,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
    }
 
    private List<TraceabilityStyle> getStyles(VariableMap variableMap) throws OseeArgumentException {
-      List<TraceabilityStyle> styles = new ArrayList<TraceabilityStyle>();
+      List<TraceabilityStyle> styles = new ArrayList<>();
       for (TraceabilityStyle style : TraceabilityStyle.values()) {
          boolean isSelected = variableMap.getBoolean(style.asLabel());
          if (isSelected) {
@@ -122,7 +122,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       List<TraceabilityStyle> selectedReports = getStyles(variableMap);
 
-      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
             TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
@@ -151,7 +151,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
          } else if (status.getSeverity() == IStatus.OK) {
             monitor.worked(1);
             int count = 0;
-            List<IFile> files = new ArrayList<IFile>();
+            List<IFile> files = new ArrayList<>();
             for (TraceabilityStyle style : selectedReports) {
                monitor.subTask(String.format("Creating table: [%s] [%s of %s]", style.asLabel(), ++count,
                   selectedReports.size()));

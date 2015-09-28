@@ -35,8 +35,8 @@ public class HourBurndownLog {
     * Constructor to initialise list of Work flow artifacts and Log entries
     */
    public HourBurndownLog() {
-      this.artifacts = new ArrayList<AbstractWorkflowArtifact>();
-      this.entries = new ArrayList<HourBurndownEntry>();
+      this.artifacts = new ArrayList<>();
+      this.entries = new ArrayList<>();
    }
 
    /**

@@ -294,7 +294,7 @@ public class TeamWorkFlowManager {
     * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
     */
    public static Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
-      Set<IArtifactType> artifactTypes = new HashSet<IArtifactType>();
+      Set<IArtifactType> artifactTypes = new HashSet<>();
       getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
       return artifactTypes;
    }

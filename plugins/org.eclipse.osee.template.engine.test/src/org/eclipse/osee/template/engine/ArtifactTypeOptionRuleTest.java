@@ -31,7 +31,7 @@ public class ArtifactTypeOptionRuleTest {
 
    @Test
    public void testBuild() throws Exception {
-      Set<String> typeNames = new HashSet<String>();
+      Set<String> typeNames = new HashSet<>();
       typeNames.add("Software Requirement Function");
       ArtifactTypeOptionsRule rule = new ArtifactTypeOptionsRule("select_id", typeNames, typeNames);
       StringBuilder builder = new StringBuilder();

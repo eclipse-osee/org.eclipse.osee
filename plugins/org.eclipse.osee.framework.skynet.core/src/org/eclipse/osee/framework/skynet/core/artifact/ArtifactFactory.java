@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class ArtifactFactory {
    public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
-   private final Set<IArtifactType> artifactTypeNames = new HashSet<IArtifactType>(5);
+   private final Set<IArtifactType> artifactTypeNames = new HashSet<>(5);
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
       for (IArtifactType artifactType : artifactTypes) {

@@ -58,7 +58,7 @@ public class AuthenticationConfigurationBuilder {
 
    private static final class AuthenticationConfigurationImpl implements AuthenticationConfiguration, Cloneable {
 
-      private final Set<String> schemes = new HashSet<String>();
+      private final Set<String> schemes = new HashSet<>();
       private String defaultScheme;
 
       @Override
@@ -104,7 +104,7 @@ public class AuthenticationConfigurationBuilder {
       }
 
       public Collection<String> getSet(Map<String, Object> props, String key, String defaultValue) {
-         Set<String> toReturn = new HashSet<String>();
+         Set<String> toReturn = new HashSet<>();
          String joinedArray = get(props, key, "");
          if (Strings.isValid(joinedArray)) {
             String[] split = joinedArray.split(",");

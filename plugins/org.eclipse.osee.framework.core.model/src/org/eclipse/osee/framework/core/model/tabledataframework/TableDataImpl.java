@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class TableDataImpl implements TableData {
 
-   private final List<Column> columns = new ArrayList<Column>();
-   private final List<KeyColumn> keyColumns = new ArrayList<KeyColumn>();
+   private final List<Column> columns = new ArrayList<>();
+   private final List<KeyColumn> keyColumns = new ArrayList<>();
    private boolean firstRun = true;
 
    protected void addColumn(Column column) {
@@ -43,7 +43,7 @@ public class TableDataImpl implements TableData {
 
    @Override
    public Collection<Object> getHeaderStrings() {
-      Collection<Object> headerStrings = new ArrayList<Object>();
+      Collection<Object> headerStrings = new ArrayList<>();
       for (Column col : columns) {
          if (col.isVisible()) {
             headerStrings.add(col.getHeaderString());
@@ -71,7 +71,7 @@ public class TableDataImpl implements TableData {
 
       @Override
       public Collection<Object> next() {
-         Collection<Object> cols = new ArrayList<Object>();
+         Collection<Object> cols = new ArrayList<>();
          try {
             beforeRow();
 

@@ -398,7 +398,7 @@ public class PeerReviewDefImpl extends MinimalEObjectImpl.Container implements P
   {
     if (assigneeRefs == null)
     {
-      assigneeRefs = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.PEER_REVIEW_DEF__ASSIGNEE_REFS);
+      assigneeRefs = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.PEER_REVIEW_DEF__ASSIGNEE_REFS);
     }
     return assigneeRefs;
   }

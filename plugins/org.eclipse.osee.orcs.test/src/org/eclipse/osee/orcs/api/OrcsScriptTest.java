@@ -66,7 +66,7 @@ public class OrcsScriptTest {
 
    @Parameters
    public static Iterable<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
 
       add(data, "start from branch 570 collect branches {*}", //
          "{\n" + //

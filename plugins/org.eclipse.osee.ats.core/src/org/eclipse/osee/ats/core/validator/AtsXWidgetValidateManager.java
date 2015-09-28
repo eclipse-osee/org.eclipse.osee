@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.api.workdef.WidgetStatus;
  */
 public class AtsXWidgetValidateManager {
    public static AtsXWidgetValidateManager instance = new AtsXWidgetValidateManager();
-   private final List<AtsXWidgetValidatorProvider> providers = new LinkedList<AtsXWidgetValidatorProvider>();
+   private final List<AtsXWidgetValidatorProvider> providers = new LinkedList<>();
 
    protected AtsXWidgetValidateManager() {
    }

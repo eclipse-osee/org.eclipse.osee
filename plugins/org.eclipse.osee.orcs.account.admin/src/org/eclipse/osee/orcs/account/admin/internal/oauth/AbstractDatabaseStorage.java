@@ -99,7 +99,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected ResultSet<T> innerCall() throws Exception {
-            List<T> list = new LinkedList<T>();
+            List<T> list = new LinkedList<>();
             JdbcStatement chStmt = jdbcClient.getStatement();
             try {
                chStmt.runPreparedQuery(query, data);
@@ -130,7 +130,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected Integer innerCall() throws Exception {
-            List<Object[]> data = new ArrayList<Object[]>();
+            List<Object[]> data = new ArrayList<>();
             for (T item : items) {
                data.add(asInsert(item));
             }
@@ -144,7 +144,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected Integer innerCall() throws Exception {
-            List<Object[]> data = new ArrayList<Object[]>();
+            List<Object[]> data = new ArrayList<>();
             for (T item : items) {
                data.add(asDelete(item));
             }
@@ -158,7 +158,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected Integer innerCall() throws Exception {
-            List<Object[]> data = new ArrayList<Object[]>();
+            List<Object[]> data = new ArrayList<>();
             for (T item : items) {
                data.add(asUpdate(item));
             }

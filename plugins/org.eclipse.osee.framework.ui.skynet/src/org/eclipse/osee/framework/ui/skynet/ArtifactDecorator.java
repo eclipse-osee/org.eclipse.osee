@@ -219,7 +219,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
          Conditions.checkNotNull(artifact, "artifact");
          Collection<IAttributeType> selectedItems = attributesAction.getSelected();
 
-         List<String> info = new ArrayList<String>();
+         List<String> info = new ArrayList<>();
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {
             if (selectedItems.contains(attributeType)) {
                String value = artifact.getAttributesToString(attributeType);
@@ -331,7 +331,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       public ShowAttributeAction(IBranchProvider branchProvider, KeyedImage image) {
          super("Show Attributes", IAction.AS_PUSH_BUTTON);
          this.branchProvider = branchProvider;
-         this.selectedTypes = new HashSet<IAttributeType>();
+         this.selectedTypes = new HashSet<>();
          if (image != null) {
             setImageDescriptor(ImageManager.getImageDescriptor(image));
          }
@@ -357,7 +357,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                               "Select attribute types to display.");
                         dialog.setSelectable(selectableTypes);
 
-                        List<IAttributeType> initSelection = new ArrayList<IAttributeType>();
+                        List<IAttributeType> initSelection = new ArrayList<>();
                         for (IAttributeType entry : selectedTypes) {
                            for (IAttributeType type : selectableTypes) {
                               if (type.equals(entry)) {
@@ -420,7 +420,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
    }
 
    private static void notifySettingsChanged(ArtifactDecorator source) {
-      List<Object> toRemove = new ArrayList<Object>();
+      List<Object> toRemove = new ArrayList<>();
 
       for (WeakReference<ArtifactDecorator> ref : DECORATOR_INSTANCES) {
          ArtifactDecorator decorator = ref.get();

@@ -56,7 +56,7 @@ public class XResultPage {
    private String html;
    private final String id; // Used to add and remove to menu item
    private String manipulatedHtml;
-   private Set<Manipulations> manipulations = new HashSet<Manipulations>();
+   private Set<Manipulations> manipulations = new HashSet<>();
    private int numWarnings = Integer.MAX_VALUE;
    private int numErrors = Integer.MAX_VALUE;
 
@@ -171,7 +171,7 @@ public class XResultPage {
                // Match getText so it doesn't mess up replace
                // Retireve all ATS=WPN_PAGE:HSRID matches
                Matcher m = ATS_NAME_AND_GUID_REGEX.matcher(str);
-               Set<String> cmdNameGuids = new HashSet<String>();
+               Set<String> cmdNameGuids = new HashSet<>();
                while (m.find()) {
                   cmdNameGuids.add(m.group());
                }
@@ -196,7 +196,7 @@ public class XResultPage {
                }
                // Retrieve all ATS=GUID matches and replace with hyperlinking
                m = ATS_GUID_REGEX.matcher(str);
-               Set<String> cmdGuids = new HashSet<String>();
+               Set<String> cmdGuids = new HashSet<>();
                while (m.find()) {
                   cmdGuids.add(m.group());
                }

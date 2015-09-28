@@ -42,7 +42,7 @@ public final class ResultSets {
       if (item == null) {
          toReturn = emptyResultSet();
       } else {
-         toReturn = new ResultSetList<T>(Collections.singletonList(item));
+         toReturn = new ResultSetList<>(Collections.singletonList(item));
       }
       return toReturn;
    }
@@ -52,7 +52,7 @@ public final class ResultSets {
       if (list == null || list.isEmpty()) {
          toReturn = emptyResultSet();
       } else {
-         toReturn = new ResultSetList<T>(list);
+         toReturn = new ResultSetList<>(list);
       }
       return toReturn;
    }
@@ -62,7 +62,7 @@ public final class ResultSets {
       if (iterable == null || !iterable.iterator().hasNext()) {
          toReturn = emptyResultSet();
       } else {
-         toReturn = new ResultSetIterable<T>(iterable);
+         toReturn = new ResultSetIterable<>(iterable);
       }
       return toReturn;
    }
@@ -77,7 +77,7 @@ public final class ResultSets {
       if (result == null || result.isEmpty()) {
          toReturn = emptyResultSet();
       } else {
-         toReturn = new ResultSetTransform<K, F, T>(result, factory);
+         toReturn = new ResultSetTransform<>(result, factory);
       }
       return toReturn;
    }

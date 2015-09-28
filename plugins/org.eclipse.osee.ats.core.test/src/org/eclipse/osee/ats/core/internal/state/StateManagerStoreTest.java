@@ -150,7 +150,7 @@ public class StateManagerStoreTest {
       Assert.assertEquals(2, stateMgr.getAssignees().size());
 
       when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<Object> objects = new ArrayList<Object>();
+      List<Object> objects = new ArrayList<>();
       when(changes.getObjects()).thenReturn(objects);
       IExecuteListener listener =
          StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr, stateMgr.getAssigneesAdded(),

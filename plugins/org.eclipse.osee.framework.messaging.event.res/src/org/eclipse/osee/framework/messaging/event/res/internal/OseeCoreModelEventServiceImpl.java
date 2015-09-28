@@ -136,11 +136,11 @@ public class OseeCoreModelEventServiceImpl implements OseeMessagingStatusCallbac
    }
 
    private <T extends RemoteEvent> void subscribe(ResMessages messageId, Class<T> clazz, boolean isVerbose, IFrameworkEventListener frameworkEventListener) {
-      OseeMessagingListener listener = new FrameworkRelayMessagingListener<T>(clazz, frameworkEventListener, isVerbose);
+      OseeMessagingListener listener = new FrameworkRelayMessagingListener<>(clazz, frameworkEventListener, isVerbose);
       getConnectionNode().subscribe(messageId, listener, this);
       HashCollection<ResMessages, OseeMessagingListener> listeners = subscriptions.get(frameworkEventListener);
       if (listeners == null) {
-         listeners = new HashCollection<ResMessages, OseeMessagingListener>(true, HashSet.class);
+         listeners = new HashCollection<>(true, HashSet.class);
          subscriptions.put(frameworkEventListener, listeners);
       }
       listeners.put(messageId, listener);

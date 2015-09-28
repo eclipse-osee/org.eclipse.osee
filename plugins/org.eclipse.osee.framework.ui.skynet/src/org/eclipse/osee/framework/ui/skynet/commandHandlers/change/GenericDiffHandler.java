@@ -42,8 +42,8 @@ public class GenericDiffHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       List<Change> localChanges = Handlers.getArtifactChangesFromStructuredSelection(selection);
       if (!localChanges.isEmpty()) {
-         Collection<Change> changes = new ArrayList<Change>(localChanges.size());
-         Set<Artifact> artifacts = new HashSet<Artifact>();
+         Collection<Change> changes = new ArrayList<>(localChanges.size());
+         Set<Artifact> artifacts = new HashSet<>();
          for (Change change : localChanges) {
             Artifact artifact = change.getChangeArtifact();
             if (!artifacts.contains(artifact)) {

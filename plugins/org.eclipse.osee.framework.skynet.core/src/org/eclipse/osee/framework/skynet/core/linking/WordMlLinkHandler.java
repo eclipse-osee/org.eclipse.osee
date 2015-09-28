@@ -147,7 +147,7 @@ public class WordMlLinkHandler {
     * @return locations where WordMlLinks were found grouped by GUID
     */
    private static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
-      HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
+      HashCollection<String, MatchRange> matchMap = new HashCollection<>();
       OseeLinkParser linkParser = new OseeLinkParser();
       WORDML_LINK.reset(content);
       while (WORDML_LINK.find()) {
@@ -190,7 +190,7 @@ public class WordMlLinkHandler {
    }
 
    private static List<String> getGuidsNotFound(List<String> guidsFromLinks, List<Artifact> artifactsFound) {
-      Set<String> artGuids = new HashSet<String>();
+      Set<String> artGuids = new HashSet<>();
       for (Artifact artifact : artifactsFound) {
          artGuids.add(artifact.getGuid());
       }
@@ -201,7 +201,7 @@ public class WordMlLinkHandler {
       Branch branch = source.getFullBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
-      List<String> guidsFromLinks = new ArrayList<String>(matchMap.keySet());
+      List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
       artifactsFromSearch =
          findArtifacts(source.getTransactionRecord(), source.getBranch(), source.isHistorical(), guidsFromLinks);
@@ -209,7 +209,7 @@ public class WordMlLinkHandler {
          Branch sourceBranch = branch.getParentBranch();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
-         List<Artifact> union = new ArrayList<Artifact>();
+         List<Artifact> union = new ArrayList<>();
          union.addAll(findArtifacts(branch.getSourceTransaction(), sourceBranch, source.isHistorical(), unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;

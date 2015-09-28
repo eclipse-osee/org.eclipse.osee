@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelGroupSelection.class.getSimpleName();
-   Set<Artifact> selectedGroups = new HashSet<Artifact>();
+   Set<Artifact> selectedGroups = new HashSet<>();
 
    public XHyperlabelGroupSelection(String label) {
       super(label, true, 80);
@@ -80,7 +80,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
    }
 
    private Collection<Artifact> getGroups() {
-      List<Artifact> groups = new ArrayList<Artifact>();
+      List<Artifact> groups = new ArrayList<>();
       for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
          if (!art.isOfType(CoreArtifactTypes.RootArtifact)) {
             groups.add(art);

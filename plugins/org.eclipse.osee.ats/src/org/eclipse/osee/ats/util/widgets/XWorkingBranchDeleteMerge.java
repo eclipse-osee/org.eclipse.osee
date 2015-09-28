@@ -50,12 +50,12 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
             try {
                Branch workingBranch = getTeamArt().getWorkingBranch();
                if (isWorkingBranchCommitWithMergeInProgress()) {
-                  List<Branch> selectedBranches = new ArrayList<Branch>();
+                  List<Branch> selectedBranches = new ArrayList<>();
                   Collection<IOseeBranch> branchesAlreadyCommitted =
                      AtsClientService.get().getBranchService().getBranchesCommittedTo(getTeamArt());
                   List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
 
-                  Set<Branch> destinationMinusAlreadyCommitted = new HashSet<Branch>();
+                  Set<Branch> destinationMinusAlreadyCommitted = new HashSet<>();
                   // Remove all the Merge branches having to do with a Destination branch that's already been committed, can't delete these merge branches
                   for (MergeBranch branch : mergeBranches) {
                      if (!branchesAlreadyCommitted.contains(branch.getDestinationBranch())) {
@@ -101,7 +101,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(getWorkingBranch());
             Collection<IOseeBranch> committedBranches =
                AtsClientService.get().getBranchService().getBranchesCommittedTo(getTeamArt());
-            List<MergeBranch> remainingMergeBranches = new ArrayList<MergeBranch>();
+            List<MergeBranch> remainingMergeBranches = new ArrayList<>();
 
             for (MergeBranch mergeBranch : mergeBranches) {
                if (!committedBranches.contains(mergeBranch.getDestinationBranch())) {

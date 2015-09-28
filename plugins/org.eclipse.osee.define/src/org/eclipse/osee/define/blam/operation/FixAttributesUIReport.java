@@ -38,7 +38,7 @@ public class FixAttributesUIReport implements Display {
 
    @Override
    public void displayReport(String reportName, List<String[]> values) {
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+      List<XViewerColumn> columns = new ArrayList<>();
       addColumn(columns, "Branch Name");
       addColumn(columns, "Artifact Guid");
       addColumn(columns, "Artifact Name");
@@ -46,12 +46,12 @@ public class FixAttributesUIReport implements Display {
       addColumn(columns, "Was Value");
       addColumn(columns, "Fixed Value");
 
-      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> rows = new ArrayList<>();
       for (String[] row : values) {
          rows.add(new ResultsXViewerRow(row));
       }
 
-      List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+      List<IResultsEditorTab> tabs = new ArrayList<>();
       tabs.add(new ResultsEditorTableTab("Results", columns, rows));
 
       ReportProvider report = new ReportProvider(reportName, tabs);

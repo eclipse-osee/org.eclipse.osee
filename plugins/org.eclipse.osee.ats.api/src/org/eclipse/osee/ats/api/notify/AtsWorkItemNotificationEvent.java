@@ -22,9 +22,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class AtsWorkItemNotificationEvent {
 
    private String fromUserId;
-   private final Collection<String> userIds = new HashSet<String>();
-   private final Collection<String> atsIds = new HashSet<String>();
-   private final Set<AtsNotifyType> notifyTypes = new HashSet<AtsNotifyType>();
+   private final Collection<String> userIds = new HashSet<>();
+   private final Collection<String> atsIds = new HashSet<>();
+   private final Set<AtsNotifyType> notifyTypes = new HashSet<>();
 
    public Collection<String> getAtsIds() {
       return atsIds;

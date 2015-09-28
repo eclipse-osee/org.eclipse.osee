@@ -76,13 +76,13 @@ import org.osgi.util.tracker.ServiceTrackerCustomizer;
  */
 public abstract class TestEnvironment implements TestEnvironmentInterface, ITestEnvironmentAccessor, ITestContext {
 
-   private final List<ITestEnvironmentListener> envListeners = new ArrayList<ITestEnvironmentListener>(32);
+   private final List<ITestEnvironmentListener> envListeners = new ArrayList<>(32);
    private IExecutionUnitManagement executionUnitManagement;
 
    private File outDir = null;
    private final ITestStation testStation;
    private boolean batchMode = false;
-   private final HashMap<String, Remote> controlInterfaces = new HashMap<String, Remote>();
+   private final HashMap<String, Remote> controlInterfaces = new HashMap<>();
    private final IEnvironmentFactory factory;
    private IServiceConnector connector;
    private final IRuntimeLibraryManager runtimeManager;
@@ -94,9 +94,9 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Deprecated
    private boolean isEnvSetup = false;
    @Deprecated
-   private final List<IScriptCompleteEvent> scriptCompleteListeners = new ArrayList<IScriptCompleteEvent>();
+   private final List<IScriptCompleteEvent> scriptCompleteListeners = new ArrayList<>();
    @Deprecated
-   private final List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<IScriptSetupEvent>();
+   private final List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<>();
 
    private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
    private OteServerSideEndpointSender oteServerSideEndpointSender;
@@ -117,8 +117,8 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
 
-      this.associatedObjectListeners = new HashMap<Class<?>, ArrayList<IAssociatedObjectListener>>();
-      this.associatedObjects = new HashMap<Class<?>, Object>(100);
+      this.associatedObjectListeners = new HashMap<>();
+      this.associatedObjects = new HashMap<>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
 
       messagingServiceTracker = setupOteMessagingSenderAndReceiver();
@@ -231,7 +231,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
 
    @Override
    public List<String> getQueueLabels() {
-      List<String> list = new ArrayList<String>();
+      List<String> list = new ArrayList<>();
       list.add("Description");
       return list;
    }

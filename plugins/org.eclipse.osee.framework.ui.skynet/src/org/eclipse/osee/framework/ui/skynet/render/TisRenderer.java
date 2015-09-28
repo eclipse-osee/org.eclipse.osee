@@ -76,7 +76,7 @@ public class TisRenderer extends WordTemplateRenderer {
          template = getTemplate(firstArtifact, presentationType);
       }
 
-      List<ITemplateAttributeHandler> handlers = new ArrayList<ITemplateAttributeHandler>();
+      List<ITemplateAttributeHandler> handlers = new ArrayList<>();
       handlers.add(new SRSSpecialPublishingAttributeHandler());
       handlers.add(new TISAttributeHandler());
       handlers.add(new WordAttributeTypeAttributeHandler());

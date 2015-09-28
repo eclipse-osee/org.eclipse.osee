@@ -76,7 +76,7 @@ public class RelationManager {
       if (artifact != null) {
          List<RelationLink> artifactsRelations = relationCache.getAll(artifact);
          if (artifactsRelations == null) {
-            artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
+            artifactsRelations = new CopyOnWriteArrayList<>();
          }
 
          // Verify that relation is unique by aArtId, bArtId and relTypeId; Needs to be cleaned up in DB, Only log problem.
@@ -130,9 +130,9 @@ public class RelationManager {
       List<Artifact> relatedArtifacts;
 
       if (selectedRelations == null) {
-         relatedArtifacts = new ArrayList<Artifact>();
+         relatedArtifacts = new ArrayList<>();
       } else {
-         relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
+         relatedArtifacts = new ArrayList<>(selectedRelations.size());
 
          Collection<Artifact> bulkLoadedArtifacts =
             ArtifactQuery.getArtifactListFromIds(
@@ -159,7 +159,7 @@ public class RelationManager {
    }
 
    private static Collection<Integer> getRelatedArtifactIds(List<RelationLink> relations, RelationSide side, DeletionFlag allowDeleted) {
-      Collection<Integer> ret = new HashSet<Integer>();
+      Collection<Integer> ret = new HashSet<>();
       if (relations != null) {
          for (RelationLink rel : relations) {
             if (allowDeleted == INCLUDE_DELETED || allowDeleted == EXCLUDE_DELETED && !rel.isDeleted()) {
@@ -177,10 +177,10 @@ public class RelationManager {
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, DeletionFlag allowDeleted, IRelationTypeSide... relationEnums) throws OseeCoreException {
       findHistoricalArtifacts(artifacts);
 
-      Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
-      Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
-      Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
-      Set<Integer> relatedArtIds = new HashSet<Integer>();
+      Set<Artifact> relatedArtifacts = new HashSet<>(artifacts.size() * 8);
+      Collection<Artifact> newArtifactsToSearch = new ArrayList<>(artifacts);
+      Collection<Artifact> newArtifacts = new ArrayList<>();
+      Set<Integer> relatedArtIds = new HashSet<>();
       if (artifacts.isEmpty()) {
          return relatedArtifacts;
       }
@@ -189,7 +189,7 @@ public class RelationManager {
       for (int i = 0; i < depth && !newArtifactsToSearch.isEmpty(); i++) {
          relatedArtIds.clear();
          for (Artifact artifact : newArtifactsToSearch) {
-            List<RelationLink> selectedRelations = new ArrayList<RelationLink>();
+            List<RelationLink> selectedRelations = new ArrayList<>();
             if (relationEnums.length == 0) {
                /**
                 * since getting relations by type will return the link between this artifact and it's parent, make sure
@@ -243,7 +243,7 @@ public class RelationManager {
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationTypeSide relationType, DeletionFlag deletionFlag) throws OseeCoreException {
       List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationType.getSide());
-      Collection<Integer> artIds = new ArrayList<Integer>();
+      Collection<Integer> artIds = new ArrayList<>();
 
       if (deletionFlag.areDeletedAllowed()) {
          Object[] formatArgs = relationType.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
@@ -381,7 +381,7 @@ public class RelationManager {
          return Collections.emptyList();
       }
 
-      List<RelationLink> relations = new ArrayList<RelationLink>(selectedRelations.size());
+      List<RelationLink> relations = new ArrayList<>(selectedRelations.size());
 
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
@@ -461,7 +461,7 @@ public class RelationManager {
             "Artifact [%s] is historical. Historical relations are only supported on the server.", artifact);
       }
       List<RelationLink> selectedRelations = relationCache.getAll(artifact);
-      Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<Pair<IRelationType, RelationSide>>();
+      Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             typesToUpdate.add(new Pair<IRelationType, RelationSide>(relation.getRelationType(),
@@ -504,7 +504,7 @@ public class RelationManager {
       }
       Collection<RelationLink> links = relationCache.getAll(artifact);
       if (!links.isEmpty()) {
-         List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
+         List<Object[]> batchArgs = new ArrayList<>(links.size());
          String PURGE_RELATION = "delete from osee_relation_link WHERE rel_link_id = ?";
          for (RelationLink link : links) {
             batchArgs.add(new Object[] {link.getId()});

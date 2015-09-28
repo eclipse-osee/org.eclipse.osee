@@ -191,7 +191,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void createOverviewChart(WorkflowMetrics sMet, Composite parent) throws OseeCoreException {
-      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      List<XBarGraphLine> lines = new ArrayList<>();
 
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
       lines.add(XBarGraphLine.getTextLineRedIfTrue(
@@ -265,14 +265,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void createCompletedByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
-      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      List<XBarGraphLine> lines = new ArrayList<>();
       for (IAtsUser user : sMet.getAssigneesAssignedOrCompleted()) {
          try {
             int numCompleted = sMet.getUserToCompletedSmas(user).size();
             double cummulativePercentComplete = numCompleted * 100;
             int numInWork = sMet.getUserToAssignedSmas(user).size();
             // Since table is loaded with arts and also shows children, don't want to count artifacts twice
-            Set<Artifact> processedArts = new HashSet<Artifact>();
+            Set<Artifact> processedArts = new HashSet<>();
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
@@ -320,7 +320,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
    }
 
    public void createHoursRemainingByAssigneesChart(WorkflowMetrics sMet, Composite parent) {
-      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      List<XBarGraphLine> lines = new ArrayList<>();
       Double hoursRemain = null;
       if (sMet.getEstRelDate() != null) {
          hoursRemain = sMet.getHoursTillRel();
@@ -329,7 +329,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
          try {
             double userHoursRemain = 0;
             for (TeamWorkFlowArtifact team : sMet.getTeamArts()) {
-               Collection<IAtsUser> users = new HashSet<IAtsUser>();
+               Collection<IAtsUser> users = new HashSet<>();
                users.addAll(team.getStateMgr().getAssignees());
                if (users.contains(user)) {
                   double hours = team.getRemainHoursTotal();

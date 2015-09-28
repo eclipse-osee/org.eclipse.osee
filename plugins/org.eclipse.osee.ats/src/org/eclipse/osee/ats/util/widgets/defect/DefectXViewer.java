@@ -269,7 +269,7 @@ public class DefectXViewer extends XViewer {
    }
 
    public List<ReviewDefectItem> getSelectedDefectItems() {
-      List<ReviewDefectItem> arts = new ArrayList<ReviewDefectItem>();
+      List<ReviewDefectItem> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -284,7 +284,7 @@ public class DefectXViewer extends XViewer {
       if (!xDefectViewer.isEditable()) {
          return;
       }
-      ArrayList<ReviewDefectItem> defectItems = new ArrayList<ReviewDefectItem>();
+      ArrayList<ReviewDefectItem> defectItems = new ArrayList<>();
       for (TreeItem item : treeItems) {
          defectItems.add((ReviewDefectItem) item.getData());
       }
@@ -312,7 +312,7 @@ public class DefectXViewer extends XViewer {
       try {
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          ReviewDefectItem defectItem = (ReviewDefectItem) treeItem.getData();
-         List<ReviewDefectItem> defectItems = new ArrayList<ReviewDefectItem>();
+         List<ReviewDefectItem> defectItems = new ArrayList<>();
          defectItems.add(defectItem);
          if (xCol.equals(DefectXViewerFactory.Severity_Col) || xCol.equals(DefectXViewerFactory.Disposition_Col) || xCol.equals(DefectXViewerFactory.Created_Date_Col) || xCol.equals(DefectXViewerFactory.Closed_Col) || xCol.equals(DefectXViewerFactory.Description_Col) || xCol.equals(DefectXViewerFactory.Resolution_Col) || xCol.equals(DefectXViewerFactory.Location_Col) || xCol.equals(DefectXViewerFactory.User_Col) || xCol.equals(DefectXViewerFactory.Injection_Activity_Col)) {
             return promptChangeData(xCol, defectItems, false);

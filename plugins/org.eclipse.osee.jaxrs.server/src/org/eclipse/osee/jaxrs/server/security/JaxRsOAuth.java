@@ -32,7 +32,7 @@ public final class JaxRsOAuth {
 
    public static List<? extends Object> getOAuthProviders() {
       if (OAUTH_PROVIDERS == null) {
-         List<Object> providers = new ArrayList<Object>();
+         List<Object> providers = new ArrayList<>();
          providers.add(new OAuthJSONProvider());
          providers.add(new OAuthContextProvider());
          providers.add(new OseeOAuthContextProvider());

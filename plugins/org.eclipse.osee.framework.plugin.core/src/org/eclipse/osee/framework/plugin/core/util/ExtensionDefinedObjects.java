@@ -87,8 +87,8 @@ public class ExtensionDefinedObjects<T> {
 
    @SuppressWarnings("unchecked")
    private void initialize(String extensionPointId, String elementName, String classNameAttribute) {
-      loadedObjects = new ArrayList<T>();
-      objectsByID = new HashMap<String, T>();
+      loadedObjects = new ArrayList<>();
+      objectsByID = new HashMap<>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
       for (IConfigurationElement element : elements) {
          IExtension extension = (IExtension) element.getParent();

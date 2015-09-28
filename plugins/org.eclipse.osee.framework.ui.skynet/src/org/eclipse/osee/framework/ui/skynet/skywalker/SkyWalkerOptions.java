@@ -60,7 +60,7 @@ public final class SkyWalkerOptions {
    // RelationLinkDescriptor and RelationLinkDescriptorSide
    private Map<Object, Boolean> relTypes;
    private boolean filterEnabled = true;
-   private final Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<ISkyWalkerOptionsChangeListener>();
+   private final Set<ISkyWalkerOptionsChangeListener> listeners = new HashSet<>();
    public static final String RADIAL_DOWN_LAYOUT = "Radial - Down";
    public static final String RADIAL_RIGHT_LAYOUT = "Radial - Right";
    public static final String SPRING_LAYOUT = "Spring";
@@ -100,7 +100,7 @@ public final class SkyWalkerOptions {
 
    private void loadArtTypes() {
       if (artTypes == null) {
-         artTypes = new HashMap<IArtifactType, Boolean>();
+         artTypes = new HashMap<>();
          try {
             for (IArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(artifact.getBranch())) {
                artTypes.put(descriptor, true);
@@ -113,7 +113,7 @@ public final class SkyWalkerOptions {
 
    private void loadAttributeTypes() {
       if (showAttributes == null) {
-         showAttributes = new HashMap<IAttributeType, Boolean>();
+         showAttributes = new HashMap<>();
          try {
             for (IAttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
@@ -126,7 +126,7 @@ public final class SkyWalkerOptions {
 
    private void loadRelTypes() {
       if (relTypes == null) {
-         relTypes = new HashMap<Object, Boolean>();
+         relTypes = new HashMap<>();
          try {
             for (RelationType relationType : RelationTypeManager.getValidTypes(artifact.getBranch())) {
                relTypes.put(relationType, true);
@@ -243,7 +243,7 @@ public final class SkyWalkerOptions {
 
    private Map<AbstractLayoutAlgorithm, String> loadLayouts() {
       if (layouts == null) {
-         layouts = new HashMap<AbstractLayoutAlgorithm, String>();
+         layouts = new HashMap<>();
 
          RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
          radLayout.setRangeToLayout(-90 * Math.PI / 360, 90 * Math.PI / 360);
@@ -368,7 +368,7 @@ public final class SkyWalkerOptions {
       if (relTypes == null) {
          loadRelTypes();
       }
-      List<Object> selList = new ArrayList<Object>();
+      List<Object> selList = new ArrayList<>();
       for (Object obj : selected) {
          selList.add(obj);
       }
@@ -379,7 +379,7 @@ public final class SkyWalkerOptions {
    }
 
    public void setSelectedShowAttributes(Object[] selected) {
-      List<Object> selList = new ArrayList<Object>();
+      List<Object> selList = new ArrayList<>();
       for (Object obj : selected) {
          selList.add(obj);
       }
@@ -400,7 +400,7 @@ public final class SkyWalkerOptions {
    }
 
    public Set<IArtifactType> getSelectedArtTypes() {
-      Set<IArtifactType> selected = new HashSet<IArtifactType>();
+      Set<IArtifactType> selected = new HashSet<>();
       if (artTypes == null) {
          return selected;
       }
@@ -413,7 +413,7 @@ public final class SkyWalkerOptions {
    }
 
    public Set<Object> getSelectedRelTypes() {
-      Set<Object> selected = new HashSet<Object>();
+      Set<Object> selected = new HashSet<>();
       if (relTypes == null) {
          return selected;
       }
@@ -426,7 +426,7 @@ public final class SkyWalkerOptions {
    }
 
    public Set<IAttributeType> getSelectedShowAttributeTypes() {
-      Set<IAttributeType> selected = new HashSet<IAttributeType>();
+      Set<IAttributeType> selected = new HashSet<>();
       if (showAttributes == null) {
          return selected;
       }
@@ -463,7 +463,7 @@ public final class SkyWalkerOptions {
       if (relTypes == null) {
          return new HashSet<RelationType>();
       }
-      Set<RelationType> descs = new HashSet<RelationType>();
+      Set<RelationType> descs = new HashSet<>();
       for (Object obj : relTypes.keySet()) {
          if (obj instanceof RelationType) {
             descs.add((RelationType) obj);

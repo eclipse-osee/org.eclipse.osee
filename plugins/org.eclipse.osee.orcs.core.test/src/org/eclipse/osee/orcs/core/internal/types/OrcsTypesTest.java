@@ -119,7 +119,7 @@ public class OrcsTypesTest {
       module.start(session);
 
       orcsTypes = module.createOrcsTypes(session);
-      resources = new ArrayList<InputSupplier<? extends InputStream>>();
+      resources = new ArrayList<>();
 
       URI uri = new URI("osee:/types.test.data.osee");
 

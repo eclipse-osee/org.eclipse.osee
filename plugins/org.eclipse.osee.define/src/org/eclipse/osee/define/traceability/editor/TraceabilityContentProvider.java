@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
 public class TraceabilityContentProvider implements ITreeContentProvider {
 
-   protected Collection<IResultsXViewerRow> rootSet = new HashSet<IResultsXViewerRow>();
+   protected Collection<IResultsXViewerRow> rootSet = new HashSet<>();
    private static Object[] EMPTY_ARRAY = new Object[0];
 
    public TraceabilityContentProvider() {
@@ -49,7 +49,7 @@ public class TraceabilityContentProvider implements ITreeContentProvider {
          Object data = row.getData();
          if (data instanceof Artifact) {
             if (((Artifact) data).getArtifactType().inheritsFrom(CoreArtifactTypes.AbstractSoftwareRequirement)) {
-               List<Object> children = new LinkedList<Object>();
+               List<Object> children = new LinkedList<>();
                try {
                   for (Artifact art : ((Artifact) data).getRelatedArtifacts(CoreRelationTypes.Verification__Verifier)) {
                      children.add(new ResultsXViewerRow(new String[] {art.getName(), "Verifies"}, art));

@@ -29,7 +29,7 @@ public class CodeUnitData extends BaseTraceDataCache {
 
    public CodeUnitData(IOseeBranch branch) {
       super("Code Unit Data", branch);
-      this.codeUnitMap = new HashMap<String, Artifact>();
+      this.codeUnitMap = new HashMap<>();
    }
 
    @Override

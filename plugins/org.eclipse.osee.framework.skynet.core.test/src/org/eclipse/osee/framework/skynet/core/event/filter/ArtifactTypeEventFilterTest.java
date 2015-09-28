@@ -82,7 +82,7 @@ public class ArtifactTypeEventFilterTest {
          new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
             CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
-      List<IBasicGuidRelation> relations = new ArrayList<IBasicGuidRelation>();
+      List<IBasicGuidRelation> relations = new ArrayList<>();
       EventBasicGuidRelation relation =
          new EventBasicGuidRelation(RelationEventType.Added, Lib.generateUuid(),
             CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);

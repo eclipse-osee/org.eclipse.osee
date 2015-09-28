@@ -49,8 +49,8 @@ public class Version extends AtsObject implements IAtsVersion {
    private Date releaseDate;
    private Date estimatedReleaseDate;
 
-   private List<IAtsVersion> parallelVersions = new ArrayList<IAtsVersion>();
-   private final Set<String> staticIds = new HashSet<String>();
+   private List<IAtsVersion> parallelVersions = new ArrayList<>();
+   private final Set<String> staticIds = new HashSet<>();
 
    private final IAtsVersionService versionService;
 
@@ -161,7 +161,7 @@ public class Version extends AtsObject implements IAtsVersion {
 
    @Override
    public String getCommitFullDisplayName() {
-      List<String> strs = new ArrayList<String>();
+      List<String> strs = new ArrayList<>();
       strs.add(getName());
       if (Strings.isValid(fullName)) {
          strs.add(fullName);

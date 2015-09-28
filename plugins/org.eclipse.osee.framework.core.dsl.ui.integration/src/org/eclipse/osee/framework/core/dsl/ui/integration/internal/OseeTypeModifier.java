@@ -62,7 +62,7 @@ public class OseeTypeModifier implements AttributeModifier {
          OseeExceptions.wrapAndThrow(ex);
       }
 
-      Set<Long> uuids = new HashSet<Long>();
+      Set<Long> uuids = new HashSet<>();
       for (EObject object : oseeDsl.eContents()) {
          if (object instanceof OseeType) {
             addUuid(uuids, (OseeType) object);

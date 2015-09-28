@@ -101,7 +101,7 @@ public class SessionTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 3; index++) {
          String guid = "ABCD" + String.valueOf(index);
          String clientAddress = "addresss-" + index;

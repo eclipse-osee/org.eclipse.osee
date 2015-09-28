@@ -45,7 +45,7 @@ public class DoorsArtifact implements INamedElement {
    * 
    */
   public DoorsArtifact() {
-    this.children = new ArrayList<DoorsArtifact>();
+    this.children = new ArrayList<>();
   }
 
   /**

@@ -71,7 +71,7 @@ import org.eclipse.ui.forms.widgets.Hyperlink;
 public class ReviewInfoXWidget extends XLabelValueBase {
 
    private final IStateToken forState;
-   private final List<Label> labelWidgets = new ArrayList<Label>();
+   private final List<Label> labelWidgets = new ArrayList<>();
    private Composite destroyableComposite = null;
    private final Composite composite;
    private final IManagedForm managedForm;
@@ -304,7 +304,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      return;
                   }
                   try {
-                     List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+                     List<AbstractWorkflowArtifact> awas = new ArrayList<>();
                      for (IAtsAbstractReview review : ReviewManager.getReviewsFromCurrentState(teamArt)) {
                         AbstractReviewArtifact revArt =
                            (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);

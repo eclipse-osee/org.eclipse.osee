@@ -90,7 +90,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
       getLogger().debug("Tagging: [%s]", getTagQueueQueryId());
       long totalTags = -1;
       try {
-         Collection<IndexedResource> sources = new LinkedHashSet<IndexedResource>();
+         Collection<IndexedResource> sources = new LinkedHashSet<>();
          OrcsDataHandler<IndexedResource> handler = createCollector(sources);
          loader.loadSource(handler, getTagQueueQueryId());
 
@@ -119,14 +119,14 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private long createTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       SearchTagCollector tagCollector = new SearchTagCollector();
 
-      Set<Long> processed = new HashSet<Long>();
+      Set<Long> processed = new HashSet<>();
 
-      Map<Long, Collection<Long>> toStore = new HashMap<Long, Collection<Long>>();
+      Map<Long, Collection<Long>> toStore = new HashMap<>();
       for (IndexedResource source : sources) {
          long startItemTime = System.currentTimeMillis();
          Long gamma = source.getGammaId();
          if (processed.add(gamma)) {
-            Set<Long> tags = new HashSet<Long>();
+            Set<Long> tags = new HashSet<>();
             toStore.put(gamma, tags);
             tagCollector.setCurrentTag(gamma, tags);
             try {
@@ -203,7 +203,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    public int deleteTags(JdbcConnection connection, Collection<IndexedResource> sources) throws OseeCoreException {
       int numberDeleted = 0;
       if (!sources.isEmpty()) {
-         List<Object[]> datas = new ArrayList<Object[]>();
+         List<Object[]> datas = new ArrayList<>();
          for (IndexedResource source : sources) {
             datas.add(new Object[] {source.getGammaId()});
          }
@@ -215,7 +215,7 @@ public final class IndexingTaskDatabaseTxCallable extends AbstractDatastoreTxCal
    private int storeTags(JdbcConnection connection, Map<Long, Collection<Long>> toStore) throws OseeCoreException {
       int updated = 0;
       if (!toStore.isEmpty()) {
-         List<Object[]> data = new ArrayList<Object[]>();
+         List<Object[]> data = new ArrayList<>();
          for (Entry<Long, Collection<Long>> entry : toStore.entrySet()) {
             Long gammaId = entry.getKey();
             for (Long codedTag : entry.getValue()) {

@@ -298,7 +298,7 @@ public class RelationManagerImpl implements RelationManager {
       resolver.resolve(session, graph, relations, otherSide);
 
       boolean modified = false;
-      Set<RelationNode> otherNodes = new LinkedHashSet<RelationNode>();
+      Set<RelationNode> otherNodes = new LinkedHashSet<>();
       for (Relation relation : relations) {
          relation.delete();
          Integer artId = relation.getLocalIdForSide(otherSide);
@@ -333,7 +333,7 @@ public class RelationManagerImpl implements RelationManager {
             node.delete();
 
             if (relations != null && !relations.isEmpty()) {
-               Map<IRelationType, RelationSide> typesToRemove = new HashMap<IRelationType, RelationSide>();
+               Map<IRelationType, RelationSide> typesToRemove = new HashMap<>();
                for (Relation relation : relations) {
                   relation.delete();
                   IRelationType type = relation.getRelationType();
@@ -435,7 +435,7 @@ public class RelationManagerImpl implements RelationManager {
       List<Identifiable<String>> relatives = Collections.emptyList();
       if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
          ResultSet<RelationNode> arts = getRelated(session, type, node1, side);
-         relatives = new LinkedList<Identifiable<String>>();
+         relatives = new LinkedList<>();
          for (RelationNode art : arts) {
             relatives.add(art);
          }

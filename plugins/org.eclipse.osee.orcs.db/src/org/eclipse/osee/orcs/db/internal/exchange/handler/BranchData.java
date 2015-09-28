@@ -32,7 +32,7 @@ public final class BranchData implements Cloneable {
    private final Map<String, Object> backingData;
 
    BranchData() {
-      this.backingData = new HashMap<String, Object>();
+      this.backingData = new HashMap<>();
    }
 
    void setData(String key, Object object) {

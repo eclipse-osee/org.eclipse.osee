@@ -120,7 +120,7 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
     */
    private Hashtable<String, String> createLDAPContextProperies(final ILDAPService ldapService) {
 
-      Hashtable<String, String> env = new Hashtable<String, String>();
+      Hashtable<String, String> env = new Hashtable<>();
       // The factory responsible to LDAPContext creation
       env.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
       // Context Authentication type

@@ -70,7 +70,7 @@ public final class WordOutlineTest {
     */
    @Parameters
    public static Collection<Object[]> getData() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       addTest(data, OUTLINE_WITH_NUMBER, data("1.0", "Outline TITLE", ""));
       addTest(data, OUTLINE_WITH_NUMBER_AND_CONTENT, data("5.0", "SCOPE", ""),
          data("5.0", "SCOPE", "content content content more content"));
@@ -94,7 +94,7 @@ public final class WordOutlineTest {
       Matcher matcher = PARAGRAPH_REGEX.matcher(rawData);
       boolean foundSomething = false;
 
-      List<DelegateData> actualData = new ArrayList<DelegateData>();
+      List<DelegateData> actualData = new ArrayList<>();
 
       while (matcher.find()) {
          foundSomething = true;

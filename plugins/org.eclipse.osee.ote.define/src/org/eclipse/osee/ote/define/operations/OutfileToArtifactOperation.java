@@ -46,8 +46,8 @@ public class OutfileToArtifactOperation {
    public OutfileToArtifactOperation(IOseeBranch branch, URI... filesToImport) {
       this.branch = branch;
       this.filesToImport = Arrays.asList(filesToImport);
-      this.results = new ArrayList<Artifact>();
-      this.filesWithErrors = new ArrayList<URI>();
+      this.results = new ArrayList<>();
+      this.filesWithErrors = new ArrayList<>();
    }
 
    public void execute(final IProgressMonitor monitor) throws Exception {
@@ -69,7 +69,7 @@ public class OutfileToArtifactOperation {
 
       };
 
-      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<Object>(outfileToArtifactFactory, false);
+      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<>(outfileToArtifactFactory, false);
       executor.executeWorkersBlocking();
    }
 

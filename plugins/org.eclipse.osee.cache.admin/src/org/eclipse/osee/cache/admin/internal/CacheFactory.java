@@ -35,7 +35,7 @@ public class CacheFactory {
    public <K, V> Cache<K, V> createCache(final CacheConfiguration config) throws Exception {
       Preconditions.checkNotNull(config, "cacheConfiguration");
       com.google.common.cache.Cache<K, V> cache = createCacheBuilder(config).build();
-      Cache<K, V> toReturn = new CacheProxy<K, V>(cache);
+      Cache<K, V> toReturn = new CacheProxy<>(cache);
       return toReturn;
    }
 
@@ -62,7 +62,7 @@ public class CacheFactory {
             return Futures.immediateFuture(newValue);
          }
       });
-      Cache<K, V> toReturn = new LoadingCacheProxy<K, V>(loadingCache, keyLoader);
+      Cache<K, V> toReturn = new LoadingCacheProxy<>(loadingCache, keyLoader);
       return toReturn;
    }
 

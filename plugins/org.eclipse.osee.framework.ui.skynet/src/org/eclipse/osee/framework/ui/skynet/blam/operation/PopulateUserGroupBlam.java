@@ -40,7 +40,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * @author Ryan D. Brooks
  */
 public class PopulateUserGroupBlam extends AbstractBlam {
-   HashMap<String, User> emailToUser = new HashMap<String, User>();
+   HashMap<String, User> emailToUser = new HashMap<>();
 
    @Override
    public String getName() {
@@ -57,7 +57,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
          emailToUser.put(user.getSoleAttributeValue(CoreAttributeTypes.Email, ""), user);
       }
 
-      List<User> users = new ArrayList<User>();
+      List<User> users = new ArrayList<>();
       int count = 0;
       for (String emailAddress : emailAddresses.split("[\n\r\t ,;]+")) {
          User user = emailToUser.get(emailAddress);

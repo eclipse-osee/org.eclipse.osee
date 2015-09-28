@@ -33,7 +33,7 @@ public class DbSchemaRuleAddColumn extends Rule {
    }
 
    private static HashCollection<String, String> wrap(String tableName, String column) {
-      HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
+      HashCollection<String, String> tableToColumns = new HashCollection<>();
       tableToColumns.put(tableName, column);
       return tableToColumns;
    }

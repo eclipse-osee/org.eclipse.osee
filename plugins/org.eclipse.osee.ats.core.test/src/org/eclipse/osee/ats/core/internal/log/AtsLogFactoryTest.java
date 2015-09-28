@@ -49,7 +49,7 @@ public class AtsLogFactoryTest {
    public void setup() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      List<IAtsLogItem> items = new ArrayList<IAtsLogItem>();
+      List<IAtsLogItem> items = new ArrayList<>();
       when(workItem.getLog()).thenReturn(log);
       when(log.getLogItems()).thenReturn(items);
    }

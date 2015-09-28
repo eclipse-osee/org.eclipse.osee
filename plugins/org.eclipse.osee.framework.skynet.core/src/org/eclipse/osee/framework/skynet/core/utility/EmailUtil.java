@@ -36,7 +36,7 @@ public class EmailUtil {
    }
 
    public static Collection<User> getValidEmailUsers(Collection<User> users) {
-      Set<User> validUsers = new HashSet<User>();
+      Set<User> validUsers = new HashSet<>();
       for (User user : users) {
          try {
             if (isEmailValid(user)) {
@@ -50,7 +50,7 @@ public class EmailUtil {
    }
 
    public static Collection<User> getActiveEmailUsers(Collection<? extends User> users) {
-      Set<User> activeUsers = new HashSet<User>();
+      Set<User> activeUsers = new HashSet<>();
       for (User user : users) {
          try {
             if (user.isActive()) {

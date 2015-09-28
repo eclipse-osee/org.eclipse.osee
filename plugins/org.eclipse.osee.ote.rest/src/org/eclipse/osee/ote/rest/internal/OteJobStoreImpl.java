@@ -11,7 +11,7 @@ public class OteJobStoreImpl implements OteJobStore {
    ConcurrentHashMap<String, OteJob> jobs;
    
    public OteJobStoreImpl(){
-      jobs = new ConcurrentHashMap<String, OteJob>();
+      jobs = new ConcurrentHashMap<>();
    }
    
    @Override

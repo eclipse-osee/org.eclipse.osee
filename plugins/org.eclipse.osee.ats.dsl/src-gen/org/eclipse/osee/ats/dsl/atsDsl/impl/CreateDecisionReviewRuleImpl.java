@@ -121,7 +121,7 @@ public class CreateDecisionReviewRuleImpl extends ReviewRuleImpl implements Crea
   {
     if (options == null)
     {
-      options = new EObjectContainmentEList<DecisionReviewOpt>(DecisionReviewOpt.class, this, AtsDslPackage.CREATE_DECISION_REVIEW_RULE__OPTIONS);
+      options = new EObjectContainmentEList<>(DecisionReviewOpt.class, this, AtsDslPackage.CREATE_DECISION_REVIEW_RULE__OPTIONS);
     }
     return options;
   }

@@ -37,7 +37,7 @@ public class OseeCoreModelEventServiceProxy implements IOseeCoreModelEventServic
    }
 
    public void start() {
-      Map<ResMessages, Boolean> eventMessageConfig = new HashMap<ResMessages, Boolean>();
+      Map<ResMessages, Boolean> eventMessageConfig = new HashMap<>();
 
       eventMessageConfig.put(ResMessages.RemoteAccessControlEvent1, Boolean.TRUE);
       eventMessageConfig.put(ResMessages.RemoteBranchEvent1, Boolean.TRUE);

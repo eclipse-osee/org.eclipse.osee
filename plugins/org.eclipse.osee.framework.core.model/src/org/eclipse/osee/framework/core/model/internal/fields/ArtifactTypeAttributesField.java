@@ -70,7 +70,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<IOs
       } else {
          Collection<AttributeType> cachedItems = validityMap.get(branch);
          if (cachedItems == null) {
-            cachedItems = new HashSet<AttributeType>(attributeTypes);
+            cachedItems = new HashSet<>(attributeTypes);
             validityMap.put(branch, cachedItems);
          } else {
             cachedItems.clear();

@@ -200,7 +200,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    }
 
    private class OpenOnShowListener implements MenuListener {
-      private final List<MenuItem> items = new LinkedList<MenuItem>();
+      private final List<MenuItem> items = new LinkedList<>();
 
       public void add(MenuItem item) {
          items.add(item);

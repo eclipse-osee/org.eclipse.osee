@@ -46,7 +46,7 @@ public class CoverageAdapter {
    public List<DispoItem> copyData(Map<String, ArtifactReadable> nameToCoverageUnit, List<DispoItem> dispoItems, OperationReport report) {
       Map<String, DispoItem> nameToDispoItem = getNameToDispoItemMap(dispoItems);
 
-      List<DispoItem> modifiedItems = new ArrayList<DispoItem>();
+      List<DispoItem> modifiedItems = new ArrayList<>();
 
       for (Entry<String, ArtifactReadable> entry : nameToCoverageUnit.entrySet()) {
          DispoItem dispoItem = nameToDispoItem.get(entry.getKey());
@@ -132,7 +132,7 @@ public class CoverageAdapter {
    }
 
    private Map<String, Discrepancy> getTextToDiscrepancyMap(DispoItem dest) {
-      Map<String, Discrepancy> toReturn = new HashMap<String, Discrepancy>();
+      Map<String, Discrepancy> toReturn = new HashMap<>();
 
       JSONObject discrepanciesList = dest.getDiscrepanciesList();
       @SuppressWarnings("rawtypes")
@@ -152,7 +152,7 @@ public class CoverageAdapter {
    }
 
    private Map<String, DispoItem> getNameToDispoItemMap(List<DispoItem> items) {
-      Map<String, DispoItem> toReturn = new HashMap<String, DispoItem>();
+      Map<String, DispoItem> toReturn = new HashMap<>();
       for (DispoItem item : items) {
          toReturn.put(item.getName(), item);
       }

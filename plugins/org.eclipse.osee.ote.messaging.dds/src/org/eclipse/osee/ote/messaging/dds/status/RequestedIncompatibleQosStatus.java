@@ -38,7 +38,7 @@ public class RequestedIncompatibleQosStatus extends CountedStatus {
    public RequestedIncompatibleQosStatus(long totalCount, long totalCountChange, long lastPolicyId, Collection<QosPolicy> policies) {
       super(totalCount, totalCountChange);
       this.lastPolicyId = lastPolicyId;
-      this.policies = new ArrayList<QosPolicy>(policies);
+      this.policies = new ArrayList<>(policies);
    }
 
    /**

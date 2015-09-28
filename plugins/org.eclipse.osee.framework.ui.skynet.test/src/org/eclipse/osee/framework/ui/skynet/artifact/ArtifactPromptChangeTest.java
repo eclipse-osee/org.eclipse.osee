@@ -42,7 +42,7 @@ public class ArtifactPromptChangeTest {
    @Test
    public void test() throws OseeCoreException {
       boolean persist = true;
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
 
       MockPromptFactory MockPromptFactory = new MockPromptFactory();
       AccessPolicy policyHandler = new MockAccessPolicyHandler();

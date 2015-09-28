@@ -39,7 +39,7 @@ public class OAuth2Util {
 
    public static List<Object> getOAuthProviders() {
       if (PROVIDERS == null) {
-         List<Object> providers = new ArrayList<Object>();
+         List<Object> providers = new ArrayList<>();
          providers.add(OAuth2Util.getOAuthJSONProvider());
          providers.add(new OAuthContextProvider());
          PROVIDERS = providers;

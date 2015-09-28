@@ -29,7 +29,7 @@ public class XScriptTableLabelProvider extends XViewerLabelProvider {
    public static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
    private static Image checkedImage = ImageManager.getImage(OteTestManagerImage.CHECKBOX_ENABLED);
    private static Image outputImage = ImageManager.getImage(OteTestManagerImage.CHECK);
-   private static Map<ScriptStatusEnum, Image> statusImage = new HashMap<ScriptStatusEnum, Image>();
+   private static Map<ScriptStatusEnum, Image> statusImage = new HashMap<>();
    private static Image uncheckedImage = ImageManager.getImage(OteTestManagerImage.CHECKBOX_DISABLED);
 
    public XScriptTableLabelProvider(XScriptTable viewer) {

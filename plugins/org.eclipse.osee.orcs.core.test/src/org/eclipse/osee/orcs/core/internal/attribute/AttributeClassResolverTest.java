@@ -146,7 +146,7 @@ public class AttributeClassResolverTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {"BooleanAttribute", BooleanAttribute.class});
       data.add(new Object[] {"CompressedContentAttribute", CompressedContentAttribute.class});

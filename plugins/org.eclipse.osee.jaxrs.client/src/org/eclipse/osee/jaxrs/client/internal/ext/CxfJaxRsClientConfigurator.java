@@ -89,19 +89,19 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
 
    @Override
    public void configureDefaults(Map<String, Object> properties) {
-      List<Object> providers = new ArrayList<Object>();
+      List<Object> providers = new ArrayList<>();
       providers.add(new GenericResponseExceptionMapper());
       providers.addAll(JacksonFeature.getProviders());
       providers.addAll(OAuth2Util.getOAuthProviders());
       this.providers = providers;
 
-      List<Feature> features = new ArrayList<Feature>(2);
+      List<Feature> features = new ArrayList<>(2);
       LoggingFeature loggingFeature = new LoggingFeature();
       loggingFeature.setPrettyLogging(true);
       features.add(loggingFeature);
       features.add(new GZIPFeature());
       this.features = features;
-      this.properties = new LinkedHashMap<String, Object>(properties);
+      this.properties = new LinkedHashMap<>(properties);
    }
 
    @Override

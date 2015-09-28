@@ -30,7 +30,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class ResultsXViewer extends XViewer {
 
-   List<IResultsEditorTableListener> listeners = new ArrayList<IResultsEditorTableListener>();
+   List<IResultsEditorTableListener> listeners = new ArrayList<>();
 
    public ResultsXViewer(Composite parent, int style, List<XViewerColumn> xColumns, XViewerFactory xViewerFactory) {
       super(parent, style, xViewerFactory);
@@ -58,7 +58,7 @@ public class ResultsXViewer extends XViewer {
    }
 
    public ArrayList<ResultsXViewerRow> getSelectedRows() {
-      ArrayList<ResultsXViewerRow> arts = new ArrayList<ResultsXViewerRow>();
+      ArrayList<ResultsXViewerRow> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       for (TreeItem item : items) {
          arts.add((ResultsXViewerRow) item.getData());

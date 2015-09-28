@@ -180,7 +180,7 @@ public class WorkDefImpl extends MinimalEObjectImpl.Container implements WorkDef
   {
     if (id == null)
     {
-      id = new EDataTypeEList<String>(String.class, this, AtsDslPackage.WORK_DEF__ID);
+      id = new EDataTypeEList<>(String.class, this, AtsDslPackage.WORK_DEF__ID);
     }
     return id;
   }
@@ -237,7 +237,7 @@ public class WorkDefImpl extends MinimalEObjectImpl.Container implements WorkDef
   {
     if (widgetDefs == null)
     {
-      widgetDefs = new EObjectContainmentEList<WidgetDef>(WidgetDef.class, this, AtsDslPackage.WORK_DEF__WIDGET_DEFS);
+      widgetDefs = new EObjectContainmentEList<>(WidgetDef.class, this, AtsDslPackage.WORK_DEF__WIDGET_DEFS);
     }
     return widgetDefs;
   }
@@ -251,7 +251,7 @@ public class WorkDefImpl extends MinimalEObjectImpl.Container implements WorkDef
   {
     if (decisionReviewDefs == null)
     {
-      decisionReviewDefs = new EObjectContainmentEList<DecisionReviewDef>(DecisionReviewDef.class, this, AtsDslPackage.WORK_DEF__DECISION_REVIEW_DEFS);
+      decisionReviewDefs = new EObjectContainmentEList<>(DecisionReviewDef.class, this, AtsDslPackage.WORK_DEF__DECISION_REVIEW_DEFS);
     }
     return decisionReviewDefs;
   }
@@ -265,7 +265,7 @@ public class WorkDefImpl extends MinimalEObjectImpl.Container implements WorkDef
   {
     if (peerReviewDefs == null)
     {
-      peerReviewDefs = new EObjectContainmentEList<PeerReviewDef>(PeerReviewDef.class, this, AtsDslPackage.WORK_DEF__PEER_REVIEW_DEFS);
+      peerReviewDefs = new EObjectContainmentEList<>(PeerReviewDef.class, this, AtsDslPackage.WORK_DEF__PEER_REVIEW_DEFS);
     }
     return peerReviewDefs;
   }
@@ -279,7 +279,7 @@ public class WorkDefImpl extends MinimalEObjectImpl.Container implements WorkDef
   {
     if (states == null)
     {
-      states = new EObjectContainmentEList<StateDef>(StateDef.class, this, AtsDslPackage.WORK_DEF__STATES);
+      states = new EObjectContainmentEList<>(StateDef.class, this, AtsDslPackage.WORK_DEF__STATES);
     }
     return states;
   }

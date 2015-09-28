@@ -84,7 +84,7 @@ public class WEUndefinedStateSection extends SectionPart {
       // Display pages that are in data store, but not in Work Definition
       Collection<String> stateNamesDefined =
          AtsClientService.get().getWorkDefinitionAdmin().getStateNames(awa.getWorkDefinition());
-      List<String> stateNamesUndefined = new ArrayList<String>();
+      List<String> stateNamesUndefined = new ArrayList<>();
       for (String pageName : awa.getAttributesToStringList(AtsAttributeTypes.State)) {
          String justPage = pageName.replaceFirst(";.*$", "");
          if (!stateNamesDefined.contains(justPage)) {

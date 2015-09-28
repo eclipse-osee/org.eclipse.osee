@@ -50,7 +50,7 @@ public class OseeDslAccessModel implements AccessModel {
          "No matching access context was found in access dsl for [%s]", contextId);
 
       for (Object objectToCheck : objectsToCheck) {
-         List<AccessDetail<?>> accessDetail = new LinkedList<AccessDetail<?>>();
+         List<AccessDetail<?>> accessDetail = new LinkedList<>();
          AccessDetailCollector collector = new AccessDataCollector(accessDetail);
          interpreter.computeAccessDetails(collector, context, objectToCheck);
          accessData.addAll(objectToCheck, accessDetail);

@@ -165,7 +165,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    public List<Branch> getBranches(String branchUuids, String branchTypes, String branchStates, boolean deleted, boolean archived, String nameEquals, String namePattern, Long childOf, Long ancestorOf) {
       BranchQueryData options = new BranchQueryData();
       if (Strings.isValid(branchUuids)) {
-         List<Long> branchUuidVals = new LinkedList<Long>();
+         List<Long> branchUuidVals = new LinkedList<>();
          for (String branchUuid : branchUuids.split(",")) {
             branchUuidVals.add(Long.parseLong(branchUuid));
          }
@@ -173,7 +173,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       if (Strings.isValid(branchTypes)) {
-         List<BranchType> branchTypeVals = new LinkedList<BranchType>();
+         List<BranchType> branchTypeVals = new LinkedList<>();
          for (String branchType : branchTypes.split(",")) {
             branchTypeVals.add(BranchType.valueOf(branchType.toUpperCase()));
          }
@@ -181,7 +181,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       if (Strings.isValid(branchStates)) {
-         List<BranchState> branchStateVals = new LinkedList<BranchState>();
+         List<BranchState> branchStateVals = new LinkedList<>();
          for (String branchState : branchStates.split(",")) {
             branchStateVals.add(BranchState.valueOf(branchState.toUpperCase()));
          }
@@ -635,7 +635,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Integer> txIds, ResultSet<TransactionReadable> result) {
       if (txIds.size() != result.size()) {
-         Set<Integer> found = new HashSet<Integer>();
+         Set<Integer> found = new HashSet<>();
          for (TransactionReadable tx : result) {
             found.add(tx.getGuid());
          }

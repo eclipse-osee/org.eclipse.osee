@@ -123,7 +123,7 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
    }
 
    private static <T> List<T> getAnnotations(Method method, Class<T> clazz) {
-      List<T> annotations = new ArrayList<T>();
+      List<T> annotations = new ArrayList<>();
       if (method != null) {
          for (Annotation annotation : method.getAnnotations()) {
             if (annotation.annotationType().isAssignableFrom(clazz)) {
@@ -137,7 +137,7 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
    }
 
    private static List<MediaType> getMediaTypesProduced(ResourceInfo resourceInfo) {
-      ArrayList<MediaType> produces = new ArrayList<MediaType>();
+      ArrayList<MediaType> produces = new ArrayList<>();
 
       boolean hasText = false;
       Method method = resourceInfo.getResourceMethod();
@@ -165,7 +165,7 @@ public class ViewModelWriter implements MessageBodyWriter<ViewModel> {
 
    private static <T> ResolvedView<T> newResolved(ViewResolver<T> resolver, Class<?> resourceClass, MediaType mediaType, ViewModel model, T viewReference) {
       String viewId = model.getViewId();
-      ResolvedView<T> toReturn = new ResolvedView<T>(viewId, resolver, mediaType, viewReference);
+      ResolvedView<T> toReturn = new ResolvedView<>(viewId, resolver, mediaType, viewReference);
       toReturn.asMap().putAll(model.asMap());
       return toReturn;
    }

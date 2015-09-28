@@ -150,7 +150,7 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private Collection<IAtsActionableItem> createActionableItems(IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+      Collection<IAtsActionableItem> aias = new ArrayList<>();
 
       // Create top actionable item
       IAtsActionableItem topAia = AtsClientService.get().createActionableItem(teamDefName);

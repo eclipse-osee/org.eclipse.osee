@@ -92,7 +92,7 @@ public class AtsWorkStateFactory implements IAtsWorkStateFactory {
 
    @Override
    public List<IAtsUser> getUsers(String sorageString) {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);

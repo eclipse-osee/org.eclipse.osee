@@ -62,9 +62,9 @@ public final class MockDataFactory {
    public static <T> AccessDetail<T> createAccessDetails(T expAccessObject, PermissionEnum expPermission, String expReason, Scope scope) {
       AccessDetail<T> target;
       if (expReason != null) {
-         target = new AccessDetail<T>(expAccessObject, expPermission, scope, expReason);
+         target = new AccessDetail<>(expAccessObject, expPermission, scope, expReason);
       } else {
-         target = new AccessDetail<T>(expAccessObject, expPermission, scope);
+         target = new AccessDetail<>(expAccessObject, expPermission, scope);
       }
       return target;
    }
@@ -100,7 +100,7 @@ public final class MockDataFactory {
       if (value == 0) {
          value++;
       }
-      MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<Long, Branch>();
+      MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<>();
       BranchCache cache = new BranchCache(accessor, new TransactionCache());
       return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42,
          type, cache);

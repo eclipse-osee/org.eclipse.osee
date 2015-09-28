@@ -72,8 +72,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private boolean destroyed = false;
 
    private DataType currentMemType;
-   private final Map<DataType, ArrayList<U>> memTypeToMessageMap = new HashMap<DataType, ArrayList<U>>();
-   private final Map<DataType, ArrayList<T>> memToDataMap = new HashMap<DataType, ArrayList<T>>();
+   private final Map<DataType, ArrayList<U>> memTypeToMessageMap = new HashMap<>();
+   private final Map<DataType, ArrayList<T>> memToDataMap = new HashMap<>();
    private final int phase;
    protected double rate;
    protected final double defaultRate;
@@ -84,15 +84,15 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    @SuppressWarnings("rawtypes")
    private IMessageRequestor messageRequestor = null;
    private static final double doubleTolerance = 0.000001;
-   private final Set<DataType> memTypeActive = new HashSet<DataType>();
+   private final Set<DataType> memTypeActive = new HashSet<>();
 
    private T defaultMessageData;
 
-   private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new CopyOnWriteArrayList<IMemSourceChangeListener>();
+   private final List<IMemSourceChangeListener> preMemSourceChangeListeners = new CopyOnWriteArrayList<>();
    private final List<IMemSourceChangeListener> postMemSourceChangeListeners =
       new CopyOnWriteArrayList<IMemSourceChangeListener>();
-   private final List<IMessageDisposeListener> preMessageDisposeListeners = new CopyOnWriteArrayList<IMessageDisposeListener>();
-   private final List<IMessageDisposeListener> postMessageDisposeListeners = new CopyOnWriteArrayList<IMessageDisposeListener>();
+   private final List<IMessageDisposeListener> preMessageDisposeListeners = new CopyOnWriteArrayList<>();
+   private final List<IMessageDisposeListener> postMessageDisposeListeners = new CopyOnWriteArrayList<>();
 
    private final int defaultByteSize;
    private final int defaultOffset;
@@ -105,7 +105,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       this.name = name;
       this.defaultByteSize = defaultByteSize;
       this.defaultOffset = defaultOffset;
-      elementMap = new LinkedHashMap<String, Element>(20);
+      elementMap = new LinkedHashMap<>(20);
       this.phase = phase;
       this.rate = rate;
       this.defaultRate = rate;
@@ -351,7 +351,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       checkState();
       ArrayList<U> list;
       if (!memTypeToMessageMap.containsKey(memType)) {
-         list = new ArrayList<U>(4);
+         list = new ArrayList<>(4);
          memTypeToMessageMap.put(memType, list);
       } else {
          list = memTypeToMessageMap.get(memType);
@@ -387,7 +387,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       final DataType type = data.getType();
       final ArrayList<T> list;
       if (!memToDataMap.containsKey(type)) {
-         list = new ArrayList<T>();
+         list = new ArrayList<>();
          memToDataMap.put(type, list);
       } else {
          list = memToDataMap.get(type);
@@ -454,7 +454,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     */
    public Collection<Element> getElements(DataType type) {
       checkState();
-      LinkedList<Element> list = new LinkedList<Element>();
+      LinkedList<Element> list = new LinkedList<>();
       for (Element element : elementMap.values()) {
          Element e = element.switchMessages(getMessageTypeAssociation(type));
          if (!e.isNonMappingElement()) {
@@ -1325,12 +1325,12 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
    
    public ListIterator<Element> getElementIterator() {
-	   ArrayList<Element> list = new ArrayList<Element>(elementMap.values());
+	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
 	   return list.listIterator();
    }
    
    public ListIterator<Element> getElementIterator(Element elemnt) {
-	   ArrayList<Element> list = new ArrayList<Element>(elementMap.values());
+	   ArrayList<Element> list = new ArrayList<>(elementMap.values());
 	   int index = list.indexOf(elemnt);
 	   if (index >= 0) {
 		   return list.listIterator(index);		   

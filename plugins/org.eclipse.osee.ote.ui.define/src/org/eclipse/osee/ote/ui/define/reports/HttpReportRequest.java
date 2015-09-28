@@ -55,7 +55,7 @@ public class HttpReportRequest implements IHttpServerRequest {
    }
 
    public static String getUrl(String id, String format, String source, int preview) throws OseeStateException {
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put(REPORT_ID, id);
       parameters.put(REPORT_FORMAT, format);
       parameters.put(REPORT_SOURCE, source);
@@ -105,7 +105,7 @@ public class HttpReportRequest implements IHttpServerRequest {
    private ArtifactTestRunOperator[] getSourceData(HttpRequest httpRequest) {
       String source = httpRequest.getParameter(REPORT_SOURCE);
 
-      List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
+      List<ArtifactTestRunOperator> toReturn = new ArrayList<>();
       if (source.equals("local")) {
          LocalSourceSelection selection = new LocalSourceSelection();
          Displays.ensureInDisplayThread(selection);
@@ -154,7 +154,7 @@ public class HttpReportRequest implements IHttpServerRequest {
       @Override
       public void run() {
          done = false;
-         List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
+         List<ArtifactTestRunOperator> toReturn = new ArrayList<>();
          StructuredViewer viewer = TestRunView.getViewer();
          if (viewer != null) {
             toReturn.addAll(SelectionHelper.getInstance().getSelections(viewer));

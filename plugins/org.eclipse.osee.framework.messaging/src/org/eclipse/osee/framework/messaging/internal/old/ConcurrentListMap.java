@@ -22,16 +22,16 @@ import java.util.concurrent.CopyOnWriteArrayList;
 public class ConcurrentListMap<MAP_TYPE, LIST_TYPE> {
 
    private final Map<MAP_TYPE, List<LIST_TYPE>> data;
-   private final List<LIST_TYPE> EMPTY_LIST = new ArrayList<LIST_TYPE>();
+   private final List<LIST_TYPE> EMPTY_LIST = new ArrayList<>();
 
    public ConcurrentListMap() {
-      data = new HashMap<MAP_TYPE, List<LIST_TYPE>>();
+      data = new HashMap<>();
    }
 
    public synchronized boolean add(MAP_TYPE key, LIST_TYPE value) {
       List<LIST_TYPE> values = data.get(key);
       if (values == null) {
-         values = new CopyOnWriteArrayList<LIST_TYPE>();
+         values = new CopyOnWriteArrayList<>();
          data.put(key, values);
       }
       if (values.contains(value)) {

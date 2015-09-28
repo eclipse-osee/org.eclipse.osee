@@ -36,7 +36,7 @@ public class ActionableItemsColumn {
    }
 
    public static String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
-      List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> ais = new ArrayList<>();
       ais.addAll(getActionableItems(atsObject));
       java.util.Collections.sort(ais, new Comparator<IAtsActionableItem>() {
 
@@ -57,7 +57,7 @@ public class ActionableItemsColumn {
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       // If object has children team workflows, roll-up results of all ais
       if (atsObject instanceof IAtsTeamWorkflowProvider) {
          for (IAtsTeamWorkflow team : ((IAtsTeamWorkflowProvider) atsObject).getTeamWorkflows()) {

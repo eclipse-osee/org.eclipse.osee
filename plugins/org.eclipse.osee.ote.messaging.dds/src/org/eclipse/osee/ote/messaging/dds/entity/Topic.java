@@ -52,8 +52,8 @@ public class Topic extends DomainEntity implements TopicDescription {
       this.name = name;
       this.namespace = namespace;
 
-      dataReaders = new Vector<DataReader>();
-      dataWriters = new Vector<DataWriter>();
+      dataReaders = new Vector<>();
+      dataWriters = new Vector<>();
       count = 1;
    }
 

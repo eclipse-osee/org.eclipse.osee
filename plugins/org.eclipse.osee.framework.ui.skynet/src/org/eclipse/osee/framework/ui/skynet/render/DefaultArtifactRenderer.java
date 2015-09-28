@@ -191,7 +191,7 @@ public class DefaultArtifactRenderer implements IRenderer {
 
    @Override
    public List<IAttributeType> getOrderedAttributeTypes(Artifact artifact, Collection<IAttributeType> attributeTypes) {
-      ArrayList<IAttributeType> orderedAttributeTypes = new ArrayList<IAttributeType>(attributeTypes.size());
+      ArrayList<IAttributeType> orderedAttributeTypes = new ArrayList<>(attributeTypes.size());
       IAttributeType contentType = null;
 
       for (IAttributeType attributeType : attributeTypes) {

@@ -294,7 +294,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (aiDefOption == null)
     {
-      aiDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION);
+      aiDefOption = new EDataTypeEList<>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__AI_DEF_OPTION);
     }
     return aiDefOption;
   }
@@ -400,7 +400,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (lead == null)
     {
-      lead = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD);
+      lead = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__LEAD);
     }
     return lead;
   }
@@ -414,7 +414,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (owner == null)
     {
-      owner = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER);
+      owner = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__OWNER);
     }
     return owner;
   }
@@ -428,7 +428,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (staticId == null)
     {
-      staticId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID);
+      staticId = new EDataTypeEList<>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__STATIC_ID);
     }
     return staticId;
   }
@@ -465,7 +465,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (accessContextId == null)
     {
-      accessContextId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID);
+      accessContextId = new EDataTypeEList<>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__ACCESS_CONTEXT_ID);
     }
     return accessContextId;
   }
@@ -479,7 +479,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (rules == null)
     {
-      rules = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES);
+      rules = new EDataTypeEList<>(String.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__RULES);
     }
     return rules;
   }
@@ -493,7 +493,7 @@ public class ActionableItemDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (children == null)
     {
-      children = new EObjectContainmentEList<ActionableItemDef>(ActionableItemDef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN);
+      children = new EObjectContainmentEList<>(ActionableItemDef.class, this, AtsDslPackage.ACTIONABLE_ITEM_DEF__CHILDREN);
     }
     return children;
   }

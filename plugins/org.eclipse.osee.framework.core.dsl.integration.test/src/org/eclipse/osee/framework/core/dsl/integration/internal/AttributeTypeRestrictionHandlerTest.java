@@ -153,7 +153,7 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
       ArtifactType artArtifactType = new ArtifactType(artifactType2.getGuid(), artifactType2.getName(), false);
 
       // Make expectedAccessObject inherit from ArtifactType
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtifactType.setSuperTypes(superTypes);
 

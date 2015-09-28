@@ -40,7 +40,7 @@ public class UserRelatedToAtsObjectSearch {
    }
 
    public Collection<Artifact> getResults() throws OseeCoreException {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
 
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(),

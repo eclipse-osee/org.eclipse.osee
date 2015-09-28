@@ -103,7 +103,7 @@ public class RelationTypeValidity {
    public List<IRelationType> getValidRelationTypes(IArtifactType artifactType) throws OseeCoreException {
       Conditions.checkNotNull(artifactType, "artifactType");
       Collection<? extends IRelationType> types = relationTypes.getAll();
-      List<IRelationType> toReturn = new ArrayList<IRelationType>();
+      List<IRelationType> toReturn = new ArrayList<>();
       for (IRelationType relationType : types) {
          if (isTypeAllowed(artifactType, relationType)) {
             toReturn.add(relationType);

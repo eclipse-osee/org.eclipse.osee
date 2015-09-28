@@ -43,7 +43,7 @@ public class AtsWorkDefinitionStoreImpl implements IAtsWorkDefinitionStore {
 
    @Override
    public List<Pair<String, String>> getWorkDefinitionStrings() throws OseeCoreException {
-      List<Pair<String, String>> nameToWorkDefStr = new ArrayList<Pair<String, String>>(15);
+      List<Pair<String, String>> nameToWorkDefStr = new ArrayList<>(15);
       for (ArtifactReadable workDefArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andTypeEquals(
          AtsArtifactTypes.WorkDefinition).getResults()) {
          nameToWorkDefStr.add(

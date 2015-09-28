@@ -82,7 +82,7 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
-      List<IAtsAbstractReview> reviews = new ArrayList<IAtsAbstractReview>();
+      List<IAtsAbstractReview> reviews = new ArrayList<>();
 
       for (ArtifactReadable reviewArt : ((ArtifactReadable) teamWf.getStoreObject()).getRelated(AtsRelationTypes.TeamWorkflowToReview_Review)) {
          reviews.add(atsServer.getWorkItemFactory().getReview(reviewArt));

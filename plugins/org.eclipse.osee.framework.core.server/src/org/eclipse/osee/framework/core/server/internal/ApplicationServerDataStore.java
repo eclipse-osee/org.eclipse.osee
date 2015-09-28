@@ -93,7 +93,7 @@ public class ApplicationServerDataStore {
       }
 
       private void create(JdbcConnection connection) throws OseeCoreException {
-         List<Object[]> insertData = new ArrayList<Object[]>();
+         List<Object[]> insertData = new ArrayList<>();
          String serverId = data.getServerId();
          URI serverUri = data.getUri();
          String uri = serverUri.toString();
@@ -114,7 +114,7 @@ public class ApplicationServerDataStore {
       }
 
       private void delete(JdbcConnection connection) throws OseeCoreException {
-         List<Object[]> deleteData = new ArrayList<Object[]>();
+         List<Object[]> deleteData = new ArrayList<>();
          deleteData.add(new Object[] {data.getServerId()});
          if (!deleteData.isEmpty()) {
             jdbcClient.runBatchUpdate(connection, DELETE_FROM_LOOKUP_TABLE_BY_ID, deleteData);

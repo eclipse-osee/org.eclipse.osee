@@ -107,7 +107,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    @Override
    public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
-      List<Artifact> workflows = new ArrayList<Artifact>();
+      List<Artifact> workflows = new ArrayList<>();
       Collection<IAtsTeamDefinition> teamDefs = getSelectedTeamDefinitions();
       IAtsVersion verArt = getSelectedVersionArtifact();
       Collection<Artifact> groups = getSelectedGroups();
@@ -125,7 +125,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.Task, AtsAttributeTypes.State,
                   "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS)));
          }
-         Set<TaskArtifact> removeTaskArts = new HashSet<TaskArtifact>();
+         Set<TaskArtifact> removeTaskArts = new HashSet<>();
          for (TaskArtifact taskArt : userTaskArts) {
             if (verArt != null && !verArt.equals(AtsClientService.get().getVersionService().getTargetedVersion(
                taskArt.getParentTeamWorkflow()))) {
@@ -162,7 +162,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          //         time.end();
       } else if (groups.size() > 0) {
-         Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
+         Set<TaskArtifact> taskArts = new HashSet<>();
          for (Artifact groupArt : groups) {
             for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
@@ -190,7 +190,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    private Set<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      Set<TaskArtifact> tasks = new HashSet<>();
       for (Artifact art : AtsUtil.getAssigned(getSelectedUser(), TaskArtifact.class)) {
          tasks.add((TaskArtifact) art);
       }
@@ -198,7 +198,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
    }
 
    private Collection<TaskArtifact> filterByCompletedAndStateAndSelectedUser(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      Set<TaskArtifact> tasks = new HashSet<>();
       String selectedState = getSelectedState();
       boolean isSelectedStateValid = Strings.isValid(selectedState);
       for (Artifact art : artifacts) {
@@ -351,7 +351,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     List<String> namesList = new ArrayList<String>(names);
+                     List<String> namesList = new ArrayList<>(names);
                      java.util.Collections.sort(namesList);
                      versionCombo.setDataStrings(namesList.toArray(new String[namesList.size()]));
                   } catch (Exception ex) {

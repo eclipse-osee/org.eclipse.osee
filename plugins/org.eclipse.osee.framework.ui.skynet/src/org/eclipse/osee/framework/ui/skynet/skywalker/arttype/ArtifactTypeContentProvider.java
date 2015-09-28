@@ -25,7 +25,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeContentProvider implements IGraphEntityContentProvider {
-   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
+   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<>(0);
 
    public ArtifactTypeContentProvider() {
       super();
@@ -47,7 +47,7 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    public Object[] getElements(Object inputElement) {
       try {
          if (inputElement instanceof ArtifactType) {
-            Set<ArtifactType> artifactTypes = new HashSet<ArtifactType>();
+            Set<ArtifactType> artifactTypes = new HashSet<>();
             artifactTypes.add((ArtifactType) inputElement);
             getDecendents((ArtifactType) inputElement, artifactTypes);
             return artifactTypes.toArray();

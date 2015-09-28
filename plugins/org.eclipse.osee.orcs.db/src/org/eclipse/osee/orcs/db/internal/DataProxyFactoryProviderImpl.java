@@ -27,7 +27,7 @@ import org.osgi.framework.ServiceReference;
  */
 public class DataProxyFactoryProviderImpl implements DataProxyFactoryProvider {
 
-   private final Map<String, DataProxyFactory> proxyClassMap = new ConcurrentHashMap<String, DataProxyFactory>();
+   private final Map<String, DataProxyFactory> proxyClassMap = new ConcurrentHashMap<>();
    private final List<ServiceReference<DataProxyFactory>> pending =
       new CopyOnWriteArrayList<ServiceReference<DataProxyFactory>>();
 

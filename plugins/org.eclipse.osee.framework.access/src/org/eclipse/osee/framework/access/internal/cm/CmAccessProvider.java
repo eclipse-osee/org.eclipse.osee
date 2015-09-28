@@ -49,7 +49,7 @@ public class CmAccessProvider implements IAccessProvider {
                for (IAccessContextId contextId : contextIds) {
                   Collection<Object> entries = cmToCheckObjects.get(management, contextId);
                   if (entries == null) {
-                     entries = new HashSet<Object>();
+                     entries = new HashSet<>();
                      cmToCheckObjects.put(management, contextId, entries);
                   }
                   entries.add(objectToCheck);

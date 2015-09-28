@@ -75,7 +75,7 @@ public class FollowupRefImpl extends MinimalEObjectImpl.Container implements Fol
   {
     if (assigneeRefs == null)
     {
-      assigneeRefs = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.FOLLOWUP_REF__ASSIGNEE_REFS);
+      assigneeRefs = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.FOLLOWUP_REF__ASSIGNEE_REFS);
     }
     return assigneeRefs;
   }

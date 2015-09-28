@@ -76,7 +76,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
 
-      List<Object> providers = new ArrayList<Object>();
+      List<Object> providers = new ArrayList<>();
       WebApplicationExceptionMapper waem = new WebApplicationExceptionMapper();
       waem.setPrintStackTrace(true);
       waem.setAddMessageToResponse(true);
@@ -86,7 +86,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       providers.addAll(JacksonFeature.getProviders());
       this.providers = providers;
 
-      List<Feature> features = new ArrayList<Feature>();
+      List<Feature> features = new ArrayList<>();
       LoggingFeature loggingFeature = new LoggingFeature();
       loggingFeature.setPrettyLogging(true);
 
@@ -94,7 +94,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
       features.add(new GZIPFeature());
       this.features = features;
 
-      Map<Object, Object> extensionMappings = new HashMap<Object, Object>(6);
+      Map<Object, Object> extensionMappings = new HashMap<>(6);
       extensionMappings.put("html", MediaType.TEXT_HTML);
       extensionMappings.put("txt", MediaType.TEXT_PLAIN);
       extensionMappings.put("xml", MediaType.APPLICATION_XML);
@@ -145,7 +145,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
 
    @Override
    public JaxRsContainer newJaxRsContainer(String contextName) {
-      Dictionary<String, Object> props = new Hashtable<String, Object>();
+      Dictionary<String, Object> props = new Hashtable<>();
       CxfJaxRsContainer container = new CxfJaxRsContainer(logger, httpService, props);
       container.setServletContext(contextName);
       logger.trace("Create - [%s]", container);

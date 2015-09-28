@@ -41,7 +41,7 @@ public class AgileUtilClient {
    }
 
    public static Collection<Artifact> getRelatedSprints(Artifact awa) {
-      Set<Artifact> sprints = new HashSet<Artifact>();
+      Set<Artifact> sprints = new HashSet<>();
       for (Artifact sprintArt : awa.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint)) {
          sprints.add(sprintArt);
       }

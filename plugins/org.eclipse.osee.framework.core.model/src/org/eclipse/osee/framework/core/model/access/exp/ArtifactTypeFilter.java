@@ -26,7 +26,7 @@ public final class ArtifactTypeFilter implements IAcceptFilter<IArtifactType> {
 
    public ArtifactTypeFilter(PermissionEnum toMatch, IArtifactType... itemsToCheck) {
       this.toMatch = toMatch;
-      this.itemsToCheck = new HashSet<IArtifactType>();
+      this.itemsToCheck = new HashSet<>();
       if (itemsToCheck != null) {
          for (IArtifactType type : itemsToCheck) {
             this.itemsToCheck.add(type);

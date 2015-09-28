@@ -46,7 +46,7 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!monitor.isCanceled() && Conditions.notNull(changes) && !changes.isEmpty()) {
          monitor.beginTask("Reverting attribute", changes.size());
-         Set<Artifact> artifactHistory = new HashSet<Artifact>();
+         Set<Artifact> artifactHistory = new HashSet<>();
 
          Change firstChange = changes.iterator().next();
          SkynetTransaction transaction =

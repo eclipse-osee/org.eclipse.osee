@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 public class AtsObjects {
 
    public static List<Long> toUuids(Collection<? extends IAtsObject> atsObjects) {
-      List<Long> uuids = new ArrayList<Long>(atsObjects.size());
+      List<Long> uuids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
          uuids.add(atsObject.getUuid());
       }
@@ -30,7 +30,7 @@ public class AtsObjects {
    }
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
-      List<String> guids = new ArrayList<String>(atsObjects.size());
+      List<String> guids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
          guids.add(AtsUtilCore.getGuid(atsObject));
       }
@@ -38,7 +38,7 @@ public class AtsObjects {
    }
 
    public static List<String> toAtsIds(Collection<? extends IAtsWorkItem> workItem) {
-      List<String> guids = new ArrayList<String>(workItem.size());
+      List<String> guids = new ArrayList<>(workItem.size());
       for (IAtsWorkItem atsObject : workItem) {
          guids.add(atsObject.getAtsId());
       }
@@ -65,7 +65,7 @@ public class AtsObjects {
    }
 
    public static Collection<String> getNames(Collection<? extends IAtsObject> atsObjects) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (IAtsObject namedAtsObject : atsObjects) {
          names.add(namedAtsObject.getName());
       }

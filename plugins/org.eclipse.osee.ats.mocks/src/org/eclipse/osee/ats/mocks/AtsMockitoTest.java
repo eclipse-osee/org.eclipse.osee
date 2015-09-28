@@ -119,7 +119,7 @@ public class AtsMockitoTest {
 
       initializeAi(testAi, "AI", true, true);
       initializeAi(testAi2, "AI2", true, true);
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> aias = new HashSet<>();
       aias.add(testAi);
       aias.add(testAi2);
 

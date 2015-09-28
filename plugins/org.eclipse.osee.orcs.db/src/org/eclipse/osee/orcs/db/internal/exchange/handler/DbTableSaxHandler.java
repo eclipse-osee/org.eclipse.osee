@@ -55,8 +55,8 @@ public class DbTableSaxHandler extends BaseDbSaxHandler {
       super(logger, jdbcClient, isCacheAll, cacheLimit);
       this.resourceManager = resourceManager;
       this.identityService = identityService;
-      this.branchesToImport = new HashSet<Long>();
-      this.transferredBinaryContent = new ArrayList<IResourceLocator>();
+      this.branchesToImport = new HashSet<>();
+      this.transferredBinaryContent = new ArrayList<>();
       this.exportDataProvider = exportDataProvider;
    }
 

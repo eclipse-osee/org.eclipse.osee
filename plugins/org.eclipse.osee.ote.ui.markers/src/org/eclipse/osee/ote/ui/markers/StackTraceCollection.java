@@ -19,7 +19,7 @@ import org.eclipse.osee.ote.core.framework.saxparse.elements.StacktraceData;
  */
 public class StackTraceCollection {
 
-   public List<StacktraceData> data = new ArrayList<StacktraceData>();
+   public List<StacktraceData> data = new ArrayList<>();
 
    public void addTrace(StacktraceData obj) {
       data.add(obj);

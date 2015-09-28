@@ -55,14 +55,14 @@ public final class ConsoleAdminUtils {
    }
 
    public static Map<String, String> toMap(String componentName, String contextName) {
-      Map<String, String> data = new HashMap<String, String>();
+      Map<String, String> data = new HashMap<>();
       data.put("component.name", componentName);
       data.put("context.name", contextName);
       return data;
    }
 
    public static List<ConsoleCommand> sort(Collection<ConsoleCommand> origCommands) {
-      List<ConsoleCommand> cmds = new ArrayList<ConsoleCommand>(origCommands);
+      List<ConsoleCommand> cmds = new ArrayList<>(origCommands);
       Collections.sort(cmds, new Comparator<ConsoleCommand>() {
          @Override
          public int compare(ConsoleCommand o1, ConsoleCommand o2) {
@@ -87,7 +87,7 @@ public final class ConsoleAdminUtils {
       String commandName = "";
       StringBuilder rawString = new StringBuilder();
       PropertyStore store = new PropertyStore();
-      Set<String> options = new HashSet<String>();
+      Set<String> options = new HashSet<>();
 
       int count = 0;
       String arg = ci.nextArgument();

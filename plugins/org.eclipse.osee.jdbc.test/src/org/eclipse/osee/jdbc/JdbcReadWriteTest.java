@@ -95,7 +95,7 @@ public class JdbcReadWriteTest {
       client.migrate(new JdbcMigrationOptions(true, true), Collections.singleton(migrationResource));
       client.runBatchUpdate("insert into books (id, title, author) values (?,?,?)", Arrays.asList(DB_DATA));
 
-      List<Book> books = new ArrayList<Book>();
+      List<Book> books = new ArrayList<>();
       client.runQuery(newBookProcessor(books), "select * from books");
       assertEquals(4, books.size());
 

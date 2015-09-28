@@ -33,8 +33,8 @@ public class UriWatcher {
    }
 
    private final Timer timer = new Timer();
-   private final Map<URI, Long> urisToWatch = new ConcurrentHashMap<URI, Long>(128);
-   private final Set<UriWatcherListener> listeners = new CopyOnWriteArraySet<UriWatcherListener>();
+   private final Map<URI, Long> urisToWatch = new ConcurrentHashMap<>(128);
+   private final Set<UriWatcherListener> listeners = new CopyOnWriteArraySet<>();
    private final long interval;
 
    public UriWatcher(long time, TimeUnit unit) {
@@ -94,7 +94,7 @@ public class UriWatcher {
       @Override
       public void run() {
          try {
-            LinkedList<URI> uris = new LinkedList<URI>();
+            LinkedList<URI> uris = new LinkedList<>();
             for (Map.Entry<URI, Long> entry : urisToWatch.entrySet()) {
                URLConnection connection = entry.getKey().toURL().openConnection();
                try {

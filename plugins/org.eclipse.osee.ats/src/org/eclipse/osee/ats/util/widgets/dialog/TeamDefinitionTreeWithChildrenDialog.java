@@ -53,7 +53,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
     * @return selected team defs and children if recurseChildren was checked
     */
    public Collection<IAtsTeamDefinition> getResultAndRecursedTeamDefs() throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>(10);
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>(10);
       for (Object obj : getResult()) {
          teamDefs.add((IAtsTeamDefinition) obj);
          if (recurseChildren) {

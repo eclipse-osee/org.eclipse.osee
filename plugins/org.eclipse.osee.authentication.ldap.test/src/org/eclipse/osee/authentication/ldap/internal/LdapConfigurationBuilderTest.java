@@ -134,7 +134,7 @@ public class LdapConfigurationBuilderTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> props = new HashMap<String, Object>();
+      Map<String, Object> props = new HashMap<>();
 
       add(props, LdapConstants.LDAP_AUTHENTICATION_TYPE, AUTHENTICATION_TYPE);
       add(props, LdapConstants.LDAP_CREDENTIALS_SOURCE, CREDENTIALS_SOURCE);

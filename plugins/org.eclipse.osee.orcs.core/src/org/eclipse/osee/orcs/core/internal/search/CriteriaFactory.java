@@ -53,7 +53,7 @@ public class CriteriaFactory {
    private Collection<? extends IAttributeType> checkForAnyType(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
       Collection<? extends IAttributeType> toReturn;
       if (attributeTypes.contains(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE)) {
-         Collection<IAttributeType> temp = new LinkedList<IAttributeType>();
+         Collection<IAttributeType> temp = new LinkedList<>();
          temp.addAll(attributeTypeCache.getAll());
          toReturn = temp;
       } else {

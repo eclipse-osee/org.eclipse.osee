@@ -69,7 +69,7 @@ public class TraceReportBlam extends AbstractBlam {
    private final List<IResultsEditorTab> resultsTabs;
 
    public TraceReportBlam() {
-      this.resultsTabs = new ArrayList<IResultsEditorTab>();
+      this.resultsTabs = new ArrayList<>();
    }
 
    @Override
@@ -132,7 +132,7 @@ public class TraceReportBlam extends AbstractBlam {
    //   }
 
    private List<TraceTypeEnum> getCheckedTraceItems(VariableMap variableMap) throws OseeArgumentException {
-      List<TraceTypeEnum> toReturn = new ArrayList<TraceTypeEnum>();
+      List<TraceTypeEnum> toReturn = new ArrayList<>();
       for (TraceTypeEnum traceType : TraceTypeEnum.values()) {
          if (variableMap.getBoolean(traceType.asLabel())) {
             toReturn.add(traceType);
@@ -161,8 +161,8 @@ public class TraceReportBlam extends AbstractBlam {
       }
       ISheetWriter writer = null;
       CharBackedInputStream excelInputStream = null;
-      Map<String, AbstractArtifactRelationReport> reports = new LinkedHashMap<String, AbstractArtifactRelationReport>();
-      List<BaseTraceDataCache> traceCache = new ArrayList<BaseTraceDataCache>();
+      Map<String, AbstractArtifactRelationReport> reports = new LinkedHashMap<>();
+      List<BaseTraceDataCache> traceCache = new ArrayList<>();
       RequirementData reqData = new RequirementData(branch);
       CodeUnitData codeUnit = null;
       TestUnitData testUnit = null;
@@ -304,7 +304,7 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    private void openReport(final List<IResultsEditorTab> resultsTabs) {
-      final List<IResultsEditorTab> results = new ArrayList<IResultsEditorTab>(resultsTabs);
+      final List<IResultsEditorTab> results = new ArrayList<>(resultsTabs);
       if (!results.isEmpty()) {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
@@ -487,14 +487,14 @@ public class TraceReportBlam extends AbstractBlam {
       @Override
       public void addRow(Object data, String... row) {
          if (rows == null) {
-            rows = new ArrayList<IResultsXViewerRow>();
+            rows = new ArrayList<>();
          }
          rows.add(new ResultsXViewerRow(row, data));
       }
 
       @Override
       public void addTableHeader(String... header) {
-         this.columns = new ArrayList<XViewerColumn>();
+         this.columns = new ArrayList<>();
          for (String name : header) {
             columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
          }

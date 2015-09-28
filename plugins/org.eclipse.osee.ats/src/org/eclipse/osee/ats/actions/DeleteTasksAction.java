@@ -92,8 +92,8 @@ public class DeleteTasksAction extends AbstractAtsAction {
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
-            ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
-            ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<TaskArtifact>();
+            ArrayList<TaskArtifact> delItems = new ArrayList<>();
+            ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<>();
             delItems.addAll(items);
             for (TaskArtifact taskArt : delItems) {
                SMAEditor.close(Collections.singleton(taskArt), false);

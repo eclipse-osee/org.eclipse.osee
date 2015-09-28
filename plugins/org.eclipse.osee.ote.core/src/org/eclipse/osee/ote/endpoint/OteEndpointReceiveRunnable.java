@@ -29,7 +29,7 @@ public class OteEndpointReceiveRunnable implements Runnable {
    private Class<OteEndpointReceiveRunnable> logger = OteEndpointReceiveRunnable.class;
    private final InetSocketAddress address;
    
-   private CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<EndpointDataProcessor>();
+   private CopyOnWriteArrayList<EndpointDataProcessor> dataProcessors = new CopyOnWriteArrayList<>();
 
    public OteEndpointReceiveRunnable(InetSocketAddress address){
       this.address = address;

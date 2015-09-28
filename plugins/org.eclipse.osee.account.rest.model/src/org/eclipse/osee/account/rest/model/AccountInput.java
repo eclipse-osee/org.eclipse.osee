@@ -51,7 +51,7 @@ public class AccountInput {
 
    public Map<String, String> getPreferences() {
       if (preferences == null) {
-         preferences = new HashMap<String, String>();
+         preferences = new HashMap<>();
       }
       return preferences;
    }

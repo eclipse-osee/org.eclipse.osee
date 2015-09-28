@@ -106,7 +106,7 @@ public class ChangeManagerTest {
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       boolean pass = false;
-      Collection<Change> changes = new ArrayList<Change>();
+      Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.comparedToParent(artifact.getBranch(), changes);
       Operations.executeWorkAndCheckStatus(operation);
 

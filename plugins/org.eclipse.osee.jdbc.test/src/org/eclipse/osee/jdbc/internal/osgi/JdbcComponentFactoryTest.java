@@ -258,7 +258,7 @@ public class JdbcComponentFactoryTest {
    }
 
    private static Map<String, Object> map(Object... keyVals) {
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Object> data = new HashMap<>();
       String key = null;
       boolean isKey = true;
       for (Object keyVal : keyVals) {

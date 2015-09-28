@@ -69,7 +69,7 @@ public class TraceabilityExtractor {
    }
 
    private List<String> getTraceMarks(CharBuffer buffer, Matcher matcher) {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       matcher.reset(buffer);
       while (matcher.find() != false) {
          String mark = matcher.group(1);
@@ -131,7 +131,7 @@ public class TraceabilityExtractor {
          String primary = structuredRequirementMatcher.group(1);
          String secondary = structuredRequirementMatcher.group(2);
          if (Strings.isValid(primary) != false) {
-            toReturn = new Pair<String, String>(primary, secondary);
+            toReturn = new Pair<>(primary, secondary);
          }
       }
       return toReturn;

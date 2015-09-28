@@ -27,14 +27,14 @@ public class ListCondition<T extends Comparable<T>> extends AbstractCondition im
       for (int i = 0; i < list.length; i++) {
          list[i] = element.elementMask(list[i]);
       }
-      this.set = new HashSet<T>(Arrays.asList(list));
+      this.set = new HashSet<>(Arrays.asList(list));
 
    }
 
    public ListCondition(DiscreteElement<T> element, boolean inList, Collection<T> list) {
       this.element = element;
       this.inList = inList;
-      this.set = new HashSet<T>();
+      this.set = new HashSet<>();
       for (T item : list) {
          set.add(element.elementMask(item));
       }

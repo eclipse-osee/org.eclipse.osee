@@ -77,7 +77,7 @@ public class WorldXViewerUtil {
 
    public static List<XViewerAtsAttributeValueColumn> getConfigurationColumns() {
       List<AtsAttributeValueColumn> columns = AtsClientService.getConfigEndpoint().get().getViews().getAttrColumns();
-      List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<XViewerAtsAttributeValueColumn>();
+      List<XViewerAtsAttributeValueColumn> configColumns = new ArrayList<>();
       for (AtsAttributeValueColumn column : columns) {
          try {
             AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());

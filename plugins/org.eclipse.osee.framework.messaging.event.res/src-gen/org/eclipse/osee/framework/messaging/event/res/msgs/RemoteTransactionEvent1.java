@@ -81,7 +81,7 @@ public class RemoteTransactionEvent1 extends RemoteEvent {
     */
    public List<RemoteTransactionChange1> getTransactions() {
       if (transactions == null) {
-         transactions = new ArrayList<RemoteTransactionChange1>();
+         transactions = new ArrayList<>();
       }
       return this.transactions;
    }

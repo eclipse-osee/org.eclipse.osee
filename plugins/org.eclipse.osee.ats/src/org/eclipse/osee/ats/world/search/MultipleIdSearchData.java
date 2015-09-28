@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class MultipleIdSearchData implements IWorldEditorConsumer {
    private String enteredIds = "";
-   private List<String> ids = new ArrayList<String>();
+   private List<String> ids = new ArrayList<>();
    private boolean includeArtIds;
    private Branch branch;
    private String name;

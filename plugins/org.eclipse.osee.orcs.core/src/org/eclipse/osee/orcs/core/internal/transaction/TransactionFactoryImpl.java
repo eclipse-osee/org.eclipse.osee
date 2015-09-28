@@ -169,7 +169,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    private void checkAllTxsFound(String opName, List<Integer> txIds, ResultSet<TransactionReadable> result) {
       if (txIds.size() != result.size()) {
-         Set<Integer> found = new HashSet<Integer>();
+         Set<Integer> found = new HashSet<>();
          for (TransactionReadable tx : result) {
             found.add(tx.getGuid());
          }

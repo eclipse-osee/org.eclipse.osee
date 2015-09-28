@@ -24,7 +24,7 @@ import org.eclipse.swt.graphics.FontData;
  */
 public final class FontManager {
 
-   public static Map<String, Font> fontMap = new HashMap<String, Font>();
+   public static Map<String, Font> fontMap = new HashMap<>();
 
    private FontManager() {
       // Utility Class

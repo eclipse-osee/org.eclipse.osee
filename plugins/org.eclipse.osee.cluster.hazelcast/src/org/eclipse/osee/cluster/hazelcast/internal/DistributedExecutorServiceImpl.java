@@ -110,7 +110,7 @@ public class DistributedExecutorServiceImpl implements DistributedExecutorServic
    @SuppressWarnings("unchecked")
    @Override
    public <T> Future<T> submit(Callable<T> worker, Callback<T> callback) {
-      DistributedTask<T> task = new DistributedTask<T>(worker);
+      DistributedTask<T> task = new DistributedTask<>(worker);
       addCallback(task, callback);
       return (Future<T>) getProxyObject().submit(task);
    }
@@ -118,7 +118,7 @@ public class DistributedExecutorServiceImpl implements DistributedExecutorServic
    @SuppressWarnings("unchecked")
    @Override
    public <T> Future<T> submitOnKeyOwner(Callable<T> worker, Callback<T> callback, Object key) {
-      DistributedTask<T> task = new DistributedTask<T>(worker, key);
+      DistributedTask<T> task = new DistributedTask<>(worker, key);
       addCallback(task, callback);
       return (Future<T>) getProxyObject().submit(task);
    }
@@ -127,7 +127,7 @@ public class DistributedExecutorServiceImpl implements DistributedExecutorServic
    @Override
    public <T> Future<T> submitOnMember(Callable<T> worker, Callback<T> callback, Member member) {
       MemberProxy memberProxy = (MemberProxy) member;
-      DistributedTask<T> task = new DistributedTask<T>(worker, memberProxy.getProxyObject());
+      DistributedTask<T> task = new DistributedTask<>(worker, memberProxy.getProxyObject());
       addCallback(task, callback);
       return (Future<T>) getProxyObject().submit(task);
    }
@@ -135,12 +135,12 @@ public class DistributedExecutorServiceImpl implements DistributedExecutorServic
    @SuppressWarnings("unchecked")
    @Override
    public <T> Future<T> submitOnMembers(Callable<T> worker, Callback<T> callback, Set<Member> members) {
-      Set<com.hazelcast.core.Member> xMembers = new HashSet<com.hazelcast.core.Member>();
+      Set<com.hazelcast.core.Member> xMembers = new HashSet<>();
       for (Member member : members) {
          MemberProxy memberProxy = (MemberProxy) member;
          xMembers.add(memberProxy.getProxyObject());
       }
-      DistributedTask<T> task = new DistributedTask<T>(worker, xMembers);
+      DistributedTask<T> task = new DistributedTask<>(worker, xMembers);
       addCallback(task, callback);
       return (Future<T>) getProxyObject().submit(task);
    }

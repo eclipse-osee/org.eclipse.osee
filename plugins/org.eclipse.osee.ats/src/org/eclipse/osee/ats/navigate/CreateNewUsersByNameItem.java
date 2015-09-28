@@ -59,7 +59,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
-         Set<String> newUserNames = new HashSet<String>();
+         Set<String> newUserNames = new HashSet<>();
          for (String str : ed.getEntry().split(System.getProperty("line.separator"))) {
             newUserNames.add(str);
          }
@@ -100,7 +100,7 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
    }
 
    private Set<Artifact> createNewUserItemTx(SkynetTransaction transaction, Set<String> userNames) throws OseeCoreException {
-      Set<Artifact> newVersions = new HashSet<Artifact>();
+      Set<Artifact> newVersions = new HashSet<>();
       for (String userName : userNames) {
          Artifact userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch(), userName);
          userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, GUID.create());

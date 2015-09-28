@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
  */
 public class MultiPageResultsProvider implements IResultsEditorProvider {
    private final DatabaseHealthOperation healthOperation;
-   private final List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>(4);
+   private final List<IResultsEditorTab> resultsTabs = new ArrayList<>(4);
 
    public MultiPageResultsProvider(DatabaseHealthOperation healthOperation) {
       super();

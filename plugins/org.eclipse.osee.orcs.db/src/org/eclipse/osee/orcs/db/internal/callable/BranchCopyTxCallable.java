@@ -85,8 +85,8 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
    }
 
    private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
-      List<Object[]> data = new ArrayList<Object[]>();
-      HashSet<Integer> gammas = new HashSet<Integer>(100000);
+      List<Object[]> data = new ArrayList<>();
+      HashSet<Integer> gammas = new HashSet<>(100000);
       long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
       if (parentBranch != null) {
          parentBranchId = parentBranch;

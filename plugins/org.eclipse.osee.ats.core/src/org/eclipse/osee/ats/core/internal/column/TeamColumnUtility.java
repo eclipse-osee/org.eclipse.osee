@@ -51,7 +51,7 @@ public class TeamColumnUtility implements IAtsColumnUtility {
          if (!Strings.isValid(result) && (atsObject instanceof IAtsAbstractReview)) {
             IAtsAbstractReview review = (IAtsAbstractReview) atsObject;
             if (reviewService.isStandAloneReview(review)) {
-               List<IAtsTeamDefinition> teams = new ArrayList<IAtsTeamDefinition>();
+               List<IAtsTeamDefinition> teams = new ArrayList<>();
                for (IAtsActionableItem ai : review.getActionableItems()) {
                   if (ai.getTeamDefinitionInherited() != null) {
                      teams.add(ai.getTeamDefinition());

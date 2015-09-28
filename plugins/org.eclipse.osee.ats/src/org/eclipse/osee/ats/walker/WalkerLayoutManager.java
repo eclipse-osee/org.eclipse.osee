@@ -30,7 +30,7 @@ public class WalkerLayoutManager {
    private HashMap<String, AbstractLayoutAlgorithm> layouts;
    private static final String RADIAL_RIGHT_LAYOUT = "Radial - Right";
    private static final String RADIAL_DOWN_LAYOUT = "Radial - Down";
-   private final List<String> layoutNames = new ArrayList<String>();
+   private final List<String> layoutNames = new ArrayList<>();
    private final ActionWalkerView view;
    private static final String defaultLayout = RADIAL_DOWN_LAYOUT;
    private String currentLayout = defaultLayout;
@@ -65,7 +65,7 @@ public class WalkerLayoutManager {
 
    public void ensureLoaded() {
       if (layouts == null) {
-         layouts = new HashMap<String, AbstractLayoutAlgorithm>();
+         layouts = new HashMap<>();
 
          RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
          radLayout.setRangeToLayout(0, 180 * Math.PI / 360);

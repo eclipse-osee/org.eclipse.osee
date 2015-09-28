@@ -61,7 +61,7 @@ public class OteEventMessageFutureImpl<T extends OteEventMessage, R extends OteE
             return th;
          }
       });
-      timeoutRunnable = new TimeoutRunnable<T, R>(lock, condition, sentMessage, callable, this);
+      timeoutRunnable = new TimeoutRunnable<>(lock, condition, sentMessage, callable, this);
       wakeup = ex.schedule(timeoutRunnable, timeout, TimeUnit.MILLISECONDS);
    }
 

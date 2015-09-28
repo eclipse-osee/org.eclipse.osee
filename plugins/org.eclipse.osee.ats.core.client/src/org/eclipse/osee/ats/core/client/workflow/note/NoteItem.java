@@ -107,7 +107,7 @@ public class NoteItem {
    }
 
    public static List<NoteItem> fromXml(String xml, String atsId) {
-      List<NoteItem> logItems = new ArrayList<NoteItem>();
+      List<NoteItem> logItems = new ArrayList<>();
       try {
          if (Strings.isValid(xml)) {
             NodeList nodes = Jaxp.readXmlDocument(xml).getElementsByTagName(LOG_ITEM_TAG);

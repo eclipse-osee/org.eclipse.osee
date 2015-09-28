@@ -27,7 +27,7 @@ import org.osgi.framework.Bundle;
  */
 public class AtsStateItemManager {
 
-   private final static List<IAtsStateItem> stateItems = new ArrayList<IAtsStateItem>();
+   private final static List<IAtsStateItem> stateItems = new ArrayList<>();
 
    public static List<IAtsStateItem> getStateItems() {
       loadAllStateItems();

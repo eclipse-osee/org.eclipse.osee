@@ -45,8 +45,8 @@ public class TxMonitorImplTest {
       tx1 = createTx();
       tx2 = createTx();
 
-      txCache = new TxMonitorCache<Object>();
-      txMonitor = new TxMonitorImpl<Object>(txCache);
+      txCache = new TxMonitorCache<>();
+      txMonitor = new TxMonitorImpl<>(txCache);
    }
 
    @Test(expected = OseeStateException.class)
@@ -185,7 +185,7 @@ public class TxMonitorImplTest {
       private final String uuid;
       private TxState txState;
       private boolean rolledBack;
-      private final Set<Object> data = new HashSet<Object>();
+      private final Set<Object> data = new HashSet<>();
 
       public MockMonitoredTx(String uuid, TxState txState) {
          this.uuid = uuid;

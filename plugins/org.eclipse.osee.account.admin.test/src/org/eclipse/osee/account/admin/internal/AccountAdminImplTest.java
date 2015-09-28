@@ -324,10 +324,10 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetAccountPreferencesModified() {
-      Map<String, String> original = new HashMap<String, String>();
+      Map<String, String> original = new HashMap<>();
       original.put("1", "2");
 
-      Map<String, String> newMap = new HashMap<String, String>();
+      Map<String, String> newMap = new HashMap<>();
       newMap.put("1", "3");
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
@@ -345,10 +345,10 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetAccountPreferencesNotModified() {
-      Map<String, String> original = new HashMap<String, String>();
+      Map<String, String> original = new HashMap<>();
       original.put("1", "2");
 
-      Map<String, String> newMap = new HashMap<String, String>();
+      Map<String, String> newMap = new HashMap<>();
       newMap.put("1", "2");
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
@@ -387,7 +387,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetAccountPreferenceModified() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");
@@ -412,7 +412,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetAccountPreferenceNotModified() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "123412");
       map.put("c", "3");
@@ -445,7 +445,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testDeleteAccountPreferenceModified() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "123412");
       map.put("c", "3");
@@ -469,7 +469,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testDeleteAccountPreferenceNotModified() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("c", "3");
 
@@ -538,11 +538,11 @@ public class AccountAdminImplTest {
 
    @Test
    public void testSetAccountPreferencesByUniqueField() {
-      Map<String, String> original = new HashMap<String, String>();
+      Map<String, String> original = new HashMap<>();
       original.put("a", "1");
       original.put("c", "3");
 
-      Map<String, String> newMap = new HashMap<String, String>();
+      Map<String, String> newMap = new HashMap<>();
       newMap.put("a", "1");
 
       ResultSet<Account> resultSet = ResultSets.singleton(account);
@@ -560,7 +560,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testAccountPreferenceByUniqueField() {
-      Map<String, String> original = new HashMap<String, String>();
+      Map<String, String> original = new HashMap<>();
       original.put("a", "1");
       original.put("c", "3");
 
@@ -585,7 +585,7 @@ public class AccountAdminImplTest {
 
    @Test
    public void testDeleteAccountPreferenceByUniqueField() {
-      Map<String, String> original = new HashMap<String, String>();
+      Map<String, String> original = new HashMap<>();
       original.put("a", "1");
       original.put("b", "2");
       original.put("c", "3");
@@ -757,7 +757,7 @@ public class AccountAdminImplTest {
       assertEquals(true, validator.isValid(AccountField.USERNAME, "abcde"));
       assertEquals(true, validator.isValid(AccountField.DISPLAY_NAME, "1234"));
 
-      Map<String, Object> props = new HashMap<String, Object>();
+      Map<String, Object> props = new HashMap<>();
       props.put(ACCOUNT_USERNAME_VALIDATION_PATTERN, userNamePattern);
       props.put(ACCOUNT_EMAIL_VALIDATION_PATTERN, emailPattern);
       props.put(ACCOUNT_DISPLAY_NAME_VALIDATION_PATTERN, displayNamePattern);

@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class AtsArtifactConfigCache extends AtsConfigCache {
 
    public List<Artifact> getArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException {
-      List<Artifact> artifacts = new LinkedList<Artifact>();
-      List<Long> uuids = new ArrayList<Long>();
+      List<Artifact> artifacts = new LinkedList<>();
+      List<Long> uuids = new ArrayList<>();
       for (IAtsObject atsObject : atsObjects) {
          Artifact artifact = getArtifact(atsObject);
          if (artifact != null) {
@@ -44,7 +44,7 @@ public class AtsArtifactConfigCache extends AtsConfigCache {
    }
 
    public <A extends IAtsConfigObject> Collection<A> getConfigObjects(Collection<? extends Artifact> artifacts, Class<A> clazz) {
-      List<A> objects = new ArrayList<A>();
+      List<A> objects = new ArrayList<>();
       for (Artifact art : artifacts) {
          objects.addAll(getByTag(art.getGuid(), clazz));
       }

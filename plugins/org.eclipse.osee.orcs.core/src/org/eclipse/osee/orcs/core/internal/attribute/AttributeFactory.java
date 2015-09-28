@@ -59,7 +59,7 @@ public class AttributeFactory {
       ResourceNameResolver resolver = createResolver(attribute);
       proxy.setResolver(resolver);
 
-      Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(container);
+      Reference<AttributeContainer> artifactRef = new WeakReference<>(container);
 
       attribute.internalInitialize(cache, artifactRef, data, isDirty, createWithDefaults);
       container.add(type, attribute);
@@ -86,7 +86,7 @@ public class AttributeFactory {
       if (source.getVersion().isInStorage()) {
          try {
             destinationAttribute = destination.getAttributeById(source, DeletionFlag.INCLUDE_DELETED);
-            Reference<AttributeContainer> artifactRef = new WeakReference<AttributeContainer>(destination);
+            Reference<AttributeContainer> artifactRef = new WeakReference<>(destination);
             destinationAttribute.internalInitialize(cache, artifactRef, attributeData, true, false);
          } catch (AttributeDoesNotExist ex) {
             destinationAttribute = createAttribute(destination, attributeData);

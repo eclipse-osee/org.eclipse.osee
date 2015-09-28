@@ -57,7 +57,7 @@ import com.hazelcast.impl.GroupProperties;
  */
 public class ClusterServiceImpl implements ClusterService, InstanceManager {
 
-   private final Map<Object, DistributedObject> distributedObjects = new ConcurrentHashMap<Object, DistributedObject>();
+   private final Map<Object, DistributedObject> distributedObjects = new ConcurrentHashMap<>();
    private final ProxyCleaner proxyCleaner = new ProxyCleaner();
    private Log logger;
    private EventService eventService;

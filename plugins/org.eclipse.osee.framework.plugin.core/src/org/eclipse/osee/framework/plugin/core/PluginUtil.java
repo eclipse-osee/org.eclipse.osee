@@ -78,7 +78,7 @@ public class PluginUtil {
    public List<URL> getInputStreams(String directory, String pattern, boolean recurse) {
       Bundle bundle = Platform.getBundle(pluginId);
       Enumeration<?> enumeration = bundle.findEntries(directory, pattern, recurse);
-      List<URL> inputs = new ArrayList<URL>();
+      List<URL> inputs = new ArrayList<>();
       while (enumeration.hasMoreElements()) {
          inputs.add(((URL) enumeration.nextElement()));
       }

@@ -65,7 +65,7 @@ public class CompletedCancelledDateColumn extends XViewerAtsColumn implements IX
                return CancelledDateColumn.getDateStr(element);
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> dates = new HashSet<String>();
+            Set<String> dates = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String date = getColumnText(team, column, columnIndex);
                if (Strings.isValid(date)) {

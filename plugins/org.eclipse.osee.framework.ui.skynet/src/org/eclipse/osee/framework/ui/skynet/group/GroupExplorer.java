@@ -221,7 +221,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    }
 
    private class OpenOnShowListener implements MenuListener {
-      private final List<MenuItem> items = new LinkedList<MenuItem>();
+      private final List<MenuItem> items = new LinkedList<>();
 
       public void add(MenuItem item) {
          items.add(item);
@@ -354,7 +354,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    }
 
    private ArrayList<GroupExplorerItem> getSelectedItems() {
-      ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
+      ArrayList<GroupExplorerItem> arts = new ArrayList<>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -366,7 +366,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    }
 
    private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
-      ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
+      ArrayList<GroupExplorerItem> arts = new ArrayList<>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -421,7 +421,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
       Collection<MenuItem> items;
 
       public NeedProjectMenuListener() {
-         this.items = new LinkedList<MenuItem>();
+         this.items = new LinkedList<>();
       }
 
       @Override

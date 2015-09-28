@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ArtifactMatch {
    private final Artifact artifact;
-   private final HashCollection<Integer, MatchLocation> matchData = new HashCollection<Integer, MatchLocation>();
+   private final HashCollection<Integer, MatchLocation> matchData = new HashCollection<>();
 
    public ArtifactMatch(Artifact artifact) {
       this.artifact = artifact;

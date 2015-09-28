@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class StringOptionsRule extends AppendableRule<String> {
    private final String listId;
-   private final List<String> options = new ArrayList<String>();
+   private final List<String> options = new ArrayList<>();
 
    protected String getListId() {
       return listId;

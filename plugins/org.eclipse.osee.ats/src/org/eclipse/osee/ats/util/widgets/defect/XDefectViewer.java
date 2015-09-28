@@ -92,7 +92,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
    private Composite parentComposite;
    private ToolBar toolBar;
    private ReviewDefectManager defectManager;
-   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<PeerToPeerReviewArtifact, Integer>();
+   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<>();
 
    public XDefectViewer() {
       super("Defects");
@@ -412,7 +412,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    @SuppressWarnings("rawtypes")
    public List<ReviewDefectItem> getSelectedDefectItems() {
-      List<ReviewDefectItem> items = new ArrayList<ReviewDefectItem>();
+      List<ReviewDefectItem> items = new ArrayList<>();
       if (xViewer == null) {
          return items;
       }

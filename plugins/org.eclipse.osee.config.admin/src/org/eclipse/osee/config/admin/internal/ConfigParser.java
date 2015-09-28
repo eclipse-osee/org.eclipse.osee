@@ -57,7 +57,7 @@ public class ConfigParser {
             for (int index = 0; index < jsonArray.length(); index++) {
                JSONObject object = jsonArray.getJSONObject(index);
                String serviceId = null;
-               Hashtable<String, Object> properties = new Hashtable<String, Object>();
+               Hashtable<String, Object> properties = new Hashtable<>();
                String[] names = JSONObject.getNames(object);
                for (String key : names) {
                   String value = object.getString(key);

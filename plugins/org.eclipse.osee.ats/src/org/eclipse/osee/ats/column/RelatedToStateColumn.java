@@ -86,7 +86,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
          return false;
       }
       try {
-         List<String> validStates = new ArrayList<String>();
+         List<String> validStates = new ArrayList<>();
          validStates.add(NONE);
          validStates.addAll(RelatedToStateColumn.getValidInWorkStates(tasks.iterator().next().getParentTeamWorkflow()));
          final StateListDialog dialog =
@@ -127,14 +127,14 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static List<String> getValidStates(TeamWorkFlowArtifact teamArt) throws OseeStateException {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       names.addAll(AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
       Collections.sort(names);
       return names;
    }
 
    public static List<String> getValidInWorkStates(TeamWorkFlowArtifact teamArt) throws OseeStateException {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       for (String state : AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition())) {
          if (teamArt.getStateDefinitionByName(state).getStateType().isWorkingState()) {
             names.add(state);
@@ -167,7 +167,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
+      Set<TaskArtifact> tasks = new HashSet<>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          if (art.isOfType(AtsArtifactTypes.Task)) {

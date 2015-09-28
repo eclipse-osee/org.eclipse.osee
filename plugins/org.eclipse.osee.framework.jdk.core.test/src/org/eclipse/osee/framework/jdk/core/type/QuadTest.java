@@ -22,14 +22,14 @@ public class QuadTest {
    private final Integer b = 233;
    private final Integer c = 433;
    private final Integer d = 555;
-   private final Quad<Integer, Integer, Integer, Integer> mapToPi = new Quad<Integer, Integer, Integer, Integer>(a, b,
+   private final Quad<Integer, Integer, Integer, Integer> mapToPi = new Quad<>(a, b,
       c, d);
-   private final Quad<Integer, Integer, Integer, Integer> mapToE = new Quad<Integer, Integer, Integer, Integer>(b, c,
+   private final Quad<Integer, Integer, Integer, Integer> mapToE = new Quad<>(b, c,
       d, a);
 
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<Integer, Integer, Integer, Integer>(a,
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<>(a,
       b, c, d);
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<Integer, Integer, Integer, Integer>(b,
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<>(b,
       c, d, a);
 
    private final Quad<Integer, Integer, Integer, Integer> firstEntryNull =
@@ -40,7 +40,7 @@ public class QuadTest {
       new Quad<Integer, Integer, Integer, Integer>(111, 222, null, 444);
    private final Quad<Integer, Integer, Integer, Integer> fourthEntryNull =
       new Quad<Integer, Integer, Integer, Integer>(111, 222, 333, null);
-   private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<Integer, Integer, Integer, Integer>(111,
+   private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<>(111,
       222, 333, 444);
 
    @org.junit.Test
@@ -97,7 +97,7 @@ public class QuadTest {
 
    @org.junit.Test
    public void testSetters() {
-      Quad<Integer, Integer, Integer, Integer> newPair = new Quad<Integer, Integer, Integer, Integer>(0, 0, 0, 0);
+      Quad<Integer, Integer, Integer, Integer> newPair = new Quad<>(0, 0, 0, 0);
       newPair.setFirst(a);
       newPair.setSecond(b);
       newPair.setThird(c);
@@ -124,7 +124,7 @@ public class QuadTest {
       Assert.assertFalse(d.equals(newPair.getSecond()));
       Assert.assertFalse(d.equals(newPair.getThird()));
 
-      Quad<Integer, Integer, Integer, Integer> anotherPair = new Quad<Integer, Integer, Integer, Integer>(0, 0, 0, 0);
+      Quad<Integer, Integer, Integer, Integer> anotherPair = new Quad<>(0, 0, 0, 0);
       Assert.assertTrue(anotherPair.set(a, b, c, d).equals(anotherPair));
    }
 

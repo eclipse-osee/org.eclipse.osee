@@ -153,7 +153,7 @@ public class ReviewRuleImpl extends RuleImpl implements ReviewRule
   {
     if (assignees == null)
     {
-      assignees = new EObjectContainmentEList<UserDef>(UserDef.class, this, AtsDslPackage.REVIEW_RULE__ASSIGNEES);
+      assignees = new EObjectContainmentEList<>(UserDef.class, this, AtsDslPackage.REVIEW_RULE__ASSIGNEES);
     }
     return assignees;
   }
@@ -236,7 +236,7 @@ public class ReviewRuleImpl extends RuleImpl implements ReviewRule
   {
     if (attributes == null)
     {
-      attributes = new EObjectContainmentEList<AttrDef>(AttrDef.class, this, AtsDslPackage.REVIEW_RULE__ATTRIBUTES);
+      attributes = new EObjectContainmentEList<>(AttrDef.class, this, AtsDslPackage.REVIEW_RULE__ATTRIBUTES);
     }
     return attributes;
   }

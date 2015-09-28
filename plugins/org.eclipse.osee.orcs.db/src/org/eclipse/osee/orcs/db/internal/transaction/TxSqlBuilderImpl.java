@@ -86,9 +86,9 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    @Override
    public void accept(TransactionReadable tx, OrcsChangeSet changeSet) throws OseeCoreException {
       txId = tx.getGuid();
-      binaryStores = new ArrayList<DaoToSql>();
-      dataItemInserts = new HashCollection<SqlOrderEnum, Object[]>();
-      txNotCurrentsJoin = new HashMap<SqlOrderEnum, IdJoinQuery>();
+      binaryStores = new ArrayList<>();
+      dataItemInserts = new HashCollection<>();
+      txNotCurrentsJoin = new HashMap<>();
 
       addRow(SqlOrderEnum.TXS_DETAIL, txId, tx.getComment(), tx.getDate(), tx.getAuthorId(), tx.getBranchId(),
          tx.getTxType().getId());

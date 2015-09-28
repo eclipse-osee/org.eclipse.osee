@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implements IXViewerPreComputedColumn, IAltLeftClickProvider {
 
    public static final Integer DEFAULT_WIDTH = 45;
-   Map<Long, String> multiMembersValueMap = new HashMap<Long, String>();
+   Map<Long, String> multiMembersValueMap = new HashMap<>();
    boolean loading = false;
 
    public AbstractMembersOrderColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

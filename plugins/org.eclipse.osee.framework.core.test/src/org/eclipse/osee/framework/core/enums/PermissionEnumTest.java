@@ -48,7 +48,7 @@ public class PermissionEnumTest {
    }
 
    private static Collection<PermissionTestData> getTestData() {
-      Collection<PermissionTestData> data = new ArrayList<PermissionTestData>();
+      Collection<PermissionTestData> data = new ArrayList<>();
       add(data, DENY, DENY, false, DENY);
       add(data, DENY, FULLACCESS, false, DENY);
       add(data, DENY, LOCK, false, DENY);

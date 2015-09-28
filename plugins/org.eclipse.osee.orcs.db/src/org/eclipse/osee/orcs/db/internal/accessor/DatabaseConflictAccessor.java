@@ -66,9 +66,9 @@ public class DatabaseConflictAccessor {
    }
 
    public void store(Collection<Conflict> conflicts) throws OseeCoreException {
-      List<Object[]> insertData = new ArrayList<Object[]>();
-      List<Object[]> updateData = new ArrayList<Object[]>();
-      List<Object[]> deleteData = new ArrayList<Object[]>();
+      List<Object[]> insertData = new ArrayList<>();
+      List<Object[]> updateData = new ArrayList<>();
+      List<Object[]> deleteData = new ArrayList<>();
       for (Conflict conflict : conflicts) {
          if (conflict.isDirty()) {
             switch (conflict.getStorageState()) {

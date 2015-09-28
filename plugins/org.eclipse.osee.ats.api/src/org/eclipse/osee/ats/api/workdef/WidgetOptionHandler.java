@@ -19,7 +19,7 @@ import java.util.Set;
  */
 public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
 
-   private final Set<WidgetOption> options = new HashSet<WidgetOption>();
+   private final Set<WidgetOption> options = new HashSet<>();
 
    public WidgetOptionHandler(WidgetOption... xOption) {
       for (WidgetOption item : xOption) {
@@ -28,7 +28,7 @@ public class WidgetOptionHandler implements IAtsWidgetOptionHandler {
    }
 
    public static Collection<WidgetOption> getCollection(WidgetOption... ats) {
-      Set<WidgetOption> items = new HashSet<WidgetOption>();
+      Set<WidgetOption> items = new HashSet<>();
       for (WidgetOption item : ats) {
          items.add(item);
       }

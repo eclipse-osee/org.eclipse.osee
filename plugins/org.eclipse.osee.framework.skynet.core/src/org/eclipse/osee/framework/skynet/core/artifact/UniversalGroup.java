@@ -37,13 +37,13 @@ public class UniversalGroup {
          artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UniversalGroup, branch);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
-         artifacts = new LinkedList<Artifact>();
+         artifacts = new LinkedList<>();
       }
       return artifacts;
    }
 
    public static Collection<Artifact> getGroupsNotRoot(IOseeBranch branch) {
-      Collection<Artifact> groups = new HashSet<Artifact>();
+      Collection<Artifact> groups = new HashSet<>();
       for (Artifact group : UniversalGroup.getGroups(branch)) {
          if (!group.getName().equals("Root Artifact")) {
             groups.add(group);

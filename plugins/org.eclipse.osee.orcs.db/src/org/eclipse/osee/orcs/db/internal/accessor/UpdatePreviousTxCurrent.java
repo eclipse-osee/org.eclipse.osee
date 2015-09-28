@@ -94,7 +94,7 @@ public class UpdatePreviousTxCurrent {
    private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeCoreException {
       String query = String.format(SELECT_TXS_AND_GAMMAS, tableName, columnName);
 
-      List<Object[]> updateData = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, branchUuid,
@@ -110,7 +110,7 @@ public class UpdatePreviousTxCurrent {
    }
 
    public void updateTxNotCurrentsFromTx(int transaction_id) throws OseeCoreException {
-      List<Object[]> updateData = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid,

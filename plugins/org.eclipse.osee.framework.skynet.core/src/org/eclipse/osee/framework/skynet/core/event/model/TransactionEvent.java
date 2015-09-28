@@ -18,7 +18,7 @@ public class TransactionEvent implements FrameworkEvent, HasNetworkSender {
 
    private TransactionEventType eventType;
    private NetworkSender networkSender;
-   private final List<TransactionChange> transactions = new ArrayList<TransactionChange>();
+   private final List<TransactionChange> transactions = new ArrayList<>();
 
    /**
     * Gets the value of the artifacts property.

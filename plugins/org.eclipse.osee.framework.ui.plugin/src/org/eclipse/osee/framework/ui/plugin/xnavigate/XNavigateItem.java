@@ -23,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class XNavigateItem {
 
-   private final List<XNavigateItem> children = new ArrayList<XNavigateItem>();
+   private final List<XNavigateItem> children = new ArrayList<>();
    private String name;
    private XNavigateItem parent;
    private final KeyedImage oseeImage;

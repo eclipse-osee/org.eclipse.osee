@@ -37,7 +37,7 @@ public class AtsDslResourceProvider implements IResourceProvider {
 
    @Override
    public Collection<String> getErrors() {
-      List<String> errors = new LinkedList<String>();
+      List<String> errors = new LinkedList<>();
       for (org.eclipse.emf.ecore.resource.Resource.Diagnostic diagnostic : resource.getErrors()) {
          throw new IllegalStateException(diagnostic.toString());
       }

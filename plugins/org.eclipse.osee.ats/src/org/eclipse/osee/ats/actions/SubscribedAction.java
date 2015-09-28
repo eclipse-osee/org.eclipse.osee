@@ -59,7 +59,7 @@ public class SubscribedAction extends AbstractAtsAction {
    }
 
    public Collection<AbstractWorkflowArtifact> getSelectedSubscribableArts() throws OseeCoreException {
-      List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> favoritableArts = new ArrayList<>();
       for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
             favoritableArts.add((AbstractWorkflowArtifact) art);

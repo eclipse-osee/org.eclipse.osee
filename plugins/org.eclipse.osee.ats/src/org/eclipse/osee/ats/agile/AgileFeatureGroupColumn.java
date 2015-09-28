@@ -125,7 +125,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       }
 
       AgileEndpointApi agileEp = AtsClientService.getAgileEndpoint();
-      List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<JaxAgileFeatureGroup>();
+      List<JaxAgileFeatureGroup> activeFeatureGroups = new ArrayList<>();
       long teamUuid = items.getCommonBacklog().getTeamUuid();
       try {
          for (JaxAgileFeatureGroup feature : agileEp.getFeatureGroups(items.getCommonBacklog().getTeamUuid())) {
@@ -172,7 +172,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    }
 
    private static Collection<IAgileFeatureGroup> getSelectedFeatureGroups(Collection<? extends AbstractWorkflowArtifact> awas) {
-      List<IAgileFeatureGroup> selected = new LinkedList<IAgileFeatureGroup>();
+      List<IAgileFeatureGroup> selected = new LinkedList<>();
       if (awas.size() == 1) {
          for (Artifact featureArt : awas.iterator().next().getRelatedArtifacts(
             AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
@@ -190,7 +190,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
@@ -211,8 +211,8 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
-         List<Artifact> arts = new ArrayList<Artifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
+         List<Artifact> arts = new ArrayList<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {

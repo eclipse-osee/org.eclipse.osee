@@ -59,7 +59,7 @@ import org.junit.BeforeClass;
  */
 public class TransitionManagerTest {
 
-   private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<AbstractWorkflowArtifact>();
+   private static List<AbstractWorkflowArtifact> EMPTY_AWAS = new ArrayList<>();
 
    @BeforeClass
    @AfterClass

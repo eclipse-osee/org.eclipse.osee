@@ -339,7 +339,7 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Job deleteBranch(final List<? extends IOseeBranch> branches) {
-      List<IOperation> ops = new ArrayList<IOperation>();
+      List<IOperation> ops = new ArrayList<>();
       for (IOseeBranch branch : branches) {
          ops.add(new DeleteBranchOperation(branch));
       }

@@ -269,7 +269,7 @@ public class ResultsEditorConverterTest {
    }
 
    private IResultsEditorTableTab createTab(String tabName) {
-      List<String[]> rows = new ArrayList<String[]>();
+      List<String[]> rows = new ArrayList<>();
       rows.add(new String[] {"a", "b", "c"});
       rows.add(new String[] {"e", "d", "f"});
       return new MockResultsEditorTableTab(tabName, new String[] {"1", "2", "3"}, rows);
@@ -290,7 +290,7 @@ public class ResultsEditorConverterTest {
 
       public MockResultsProvider(String editorName) {
          this.editorName = editorName;
-         this.tabs = new ArrayList<IResultsEditorTab>();
+         this.tabs = new ArrayList<>();
       }
 
       @Override
@@ -317,7 +317,7 @@ public class ResultsEditorConverterTest {
 
       @Override
       public List<XViewerColumn> getTableColumns() {
-         List<XViewerColumn> xColumns = new ArrayList<XViewerColumn>();
+         List<XViewerColumn> xColumns = new ArrayList<>();
          for (String col : columns) {
             xColumns.add(new XViewerColumn("", col, 0, 0, true, SortDataType.String, false, ""));
          }
@@ -326,7 +326,7 @@ public class ResultsEditorConverterTest {
 
       @Override
       public Collection<IResultsXViewerRow> getTableRows() {
-         List<IResultsXViewerRow> xRows = new ArrayList<IResultsXViewerRow>();
+         List<IResultsXViewerRow> xRows = new ArrayList<>();
          for (String[] row : rows) {
             xRows.add(new ResultsXViewerRow(row));
          }

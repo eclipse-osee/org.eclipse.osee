@@ -59,7 +59,7 @@ public class MessageSubscriptionService implements IOteMessageService, ITestConn
    private static final int MAX_CONCURRENT_WORKER_THREADS = Math.min(Runtime.getRuntime().availableProcessors() + 1, 4);
 
    private final InetAddress localAddress;
-   private final List<MessageSubscription> subscriptions = new CopyOnWriteArrayList<MessageSubscription>();
+   private final List<MessageSubscription> subscriptions = new CopyOnWriteArrayList<>();
    private volatile AbstractMessageDataBase msgDatabase;
    private UdpFileTransferHandler fileTransferHandler;
    private volatile boolean connected = false;

@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.db.internal.SqlProvider;
  */
 public class StaticSqlProvider implements SqlProvider {
 
-   private final Map<String, String> sqlMap = new HashMap<String, String>();
+   private final Map<String, String> sqlMap = new HashMap<>();
 
    private Log logger;
    private SystemPreferences preferences;

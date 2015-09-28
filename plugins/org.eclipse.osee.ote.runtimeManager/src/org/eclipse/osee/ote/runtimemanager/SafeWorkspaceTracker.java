@@ -64,8 +64,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
 
    @Override
    public Object addingService(ServiceReference reference) {
-      this.systemLibListener = new LibJarListener<OteSystemLibsNature>();
-      this.userLibListener = new LibJarListener<OteUserLibsNature>();
+      this.systemLibListener = new LibJarListener<>();
+      this.userLibListener = new LibJarListener<>();
       this.systemLibResourceListener =
          new JarChangeResourceListener<OteSystemLibsNature>(OteSystemLibsNature.NATURE_ID, systemLibListener);
       this.userLibResourceListener =
@@ -154,8 +154,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
    }
 
    private Collection<BundleInfo> getRuntimeLibs(Collection<URL> systemLibUrls, Collection<URL> userLibUrls) throws IOException {
-      Map<String, BundleInfo> runtimeMap = new HashMap<String, BundleInfo>();
-      Collection<BundleInfo> runtimeInfos = new LinkedList<BundleInfo>();
+      Map<String, BundleInfo> runtimeMap = new HashMap<>();
+      Collection<BundleInfo> runtimeInfos = new LinkedList<>();
 
       // First add all of the system libraries to the map
       for (URL url : systemLibUrls) {
@@ -184,7 +184,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     * @return system library URL's
     */
    public Collection<URL> getSystemLibUrls() throws CoreException {
-      Collection<URL> libs = new LinkedList<URL>();
+      Collection<URL> libs = new LinkedList<>();
       for (OteSystemLibsNature systemNature : OteSystemLibsNature.getWorkspaceProjects()) {
          libs.addAll(systemNature.getBundles());
       }
@@ -198,7 +198,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     * @return user library URL's
     */
    public Collection<URL> getUserLibUrls() throws CoreException {
-      Collection<URL> libs = new LinkedList<URL>();
+      Collection<URL> libs = new LinkedList<>();
       for (OteUserLibsNature userNature : OteUserLibsNature.getWorkspaceProjects()) {
          libs.addAll(userNature.getBundles());
       }
@@ -224,7 +224,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
     */
    @Override
    public Collection<BundleInfo> consumeModifiedLibs() throws IOException {
-      //		Collection<BundleInfo> modifiedLibs = new LinkedList<BundleInfo>();
+      //		Collection<BundleInfo> modifiedLibs = new LinkedList<>();
 
       Set<URL> sysNewBundles = systemLibListener.consumeNewBundles();
       Set<URL> sysChangedBundles = systemLibListener.consumeChangedBundles();
@@ -236,11 +236,11 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
       //		Set<URL> userRemovedBundles =
       userLibListener.consumeRemovedBundles();
 
-      Collection<URL> sysNewModLibs = new ArrayList<URL>(sysNewBundles.size() + sysChangedBundles.size());
+      Collection<URL> sysNewModLibs = new ArrayList<>(sysNewBundles.size() + sysChangedBundles.size());
       sysNewModLibs.addAll(sysNewBundles);
       sysNewModLibs.addAll(sysChangedBundles);
 
-      Collection<URL> userNewModLibs = new ArrayList<URL>(userNewBundles.size() + userChangedBundles.size());
+      Collection<URL> userNewModLibs = new ArrayList<>(userNewBundles.size() + userChangedBundles.size());
       userNewModLibs.addAll(userNewBundles);
       userNewModLibs.addAll(userChangedBundles);
 

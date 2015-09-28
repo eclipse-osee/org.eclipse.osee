@@ -17,7 +17,7 @@ public class CmdLineArgs {
    private final HashMap<String, String> cmdArgs;
 
    public CmdLineArgs(String[] args) {
-      cmdArgs = new HashMap<String, String>();
+      cmdArgs = new HashMap<>();
 
       for (int i = 0; i < args.length; i++) {
          if (args[i].matches("-\\w.*")) {

@@ -192,7 +192,7 @@ public final class AWorkspace {
 
    public static IResource findWorkspaceFile(String fileName) {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
-      List<IResource> resources = new ArrayList<IResource>();
+      List<IResource> resources = new ArrayList<>();
       recursiveFileFind(fileName, ws, resources);
       return !resources.isEmpty() ? resources.iterator().next() : null;
    }
@@ -214,7 +214,7 @@ public final class AWorkspace {
 
    public static List<IResource> findWorkspaceFileMatch(String regex) {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
-      List<IResource> resources = new ArrayList<IResource>();
+      List<IResource> resources = new ArrayList<>();
       recursiveFileFindMatch(regex, ws, resources);
       return resources;
    }

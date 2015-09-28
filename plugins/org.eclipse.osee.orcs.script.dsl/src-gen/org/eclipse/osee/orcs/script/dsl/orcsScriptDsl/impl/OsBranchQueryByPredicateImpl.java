@@ -120,7 +120,7 @@ public class OsBranchQueryByPredicateImpl extends OsBranchQueryImpl implements O
   {
     if (criteria == null)
     {
-      criteria = new EObjectContainmentEList<OsBranchCriteria>(OsBranchCriteria.class, this, OrcsScriptDslPackage.OS_BRANCH_QUERY_BY_PREDICATE__CRITERIA);
+      criteria = new EObjectContainmentEList<>(OsBranchCriteria.class, this, OrcsScriptDslPackage.OS_BRANCH_QUERY_BY_PREDICATE__CRITERIA);
     }
     return criteria;
   }

@@ -48,7 +48,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>> {
 
    void internalInitialize(IAttributeType attributeType, Artifact artifact, ModificationType modificationType, boolean markDirty, boolean setDefaultValue) throws OseeCoreException {
       this.attributeTypeToken = attributeType;
-      this.artifactRef = new WeakReference<Artifact>(artifact);
+      this.artifactRef = new WeakReference<>(artifact);
       internalSetModType(modificationType, false, markDirty);
 
       try {

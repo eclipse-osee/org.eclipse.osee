@@ -34,7 +34,7 @@ public class CriteriaTxArtifactGuids extends Criteria implements TxCriteria {
    @Override
    public void checkValid(Options options) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifactGuids, "artifact guids");
-      List<String> invalids = new ArrayList<String>();
+      List<String> invalids = new ArrayList<>();
       for (String guid : artifactGuids) {
          if (!GUID.isValid(guid)) {
             invalids.add(guid);

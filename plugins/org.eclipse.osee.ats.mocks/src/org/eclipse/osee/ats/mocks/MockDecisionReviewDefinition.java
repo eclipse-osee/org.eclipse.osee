@@ -28,9 +28,9 @@ public class MockDecisionReviewDefinition implements IAtsDecisionReviewDefinitio
    public String relatedToState;
    public ReviewBlockType blockingType;
    public StateEventType stateEventType;
-   public List<String> assignees = new ArrayList<String>();
+   public List<String> assignees = new ArrayList<>();
    public boolean autoTransitionToDecision = false;
-   public List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+   public List<IAtsDecisionReviewOption> options = new ArrayList<>();
 
    public MockDecisionReviewDefinition(String name) {
       this.name = name;

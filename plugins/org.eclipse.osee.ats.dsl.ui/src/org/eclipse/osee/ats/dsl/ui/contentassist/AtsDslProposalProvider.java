@@ -116,7 +116,7 @@ public class AtsDslProposalProvider extends AbstractAtsDslProposalProvider {
    private void provideAttributeNameOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
          try {
-            List<String> attrs = new ArrayList<String>();
+            List<String> attrs = new ArrayList<>();
             for (AttributeType type : AttributeTypeManager.getAllTypes()) {
                attrs.add(type.getName());
             }

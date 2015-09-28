@@ -59,9 +59,9 @@ import org.eclipse.ui.dialogs.ListDialog;
  * @author Donald G. Dunne
  */
 public class MultipleIdSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
-   private final Set<Artifact> resultAtsArts = new HashSet<Artifact>();
-   private final Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
-   private final Set<Artifact> artifacts = new HashSet<Artifact>();
+   private final Set<Artifact> resultAtsArts = new HashSet<>();
+   private final Set<Artifact> resultNonAtsArts = new HashSet<>();
+   private final Set<Artifact> artifacts = new HashSet<>();
    private final MultipleIdSearchData data;
    private boolean multiLine;
 
@@ -109,7 +109,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    }
 
    private void openChangeReport(Set<Artifact> artifacts, final String enteredIds) throws OseeCoreException {
-      final Set<Artifact> addedArts = new HashSet<Artifact>();
+      final Set<Artifact> addedArts = new HashSet<>();
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(AtsArtifactTypes.Action)) {
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {

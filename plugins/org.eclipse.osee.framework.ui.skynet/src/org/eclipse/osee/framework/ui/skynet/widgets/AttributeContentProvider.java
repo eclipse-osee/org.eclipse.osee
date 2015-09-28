@@ -33,7 +33,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
    @Override
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Branch) {
-         ArrayList<Object> descriptors = new ArrayList<Object>();
+         ArrayList<Object> descriptors = new ArrayList<>();
 
          try {
             for (IAttributeType descriptor : AttributeTypeManager.getValidAttributeTypes((Branch) parentElement)) {

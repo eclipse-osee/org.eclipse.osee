@@ -27,12 +27,12 @@ public class SaxChunkCollector {
    private String currentLocalName;
 
    public SaxChunkCollector(ISaxElementHandler handler, String... collect) {
-      this.collectionElement = new HashSet<String>();
+      this.collectionElement = new HashSet<>();
       for (String item : collect) {
          collectionElement.add(item);
       }
       this.handler = handler;
-      collectionChunks = new ArrayList<String>();
+      collectionChunks = new ArrayList<>();
       builder = new StringBuilder(5000);
    }
 

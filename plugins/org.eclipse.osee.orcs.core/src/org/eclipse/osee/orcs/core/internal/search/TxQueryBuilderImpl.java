@@ -49,7 +49,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andTxId(int... ids) throws OseeCoreException {
-      Set<Integer> values = new LinkedHashSet<Integer>();
+      Set<Integer> values = new LinkedHashSet<>();
       for (int value : ids) {
          values.add(value);
       }
@@ -104,7 +104,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andBranch(Collection<? extends IOseeBranch> ids) throws OseeCoreException {
-      Set<Long> values = new LinkedHashSet<Long>();
+      Set<Long> values = new LinkedHashSet<>();
       for (IOseeBranch value : ids) {
          values.add(value.getUuid());
       }
@@ -114,7 +114,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andBranchIds(long... ids) throws OseeCoreException {
-      Set<Long> values = new LinkedHashSet<Long>();
+      Set<Long> values = new LinkedHashSet<>();
       for (long value : ids) {
          values.add(value);
       }
@@ -152,7 +152,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andAuthorIds(int... id) throws OseeCoreException {
-      ArrayList<Integer> theList = new ArrayList<Integer>();
+      ArrayList<Integer> theList = new ArrayList<>();
       for (int i = 0; i < id.length; i++) {
          theList.add(new Integer(id[i]));
       }
@@ -172,7 +172,7 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
 
    @Override
    public T andNullCommitId() throws OseeCoreException {
-      Collection<Integer> aNull = new ArrayList<Integer>();
+      Collection<Integer> aNull = new ArrayList<>();
       aNull.add(null);
       return andCommitIds(aNull);
    }

@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class VCastVcp {
 
-   private final List<VcpSourceFile> sourceFiles = new ArrayList<VcpSourceFile>();
-   private final List<VcpResultsFile> resultsFiles = new ArrayList<VcpResultsFile>();
+   private final List<VcpSourceFile> sourceFiles = new ArrayList<>();
+   private final List<VcpResultsFile> resultsFiles = new ArrayList<>();
    private final File file;
 
    public VCastVcp(File file) {

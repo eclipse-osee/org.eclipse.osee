@@ -194,7 +194,7 @@ public class XHistoryWidget extends GenericXWidget {
    }
 
    public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<Branch>();
+      ArrayList<Branch> items = new ArrayList<>();
       if (xHistoryViewer == null) {
          return items;
       }
@@ -258,7 +258,7 @@ public class XHistoryWidget extends GenericXWidget {
 
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            final Collection<Change> changes = new ArrayList<Change>();
+            final Collection<Change> changes = new ArrayList<>();
 
             try {
                if (loadHistory) {
@@ -315,7 +315,7 @@ public class XHistoryWidget extends GenericXWidget {
       @Override
       public Artifact[] getArtifacts() {
          IStructuredSelection selection = (IStructuredSelection) xHistoryViewer.getSelection();
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+         ArrayList<Artifact> artifacts = new ArrayList<>();
 
          if (selection != null && !selection.isEmpty()) {
             for (Object object : selection.toArray()) {
@@ -335,7 +335,7 @@ public class XHistoryWidget extends GenericXWidget {
 
    @SuppressWarnings("rawtypes")
    public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      ArrayList<TransactionRecord> items = new ArrayList<TransactionRecord>();
+      ArrayList<TransactionRecord> items = new ArrayList<>();
       if (xHistoryViewer == null) {
          return items;
       }

@@ -23,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
 public class PluginUtil {
 
    public static List<IViewReference> findAllViews(String viewID) {
-      ArrayList<IViewReference> list = new ArrayList<IViewReference>();
+      ArrayList<IViewReference> list = new ArrayList<>();
       IWorkbenchWindow windows[] = PlatformUI.getWorkbench().getWorkbenchWindows();
       for (IWorkbenchWindow window : windows) {
          IWorkbenchPage pages[] = window.getPages();
@@ -45,7 +45,7 @@ public class PluginUtil {
    }
 
    public static TestManagerEditor[] getTestManagers() {
-      List<TestManagerEditor> tmes = new ArrayList<TestManagerEditor>();
+      List<TestManagerEditor> tmes = new ArrayList<>();
       IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
       if (window != null) {
          IWorkbenchPage page = window.getActivePage();

@@ -77,9 +77,9 @@ public class SystemSubsystemReport extends AbstractBlam {
    private static final int COMP_ENUM_COUNT = SubsystemCompletness.values().length;
 
    public SystemSubsystemReport() {
-      subsysToSubsysReqsMap = new HashMap<String, Set<Artifact>>();
-      subsysToSysReqsMap = new HashMap<String, Set<Artifact>>();
-      components = new LinkedHashSet<Artifact>(250);
+      subsysToSubsysReqsMap = new HashMap<>();
+      subsysToSysReqsMap = new HashMap<>();
+      components = new LinkedHashSet<>(250);
    }
 
    private void init() throws IOException {
@@ -132,7 +132,7 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void storeInHierarchyOrderBySubsystem(String subSysName, List<Artifact> sysReqByComp) {
-      Set<Artifact> orderedSysReqs = new LinkedHashSet<Artifact>(sysReqByComp.size());
+      Set<Artifact> orderedSysReqs = new LinkedHashSet<>(sysReqByComp.size());
       for (Artifact sysReq : sysReqs) {
          if (sysReqByComp.contains(sysReq)) {
             orderedSysReqs.add(sysReq);
@@ -156,7 +156,7 @@ public class SystemSubsystemReport extends AbstractBlam {
             "Req GUID not allocated"};
       excelWriter.writeRow(row);
 
-      CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<Artifact>(sysReqs.size());
+      CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<>(sysReqs.size());
 
       for (Artifact subsysFolder : subsysTopFolder.getChildren()) {
          resetCounters();
@@ -168,7 +168,7 @@ public class SystemSubsystemReport extends AbstractBlam {
          List<Artifact> sysReqByComp = component.getRelatedArtifacts(CoreRelationTypes.Allocation__Requirement);
          storeInHierarchyOrderBySubsystem(subSysName, sysReqByComp);
          allocatedSysReqCounter.put(sysReqByComp);
-         Set<String> missingAllocationGuids = new LinkedHashSet<String>();
+         Set<String> missingAllocationGuids = new LinkedHashSet<>();
 
          recurseWholeSubsystem(subSysName, subsysFolder, missingAllocationGuids);
 
@@ -313,7 +313,7 @@ public class SystemSubsystemReport extends AbstractBlam {
    }
 
    private void recurseWholeSubsystem(String subSysName, Artifact subsysFolder, Set<String> missingAllocationGuids) throws OseeCoreException {
-      Set<Artifact> subsysReqs = new LinkedHashSet<Artifact>();
+      Set<Artifact> subsysReqs = new LinkedHashSet<>();
       subsysToSubsysReqsMap.put(subSysName, subsysReqs);
       countDescendants(subSysName, subsysReqs, subsysFolder, missingAllocationGuids);
    }

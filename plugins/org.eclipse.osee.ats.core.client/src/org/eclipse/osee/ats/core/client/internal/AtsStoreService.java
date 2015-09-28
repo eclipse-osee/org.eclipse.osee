@@ -48,7 +48,7 @@ public class AtsStoreService implements IAtsStoreService {
       Long result = AtsUtilCore.getUuidFromGuid(guid);
       if (result == null) {
          if (guidToUuid == null) {
-            guidToUuid = new HashMap<String, Long>(200);
+            guidToUuid = new HashMap<>(200);
          }
          if (guidToUuid.containsKey(guid)) {
             result = guidToUuid.get(guid);

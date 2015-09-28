@@ -56,7 +56,7 @@ public class ExportArtifacts extends AbstractBlam {
       List<Artifact> artifacts;
 
       if (variableMap.getBoolean("Include Children")) {
-         artifacts = new ArrayList<Artifact>(400);
+         artifacts = new ArrayList<>(400);
          for (Artifact artifact : parentArtifacts) {
             artifacts.add(artifact);
             artifacts.addAll(artifact.getDescendants());
@@ -101,7 +101,7 @@ public class ExportArtifacts extends AbstractBlam {
    }
 
    private void mapAttributeTypeToColumn(List<Artifact> artifacts) throws OseeCoreException {
-      HashSet<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
+      HashSet<IAttributeType> attributeTypes = new HashSet<>();
 
       for (Artifact artifact : artifacts) {
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {

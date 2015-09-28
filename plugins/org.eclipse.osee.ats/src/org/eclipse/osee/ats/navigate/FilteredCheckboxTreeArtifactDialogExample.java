@@ -36,7 +36,7 @@ public class FilteredCheckboxTreeArtifactDialogExample extends XNavigateItemActi
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtilCore.getAtsBranch());
-      List<Artifact> initialSelection = new ArrayList<Artifact>();
+      List<Artifact> initialSelection = new ArrayList<>();
       List<Artifact> children = rootArtifact.getChildren();
       initialSelection.add(children.iterator().next());
       FilteredCheckboxTreeArtifactDialog dialog =

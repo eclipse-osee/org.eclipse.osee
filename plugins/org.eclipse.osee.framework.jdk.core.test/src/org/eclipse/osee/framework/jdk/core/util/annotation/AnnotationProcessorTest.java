@@ -30,7 +30,7 @@ public class AnnotationProcessorTest {
 
    @Before
    public void setup() {
-      annotationHandlers = new HashMap<Class<? extends Annotation>, FieldAnnotationHandler<?>>();
+      annotationHandlers = new HashMap<>();
 
       annotationHandlers.put(Annotation1.class, new Handler1());
       annotationHandlers.put(Annotation2.class, new Handler2());

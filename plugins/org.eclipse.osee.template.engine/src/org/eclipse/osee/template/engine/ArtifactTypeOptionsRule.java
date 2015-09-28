@@ -124,7 +124,7 @@ public class ArtifactTypeOptionsRule extends AppendableRule<String> {
 
    @Override
    public void applyTo(Appendable appendable) throws IOException {
-      ArrayList<String> sortedList = new ArrayList<String>();
+      ArrayList<String> sortedList = new ArrayList<>();
       for (String type : typeNames) {
          sortedList.add(type);
       }

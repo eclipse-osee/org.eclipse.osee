@@ -189,7 +189,7 @@ public class ModelAsserts {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
-      List<ArtifactType> expectedSuperTypes = new ArrayList<ArtifactType>();
+      List<ArtifactType> expectedSuperTypes = new ArrayList<>();
       for (Long superTyperGuid : superTypeGuids) {
          ArtifactType superArtifactType = artCache.getByGuid(superTyperGuid);
          Assert.assertNotNull(superArtifactType);
@@ -212,7 +212,7 @@ public class ModelAsserts {
       ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
-      List<ArtifactType> expectedDescendants = new ArrayList<ArtifactType>();
+      List<ArtifactType> expectedDescendants = new ArrayList<>();
       for (Long type : descendantGuids) {
          ArtifactType childType = artCache.getByGuid(type);
          Assert.assertNotNull(childType);
@@ -241,7 +241,7 @@ public class ModelAsserts {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 
-      List<IAttributeType> expectedAttributes = new ArrayList<IAttributeType>();
+      List<IAttributeType> expectedAttributes = new ArrayList<>();
       for (Long attrGuid : attributeGuids) {
          IAttributeType attributeType = attrCache.getByGuid(attrGuid);
          Assert.assertNotNull(attributeType);
@@ -272,7 +272,7 @@ public class ModelAsserts {
       Assert.assertEquals(maxValue == Integer.MAX_VALUE ? "n" : "1",
          relationType.getMultiplicity().asLimitLabel(relationSide));
 
-      List<ArtifactType> allowedTypes = new ArrayList<ArtifactType>();
+      List<ArtifactType> allowedTypes = new ArrayList<>();
       for (Long guid : artifactTypesAllowed) {
          ArtifactType type = artCache.getByGuid(guid);
          Assert.assertNotNull(type);

@@ -39,7 +39,7 @@ public class ActionableItemListDialog extends FilteredCheckboxTreeDialog {
    }
 
    public Set<IAtsActionableItem> getSelected() {
-      Set<IAtsActionableItem> selectedactionItems = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> selectedactionItems = new HashSet<>();
       for (Object obj : getResult()) {
          selectedactionItems.add((IAtsActionableItem) obj);
       }

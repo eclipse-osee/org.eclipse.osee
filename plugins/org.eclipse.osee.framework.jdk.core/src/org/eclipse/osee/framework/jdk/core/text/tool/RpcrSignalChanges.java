@@ -29,7 +29,7 @@ public class RpcrSignalChanges {
 
    public RpcrSignalChanges(File file) throws IOException {
       rpcrName = file.getName().substring(0, 4);
-      this.signals = new ArrayList<String>(500);
+      this.signals = new ArrayList<>(500);
 
       BufferedReader in = null;
       try {

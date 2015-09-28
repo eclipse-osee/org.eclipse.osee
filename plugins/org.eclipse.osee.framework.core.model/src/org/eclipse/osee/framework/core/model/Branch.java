@@ -37,7 +37,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
 
    private static final int SHORT_NAME_LIMIT = 35;
 
-   private final Collection<Branch> childBranches = new HashSet<Branch>();
+   private final Collection<Branch> childBranches = new HashSet<>();
 
    public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
       super(uuid, name);
@@ -232,7 +232,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
     */
    @Override
    public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
-      Set<Branch> children = new HashSet<Branch>();
+      Set<Branch> children = new HashSet<>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       filter.setNegatedBranchTypes(BranchType.MERGE);
 
@@ -247,7 +247,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
     */
    @Override
    public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
-      Set<Branch> children = new HashSet<Branch>();
+      Set<Branch> children = new HashSet<>();
       getChildBranches(children, recurse, new BranchFilter());
       return children;
    }
@@ -271,7 +271,7 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
 
    @Override
    public Collection<Branch> getAncestors() throws OseeCoreException {
-      List<Branch> ancestors = new ArrayList<Branch>();
+      List<Branch> ancestors = new ArrayList<>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
       while (branchCursor.hasParentBranch()) {

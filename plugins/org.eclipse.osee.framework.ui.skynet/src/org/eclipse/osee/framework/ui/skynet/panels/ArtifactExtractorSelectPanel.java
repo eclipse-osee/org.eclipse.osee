@@ -39,7 +39,7 @@ public class ArtifactExtractorSelectPanel {
    private IArtifactExtractor selectedParser;
 
    public ArtifactExtractorSelectPanel(ArtifactExtractorContributionManager importContributionManager) {
-      this.listeners = new HashSet<Listener>();
+      this.listeners = new HashSet<>();
       this.importContributionManager = importContributionManager;
    }
 

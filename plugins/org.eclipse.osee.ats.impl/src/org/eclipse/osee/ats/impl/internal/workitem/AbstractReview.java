@@ -31,7 +31,7 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
          ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);

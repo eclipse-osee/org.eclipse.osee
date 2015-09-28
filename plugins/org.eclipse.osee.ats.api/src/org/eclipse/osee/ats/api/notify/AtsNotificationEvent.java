@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AtsNotificationEvent {
 
-   private Collection<String> userIds = new HashSet<String>();
+   private Collection<String> userIds = new HashSet<>();
    private String id;
    private String fromUserId;
    private String type;

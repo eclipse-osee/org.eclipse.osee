@@ -73,7 +73,7 @@ public class OsVariableDeclarationImpl extends OsExpressionImpl implements OsVar
   {
     if (elements == null)
     {
-      elements = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_VARIABLE_DECLARATION__ELEMENTS);
+      elements = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_VARIABLE_DECLARATION__ELEMENTS);
     }
     return elements;
   }

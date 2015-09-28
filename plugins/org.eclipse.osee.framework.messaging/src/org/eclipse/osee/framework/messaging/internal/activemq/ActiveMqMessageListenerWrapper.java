@@ -105,7 +105,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
       @Override
       public void run() {
          try {
-            Map<String, Object> headers = new HashMap<String, Object>();
+            Map<String, Object> headers = new HashMap<>();
             Enumeration<?> propertyNames = message.getPropertyNames();
             while( propertyNames.hasMoreElements() )
             {

@@ -53,7 +53,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
    private final BranchCriteriaFactory factory2;
    private final CriteriaFactory factory3;
 
-   private final LinkedList<QueryData> queries = new LinkedList<QueryData>();
+   private final LinkedList<QueryData> queries = new LinkedList<>();
    private String version;
    private TxQueryBuilderImpl<?> txQuery;
    private ArtifactQueryBuilderImpl<?> artQuery;
@@ -102,7 +102,7 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
       OptionsUtil.setIncludeDeletedAttributes(options, false);
       OptionsUtil.setIncludeDeletedRelations(options, false);
 
-      List<CriteriaSet> criterias = new ArrayList<CriteriaSet>();
+      List<CriteriaSet> criterias = new ArrayList<>();
       criterias.add(new CriteriaSet());
       queries.add(new QueryData(options, criterias, new SelectData()));
    }
@@ -121,19 +121,19 @@ public class OrcsScriptAssemblerImpl implements OrcsScriptAssembler, OrcsScriptE
 
    @Override
    public TxQueryBuilder<?> newTxQuery() {
-      this.txQuery = new TxQueryBuilderImpl<TxQueryBuilder<?>>(factory1, getLastQuery());
+      this.txQuery = new TxQueryBuilderImpl<>(factory1, getLastQuery());
       return txQuery;
    }
 
    @Override
    public BranchQueryBuilder<?> newBranchQuery() {
-      this.branchQuery = new BranchQueryBuilderImpl<BranchQueryBuilder<?>>(factory2, getLastQuery());
+      this.branchQuery = new BranchQueryBuilderImpl<>(factory2, getLastQuery());
       return branchQuery;
    }
 
    @Override
    public ArtifactQueryBuilder<?> newArtifactQuery() {
-      this.artQuery = new ArtifactQueryBuilderImpl<ArtifactQueryBuilder<?>>(factory3, getLastQuery());
+      this.artQuery = new ArtifactQueryBuilderImpl<>(factory3, getLastQuery());
       return artQuery;
    }
 

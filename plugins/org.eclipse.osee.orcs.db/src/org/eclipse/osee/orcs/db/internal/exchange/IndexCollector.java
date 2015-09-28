@@ -36,7 +36,7 @@ public final class IndexCollector {
       this.source = source;
       this.primaryKey = primaryKey.toLowerCase();
       this.ids = java.util.Collections.synchronizedSet(new HashSet<Long>());
-      this.aliases = new HashSet<String>();
+      this.aliases = new HashSet<>();
       if (aliases != null && aliases.length > 0) {
          for (String alias : aliases) {
             this.aliases.add(alias.toLowerCase());
@@ -44,7 +44,7 @@ public final class IndexCollector {
       }
       this.aliases.add(this.primaryKey);
 
-      this.negativeOneAliases = new HashSet<String>();
+      this.negativeOneAliases = new HashSet<>();
       if (negativeOneAliases != null && negativeOneAliases.length > 0) {
          for (String alias : negativeOneAliases) {
             this.negativeOneAliases.add(alias.toLowerCase());
@@ -100,7 +100,7 @@ public final class IndexCollector {
 
    protected void removeFalsePositives() {
       if (!notFound.isEmpty()) {
-         List<String> keysToRemove = new ArrayList<String>();
+         List<String> keysToRemove = new ArrayList<>();
          for (String key : notFound.keySet()) {
             Collection<Long> values = notFound.get(key);
             if (values != null && !values.isEmpty()) {

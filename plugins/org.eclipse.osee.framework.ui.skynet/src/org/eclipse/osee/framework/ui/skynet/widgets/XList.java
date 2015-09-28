@@ -91,7 +91,7 @@ public class XList extends GenericXWidget {
    private Menu listMenu;
    private Composite parent;
    private Composite composite;
-   private final Map<String, XListItem> items = new TreeMap<String, XListItem>();
+   private final Map<String, XListItem> items = new TreeMap<>();
    private int requiredMinSelected = 0;
    private int requiredMaxSelected = 0;
    private boolean grabHorizontal = false;
@@ -224,7 +224,7 @@ public class XList extends GenericXWidget {
    }
 
    public Set<XListItem> getSelected() {
-      Set<XListItem> sel = new HashSet<XListItem>();
+      Set<XListItem> sel = new HashSet<>();
       for (XListItem xItem : items.values()) {
          if (xItem.isSelected()) {
             sel.add(xItem);
@@ -251,7 +251,7 @@ public class XList extends GenericXWidget {
    }
 
    public Collection<String> getSelectedStrs() {
-      Set<String> selected = new HashSet<String>();
+      Set<String> selected = new HashSet<>();
       for (XListItem item : getSelected()) {
          selected.add(item.getName());
       }
@@ -272,8 +272,8 @@ public class XList extends GenericXWidget {
          return;
       }
       String listItems[] = listList.getItems();
-      Set<String> listItemsSet = new HashSet<String>();
-      Set<String> selected = new HashSet<String>();
+      Set<String> listItemsSet = new HashSet<>();
+      Set<String> selected = new HashSet<>();
       for (String listItem : listItems) {
          listItemsSet.add(listItem);
       }
@@ -332,7 +332,7 @@ public class XList extends GenericXWidget {
    }
 
    public void setSelected(Collection<String> names) {
-      ArrayList<String> handledNames = new ArrayList<String>();
+      ArrayList<String> handledNames = new ArrayList<>();
       for (Entry<String, XListItem> entry : items.entrySet()) {
          if (names.contains(entry.getKey())) {
             entry.getValue().selected = true;

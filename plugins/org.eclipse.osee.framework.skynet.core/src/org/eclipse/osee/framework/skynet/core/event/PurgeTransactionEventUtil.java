@@ -46,7 +46,7 @@ public final class PurgeTransactionEventUtil {
    public static void handleRemotePurgeTransactionEvent(TransactionEvent transEvent) {
       if (transEvent.getEventType() == TransactionEventType.Purged) {
 
-         Set<Artifact> artifactsInCache = new HashSet<Artifact>();
+         Set<Artifact> artifactsInCache = new HashSet<>();
          for (TransactionChange transChange : transEvent.getTransactionChanges()) {
             try {
                TransactionManager.deCache(transChange.getTransactionId());

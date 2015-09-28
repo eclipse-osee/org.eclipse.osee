@@ -120,7 +120,7 @@ public class OsTxQueryByPredicateImpl extends OsTxQueryImpl implements OsTxQuery
   {
     if (criteria == null)
     {
-      criteria = new EObjectContainmentEList<OsTxCriteria>(OsTxCriteria.class, this, OrcsScriptDslPackage.OS_TX_QUERY_BY_PREDICATE__CRITERIA);
+      criteria = new EObjectContainmentEList<>(OsTxCriteria.class, this, OrcsScriptDslPackage.OS_TX_QUERY_BY_PREDICATE__CRITERIA);
     }
     return criteria;
   }

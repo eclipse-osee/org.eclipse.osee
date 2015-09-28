@@ -53,7 +53,7 @@ public class AttributeReadOnlyImplTest {
    public void setUp() {
       MockitoAnnotations.initMocks(this);
 
-      readOnly = new AttributeReadOnlyImpl<Date>(proxyManager, session, proxiedObject);
+      readOnly = new AttributeReadOnlyImpl<>(proxyManager, session, proxiedObject);
    }
 
    @Test

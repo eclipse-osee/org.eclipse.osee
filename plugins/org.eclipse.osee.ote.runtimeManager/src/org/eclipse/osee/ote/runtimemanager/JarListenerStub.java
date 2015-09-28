@@ -34,9 +34,9 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
 
    public JarListenerStub() {
       this.bundleSynchronizer = new Object();
-      this.newBundles = new HashSet<String>();
-      this.changedBundles = new HashSet<String>();
-      this.removedBundles = new HashSet<String>();
+      this.newBundles = new HashSet<>();
+      this.changedBundles = new HashSet<>();
+      this.removedBundles = new HashSet<>();
    }
 
    @Override
@@ -96,7 +96,7 @@ public class JarListenerStub<T extends JarCollectionNature> implements IJarChang
 
    private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
       synchronized (bundleSynchronizer) {
-         Set<S> returnBundles = new HashSet<S>(set);
+         Set<S> returnBundles = new HashSet<>(set);
          set.clear();
          return returnBundles;
       }

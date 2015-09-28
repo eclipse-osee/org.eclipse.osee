@@ -33,7 +33,7 @@ public class OutfileDataCollector implements IDataListener {
    protected final Map<String, String> collectedData;
 
    public OutfileDataCollector() {
-      this.collectedData = new HashMap<String, String>();
+      this.collectedData = new HashMap<>();
    }
 
    @Override

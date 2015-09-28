@@ -39,7 +39,7 @@ public class MessageServiceController implements HasMessageService {
    }
 
    public void start() throws Exception {
-      brokers = new ConcurrentHashMap<String, BrokerService>();
+      brokers = new ConcurrentHashMap<>();
 
       messageServiceProviderImpl = new MessageServiceProxy();
       messageServiceProviderImpl.start();

@@ -66,24 +66,24 @@ public final class ExchangeDb {
    private static final String[] GAMMA_ID_ALIASES;
    private static final String[] TRANSACTION_ID_ALIASES;
    static {
-      Set<String> artIdAliases = new HashSet<String>();
+      Set<String> artIdAliases = new HashSet<>();
       artIdAliases.add(ARTIFACT_ID);
       artIdAliases.addAll(Arrays.asList(ARTIFACT_ID_REG_ALIASES));
       artIdAliases.addAll(Arrays.asList(ARTIFACT_ID_NEG_ONE_ALIASES));
       ARTIFACT_ID_ALIASES = artIdAliases.toArray(new String[artIdAliases.size()]);
 
-      Set<String> branchUuidAliases = new HashSet<String>();
+      Set<String> branchUuidAliases = new HashSet<>();
       branchUuidAliases.add(BRANCH_ID);
       branchUuidAliases.addAll(Arrays.asList(BRANCH_ID_REG_ALIASES));
       branchUuidAliases.addAll(Arrays.asList(BRANCH_ID_NEG_ONE_ALIASES));
       BRANCH_ID_ALIASES = branchUuidAliases.toArray(new String[branchUuidAliases.size()]);
 
-      Set<String> gammaIdAliases = new HashSet<String>();
+      Set<String> gammaIdAliases = new HashSet<>();
       gammaIdAliases.add(GAMMA_ID);
       gammaIdAliases.addAll(Arrays.asList(GAMMA_ID_REG_ALIASES));
       GAMMA_ID_ALIASES = gammaIdAliases.toArray(new String[gammaIdAliases.size()]);
 
-      Set<String> txIdAliases = new HashSet<String>();
+      Set<String> txIdAliases = new HashSet<>();
       txIdAliases.add(TRANSACTION_ID);
       txIdAliases.addAll(Arrays.asList(TRANSACTION_ID_REG_ALIASES));
       txIdAliases.addAll(Arrays.asList(TRANSACTION_ID_NEG_ONE_ALIASES));
@@ -91,7 +91,7 @@ public final class ExchangeDb {
    }
 
    static List<IndexCollector> createCheckList() {
-      List<IndexCollector> items = new ArrayList<IndexCollector>();
+      List<IndexCollector> items = new ArrayList<>();
       items.add(new IndexCollector(ExportItem.OSEE_TXS_DATA, GAMMA_ID, GAMMA_ID_REG_ALIASES));
       items.add(new IndexCollector(ExportItem.OSEE_TXS_ARCHIVED_DATA, GAMMA_ID, GAMMA_ID_REG_ALIASES));
       items.add(new IndexCollector(ExportItem.OSEE_TX_DETAILS_DATA, TRANSACTION_ID, TRANSACTION_ID_REG_ALIASES,
@@ -106,7 +106,7 @@ public final class ExchangeDb {
    }
 
    static List<IdTranslator> createTranslators(JdbcClient service) {
-      List<IdTranslator> translators = new ArrayList<IdTranslator>();
+      List<IdTranslator> translators = new ArrayList<>();
       translators.add(new IdTranslator(service, IdentityManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
       translators.add(new IdTranslator(service, IdentityManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
       translators.add(new IdTranslator(service, IdentityManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));

@@ -32,7 +32,7 @@ public final class OseeLinkParser {
    private final Map<String, String> parameterMap;
 
    public OseeLinkParser() {
-      this.parameterMap = new HashMap<String, String>();
+      this.parameterMap = new HashMap<>();
    }
 
    public void parse(String link) {

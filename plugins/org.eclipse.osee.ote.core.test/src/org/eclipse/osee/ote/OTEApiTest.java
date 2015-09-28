@@ -47,7 +47,7 @@ public class OTEApiTest {
       validConfiguration.addItem(config2);
       validConfiguration.addItem(config3);
 
-      OTEStatusCallback<ConfigurationStatus> callable = new OTEStatusCallbackForTests<ConfigurationStatus>();
+      OTEStatusCallback<ConfigurationStatus> callable = new OTEStatusCallbackForTests<>();
 
       Future<ConfigurationStatus> statusFuture = oteApi.loadConfiguration(validConfiguration, callable);
       ConfigurationStatus status = statusFuture.get();
@@ -123,7 +123,7 @@ public class OTEApiTest {
       validConfiguration.addItem(config2);
       validConfiguration.addItem(config3);
 
-      OTEStatusCallback<ConfigurationStatus> callable = new OTEStatusCallbackForTests<ConfigurationStatus>();
+      OTEStatusCallback<ConfigurationStatus> callable = new OTEStatusCallbackForTests<>();
 
       Future<ConfigurationStatus> statusFuture = oteApi.downloadConfigurationJars(validConfiguration, callable);
       ConfigurationStatus status = statusFuture.get();

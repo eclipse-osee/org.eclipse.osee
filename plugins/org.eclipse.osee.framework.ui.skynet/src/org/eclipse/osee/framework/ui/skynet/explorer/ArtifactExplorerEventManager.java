@@ -42,7 +42,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class ArtifactExplorerEventManager implements IArtifactEventListener {
 
-   List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<IArtifactExplorerEventHandler>();
+   List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactExplorerEventManager instance;
 
    public static void add(IArtifactExplorerEventHandler iWorldEventHandler) {
@@ -86,7 +86,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
       }
 
       // Do not process event if branch is null, deleted or purged.  But, don't want to remove as handler cause another branch may be selected
-      final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<IArtifactExplorerEventHandler>();
+      final List<IArtifactExplorerEventHandler> handlersToProcess = new ArrayList<>();
       for (IArtifactExplorerEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             handlers.remove(handler);

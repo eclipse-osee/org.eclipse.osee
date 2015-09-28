@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
  */
 public class DataStoreInfoImpl implements DataStoreInfo {
 
-   private Map<String, String> configProperties = new HashMap<String, String>();
+   private Map<String, String> configProperties = new HashMap<>();
    private Set<URL> configResources;
 
    @Override

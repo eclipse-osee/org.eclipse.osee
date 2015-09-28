@@ -44,7 +44,7 @@ public class ReviewDefectItem {
       Minor,
       Issue;
       public static Collection<String> strValues() {
-         Set<String> values = new HashSet<String>();
+         Set<String> values = new HashSet<>();
          for (Enum<Severity> e : values()) {
             values.add(e.name());
          }
@@ -100,7 +100,7 @@ public class ReviewDefectItem {
       Reject,
       Duplicate;
       public static Collection<String> strValues() {
-         Set<String> values = new HashSet<String>();
+         Set<String> values = new HashSet<>();
          for (Enum<Disposition> e : values()) {
             values.add(e.name());
          }
@@ -119,7 +119,7 @@ public class ReviewDefectItem {
       Test,
       Other;
       public static Collection<String> strValues() {
-         Set<String> values = new HashSet<String>();
+         Set<String> values = new HashSet<>();
          for (Enum<InjectionActivity> e : values()) {
             values.add(e.name());
          }

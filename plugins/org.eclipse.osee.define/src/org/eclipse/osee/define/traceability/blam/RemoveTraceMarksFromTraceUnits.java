@@ -94,7 +94,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
    }
 
    private TraceHandler getCheckedTraceHandler(VariableMap variableMap) throws OseeArgumentException {
-      List<TraceHandler> toReturn = new ArrayList<TraceHandler>();
+      List<TraceHandler> toReturn = new ArrayList<>();
       for (TraceHandler handler : getTraceHandlers()) {
          if (variableMap.getBoolean(handler.getName())) {
             toReturn.add(handler);
@@ -189,7 +189,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
    }
 
    private List<TraceHandler> getTraceHandlers() {
-      List<TraceHandler> handlers = new ArrayList<TraceHandler>();
+      List<TraceHandler> handlers = new ArrayList<>();
       try {
          for (TraceHandler handler : TraceUnitExtensionManager.getInstance().getAllTraceHandlers()) {
             if (handler.getParser().isTraceRemovalAllowed()) {
@@ -251,7 +251,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
       public void addModifiedItem(String name, CharBuffer original, CharBuffer modified) {
          if (modifiedRows == null) {
-            modifiedRows = new ArrayList<IResultsXViewerRow>();
+            modifiedRows = new ArrayList<>();
          }
          String delta = getDelta(original, modified);
          String[] entries = delta.split("(\\n|;)");
@@ -293,7 +293,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
       public void addNoChangeItem(String... name) {
          if (noChangeRows == null) {
-            noChangeRows = new ArrayList<IResultsXViewerRow>();
+            noChangeRows = new ArrayList<>();
          }
          noChangeRows.add(new ResultsXViewerRow(name));
       }
@@ -307,7 +307,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
       }
 
       private List<XViewerColumn> createColumnHelper(String... headers) {
-         List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+         List<XViewerColumn> columns = new ArrayList<>();
          for (String name : headers) {
             columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
          }
@@ -327,7 +327,7 @@ public class RemoveTraceMarksFromTraceUnits extends AbstractBlam {
 
                   @Override
                   public List<IResultsEditorTab> getResultsEditorTabs() {
-                     List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>();
+                     List<IResultsEditorTab> resultsTabs = new ArrayList<>();
                      if (modifiedRows != null && !modifiedRows.isEmpty()) {
                         resultsTabs.add(new ResultsEditorTableTab("Modified Trace Units", getModifiedHeaders(),
                            modifiedRows));

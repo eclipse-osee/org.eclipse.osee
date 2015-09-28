@@ -93,9 +93,9 @@ public class AuthenticationComposite extends Composite {
    public AuthenticationComposite(Composite parent, int style, boolean buildSubmitButton) {
       super(parent, style);
       this.buildSubmitButton = buildSubmitButton;
-      fieldMap = new HashMap<LabelEnum, Control>();
-      dataMap = new HashMap<LabelEnum, String>();
-      statusMap = new HashMap<LabelEnum, Label>();
+      fieldMap = new HashMap<>();
+      dataMap = new HashMap<>();
+      statusMap = new HashMap<>();
       createControl();
    }
 

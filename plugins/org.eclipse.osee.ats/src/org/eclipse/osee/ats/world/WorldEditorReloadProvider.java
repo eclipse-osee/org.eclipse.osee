@@ -77,7 +77,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       if (validartUuids.isEmpty()) {
          AWorkbench.popup("No valid ids to load");
       } else {
-         artifacts = new ArrayList<Artifact>();
+         artifacts = new ArrayList<>();
          if (branchUuid == AtsUtilCore.getAtsBranch().getUuid()) {
             artifacts.addAll(ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids),
                AtsUtilCore.getAtsBranch()));
@@ -89,7 +89,7 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
    }
 
    public List<Integer> getValidArtUuids() {
-      List<Integer> validartUuids = new ArrayList<Integer>();
+      List<Integer> validartUuids = new ArrayList<>();
       for (Integer artUuid : artUuids) {
          if (artUuid > 0) {
             validartUuids.add(artUuid);

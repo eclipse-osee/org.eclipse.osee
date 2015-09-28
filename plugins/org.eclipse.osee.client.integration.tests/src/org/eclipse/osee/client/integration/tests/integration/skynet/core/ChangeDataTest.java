@@ -60,7 +60,7 @@ public class ChangeDataTest {
    @Before
    public void setUp() throws OseeCoreException {
       workingBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, method.getQualifiedTestName());
-      ArrayList<Change> theChanges = new ArrayList<Change>();
+      ArrayList<Change> theChanges = new ArrayList<>();
 
       Artifact artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
       Artifact artifactEnd = artifactStart.duplicate(workingBranch);
@@ -139,7 +139,7 @@ public class ChangeDataTest {
 
    @Test
    public void testGetSubset() throws Exception {
-      ArrayList<IAttributeType> typesToIgnore = new ArrayList<IAttributeType>();
+      ArrayList<IAttributeType> typesToIgnore = new ArrayList<>();
       typesToIgnore.add(CoreAttributeTypes.CrewInterfaceRequirement);
 
       Collection<Artifact> theChanges =

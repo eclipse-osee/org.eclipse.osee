@@ -47,7 +47,7 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       this.soleBacklogArtifact = soleBacklogArtifact;
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
-      List<XViewerColumn> backlogCols = new LinkedList<XViewerColumn>();
+      List<XViewerColumn> backlogCols = new LinkedList<>();
 
       // Add default Backlog columns
       WorldXViewerUtil.addColumn(this, BacklogOrderColumn.getInstance(), AbstractMembersOrderColumn.DEFAULT_WIDTH,

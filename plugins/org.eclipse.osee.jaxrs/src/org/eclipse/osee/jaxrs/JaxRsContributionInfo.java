@@ -53,7 +53,7 @@ public class JaxRsContributionInfo {
    @XmlElement
    public Set<ApplicationInfo> getApplications() {
       if (applications == null) {
-         applications = new TreeSet<ApplicationInfo>();
+         applications = new TreeSet<>();
       }
       return applications;
    }
@@ -65,7 +65,7 @@ public class JaxRsContributionInfo {
    @XmlElement
    public Set<String> getProviders() {
       if (providers == null) {
-         providers = new TreeSet<String>();
+         providers = new TreeSet<>();
       }
       return providers;
    }
@@ -77,7 +77,7 @@ public class JaxRsContributionInfo {
    @XmlElement
    public Set<String> getStaticResources() {
       if (staticResources == null) {
-         staticResources = new TreeSet<String>();
+         staticResources = new TreeSet<>();
       }
       return staticResources;
    }

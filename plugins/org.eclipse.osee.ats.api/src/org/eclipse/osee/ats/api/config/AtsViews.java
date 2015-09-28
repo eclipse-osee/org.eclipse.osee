@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement
 public class AtsViews {
-   private final List<AtsAttributeValueColumn> attrColumns = new ArrayList<AtsAttributeValueColumn>();
+   private final List<AtsAttributeValueColumn> attrColumns = new ArrayList<>();
 
    public List<AtsAttributeValueColumn> getAttrColumns() {
       return attrColumns;

@@ -35,7 +35,7 @@ public class OseeAnnotationsInterceptor extends SecureAnnotationsInterceptor {
    }
 
    private void initRoles(Class<?> clazz) {
-      Map<String, String> rolesMap = new HashMap<String, String>();
+      Map<String, String> rolesMap = new HashMap<>();
       findRoles(clazz, rolesMap);
       super.setMethodRolesMap(rolesMap);
    }

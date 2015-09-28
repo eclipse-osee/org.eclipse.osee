@@ -81,7 +81,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       OseePrincipal anonymous = null;
       Account account = result.getOneOrNull();
       if (account != null) {
-         Set<String> roles = new LinkedHashSet<String>();
+         Set<String> roles = new LinkedHashSet<>();
          roles.add(SystemRoles.ROLES_ANONYMOUS);
          // Get additional roles/permissions from authorization service;
 
@@ -102,7 +102,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       AuthenticatedUser subject = authenticationAdmin.authenticate(request);
       Account account = resolveAccount(username, subject, automaticAccountCreationAllowed);
 
-      Set<String> roles = new LinkedHashSet<String>();
+      Set<String> roles = new LinkedHashSet<>();
       if (subject.isAuthenticated()) {
          roles.add(SystemRoles.ROLES_AUTHENTICATED);
       } else {

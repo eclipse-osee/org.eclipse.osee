@@ -29,7 +29,7 @@ public class FieldTestUtil {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 
-      List<T> actual = new ArrayList<T>(field.get());
+      List<T> actual = new ArrayList<>(field.get());
       Assert.assertEquals(expected.size(), actual.size());
       Assert.assertTrue(Collections.setComplement(actual, expected).isEmpty());
       Assert.assertTrue(Collections.setComplement(expected, actual).isEmpty());

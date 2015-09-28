@@ -235,7 +235,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     List<String> namesList = new ArrayList<String>(names);
+                     List<String> namesList = new ArrayList<>(names);
                      java.util.Collections.sort(namesList);
                      versionCombo.setDataStrings(namesList.toArray(new String[namesList.size()]));
                   } catch (Exception ex) {
@@ -271,7 +271,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
       if (stateCombo == null) {
          return;
       }
-      List<Object> states = new ArrayList<Object>();
+      List<Object> states = new ArrayList<>();
       states.add("Implement");
       stateCombo.setSelected(states);
    }

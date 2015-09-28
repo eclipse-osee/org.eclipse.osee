@@ -93,7 +93,7 @@ public final class WordTemplateFileDiffer {
       boolean recurseOnLoad = renderer.getBooleanOption(WordTemplateProcessor.RECURSE_ON_LOAD);
       Collection<Artifact> toProcess =
          (recurseChildren || recurseOnLoad) ? getAllArtifacts(endArtifacts) : endArtifacts;
-      List<Change> changes = new LinkedList<Change>();
+      List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
       IProgressMonitor monitor = (IProgressMonitor) renderer.getOption("Progress Monitor");
       if (monitor == null) {
@@ -110,7 +110,7 @@ public final class WordTemplateFileDiffer {
    }
 
    private Collection<Artifact> getAllArtifacts(List<Artifact> endArtifacts) throws OseeCoreException {
-      Set<Artifact> toReturn = new LinkedHashSet<Artifact>();
+      Set<Artifact> toReturn = new LinkedHashSet<>();
       for (Artifact art : endArtifacts) {
          toReturn.add(art);
          toReturn.addAll(art.getDescendants());
@@ -120,9 +120,9 @@ public final class WordTemplateFileDiffer {
 
    private void diff(List<Change> changes, Collection<Artifact> endArtifacts, String diffPrefix, TransactionDelta txDelta) throws OseeCoreException {
 
-      Collection<ArtifactDelta> artifactDeltas = new ArrayList<ArtifactDelta>();
-      Set<Integer> addedIds = new HashSet<Integer>();
-      Set<Integer> changeIds = new HashSet<Integer>(changes.size());
+      Collection<ArtifactDelta> artifactDeltas = new ArrayList<>();
+      Set<Integer> addedIds = new HashSet<>();
+      Set<Integer> changeIds = new HashSet<>(changes.size());
       for (Change change : changes) {
          changeIds.add(change.getArtId());
       }

@@ -33,7 +33,7 @@ public class AccountPreferencesData {
 
    public Map<String, String> getMap() {
       if (preferences == null) {
-         preferences = new HashMap<String, String>();
+         preferences = new HashMap<>();
       }
       return preferences;
    }

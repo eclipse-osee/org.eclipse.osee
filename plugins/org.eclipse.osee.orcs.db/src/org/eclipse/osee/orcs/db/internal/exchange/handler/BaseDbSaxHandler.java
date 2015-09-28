@@ -50,7 +50,7 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
       this.metadata = null;
       this.isCacheAll = isCacheAll;
       this.cacheLimit = cacheLimit;
-      this.data = new ArrayList<Object[]>();
+      this.data = new ArrayList<>();
    }
 
    protected Log getLogger() {

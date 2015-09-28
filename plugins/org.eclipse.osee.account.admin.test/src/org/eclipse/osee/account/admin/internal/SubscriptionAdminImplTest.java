@@ -285,7 +285,7 @@ public class SubscriptionAdminImplTest {
       Validator validator = manager.getValidator();
       assertEquals(true, validator.isValid(AccountField.SUBSCRIPTION_GROUP_NAME, "group-12313"));
 
-      Map<String, Object> props = new HashMap<String, Object>();
+      Map<String, Object> props = new HashMap<>();
       props.put(SUBSCRIPTION_GROUP_NAME_VALIDATION_PATTERN, namePattern);
 
       manager.update(props);

@@ -39,7 +39,7 @@ public final class TxMonitorCache<K> {
    public void putTx(K key, MonitoredTx tx) {
       Map<String, WeakReference<MonitoredTx>> data = txMap.get(key);
       if (data == null) {
-         data = new ConcurrentHashMap<String, WeakReference<MonitoredTx>>();
+         data = new ConcurrentHashMap<>();
          txMap.put(key, data);
       }
       data.put(tx.getUuid(), new WeakReference<MonitoredTx>(tx));
@@ -55,7 +55,7 @@ public final class TxMonitorCache<K> {
    }
 
    private void manageReferences() {
-      Set<K> toRemove = new HashSet<K>();
+      Set<K> toRemove = new HashSet<>();
       for (Entry<K, Map<String, WeakReference<MonitoredTx>>> entry : txMap.entrySet()) {
          Map<?, WeakReference<MonitoredTx>> data = entry.getValue();
          manageReferences(data);
@@ -69,7 +69,7 @@ public final class TxMonitorCache<K> {
    }
 
    private void manageReferences(Map<?, WeakReference<MonitoredTx>> data) {
-      Set<Object> toRemove = new HashSet<Object>();
+      Set<Object> toRemove = new HashSet<>();
       for (Entry<?, WeakReference<MonitoredTx>> entry : data.entrySet()) {
          WeakReference<?> reference = entry.getValue();
          if (reference == null || reference.get() == null) {
@@ -100,10 +100,10 @@ public final class TxMonitorCache<K> {
    }
 
    public List<MonitoredTx> getTxs(K key) {
-      List<MonitoredTx> txs = new ArrayList<MonitoredTx>();
+      List<MonitoredTx> txs = new ArrayList<>();
       Map<String, WeakReference<MonitoredTx>> data = txMap.get(key);
       if (data != null) {
-         Set<String> toRemove = new HashSet<String>();
+         Set<String> toRemove = new HashSet<>();
          for (Entry<String, WeakReference<MonitoredTx>> entry : data.entrySet()) {
             WeakReference<MonitoredTx> reference = entry.getValue();
             if (reference != null) {

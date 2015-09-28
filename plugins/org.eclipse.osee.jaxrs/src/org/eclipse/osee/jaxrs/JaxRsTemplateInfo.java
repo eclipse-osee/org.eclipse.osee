@@ -24,7 +24,7 @@ public class JaxRsTemplateInfo extends JaxRsTemplateId {
 
    public Set<String> getAttributes() {
       if (attributes == null) {
-         attributes = new TreeSet<String>();
+         attributes = new TreeSet<>();
       }
       return attributes;
    }

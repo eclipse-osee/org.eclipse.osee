@@ -72,9 +72,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
  */
 public class ExcelAtsActionArtifactExtractor {
 
-   private final List<ActionData> actionDatas = new ArrayList<ActionData>();
-   private final Set<Artifact> actionArts = new HashSet<Artifact>();
-   private final Map<String, Artifact> actionNameToAction = new HashMap<String, Artifact>(100);
+   private final List<ActionData> actionDatas = new ArrayList<>();
+   private final Set<Artifact> actionArts = new HashSet<>();
+   private final Map<String, Artifact> actionNameToAction = new HashMap<>(100);
    private final boolean emailPOCs;
    private boolean dataIsValid = true;
    private final IAtsGoal toGoal;
@@ -95,13 +95,13 @@ public class ExcelAtsActionArtifactExtractor {
          if (aData.title.equals("")) {
             rd.error("Row " + rowNum + "; Invalid Title");
          }
-         Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+         Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
          if (aData.actionableItems.isEmpty()) {
             rd.error("Row " + rowNum + ": Must have at least one ActionableItem defined");
          } else {
             for (String actionableItemName : aData.actionableItems) {
                try {
-                  Collection<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+                  Collection<IAtsActionableItem> aias = new ArrayList<>();
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsUtilCore.getAtsBranch())) {
                      IAtsActionableItem ai =
@@ -171,13 +171,13 @@ public class ExcelAtsActionArtifactExtractor {
 
    public void createArtifactsAndNotify(IAtsChangeSet changes) {
       AtsUtilClient.setEmailEnabled(false);
-      Set<TeamWorkFlowArtifact> teamWfs = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teamWfs = new HashSet<>();
       Date createdDate = new Date();
       try {
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
          for (ActionData aData : actionDatas) {
             Artifact actionArt = actionNameToAction.get(aData.title);
-            Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
+            Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
             if (actionArt == null) {
                actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
@@ -323,11 +323,11 @@ public class ExcelAtsActionArtifactExtractor {
       protected String title = "";
       protected String desc = "";
       protected String priorityStr = "";
-      protected Set<String> userComms = new HashSet<String>();
+      protected Set<String> userComms = new HashSet<>();
       protected String changeType = "";
-      protected Set<String> assigneeStrs = new HashSet<String>();
-      protected List<IAtsUser> assignees = new LinkedList<IAtsUser>();
-      protected Set<String> actionableItems = new HashSet<String>();
+      protected Set<String> assigneeStrs = new HashSet<>();
+      protected List<IAtsUser> assignees = new LinkedList<>();
+      protected Set<String> actionableItems = new HashSet<>();
       protected String version = "";
       protected Double estimatedHours = null;
    }

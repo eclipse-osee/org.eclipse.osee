@@ -73,7 +73,7 @@ public class OsTxAuthorIdCriteriaImpl extends OsTxCriteriaImpl implements OsTxAu
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_AUTHOR_ID_CRITERIA__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_AUTHOR_ID_CRITERIA__IDS);
     }
     return ids;
   }

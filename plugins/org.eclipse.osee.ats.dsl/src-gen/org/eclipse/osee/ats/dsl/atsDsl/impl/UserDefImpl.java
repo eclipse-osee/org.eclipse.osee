@@ -202,7 +202,7 @@ public class UserDefImpl extends MinimalEObjectImpl.Container implements UserDef
   {
     if (userDefOption == null)
     {
-      userDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.USER_DEF__USER_DEF_OPTION);
+      userDefOption = new EDataTypeEList<>(String.class, this, AtsDslPackage.USER_DEF__USER_DEF_OPTION);
     }
     return userDefOption;
   }

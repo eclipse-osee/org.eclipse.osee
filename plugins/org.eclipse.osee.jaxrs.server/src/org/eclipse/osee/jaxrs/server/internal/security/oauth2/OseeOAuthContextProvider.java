@@ -111,7 +111,7 @@ public class OseeOAuthContextProvider implements ContextProvider<OseeOAuthContex
             List<OseePermission> perms = Collections.emptyList();
             List<OAuthPermission> permissions = ctx.getPermissions();
             if (permissions != null && !permissions.isEmpty()) {
-               perms = new ArrayList<OseePermission>();
+               perms = new ArrayList<>();
                for (OAuthPermission permission : permissions) {
                   perms.add(newPermission(permission));
                }

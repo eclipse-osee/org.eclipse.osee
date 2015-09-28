@@ -109,7 +109,7 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
       @Override
       public void run() {
          boolean isActive = getStatus();
-         Set<OseeStatusContributionItem> toRemove = new HashSet<OseeStatusContributionItem>();
+         Set<OseeStatusContributionItem> toRemove = new HashSet<>();
          for (OseeStatusContributionItem item : itemsToUpdate) {
             if (item.isDisposed()) {
                toRemove.add(item);

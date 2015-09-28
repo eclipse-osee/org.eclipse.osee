@@ -22,7 +22,7 @@ public abstract class FieldValidator implements IValidator {
    FieldValidator(String fieldName) {
       this.fieldName = fieldName;
       this.message = "";
-      this.paramMap = new HashMap<String, Object>();
+      this.paramMap = new HashMap<>();
    }
 
    @Override

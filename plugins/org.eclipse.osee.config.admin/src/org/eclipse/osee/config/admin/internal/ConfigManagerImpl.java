@@ -39,8 +39,8 @@ public class ConfigManagerImpl implements UriWatcherListener {
    private ConfigurationAdmin configAdmin;
 
    private ConfigManagerConfiguration config;
-   private final AtomicReference<UriWatcher> watcherRef = new AtomicReference<UriWatcher>();
-   private final Map<String, ServiceConfig> services = new HashMap<String, ServiceConfig>();
+   private final AtomicReference<UriWatcher> watcherRef = new AtomicReference<>();
+   private final Map<String, ServiceConfig> services = new HashMap<>();
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -109,7 +109,7 @@ public class ConfigManagerImpl implements UriWatcherListener {
    private void processUri(URI uri) {
       try {
          String source = Lib.inputStreamToString(uri.toURL().openStream());
-         final Map<String, Dictionary<String, Object>> newConfigs = new HashMap<String, Dictionary<String, Object>>();
+         final Map<String, Dictionary<String, Object>> newConfigs = new HashMap<>();
          parser.process(new ConfigWriter() {
 
             @Override

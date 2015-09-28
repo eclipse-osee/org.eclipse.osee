@@ -150,7 +150,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private IStatus checkTeamDefinitions(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
-      List<String> guids = new ArrayList<String>();
+      List<String> guids = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             guids.add(art.getGuid());
@@ -192,7 +192,7 @@ public class AtsArtifactChecks extends ArtifactCheck {
    }
 
    private IStatus checkUsers(Collection<Artifact> artifacts) throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
+      Set<User> users = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art instanceof User) {
             users.add((User) art);

@@ -24,7 +24,7 @@ public final class HsqlJdbcServer implements JdbcServer {
 
    private final JdbcLogger logger;
    private final JdbcServerConfig config;
-   private final AtomicReference<HsqlServerDelegate> serverRef = new AtomicReference<HsqlServerDelegate>();
+   private final AtomicReference<HsqlServerDelegate> serverRef = new AtomicReference<>();
    private final AtomicBoolean wasStarted = new AtomicBoolean(false);
 
    public HsqlJdbcServer(JdbcLogger logger, JdbcServerConfig config) {

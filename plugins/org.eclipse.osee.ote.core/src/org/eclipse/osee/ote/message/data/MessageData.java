@@ -67,8 +67,8 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
    private final MemoryResource mem;
    private final String typeName;
    private final String name;
-   private final CopyOnWriteNoIteratorList<Message> messages = new CopyOnWriteNoIteratorList<Message>(Message.class);
-   private final CopyOnWriteNoIteratorList<IMessageSendListener> messageSendListeners = new CopyOnWriteNoIteratorList<IMessageSendListener>(IMessageSendListener.class);
+   private final CopyOnWriteNoIteratorList<Message> messages = new CopyOnWriteNoIteratorList<>(Message.class);
+   private final CopyOnWriteNoIteratorList<IMessageSendListener> messageSendListeners = new CopyOnWriteNoIteratorList<>(IMessageSendListener.class);
    private final int defaultDataByteSize;
    private final DataType memType;
    private final boolean isEnabled = true;

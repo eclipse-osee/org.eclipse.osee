@@ -48,7 +48,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    public Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
 
-      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
+      List<Artifact> artifactsToReturn = new ArrayList<>(assigned.size());
       for (Artifact artifact : assigned) {
          if (artifact instanceof AbstractWorkflowArtifact) {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {

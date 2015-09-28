@@ -83,7 +83,7 @@ public final class UserManager {
    }
 
    public static List<User> getUsersByUserId(Collection<String> userIds) throws OseeCoreException {
-      List<User> users = new ArrayList<User>();
+      List<User> users = new ArrayList<>();
       for (String userId : userIds) {
          try {
             User user = getUserAdmin().getUserByUserId(userId);

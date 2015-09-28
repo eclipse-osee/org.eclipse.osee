@@ -20,7 +20,7 @@ import java.util.Set;
 public class MatrixItem {
 
    private String name;
-   private Set<String> values = new HashSet<String>();
+   private Set<String> values = new HashSet<>();
 
    public MatrixItem() {
       this("Unset", null);

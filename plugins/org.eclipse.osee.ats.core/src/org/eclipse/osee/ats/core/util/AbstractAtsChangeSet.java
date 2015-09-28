@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
 
    protected String comment;
-   protected final Set<Object> objects = new CopyOnWriteArraySet<Object>();
-   protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<Object>();
-   protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<IExecuteListener>();
+   protected final Set<Object> objects = new CopyOnWriteArraySet<>();
+   protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<>();
+   protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
    protected final IAtsUser user;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();

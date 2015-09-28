@@ -65,7 +65,7 @@ public class Find {
    private static FileToBufferConvert simpleToBuffer = new SimpleFileToBufferConvert();
 
    private static ArrayList<String> toList(String pattern) {
-      ArrayList<String> patterns = new ArrayList<String>();
+      ArrayList<String> patterns = new ArrayList<>();
       patterns.add(pattern);
       return patterns;
    }
@@ -84,7 +84,7 @@ public class Find {
       if (new File(args[0]).exists()) {
          patterns = Lib.readListFromFile(args[0]);
       } else {
-         patterns = new ArrayList<String>();
+         patterns = new ArrayList<>();
          patterns.add(args[0]);
       }
       File resultFile = new File("results.txt");

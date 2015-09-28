@@ -137,7 +137,7 @@ public class ArtifactFactory {
    }
 
    private Collection<? extends IAttributeType> getAllowedTypes(Artifact destination, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      Set<IAttributeType> toReturn = new HashSet<IAttributeType>();
+      Set<IAttributeType> toReturn = new HashSet<>();
       for (IAttributeType type : types) {
          if (!CoreAttributeTypes.RelationOrder.equals(type)) {
             if (destination.isAttributeTypeValid(type)) {

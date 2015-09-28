@@ -51,7 +51,7 @@ public class PurgeAttributesBlam extends AbstractBlam {
 
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
 
-      List<Attribute<?>> attributesToPurge = new ArrayList<Attribute<?>>();
+      List<Attribute<?>> attributesToPurge = new ArrayList<>();
 
       for (Artifact artifact : artifacts) {
          for (IAttributeType attributeType : purgeAttributeTypes) {

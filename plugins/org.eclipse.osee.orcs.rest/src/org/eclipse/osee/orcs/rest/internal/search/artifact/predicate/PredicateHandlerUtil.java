@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 public class PredicateHandlerUtil {
 
    public static Collection<IAttributeType> getIAttributeTypes(Collection<String> types) throws OseeCoreException {
-      Collection<IAttributeType> attrTypes = new LinkedHashSet<IAttributeType>();
+      Collection<IAttributeType> attrTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
@@ -39,7 +39,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IArtifactType> getIArtifactTypes(Collection<String> types) throws OseeCoreException {
-      Collection<IArtifactType> artTypes = new LinkedHashSet<IArtifactType>();
+      Collection<IArtifactType> artTypes = new LinkedHashSet<>();
       for (String value : types) {
          long uuid = parseUuid(value);
          if (uuid != -1L) {
@@ -50,7 +50,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IRelationType> getIRelationTypes(Collection<String> rels) throws OseeCoreException {
-      Collection<IRelationType> types = new LinkedHashSet<IRelationType>();
+      Collection<IRelationType> types = new LinkedHashSet<>();
       for (String value : rels) {
          long longUuid = parseUuid(value);
          if (longUuid != -1L) {
@@ -61,7 +61,7 @@ public class PredicateHandlerUtil {
    }
 
    public static Collection<IRelationTypeSide> getIRelationTypeSides(Collection<String> rels) throws OseeCoreException {
-      Collection<IRelationTypeSide> relSides = new LinkedHashSet<IRelationTypeSide>();
+      Collection<IRelationTypeSide> relSides = new LinkedHashSet<>();
       for (String value : rels) {
          char sideChar = value.charAt(0);
          String uuid = value.substring(1);

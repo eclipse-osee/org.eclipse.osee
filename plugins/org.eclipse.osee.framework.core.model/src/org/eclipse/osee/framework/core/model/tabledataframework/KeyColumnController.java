@@ -19,7 +19,7 @@ import java.util.Iterator;
  * @author Shawn F. Cook
  */
 public class KeyColumnController implements Iterator<Collection<Object>> {
-   private final Collection<KeyColumn> keyColumns = new ArrayList<KeyColumn>();
+   private final Collection<KeyColumn> keyColumns = new ArrayList<>();
 
    public KeyColumnController(KeyColumn... keyColumns) {
       this.keyColumns.addAll(Arrays.asList(keyColumns));
@@ -38,7 +38,7 @@ public class KeyColumnController implements Iterator<Collection<Object>> {
 
    @Override
    public Collection<Object> next() {
-      Collection<Object> keyList = new ArrayList<Object>();
+      Collection<Object> keyList = new ArrayList<>();
       if (hasNext()) {
          for (KeyColumn keyColumn : keyColumns) {
             if (!keyColumn.hasNext()) {

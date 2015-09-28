@@ -77,9 +77,9 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
    
    public OTEBundleLoader() {
       this.context = FrameworkUtil.getBundle(getClass()).getBundleContext();
-      this.installedBundles = new LinkedList<Bundle>();
-      this.runningBundles = new LinkedList<Bundle>();
-      this.bundleNameToMd5Map = new HashMap<String, String>();
+      this.installedBundles = new LinkedList<>();
+      this.runningBundles = new LinkedList<>();
+      this.bundleNameToMd5Map = new HashMap<>();
    }
 
    @Override
@@ -262,7 +262,7 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
    
    @Override
    public void resetScriptLoader(Configuration oteConfiguration, String[] classPaths) throws Exception {
-      List<URL> urls = new ArrayList<URL>();
+      List<URL> urls = new ArrayList<>();
       if(oteConfiguration != null){
          for(ConfigurationItem item:oteConfiguration.getItems()){
             File file = serverRuntimeCache.get(item.getSymbolicName(), item.getMd5Digest());
@@ -303,7 +303,7 @@ public class OTEBundleLoader implements IRuntimeLibraryManager{
    @JsonProperty
    public List<String> getBundleVersions() {
        Bundle[] bundles = ServiceUtility.getContext().getBundles();
-       List<String> versions = new ArrayList<String>();
+       List<String> versions = new ArrayList<>();
        for(Bundle bundle: bundles ){
            String version = bundle.getHeaders().get("Bundle-Version");
            String implVersion = bundle.getHeaders().get("Implementation-Version");

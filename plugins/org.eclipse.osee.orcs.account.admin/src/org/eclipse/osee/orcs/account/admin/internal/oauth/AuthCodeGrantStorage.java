@@ -81,7 +81,7 @@ public class AuthCodeGrantStorage extends AbstractDatabaseStorage<OAuthCodeGrant
    private List<String> parseScopes(String scopes) {
       List<String> toReturn = Collections.emptyList();
       if (scopes != null) {
-         toReturn = new ArrayList<String>();
+         toReturn = new ArrayList<>();
          String[] scopeValues = scopes.split(SCOPES_SEPARATOR);
          for (String scope : scopeValues) {
             if (Strings.isValid(scope)) {

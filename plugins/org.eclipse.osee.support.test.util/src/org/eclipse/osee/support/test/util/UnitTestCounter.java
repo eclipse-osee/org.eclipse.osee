@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 public class UnitTestCounter {
 
    private static int unitTestCount = 0, testPointCount = 0;
-   private static final CountingMap<String> authorToFileCount = new CountingMap<String>(10);
-   private static final CountingMap<String> authorToTestPointCount = new CountingMap<String>(10);
+   private static final CountingMap<String> authorToFileCount = new CountingMap<>(10);
+   private static final CountingMap<String> authorToTestPointCount = new CountingMap<>(10);
 
    public static void main(String[] args) {
 
@@ -55,7 +55,7 @@ public class UnitTestCounter {
 
          results.append("\n\nTest Unit Total (file with at least 1 test case), " + unitTestCount + "\n");
 
-         List<String> names = new ArrayList<String>();
+         List<String> names = new ArrayList<>();
          for (Entry<String, MutableInteger> entry : authorToFileCount.getCounts()) {
             System.out.println(String.format("Author [%s]", entry.getKey()));
             names.add(entry.getKey() + ", " + entry.getValue() + "\n");

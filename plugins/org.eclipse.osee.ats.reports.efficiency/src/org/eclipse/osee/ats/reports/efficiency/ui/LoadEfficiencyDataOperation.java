@@ -33,7 +33,7 @@ public class LoadEfficiencyDataOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Conditions.checkNotNull(teamDef, "teamDefinition");
-      List<VersionEfficiency> verEffs = new ArrayList<VersionEfficiency>();
+      List<VersionEfficiency> verEffs = new ArrayList<>();
       for (IAtsVersion version : teamDef.getVersions()) {
          VersionEfficiency eff = new VersionEfficiency(version);
          eff.compute();

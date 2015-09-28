@@ -691,8 +691,8 @@ public class MergeXWidget extends GenericXWidget {
          Conflict[] conflicts = getConflicts();
          if (conflicts.length != 0) {
             if (conflicts[0].getSourceBranch() != null) {
-               ArrayList<String> selections = new ArrayList<String>();
-               ArrayList<Long> branchUuids = new ArrayList<Long>();
+               ArrayList<String> selections = new ArrayList<>();
+               ArrayList<Long> branchUuids = new ArrayList<>();
                try {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());

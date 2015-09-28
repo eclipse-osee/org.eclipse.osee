@@ -40,7 +40,7 @@ public class QueryData implements HasOptions, Cloneable {
    }
 
    public List<Criteria> getAllCriteria() {
-      List<Criteria> allCriterias = new ArrayList<Criteria>();
+      List<Criteria> allCriterias = new ArrayList<>();
       for (CriteriaSet set : criterias) {
          allCriterias.addAll(set.getCriterias());
       }
@@ -108,7 +108,7 @@ public class QueryData implements HasOptions, Cloneable {
 
    @Override
    public QueryData clone() {
-      List<CriteriaSet> newCriterias = new ArrayList<CriteriaSet>(criterias.size());
+      List<CriteriaSet> newCriterias = new ArrayList<>(criterias.size());
       for (CriteriaSet criteriaSet : criterias) {
          newCriterias.add(criteriaSet.clone());
       }

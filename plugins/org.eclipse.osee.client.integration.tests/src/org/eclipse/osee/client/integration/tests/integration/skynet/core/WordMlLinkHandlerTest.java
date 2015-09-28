@@ -128,7 +128,7 @@ public class WordMlLinkHandlerTest {
          addArtifact.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, wordData);
          addArtifact.persist(method.getTestName());
 
-         Set<String> unknownGuids = new HashSet<String>();
+         Set<String> unknownGuids = new HashSet<>();
          WordMlLinkHandler.link(LinkType.OSEE_SERVER_LINK, addArtifact, wordData, unknownGuids);
          Assert.assertTrue(unknownGuids.size() == 1);
          Assert.assertTrue(unknownGuids.iterator().next().endsWith("BLAH"));
@@ -170,7 +170,7 @@ public class WordMlLinkHandlerTest {
    }
 
    private Map<String, TestData> getTestData() {
-      Map<String, TestData> toReturn = new LinkedHashMap<String, TestData>();
+      Map<String, TestData> toReturn = new LinkedHashMap<>();
 
       Bundle bundle = FrameworkUtil.getBundle(WordMlLinkHandlerTest.class);
       Enumeration<?> urls = bundle.findEntries("support/WordMlLinkData", "*.*", true);

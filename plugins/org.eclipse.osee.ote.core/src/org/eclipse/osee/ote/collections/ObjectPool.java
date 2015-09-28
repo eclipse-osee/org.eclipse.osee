@@ -9,7 +9,7 @@ public class ObjectPool<T> {
    
    public ObjectPool(ObjectPoolConfiguration<T> config) {
       this.config = config;
-      objs = new ArrayBlockingQueue<T>(config.getMaxSize());
+      objs = new ArrayBlockingQueue<>(config.getMaxSize());
       if(config.preallocate()){
          for(int i = 0; i < config.getMaxSize(); i++){
             objs.offer(config.make());

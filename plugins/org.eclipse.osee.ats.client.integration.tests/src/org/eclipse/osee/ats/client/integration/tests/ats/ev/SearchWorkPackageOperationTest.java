@@ -59,8 +59,8 @@ public class SearchWorkPackageOperationTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
-      List<Long> EMPYT_RESULTS = new ArrayList<Long>();
+      List<Object[]> data = new ArrayList<>();
+      List<Long> EMPYT_RESULTS = new ArrayList<>();
       Long WP_01 = DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid();
       Long WP_02 = DemoArtifactToken.SAW_Code_Team_WorkPackage_02.getUuid();
       Long WP_03 = DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getUuid();
@@ -98,14 +98,14 @@ public class SearchWorkPackageOperationTest {
 
    @Test
    public void testSearchResults() throws OseeCoreException {
-      List<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
+      List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefUuid : teamDefUuids) {
          IAtsTeamDefinition teamDef =
             (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByUuid(teamDefUuid);
          teamDefs.add(teamDef);
       }
 
-      List<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> ais = new ArrayList<>();
       for (Long aiUuid : aiUuids) {
          IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getConfig().getSoleByUuid(aiUuid);
          ais.add(ai);

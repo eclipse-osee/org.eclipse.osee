@@ -96,7 +96,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             return ((AbstractWorkflowArtifact) element).getAttributesToStringUnique(getAttributeType(), ";");
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new LinkedHashSet<String>();
+            Set<String> strs = new LinkedHashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                String str = getColumnText(team, column, columnIndex);
                if (Strings.isValid(str)) {
@@ -126,7 +126,7 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
 
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> awas = new LinkedHashSet<>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          try {

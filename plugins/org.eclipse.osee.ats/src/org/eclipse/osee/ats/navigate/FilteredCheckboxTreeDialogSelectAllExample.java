@@ -28,7 +28,7 @@ public class FilteredCheckboxTreeDialogSelectAllExample extends XNavigateItemAct
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       List<MyTask> input = FilteredDialogExampleUtil.getInput();
-      List<FilteredDialogExampleUtil.MyTask> initialSelection = new ArrayList<FilteredDialogExampleUtil.MyTask>();
+      List<FilteredDialogExampleUtil.MyTask> initialSelection = new ArrayList<>();
       initialSelection.add(FilteredDialogExampleUtil.getChild3());
       initialSelection.add(FilteredDialogExampleUtil.getParent11());
       FilteredCheckboxTreeDialog dialog =

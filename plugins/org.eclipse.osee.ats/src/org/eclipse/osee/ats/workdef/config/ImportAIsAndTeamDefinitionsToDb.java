@@ -64,11 +64,11 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    private final AtsDsl atsDsl;
    private final IAtsChangeSet changes;
-   private final Map<String, Artifact> newTeams = new HashMap<String, Artifact>();
-   private final Map<String, Artifact> newAIs = new HashMap<String, Artifact>();
-   private final Map<String, Artifact> newVersions = new HashMap<String, Artifact>();
+   private final Map<String, Artifact> newTeams = new HashMap<>();
+   private final Map<String, Artifact> newAIs = new HashMap<>();
+   private final Map<String, Artifact> newVersions = new HashMap<>();
    private final String modelName;
-   private final Map<String, Artifact> teamNameToTeamDefArt = new HashMap<String, Artifact>();
+   private final Map<String, Artifact> teamNameToTeamDefArt = new HashMap<>();
 
    public ImportAIsAndTeamDefinitionsToDb(String modelName, AtsDsl atsDsl, IAtsChangeSet changes) {
       this.modelName = modelName;
@@ -179,7 +179,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
    }
 
    private Set<Artifact> getUsers(EList<UserRef> userRefs) throws OseeCoreException {
-      Set<Artifact> users = new HashSet<Artifact>();
+      Set<Artifact> users = new HashSet<>();
       if (userRefs != null) {
          IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
          for (String userId : UserRefUtil.getUserIds(userRefs)) {
@@ -202,7 +202,7 @@ public class ImportAIsAndTeamDefinitionsToDb {
 
    private void importVersionDefinitions(EList<VersionDef> versionDefs, Artifact teamDef) throws OseeCoreException {
 
-      Map<String, Artifact> nameToVerArt = new HashMap<String, Artifact>();
+      Map<String, Artifact> nameToVerArt = new HashMap<>();
       for (VersionDef dslVersionDef : versionDefs) {
          String dslVerName = Strings.unquote(dslVersionDef.getName());
          // System.out.println("   - Importing Version " + dslVerName);

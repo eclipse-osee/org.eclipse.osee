@@ -43,7 +43,7 @@ public class GraphBuilderImpl extends LoadDataHandlerAdapter implements GraphBui
    private final RelationFactory relationFactory;
    private final GraphProvider graphProvider;
 
-   private final Set<Artifact> updated = new LinkedHashSet<Artifact>();
+   private final Set<Artifact> updated = new LinkedHashSet<>();
    private GraphData graph;
 
    public GraphBuilderImpl(Log logger, ArtifactFactory artifactFactory, AttributeFactory attributeFactory, RelationFactory relationFactory, GraphProvider graphProvider) {

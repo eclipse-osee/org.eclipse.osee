@@ -58,7 +58,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
       if (MessageDialog.openConfirm(Displays.getActiveShell(), "Add to " + type + " Dictionary",
          "Add \"" + word + "\" to " + type + " Dictionary")) {
          try {
-            Set<String> words = new HashSet<String>();
+            Set<String> words = new HashSet<>();
             for (String str : art.getSoleAttributeValue(CoreAttributeTypes.Dictionary, "").split(";")) {
                words.add(str);
             }
@@ -92,7 +92,7 @@ public class SkynetSpellModifyDictionary implements XTextSpellModifyDictionary, 
          return;
       }
       try {
-         dictionary = new HashSet<String>();
+         dictionary = new HashSet<>();
          User user = UserManager.getUser();
          if (user != null) {
             String value = user.getSoleAttributeValue(CoreAttributeTypes.Dictionary, "");

@@ -71,7 +71,7 @@ public abstract class AbstractConfigResource {
    }
 
    private List<IAtsConfigObject> getObjects() {
-      List<IAtsConfigObject> configs = new ArrayList<IAtsConfigObject>();
+      List<IAtsConfigObject> configs = new ArrayList<>();
       for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
          configs.add(atsServer.getConfigItemFactory().getConfigObject(art));
       }

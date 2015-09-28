@@ -31,7 +31,7 @@ public class BaseOseeTypeTest extends AbstractOseeTypeTest<Long, MockAbstractOse
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 2; index++) {
          Long guid = (long) index;
          String name = "index: " + index;

@@ -89,7 +89,7 @@ public class CreateBranchOperationTest {
     */
    @Test
    public void test_checkPreconditions_DisallowWorkingBranchCreation() throws OseeCoreException {
-      Set<BranchState> subset = new HashSet<BranchState>(Arrays.asList(BranchState.values()));
+      Set<BranchState> subset = new HashSet<>(Arrays.asList(BranchState.values()));
 
       Collection<BranchState> allowedStates = Arrays.asList(BranchState.DELETED, BranchState.REBASELINED);
       subset.removeAll(allowedStates);

@@ -47,7 +47,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
    }
 
    private static Collection<? extends IAtsProgramClient> getAllPrograms() throws OseeCoreException {
-      List<IAtsProgramClient> programs = new ArrayList<IAtsProgramClient>();
+      List<IAtsProgramClient> programs = new ArrayList<>();
       for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
          programs.addAll(manager.getPrograms());
       }
@@ -63,7 +63,7 @@ public class XAtsProgramComboWidget extends XComboViewer {
    }
 
    public void reload(Collection<? extends IAtsProgramClient> lbaPrograms) {
-      Collection<Object> objs = new ArrayList<Object>();
+      Collection<Object> objs = new ArrayList<>();
       for (IAtsProgramClient proj : atsPrograms) {
          objs.add(proj);
       }

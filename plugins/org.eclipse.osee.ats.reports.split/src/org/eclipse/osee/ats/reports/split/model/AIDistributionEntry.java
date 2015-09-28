@@ -32,7 +32,7 @@ public class AIDistributionEntry {
     */
    public AIDistributionEntry(final Artifact verArtifact) {
       this.versionArtifact = verArtifact;
-      this.aiSplitMap = new HashMap<IAtsActionableItem, Integer>();
+      this.aiSplitMap = new HashMap<>();
    }
 
    /**

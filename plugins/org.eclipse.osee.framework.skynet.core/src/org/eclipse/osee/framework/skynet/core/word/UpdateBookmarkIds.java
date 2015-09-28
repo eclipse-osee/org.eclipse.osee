@@ -102,7 +102,7 @@ public class UpdateBookmarkIds {
          Collection<Node> nodes = Jaxp.selectNodesViaXPath(xPath, element, XPATH_EXPRESSION);
 
          //Get a new value for each aml.id (maintaining the order of the start/end Bookmark tags
-         Map<Integer, Integer> oldToNewAmlIds = new HashMap<Integer, Integer>();
+         Map<Integer, Integer> oldToNewAmlIds = new HashMap<>();
          for (Node node : nodes) {
             if (isStartNode(node) || isEndNode(node)) {
                changesMade = true;

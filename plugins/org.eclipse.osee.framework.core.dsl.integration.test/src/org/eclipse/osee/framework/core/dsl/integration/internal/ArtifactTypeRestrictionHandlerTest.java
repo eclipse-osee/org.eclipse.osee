@@ -88,7 +88,7 @@ public class ArtifactTypeRestrictionHandlerTest extends BaseRestrictionHandlerTe
       DslAsserts.assertNullAccessDetail(getRestrictionHandler(), restriction, artData, expectedScope);
 
       // Make expectedAccessObject inherit from ArtifactType
-      Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> superTypes = new HashSet<>();
       superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       expectedAccessObject.setSuperTypes(superTypes);
       DslAsserts.assertAccessDetail(getRestrictionHandler(), restriction, artData, expectedAccessObject,

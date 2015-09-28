@@ -31,7 +31,7 @@ public class WeightedCompositeOperation extends AbstractOperation {
 
    public static final Double EMPTY_WEIGHT_HINT = null;
 
-   private final List<IStatus> statuses = new ArrayList<IStatus>();
+   private final List<IStatus> statuses = new ArrayList<>();
    private final List<Pair<Double, ? extends IOperation>> operations;
    private final OperationBehavior behavior;
    private final double runningTotal;

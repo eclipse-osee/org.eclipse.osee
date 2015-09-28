@@ -65,7 +65,7 @@ public class AtsUserTest {
 
    @org.junit.Test
    public void testRemove() throws OseeCoreException {
-      Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
+      Collection<IAtsUser> assignees = new HashSet<>();
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
       Assert.assertTrue(Collections.isEqual(

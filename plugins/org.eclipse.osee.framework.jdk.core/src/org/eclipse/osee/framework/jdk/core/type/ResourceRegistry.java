@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ResourceRegistry implements IResourceRegistry {
 
-   private final ConcurrentHashMap<Long, ResourceToken> registry = new ConcurrentHashMap<Long, ResourceToken>();
+   private final ConcurrentHashMap<Long, ResourceToken> registry = new ConcurrentHashMap<>();
 
    @Override
    public ResourceToken registerResource(Long universalId, ResourceToken token) {

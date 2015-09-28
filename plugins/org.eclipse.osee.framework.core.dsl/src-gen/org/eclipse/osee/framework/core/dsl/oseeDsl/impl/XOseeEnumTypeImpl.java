@@ -73,7 +73,7 @@ public class XOseeEnumTypeImpl extends OseeTypeImpl implements XOseeEnumType
   {
     if (enumEntries == null)
     {
-      enumEntries = new EObjectContainmentEList<XOseeEnumEntry>(XOseeEnumEntry.class, this, OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
+      enumEntries = new EObjectContainmentEList<>(XOseeEnumEntry.class, this, OseeDslPackage.XOSEE_ENUM_TYPE__ENUM_ENTRIES);
     }
     return enumEntries;
   }

@@ -42,7 +42,7 @@ public class EarnedValueReportOperationTest {
 
    @Test
    public void test() throws OseeCoreException {
-      List<IAtsTeamDefinition> teamDefs = new ArrayList<IAtsTeamDefinition>();
+      List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       IAtsTeamDefinition teamDef =
          (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_SW.getUuid());
       teamDefs.add(teamDef);

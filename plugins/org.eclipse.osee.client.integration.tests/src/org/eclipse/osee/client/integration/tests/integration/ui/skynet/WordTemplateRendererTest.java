@@ -238,7 +238,7 @@ public class WordTemplateRendererTest {
    public void testPublishWithoutDiff() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(docFolder);
       renderer.publish(singleTemplate, null, artifacts, options);
 
@@ -257,7 +257,7 @@ public class WordTemplateRendererTest {
    public void testPublishWithDiff() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
@@ -277,7 +277,7 @@ public class WordTemplateRendererTest {
    public void testPublishWithoutDiffRecurseTemplate() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(docFolder);
       renderer.publish(recurseTemplate, null, artifacts, options);
 
@@ -296,7 +296,7 @@ public class WordTemplateRendererTest {
    public void testPublishWithDiffRecurseTemplate() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(recurseTemplate, null, artifacts, options);
@@ -318,7 +318,7 @@ public class WordTemplateRendererTest {
       modifyOption("Publish As Diff", true);
       modifyOption("compareBranch", rootBranch);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplate, null, artifacts, options);
@@ -352,7 +352,7 @@ public class WordTemplateRendererTest {
       modifyOption("Publish As Diff", true);
       modifyOption("compareBranch", null);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
@@ -403,7 +403,7 @@ public class WordTemplateRendererTest {
       modifyOption("Publish As Diff", false);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       modifyOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, true);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
@@ -440,7 +440,7 @@ public class WordTemplateRendererTest {
       modifyOption("Publish As Diff", true);
       modifyOption("linkType", LinkType.INTERNAL_DOC_REFERENCE_USE_PARAGRAPH_NUMBER_AND_NAME);
       modifyOption(ITemplateRenderer.USE_TEMPLATE_ONCE, false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
       renderer.publish(singleTemplateAttrib, null, artifacts, options);
@@ -468,7 +468,7 @@ public class WordTemplateRendererTest {
    public void testPublishSoftwareRequirements() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
       renderer.publish(masterTemplate, slaveTemplate, artifacts, options);
 
@@ -500,7 +500,7 @@ public class WordTemplateRendererTest {
    public void testPublishUsingIds() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
       renderer.publish(masterTemplate_idOnly, slaveTemplate, artifacts, options);
 
@@ -532,7 +532,7 @@ public class WordTemplateRendererTest {
    public void testPublishUsingIdAndName() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", false);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       artifacts.add(swReqFolder);
       renderer.publish(masterTemplate_idAndName, slaveTemplate, artifacts, options);
 
@@ -564,7 +564,7 @@ public class WordTemplateRendererTest {
    public void testPublishDiffWithFieldCodes() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);
       artifacts.add(updateDoc);
@@ -591,7 +591,7 @@ public class WordTemplateRendererTest {
    public void testPublishDiffWithOutFieldCodes() throws OseeCoreException {
       modifyOption("Branch", updateBranch);
       modifyOption("Publish As Diff", true);
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       setupFieldCodeChange();
       UserManager.setSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES, "true");
       Artifact updateDoc = ArtifactQuery.getArtifactFromId(docFolder.getArtId(), updateBranch);

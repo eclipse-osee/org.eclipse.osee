@@ -31,14 +31,14 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
-      data = new ArrayList<OseeEnumType>();
+      data = new ArrayList<>();
 
       cache = new OseeEnumTypeCache();
 
       int typeId = 100;
       for (int index = 0; index < 10; index++) {
          OseeEnumType item = MockDataFactory.createEnumType(index);
-         List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+         List<OseeEnumEntry> entries = new ArrayList<>();
          for (int j = 1; j <= 5; j++) {
             OseeEnumEntry enumEntry = MockDataFactory.createEnumEntry(index + j);
             entries.add(enumEntry);

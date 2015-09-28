@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
 public class PathResourceFinder extends ResourceFinder {
 
-   private final HashSet<JarFile> jars = new HashSet<JarFile>(128);
-   private final HashSet<String> dirs = new HashSet<String>(128);
-   private final HashMap<String, JarFile[]> map = new HashMap<String, JarFile[]>(128);
+   private final HashSet<JarFile> jars = new HashSet<>(128);
+   private final HashSet<String> dirs = new HashSet<>(128);
+   private final HashMap<String, JarFile[]> map = new HashMap<>(128);
    private final boolean trees;
    private final ClassServerPermissions perm;
    private static final int NUMBER_OF_FILE_READ_ATTEMPTS = 20;
@@ -145,7 +145,7 @@ public class PathResourceFinder extends ResourceFinder {
                   for (int j = 0; j < files.length; j++) {
                      String jar = files[j];
                      if (jar.endsWith(".jar") || jar.endsWith(".zip")) {
-                        ArrayList<JarFile> jfs = new ArrayList<JarFile>(10);
+                        ArrayList<JarFile> jfs = new ArrayList<>(10);
                         try {
                            addJar(jar, jfs, base);
                            map.put(jar.substring(0, jar.length() - 4), jfs.toArray(new JarFile[jfs.size()]));

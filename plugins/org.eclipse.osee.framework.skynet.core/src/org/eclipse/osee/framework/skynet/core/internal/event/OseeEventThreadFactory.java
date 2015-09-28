@@ -25,7 +25,7 @@ public final class OseeEventThreadFactory implements ThreadFactory {
 
    public OseeEventThreadFactory(String threadName, int priority) {
       this.threadName = threadName;
-      this.threads = new CopyOnWriteArrayList<WeakReference<Thread>>();
+      this.threads = new CopyOnWriteArrayList<>();
       this.priority = priority;
    }
 

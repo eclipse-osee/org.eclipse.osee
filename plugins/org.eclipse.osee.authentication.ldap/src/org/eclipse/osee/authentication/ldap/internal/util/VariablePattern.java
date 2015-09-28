@@ -54,7 +54,7 @@ public final class VariablePattern {
    }
 
    public List<String> getVariableNames() {
-      List<String> toReturn = new ArrayList<String>(variables.size());
+      List<String> toReturn = new ArrayList<>(variables.size());
       for (Variable variable : variables) {
          toReturn.add(variable.getName());
       }
@@ -86,7 +86,7 @@ public final class VariablePattern {
    }
 
    public static VariablePattern newPattern(String pattern) {
-      List<Variable> variables = new ArrayList<Variable>();
+      List<Variable> variables = new ArrayList<>();
       StringBuilder builder = new StringBuilder();
       int size = pattern.length();
       int index = 0;

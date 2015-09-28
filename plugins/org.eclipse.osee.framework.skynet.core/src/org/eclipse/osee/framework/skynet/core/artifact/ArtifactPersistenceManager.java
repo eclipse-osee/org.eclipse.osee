@@ -76,7 +76,7 @@ public class ArtifactPersistenceManager {
    }
 
    private static void bulkLoadRelatives(Collection<Artifact> artifacts) throws OseeCoreException {
-      Collection<Integer> artIds = new HashSet<Integer>();
+      Collection<Integer> artIds = new HashSet<>();
       for (Artifact artifact : artifacts) {
          for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
             artIds.add(link.getAArtifactId());

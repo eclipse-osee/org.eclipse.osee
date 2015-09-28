@@ -74,7 +74,7 @@ public class CallableQueryFactory {
 
          @Override
          protected ResultSet<HasLocalId<Integer>> innerCall() throws Exception {
-            final List<HasLocalId<Integer>> results = new LinkedList<HasLocalId<Integer>>();
+            final List<HasLocalId<Integer>> results = new LinkedList<>();
             LoadDataHandlerAdapter handler = new LoadDataHandlerAdapter() {
                @Override
                public void onData(ArtifactData data) {

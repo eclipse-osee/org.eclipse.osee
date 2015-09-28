@@ -110,7 +110,7 @@ public final class ImportTraceUnitsOperationTest {
    @Test
    public void testImportTraceUnitsJob() throws Exception {
 
-      ArrayList<Integer> gammas = new ArrayList<Integer>(RUNS);
+      ArrayList<Integer> gammas = new ArrayList<>(RUNS);
 
       for (int i = 0; i < RUNS; i++) {
          runOperation(Arrays.asList(testFile.toURI()));

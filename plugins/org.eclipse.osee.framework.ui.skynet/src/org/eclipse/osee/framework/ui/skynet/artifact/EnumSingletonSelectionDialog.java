@@ -46,7 +46,7 @@ public class EnumSingletonSelectionDialog extends ListDialog {
          isRemoveAllAllowed = AttributeTypeManager.checkIfRemovalAllowed(attributeType, artifacts);
 
       } catch (OseeCoreException ex) {
-         options = new HashSet<String>();
+         options = new HashSet<>();
          options.add(ex.getLocalizedMessage());
       }
       setInput(options);

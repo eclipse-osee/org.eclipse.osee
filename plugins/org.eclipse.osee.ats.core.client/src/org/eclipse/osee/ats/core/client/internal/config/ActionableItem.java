@@ -31,10 +31,10 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
    private boolean active = true;
    private IAtsTeamDefinition teamDefinition;
    private IAtsActionableItem parentActionableItem;
-   private final Set<String> staticIds = new HashSet<String>();
-   private final Set<IAtsUser> leads = new HashSet<IAtsUser>();
-   private final Set<IAtsUser> subscribed = new HashSet<IAtsUser>();
-   private final Set<IAtsActionableItem> childrenActionableItems = new HashSet<IAtsActionableItem>();
+   private final Set<String> staticIds = new HashSet<>();
+   private final Set<IAtsUser> leads = new HashSet<>();
+   private final Set<IAtsUser> subscribed = new HashSet<>();
+   private final Set<IAtsActionableItem> childrenActionableItems = new HashSet<>();
    private final RuleManager ruleMgr = new RuleManager();
 
    public ActionableItem(String name, String guid, long uuid) {

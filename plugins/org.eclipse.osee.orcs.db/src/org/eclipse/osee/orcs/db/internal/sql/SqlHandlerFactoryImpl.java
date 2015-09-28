@@ -51,7 +51,7 @@ public class SqlHandlerFactoryImpl implements SqlHandlerFactory {
 
    @Override
    public List<SqlHandler<?>> createHandlers(Iterable<CriteriaSet> criteriaSets) throws OseeCoreException {
-      List<SqlHandler<?>> handlers = new ArrayList<SqlHandler<?>>();
+      List<SqlHandler<?>> handlers = new ArrayList<>();
       int level = 0;
       for (CriteriaSet criteriaSet : criteriaSets) {
          addHandlers(handlers, level, criteriaSet);

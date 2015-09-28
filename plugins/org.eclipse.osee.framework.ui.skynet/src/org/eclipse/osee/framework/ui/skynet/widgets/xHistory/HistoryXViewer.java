@@ -48,7 +48,7 @@ public class HistoryXViewer extends XViewer {
    }
 
    public ArrayList<Artifact> getSelectedChanges() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
 
       if (items.length > 0) {

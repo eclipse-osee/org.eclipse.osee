@@ -120,8 +120,8 @@ public class EventColumn extends XViewerValueColumn {
          }
          Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
          Collection<? extends IAtsUser> isAssignees = is.getAssignees();
-         Set<IAtsUser> assigned = new HashSet<IAtsUser>();
-         Set<IAtsUser> unAssigned = new HashSet<IAtsUser>();
+         Set<IAtsUser> assigned = new HashSet<>();
+         Set<IAtsUser> unAssigned = new HashSet<>();
          for (IAtsUser isAssignee : isAssignees) {
             if (!wasAssignees.contains(isAssignee)) {
                assigned.add(isAssignee);

@@ -36,7 +36,7 @@ public class OteClasspathContainer implements IClasspathContainer {
    private final IJavaProject javaProject;
    private final IPath containerPath;
 
-   private static final List<OteClasspathContainer> activeContainers = new ArrayList<OteClasspathContainer>();
+   private static final List<OteClasspathContainer> activeContainers = new ArrayList<>();
 
    private static boolean classpathEnabled;
    static {
@@ -94,7 +94,7 @@ public class OteClasspathContainer implements IClasspathContainer {
 
    @Override
    public IClasspathEntry[] getClasspathEntries() {
-      List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+      List<IClasspathEntry> entries = new ArrayList<>();
       Collection<BundleInfo> runtimeLibUrls;
       if (classpathEnabled) {
          try {

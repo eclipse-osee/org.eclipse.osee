@@ -137,7 +137,7 @@ public class CxfJaxRsClientConfiguratorTest {
 
       configurator = new CxfJaxRsClientConfigurator(oauthFactory);
 
-      props = new LinkedHashMap<String, Object>();
+      props = new LinkedHashMap<>();
       props.put("a", "1");
       props.put("b", "2");
       props.put("c", "3");

@@ -47,7 +47,7 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
    public LoadScriptPage(ScriptPage tmPage) {
       this.scriptPage = tmPage;
       this.scriptTableViewer = scriptPage.getScriptTableViewer();
-      scriptTasks = new Vector<ScriptTask>();
+      scriptTasks = new Vector<>();
    }
 
    @Override

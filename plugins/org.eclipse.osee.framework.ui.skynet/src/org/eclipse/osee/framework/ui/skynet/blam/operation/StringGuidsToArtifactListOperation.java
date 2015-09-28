@@ -63,8 +63,8 @@ public class StringGuidsToArtifactListOperation extends AbstractOperation {
          String[] guids = this.rawGuidsData.split(splitRegex);
          monitor.beginTask(taskName, guids.length + costOfArtifactRetrieval);
 
-         List<String> validGuids = new ArrayList<String>(guids.length);
-         final Collection<Object> artifacts = new ArrayList<Object>(guids.length); //widget accepts Collection<Object>
+         List<String> validGuids = new ArrayList<>(guids.length);
+         final Collection<Object> artifacts = new ArrayList<>(guids.length); //widget accepts Collection<Object>
 
          for (int guidIndex = 0; !monitor.isCanceled() && guidIndex < guids.length; guidIndex++) {
             if (GUID.isValid(guids[guidIndex])) {

@@ -19,7 +19,7 @@ import java.util.List;
 public class TestPointData {
 
    private boolean isFailed;
-   private final List<CheckPointData> data = new ArrayList<CheckPointData>();
+   private final List<CheckPointData> data = new ArrayList<>();
    private String number;
    private StackTraceCollection stacktrace;
 

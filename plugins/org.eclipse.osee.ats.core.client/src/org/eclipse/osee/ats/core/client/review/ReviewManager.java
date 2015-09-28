@@ -84,7 +84,7 @@ public class ReviewManager {
    }
 
    public static Collection<AbstractReviewArtifact> getReviews(TeamWorkFlowArtifact teamArt, IStateToken state) throws OseeCoreException {
-      Set<AbstractReviewArtifact> arts = new HashSet<AbstractReviewArtifact>();
+      Set<AbstractReviewArtifact> arts = new HashSet<>();
       for (AbstractReviewArtifact revArt : getReviews(teamArt)) {
          if (revArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
             arts.add(revArt);

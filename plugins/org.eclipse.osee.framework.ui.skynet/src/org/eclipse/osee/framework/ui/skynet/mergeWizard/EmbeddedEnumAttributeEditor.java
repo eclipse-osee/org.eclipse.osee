@@ -78,10 +78,10 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       }
       editor = new EmbeddedEnumEditor(PROMPT);
       editor.createEditor(composite);
-      TreeSet<String> options = new TreeSet<String>();
+      TreeSet<String> options = new TreeSet<>();
       try {
          if (obj instanceof Artifact) {
-            options = new TreeSet<String>(AttributeTypeManager.getEnumerationValues(attributeType));
+            options = new TreeSet<>(AttributeTypeManager.getEnumerationValues(attributeType));
          }
          if (obj instanceof AttributeConflict) {
             options = ((AttributeConflict) obj).getEnumerationAttributeValues();

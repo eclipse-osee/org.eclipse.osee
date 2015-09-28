@@ -42,8 +42,8 @@ public class GenericParser extends AbstractSaxHandler {
 
    public GenericParser(String startTag) {
       this.toFind = startTag;
-      this.listeners = new HashSet<IXmlNodeListener>();
-      this.instructionListeners = new HashSet<IProcessingInstructionsListener>();
+      this.listeners = new HashSet<>();
+      this.instructionListeners = new HashSet<>();
    }
 
    public void reset() {
@@ -56,7 +56,7 @@ public class GenericParser extends AbstractSaxHandler {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) {
       if (localName.equalsIgnoreCase(toFind)) {
          startCollecting = true;
-         collectedTree = new Tree<XmlNode>(new XmlNode(localName, attributes));
+         collectedTree = new Tree<>(new XmlNode(localName, attributes));
          currentNode = null;
       }
 

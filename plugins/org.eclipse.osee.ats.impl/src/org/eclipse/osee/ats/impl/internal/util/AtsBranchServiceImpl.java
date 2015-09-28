@@ -64,7 +64,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    public IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates) {
       BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
       if (negatedBranchStates.length > 0) {
-         Collection<BranchState> statesToSearch = new LinkedList<BranchState>(Arrays.asList(BranchState.values()));
+         Collection<BranchState> statesToSearch = new LinkedList<>(Arrays.asList(BranchState.values()));
          statesToSearch.removeAll(Arrays.asList(negatedBranchStates));
          branchQuery.andStateIs(statesToSearch.toArray(new BranchState[statesToSearch.size()]));
       }
@@ -142,7 +142,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
-         transactionIds = new ArrayList<ITransaction>(5);
+         transactionIds = new ArrayList<>(5);
          TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
          txQuery.andCommitIds(artifactReadable.getLocalId());
          for (TransactionReadable tx : txQuery.getResults()) {

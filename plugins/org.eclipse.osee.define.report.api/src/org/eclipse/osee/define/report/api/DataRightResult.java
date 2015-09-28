@@ -39,7 +39,7 @@ public class DataRightResult {
    @XmlElement
    public Collection<DataRightAnchor> getDataRightAnchors() {
       if (dataRightAnchors == null) {
-         dataRightAnchors = new ArrayList<DataRightAnchor>();
+         dataRightAnchors = new ArrayList<>();
       }
       return dataRightAnchors;
    }
@@ -51,7 +51,7 @@ public class DataRightResult {
    @XmlElement
    public Collection<DataRight> getDataRights() {
       if (dataRights == null) {
-         dataRights = new ArrayList<DataRight>();
+         dataRights = new ArrayList<>();
       }
       return dataRights;
    }
@@ -107,8 +107,8 @@ public class DataRightResult {
 
    private void checkInitialized() {
       if (dataRightIdToDataRight == null || guidToAnchor == null) {
-         dataRightIdToDataRight = new HashMap<DataRightId, DataRight>();
-         guidToAnchor = new HashMap<String, DataRightAnchor>();
+         dataRightIdToDataRight = new HashMap<>();
+         guidToAnchor = new HashMap<>();
          for (DataRightAnchor anchor : dataRightAnchors) {
             guidToAnchor.put(anchor.getId(), anchor);
          }

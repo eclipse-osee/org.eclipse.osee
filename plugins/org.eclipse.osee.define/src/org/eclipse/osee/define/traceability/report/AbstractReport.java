@@ -24,7 +24,7 @@ public abstract class AbstractReport {
    private final Set<IReportDataCollector> dataCollectors;
 
    public AbstractReport() {
-      this.dataCollectors = new HashSet<IReportDataCollector>();
+      this.dataCollectors = new HashSet<>();
    }
 
    public void addReportDataCollector(IReportDataCollector collector) {

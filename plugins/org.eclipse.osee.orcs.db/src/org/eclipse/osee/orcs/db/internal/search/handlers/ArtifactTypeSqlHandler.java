@@ -65,7 +65,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
    private Collection<Long> getLocalTypeIds() throws OseeCoreException {
       Collection<? extends IArtifactType> types = criteria.getTypes();
-      Collection<Long> toReturn = new HashSet<Long>();
+      Collection<Long> toReturn = new HashSet<>();
       for (IArtifactType type : types) {
          toReturn.add(type.getGuid());
       }

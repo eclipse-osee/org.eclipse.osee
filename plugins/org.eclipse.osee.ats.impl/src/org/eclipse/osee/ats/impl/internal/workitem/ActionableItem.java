@@ -38,7 +38,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public Collection<IAtsActionableItem> getChildrenActionableItems() {
-      Set<IAtsActionableItem> children = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> children = new HashSet<>();
       try {
          for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
             IAtsActionableItem childTeamDef = atsServices.getConfigItemFactory().getActionableItem(childArt);
@@ -129,7 +129,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
 
    @Override
    public Collection<String> getRules() {
-      Collection<String> rules = new ArrayList<String>();
+      Collection<String> rules = new ArrayList<>();
       try {
          rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {

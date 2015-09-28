@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 public class Unique extends Rule {
    @Override
    public ChangeSet computeChanges(CharSequence seq) {
-      LinkedHashSet<Object> set = new LinkedHashSet<Object>();
+      LinkedHashSet<Object> set = new LinkedHashSet<>();
       int start = 0;
       int end = 0;
       int length = seq.length();

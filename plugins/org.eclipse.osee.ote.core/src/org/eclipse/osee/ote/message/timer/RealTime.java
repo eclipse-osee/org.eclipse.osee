@@ -41,7 +41,7 @@ public class RealTime extends TimerControl {
    @Override
    public void addTask(final EnvironmentTask task, final TestEnvironment environment) {
       if (!handleMap.containsKey(task)) {
-         final WeakReference<TestEnvironment> te = new WeakReference<TestEnvironment>(environment);
+         final WeakReference<TestEnvironment> te = new WeakReference<>(environment);
          final ScheduledFuture<?> handle = schedulePeriodicTask(new Runnable() {
             final Benchmark bm = new Benchmark(task.getClass().getName() + ":" + task.getHzRate() + "Hz",
                   (long) (1000000.0 / task.getHzRate()));

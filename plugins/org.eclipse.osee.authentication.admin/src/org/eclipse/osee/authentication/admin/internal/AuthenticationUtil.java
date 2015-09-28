@@ -35,7 +35,7 @@ public final class AuthenticationUtil {
    }
 
    public static Iterable<String> unmodifiableSortedIterable(Collection<String> source) {
-      List<String> list = new ArrayList<String>();
+      List<String> list = new ArrayList<>();
       list.addAll(source);
       Collections.sort(list);
       return Collections.unmodifiableList(list);

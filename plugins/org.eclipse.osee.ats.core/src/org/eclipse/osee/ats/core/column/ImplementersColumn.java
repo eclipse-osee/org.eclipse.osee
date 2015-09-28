@@ -48,7 +48,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
    }
 
    public List<IAtsUser> getImplementers(IAtsObject atsObject) throws OseeCoreException {
-      List<IAtsUser> implementers = new LinkedList<IAtsUser>();
+      List<IAtsUser> implementers = new LinkedList<>();
       if (atsObject instanceof IActionGroup) {
          implementers.addAll(getActionGroupImplementers((IActionGroup) atsObject));
       } else if (atsObject instanceof IAtsWorkItem) {
@@ -60,7 +60,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
    }
 
    public List<IAtsUser> getWorkItemImplementers(IAtsWorkItem workItem) throws OseeCoreException {
-      List<IAtsUser> implementers = new ArrayList<IAtsUser>();
+      List<IAtsUser> implementers = new ArrayList<>();
       getImplementers_fromWorkItem(workItem, implementers);
       getImplementers_fromCompletedCancelledBy(workItem, implementers);
       getImplementers_fromCompletedCancelledFrom(workItem, implementers);
@@ -109,7 +109,7 @@ public class ImplementersColumn implements ImplementersStringProvider {
    }
 
    public List<IAtsUser> getActionGroupImplementers(IActionGroup actionGroup) throws OseeCoreException {
-      List<IAtsUser> implementers = new LinkedList<IAtsUser>();
+      List<IAtsUser> implementers = new LinkedList<>();
       for (IAtsWorkItem action : actionGroup.getActions()) {
          if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
             for (IAtsUser user : getWorkItemImplementers(action)) {

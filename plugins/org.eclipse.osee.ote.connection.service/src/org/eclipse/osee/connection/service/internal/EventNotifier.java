@@ -29,7 +29,7 @@ public class EventNotifier {
    void notifyConnectorsAdded(final Collection<IServiceConnector> connectors) {
       executorService.submit(new Runnable() {
          // copy the collection of new connectors
-         final ArrayList<IServiceConnector> newConnectors = new ArrayList<IServiceConnector>(connectors);
+         final ArrayList<IServiceConnector> newConnectors = new ArrayList<>(connectors);
 
          @Override
          public void run() {

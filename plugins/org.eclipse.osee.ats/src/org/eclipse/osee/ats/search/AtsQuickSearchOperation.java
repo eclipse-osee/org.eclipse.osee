@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
  * @author Donald G. Dunne
  */
 class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
-   Set<Artifact> allArtifacts = new HashSet<Artifact>();
+   Set<Artifact> allArtifacts = new HashSet<>();
    private final AtsQuickSearchData data;
    private WorldEditor worldEditor;
 

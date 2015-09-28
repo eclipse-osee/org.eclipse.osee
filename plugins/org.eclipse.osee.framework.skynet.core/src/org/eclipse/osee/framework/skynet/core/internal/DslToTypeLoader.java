@@ -157,7 +157,7 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private void translateSuperTypes(TypeBuffer buffer, ArtifactType targetArtifactType, XArtifactType xArtifactType) throws OseeCoreException {
-      Set<ArtifactType> oseeSuperTypes = new HashSet<ArtifactType>();
+      Set<ArtifactType> oseeSuperTypes = new HashSet<>();
       for (XArtifactType xSuperType : xArtifactType.getSuperArtifactTypes()) {
          String superTypeName = xSuperType.getName();
          ArtifactType oseeSuperType = buffer.getArtTypes().getUniqueByName(superTypeName);
@@ -180,7 +180,7 @@ public class DslToTypeLoader implements TypesLoader {
          if (oseeAttributeType != null) {
             Collection<AttributeType> listOfAllowedAttributes = validAttributes.get(branch);
             if (listOfAllowedAttributes == null) {
-               listOfAllowedAttributes = new HashSet<AttributeType>();
+               listOfAllowedAttributes = new HashSet<>();
                validAttributes.put(branch, listOfAllowedAttributes);
             }
             listOfAllowedAttributes.add(oseeAttributeType);
@@ -225,7 +225,7 @@ public class DslToTypeLoader implements TypesLoader {
          public Void caseRemoveAttribute(RemoveAttribute removeOption) {
             XAttributeType attribute = removeOption.getAttribute();
             String guidToMatch = attribute.getUuid();
-            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
                String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
@@ -240,7 +240,7 @@ public class DslToTypeLoader implements TypesLoader {
          public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
             XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
             String guidToMatch = refToUpdate.getValidAttributeType().getUuid();
-            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
                String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
@@ -271,7 +271,7 @@ public class DslToTypeLoader implements TypesLoader {
       OseeEnumType oseeEnumType = enumTypeFactory.createOrUpdate(buffer.getEnumTypes(), enumUuid, enumTypeName);
 
       int lastOrdinal = 0;
-      List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
+      List<OseeEnumEntry> oseeEnumEntries = new ArrayList<>();
       for (XOseeEnumEntry xEnumEntry : xEnumType.getEnumEntries()) {
          String entryName = xEnumEntry.getName();
          String ordinal = xEnumEntry.getOrdinal();
@@ -310,7 +310,7 @@ public class DslToTypeLoader implements TypesLoader {
          public Void caseRemoveEnum(RemoveEnum removeEnum) {
             XOseeEnumEntry enumEntry = removeEnum.getEnumEntry();
             String guidToMatch = enumEntry.getEntryGuid();
-            List<XOseeEnumEntry> toRemove = new LinkedList<XOseeEnumEntry>();
+            List<XOseeEnumEntry> toRemove = new LinkedList<>();
             for (XOseeEnumEntry item : enumEntries) {
                String itemGuid = item.getEntryGuid();
                if (guidToMatch.equals(itemGuid)) {

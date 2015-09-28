@@ -31,9 +31,9 @@ public class EndpointSendCollection {
    private final Map<MessageId, ProtocolId> messageIdMapping;
 
    public EndpointSendCollection() {
-      endpoints = new CopyOnWriteArrayList<EndpointSend>();
-      protocolMapping = new ConcurrentHashMap<ProtocolId, EndpointSend>();
-      messageIdMapping = new ConcurrentHashMap<MessageId, ProtocolId>();
+      endpoints = new CopyOnWriteArrayList<>();
+      protocolMapping = new ConcurrentHashMap<>();
+      messageIdMapping = new ConcurrentHashMap<>();
    }
 
    public synchronized boolean add(EndpointSend endpoint) {
@@ -46,7 +46,7 @@ public class EndpointSendCollection {
 
    public synchronized boolean remove(EndpointSend endpoint) {
       if (endpoints.remove(endpoint)) {
-         List<ProtocolId> protocolIdsToRemove = new ArrayList<ProtocolId>();
+         List<ProtocolId> protocolIdsToRemove = new ArrayList<>();
          Iterator<ProtocolId> it = protocolMapping.keySet().iterator();
          while (it.hasNext()) {
             ProtocolId id = it.next();

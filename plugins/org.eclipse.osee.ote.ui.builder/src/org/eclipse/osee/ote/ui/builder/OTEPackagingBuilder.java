@@ -144,7 +144,7 @@ public class OTEPackagingBuilder extends IncrementalProjectBuilder {
 	}
 
    private List<IPath> getOutputLocations(IPath outputLocation, IClasspathEntry[] rawClasspath) {
-      List<IPath> outputLocations = new ArrayList<IPath>();
+      List<IPath> outputLocations = new ArrayList<>();
       outputLocations.add(outputLocation);
       for(IClasspathEntry classpathEntry:rawClasspath){
          if(classpathEntry.getOutputLocation() != null){

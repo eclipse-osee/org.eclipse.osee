@@ -33,8 +33,8 @@ public class LinkTestRunToTestScriptOperation {
 
    public LinkTestRunToTestScriptOperation(Artifact... artifacts) {
       this.artifacts = Arrays.asList(artifacts);
-      this.unlinked = new ArrayList<Artifact>();
-      this.linked = new ArrayList<Artifact>();
+      this.unlinked = new ArrayList<>();
+      this.linked = new ArrayList<>();
    }
 
    public void execute(final IProgressMonitor monitor) throws OseeCoreException {
@@ -56,7 +56,7 @@ public class LinkTestRunToTestScriptOperation {
 
       };
 
-      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<Object>(outfileToArtifactFactory, true);
+      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<>(outfileToArtifactFactory, true);
       executor.executeWorkersBlocking();
    }
 

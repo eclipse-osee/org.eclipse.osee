@@ -115,8 +115,8 @@ public class AccessControlService implements IAccessControlService {
       new DoubleKeyHashMap<Integer, AccessObject, PermissionEnum>();
    private final HashCollection<AccessObject, Integer> objectToSubjectCache =
       new HashCollection<AccessObject, Integer>(true); // <subjectId, groupId>
-   private final HashCollection<Integer, Integer> subjectToGroupCache = new HashCollection<Integer, Integer>(true); // <groupId, subjectId>
-   private final HashCollection<Integer, Integer> groupToSubjectsCache = new HashCollection<Integer, Integer>(true); // <artId, branchUuid>
+   private final HashCollection<Integer, Integer> subjectToGroupCache = new HashCollection<>(true); // <groupId, subjectId>
+   private final HashCollection<Integer, Integer> groupToSubjectsCache = new HashCollection<>(true); // <artId, branchUuid>
 
    // branch_id, art_id, subject_id
    private final CompositeKeyHashMap<Long, Integer, Integer> artifactLockCache =
@@ -344,7 +344,7 @@ public class AccessControlService implements IAccessControlService {
    @Override
    public AccessDataQuery getAccessData(final IBasicArtifact<?> userArtifact, final Collection<?> objectsToCheck) throws OseeCoreException {
       ensurePopulated();
-      List<String> key = new LinkedList<String>();
+      List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
          if (o instanceof Branch) {
             key.add(String.valueOf(((Branch) o).getGuid()));
@@ -567,7 +567,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    public List<AccessControlData> getAccessControlList(Object object) {
-      List<AccessControlData> datas = new LinkedList<AccessControlData>();
+      List<AccessControlData> datas = new LinkedList<>();
       AccessObject accessObject = null;
 
       try {
@@ -587,7 +587,7 @@ public class AccessControlService implements IAccessControlService {
 
    public List<AccessControlData> generateAccessControlList(AccessObject accessObject) throws OseeCoreException {
       ensurePopulated();
-      List<AccessControlData> datas = new LinkedList<AccessControlData>();
+      List<AccessControlData> datas = new LinkedList<>();
 
       Collection<Integer> subjects = objectToSubjectCache.getValues(accessObject);
       if (subjects == null) {
@@ -667,7 +667,7 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
       AccessControlEvent event = new AccessControlEvent();
       event.setEventType(AccessControlEventType.ArtifactsLocked);
-      Set<Artifact> lockedArts = new HashSet<Artifact>();
+      Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
          Integer subjectArtId = subject.getArtId();
@@ -695,7 +695,7 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
       AccessControlEvent event = new AccessControlEvent();
       event.setEventType(AccessControlEventType.ArtifactsUnlocked);
-      Set<Artifact> lockedArts = new HashSet<Artifact>();
+      Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
          Long branchUuid = object.getFullBranch().getUuid();

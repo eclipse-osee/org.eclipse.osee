@@ -66,8 +66,8 @@ public class FindCommitableJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       IStatus toReturn = Status.CANCEL_STATUS;
       monitor.beginTask(getName(), artifactsToSort.size());
-      commitable = new ArrayList<Artifact>();
-      nonCommitable = new ArrayList<Artifact>();
+      commitable = new ArrayList<>();
+      nonCommitable = new ArrayList<>();
 
       ThreadedWorkerFactory<Object> outfileToArtifactFactory = new ThreadedWorkerFactory<Object>() {
 
@@ -83,7 +83,7 @@ public class FindCommitableJob extends Job {
 
       };
 
-      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<Object>(outfileToArtifactFactory, false);
+      ThreadedWorkerExecutor<Object> executor = new ThreadedWorkerExecutor<>(outfileToArtifactFactory, false);
       try {
          executor.executeWorkersBlocking();
       } catch (OseeCoreException ex) {

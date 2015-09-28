@@ -20,7 +20,7 @@ public class TreeParent extends TreeObject {
 
    public TreeParent(String name) {
       super(name);
-      children = new ArrayList<TreeObject>();
+      children = new ArrayList<>();
    }
 
    public TreeParent() {

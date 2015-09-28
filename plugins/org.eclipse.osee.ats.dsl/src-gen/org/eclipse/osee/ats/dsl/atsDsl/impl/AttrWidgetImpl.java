@@ -116,7 +116,7 @@ public class AttrWidgetImpl extends LayoutItemImpl implements AttrWidget
   {
     if (option == null)
     {
-      option = new EDataTypeEList<String>(String.class, this, AtsDslPackage.ATTR_WIDGET__OPTION);
+      option = new EDataTypeEList<>(String.class, this, AtsDslPackage.ATTR_WIDGET__OPTION);
     }
     return option;
   }

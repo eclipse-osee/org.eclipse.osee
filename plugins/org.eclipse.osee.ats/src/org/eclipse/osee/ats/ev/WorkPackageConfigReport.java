@@ -52,7 +52,7 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
-               tabs = new LinkedList<IResultsEditorTab>();
+               tabs = new LinkedList<>();
                tabs.add(createConfigurationTab());
             }
             return tabs;
@@ -64,7 +64,7 @@ public class WorkPackageConfigReport extends XNavigateItemAction {
    private IResultsEditorTab createConfigurationTab() {
       List<XViewerColumn> columns = getColumns();
 
-      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> rows = new ArrayList<>();
       WorkPackageConfigLoader loader = new WorkPackageConfigLoader();
       loader.load();
 

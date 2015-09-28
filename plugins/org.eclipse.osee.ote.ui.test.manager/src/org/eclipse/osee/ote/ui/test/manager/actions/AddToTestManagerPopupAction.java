@@ -30,7 +30,7 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
    public static String[] getSelection() {
       StructuredSelection sel = AWorkspace.getSelection();
       Iterator<?> i = sel.iterator();
-      List<String> selection = new ArrayList<String>();
+      List<String> selection = new ArrayList<>();
       
       while (i.hasNext()) {
          Object obj = i.next();

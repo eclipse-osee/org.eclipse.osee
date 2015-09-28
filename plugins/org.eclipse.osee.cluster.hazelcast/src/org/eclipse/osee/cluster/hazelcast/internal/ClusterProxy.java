@@ -29,7 +29,7 @@ public class ClusterProxy implements Cluster {
 
    @Override
    public Set<Member> getMembers() {
-      Set<Member> members = new HashSet<Member>();
+      Set<Member> members = new HashSet<>();
       for (com.hazelcast.core.Member member : getProxyObject().getMembers()) {
          members.add(new MemberProxy(member));
       }

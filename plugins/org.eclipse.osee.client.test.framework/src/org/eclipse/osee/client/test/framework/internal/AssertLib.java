@@ -88,7 +88,7 @@ public class AssertLib {
    }
 
    private static Collection<String> mergeIgnoreLogs(Collection<String> ignoreLogs) {
-      Collection<String> logsToIgnore = new HashSet<String>();
+      Collection<String> logsToIgnore = new HashSet<>();
       logsToIgnore.addAll(DEFAULT_IGNORE_LOGS);
       for (String toIgnore : ignoreLogs) {
          logsToIgnore.add(toIgnore);

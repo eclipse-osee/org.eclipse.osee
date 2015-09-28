@@ -52,7 +52,7 @@ public class HtmlWriter {
             TransactionReadable tx = (TransactionReadable) object;
             addTable(builder, toData(tx));
          } else {
-            Map<String, Object> unhandled = new LinkedHashMap<String, Object>();
+            Map<String, Object> unhandled = new LinkedHashMap<>();
             unhandled.put("Class", object.getClass().getSimpleName());
             unhandled.put("Data", object.toString());
             addTable(builder, unhandled);
@@ -64,7 +64,7 @@ public class HtmlWriter {
    }
 
    private Map<String, Object> toData(AttributeReadable<?> attribute) throws OseeCoreException {
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", attribute.getAttributeType().getName());
 
       int attrId = attribute.getLocalId();
@@ -74,7 +74,7 @@ public class HtmlWriter {
    }
 
    private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", artifact.getName());
       data.put("Uuid", artifact.getGuid());
       data.put("Tx Id", artifact.getTransaction());
@@ -113,7 +113,7 @@ public class HtmlWriter {
    }
 
    private Map<String, Object> toData(BranchReadable branch) throws OseeCoreException {
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", branch.getName());
       data.put("Uuid", branch.getUuid());
       data.put("Local Id", branch.getLocalId());
@@ -151,7 +151,7 @@ public class HtmlWriter {
    }
 
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put("TxId", txRecord.getLocalId());
       data.put("TxType", txRecord.getTxType());
       data.put("Date", txRecord.getDate());

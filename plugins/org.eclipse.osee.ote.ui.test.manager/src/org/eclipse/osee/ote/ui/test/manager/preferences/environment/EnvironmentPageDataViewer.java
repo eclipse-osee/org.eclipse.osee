@@ -33,7 +33,7 @@ public class EnvironmentPageDataViewer {
 
    public EnvironmentPageDataViewer(Composite parent) {
       createArea(parent);
-      styleArray = new ArrayList<StyleRange>();
+      styleArray = new ArrayList<>();
    }
 
    public void clearTextArea() {

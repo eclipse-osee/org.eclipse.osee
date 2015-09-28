@@ -92,7 +92,7 @@ public class RelationChangeWorker implements IChangeWorker {
                RelationOrderData relationOrderData =
                   new RelationOrderFactory().createRelationOrderData(otherSideCurrent);
 
-               List<String> guids = new ArrayList<String>();
+               List<String> guids = new ArrayList<>();
 
                for (Entry<Pair<String, String>, Pair<String, List<String>>> relationOrderGuidData : relationOrderData.entrySet()) {
                   guids.addAll(relationOrderGuidData.getValue().getSecond());

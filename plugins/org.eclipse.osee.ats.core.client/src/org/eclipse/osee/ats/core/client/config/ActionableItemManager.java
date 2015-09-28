@@ -39,7 +39,7 @@ public class ActionableItemManager {
    }
 
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       if (!artifact.isDeleted()) {
          for (Long uuid : getActionableItemUuids()) {
             IAtsActionableItem aia = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
@@ -64,7 +64,7 @@ public class ActionableItemManager {
     * Definitions and AIs are referenced by uuid instead of guid in DB Store.
     */
    public List<Long> getActionableItemUuids() throws OseeCoreException {
-      List<Long> uuids = new LinkedList<Long>();
+      List<Long> uuids = new LinkedList<>();
       for (String guid : artifact.getAttributesToStringList(AtsAttributeTypes.ActionableItem)) {
          Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(guid);
          if (uuid != null) {

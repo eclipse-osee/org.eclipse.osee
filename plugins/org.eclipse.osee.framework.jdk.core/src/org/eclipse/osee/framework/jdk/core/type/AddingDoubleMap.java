@@ -22,11 +22,11 @@ public class AddingDoubleMap<K> {
    private final HashMap<K, MutableDouble> addingMap;
 
    public AddingDoubleMap(int initialCapacity) {
-      addingMap = new HashMap<K, MutableDouble>(initialCapacity);
+      addingMap = new HashMap<>(initialCapacity);
    }
 
    public AddingDoubleMap() {
-      addingMap = new HashMap<K, MutableDouble>();
+      addingMap = new HashMap<>();
    }
 
    public double get(K key) {

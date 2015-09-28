@@ -37,7 +37,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class DefineNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
-   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
 
    @Override
    public List<XNavigateItem> getSearchNavigateItems() {

@@ -72,9 +72,9 @@ public class VariablePatternTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
-      Map<String, String> params = new HashMap<String, String>();
+      Map<String, String> params = new HashMap<>();
       params.put("y", "hello");
       params.put("c", "ball");
       params.put("a", "cat");

@@ -110,7 +110,7 @@ public class DecisionUpdater {
 
    private void updateAssignees(final DecisionUpdate update, IAtsChangeSet changes, IAtsTeamWorkflow teamWf, XResultData rd) {
       if (update.getAssignees() != null) {
-         List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+         List<IAtsUser> assignees = new ArrayList<>();
          for (String userId : update.getAssignees()) {
             IAtsUser user = atsServer.getUserService().getUserById(userId);
             if (user == null) {

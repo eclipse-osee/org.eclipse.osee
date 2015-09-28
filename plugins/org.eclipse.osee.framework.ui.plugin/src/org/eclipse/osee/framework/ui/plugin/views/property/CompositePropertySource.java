@@ -35,7 +35,7 @@ public class CompositePropertySource extends AbstractPropertySource {
    public void add(IPropertySource propertySource) {
       if (propertySource instanceof AbstractPropertySource) {
          if (sources == null) {
-            sources = new ArrayList<AbstractPropertySource>();
+            sources = new ArrayList<>();
          }
          sources.add((AbstractPropertySource) propertySource);
       }

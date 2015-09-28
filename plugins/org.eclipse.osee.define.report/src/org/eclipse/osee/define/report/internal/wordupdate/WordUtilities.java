@@ -57,7 +57,7 @@ public class WordUtilities {
    }
 
    public static String referencesOnly(String content) {
-      List<String> references = new ArrayList<String>();
+      List<String> references = new ArrayList<>();
 
       Matcher referenceMatcher = referencePattern.matcher(content);
       while (referenceMatcher.find()) {

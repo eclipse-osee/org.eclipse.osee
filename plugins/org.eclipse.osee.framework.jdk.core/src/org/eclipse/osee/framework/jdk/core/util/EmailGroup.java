@@ -19,7 +19,7 @@ import java.util.Collection;
 public class EmailGroup {
 
    private final String groupName;
-   private final ArrayList<String> emails = new ArrayList<String>();
+   private final ArrayList<String> emails = new ArrayList<>();
 
    public EmailGroup(String groupName, Collection<String> emails) {
       setEmails(emails);

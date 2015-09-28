@@ -49,7 +49,7 @@ public abstract class DynamicWizard implements IWizard {
    /**
     * This wizard's list of pages (element type: <code>IWizardPage</code>).
     */
-   private final Map<String, IWizardPage> pages = new HashMap<String, IWizardPage>();
+   private final Map<String, IWizardPage> pages = new HashMap<>();
 
    /**
     * Indicates whether this wizard needs a progress monitor.

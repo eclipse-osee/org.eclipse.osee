@@ -63,7 +63,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
       // state
       if (stateType != null) {
-         List<String> stateTypes = new ArrayList<String>();
+         List<String> stateTypes = new ArrayList<>();
          for (StateType type : stateType) {
             stateTypes.add(type.name());
          }
@@ -76,7 +76,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       }
 
       if (uuids != null && uuids.length > 0) {
-         List<Long> artIds = new LinkedList<Long>();
+         List<Long> artIds = new LinkedList<>();
          for (Long uuid : uuids) {
             artIds.add(uuid);
          }
@@ -96,7 +96,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
          }
       }
 
-      Set<T> workItems = new HashSet<T>();
+      Set<T> workItems = new HashSet<>();
       Iterator<ArtifactReadable> iterator = query.getResults().iterator();
       while (iterator.hasNext()) {
          workItems.add((T) atsServer.getWorkItemFactory().getWorkItem(iterator.next()));

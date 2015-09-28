@@ -39,7 +39,7 @@ public class XBranchSelectComboWidget extends GenericXWidget implements Listener
    private Composite composite;
    private final int defaultBranch;
 
-   private final List<Listener> listeners = new ArrayList<Listener>();
+   private final List<Listener> listeners = new ArrayList<>();
 
    public XBranchSelectComboWidget(String label) {
       super(label);

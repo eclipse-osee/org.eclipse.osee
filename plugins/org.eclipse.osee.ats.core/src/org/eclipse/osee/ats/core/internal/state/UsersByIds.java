@@ -40,7 +40,7 @@ public class UsersByIds {
    }
 
    public List<IAtsUser> getUsers(String sorageString, IAtsUserService userService) {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       Matcher m = userPattern.matcher(sorageString);
       while (m.find()) {
          String userId = m.group(1);

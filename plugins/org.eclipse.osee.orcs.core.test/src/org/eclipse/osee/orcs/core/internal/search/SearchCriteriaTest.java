@@ -71,7 +71,7 @@ public class SearchCriteriaTest {
 
       when(cache.isTaggable(CoreAttributeTypes.FavoriteBranch)).thenReturn(false);
 
-      ArrayList<IAttributeType> types = new ArrayList<IAttributeType>();
+      ArrayList<IAttributeType> types = new ArrayList<>();
       types.add(CoreAttributeTypes.Active);
       types.add(CoreAttributeTypes.FavoriteBranch);
 

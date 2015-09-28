@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
  */
 public final class HierarchyHandler {
    private static final Matcher subsystemMatcher = Pattern.compile("(\\w*)\\.ss").matcher("");
-   private final Map<String, Artifact> folderNameToArtifact = new HashMap<String, Artifact>(50);
+   private final Map<String, Artifact> folderNameToArtifact = new HashMap<>(50);
    private final SkynetTransaction transaction;
    private final IOseeBranch branch;
    private Artifact root;

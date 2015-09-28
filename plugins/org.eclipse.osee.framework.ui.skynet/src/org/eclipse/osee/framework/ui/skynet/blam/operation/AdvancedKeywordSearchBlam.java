@@ -59,7 +59,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
          return;
       }
       Collection<AttributeType> attrTypes = variableMap.getAttributeTypes("Include Attribute Values in Results");
-      HashCollection<Artifact, String> artifactToMatch = new HashCollection<Artifact, String>(100);
+      HashCollection<Artifact, String> artifactToMatch = new HashCollection<>(100);
       for (String keywords : keywordgroups.split(System.getProperty("line.separator"))) {
          for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(branch, keywords, true,
             EXCLUDE_DELETED, false)) {
@@ -71,14 +71,14 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       XResultData resultData = new XResultData(false);
       resultData.log(String.format("[%s] on branch [%s] (keyword groups listed below results)", getName(), branch));
       resultData.addRaw(AHTML.beginMultiColumnTable(100, 1));
-      List<String> headerList = new ArrayList<String>();
+      List<String> headerList = new ArrayList<>();
       headerList.addAll(Arrays.asList("Artifact", "Keywords matched", "Guid", "Link", "Artifact Type"));
       for (AttributeType attrType : attrTypes) {
          headerList.add(attrType.getName());
       }
       resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(headerList));
       for (Entry<Artifact, Collection<String>> entry : artifactToMatch.entrySet()) {
-         List<String> valueList = new ArrayList<String>();
+         List<String> valueList = new ArrayList<>();
          valueList.addAll(Arrays.asList(entry.getKey().getName(), Collections.toString(";", entry.getValue()),
             entry.getKey().getGuid(), XResultDataUI.getHyperlink("open", entry.getKey()),
             entry.getKey().getArtifactTypeName()));

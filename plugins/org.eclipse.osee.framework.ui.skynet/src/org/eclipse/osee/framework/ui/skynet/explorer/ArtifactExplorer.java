@@ -164,7 +164,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private static final String ROOT_UUID = "artifact.explorer.last.root_uuid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
    private static final ArtifactClipboard artifactClipboard = new ArtifactClipboard(VIEW_ID);
-   private static final LinkedList<Tree> trees = new LinkedList<Tree>();
+   private static final LinkedList<Tree> trees = new LinkedList<>();
 
    private TreeViewer treeViewer;
    private Action upAction;
@@ -914,8 +914,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          public void widgetSelected(SelectionEvent e) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Iterator<?> iterator = selection.iterator();
-            Set<Artifact> lockArtifacts = new HashSet<Artifact>();
-            Set<Artifact> unlockArtifacts = new HashSet<Artifact>();
+            Set<Artifact> lockArtifacts = new HashSet<>();
+            Set<Artifact> unlockArtifacts = new HashSet<>();
             while (iterator.hasNext()) {
                try {
                   Artifact object = (Artifact) iterator.next();
@@ -959,7 +959,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    private void performCopy() throws OseeCoreException {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      List<Artifact> artifactTransferData = new ArrayList<Artifact>();
+      List<Artifact> artifactTransferData = new ArrayList<>();
       Artifact artifact;
 
       if (selection != null && !selection.isEmpty()) {
@@ -1121,7 +1121,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       private final HashCollection<Class<? extends Artifact>, MenuItem> menuItemMap;
 
       public NeedArtifactMenuListener() {
-         menuItemMap = new HashCollection<Class<? extends Artifact>, MenuItem>();
+         menuItemMap = new HashCollection<>();
       }
 
       public void add(MenuItem item) {
@@ -1159,7 +1159,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       Collection<MenuItem> items;
 
       public NeedProjectMenuListener() {
-         items = new LinkedList<MenuItem>();
+         items = new LinkedList<>();
       }
 
       public void add(MenuItem item) {
@@ -1317,7 +1317,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    @Override
    public ArtifactStructuredSelection getSelection() {
-      final List<Artifact> selectedItems = new LinkedList<Artifact>();
+      final List<Artifact> selectedItems = new LinkedList<>();
       TreeViewerUtility.getPreorderSelection(treeViewer, selectedItems);
       return new ArtifactStructuredSelection(selectedItems);
    }

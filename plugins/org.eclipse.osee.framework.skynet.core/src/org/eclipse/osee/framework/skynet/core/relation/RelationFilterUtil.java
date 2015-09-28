@@ -132,7 +132,7 @@ public class RelationFilterUtil {
 
    private static final class CompositeMatcher implements RelationMatcher {
 
-      private final List<RelationMatcher> matchers = new ArrayList<RelationMatcher>();
+      private final List<RelationMatcher> matchers = new ArrayList<>();
 
       public void add(RelationMatcher matcher) {
          matchers.add(matcher);

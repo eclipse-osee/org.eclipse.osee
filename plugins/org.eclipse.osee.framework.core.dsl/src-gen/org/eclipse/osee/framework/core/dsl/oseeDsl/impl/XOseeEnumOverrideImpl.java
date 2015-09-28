@@ -175,7 +175,7 @@ public class XOseeEnumOverrideImpl extends OseeElementImpl implements XOseeEnumO
   {
     if (overrideOptions == null)
     {
-      overrideOptions = new EObjectContainmentEList<OverrideOption>(OverrideOption.class, this, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
+      overrideOptions = new EObjectContainmentEList<>(OverrideOption.class, this, OseeDslPackage.XOSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
     }
     return overrideOptions;
   }

@@ -97,7 +97,7 @@ public class DemoDbReviews {
 
    private static List<TeamWorkFlowArtifact> getSampleReviewTestWorkflows() throws Exception {
       if (reviewTestArts == null) {
-         reviewTestArts = new ArrayList<TeamWorkFlowArtifact>();
+         reviewTestArts = new ArrayList<>();
          for (String actionName : new String[] {"Button W doesn't work on", "Diagram Tree"}) {
             for (Artifact art : ArtifactQuery.getArtifactListFromName(actionName, AtsUtilCore.getAtsBranch(),
                EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS)) {
@@ -134,7 +134,7 @@ public class DemoDbReviews {
       reviewArt =
          PeerToPeerReviewManager.createNewPeerToPeerReview(firstCodeArt, "Peer Review algorithm used in code",
             firstCodeArt.getStateMgr().getCurrentStateName(), changes);
-      List<UserRole> roles = new ArrayList<UserRole>();
+      List<UserRole> roles = new ArrayList<>();
       roles.add(new UserRole(Role.Author, AtsClientService.get().getUserServiceClient().getUserFromToken(
          DemoUsers.Joe_Smith)));
       roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserServiceClient().getUserFromToken(
@@ -158,7 +158,7 @@ public class DemoDbReviews {
             new Date(),
             AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
                DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)), changes);
-      roles = new ArrayList<UserRole>();
+      roles = new ArrayList<>();
       roles.add(new UserRole(Role.Author, AtsClientService.get().getUserServiceClient().getUserFromToken(
          DemoUsers.Kay_Jones), 2.3, true));
       roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserServiceClient().getUserFromToken(
@@ -166,7 +166,7 @@ public class DemoDbReviews {
       roles.add(new UserRole(Role.Reviewer, AtsClientService.get().getUserServiceClient().getUserFromToken(
          DemoUsers.Alex_Kay), 2.0, true));
 
-      List<ReviewDefectItem> defects = new ArrayList<ReviewDefectItem>();
+      List<ReviewDefectItem> defects = new ArrayList<>();
       defects.add(new ReviewDefectItem(AtsClientService.get().getUserServiceClient().getUserFromToken(
          DemoUsers.Alex_Kay), Severity.Issue, Disposition.Accept, InjectionActivity.Code, "Problem with logic",
          "Fixed", "Line 234", new Date()));

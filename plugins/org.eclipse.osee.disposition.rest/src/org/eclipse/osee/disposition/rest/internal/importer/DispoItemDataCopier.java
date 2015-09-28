@@ -78,7 +78,7 @@ public class DispoItemDataCopier {
    private static String rebuildLocRef(JSONArray idsOfCoveredDiscrepancies, JSONObject discrepancies, HashMap<String, Integer> idsToUpdate, StringBuilder message) throws JSONException {
       boolean isGaveup = false;
       int length = idsOfCoveredDiscrepancies.length();
-      List<Integer> testPointNumber = new ArrayList<Integer>();
+      List<Integer> testPointNumber = new ArrayList<>();
       for (int i = 0; i < length; i++) {
          String id = idsOfCoveredDiscrepancies.getString(i);
          if (discrepancies.has(id)) {
@@ -110,7 +110,7 @@ public class DispoItemDataCopier {
    private static HashMap<String, Integer> matchupOldDiscrepancies(JSONObject oldDiscrepancies, JSONObject newDiscrepancies, JSONArray annotations, StringBuilder message, Boolean needsReview) throws JSONException {
       HashMap<String, Pair<Discrepancy, Boolean>> textToNewDiscrepancies =
          createTextToDiscrepanciesMap(newDiscrepancies);
-      HashMap<String, Integer> idsToUpdate = new HashMap<String, Integer>();
+      HashMap<String, Integer> idsToUpdate = new HashMap<>();
 
       Iterator<String> iterator = oldDiscrepancies.keys();
       while (iterator.hasNext()) {
@@ -194,7 +194,7 @@ public class DispoItemDataCopier {
 
    @SuppressWarnings("unchecked")
    private static HashMap<String, Pair<Discrepancy, Boolean>> createTextToDiscrepanciesMap(JSONObject discrepancies) throws JSONException {
-      HashMap<String, Pair<Discrepancy, Boolean>> textToDiscrepancy = new HashMap<String, Pair<Discrepancy, Boolean>>();
+      HashMap<String, Pair<Discrepancy, Boolean>> textToDiscrepancy = new HashMap<>();
       Iterator<String> iterator = discrepancies.keys();
       while (iterator.hasNext()) {
          String key = iterator.next();
@@ -202,7 +202,7 @@ public class DispoItemDataCopier {
          Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsObject);
          String normalizedText = discrepancy.getText().replaceFirst(".*?\\.", ""); // Want to exclude Point number from text we match with
 
-         Pair newPair = new Pair<Discrepancy, Boolean>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
+         Pair newPair = new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
          textToDiscrepancy.put(normalizedText, newPair);
       }
 

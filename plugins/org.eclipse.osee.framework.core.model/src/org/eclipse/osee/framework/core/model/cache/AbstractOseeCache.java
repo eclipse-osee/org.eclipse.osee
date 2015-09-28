@@ -34,10 +34,10 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
-   private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>(true,
+   private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true,
       CopyOnWriteArrayList.class);
-   private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<Long, T>();
-   private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<K, T>();
+   private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<>();
 
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
@@ -103,7 +103,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    private void decacheByName(T type) {
-      Set<String> keysToRemove = new HashSet<String>();
+      Set<String> keysToRemove = new HashSet<>();
 
       for (String name : nameToTypeMap.keySet()) {
          Collection<T> items = nameToTypeMap.getValues(name);
@@ -144,7 +144,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    private void checkNameUnique(T type) throws OseeCoreException {
       ensurePopulated();
       Collection<T> cachedTypes = getByName(type.getName());
-      Set<String> itemsFound = new HashSet<String>();
+      Set<String> itemsFound = new HashSet<>();
       // TODO Need to revisit this based on deleted types
       //      for (T cachedType : cachedTypes) {
       //         if (!cachedType.getGuid().equals(type.getGuid()) && !cachedType.getModificationType().isDeleted()) {
@@ -188,7 +188,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
 
    public Collection<T> getByName(String typeName) throws OseeCoreException {
       ensurePopulated();
-      Collection<T> types = new ArrayList<T>();
+      Collection<T> types = new ArrayList<>();
       Collection<T> values = nameToTypeMap.getValues(typeName);
       if (values != null) {
          types.addAll(values);
@@ -225,7 +225,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    @Override
    public Collection<T> getAllDirty() throws OseeCoreException {
       ensurePopulated();
-      Collection<T> dirtyItems = new HashSet<T>();
+      Collection<T> dirtyItems = new HashSet<>();
       for (T type : guidToTypeMap.values()) {
          if (type.isDirty()) {
             dirtyItems.add(type);
@@ -242,7 +242,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    public void storeByGuid(Collection<K> guids) throws OseeCoreException {
       ensurePopulated();
       Conditions.checkNotNull(guids, "guids to store");
-      Collection<T> items = new HashSet<T>();
+      Collection<T> items = new HashSet<>();
       for (K guid : guids) {
          T type = getByGuid(guid);
          if (type == null) {

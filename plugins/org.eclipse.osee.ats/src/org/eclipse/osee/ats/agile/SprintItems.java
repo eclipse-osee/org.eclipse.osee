@@ -43,7 +43,7 @@ public class SprintItems {
 
    public void validate() {
       commonBacklog = null;
-      multipleSprints = new HashSet<Artifact>();
+      multipleSprints = new HashSet<>();
       commonSelectedSprint = true;
       noBacklogDetected = false;
       multipleBacklogsDetected = false;
@@ -119,7 +119,7 @@ public class SprintItems {
    }
 
    public Set<IAgileSprint> getMultipleSprints() {
-      Set<IAgileSprint> sprints = new HashSet<IAgileSprint>();
+      Set<IAgileSprint> sprints = new HashSet<>();
       for (Artifact art : multipleSprints) {
          sprints.add(AtsClientService.get().getWorkItemFactory().getAgileSprint(art));
       }

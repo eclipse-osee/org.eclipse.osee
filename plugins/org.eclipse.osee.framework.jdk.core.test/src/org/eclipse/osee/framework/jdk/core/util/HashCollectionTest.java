@@ -28,7 +28,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testPutKV() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
 
       Assert.assertEquals(0, collection.size());
       Assert.assertEquals(0, collection.getValues().size());
@@ -50,8 +50,8 @@ public class HashCollectionTest {
     */
    @Test
    public void testPutKCollectionOfV() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
-      List<String> values = new ArrayList<String>();
+      HashCollection<String, String> collection = new HashCollection<>();
+      List<String> values = new ArrayList<>();
 
       for (int x = 1; x <= 5; x++) {
          values.add("value " + x);
@@ -70,7 +70,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testRemoveValue() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -85,7 +85,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testRemoveValues() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -100,7 +100,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testKeySet() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -115,7 +115,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testClear() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -130,7 +130,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testContainsKey() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -142,7 +142,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testIsEmpty() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       Assert.assertTrue(collection.isEmpty());
       collection.put("key", "value 1");
       Assert.assertFalse(collection.isEmpty());
@@ -155,7 +155,7 @@ public class HashCollectionTest {
     */
    @Test
    public void testContainsValue() {
-      HashCollection<String, String> collection = new HashCollection<String, String>();
+      HashCollection<String, String> collection = new HashCollection<>();
       for (int x = 1; x <= 5; x++) {
          collection.put("key", "value " + x);
       }
@@ -165,7 +165,7 @@ public class HashCollectionTest {
 
    @Test
    public void testHashCollectionObject() {
-      HashCollection<Object, String> collection = new HashCollection<Object, String>();
+      HashCollection<Object, String> collection = new HashCollection<>();
 
       Assert.assertEquals(0, collection.size());
       Assert.assertEquals(0, collection.getValues().size());

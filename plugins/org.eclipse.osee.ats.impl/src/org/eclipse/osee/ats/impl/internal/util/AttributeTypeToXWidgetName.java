@@ -64,7 +64,7 @@ public class AttributeTypeToXWidgetName {
    }
 
    private static Collection<String> getEnumerationValues(OrcsApi orcsApi, IAttributeType attributeType) {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (EnumEntry entry : orcsApi.getOrcsTypes().getAttributeTypes().getEnumType(attributeType).values()) {
          values.add(entry.getName());
       }

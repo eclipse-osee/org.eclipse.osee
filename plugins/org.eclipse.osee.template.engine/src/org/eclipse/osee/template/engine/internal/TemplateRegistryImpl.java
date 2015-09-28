@@ -55,9 +55,9 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    public void start(BundleContext context) {
-      templates = new ConcurrentHashMap<String, TemplateResources>();
-      tokenByName = new ConcurrentHashMap<String, ResourceToken>();
-      tokenByUuid = new ConcurrentHashMap<Long, ResourceToken>();
+      templates = new ConcurrentHashMap<>();
+      tokenByName = new ConcurrentHashMap<>();
+      tokenByUuid = new ConcurrentHashMap<>();
 
       OseeTemplateTokens.register(this);
 
@@ -284,7 +284,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    private List<URL> findUrls(Bundle bundle, String headerValue, boolean recurse, String... resources) {
-      List<URL> resourceUrls = new ArrayList<URL>();
+      List<URL> resourceUrls = new ArrayList<>();
       for (String resource : resources) {
          int index = resource.lastIndexOf('/');
          String path = index != -1 ? resource.substring(0, index) : "/";
@@ -308,7 +308,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
    }
 
    private static class TemplateResources {
-      private final Set<TemplateToken> tokens = new HashSet<TemplateToken>();
+      private final Set<TemplateToken> tokens = new HashSet<>();
 
       public boolean addToken(TemplateToken token) {
          return tokens.add(token);

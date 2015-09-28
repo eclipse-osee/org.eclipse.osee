@@ -21,10 +21,10 @@ import java.util.Set;
 
 public class OperationReport {
 
-   private final Map<String, String> itemToSummaryMap = new HashMap<String, String>();
-   private final Set<String> newItems = new HashSet<String>();
+   private final Map<String, String> itemToSummaryMap = new HashMap<>();
+   private final Set<String> newItems = new HashSet<>();
    private String summary;
-   private final Set<String> otherMessages = new HashSet<String>();
+   private final Set<String> otherMessages = new HashSet<>();
 
    public OperationReport() {
 

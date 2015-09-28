@@ -52,7 +52,7 @@ public class RelationDeletionTest {
 
    @Before
    public void setup() {
-      artifacts = new ArrayList<Artifact>();
+      artifacts = new ArrayList<>();
    }
 
    @After

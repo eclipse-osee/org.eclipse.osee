@@ -78,7 +78,7 @@ public class OseeFieldMainTest {
    @SuppressWarnings("unchecked")
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {//
       new OseeFieldTestData<Object>(new OseeField<Object>(), //

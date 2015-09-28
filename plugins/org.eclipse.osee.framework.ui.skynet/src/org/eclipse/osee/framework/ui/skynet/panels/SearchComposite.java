@@ -58,7 +58,7 @@ public class SearchComposite extends Composite implements Listener {
 
    public SearchComposite(Composite parent, int style, String buttonText, String groupBoxText) {
       super(parent, style);
-      this.listeners = new HashSet<Listener>();
+      this.listeners = new HashSet<>();
       this.entryChanged = false;
       this.buttonText = buttonText;
       this.groupBoxText = groupBoxText;
@@ -257,7 +257,7 @@ public class SearchComposite extends Composite implements Listener {
 
       if (querySearches == null || querySearches.isEmpty()) {
          if (Strings.isValid(lastSelected)) {
-            querySearches = new ArrayList<String>();
+            querySearches = new ArrayList<>();
             querySearches.add(lastSelected);
          } else {
             querySearches = Collections.emptyList();
@@ -294,7 +294,7 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    public List<Control> getSearchChildren() {
-      List<Control> children = new ArrayList<Control>();
+      List<Control> children = new ArrayList<>();
       if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
          children = Arrays.asList(this, searchArea, executeSearch, clear);
       }

@@ -25,7 +25,7 @@ public class IdeVersion {
 
    public List<String> getVersions() {
       if (versions == null) {
-         versions = new ArrayList<String>();
+         versions = new ArrayList<>();
       }
       return versions;
    }

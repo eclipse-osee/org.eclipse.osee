@@ -54,11 +54,11 @@ public class JavaFileBuilder {
       this.className = className;
       this.classJavaDoc = classJavaDoc;
       this.extendsClass = extendsClass;
-      interfaces = new ArrayList<String>();
-      fields = new LinkedList<Field>();
-      imports = new LinkedList<String>();
-      methods = new LinkedList<String>();
-      enumFields = new LinkedList<EnumRecord>();
+      interfaces = new ArrayList<>();
+      fields = new LinkedList<>();
+      imports = new LinkedList<>();
+      methods = new LinkedList<>();
+      enumFields = new LinkedList<>();
    }
 
    public void addInterface(String interfaceName) {

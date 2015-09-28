@@ -92,7 +92,7 @@ public class User extends Artifact {
 
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
       Conditions.checkNotNull(favoriteBranch, "Branch");
-      HashSet<Long> branchUuids = new HashSet<Long>();
+      HashSet<Long> branchUuids = new HashSet<>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
          branchUuids.add(branch.getUuid());

@@ -202,7 +202,7 @@ public class ArtifactEventTest {
       Assert.assertTrue(orderedChildren.get(3).getName().endsWith(" 4"));
       Assert.assertTrue(orderedChildren.get(4).getName().endsWith(" 5"));
 
-      List<Artifact> artifactsInNewOrder = new ArrayList<Artifact>();
+      List<Artifact> artifactsInNewOrder = new ArrayList<>();
       artifactsInNewOrder.add(orderedChildren.get(0));
       artifactsInNewOrder.add(orderedChildren.get(1));
       artifactsInNewOrder.add(orderedChildren.get(3));
@@ -882,8 +882,8 @@ public class ArtifactEventTest {
 
    private static final class ArtifactEventListener implements IArtifactEventListener {
 
-      private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<EventBasicGuidArtifact>();
-      private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<EventBasicGuidRelation>();
+      private final Set<EventBasicGuidArtifact> resultEventArtifacts = new HashSet<>();
+      private final Set<EventBasicGuidRelation> resultEventRelations = new HashSet<>();
       private final Set<DefaultBasicUuidRelationReorder> resultEventReorders =
          new HashSet<DefaultBasicUuidRelationReorder>();
 

@@ -143,7 +143,7 @@ public class CreateTaskRuleImpl extends RuleImpl implements CreateTaskRule
   {
     if (assignees == null)
     {
-      assignees = new EObjectContainmentEList<UserDef>(UserDef.class, this, AtsDslPackage.CREATE_TASK_RULE__ASSIGNEES);
+      assignees = new EObjectContainmentEList<>(UserDef.class, this, AtsDslPackage.CREATE_TASK_RULE__ASSIGNEES);
     }
     return assignees;
   }
@@ -203,7 +203,7 @@ public class CreateTaskRuleImpl extends RuleImpl implements CreateTaskRule
   {
     if (onEvent == null)
     {
-      onEvent = new EDataTypeEList<OnEventType>(OnEventType.class, this, AtsDslPackage.CREATE_TASK_RULE__ON_EVENT);
+      onEvent = new EDataTypeEList<>(OnEventType.class, this, AtsDslPackage.CREATE_TASK_RULE__ON_EVENT);
     }
     return onEvent;
   }
@@ -217,7 +217,7 @@ public class CreateTaskRuleImpl extends RuleImpl implements CreateTaskRule
   {
     if (attributes == null)
     {
-      attributes = new EObjectContainmentEList<AttrDef>(AttrDef.class, this, AtsDslPackage.CREATE_TASK_RULE__ATTRIBUTES);
+      attributes = new EObjectContainmentEList<>(AttrDef.class, this, AtsDslPackage.CREATE_TASK_RULE__ATTRIBUTES);
     }
     return attributes;
   }

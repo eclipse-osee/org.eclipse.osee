@@ -37,7 +37,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
 
    public synchronized static Map<String, AbstractBlam> getBlamMap() {
       if (blams == null) {
-         blams = new TreeMap<String, AbstractBlam>();
+         blams = new TreeMap<>();
          ExtensionDefinedObjects<AbstractBlam> definedObjects =
             new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
                "Operation", "className");
@@ -83,7 +83,7 @@ public class BlamContributionManager implements IXNavigateCommonItem {
 
    @Override
    public void createCommonSection(List<XNavigateItem> items, List<String> excludeSectionIds) {
-      Map<String, XNavigateItem> nameToParent = new HashMap<String, XNavigateItem>();
+      Map<String, XNavigateItem> nameToParent = new HashMap<>();
       XNavigateItem blamOperationItems = new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM);
       for (AbstractBlam blamOperation : getBlamOperations()) {
 

@@ -46,7 +46,7 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
 
    @org.junit.Test
    public void testAllItems() throws OseeCoreException {
-      List<T> actualTypes = new ArrayList<T>(cache.getAll());
+      List<T> actualTypes = new ArrayList<>(cache.getAll());
       java.util.Collections.sort(actualTypes, comparator);
 
       java.util.Collections.sort(data, comparator);

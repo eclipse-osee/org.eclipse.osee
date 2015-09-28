@@ -100,7 +100,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
       private final List<AttributeTypeContainer> containers;
 
       public InternalLabelProvider() {
-         this.containers = new ArrayList<AttributeTypeContainer>();
+         this.containers = new ArrayList<>();
       }
 
       @Override
@@ -148,7 +148,7 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public Object[] getChildren(Object element) {
-         List<Object> items = new ArrayList<Object>();
+         List<Object> items = new ArrayList<>();
 
          if (element instanceof ArtifactEditor) {
             ArtifactEditorInput editorInput = ((ArtifactEditor) element).getEditorInput();

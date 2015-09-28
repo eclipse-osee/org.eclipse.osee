@@ -25,7 +25,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public class OseeMainDictionary implements IOseeDictionary {
-   private final Set<String> dictionary = new HashSet<String>();
+   private final Set<String> dictionary = new HashSet<>();
    private volatile boolean wasLoaded = false;
 
    @Override

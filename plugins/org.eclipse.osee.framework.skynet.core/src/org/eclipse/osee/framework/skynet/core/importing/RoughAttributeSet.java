@@ -57,14 +57,14 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
       CaseInsensitiveString key = new CaseInsensitiveString(name);
       Collection<RoughAttribute> collection = attributes.get(key);
       if (collection == null) {
-         collection = new LinkedList<RoughAttribute>();
+         collection = new LinkedList<>();
          attributes.put(key, collection);
       }
       collection.add(attr);
    }
 
    public Set<String> getAttributeTypeNames() {
-      Set<String> typeNames = new LinkedHashSet<String>();
+      Set<String> typeNames = new LinkedHashSet<>();
       for (CharSequence attrTypeName : attributes.keySet()) {
          typeNames.add(attrTypeName.toString());
       }
@@ -93,7 +93,7 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
       if (roughAttributes == null) {
          return null;
       }
-      Collection<String> values = new ArrayList<String>();
+      Collection<String> values = new ArrayList<>();
       for (RoughAttribute attribute : roughAttributes) {
          if (!attribute.hasURI()) {
             values.add(attribute.getValue());
@@ -103,7 +103,7 @@ public final class RoughAttributeSet implements Iterable<Entry<CaseInsensitiveSt
    }
 
    public Collection<URI> getURIAttributes() {
-      Collection<URI> values = new ArrayList<URI>();
+      Collection<URI> values = new ArrayList<>();
       for (Collection<RoughAttribute> attributeSets : attributes.values()) {
          for (RoughAttribute attribute : attributeSets) {
             if (attribute.hasURI()) {

@@ -60,13 +60,13 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactType {
-   private final HashSet<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
-   private final HashSet<IRelationType> relationTypes = new HashSet<IRelationType>();
-   private final HashMap<IOseeBranch, SkynetTransaction> txMap = new HashMap<IOseeBranch, SkynetTransaction>();
-   private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
-   private final List<Artifact> modifiedArtifacts = new ArrayList<Artifact>();
+   private final HashSet<IAttributeType> attributeTypes = new HashSet<>();
+   private final HashSet<IRelationType> relationTypes = new HashSet<>();
+   private final HashMap<IOseeBranch, SkynetTransaction> txMap = new HashMap<>();
+   private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
+   private final List<Artifact> modifiedArtifacts = new ArrayList<>();
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
-   private final Map<Integer, Integer> gammaToArtId = new HashMap<Integer, Integer>();
+   private final Map<Integer, Integer> gammaToArtId = new HashMap<>();
 
    public static void changeArtifactType(Collection<? extends Artifact> inputArtifacts, IArtifactType newArtifactTypeToken, boolean prompt) throws OseeCoreException {
 
@@ -241,7 +241,7 @@ public class ChangeArtifactType {
    }
 
    private void changeArtifactTypeOutsideofHistory(Collection<? extends Artifact> inputArtifacts, ArtifactType newArtifactType) throws OseeCoreException {
-      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> insertData = new ArrayList<>();
 
       String UPDATE = "UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?";
 

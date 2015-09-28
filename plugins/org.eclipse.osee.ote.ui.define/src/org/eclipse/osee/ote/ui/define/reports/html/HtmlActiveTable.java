@@ -48,8 +48,8 @@ public class HtmlActiveTable {
 
    public HtmlActiveTable() {
       super();
-      this.rowData = new ArrayList<List<String>>();
-      this.columnList = new ArrayList<HtmlActiveTableColumnData>();
+      this.rowData = new ArrayList<>();
+      this.columnList = new ArrayList<>();
       this.elementName = "ID";
       this.tableHeight = "";
       this.tableWidth = "";

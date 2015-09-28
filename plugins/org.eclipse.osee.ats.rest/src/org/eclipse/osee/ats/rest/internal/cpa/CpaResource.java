@@ -70,7 +70,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public List<CpaProgram> getPrograms() throws Exception {
-      List<CpaProgram> programs = new ArrayList<CpaProgram>();
+      List<CpaProgram> programs = new ArrayList<>();
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          programs.addAll(service.getPrograms());
       }
@@ -90,7 +90,7 @@ public final class CpaResource implements AtsCpaEndpointApi {
    @Produces(MediaType.APPLICATION_JSON)
    @Override
    public List<CpaBuild> getBuildsByProgram(@PathParam("uuid") String programUuid) throws Exception {
-      List<CpaBuild> builds = new ArrayList<CpaBuild>();
+      List<CpaBuild> builds = new ArrayList<>();
       for (IAtsCpaService service : cpaRegistry.getServices()) {
          builds.addAll(service.getBuilds(programUuid));
       }

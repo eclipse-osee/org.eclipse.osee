@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
  */
 public class AnotherMockLifecycePoint extends AbstractLifecycleVisitor<NonRunHandler> {
 
-   public static final Type<NonRunHandler> TYPE = new Type<NonRunHandler>();
+   public static final Type<NonRunHandler> TYPE = new Type<>();
 
    @Override
    public Type<NonRunHandler> getAssociatedType() {

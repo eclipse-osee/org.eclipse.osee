@@ -65,8 +65,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
       }
    };
 
-   private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<Long, Object[]>();
-   private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<Long, Object[]>();
+   private final ConcurrentHashMap<Long, Object[]> newEntities = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<Long, Object[]> updatedEntities = new ConcurrentHashMap<>();
    private static final Object[] EMPTY_ARRAY = new Object[0];
 
    private Log logger;
@@ -360,7 +360,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
 
    private void initialize() {
       try {
-         final Map<Long, ActivityType> types = new HashMap<Long, ActivityType>(4);
+         final Map<Long, ActivityType> types = new HashMap<>(4);
          for (Activity type : Activity.values()) {
             types.put(type.getTypeId(), type);
          }

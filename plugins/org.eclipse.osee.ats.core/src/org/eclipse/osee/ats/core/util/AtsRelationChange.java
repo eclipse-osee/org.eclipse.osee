@@ -32,7 +32,7 @@ public class AtsRelationChange {
    public AtsRelationChange(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects, RelationOperation operation) {
       this.object = object;
       this.relationSide = relationSide;
-      this.objects = new ArrayList<Object>(objects);
+      this.objects = new ArrayList<>(objects);
       this.operation = operation;
    }
 

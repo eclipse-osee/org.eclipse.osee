@@ -43,7 +43,7 @@ public final class TestManagerStatusListener implements EventHandler {
 
    public TestManagerStatusListener(TestManagerEditor testManagerEditor, ScriptManager userEnvironment) {
       this.testManagerServiceDataVisitor = new TestManagerServiceStatusDataVisitor(userEnvironment, testManagerEditor);
-      Hashtable<String, Object> properties = new Hashtable<String, Object>();
+      Hashtable<String, Object> properties = new Hashtable<>();
       properties.put("event.topics", "ote/status/*");
       eventReference = FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(EventHandler.class.getName(), this, properties);
    }

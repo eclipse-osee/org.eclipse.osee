@@ -25,7 +25,7 @@ class LookupTimeoutMonitor implements Runnable {
          Calendar cal = Calendar.getInstance();
          cal.setTime(new Date());
          cal.add(Calendar.SECOND, timeoutSeconds*-1);
-         List<OTELookupServerEntry> toRemove = new ArrayList<OTELookupServerEntry>();
+         List<OTELookupServerEntry> toRemove = new ArrayList<>();
          for(OTELookupServerEntry entry: availableServers){
             if(entry.getUpdateTime().before(cal.getTime())){
                toRemove.add(entry);

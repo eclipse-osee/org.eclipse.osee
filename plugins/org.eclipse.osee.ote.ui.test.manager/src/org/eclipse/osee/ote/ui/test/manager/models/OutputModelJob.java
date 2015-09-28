@@ -25,7 +25,7 @@ public class OutputModelJob extends Job {
 
    private static OutputModelJob singleton = null;
    private final ScriptManager scriptManager;
-   private final ConcurrentLinkedQueue<ScriptTask> outputModels = new ConcurrentLinkedQueue<ScriptTask>();
+   private final ConcurrentLinkedQueue<ScriptTask> outputModels = new ConcurrentLinkedQueue<>();
 
    public static void createSingleton(ScriptManager scriptManager) {
       if (singleton == null) {

@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ValidateResults {
 
-   private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<String>();
-   private final HashCollection<String, String> testNameToResultsMap = new HashCollection<String, String>(50);
-   private final HashCollection<String, String> testNameToGuidMap = new HashCollection<String, String>(50);
+   private final CountingMap<String> testNameToTimeSpentMap = new CountingMap<>();
+   private final HashCollection<String, String> testNameToResultsMap = new HashCollection<>(50);
+   private final HashCollection<String, String> testNameToGuidMap = new HashCollection<>(50);
 
    public void logTestTimeSpent(Date date, String testName) {
       Date now = new Date();
@@ -53,7 +53,7 @@ public class ValidateResults {
             xResultData.log(result);
          }
          // uniqueize guids
-         Set<String> guidStrs = new HashSet<String>();
+         Set<String> guidStrs = new HashSet<>();
          Collection<String> values = testNameToGuidMap.getValues(testName);
          if (values != null) {
             guidStrs.addAll(values);

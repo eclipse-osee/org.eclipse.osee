@@ -68,7 +68,7 @@ public class WorkItemNotificationProcessor {
     */
    public void run(AtsNotificationCollector notifications, AtsWorkItemNotificationEvent event) throws OseeCoreException {
       Collection<AtsNotifyType> types = event.getNotifyTypes();
-      List<IAtsUser> notifyUsers = new ArrayList<IAtsUser>();
+      List<IAtsUser> notifyUsers = new ArrayList<>();
       IAtsUser fromUser = AtsCoreUsers.SYSTEM_USER;
       if (Strings.isValid(event.getFromUserId())) {
          fromUser = userService.getUserById(event.getFromUserId());
@@ -104,7 +104,7 @@ public class WorkItemNotificationProcessor {
          }
          if (types.contains(AtsNotifyType.Assigned)) {
             try {
-               Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
+               Collection<IAtsUser> assignees = new HashSet<>();
                if (!notifyUsers.isEmpty()) {
                   assignees.addAll(notifyUsers);
                } else {
@@ -131,7 +131,7 @@ public class WorkItemNotificationProcessor {
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
             try {
-               Collection<IAtsUser> subscribed = new HashSet<IAtsUser>();
+               Collection<IAtsUser> subscribed = new HashSet<>();
                subscribed.addAll(userService.getSubscribed(workItem));
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
@@ -186,7 +186,7 @@ public class WorkItemNotificationProcessor {
          if (types.contains(AtsNotifyType.Peer_Reviewers_Completed) && workItem instanceof IAtsAbstractReview) {
             try {
                UserRoleManager roleMgr = new UserRoleManager(attrResolver, userService, workItem);
-               Collection<IAtsUser> authorModerator = new ArrayList<IAtsUser>();
+               Collection<IAtsUser> authorModerator = new ArrayList<>();
                for (UserRole role : roleMgr.getUserRoles()) {
                   if (role.getRole() == Role.Author || role.getRole() == Role.Moderator) {
                      authorModerator.add(userService.getUserById(role.getUserId()));
@@ -210,7 +210,7 @@ public class WorkItemNotificationProcessor {
             if (workItem.isTeamWorkflow()) {
                IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) workItem;
                try {
-                  Collection<IAtsUser> subscribedUsers = new HashSet<IAtsUser>();
+                  Collection<IAtsUser> subscribedUsers = new HashSet<>();
                   // Handle Team Definitions
                   IAtsTeamDefinition teamDef = teamWf.getTeamDefinition();
                   subscribedUsers.addAll(teamDef.getSubscribed());

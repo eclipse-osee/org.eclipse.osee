@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 
 public class MessageProviderVersion {
-	Set<String> versions = new ConcurrentSkipListSet<String>();
+	Set<String> versions = new ConcurrentSkipListSet<>();
 	
 	public synchronized void add(MessageDefinitionProvider provider){
 		versions.add(generateVersion(provider));

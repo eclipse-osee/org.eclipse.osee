@@ -214,7 +214,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
 
    @SuppressWarnings("unchecked")
    public final <A extends Artifact> List<A> getRelatedArtifactsOfType(IRelationTypeSide side, Class<A> clazz) throws OseeCoreException {
-      List<A> objs = new ArrayList<A>();
+      List<A> objs = new ArrayList<>();
       for (Artifact art : getRelatedArtifacts(side)) {
          if (clazz.isInstance(art)) {
             objs.add((A) art);
@@ -286,7 +286,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * from getArtifactRoot().
     */
    public final List<Artifact> getAncestors() throws OseeCoreException {
-      List<Artifact> ancestors = new ArrayList<Artifact>();
+      List<Artifact> ancestors = new ArrayList<>();
 
       for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
          ancestors.add(parent);
@@ -304,7 +304,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final List<Integer> getAttributeIds(IAttributeType attributeType) throws OseeCoreException {
-      List<Integer> items = new ArrayList<Integer>();
+      List<Integer> items = new ArrayList<>();
       List<Attribute<Object>> data = getAttributes(attributeType);
       for (Attribute<Object> attribute : data) {
          Integer value = new Integer(attribute.getId());
@@ -344,7 +344,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
       if (this.equals(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch()))) {
          root = this;
       } else {
-         Set<Artifact> set = new HashSet<Artifact>();
+         Set<Artifact> set = new HashSet<>();
          set.add(this);
          for (Artifact parent = getParent(); parent != null; parent = parent.getParent()) {
             if (set.add(parent)) {
@@ -392,7 +392,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final List<Artifact> getDescendants(DeletionFlag includeDeleted) throws OseeCoreException {
-      List<Artifact> descendants = new LinkedList<Artifact>();
+      List<Artifact> descendants = new LinkedList<>();
       getDescendants(descendants, includeDeleted);
       return descendants;
    }
@@ -401,7 +401,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * @return a list of artifacts ordered by a depth first traversal of this artifact's descendants
     */
    public final List<Artifact> getDescendants() throws OseeCoreException {
-      List<Artifact> descendants = new LinkedList<Artifact>();
+      List<Artifact> descendants = new LinkedList<>();
       getDescendants(descendants, DeletionFlag.EXCLUDE_DELETED);
       return descendants;
    }
@@ -414,7 +414,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public List<Artifact> getDescendantsWithArtTypes(Collection<ArtifactType> descendantTypes) throws OseeCoreException {
-      List<Artifact> descendants = new LinkedList<Artifact>();
+      List<Artifact> descendants = new LinkedList<>();
       for (Artifact child : getChildren()) {
          ArtifactType childArtType = child.getArtifactType();
          if (descendantTypes.contains(childArtType)) {
@@ -489,7 +489,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * The use of this method is discouraged since it directly returns Attributes.
     */
    public final <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, Object value) throws OseeCoreException {
-      List<Attribute<?>> filteredList = new ArrayList<Attribute<?>>();
+      List<Attribute<?>> filteredList = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          if (attribute.getValue().equals(value)) {
             filteredList.add(attribute);
@@ -544,7 +544,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    private List<Attribute<?>> filterByModificationType(Collection<Attribute<?>> attributes, Set<ModificationType> allowedModTypes) {
-      List<Attribute<?>> filteredList = new ArrayList<Attribute<?>>();
+      List<Attribute<?>> filteredList = new ArrayList<>();
       if (allowedModTypes != null && !allowedModTypes.isEmpty() && attributes != null && !attributes.isEmpty()) {
          for (Attribute<?> attribute : attributes) {
             if (allowedModTypes.contains(attribute.getModificationType())) {
@@ -775,7 +775,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * @return comma delimited representation of all the attributes of the type attributeName
     */
    public final String getAttributesToString(IAttributeType attributeType, boolean sorted) throws OseeCoreException {
-      List<String> strs = new ArrayList<String>();
+      List<String> strs = new ArrayList<>();
       List<Attribute<Object>> attributes = getAttributes(attributeType);
       if (sorted) {
          java.util.Collections.sort(attributes);
@@ -791,7 +791,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * @return comma separator representation unique values of the attributes of the type attributeName
     */
    public final String getAttributesToStringUnique(IAttributeType attributeType, String separator) throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
+      Set<String> strs = new HashSet<>();
       for (Attribute<?> attr : getAttributes(attributeType)) {
          strs.add(String.valueOf(attr));
       }
@@ -832,10 +832,10 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    public final void setAttributeValues(IAttributeType attributeType, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
       // ensure new values are unique
-      HashSet<String> uniqueNewValues = new HashSet<String>(newValues);
+      HashSet<String> uniqueNewValues = new HashSet<>(newValues);
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeType);
-      List<String> remainingNewValues = new ArrayList<String>(uniqueNewValues.size());
+      List<String> remainingNewValues = new ArrayList<>(uniqueNewValues.size());
 
       // all existing attributes matching a new value will be left untouched
       for (String newValue : uniqueNewValues) {
@@ -873,7 +873,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
       Set<T> uniqueItems = Collections.toSet(values);
 
       List<Attribute<T>> remainingAttributes = getAttributes(attributeType);
-      List<T> remainingNewValues = new ArrayList<T>(uniqueItems.size());
+      List<T> remainingNewValues = new ArrayList<>(uniqueItems.size());
 
       // all existing attributes matching a new value will be left untouched
       for (T newValue : uniqueItems) {
@@ -975,7 +975,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    public final List<String> getAttributesToStringList(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
 
-      List<String> items = new ArrayList<String>();
+      List<String> items = new ArrayList<>();
       for (Attribute<?> attribute : getAttributes(attributeType)) {
          items.add(attribute.getDisplayableString());
       }
@@ -985,7 +985,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    public final <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
 
-      List<T> items = new ArrayList<T>();
+      List<T> items = new ArrayList<>();
       List<Attribute<T>> data = getAttributes(attributeType);
       for (Attribute<T> attribute : data) {
          T value = attribute.getValue();
@@ -1232,7 +1232,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * Remove artifact from a specific branch in the database
     */
    public final void purgeFromBranch(boolean purgeChildren) throws OseeCoreException {
-      Collection<Artifact> artifacts = new LinkedHashSet<Artifact>();
+      Collection<Artifact> artifacts = new LinkedHashSet<>();
       artifacts.add(this);
       if (purgeChildren) {
          artifacts.addAll(getDescendants());
@@ -1490,7 +1490,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final Collection<AttributeChange> getDirtyFrameworkAttributeChanges() throws OseeDataStoreException {
-      List<AttributeChange> dirtyAttributes = new LinkedList<AttributeChange>();
+      List<AttributeChange> dirtyAttributes = new LinkedList<>();
 
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
@@ -1614,7 +1614,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     * Return relations that exist between artifacts
     */
    public final ArrayList<RelationLink> internalGetRelations(Artifact artifact) throws OseeCoreException {
-      ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
+      ArrayList<RelationLink> relations = new ArrayList<>();
       for (RelationLink relation : getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          try {
             if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
@@ -1636,7 +1636,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
     */
    @Deprecated
    public final ArrayList<RelationLink> getRelations(IRelationTypeSide side, Artifact artifact) throws OseeCoreException {
-      ArrayList<RelationLink> relations = new ArrayList<RelationLink>();
+      ArrayList<RelationLink> relations = new ArrayList<>();
       for (RelationLink relation : getRelations(side)) {
          try {
             if (relation.getArtifactOnOtherSide(this).equals(artifact)) {
@@ -1726,7 +1726,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public Set<AttributeType> getAttributeTypesUsed() throws OseeCoreException {
-      Set<AttributeType> types = new HashSet<AttributeType>();
+      Set<AttributeType> types = new HashSet<>();
       for (Attribute<?> attr : getAttributes()) {
          types.add(attr.getAttributeType());
       }

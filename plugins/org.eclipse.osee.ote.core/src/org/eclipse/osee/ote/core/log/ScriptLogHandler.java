@@ -75,7 +75,7 @@ public class ScriptLogHandler extends Handler {
          document.createProcessingInstruction("xml-stylesheet",
             "type=\"text/xsl\" href=\"" + getXSLTransformName() + "\"");
       document.appendChild(processingInstruction);
-      records = new ArrayList<LogRecord>();
+      records = new ArrayList<>();
 
       document.appendChild(document.createComment("OUTFILE_COMMNET"));
 

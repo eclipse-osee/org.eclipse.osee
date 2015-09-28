@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class DecisionOption {
    private String name;
-   private Collection<IAtsUser> assignees = new HashSet<IAtsUser>();
+   private Collection<IAtsUser> assignees = new HashSet<>();
    private boolean followupRequired;
 
    @Override

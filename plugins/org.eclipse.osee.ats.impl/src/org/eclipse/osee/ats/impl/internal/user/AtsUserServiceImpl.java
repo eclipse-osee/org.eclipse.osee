@@ -127,7 +127,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    @Override
    public List<IAtsUser> getUsers(Active active) {
       ensureLoaded();
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.User).getResults()) {
          Boolean activeFlag = userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true);
@@ -169,7 +169,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
 
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
-      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
+      ArrayList<IAtsUser> arts = new ArrayList<>();
       for (ArtifactReadable art : ((ArtifactReadable) workItem.getStoreObject()).getRelated(
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));

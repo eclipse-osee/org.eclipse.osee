@@ -59,10 +59,10 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
 
    private final Matcher reqNumberMatcher = Pattern.compile("(\\d+\\.)*(\\d+\\.?)\\s*").matcher("");
    private final Matcher reqListMatcher = Pattern.compile("\\w+\\)", Pattern.CASE_INSENSITIVE).matcher("");
-   private final Stack<String> currentListStack = new Stack<String>();
+   private final Stack<String> currentListStack = new Stack<>();
    private final int maxExtractionDepth = 0;
 
-   private Stack<String> clonedCurrentListStack = new Stack<String>();
+   private Stack<String> clonedCurrentListStack = new Stack<>();
    private int lastDepthNumber;
    private String headerNumber = "";
    private String listIdentifier = "";

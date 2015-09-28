@@ -38,7 +38,7 @@ public abstract class ProgramManagers {
 
    @SuppressWarnings("rawtypes")
    public static Set<IAtsProgramManager> getAtsProgramManagers() {
-      Set<IAtsProgramManager> lbaProgramItems = new HashSet<IAtsProgramManager>();
+      Set<IAtsProgramManager> lbaProgramItems = new HashSet<>();
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.core.client.AtsProgramManager");
       if (point == null) {

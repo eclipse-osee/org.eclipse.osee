@@ -62,9 +62,9 @@ public class Publisher extends DomainEntity implements EntityFactory {
 
       this.participant = participant;
       publicationsAllowed = true;
-      dataWriters = new CopyOnWriteArrayList<DataWriter>();
-      publicationQueue = new ArrayList<DataStoreItem>();
-      pendingQueue = new ArrayList<DataStoreItem>();
+      dataWriters = new CopyOnWriteArrayList<>();
+      publicationQueue = new ArrayList<>();
+      pendingQueue = new ArrayList<>();
    }
 
    /**

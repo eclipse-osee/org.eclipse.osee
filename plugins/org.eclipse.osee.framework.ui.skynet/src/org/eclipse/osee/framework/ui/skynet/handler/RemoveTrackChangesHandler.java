@@ -40,7 +40,7 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
       final MutableBoolean isOkToRemove = new MutableBoolean(false);
       final String message = (String) source;
 
-      final Pair<MutableBoolean, Integer> answer = new Pair<MutableBoolean, Integer>(isOkToRemove, NO);
+      final Pair<MutableBoolean, Integer> answer = new Pair<>(isOkToRemove, NO);
 
       if (RenderingUtil.arePopupsAllowed()) {
          Displays.pendInDisplayThread(new Runnable() {

@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
  */
 public class AccessProviderVisitor extends AbstractLifecycleVisitor<IAccessProvider> {
 
-   public static final Type<IAccessProvider> TYPE = new Type<IAccessProvider>();
+   public static final Type<IAccessProvider> TYPE = new Type<>();
 
    private final IBasicArtifact<?> userArtifact;
    private final Collection<?> artsToCheck;

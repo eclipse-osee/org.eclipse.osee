@@ -112,7 +112,7 @@ public class BranchUtilBranchTest {
 
    @Test
    public void testConnectedBranchSorting() {
-      List<Branch> branchList = new LinkedList<Branch>();
+      List<Branch> branchList = new LinkedList<>();
       initBranchParentageList();
       initOutOfOrderList(branchList);
       List<Branch> ordered = BranchUtil.orderByParent(branchList);
@@ -121,7 +121,7 @@ public class BranchUtilBranchTest {
 
    @Test
    public void testDisjointBranchSorting() {
-      List<Branch> branchList = new LinkedList<Branch>();
+      List<Branch> branchList = new LinkedList<>();
       initDisjointParentageList();
       initDisjointOrderList(branchList);
       List<Branch> ordered = BranchUtil.orderByParent(branchList);
@@ -130,7 +130,7 @@ public class BranchUtilBranchTest {
 
    @Test
    public void testDisjointOutOfOrderBranchSorting() {
-      List<Branch> branchList = new LinkedList<Branch>();
+      List<Branch> branchList = new LinkedList<>();
       initDisjointParentageList();
       initOutOfOrderList(branchList);
       List<Branch> ordered = BranchUtil.orderByParent(branchList);
@@ -139,7 +139,7 @@ public class BranchUtilBranchTest {
 
    @Test
    public void testOutsideParentsBranchSorting() {
-      List<Branch> branchList = new LinkedList<Branch>();
+      List<Branch> branchList = new LinkedList<>();
       initOutsideParentList();
       initOutOfOrderList(branchList);
       List<Branch> ordered = BranchUtil.orderByParent(branchList);

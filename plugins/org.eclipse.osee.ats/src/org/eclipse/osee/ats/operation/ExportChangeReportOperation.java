@@ -90,7 +90,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       };
 
       for (TeamWorkFlowArtifact workflow : workflows) {
-         Set<Integer> artIds = new HashSet<Integer>();
+         Set<Integer> artIds = new HashSet<>();
          Collection<Change> changes = computeChanges(workflow, monitor, artIds);
          if (!changes.isEmpty() && changes.size() < 4000) {
             logf("Exporting: %s", workflow.toStringWithId());
@@ -137,7 +137,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private Collection<Change> computeChanges(Artifact workflow, IProgressMonitor monitor, Set<Integer> artIds) throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workflow;
 
-      List<Change> changes = new ArrayList<Change>();
+      List<Change> changes = new ArrayList<>();
       IOperation operation = null;
       if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);

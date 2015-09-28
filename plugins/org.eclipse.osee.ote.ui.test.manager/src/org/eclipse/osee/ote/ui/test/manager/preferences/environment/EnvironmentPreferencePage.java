@@ -56,7 +56,7 @@ public class EnvironmentPreferencePage {
    public static final String VALUE = "value";
 
    public static Map<String, String> getSelectedItems() {
-      Map<String, String> environmentVariables = new HashMap<String, String>();
+      Map<String, String> environmentVariables = new HashMap<>();
 
       ArrayList<EnvironmentPreferenceNode> envList = loadVariables();
 
@@ -73,7 +73,7 @@ public class EnvironmentPreferencePage {
    }
 
    private static ArrayList<EnvironmentPreferenceNode> loadVariables() {
-      ArrayList<EnvironmentPreferenceNode> list = new ArrayList<EnvironmentPreferenceNode>();
+      ArrayList<EnvironmentPreferenceNode> list = new ArrayList<>();
       IPreferenceStore prefStore = TestManagerPlugin.getInstance().getPreferenceStore();
 
       int numberOfValues = prefStore.getInt(PAGE_KEY + "." + NUMBER_OF_VALUES);

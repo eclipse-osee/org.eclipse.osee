@@ -55,9 +55,9 @@ public class HashCollectionPlus<K, V, O> {
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
 
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor);
+         map = new ConcurrentHashMap<>(initialCapacity, loadFactor);
       } else {
-         map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor);
+         map = new HashMap<>(initialCapacity, loadFactor);
       }
 
       this.isSynchronized = isSynchronized;
@@ -74,9 +74,9 @@ public class HashCollectionPlus<K, V, O> {
     */
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>(initialCapacity);
+         map = new ConcurrentHashMap<>(initialCapacity);
       } else {
-         map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity);
+         map = new HashMap<>(initialCapacity);
       }
 
       this.isSynchronized = isSynchronized;
@@ -93,9 +93,9 @@ public class HashCollectionPlus<K, V, O> {
     */
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>();
+         map = new ConcurrentHashMap<>();
       } else {
-         map = new HashMap<K, Pair<Collection<V>, O>>();
+         map = new HashMap<>();
       }
 
       this.isSynchronized = isSynchronized;
@@ -240,7 +240,7 @@ public class HashCollectionPlus<K, V, O> {
     * @return Return value collection reference
     */
    public List<V> getValues() {
-      List<V> values = new ArrayList<V>();
+      List<V> values = new ArrayList<>();
       for (Pair<Collection<V>, O> objectPair : map.values()) {
          if (objectPair != null) {
             values.addAll(objectPair.getFirst());

@@ -19,7 +19,7 @@ import java.util.Map;
 public class ViewModel {
 
    private final String viewId;
-   private final Map<String, Object> model = new LinkedHashMap<String, Object>();
+   private final Map<String, Object> model = new LinkedHashMap<>();
 
    public ViewModel(String viewId) {
       this.viewId = viewId;

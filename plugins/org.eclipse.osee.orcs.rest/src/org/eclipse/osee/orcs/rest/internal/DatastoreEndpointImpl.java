@@ -68,7 +68,7 @@ public class DatastoreEndpointImpl implements DatastoreEndpoint {
       activityLog.setEnabled(false);
       OrcsAdmin adminOps = getOrcsAdmin();
 
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put("schema.table.data.namespace", options.getTableDataSpace());
       parameters.put("schema.index.data.namespace", options.getIndexDataSpace());
       parameters.put("schema.user.file.specified.schema.names", Boolean.toString(options.isUseFileSpecifiedSchemas()));

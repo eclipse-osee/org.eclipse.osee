@@ -134,7 +134,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
       @Override
       public Artifact[] getArtifacts() {
          IStructuredSelection selection = (IStructuredSelection) xChangeViewer.getSelection();
-         ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+         ArrayList<Artifact> artifacts = new ArrayList<>();
 
          if (selection != null && !selection.isEmpty()) {
             for (Object object : selection.toArray()) {

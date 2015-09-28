@@ -32,7 +32,7 @@ public class TeamDistributionEntry {
     */
    public TeamDistributionEntry(final Artifact verArtifact) {
       this.versionArtifact = verArtifact;
-      this.teamSplitMap = new HashMap<String, Double>();
+      this.teamSplitMap = new HashMap<>();
    }
 
    /**

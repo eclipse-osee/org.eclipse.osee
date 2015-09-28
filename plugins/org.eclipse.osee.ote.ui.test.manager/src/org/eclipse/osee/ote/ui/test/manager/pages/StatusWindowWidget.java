@@ -36,8 +36,8 @@ public class StatusWindowWidget {
    }
 
    public StatusWindowWidget(Composite parent) {
-      keys = new ArrayList<String>();
-      labelValueMap = new HashMap<String, Map<EntryAttribute, Object>>();
+      keys = new ArrayList<>();
+      labelValueMap = new HashMap<>();
       statusTextArea = new FormattedText(parent, SWT.BORDER, SWT.DEFAULT, SWT.DEFAULT, false);
       statusTextArea.setTextAreaBackground(SWT.COLOR_WHITE);
    }
@@ -46,7 +46,7 @@ public class StatusWindowWidget {
       if (!keys.contains(key)) {
          keys.add(key);
       }
-      Map<EntryAttribute, Object> entry = new HashMap<EntryAttribute, Object>();
+      Map<EntryAttribute, Object> entry = new HashMap<>();
       entry.put(EntryAttribute.LABEL, label);
       entry.put(EntryAttribute.VALUE, value);
       entry.put(EntryAttribute.STYLE, new Integer(style));

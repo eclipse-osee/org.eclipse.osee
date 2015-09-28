@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class Sessions {
 
-   public List<ClientSession> sessions = new LinkedList<ClientSession>();
+   public List<ClientSession> sessions = new LinkedList<>();
 
    public void add(ClientSession clientSession) {
       sessions.add(clientSession);

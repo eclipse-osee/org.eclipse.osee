@@ -54,7 +54,7 @@ public enum SQL3DataType {
    private Class<?> javaClassEquivalent;
    private int sqlTypeNumber;
 
-   private static HashMap<Integer, SQL3DataType> typeToEnum = new HashMap<Integer, SQL3DataType>();
+   private static HashMap<Integer, SQL3DataType> typeToEnum = new HashMap<>();
 
    private SQL3DataType(int sqlTypeNumber, Class<?> classEquiv) {
       this.javaClassEquivalent = classEquiv;

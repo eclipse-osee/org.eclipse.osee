@@ -50,7 +50,7 @@ public class PurgeAttributeTest {
       int prePurgeTxsCount = getCount(jdbcClient, "osee_txs");
 
       stmt.runPreparedQuery("select attr_id from osee_attribute where value = 'Software Requirements'");
-      List<Long> toPurge = new LinkedList<Long>();
+      List<Long> toPurge = new LinkedList<>();
       while (stmt.next()) {
          toPurge.add(stmt.getLong("attr_id"));
       }

@@ -66,7 +66,7 @@ public class JmsToJiniBridgeConnectorLite implements IServiceConnector, OseeMess
    private MessageService messageService;
    private OteServiceRequestHandler myOteServiceRequestHandler = new OteServiceRequestHandler();
    private EnhancedProperties properties;
-   private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
+   private final HashMap<Object, ExportInfo> exports = new HashMap<>();
    private final ExportClassLoader exportClassLoader;
    private final List<IServicePropertyChangeListener> propertyChangeListeners =
 		   new CopyOnWriteArrayList<IServicePropertyChangeListener>();

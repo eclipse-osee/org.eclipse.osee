@@ -154,7 +154,7 @@ public class RelationManagerTest {
       when(node2.getOrderData()).thenReturn("");
       when(node3.getOrderData()).thenReturn("");
 
-      mockDb = new HashMap<Integer, RelationNode>();
+      mockDb = new HashMap<>();
       mockDb.put(11, node1);
       mockDb.put(22, node2);
       mockDb.put(33, node3);
@@ -332,7 +332,7 @@ public class RelationManagerTest {
       @SuppressWarnings("unchecked")
       @Override
       public Iterable<RelationNode> answer(InvocationOnMock invocation) throws Throwable {
-         List<RelationNode> artLoaded = new ArrayList<RelationNode>();
+         List<RelationNode> artLoaded = new ArrayList<>();
 
          Collection<Integer> toLoad = (Collection<Integer>) invocation.getArguments()[2];
          artLoaded.clear();

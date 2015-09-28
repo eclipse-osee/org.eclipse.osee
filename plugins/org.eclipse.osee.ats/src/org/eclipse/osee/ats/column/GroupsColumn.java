@@ -104,7 +104,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    public static boolean promptChangeGroups(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
-      Set<Artifact> selected = new HashSet<Artifact>();
+      Set<Artifact> selected = new HashSet<>();
       for (AbstractWorkflowArtifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
@@ -127,7 +127,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<Artifact> groups = new HashSet<Artifact>();
+            Set<Artifact> groups = new HashSet<>();
             Artifact actionArt = (Artifact) element;
             groups.addAll(actionArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
             // Roll up if same for all children
@@ -149,7 +149,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {

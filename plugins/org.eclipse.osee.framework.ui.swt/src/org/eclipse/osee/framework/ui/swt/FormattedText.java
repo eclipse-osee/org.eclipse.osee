@@ -47,7 +47,7 @@ public class FormattedText extends Composite {
       this.editable = editable;
       this.height = height;
       this.width = width;
-      this.styleArray = new ArrayList<StyleRange>();
+      this.styleArray = new ArrayList<>();
       createTextArea();
    }
 

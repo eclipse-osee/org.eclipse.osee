@@ -120,7 +120,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
             try {
                AccessPolicy policy = ServiceUtil.getAccessPolicy();
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
-               List<Artifact> artsOnSameBranchAsDestination = new LinkedList<Artifact>();
+               List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
                IOseeBranch destinationBranch = dropTarget.getBranch();
                for (Artifact art : artifactsBeingDropped) {
                   if (art.getBranch().equals(destinationBranch)) {

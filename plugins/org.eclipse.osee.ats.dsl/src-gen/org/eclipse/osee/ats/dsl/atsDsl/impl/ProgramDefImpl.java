@@ -260,7 +260,7 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
   {
     if (programDefOption == null)
     {
-      programDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.PROGRAM_DEF__PROGRAM_DEF_OPTION);
+      programDefOption = new EDataTypeEList<>(String.class, this, AtsDslPackage.PROGRAM_DEF__PROGRAM_DEF_OPTION);
     }
     return programDefOption;
   }
@@ -412,7 +412,7 @@ public class ProgramDefImpl extends MinimalEObjectImpl.Container implements Prog
   {
     if (attributes == null)
     {
-      attributes = new EObjectContainmentEList<AttrDef>(AttrDef.class, this, AtsDslPackage.PROGRAM_DEF__ATTRIBUTES);
+      attributes = new EObjectContainmentEList<>(AttrDef.class, this, AtsDslPackage.PROGRAM_DEF__ATTRIBUTES);
     }
     return attributes;
   }

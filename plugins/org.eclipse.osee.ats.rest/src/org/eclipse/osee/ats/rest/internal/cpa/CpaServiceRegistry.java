@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
  */
 public class CpaServiceRegistry {
 
-   private final Map<String, IAtsCpaService> idToCpaService = new ConcurrentHashMap<String, IAtsCpaService>();
+   private final Map<String, IAtsCpaService> idToCpaService = new ConcurrentHashMap<>();
 
    public void addCpaService(IAtsCpaService cpaService) {
       String id = cpaService.getId();

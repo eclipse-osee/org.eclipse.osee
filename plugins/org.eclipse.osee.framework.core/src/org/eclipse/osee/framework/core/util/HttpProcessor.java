@@ -63,7 +63,7 @@ public class HttpProcessor {
 
    private static IProxyService proxyService;
 
-   private static final Map<String, IProxyData[]> proxiedData = new ConcurrentHashMap<String, IProxyData[]>();
+   private static final Map<String, IProxyData[]> proxiedData = new ConcurrentHashMap<>();
    private static int requests = 0;
 
    private static final Map<String, Pair<Integer, Long>> isAliveMap =

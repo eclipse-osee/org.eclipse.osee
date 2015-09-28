@@ -65,7 +65,7 @@ public class FindTraceUnitActionDelegate implements IWorkbenchWindowActionDelega
          selectedItems = currentSelection;
       }
       if (selectedItems != null && !selectedItems.isEmpty()) {
-         List<IResource> toReturn = new ArrayList<IResource>();
+         List<IResource> toReturn = new ArrayList<>();
          for (IResource resource : selectedItems) {
             if (resource instanceof IFile) {
                toReturn.add(resource);

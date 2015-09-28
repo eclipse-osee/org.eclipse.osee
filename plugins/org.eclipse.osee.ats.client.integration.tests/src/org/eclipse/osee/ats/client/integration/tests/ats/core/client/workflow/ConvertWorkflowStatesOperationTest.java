@@ -55,8 +55,8 @@ public class ConvertWorkflowStatesOperationTest {
 
    @Test
    public void testDoWork_errorChecking() throws Exception {
-      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
-      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      Map<String, String> fromStateToStateMap = new HashMap<>();
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       boolean persist = false;
       XResultData rd = new XResultData(false);
       ConvertWorkflowStatesOperation operation =
@@ -82,11 +82,11 @@ public class ConvertWorkflowStatesOperationTest {
 
    @Test
    public void testDoWork() throws Exception {
-      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
+      Map<String, String> fromStateToStateMap = new HashMap<>();
       fromStateToStateMap.put("Endorse", "NewEndorse");
       fromStateToStateMap.put("Analyze", "NewAnalyze");
 
-      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf =
          ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
             "ConvertWorkflowStatesOperationTest.testDoWork");
@@ -123,10 +123,10 @@ public class ConvertWorkflowStatesOperationTest {
 
    @Test
    public void testDoWork_persist() throws Exception {
-      Map<String, String> fromStateToStateMap = new HashMap<String, String>();
+      Map<String, String> fromStateToStateMap = new HashMap<>();
       fromStateToStateMap.put("Endorse", "NewEndorse");
 
-      List<AbstractWorkflowArtifact> workflows = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
       Artifact teamWf =
          ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
             "ConvertWorkflowStatesOperationTest.testDoWork_persist");

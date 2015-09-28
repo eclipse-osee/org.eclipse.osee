@@ -99,7 +99,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
-               tabs = new LinkedList<IResultsEditorTab>();
+               tabs = new LinkedList<>();
                tabs.add(createChartTab());
                tabs.add(createDataTab());
                tabs.add(createHtmlTab());
@@ -115,7 +115,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
    }
 
    private IResultsEditorTab createDataTab() {
-      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> rows = new ArrayList<>();
       for (int x = 0; x < chartDateStrs.size(); x++) {
          rows.add(new ResultsXViewerRow(new String[] {
             chartDateStrs.get(x),
@@ -143,7 +143,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
             "Requirement Artifact"), new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String, false,
             "TestScript Name"));
 
-      List<IResultsXViewerRow> artRows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> artRows = new ArrayList<>();
       List<Artifact> userArts = null;
       try {
          userArts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);

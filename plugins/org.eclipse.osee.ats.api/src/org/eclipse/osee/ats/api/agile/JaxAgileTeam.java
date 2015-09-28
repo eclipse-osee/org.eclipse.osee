@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.config.JaxAtsObject;
 @XmlRootElement
 public class JaxAgileTeam extends JaxAtsObject {
 
-   private List<Long> atsTeamUuids = new ArrayList<Long>();
+   private List<Long> atsTeamUuids = new ArrayList<>();
    private long backlogUuid = 0;
    private String description = "";
 

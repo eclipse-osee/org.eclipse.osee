@@ -60,7 +60,7 @@ public class SecondPassScannerTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {
          "What->does] .this. mean",
@@ -91,10 +91,10 @@ public class SecondPassScannerTest {
    }
 
    private static List<Pair<String, MatchLocation>> getExpected(List<String> tokens, int... locations) {
-      List<Pair<String, MatchLocation>> toReturn = new LinkedList<Pair<String, MatchLocation>>();
+      List<Pair<String, MatchLocation>> toReturn = new LinkedList<>();
       List<MatchLocation> matchLocs = SearchAsserts.asLocations(locations);
       for (int i = 0; i < tokens.size(); i++) {
-         Pair<String, MatchLocation> pair = new Pair<String, MatchLocation>(tokens.get(i), matchLocs.get(i));
+         Pair<String, MatchLocation> pair = new Pair<>(tokens.get(i), matchLocs.get(i));
          toReturn.add(pair);
       }
       return toReturn;

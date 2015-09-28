@@ -23,7 +23,7 @@ import org.osgi.framework.ServiceReference;
  */
 public abstract class JaxRsDynamicServiceManager<T> {
 
-   private final List<ServiceReference<T>> pendingReg = new ArrayList<ServiceReference<T>>();
+   private final List<ServiceReference<T>> pendingReg = new ArrayList<>();
    private final AtomicReference<JaxRsApplicationRegistry> registryRef =
       new AtomicReference<JaxRsApplicationRegistry>();
 

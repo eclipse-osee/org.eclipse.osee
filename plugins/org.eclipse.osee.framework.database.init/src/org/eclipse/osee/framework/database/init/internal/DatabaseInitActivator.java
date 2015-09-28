@@ -33,7 +33,7 @@ public class DatabaseInitActivator implements BundleActivator {
          new ServiceTracker<IOseeCachingService, IOseeCachingService>(context, IOseeCachingService.class, null);
       serviceTracker2.open(true);
 
-      serviceTracker3 = new ServiceTracker<JdbcService, JdbcService>(context, JdbcService.class, null);
+      serviceTracker3 = new ServiceTracker<>(context, JdbcService.class, null);
       serviceTracker3.open(true);
 
    }

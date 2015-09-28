@@ -41,10 +41,10 @@ public class TypeSignature {
       super();
       this.typeName = typeName;
       this.typeDataSize = typeDataSize;
-      this.key = new WeakReference<Key>(key);
+      this.key = new WeakReference<>(key);
       this.readerName = readerName;
       this.writerName = writerName;
-      this.classLoader = new WeakReference<ClassLoader>(classLoader);
+      this.classLoader = new WeakReference<>(classLoader);
    }
 
    /**

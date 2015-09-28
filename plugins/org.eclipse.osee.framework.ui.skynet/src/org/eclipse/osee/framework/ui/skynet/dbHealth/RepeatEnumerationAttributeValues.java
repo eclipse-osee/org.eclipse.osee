@@ -53,7 +53,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      HashCollection<Branch, AttrData> attributesWithErrors = new HashCollection<Branch, AttrData>();
+      HashCollection<Branch, AttrData> attributesWithErrors = new HashCollection<>();
       List<Branch> branches = BranchManager.getBaselineBranches();
       if (branches.isEmpty()) {
          throw new OseeStateException("no branches found");
@@ -87,7 +87,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       if (isFixOperationEnabled() && hadItemsToFix()) {
          for (Branch branch : attributesWithErrors.keySet()) {
             Collection<AttrData> attributeData = attributesWithErrors.getValues(branch);
-            List<String> artifactGuids = new ArrayList<String>(attributeData.size());
+            List<String> artifactGuids = new ArrayList<>(attributeData.size());
             for (AttrData attrData : attributeData) {
                artifactGuids.add(attrData.getArtifactGuid());
             }
@@ -124,7 +124,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
    }
 
    private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeCoreException {
-      Set<AttrData> attrData = new HashSet<AttrData>();
+      Set<AttrData> attrData = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getUuid(), branch.getUuid());

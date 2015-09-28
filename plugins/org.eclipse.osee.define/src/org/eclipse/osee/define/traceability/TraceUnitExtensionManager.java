@@ -41,7 +41,7 @@ public class TraceUnitExtensionManager {
    private static TraceUnitExtensionManager instance = null;
 
    private TraceUnitExtensionManager() {
-      contributions = new HashMap<String, TraceHandler>();
+      contributions = new HashMap<>();
    }
 
    public static TraceUnitExtensionManager getInstance() {
@@ -95,7 +95,7 @@ public class TraceUnitExtensionManager {
    }
 
    public List<String> getAllTraceHandlerNames() throws OseeCoreException {
-      List<String> handlerNames = new LinkedList<String>();
+      List<String> handlerNames = new LinkedList<>();
       for (TraceHandler handler : getAllTraceHandlers()) {
          handlerNames.add(handler.getName());
       }
@@ -104,7 +104,7 @@ public class TraceUnitExtensionManager {
 
    public Collection<ITraceParser> getAllTraceParsers() throws OseeCoreException {
       checkObjectsLoaded();
-      Set<ITraceParser> parsers = new HashSet<ITraceParser>();
+      Set<ITraceParser> parsers = new HashSet<>();
       for (TraceHandler traceHandler : contributions.values()) {
          ITraceParser parser = traceHandler.getParser();
          if (parser != null) {
@@ -116,7 +116,7 @@ public class TraceUnitExtensionManager {
 
    public Collection<ITraceUnitResourceLocator> getAllTraceUnitLocators() throws OseeCoreException {
       checkObjectsLoaded();
-      Set<ITraceUnitResourceLocator> locators = new HashSet<ITraceUnitResourceLocator>();
+      Set<ITraceUnitResourceLocator> locators = new HashSet<>();
       for (TraceHandler traceHandler : contributions.values()) {
          ITraceUnitResourceLocator locator = traceHandler.getLocator();
          if (locator != null) {

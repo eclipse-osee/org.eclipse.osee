@@ -65,7 +65,7 @@ public class XWidgetParser {
 
    public static List<XWidgetRendererItem> extractlayoutDatas(SwtXWidgetRenderer dynamicXWidgetLayout, Element xWidgets) {
       NodeList widgets = xWidgets.getElementsByTagName(SwtXWidgetRenderer.XWIDGET);
-      List<XWidgetRendererItem> layoutDatas = new ArrayList<XWidgetRendererItem>(widgets.getLength());
+      List<XWidgetRendererItem> layoutDatas = new ArrayList<>(widgets.getLength());
 
       for (int i = 0; i < widgets.getLength(); i++) {
          layoutDatas.add(extractWorkAttribute(dynamicXWidgetLayout, (Element) widgets.item(i)));

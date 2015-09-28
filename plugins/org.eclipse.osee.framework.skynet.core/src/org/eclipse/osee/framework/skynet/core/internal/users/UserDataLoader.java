@@ -39,7 +39,7 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    @Override
    public Map<String, User> load(Iterable<? extends String> keys) throws OseeCoreException {
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
-      Map<String, User> result = new HashMap<String, User>();
+      Map<String, User> result = new HashMap<>();
       for (Artifact artifact : artifacts) {
          User user = (User) artifact;
          result.put(user.getUserId(), user);

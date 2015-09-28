@@ -70,7 +70,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       AbstractJoinQuery joinQuery = null;
       String jIdAlias = null;
       if (!criteria.isIncludeAllTypes() && types.size() > 1) {
-         Set<Long> typeIds = new HashSet<Long>();
+         Set<Long> typeIds = new HashSet<>();
          for (IAttributeType type : types) {
             typeIds.add(type.getGuid());
          }
@@ -82,7 +82,7 @@ public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywor
       int valueCount = values.size();
       int valueIdx = 0;
       for (String value : values) {
-         List<Long> tags = new ArrayList<Long>();
+         List<Long> tags = new ArrayList<>();
          tokenize(value, tags);
          int tagsSize = tags.size();
          gammaSb.append("  ( \n");

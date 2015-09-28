@@ -72,7 +72,7 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
 
    @Override
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) throws OseeCoreException {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+      List<XNavigateItem> items = new ArrayList<>();
 
       if (DbConnectionUtility.areOSEEServicesAvailable().isFalse()) {
          return items;

@@ -29,7 +29,7 @@ public class ColorTeamColumn {
    public static final String ATS_COLOR_TEAM_COLUMN_ID = "ats.Color Team";
 
    public static Pair<String, Boolean> getWorkItemColorTeam(IAtsWorkItem workItem, IAtsServices atsServices) {
-      Pair<String, Boolean> result = new Pair<String, Boolean>(null, false);
+      Pair<String, Boolean> result = new Pair<>(null, false);
       IAttributeResolver attributeResolver = atsServices.getAttributeResolver();
       String workPackageGuid =
          attributeResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, null);

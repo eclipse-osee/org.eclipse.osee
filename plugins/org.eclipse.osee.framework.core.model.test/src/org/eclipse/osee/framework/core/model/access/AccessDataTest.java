@@ -110,7 +110,7 @@ public class AccessDataTest {
 
    @Test
    public void testAddAll() throws OseeCoreException {
-      Collection<AccessDetail<?>> expectedDetails = new ArrayList<AccessDetail<?>>();
+      Collection<AccessDetail<?>> expectedDetails = new ArrayList<>();
       createTestObjects(expectedDetails, branchToCheck1, artifactType, attributeType, wordAttributeType,
          artifactToCheck, relTypeSide1, relTypeSide2, branchToCheck2);
 

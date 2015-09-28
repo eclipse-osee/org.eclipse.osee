@@ -109,7 +109,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     */
    public List<RemoteBasicGuidArtifact1> getArtifacts() {
       if (artifacts == null) {
-         artifacts = new ArrayList<RemoteBasicGuidArtifact1>();
+         artifacts = new ArrayList<>();
       }
       return this.artifacts;
    }
@@ -131,7 +131,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     */
    public List<RemoteBasicGuidRelation1> getRelations() {
       if (relations == null) {
-         relations = new ArrayList<RemoteBasicGuidRelation1>();
+         relations = new ArrayList<>();
       }
       return this.relations;
    }
@@ -153,7 +153,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     */
    public List<RemoteBasicGuidRelationReorder1> getRelationReorders() {
       if (relationReorders == null) {
-         relationReorders = new ArrayList<RemoteBasicGuidRelationReorder1>();
+         relationReorders = new ArrayList<>();
       }
       return this.relationReorders;
    }

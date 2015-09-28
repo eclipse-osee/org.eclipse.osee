@@ -29,7 +29,7 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
 
    private final ResultSet<F> result;
    private final Function<I, F, T> function;
-   private final Map<I, T> objectMap = new HashMap<I, T>();
+   private final Map<I, T> objectMap = new HashMap<>();
    private List<T> data;
 
    protected ResultSetTransform(ResultSet<F> result, Function<I, F, T> factory) {
@@ -110,7 +110,7 @@ public class ResultSetTransform<I, F extends Identity<I>, T extends Identity<I>>
 
    @Override
    public ResultSet<T> sort(Comparator<T> comparator) {
-      List<T> list = new LinkedList<T>();
+      List<T> list = new LinkedList<>();
       Iterator<T> iter = iterator();
       while (iter.hasNext()) {
          list.add(iter.next());

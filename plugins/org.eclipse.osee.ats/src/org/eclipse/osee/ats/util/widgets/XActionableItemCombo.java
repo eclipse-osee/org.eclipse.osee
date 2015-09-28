@@ -57,11 +57,11 @@ public class XActionableItemCombo extends XComboViewer {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading actionable items", ex);
       }
 
-      List<IAtsActionableItem> sortedAiArts = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> sortedAiArts = new ArrayList<>();
       sortedAiArts.addAll(ais);
       Collections.sort(sortedAiArts, new ActionableItemSorter());
       getComboViewer().setInput(sortedAiArts);
-      ArrayList<Object> defaultSelection = new ArrayList<Object>();
+      ArrayList<Object> defaultSelection = new ArrayList<>();
       defaultSelection.add("--select--");
       setSelected(defaultSelection);
       addXModifiedListener(new XModifiedListener() {

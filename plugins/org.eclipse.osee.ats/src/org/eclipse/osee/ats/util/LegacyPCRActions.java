@@ -34,7 +34,7 @@ public class LegacyPCRActions {
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, false);
-      Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teamArts = new HashSet<>();
       for (Artifact art : search.performSearchGetResults()) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teamArts.add((TeamWorkFlowArtifact) art);
@@ -57,7 +57,7 @@ public class LegacyPCRActions {
 
    public static Collection<TeamWorkFlowArtifact> getTeamsTeamWorkflowArtifacts(Collection<String> pcrIds, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, false);
-      Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teamArts = new HashSet<>();
       for (Artifact art : search.performSearchGetResults()) {
          if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
             teamArts.add((TeamWorkFlowArtifact) art);
@@ -72,7 +72,7 @@ public class LegacyPCRActions {
 
    public static Collection<ActionArtifact> getTeamsActionArtifacts(Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(teamDefs, true);
-      Set<ActionArtifact> actArts = new HashSet<ActionArtifact>();
+      Set<ActionArtifact> actArts = new HashSet<>();
       for (Artifact art : search.performSearchGetResults()) {
          if (art.isOfType(AtsArtifactTypes.Action)) {
             actArts.add((ActionArtifact) art);
@@ -87,7 +87,7 @@ public class LegacyPCRActions {
 
    public static Collection<Artifact> getTeamsActionArtifacts(Collection<String> pcrIds, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
       LegacyPCRActionsWorldSearchItem search = new LegacyPCRActionsWorldSearchItem(pcrIds, teamDefs, true);
-      Set<Artifact> actArts = new HashSet<Artifact>();
+      Set<Artifact> actArts = new HashSet<>();
       for (Artifact art : search.performSearchGetResults()) {
          actArts.add(art);
       }

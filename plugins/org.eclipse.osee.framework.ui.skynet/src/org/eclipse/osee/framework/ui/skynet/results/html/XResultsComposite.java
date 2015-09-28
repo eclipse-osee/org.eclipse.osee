@@ -129,7 +129,7 @@ public class XResultsComposite extends Composite {
                AWorkbench.popup("ERROR", "Nothing to email");
                return;
             }
-            Set<Manipulations> manipulations = new HashSet<Manipulations>();
+            Set<Manipulations> manipulations = new HashSet<>();
             manipulations.add(Manipulations.ALL);
             manipulations.add(Manipulations.ERROR_WARNING_HEADER);
             Dialogs.emailDialog(title, htmlText);

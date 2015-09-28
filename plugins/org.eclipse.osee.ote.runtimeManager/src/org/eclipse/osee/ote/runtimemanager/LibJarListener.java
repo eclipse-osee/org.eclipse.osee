@@ -41,9 +41,9 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
 
    public LibJarListener() {
       this.bundleSynchronizer = new Object();
-      this.newBundles = new HashSet<URL>();
-      this.changedBundles = new HashSet<URL>();
-      this.removedBundles = new HashSet<URL>();
+      this.newBundles = new HashSet<>();
+      this.changedBundles = new HashSet<>();
+      this.removedBundles = new HashSet<>();
    }
 
    @Override
@@ -116,7 +116,7 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
 
    private <S extends Object> Set<S> duplicateAndClear(Set<S> set) {
       synchronized (bundleSynchronizer) {
-         Set<S> returnBundles = new HashSet<S>(set);
+         Set<S> returnBundles = new HashSet<>(set);
          set.clear();
          return returnBundles;
       }

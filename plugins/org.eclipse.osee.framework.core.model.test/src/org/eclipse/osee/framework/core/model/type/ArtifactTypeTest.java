@@ -83,7 +83,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       boolean isAbstract = true;
       for (int index = 1; index <= 3; index++) {
          Long guid = 0x00L;
@@ -118,7 +118,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //      ArtifactType baseType = artCache.getUniqueByName("BaseArtifactType");
    //      Assert.assertNotNull(baseType);
    //
-   //      Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
+   //      Set<ArtifactType> baseSuperType = new HashSet<>();
    //      baseSuperType.add(baseType);
    //
    //      try {
@@ -273,7 +273,7 @@ public class ArtifactTypeTest extends AbstractOseeTypeTest<Long, ArtifactType> {
    //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
    //         ArtifactType baseType = cache.getUniqueByName("BaseArtifactType");
    //
-   //         Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
+   //         Set<ArtifactType> baseSuperType = new HashSet<>();
    //         baseSuperType.add(baseType);
    //         // 0<-1
    //         cache.cacheArtifactSuperType(cache.getByGuid("111"), baseSuperType);

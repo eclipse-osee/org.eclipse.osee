@@ -87,8 +87,8 @@ public final class ParserVerification {
    public void checkRuleErrors(Class<? extends EObject> rule, String textToParse, String... expectedErrorSubstrings) {
       List<SyntaxErrorMessage> errors = checkRule(rule, textToParse, true);
 
-      Set<String> matchingSubstrings = new HashSet<String>();
-      Set<String> assertedErrors = new HashSet<String>();
+      Set<String> matchingSubstrings = new HashSet<>();
+      Set<String> assertedErrors = new HashSet<>();
 
       boolean hadError = false;
       for (final SyntaxErrorMessage err : errors) {

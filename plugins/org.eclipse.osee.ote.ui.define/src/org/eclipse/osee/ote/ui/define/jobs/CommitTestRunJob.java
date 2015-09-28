@@ -78,7 +78,7 @@ public class CommitTestRunJob extends Job {
 
    private Artifact[] commitSelectedArtifacts(IProgressMonitor monitor, String comment, Object[] items) throws Exception {
       Map<IOseeBranch, List<Artifact>> commitMap = getArtifactsByBranch(items);
-      List<Artifact> committedList = new ArrayList<Artifact>();
+      List<Artifact> committedList = new ArrayList<>();
       for (IOseeBranch branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
@@ -89,13 +89,13 @@ public class CommitTestRunJob extends Job {
    }
 
    private Map<IOseeBranch, List<Artifact>> getArtifactsByBranch(Object[] items) {
-      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<IOseeBranch, List<Artifact>>();
+      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
          IOseeBranch branch = testRun.getBranch();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
-            artList = new ArrayList<Artifact>();
+            artList = new ArrayList<>();
             branchMap.put(branch, artList);
          }
          artList.add(testRun);

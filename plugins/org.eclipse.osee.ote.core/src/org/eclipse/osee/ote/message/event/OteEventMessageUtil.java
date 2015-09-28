@@ -50,7 +50,7 @@ public class OteEventMessageUtil {
    public static void sendEvent(OteEventMessage message, EventAdmin eventAdmin) {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Object> data = new HashMap<>();
       data.put(BYTE_KEY, message.getData());
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.sendEvent(newevent);
@@ -59,7 +59,7 @@ public class OteEventMessageUtil {
    public static void postEvent(OteEventMessage message, EventAdmin eventAdmin) {
       message.getHeader().UUID_HIGH.setNoLog((long) 0x0);
       message.getHeader().UUID_LOW.setNoLog((long) 0x0);
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Object> data = new HashMap<>();
       data.put(BYTE_KEY, message.getData());
       Event newevent = new Event(message.getHeader().TOPIC.getValue(), data);
       eventAdmin.postEvent(newevent);
@@ -131,7 +131,7 @@ public class OteEventMessageUtil {
    }
 
    public static ServiceRegistration<EventHandler> subscribe(String topic, EventHandler handler){
-      Dictionary<String, String> props = new Hashtable<String, String>();
+      Dictionary<String, String> props = new Hashtable<>();
       props.put("event.topics", topic);
       return ServiceUtility.getContext().registerService(EventHandler.class, handler, props);
    }
@@ -141,7 +141,7 @@ public class OteEventMessageUtil {
       if (context == null) {
          return null;
       }
-      Hashtable<String, Object> props = new Hashtable<String, Object>();
+      Hashtable<String, Object> props = new Hashtable<>();
       props.put("event.topics", signal.getHeader().TOPIC.getValue());
       return context.registerService(EventHandler.class, eventHandler, props);
    }

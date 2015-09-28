@@ -144,7 +144,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       when(dataLoader.load(Matchers.<Iterable<? extends String>> any())).thenAnswer(createAnswer(data));
@@ -189,7 +189,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       when(dataLoader.load(Matchers.<Iterable<? extends String>> any())).thenAnswer(createAnswer(data));
@@ -244,7 +244,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       data.put(KEY_3, OBJECT_3);
@@ -266,7 +266,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       data.put(KEY_3, OBJECT_3);
@@ -291,7 +291,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       data.put(KEY_3, OBJECT_3);
@@ -316,7 +316,7 @@ public class LoadingCacheTest {
       Iterable<? extends String> keysInStore = Arrays.asList(KEY_1, KEY_2, KEY_3);
       when(keyLoader.getAllKeys()).thenAnswer(createAnswer(keysInStore));
 
-      Map<String, Object> data = new LinkedHashMap<String, Object>();
+      Map<String, Object> data = new LinkedHashMap<>();
       data.put(KEY_1, OBJECT_1);
       data.put(KEY_2, OBJECT_2);
       data.put(KEY_3, OBJECT_3);

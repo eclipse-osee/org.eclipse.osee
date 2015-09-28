@@ -63,7 +63,7 @@ public class SecondPassMatcherTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
 
       StreamMatcher matcher = MatcherFactory.createMatcher();
 

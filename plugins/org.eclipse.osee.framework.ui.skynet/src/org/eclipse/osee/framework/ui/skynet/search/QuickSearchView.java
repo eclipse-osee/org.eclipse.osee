@@ -126,7 +126,7 @@ public class QuickSearchView extends GenericViewPart {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(attrSearchComposite)) {
             String lastQuery = memento.getString(LAST_QUERY_KEY_ID);
-            List<String> queries = new ArrayList<String>();
+            List<String> queries = new ArrayList<>();
             String rawHistory = memento.getString(QUERY_HISTORY_KEY_ID);
             if (rawHistory != null) {
                String[] values = rawHistory.split(ENTRY_SEPARATOR);
@@ -309,7 +309,7 @@ public class QuickSearchView extends GenericViewPart {
                }
             } else if (Widgets.isAccessible(guidSearchComposite) && guidSearchComposite.isExecuteSearchEvent(event)) {
                String searchString = guidSearchComposite.getQuery();
-               List<String> invalids = new LinkedList<String>();
+               List<String> invalids = new LinkedList<>();
                for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
                   if (!Strings.isValid(id) || !(GUID.isValid(id) || Strings.isNumeric(id))) {
                      invalids.add(id);

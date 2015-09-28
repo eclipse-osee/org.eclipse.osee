@@ -134,7 +134,7 @@ public class ResourceManagerTest {
 
    @Test
    public void testGetProtocols() {
-      List<String> actual = new ArrayList<String>(manager.getProtocols());
+      List<String> actual = new ArrayList<>(manager.getProtocols());
       Assert.assertEquals(3, actual.size());
 
       Collections.sort(actual);

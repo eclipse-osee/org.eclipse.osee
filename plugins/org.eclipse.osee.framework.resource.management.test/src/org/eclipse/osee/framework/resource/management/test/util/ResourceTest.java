@@ -68,7 +68,7 @@ public class ResourceTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       data.add(new Object[] {"file://1/sample.file", "sample.file", true});
       data.add(new Object[] {"http://www.url.com", "www.url.com", false,});
       data.add(new Object[] {"http://www.url.com/hello", "hello", false,});

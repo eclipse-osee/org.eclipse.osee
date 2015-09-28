@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
-   private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<IAttributeType>();
+   private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<>();
    static {
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkData);
@@ -39,7 +39,7 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
 
    @Override
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      List<XWidgetRendererItem> layouts = new ArrayList<XWidgetRendererItem>();
+      List<XWidgetRendererItem> layouts = new ArrayList<>();
       if (attributeType.equals(AtsAttributeTypes.BaselineBranchUuid)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);

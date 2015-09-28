@@ -101,7 +101,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
 
    @Override
    public T andUuids(long... uuids) throws OseeCoreException {
-      Set<Long> allUuids = new HashSet<Long>();
+      Set<Long> allUuids = new HashSet<>();
       for (Long uuid : uuids) {
          allUuids.add(uuid);
       }
@@ -121,7 +121,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
 
    @Override
    public T andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException {
-      Set<Long> allIds = new HashSet<Long>();
+      Set<Long> allIds = new HashSet<>();
       for (IOseeBranch token : ids) {
          allIds.add(token.getUuid());
       }
@@ -202,7 +202,7 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
          addAndCheck(queryData, criteriaFactory.createBranchArchivedCriteria(states));
       }
       if (!areDeletedIncluded()) {
-         Collection<BranchState> states = new ArrayList<BranchState>();
+         Collection<BranchState> states = new ArrayList<>();
          for (BranchState state : BranchState.values()) {
             if (state != DELETE_IN_PROGRESS && state != DELETED && state != PURGE_IN_PROGRESS && state != PURGED) {
                states.add(state);

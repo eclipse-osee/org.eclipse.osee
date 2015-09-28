@@ -158,7 +158,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             data = WordUtil.reassignBinDataID(data);
 
             LinkType linkType = (LinkType) getOption("linkType");
-            Set<String> unknownGuids = new HashSet<String>();
+            Set<String> unknownGuids = new HashSet<>();
             data = WordMlLinkHandler.link(linkType, artifact, data, unknownGuids);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
@@ -188,7 +188,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      final List<Artifact> notMultiEditableArtifacts = new LinkedList<Artifact>();
+      final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
       String template;
 
       if (artifacts.isEmpty()) {

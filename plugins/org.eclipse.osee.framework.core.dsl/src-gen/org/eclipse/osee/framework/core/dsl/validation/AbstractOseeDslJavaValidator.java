@@ -14,7 +14,7 @@ public class AbstractOseeDslJavaValidator extends org.eclipse.xtext.validation.A
 
 	@Override
 	protected List<EPackage> getEPackages() {
-	    List<EPackage> result = new ArrayList<EPackage>();
+	    List<EPackage> result = new ArrayList<>();
 	    result.add(org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDslPackage.eINSTANCE);
 		return result;
 	}

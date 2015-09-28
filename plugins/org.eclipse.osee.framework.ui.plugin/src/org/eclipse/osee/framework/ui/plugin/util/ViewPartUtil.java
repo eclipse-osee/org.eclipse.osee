@@ -41,7 +41,7 @@ public class ViewPartUtil {
        * and 3 are currently running, the next instance of the view should be 2.
        */
 
-      SortedSet<Integer> set = new TreeSet<Integer>();
+      SortedSet<Integer> set = new TreeSet<>();
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IViewReference[] viewRefs = page.getViewReferences();
       for (IViewReference viewRef : viewRefs) {

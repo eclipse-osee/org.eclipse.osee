@@ -367,7 +367,7 @@ public abstract class XStackedWidget<T> extends XLabel {
       public StackedControl() {
          this.stackedViewer = null;
          this.currentPage = -1;
-         this.pageIds = new ArrayList<String>();
+         this.pageIds = new ArrayList<>();
       }
 
       private void createControl(Composite parent) {

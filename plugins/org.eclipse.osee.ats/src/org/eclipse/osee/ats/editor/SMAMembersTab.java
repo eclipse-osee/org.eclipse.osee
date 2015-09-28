@@ -107,7 +107,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
    private LoadingComposite loadingComposite;
    public final static String ID = "ats.members.tab";
    private final SMAEditor editor;
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<String, Integer>();
+   private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
    private final ReloadJobChangeAdapter reloadAdapter;
    private final IMemberProvider provider;
 
@@ -419,7 +419,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          return;
       }
       List<Artifact> loadedArtifacts = worldComposite.getLoadedArtifacts();
-      List<Artifact> toRemoveFromLoaded = new LinkedList<Artifact>(members);
+      List<Artifact> toRemoveFromLoaded = new LinkedList<>(members);
       members.removeAll(loadedArtifacts);
       for (Artifact art : members) {
          worldComposite.insert(art, -1);
@@ -632,7 +632,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
             artifacts.add(art);
@@ -643,7 +643,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
             artifacts.add(art);
@@ -654,7 +654,7 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
-      List<TaskArtifact> tasks = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> tasks = new ArrayList<>();
       for (Artifact art : worldComposite.getSelectedArtifacts()) {
          if (art instanceof TaskArtifact) {
             tasks.add((TaskArtifact) art);

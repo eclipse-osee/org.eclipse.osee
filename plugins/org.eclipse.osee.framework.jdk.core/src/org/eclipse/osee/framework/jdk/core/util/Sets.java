@@ -33,7 +33,7 @@ public class Sets {
          throw new IllegalArgumentException("set2 can not be null.");
       }
 
-      Set<A> intersection = new HashSet<A>();
+      Set<A> intersection = new HashSet<>();
 
       // Pick the smaller of the two sets as this will be the largest
       // possible intersection.

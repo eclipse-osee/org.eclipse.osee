@@ -65,7 +65,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       Map<Long, Long> artifactGammaToNetGammaId = convertArtifactAndConflicts(processor);
       consolidateTxsAddressing(processor, ExportItem.OSEE_TXS_DATA, branchUuids, artifactGammaToNetGammaId);
 
-      HashCollection<String, String> tableToColumns = new HashCollection<String, String>();
+      HashCollection<String, String> tableToColumns = new HashCollection<>();
       tableToColumns.put("osee_artifact", "<column id=\"gamma_id\" type=\"NUMERIC\" />\n");
       tableToColumns.put("osee_branch", "<column id=\"baseline_transaction_id\" type=\"INTEGER\" />\n");
       processor.transform(ExportItem.EXPORT_DB_SCHEMA, new DbSchemaRuleAddColumn(tableToColumns));
@@ -92,7 +92,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
    }
 
    private List<Long> convertBranchTable(ExchangeDataProcessor processor) throws OseeCoreException {
-      Map<Long, Integer> branchToBaseTx = new HashMap<Long, Integer>(10000);
+      Map<Long, Integer> branchToBaseTx = new HashMap<>(10000);
       processor.parse(ExportItem.OSEE_TX_DETAILS_DATA, new V0_9_2TxDetailsHandler(branchToBaseTx));
       processor.transform(ExportItem.OSEE_BRANCH_DATA, new V0_9_2BranchTransformer(branchToBaseTx));
       return new ArrayList<Long>(branchToBaseTx.keySet());
@@ -114,7 +114,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       File targetFile = processor.getDataProvider().getFile(exportItem);
       File tempFile = new File(Lib.changeExtension(targetFile.getPath(), "temp"));
       Writer fileWriter = null;
-      HashCollection<Long, Address> addressMap = new HashCollection<Long, Address>(false, TreeSet.class);
+      HashCollection<Long, Address> addressMap = new HashCollection<>(false, TreeSet.class);
       V0_9_2TxsConsolidateParser transformer = new V0_9_2TxsConsolidateParser(artifactGammaToNetGammaId, addressMap);
       try {
          fileWriter = processor.startTransform(targetFile, tempFile, transformer);

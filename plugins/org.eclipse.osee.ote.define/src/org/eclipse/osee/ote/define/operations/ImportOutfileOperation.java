@@ -100,7 +100,7 @@ public class ImportOutfileOperation {
    }
 
    private String toString(Artifact[] artifacts) {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       for (Artifact artifact : artifacts) {
          toReturn.add(artifact.getName());
       }
@@ -117,13 +117,13 @@ public class ImportOutfileOperation {
    }
 
    private Map<IOseeBranch, List<Artifact>> getArtifactsByBranch(Object[] items) {
-      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<IOseeBranch, List<Artifact>>();
+      Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
          IOseeBranch branch = testRun.getBranch();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
-            artList = new ArrayList<Artifact>();
+            artList = new ArrayList<>();
             branchMap.put(branch, artList);
          }
          artList.add(testRun);

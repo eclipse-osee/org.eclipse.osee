@@ -140,7 +140,7 @@ public class OseeUtilTest {
 
    @Test
    public void testGetRelationOrderType() throws OseeCoreException {
-      Map<String, String> testData = new HashMap<String, String>();
+      Map<String, String> testData = new HashMap<>();
       testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "Lexicographical_Ascending");
       testData.put(RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid(), "Lexicographical_Descending");
       testData.put(RelationOrderBaseTypes.UNORDERED.getGuid(), "Unordered");
@@ -169,7 +169,7 @@ public class OseeUtilTest {
 
    @Test
    public void testOrderTypeNameToGuid() throws OseeCoreException {
-      Map<String, String> testData = new HashMap<String, String>();
+      Map<String, String> testData = new HashMap<>();
       testData.put("Lexicographical_Ascending", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
       testData.put("Lexicographical_Descending", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
       testData.put("Unordered", RelationOrderBaseTypes.UNORDERED.getGuid());

@@ -66,7 +66,7 @@ public class XScriptTable extends XViewer {
 
    public List<ScriptTask> getVisibleSortedScriptTasksToRun() {
       Object[] objs = getSortedChildren(getInput());
-      List<ScriptTask> runs = new ArrayList<ScriptTask>();
+      List<ScriptTask> runs = new ArrayList<>();
       for (Object obj : objs) {
          if (((ScriptTask) obj).isRun()) {
             runs.add((ScriptTask) obj);
@@ -77,7 +77,7 @@ public class XScriptTable extends XViewer {
 
    public List<ScriptTask> getVisibibleSortedScriptTasks() {
       Object[] objs = getSortedChildren(getInput());
-      List<ScriptTask> runs = new ArrayList<ScriptTask>();
+      List<ScriptTask> runs = new ArrayList<>();
       for (Object obj : objs) {
          runs.add((ScriptTask) obj);
       }

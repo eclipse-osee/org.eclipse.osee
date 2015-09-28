@@ -27,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
  * @author Donald G. Dunne
  */
 public class XStateSearchCombo extends XComboViewer {
-   protected static List<String> validStates = new ArrayList<String>();
+   protected static List<String> validStates = new ArrayList<>();
    public static final String WIDGET_ID = XStateSearchCombo.class.getSimpleName();
    private String selectedState = null;
 
@@ -49,7 +49,7 @@ public class XStateSearchCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       getComboViewer().setInput(validStates);
-      ArrayList<Object> defaultSelection = new ArrayList<Object>();
+      ArrayList<Object> defaultSelection = new ArrayList<>();
       defaultSelection.add("--select--");
       setSelected(defaultSelection);
       addXModifiedListener(new XModifiedListener() {

@@ -44,7 +44,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       this.soleSprintArtifact = soleSprintArtifact;
 
       List<XViewerAtsAttributeValueColumn> configCols = WorldXViewerUtil.getConfigurationColumns();
-      List<XViewerColumn> sprintCols = new LinkedList<XViewerColumn>();
+      List<XViewerColumn> sprintCols = new LinkedList<>();
 
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);

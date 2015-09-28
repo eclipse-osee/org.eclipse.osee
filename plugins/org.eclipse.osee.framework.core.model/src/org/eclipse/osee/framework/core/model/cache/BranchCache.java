@@ -78,7 +78,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
 
    public List<MergeBranch> findAllMergeBranches(Branch sourceBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
-      List<MergeBranch> toReturn = new ArrayList<MergeBranch>();
+      List<MergeBranch> toReturn = new ArrayList<>();
       for (Branch branch : getAll()) {
          if (branch instanceof MergeBranch) {
             MergeBranch mergeBranch = (MergeBranch) branch;
@@ -92,7 +92,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
 
    public synchronized List<Branch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
       Collection<Branch> allBranches = getRawValues();
-      List<Branch> branches = new LinkedList<Branch>();
+      List<Branch> branches = new LinkedList<>();
       for (Branch branch : allBranches) {
          if (branchFilter.matches(branch)) {
             branches.add(branch);

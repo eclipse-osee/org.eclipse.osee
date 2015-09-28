@@ -45,11 +45,11 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    private static final String DELETE_RELATIONS = "delete from osee_relation_link where gamma_id = ?";
 
-   private final List<Object[]> relationDeleteData = new ArrayList<Object[]>(14000);
-   private final List<Long> obsoleteGammas = new ArrayList<Long>();
+   private final List<Object[]> relationDeleteData = new ArrayList<>(14000);
+   private final List<Long> obsoleteGammas = new ArrayList<>();
    private final StringBuilder addressingBackup = new StringBuilder(100000);
-   private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
-   private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
+   private final List<Object[]> addressingToDelete = new ArrayList<>(13000);
+   private final List<Object[]> updateAddressingData = new ArrayList<>(5000);
    private ExportImportJoinQuery gammaJoin;
    private JdbcConnection connection;
    private long previousRelationTypeId;

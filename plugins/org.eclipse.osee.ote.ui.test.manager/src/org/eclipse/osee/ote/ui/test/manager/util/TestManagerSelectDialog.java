@@ -51,7 +51,7 @@ public class TestManagerSelectDialog {
    }
 
    public TestManagerEditor[] getResult() {
-      List<TestManagerEditor> tmes = new ArrayList<TestManagerEditor>();
+      List<TestManagerEditor> tmes = new ArrayList<>();
       for (Object object : listSelectionDialog.getResult()) {
          tmes.add((TestManagerEditor) object);
       }

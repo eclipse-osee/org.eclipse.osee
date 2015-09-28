@@ -23,7 +23,7 @@ public class WorkDefinitionMatch implements IWorkDefinitionMatch {
 
    private IAtsWorkDefinition workDefinition;
    private String workDefinitionId;
-   private final List<String> trace = new ArrayList<String>();
+   private final List<String> trace = new ArrayList<>();
 
    public WorkDefinitionMatch() {
       this(null, null);

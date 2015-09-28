@@ -76,7 +76,7 @@ public final class Compare {
    }
 
    private static Map<Object, Object> toMap(Dictionary<Object, Object> source) {
-      Map<Object, Object> sink = new HashMap<Object, Object>(source.size());
+      Map<Object, Object> sink = new HashMap<>(source.size());
       for (Enumeration<Object> keys = source.keys(); keys.hasMoreElements();) {
          Object key = keys.nextElement();
          sink.put(key, source.get(key));

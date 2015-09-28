@@ -73,7 +73,7 @@ public class AccountClientTest {
          email = String.format("email_%s_%s@hello.com", methodName, value);
          active = true;
 
-         prefs = new HashMap<String, String>();
+         prefs = new HashMap<>();
          prefs.put("a", "1");
          prefs.put("b", "2");
          prefs.put("c", "3");
@@ -187,7 +187,7 @@ public class AccountClientTest {
 
    @Test
    public void test_F_SetAccountPreferences() {
-      Map<String, String> newPrefs = new HashMap<String, String>();
+      Map<String, String> newPrefs = new HashMap<>();
       newPrefs.put("r", "7");
       newPrefs.put("s", "8");
       newPrefs.put("t", "9");

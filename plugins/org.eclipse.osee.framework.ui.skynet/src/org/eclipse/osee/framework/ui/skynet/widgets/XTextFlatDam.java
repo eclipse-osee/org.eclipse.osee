@@ -59,7 +59,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
 
    public XTextFlatDam(String displayLabel) {
       super(displayLabel);
-      this.xWidgets = new LinkedHashMap<String, XWidget>();
+      this.xWidgets = new LinkedHashMap<>();
       this.artifact = null;
       this.xModifiedListener = new XModifiedListener() {
          @Override
@@ -101,7 +101,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
-      final Collection<String> values = new ArrayList<String>();
+      final Collection<String> values = new ArrayList<>();
       try {
          values.addAll(getStored());
          for (int index = 0; index < values.size(); index++) {
@@ -135,7 +135,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
    }
 
    public List<String> getInput() {
-      List<String> data = new ArrayList<String>();
+      List<String> data = new ArrayList<>();
       for (XWidget widget : xWidgets.values()) {
          if (widget instanceof XText) {
             data.add(((XText) widget).get());
@@ -157,7 +157,7 @@ public class XTextFlatDam extends XFlatWidget<String> implements IAttributeWidge
    public Result isDirty() throws OseeCoreException {
       if (isEditable()) {
          try {
-            Collection<String> enteredValues = new ArrayList<String>();//getSelected();
+            Collection<String> enteredValues = new ArrayList<>();//getSelected();
             Collection<String> storedValues = getStored();
             if (!Collections.isEqual(enteredValues, storedValues)) {
                return new Result(true, getAttributeType() + " is dirty");

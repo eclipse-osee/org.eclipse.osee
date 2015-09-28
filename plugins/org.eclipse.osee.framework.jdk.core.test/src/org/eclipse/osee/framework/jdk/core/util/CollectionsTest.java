@@ -106,13 +106,13 @@ public class CollectionsTest {
 
    @Test
    public void test_flatten() {
-      Collection<Object> deepList = new ArrayList<Object>();
+      Collection<Object> deepList = new ArrayList<>();
       deepList.add("A");
       deepList.add(Arrays.asList("B", "C"));
       deepList.add(Arrays.asList("D"));
       deepList.add(Arrays.asList("E"));
 
-      List<Object> flattened = new ArrayList<Object>();
+      List<Object> flattened = new ArrayList<>();
       Collections.flatten(deepList, flattened);
 
       List<Object> expected = Collections.castAll(Object.class, getTestList());
@@ -121,7 +121,7 @@ public class CollectionsTest {
    }
 
    private List<String> getTestList() {
-      List<String> newList = new ArrayList<String>();
+      List<String> newList = new ArrayList<>();
       newList.addAll(Arrays.asList("A", "B", "C", "D", "E"));
       return newList;
    }

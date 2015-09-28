@@ -43,7 +43,7 @@ public class ActionableItemManager {
    }
 
    public Set<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       if (!atsStoreService.isDeleted(atsObject)) {
          for (String guid : getActionableItemGuids(atsObject)) {
             long uuid = atsStoreService.getUuidFromGuid(guid);

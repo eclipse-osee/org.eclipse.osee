@@ -38,8 +38,8 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected static final String AND_WITH_NEWLINES = "\n AND \n";
 
    private final StringBuilder output = new StringBuilder();
-   private final List<String> tableEntries = new ArrayList<String>();
-   private final List<WithClause> withClauses = new ArrayList<WithClause>();
+   private final List<String> tableEntries = new ArrayList<>();
+   private final List<WithClause> withClauses = new ArrayList<>();
    private final SqlAliasManager aliasManager = new SqlAliasManager();
 
    private final Log logger;

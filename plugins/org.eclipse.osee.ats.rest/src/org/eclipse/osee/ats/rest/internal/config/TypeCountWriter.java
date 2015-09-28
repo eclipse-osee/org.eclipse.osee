@@ -109,7 +109,7 @@ public class TypeCountWriter {
    }
 
    private List<IArtifactType> getTypes(List<Long> typeIds) {
-      List<IArtifactType> toReturn = new ArrayList<IArtifactType>();
+      List<IArtifactType> toReturn = new ArrayList<>();
 
       Collection<? extends IArtifactType> allTypes = orcsApi.getOrcsTypes().getArtifactTypes().getAll();
       for (IArtifactType type : allTypes) {
@@ -121,7 +121,7 @@ public class TypeCountWriter {
    }
 
    private List<IAttributeType> getAttrTypes(List<Long> typeIds) {
-      List<IAttributeType> toReturn = new ArrayList<IAttributeType>();
+      List<IAttributeType> toReturn = new ArrayList<>();
 
       Collection<? extends IAttributeType> allTypes = orcsApi.getOrcsTypes().getAttributeTypes().getAll();
       for (IAttributeType type : allTypes) {

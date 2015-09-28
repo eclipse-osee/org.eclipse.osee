@@ -63,7 +63,7 @@ public class XTextDam extends XText implements IAttributeWidget {
 
    private void setArtifact(Artifact artifact) {
       if (isWeakReference) {
-         this.artifactRef = new WeakReference<Artifact>(artifact);
+         this.artifactRef = new WeakReference<>(artifact);
       } else {
          artifactStrongRef = artifact;
       }

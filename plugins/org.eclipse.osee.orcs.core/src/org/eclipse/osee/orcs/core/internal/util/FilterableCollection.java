@@ -93,7 +93,7 @@ public abstract class FilterableCollection<MATCH_DATA, KEY, DATA> {
    private <T extends DATA> List<T> getListByFilter(Collection<DATA> source, Predicate<MATCH_DATA> matcher) throws OseeCoreException {
       List<T> toReturn;
       if (source != null && !source.isEmpty()) {
-         toReturn = new LinkedList<T>();
+         toReturn = new LinkedList<>();
          for (Iterator<DATA> iterator = source.iterator(); iterator.hasNext();) {
             DATA data = iterator.next();
             if (isValid(data)) {

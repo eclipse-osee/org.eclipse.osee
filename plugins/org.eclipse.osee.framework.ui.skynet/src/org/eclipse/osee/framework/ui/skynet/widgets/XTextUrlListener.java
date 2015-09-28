@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Display;
 public class XTextUrlListener implements ModifyListener {
 
    private final XText xText;
-   private final Set<UrlWord> urls = new HashSet<UrlWord>();
+   private final Set<UrlWord> urls = new HashSet<>();
    private Integer maxLength = 50000;
 
    public class UrlWord {

@@ -23,7 +23,7 @@ public class BundleResourceFinder extends ResourceFinder {
    private final ArrayList<Bundle> bundles;
 
    public BundleResourceFinder(String[] bundlenames) {
-      bundles = new ArrayList<Bundle>();
+      bundles = new ArrayList<>();
       for (int i = 0; i < bundlenames.length; i++) {
          Bundle bundle = Platform.getBundle(bundlenames[i]);
          if (bundle != null) {

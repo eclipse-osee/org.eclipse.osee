@@ -21,19 +21,19 @@ public class TripletTest {
    private final Integer a = 144;
    private final Integer b = 233;
    private final Integer c = 533;
-   private final Triplet<Integer, Integer, Integer> mapToPi = new Triplet<Integer, Integer, Integer>(a, b, c);
-   private final Triplet<Integer, Integer, Integer> mapToE = new Triplet<Integer, Integer, Integer>(b, c, a);
+   private final Triplet<Integer, Integer, Integer> mapToPi = new Triplet<>(a, b, c);
+   private final Triplet<Integer, Integer, Integer> mapToE = new Triplet<>(b, c, a);
 
-   private final Triplet<Integer, Integer, Integer> alsoMapToPi = new Triplet<Integer, Integer, Integer>(a, b, c);
-   private final Triplet<Integer, Integer, Integer> alsoMapToE = new Triplet<Integer, Integer, Integer>(b, c, a);
+   private final Triplet<Integer, Integer, Integer> alsoMapToPi = new Triplet<>(a, b, c);
+   private final Triplet<Integer, Integer, Integer> alsoMapToE = new Triplet<>(b, c, a);
 
-   private final Triplet<Integer, Integer, Integer> firstEntryNull = new Triplet<Integer, Integer, Integer>(null, 222,
+   private final Triplet<Integer, Integer, Integer> firstEntryNull = new Triplet<>(null, 222,
       333);
-   private final Triplet<Integer, Integer, Integer> secondEntryNull = new Triplet<Integer, Integer, Integer>(111, null,
+   private final Triplet<Integer, Integer, Integer> secondEntryNull = new Triplet<>(111, null,
       333);
-   private final Triplet<Integer, Integer, Integer> thirdEntryNull = new Triplet<Integer, Integer, Integer>(111, 222,
+   private final Triplet<Integer, Integer, Integer> thirdEntryNull = new Triplet<>(111, 222,
       null);
-   private final Triplet<Integer, Integer, Integer> nonNull = new Triplet<Integer, Integer, Integer>(111, 222, 333);
+   private final Triplet<Integer, Integer, Integer> nonNull = new Triplet<>(111, 222, 333);
 
    @org.junit.Test
    public void testConstructor() {
@@ -71,7 +71,7 @@ public class TripletTest {
 
    @org.junit.Test
    public void testSetters() {
-      Triplet<Integer, Integer, Integer> newPair = new Triplet<Integer, Integer, Integer>(0, 0, 0);
+      Triplet<Integer, Integer, Integer> newPair = new Triplet<>(0, 0, 0);
       newPair.setFirst(a);
       newPair.setSecond(b);
       newPair.setThird(c);
@@ -89,7 +89,7 @@ public class TripletTest {
       Assert.assertFalse(c.equals(newPair.getFirst()));
       Assert.assertFalse(c.equals(newPair.getSecond()));
 
-      Triplet<Integer, Integer, Integer> anotherPair = new Triplet<Integer, Integer, Integer>(0, 0, 0);
+      Triplet<Integer, Integer, Integer> anotherPair = new Triplet<>(0, 0, 0);
       Assert.assertTrue(anotherPair.set(a, b, c).equals(anotherPair));
    }
 

@@ -132,7 +132,7 @@ public class HierarchyRestrictionImpl extends MinimalEObjectImpl.Container imple
   {
     if (accessRules == null)
     {
-      accessRules = new EObjectContainmentEList<ObjectRestriction>(ObjectRestriction.class, this, OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES);
+      accessRules = new EObjectContainmentEList<>(ObjectRestriction.class, this, OseeDslPackage.HIERARCHY_RESTRICTION__ACCESS_RULES);
     }
     return accessRules;
   }

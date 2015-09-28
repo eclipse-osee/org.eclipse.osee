@@ -49,8 +49,8 @@ public class OseeDslSegmentParser {
 
    public Collection<OseeDslSegment> getSegments(Collection<TagLocation> tagLocations) throws OseeCoreException {
       Conditions.checkNotNull(tagLocations, "tagLocations");
-      Collection<OseeDslSegment> segments = new ArrayList<OseeDslSegment>();
-      Stack<TagLocation> segmentStack = new Stack<TagLocation>();
+      Collection<OseeDslSegment> segments = new ArrayList<>();
+      Stack<TagLocation> segmentStack = new Stack<>();
       for (TagLocation segment : tagLocations) {
          if (segment.isStartTag()) {
             segmentStack.push(segment);
@@ -81,7 +81,7 @@ public class OseeDslSegmentParser {
 
    public Collection<TagLocation> getTagLocations(String source) throws OseeCoreException {
       Conditions.checkNotNull(source, "artifact source data");
-      Collection<TagLocation> segments = new ArrayList<TagLocation>();
+      Collection<TagLocation> segments = new ArrayList<>();
       Pattern pattern = Pattern.compile("\\s?//@(.*?)_artifact\\s+branch/(.*?)/artifact/(.*?)/\\s+\\(.*?\\)");
       Matcher matcher = pattern.matcher(source);
 

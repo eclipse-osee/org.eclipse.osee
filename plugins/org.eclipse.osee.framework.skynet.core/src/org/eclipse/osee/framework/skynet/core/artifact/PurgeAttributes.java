@@ -99,7 +99,7 @@ public class PurgeAttributes extends AbstractDbTxOperation {
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       super.handleTxFinally(monitor);
       if (success) {
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
          for (Attribute<?> attribute : attributesToPurge) {
             artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, attribute.getArtifact()));
          }

@@ -30,20 +30,20 @@ public class FindResults {
    private final HashMap<String, HashMap<File, List<String>>> results;
 
    public FindResults(int initialCapacity) {
-      results = new HashMap<String, HashMap<File, List<String>>>(initialCapacity * 4 / 3);
+      results = new HashMap<>(initialCapacity * 4 / 3);
    }
 
    public void addMatch(String pattern, File file, String region) {
       HashMap<File, List<String>> fileMatches = results.get(pattern);
 
       if (fileMatches == null) {
-         fileMatches = new HashMap<File, List<String>>();
+         fileMatches = new HashMap<>();
          results.put(pattern, fileMatches);
       }
 
       List<String> regions = fileMatches.get(file);
       if (regions == null) {
-         regions = new LinkedList<String>();
+         regions = new LinkedList<>();
          fileMatches.put(file, regions);
       }
       regions.add(region);
@@ -71,7 +71,7 @@ public class FindResults {
     * Returns a simple set of all files that had matches (or anti-matches)
     */
    public Set<File> getFileSet() {
-      Set<File> files = new LinkedHashSet<File>(1000);
+      Set<File> files = new LinkedHashSet<>(1000);
       for (Iterator<Entry<String, HashMap<File, List<String>>>> i = results.entrySet().iterator(); i.hasNext();) {
          Map.Entry<String, HashMap<File, List<String>>> entry = i.next();
          HashMap<File, List<String>> fileMatches = entry.getValue();
@@ -81,11 +81,11 @@ public class FindResults {
    }
 
    public HashMap<String, List<File>> getRegionToFileMapping() {
-      HashMap<String, List<File>> mapping = new HashMap<String, List<File>>(1000);
+      HashMap<String, List<File>> mapping = new HashMap<>(1000);
       for (FindResultsIterator i = iterator(); i.hasNext();) {
          List<File> files = mapping.get(i.currentRegion);
          if (files == null) {
-            files = new LinkedList<File>();
+            files = new LinkedList<>();
             mapping.put(i.currentRegion, files);
          }
          files.add(i.currentFile);

@@ -43,7 +43,7 @@ public class ImportTraceUnitsOperation extends AbstractOperation {
       if (traceHandlerIds == null) {
          traceTypeIds = new String[0];
       } else {
-         Set<String> traceSet = new HashSet<String>(Arrays.asList(traceHandlerIds));
+         Set<String> traceSet = new HashSet<>(Arrays.asList(traceHandlerIds));
          traceTypeIds = traceSet.toArray(new String[traceSet.size()]);
       }
    }

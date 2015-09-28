@@ -40,7 +40,7 @@ public final class DeletedBranchProvider implements BranchProvider {
       branchFilter.setNegatedBranchTypes(BranchType.BASELINE);
 
       List<Branch> branches = branchCache.getBranches(branchFilter);
-      Collection<Branch> branchesToReturn = new LinkedHashSet<Branch>();
+      Collection<Branch> branchesToReturn = new LinkedHashSet<>();
       branchesToReturn.addAll(branches);
       for (Branch branch : branches) {
          branch.getChildBranches(branchesToReturn, true, branchFilter);

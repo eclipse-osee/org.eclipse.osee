@@ -101,7 +101,7 @@ public class XmlTransformAsProcess {
    }
 
    private void launchServer(int port) throws Exception {
-      List<String> commands = new ArrayList<String>();
+      List<String> commands = new ArrayList<>();
       try {
          URL url = getClassLocation(XmlTransformServer.class);
          String path = new File(url.toURI()).getAbsolutePath();

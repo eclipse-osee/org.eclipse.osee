@@ -60,7 +60,7 @@ public class ClassServer extends Thread {
          hostName = new URL("http://" + address.getHostAddress() + ":" + server.getLocalPort() + "/");
    	  }
       this.setName("OSEE ClassServer");
-      this.resourceFinders = new ArrayList<ResourceFinder>();
+      this.resourceFinders = new ArrayList<>();
    }
 
    public void addResourceFinder(ResourceFinder finder) {

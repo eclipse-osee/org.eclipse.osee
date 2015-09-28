@@ -94,7 +94,7 @@ public class AnnotationResourceTest {
       DispoAnnotationData annotation = new DispoAnnotationData();
       annotation.setId(mockId);
       annotation.setLocationRefs("1-10");
-      List<DispoAnnotationData> resultSet = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> resultSet = new ArrayList<>();
       resultSet.add(annotation);
 
       when(dispositionApi.getDispoAnnotations(program, "itemId")).thenReturn(resultSet);

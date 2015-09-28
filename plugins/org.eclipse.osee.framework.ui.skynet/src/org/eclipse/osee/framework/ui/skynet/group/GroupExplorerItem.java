@@ -109,11 +109,11 @@ public class GroupExplorerItem implements IAdaptable {
    public List<GroupExplorerItem> getGroupItems() {
       // Light loading; load the first time getChildren is called
       if (groupItems == null) {
-         groupItems = new ArrayList<GroupExplorerItem>();
+         groupItems = new ArrayList<>();
          //         populateUpdateCategory();
       }
       //      populateUpdateCategory();
-      //      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
+      //      List<GroupExplorerItem> items = new ArrayList<>();
       //      if (groupItems != null) items.addAll(groupItems);
       //      return items;
 
@@ -125,7 +125,7 @@ public class GroupExplorerItem implements IAdaptable {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
+      List<GroupExplorerItem> items = new ArrayList<>();
       if (groupItems != null) {
          items.addAll(groupItems);
       }

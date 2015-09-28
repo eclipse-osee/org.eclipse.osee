@@ -70,7 +70,7 @@ import org.w3c.dom.Element;
  */
 public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateToken {
 
-   private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<IStatus, XWidget>(Status.OK_STATUS, null);
+   private static final Pair<IStatus, XWidget> OK_PAIR = new Pair<>(Status.OK_STATUS, null);
    protected SwtXWidgetRenderer dynamicXWidgetLayout;
    protected final IAtsStateDefinition stateDefinition;
    protected final IAtsWorkDefinition workDefinition;

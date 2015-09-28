@@ -27,10 +27,10 @@ public class MailStatus {
    private Date dateSent;
    private boolean verified;
 
-   private final Set<String> fromAddress = new HashSet<String>();
-   private final Set<String> invalidAddress = new HashSet<String>();
-   private final Set<String> sentAddress = new HashSet<String>();
-   private final Set<String> unsentAddress = new HashSet<String>();
+   private final Set<String> fromAddress = new HashSet<>();
+   private final Set<String> invalidAddress = new HashSet<>();
+   private final Set<String> sentAddress = new HashSet<>();
+   private final Set<String> unsentAddress = new HashSet<>();
 
    public void setUuid(String uuid) {
       this.uuid = uuid;

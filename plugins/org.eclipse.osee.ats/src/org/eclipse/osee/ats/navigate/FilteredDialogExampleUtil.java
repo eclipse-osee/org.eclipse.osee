@@ -62,7 +62,7 @@ public class FilteredDialogExampleUtil {
    }
 
    protected static List<MyTask> getInput() {
-      List<MyTask> tasks = new ArrayList<MyTask>();
+      List<MyTask> tasks = new ArrayList<>();
       MyTask parent1 = new MyTask("First One");
       tasks.add(parent1);
       MyTask child1 = new MyTask("Child this 1", parent1);
@@ -101,7 +101,7 @@ public class FilteredDialogExampleUtil {
 
       String name;
       MyTask parent;
-      List<MyTask> children = new ArrayList<MyTask>();
+      List<MyTask> children = new ArrayList<>();
 
       public MyTask(String name) {
          this.name = name;

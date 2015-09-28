@@ -64,7 +64,7 @@ public class BranchTest {
    //      OseeTypesUtil.checkAliases(cache, "JJJ", "a merge branch");
    //      OseeTypesUtil.checkAliases(cache, "KKK", "a merge branch");
    //
-   //      List<Branch> aliasedbranch = new ArrayList<Branch>(cache.getByAlias("a merge branch"));
+   //      List<Branch> aliasedbranch = new ArrayList<>(cache.getByAlias("a merge branch"));
    //      Assert.assertEquals(2, aliasedbranch.size());
    //
    //      Collections.sort(aliasedbranch);

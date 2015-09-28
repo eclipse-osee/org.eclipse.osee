@@ -144,7 +144,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
 
    @Override
    public Collection<IAtsTeamWorkflow> getTargetedForTeamWorkflows(IAtsVersion verArt) throws OseeCoreException {
-      List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<IAtsTeamWorkflow>();
+      List<IAtsTeamWorkflow> teamWorkflows = new LinkedList<>();
       for (IAtsTeamWorkflow teamWf : services.getRelationResolver().getRelated(verArt,
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, IAtsTeamWorkflow.class)) {
          teamWorkflows.add(teamWf);

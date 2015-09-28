@@ -137,7 +137,7 @@ public class OseeValidator {
 
    // TODO Implement dynamic attribute type validation chain definition
    //   public List<IValidator> createValidateChain(String xml) {
-   //      List<IValidator> validators = new ArrayList<IValidator>();
+   //      List<IValidator> validators = new ArrayList<>();
    //      return validators;
    //   }
 }

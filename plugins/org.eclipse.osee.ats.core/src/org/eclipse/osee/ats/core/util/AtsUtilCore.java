@@ -39,8 +39,8 @@ public class AtsUtilCore {
    private static final Object lock = new Object();
    private volatile static IOseeBranch atsBranch;
    private volatile static String atsConfigName;
-   private static Map<Long, String> uuidToGuidMap = new HashMap<Long, String>(50);
-   private static Map<String, Long> guidToUuidMap = new HashMap<String, Long>(50);
+   private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
+   private static Map<String, Long> guidToUuidMap = new HashMap<>(50);
 
    public static String getAtsConfigName() {
       getAtsBranch();
@@ -87,7 +87,7 @@ public class AtsUtilCore {
    }
 
    public static List<String> toGuids(Collection<? extends IAtsObject> atsObjects) {
-      List<String> guids = new ArrayList<String>(atsObjects.size());
+      List<String> guids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObj : atsObjects) {
          guids.add(AtsUtilCore.getGuid(atsObj));
       }

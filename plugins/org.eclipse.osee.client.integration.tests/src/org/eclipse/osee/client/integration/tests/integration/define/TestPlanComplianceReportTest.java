@@ -123,7 +123,7 @@ public final class TestPlanComplianceReportTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestPlanElement, SAW_Bld_1, "Sample_Test_Plan");
       testPlan.persist(getClass().getSimpleName());
 
-      dummyArtifactList = new ArrayList<Artifact>();
+      dummyArtifactList = new ArrayList<>();
       dummyArtifactList.add(testPlan);
 
       for (int i = 0; i < amountOfTestProcedures; i++) {

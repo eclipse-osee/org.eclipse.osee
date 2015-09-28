@@ -70,7 +70,7 @@ public class AtsExportBlam extends AbstractBlam {
       sb.append(ARTIFACTS);
       sb.append("\" />");
 
-      List<ExportOption> validExportOptions = new ArrayList<ExportOption>();
+      List<ExportOption> validExportOptions = new ArrayList<>();
       validExportOptions.addAll(Arrays.asList(ExportOption.values()));
 
       for (ExportOption exportOption : validExportOptions) {
@@ -128,7 +128,7 @@ public class AtsExportBlam extends AbstractBlam {
    }
 
    public Collection<ExportOption> getExportOptions(VariableMap variableMap) {
-      List<ExportOption> options = new ArrayList<AtsExportAction.ExportOption>();
+      List<ExportOption> options = new ArrayList<>();
       for (ExportOption exportOption : ExportOption.values()) {
          boolean checked = variableMap.getBoolean(exportOption.name());
          if (checked) {

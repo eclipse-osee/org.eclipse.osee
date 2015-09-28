@@ -50,8 +50,8 @@ public class AddNoteAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      ArrayList<String> artifactNames = new ArrayList<String>();
-      Map<String, String> selectedToStateName = new HashMap<String, String>();
+      ArrayList<String> artifactNames = new ArrayList<>();
+      Map<String, String> selectedToStateName = new HashMap<>();
       artifactNames.add("Whole \"" + sma.getArtifactTypeName() + "\"");
       for (IAtsStateDefinition stateDefinition : AtsClientService.get().getWorkDefinitionAdmin().getStatesOrderedByOrdinal(
          sma.getWorkDefinition())) {

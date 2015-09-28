@@ -21,7 +21,7 @@ public enum TestStatusEnum {
    COMPLETED_WITH_ISSUES_CODE("Completed -- With Issues"),
    COMPLETED_WITH_ISSUES_RESOLVED_CODE("Completed -- With Issues Resolved"),
    PARTIALLY_COMPLETED_CODE("Partially Complete");
-   private final static Map<String, TestStatusEnum> testStatusToCodeMap = new HashMap<String, TestStatusEnum>();
+   private final static Map<String, TestStatusEnum> testStatusToCodeMap = new HashMap<>();
 
    public String testStatus;
 

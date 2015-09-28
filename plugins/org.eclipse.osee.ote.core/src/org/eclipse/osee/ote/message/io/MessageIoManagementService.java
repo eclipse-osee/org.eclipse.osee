@@ -20,7 +20,7 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class MessageIoManagementService implements IMessageIoManagementService {
 
-   private final HashSet<IMessageIoDriver> drivers = new HashSet<IMessageIoDriver>();
+   private final HashSet<IMessageIoDriver> drivers = new HashSet<>();
 
    private final Lock lock = new ReentrantLock();
    private boolean ioStarted = false;
@@ -47,7 +47,7 @@ public class MessageIoManagementService implements IMessageIoManagementService {
       lock.lock();
       ioStarted = true;
 
-      Set<IMessageIoDriver> copiedDrivers = new HashSet<IMessageIoDriver>(drivers);
+      Set<IMessageIoDriver> copiedDrivers = new HashSet<>(drivers);
       lock.unlock();
       for (IMessageIoDriver driver : copiedDrivers) {
          driver.start();
@@ -59,7 +59,7 @@ public class MessageIoManagementService implements IMessageIoManagementService {
    public void stopIO() {
       lock.lock();
       ioStarted = false;
-      Set<IMessageIoDriver> copiedDrivers = new HashSet<IMessageIoDriver>(drivers);
+      Set<IMessageIoDriver> copiedDrivers = new HashSet<>(drivers);
       lock.unlock();
       for (IMessageIoDriver driver : copiedDrivers) {
          driver.stop();

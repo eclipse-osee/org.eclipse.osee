@@ -60,7 +60,7 @@ public class PurgeTransactionCommand implements ConsoleCommand {
          @Override
          public Object call() throws Exception {
             String[] stringIds = params.getArray("txIds");
-            final List<ITransaction> transactions = new ArrayList<ITransaction>();
+            final List<ITransaction> transactions = new ArrayList<>();
             for (String arg : stringIds) {
                ITransaction tx = TokenFactory.createTransaction(Integer.parseInt(arg));
                transactions.add(tx);

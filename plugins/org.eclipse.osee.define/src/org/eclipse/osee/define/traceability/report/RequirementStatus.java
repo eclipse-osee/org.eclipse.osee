@@ -29,8 +29,8 @@ public class RequirementStatus implements Comparable<RequirementStatus> {
       this.legacyId = legacyId;
       this.swEnhancement = swEnhancement;
       this.partitionStatuses = new StringBuilder();
-      this.percents = new LinkedList<Integer>();
-      this.testPocs = new HashSet<IAtsUser>();
+      this.percents = new LinkedList<>();
+      this.testPocs = new HashSet<>();
    }
 
    public void addPartitionStatus(int percentComplete, String partition, String resolution) {

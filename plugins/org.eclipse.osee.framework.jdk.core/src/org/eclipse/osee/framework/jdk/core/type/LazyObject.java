@@ -18,7 +18,7 @@ import java.util.concurrent.atomic.AtomicReference;
  */
 public abstract class LazyObject<T> {
 
-   private final AtomicReference<T> instanceReference = new AtomicReference<T>();
+   private final AtomicReference<T> instanceReference = new AtomicReference<>();
 
    private final Object lock = new Object();
    private FutureTask<T> lastLoader;

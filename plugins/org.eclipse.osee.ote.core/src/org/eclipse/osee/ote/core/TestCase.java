@@ -103,7 +103,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
    private final TestDescriptionRecord testDescription;
    @JsonProperty
    public int number;
-   protected List<RequirementRecord> traceability = new ArrayList<RequirementRecord>();
+   protected List<RequirementRecord> traceability = new ArrayList<>();
 
    /**
     * TestCase Constructor.
@@ -129,7 +129,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       if (addToRunList) {
          this.number = testScript.addTestCase(this);
       }
-      this.testScript = new WeakReference<TestScript>(testScript);
+      this.testScript = new WeakReference<>(testScript);
       this.environment = testScript.getTestEnvironment();
       GCHelper.getGCHelper().addRefWatch(this);
    }
@@ -140,7 +140,7 @@ public abstract class TestCase implements ITestEnvironmentAccessor, Xmlizable, X
       // TODO we have two different traceability tags here.... we need to combine these or get rid
       // of them all together since define and the artifact framework specifies traceability
       // this.tracability = new ArrayList();
-      this.traceability = new ArrayList<RequirementRecord>();
+      this.traceability = new ArrayList<>();
 
       this.standAlone = false;
       ;

@@ -57,15 +57,15 @@ import org.w3c.dom.Element;
 public class SwtXWidgetRenderer {
    public static final String XWIDGET = "XWidget";
 
-   private final Set<XWidgetRendererItem> datas = new LinkedHashSet<XWidgetRendererItem>();
-   private final Map<String, XWidgetRendererItem> nameToLayoutData = new HashMap<String, XWidgetRendererItem>();
+   private final Set<XWidgetRendererItem> datas = new LinkedHashSet<>();
+   private final Map<String, XWidgetRendererItem> nameToLayoutData = new HashMap<>();
 
-   private final Collection<ArrayList<String>> orRequired = new ArrayList<ArrayList<String>>();
-   private final Collection<ArrayList<String>> xorRequired = new ArrayList<ArrayList<String>>();
+   private final Collection<ArrayList<String>> orRequired = new ArrayList<>();
+   private final Collection<ArrayList<String>> xorRequired = new ArrayList<>();
 
    private final IDynamicWidgetLayoutListener dynamicWidgetLayoutListener;
    private final IXWidgetOptionResolver optionResolver;
-   private final Collection<XWidget> xWidgets = new ArrayList<XWidget>();
+   private final Collection<XWidget> xWidgets = new ArrayList<>();
 
    public SwtXWidgetRenderer() {
       this(null, new DefaultXWidgetOptionResolver());
@@ -435,7 +435,7 @@ public class SwtXWidgetRenderer {
    }
 
    protected void processOrRequired(String instr) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (String attr : instr.split(";")) {
          if (!attr.contains("[ \\s]*")) {
             names.add(attr);
@@ -445,7 +445,7 @@ public class SwtXWidgetRenderer {
    }
 
    protected void processXOrRequired(String instr) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (String attr : instr.split(";")) {
          if (!attr.contains("[ \\s]*")) {
             names.add(attr);

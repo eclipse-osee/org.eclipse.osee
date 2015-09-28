@@ -87,7 +87,7 @@ public class ChangeItemTest {
 
    @Parameters
    public static List<Object[]> getData() {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
 
       ChangeVersion base = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
       ChangeVersion first = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);

@@ -107,7 +107,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
-      Set<IAtsUser> results = new HashSet<IAtsUser>();
+      Set<IAtsUser> results = new HashSet<>();
       try {
          for (Object userArt : atsServices.getRelationResolver().getRelated(artifact, relation)) {
             IAtsUser lead =

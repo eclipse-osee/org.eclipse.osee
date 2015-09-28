@@ -23,7 +23,7 @@ public final class ClusterServiceUtils {
    }
 
    public static Map<String, Object> toMap(String componentName, String contextName) {
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Object> data = new HashMap<>();
       data.put("component.name", componentName);
       data.put("context.name", contextName);
       return data;

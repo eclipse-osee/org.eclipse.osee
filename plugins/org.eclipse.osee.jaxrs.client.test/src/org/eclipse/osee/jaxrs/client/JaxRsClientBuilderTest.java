@@ -342,7 +342,7 @@ public class JaxRsClientBuilderTest {
 
    @Test
    public void testDefaultProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       builder.properties(properties);
 
       JaxRsClient actual = builder.build();
@@ -395,7 +395,7 @@ public class JaxRsClientBuilderTest {
 
    @Test
    public void testPropertiesDefaultsWithNegatives() {
-      Map<String, Object> props = new HashMap<String, Object>();
+      Map<String, Object> props = new HashMap<>();
       props.put(JAXRS_CLIENT_CONNECTION_TIMEOUT, NEGATIVE_TIMEOUT);
       props.put(JAXRS_CLIENT_RECEIVE_TIMEOUT, NEGATIVE_TIMEOUT);
       props.put(JAXRS_CLIENT_MAX_RETRANSMITS, NEGATIVE_INT);
@@ -439,7 +439,7 @@ public class JaxRsClientBuilderTest {
 
    @Test
    public void testProperties() {
-      Map<String, Object> props = new HashMap<String, Object>();
+      Map<String, Object> props = new HashMap<>();
       props.put(JAXRS_CLIENT_ASYNC_EXECUTE_TIMEOUT, ASYNC_EXECUTE_TIMEOUT);
       props.put(JAXRS_CLIENT_ASYNC_EXECUTE_TIMEOUT_REJECTION, ASYNC_EXECUTE_TIMEOUT_REJECTION);
       props.put(JAXRS_CLIENT_CHUNK_SIZE, CHUNK_SIZE);

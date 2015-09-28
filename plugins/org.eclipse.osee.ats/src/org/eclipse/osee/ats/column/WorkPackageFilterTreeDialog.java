@@ -143,7 +143,7 @@ public class WorkPackageFilterTreeDialog extends FilteredTreeDialog {
    }
 
    private Collection<? extends IAtsWorkPackage> filterInput(Collection<? extends IAtsWorkPackage> input2) throws OseeCoreException {
-      List<IAtsWorkPackage> filtered = new ArrayList<IAtsWorkPackage>();
+      List<IAtsWorkPackage> filtered = new ArrayList<>();
       boolean all = false;
       if (showAll != null && showAll.isChecked()) {
          all = true;

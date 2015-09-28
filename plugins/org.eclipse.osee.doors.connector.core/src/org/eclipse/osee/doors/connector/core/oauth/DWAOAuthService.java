@@ -135,7 +135,7 @@ public class DWAOAuthService {
       // generate signature
       // create the OAuth Authorization header
       // return the method
-      Map<String, String> oauth_parameters = new HashMap<String, String>();
+      Map<String, String> oauth_parameters = new HashMap<>();
       if (isTokenRequired) {
          oauth_parameters.put(OAuthConstants.TOKEN, token.getToken());
       }

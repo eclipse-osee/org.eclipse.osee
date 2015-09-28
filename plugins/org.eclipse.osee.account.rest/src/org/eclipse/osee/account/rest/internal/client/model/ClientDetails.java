@@ -25,10 +25,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class ClientDetails {
 
-   public List<ClientSession> sessions = new LinkedList<ClientSession>();
-   public Map<String, Integer> releaseCount = new HashMap<String, Integer>();
-   public Map<String, Collection<String>> releaseToUserId = new HashMap<String, Collection<String>>(10);
-   public Set<String> networkReleaseUserIds = new HashSet<String>();
+   public List<ClientSession> sessions = new LinkedList<>();
+   public Map<String, Integer> releaseCount = new HashMap<>();
+   public Map<String, Collection<String>> releaseToUserId = new HashMap<>(10);
+   public Set<String> networkReleaseUserIds = new HashSet<>();
 
    public ClientDetails() {
    }

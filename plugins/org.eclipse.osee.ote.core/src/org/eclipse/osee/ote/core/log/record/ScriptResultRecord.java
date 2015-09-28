@@ -46,8 +46,8 @@ public class ScriptResultRecord extends TestRecord {
      */
     public ScriptResultRecord(TestScript script) {
         super(script.getTestEnvironment(), TestLevel.TEST_POINT, script.getClass().getName(), false);
-        childElements = new ArrayList<Xmlizable>(1000);
-        childStreamElements = new ArrayList<XmlizableStream>(100);
+        childElements = new ArrayList<>(1000);
+        childStreamElements = new ArrayList<>(100);
     }
 
     public void addChildElement(Xmlizable xml) {

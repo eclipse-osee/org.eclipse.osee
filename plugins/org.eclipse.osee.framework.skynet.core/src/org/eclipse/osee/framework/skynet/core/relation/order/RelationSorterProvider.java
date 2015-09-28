@@ -34,7 +34,7 @@ public class RelationSorterProvider {
    private final Map<String, IRelationSorter> orderMap;
 
    public RelationSorterProvider() {
-      orderMap = new ConcurrentHashMap<String, IRelationSorter>();
+      orderMap = new ConcurrentHashMap<>();
 
       registerOrderType(new LexicographicalRelationSorter(SortMode.ASCENDING));
       registerOrderType(new LexicographicalRelationSorter(SortMode.DESCENDING));
@@ -66,7 +66,7 @@ public class RelationSorterProvider {
 
    public List<IRelationSorterId> getAllRelationOrderIds() {
       Collection<IRelationSorter> relationOrder = orderMap.values();
-      List<IRelationSorterId> ids = new ArrayList<IRelationSorterId>();
+      List<IRelationSorterId> ids = new ArrayList<>();
       for (IRelationSorter order : relationOrder) {
          ids.add(order.getSorterId());
       }

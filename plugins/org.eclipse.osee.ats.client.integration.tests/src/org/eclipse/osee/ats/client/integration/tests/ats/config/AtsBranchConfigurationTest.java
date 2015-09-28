@@ -75,7 +75,7 @@ public class AtsBranchConfigurationTest {
    private final boolean DEBUG = false;
 
    private static Collection<String> appendToName(IOseeBranch branch, String... postFixes) {
-      Collection<String> data = new ArrayList<String>();
+      Collection<String> data = new ArrayList<>();
       for (String postFix : postFixes) {
          data.add(String.format("%s - %s", branch.getName(), postFix));
       }

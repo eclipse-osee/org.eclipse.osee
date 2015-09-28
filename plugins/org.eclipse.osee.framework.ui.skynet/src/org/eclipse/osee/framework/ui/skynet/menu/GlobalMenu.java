@@ -68,7 +68,7 @@ public class GlobalMenu {
 
       public static final Collection<GlobalMenuItem> ALL = Arrays.asList(GlobalMenuItem.values());
    };
-   private final ArrayList<GlobalMenuListener> listeners = new ArrayList<GlobalMenuListener>();
+   private final ArrayList<GlobalMenuListener> listeners = new ArrayList<>();
 
    public GlobalMenu(Menu parentMenu, IGlobalMenuHelper globalMenuHelper) {
       this.globalMenuHelper = globalMenuHelper;
@@ -215,7 +215,7 @@ public class GlobalMenu {
 
                   try {
                      boolean recurseChildren = dialog.getToggleState();
-                     Collection<Artifact> toPurge = new LinkedHashSet<Artifact>();
+                     Collection<Artifact> toPurge = new LinkedHashSet<>();
                      for (Artifact artifactToPurge : artifactsToBePurged) {
                         if (!artifactToPurge.isDeleted()) {
                            toPurge.add(artifactToPurge);

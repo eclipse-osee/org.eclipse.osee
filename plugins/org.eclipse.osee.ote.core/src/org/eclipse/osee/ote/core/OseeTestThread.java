@@ -30,7 +30,7 @@ public abstract class OseeTestThread {
    private static final Logger logger = Logger.getLogger("osee.test.core.OseeTestThread");
    private final Thread thread;
    private final WeakReference<TestEnvironment> env;
-   private static final HashSet<OseeTestThread> threadList = new HashSet<OseeTestThread>(32);
+   private static final HashSet<OseeTestThread> threadList = new HashSet<>(32);
    private volatile Throwable causeOfDeath = null;
    private volatile Date timeOfDeath = null;
 
@@ -57,7 +57,7 @@ public abstract class OseeTestThread {
     */
    public OseeTestThread(String name, boolean isDaemon, ThreadGroup group, TestEnvironment env) {
       GCHelper.getGCHelper().addRefWatch(this);
-      this.env = new WeakReference<TestEnvironment>(env);
+      this.env = new WeakReference<>(env);
       thread = new Thread(group, name) {
 
          @Override

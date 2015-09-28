@@ -80,7 +80,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
       operation.setFixOperationEnabled(false);
       Operations.executeWorkAndCheckStatus(operation);
 
-      List<String> summaryLinks = new ArrayList<String>();
+      List<String> summaryLinks = new ArrayList<>();
       int count = operation.getItemsToFixCount();
       if (count > 0) {
          writeReport(operation, reportsDirectory, summaryLinks);
@@ -143,7 +143,7 @@ public class DatabaseIntegrityCheckApplication implements IApplication {
 
       public SummaryTab(String title) {
          this.title = title;
-         this.tabs = new ArrayList<IResultsEditorTab>();
+         this.tabs = new ArrayList<>();
 
          mainTab = new ResultsEditorTableTab(title);
          mainTab.addColumn(new XViewerColumn("1", "Operation", 220, SWT.LEFT, true, SortDataType.String, false, ""));

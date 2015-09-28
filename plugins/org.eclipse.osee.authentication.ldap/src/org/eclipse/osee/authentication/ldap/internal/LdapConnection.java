@@ -134,7 +134,7 @@ public class LdapConnection implements Closeable {
       LdapSearchScope accountSearchScope =
          LdapUtil.getValue(filter.getAccountSearchScope(), defaultFilter.getAccountSearchScope());
 
-      Set<String> fieldsToGet = new HashSet<String>();
+      Set<String> fieldsToGet = new HashSet<>();
       VariablePattern accountSearchPattern =
          patternField(fieldsToGet, filter.getAccountPattern(), defaultFilter.getAccountPattern());
       VariablePattern accountFullName =
@@ -164,7 +164,7 @@ public class LdapConnection implements Closeable {
       .fields(fieldsToGet)//
       .scope(accountSearchScope);
 
-      HashMap<String, String> params = new HashMap<String, String>();
+      HashMap<String, String> params = new HashMap<>();
       params.put(usernameVariableName, username);
 
       ResultSet<LdapEntry> results = query.search(connection, params);
@@ -186,7 +186,7 @@ public class LdapConnection implements Closeable {
       LdapSearchScope groupSearchScope =
          LdapUtil.getValue(filter.getGroupSearchScope(), defaultFilter.getGroupSearchScope());
 
-      Set<String> fieldsToGet = new HashSet<String>();
+      Set<String> fieldsToGet = new HashSet<>();
       VariablePattern groupNamePattern = patternField(fieldsToGet, filter.getGroupName(), defaultFilter.getGroupName());
       VariablePattern groupByGroupMemberPattern =
          patternField(fieldsToGet, filter.getGroupByGroupMemberPattern(), defaultFilter.getGroupByGroupMemberPattern());
@@ -206,7 +206,7 @@ public class LdapConnection implements Closeable {
          .fields(fieldsToGet)//
          .scope(groupSearchScope);
 
-         HashMap<String, String> params = new HashMap<String, String>();
+         HashMap<String, String> params = new HashMap<>();
          for (String key : query.getParameters()) {
             String value = account.getField(key);
             if (Strings.isValid(value)) {
@@ -217,8 +217,8 @@ public class LdapConnection implements Closeable {
          results = query.search(connection, params);
       }
 
-      Set<LdapGroup> groups = new HashSet<LdapGroup>();
-      Set<String> groupDns = new HashSet<String>();
+      Set<LdapGroup> groups = new HashSet<>();
+      Set<String> groupDns = new HashSet<>();
       for (LdapEntry entry : results) {
          findSubGroups(groups, groupDns, groupNamePattern, memberOfField, entry);
       }

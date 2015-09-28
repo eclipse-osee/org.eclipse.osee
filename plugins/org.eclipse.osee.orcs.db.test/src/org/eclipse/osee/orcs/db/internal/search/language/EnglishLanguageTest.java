@@ -42,7 +42,7 @@ public class EnglishLanguageTest {
    }
 
    private Map<String, String> getSingularToPluralData() {
-      Map<String, String> testMap = new LinkedHashMap<String, String>();
+      Map<String, String> testMap = new LinkedHashMap<>();
       testMap.put("tries", "try");
       testMap.put("volcanoes", "volcano");
       testMap.put("geese", "goose");

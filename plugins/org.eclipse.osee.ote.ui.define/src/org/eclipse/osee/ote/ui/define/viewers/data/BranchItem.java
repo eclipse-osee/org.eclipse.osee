@@ -54,7 +54,7 @@ public class BranchItem extends DataItem implements IXViewerItem {
    public DataItem[] getChildren() {
       DataItem[] toReturn = super.getChildren();
       if (isGroupModeEnabled() != true) {
-         List<DataItem> tempList = new ArrayList<DataItem>();
+         List<DataItem> tempList = new ArrayList<>();
          for (DataItem item : toReturn) {
             if (item.hasChildren()) {
                for (DataItem itemX : item.getChildren()) {

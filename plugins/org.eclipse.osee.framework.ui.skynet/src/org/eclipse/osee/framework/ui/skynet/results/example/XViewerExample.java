@@ -54,8 +54,8 @@ public final class XViewerExample extends XNavigateItemAction {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
-            List<IResultsXViewerRow> bigRows = new ArrayList<IResultsXViewerRow>();
+            List<IResultsXViewerRow> rows = new ArrayList<>();
+            List<IResultsXViewerRow> bigRows = new ArrayList<>();
             for (int x = 0; x < 50000; x++) {
                if (x < 15000) {
                   rows.add(new ResultsXViewerRow(new String[] {"Date " + x, "hello", "world"}));
@@ -67,7 +67,7 @@ public final class XViewerExample extends XNavigateItemAction {
                   SortDataType.String, false, ""), new XViewerColumn(Columns.String1.name(), Columns.String1.name(),
                   80, SWT.LEFT, true, SortDataType.Integer, false, ""), new XViewerColumn(Columns.String2.name(),
                   Columns.String2.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorTableTab("15,000 entries", columns, rows));
             tabs.add(new ResultsEditorTableTab("50,000 entries", columns, bigRows));
             return tabs;

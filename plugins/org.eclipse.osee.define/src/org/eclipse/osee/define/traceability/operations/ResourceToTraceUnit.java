@@ -44,7 +44,7 @@ public class ResourceToTraceUnit {
 
    public ResourceToTraceUnit(final Iterable<URI> sources, final boolean isRecursionAllowed, final boolean isFileWithMultiplePaths) {
       super();
-      this.traceUnitHandlers = new HashCollection<ITraceUnitResourceLocator, ITraceParser>();
+      this.traceUnitHandlers = new HashCollection<>();
       this.traceProcessors = Collections.synchronizedSet(new HashSet<ITraceUnitProcessor>());
       this.resourceFinder = new UriResourceContentFinder(sources, isRecursionAllowed, isFileWithMultiplePaths);
    }
@@ -80,7 +80,7 @@ public class ResourceToTraceUnit {
    }
 
    public void execute(IProgressMonitor monitor) throws OseeCoreException {
-      List<TraceUnitCollector> collectors = new ArrayList<TraceUnitCollector>();
+      List<TraceUnitCollector> collectors = new ArrayList<>();
       try {
          for (ITraceUnitResourceLocator locator : traceUnitHandlers.keySet()) {
             Collection<ITraceParser> parsers = traceUnitHandlers.getValues(locator);
@@ -181,7 +181,7 @@ public class ResourceToTraceUnit {
       public TraceUnitCollector(ITraceUnitResourceLocator traceUnitLocator, ITraceParser traceParser) {
          this.traceParser = traceParser;
          this.traceUnitLocator = traceUnitLocator;
-         this.traceUnitToTraceMarks = new HashMap<IArtifactType, Map<String, TraceUnit>>();
+         this.traceUnitToTraceMarks = new HashMap<>();
       }
 
       @Override
@@ -192,7 +192,7 @@ public class ResourceToTraceUnit {
             if (traceParser.addIfEmpty() || Conditions.hasValues(traceMarks)) {
                Map<String, TraceUnit> traceUnits = traceUnitToTraceMarks.get(traceUnitType);
                if (traceUnits == null) {
-                  traceUnits = new HashMap<String, TraceUnit>();
+                  traceUnits = new HashMap<>();
                   traceUnitToTraceMarks.put(traceUnitType, traceUnits);
                }
                TraceUnit unit = traceUnits.get(name);

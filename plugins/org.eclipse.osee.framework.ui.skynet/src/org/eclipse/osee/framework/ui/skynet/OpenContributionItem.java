@@ -70,7 +70,7 @@ public class OpenContributionItem extends ContributionItem {
 
    private static final String DEFAULT_OPEN_CMD_ID = "org.eclipse.osee.framework.ui.skynet.open.command";
 
-   private final Collection<IContributionItem> openWithItems = new ArrayList<IContributionItem>();
+   private final Collection<IContributionItem> openWithItems = new ArrayList<>();
    private final ICommandService commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
 
    private IContributionItem defaultOpenItem;

@@ -24,7 +24,7 @@ public abstract class BaseOutfileParser {
    private final Set<IDataListener> listeners;
 
    public BaseOutfileParser() {
-      this.listeners = new HashSet<IDataListener>();
+      this.listeners = new HashSet<>();
    }
 
    public void registerListener(IDataListener listener) {

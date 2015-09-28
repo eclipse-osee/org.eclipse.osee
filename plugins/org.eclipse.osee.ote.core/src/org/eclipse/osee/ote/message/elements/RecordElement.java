@@ -38,7 +38,7 @@ public abstract class RecordElement extends Element {
     */
    public RecordElement(Message<?, ?, ?> message, String elementName, int index, MessageData messageData, int firstRecordBitOffset, int recordBitSize) {
       super(message, elementName, messageData, firstRecordBitOffset + index * recordBitSize, recordBitSize);
-      elementMap = new LinkedHashMap<String, Element>();
+      elementMap = new LinkedHashMap<>();
       BIT_OFFSET = this.bitOffset = firstRecordBitOffset + index * recordBitSize;
       this.recordBitSize = recordBitSize;
       this.firstRecordBitOffset = firstRecordBitOffset;

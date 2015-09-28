@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class PrivilegedUserManager {
 
    public static Set<IAtsUser> getPrivilegedUsers(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      Set<IAtsUser> users = new HashSet<>();
       if (workflow.getParentTeamWorkflow() != null) {
          users.addAll(getPrivilegedUsers(workflow.getParentTeamWorkflow()));
       } else {
@@ -51,7 +51,7 @@ public class PrivilegedUserManager {
    }
 
    public static Set<IAtsUser> getPrivilegedUsers(TeamWorkFlowArtifact teamArt) {
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      Set<IAtsUser> users = new HashSet<>();
       try {
          addPrivilegedUsersUpTeamDefinitionTree(teamArt.getTeamDefinition(), users);
 

@@ -61,7 +61,7 @@ public final class ArtifactFactoryManager {
 
    public static synchronized Collection<IArtifactType> getEternalArtifactTypes() {
       if (eternalArtifactTypes == null) {
-         eternalArtifactTypes = new HashSet<IArtifactType>();
+         eternalArtifactTypes = new HashSet<>();
          for (ArtifactFactory factory : getFactories()) {
             eternalArtifactTypes.addAll(factory.getEternalArtifactTypes());
          }

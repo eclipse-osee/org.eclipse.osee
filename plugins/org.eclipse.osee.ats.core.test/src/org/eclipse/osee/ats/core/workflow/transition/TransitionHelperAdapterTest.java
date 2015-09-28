@@ -80,7 +80,7 @@ public class TransitionHelperAdapterTest {
    @Test
    public void testIsSystemUserAssignee() {
       when(workItem.getStateMgr()).thenReturn(stateMgr);
-      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+      List<IAtsUser> assignees = new ArrayList<>();
       when(stateMgr.getAssignees()).thenReturn(assignees);
 
       Assert.assertFalse(helper.isSystemUserAssingee(workItem));

@@ -138,8 +138,8 @@ public class OteBatchResource {
    
 
    private List<TestResultSummary> getTestResults(File[] resultFiles, String[] runListArray) {
-      List<TestResultSummary> results = new ArrayList<TestResultSummary>();
-      Map<String, TestResultSummary> resultsTemp = new HashMap<String, TestResultSummary>();
+      List<TestResultSummary> results = new ArrayList<>();
+      Map<String, TestResultSummary> resultsTemp = new HashMap<>();
       for(File file:resultFiles){
          String content = getFileContents(file);
          if(content.length() > 0){

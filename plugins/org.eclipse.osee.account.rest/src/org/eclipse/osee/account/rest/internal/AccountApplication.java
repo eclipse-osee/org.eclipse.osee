@@ -22,7 +22,7 @@ import org.eclipse.osee.account.admin.SubscriptionAdmin;
  */
 @ApplicationPath("/")
 public class AccountApplication extends Application {
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
 
    private AccountAdmin accountAdmin;
    private SubscriptionAdmin subscriptionAdmin;

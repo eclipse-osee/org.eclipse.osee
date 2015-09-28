@@ -80,7 +80,7 @@ public class MailMessageTest {
    @org.junit.Test
    public void testMailMsgAddAttachments() {
       MailMessage msg = new MailMessage();
-      LinkedList<DataSource> dslist = new LinkedList<DataSource>();
+      LinkedList<DataSource> dslist = new LinkedList<>();
 
       for (String item : llist) {
          DataSource ds = MailUtils.createFromString(item, item);
@@ -93,7 +93,7 @@ public class MailMessageTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {
          "One new string value.",

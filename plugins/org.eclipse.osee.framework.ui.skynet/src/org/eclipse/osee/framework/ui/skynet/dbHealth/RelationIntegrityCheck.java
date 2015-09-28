@@ -136,8 +136,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private boolean verify;
 
    //Containers for different cases
-   private final Collection<LocalRelationLink> unExpectedCases = new ArrayList<LocalRelationLink>();
-   private final Collection<LocalRelationLink> newRelationOnDeletedArtifact = new ArrayList<LocalRelationLink>();
+   private final Collection<LocalRelationLink> unExpectedCases = new ArrayList<>();
+   private final Collection<LocalRelationLink> newRelationOnDeletedArtifact = new ArrayList<>();
 
    private List<Object[]> insertArtifactDeleted;
    private List<Object[]> updatePreviousAddressing;
@@ -177,8 +177,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    private void loadBrokenRelations() throws OseeCoreException {
       if (isLoadingBrokenRelationsNecessary()) {
-         deleteMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-         updateMap = new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+         deleteMap = new DoubleKeyHashMap<>();
+         updateMap = new DoubleKeyHashMap<>();
 
          loadData("Loading Relations with nonexistent artifacts on the A side", NO_ADDRESSING_ARTIFACTS_A, true);
          loadData("Loading Relations with nonexistent artifacts on the B side", NO_ADDRESSING_ARTIFACTS_B, true);
@@ -192,10 +192,10 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    private void classifyResults() {
 
-      insertArtifactDeleted = new LinkedList<Object[]>();
-      updatePreviousAddressing = new LinkedList<Object[]>();
-      updateCurrentAddressing = new LinkedList<Object[]>();
-      commitOfNewRelationOnDeletedArtifactCases = new ArrayList<Object[]>();
+      insertArtifactDeleted = new LinkedList<>();
+      updatePreviousAddressing = new LinkedList<>();
+      updateCurrentAddressing = new LinkedList<>();
+      commitOfNewRelationOnDeletedArtifactCases = new ArrayList<>();
 
       for (LocalRelationLink relLink : updateMap.allValues()) {
          if (relLink.relTransId > relLink.transIdForArtifactDeletion) {
@@ -239,7 +239,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    }
 
    private void deleteInvalidRelationAddressing() throws OseeCoreException {
-      List<Object[]> rowsToDelete = new LinkedList<Object[]>();
+      List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : deleteMap.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
       }

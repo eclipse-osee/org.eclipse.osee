@@ -27,7 +27,7 @@ public class WindowLocal<T> {
    private final WindowKey windowKey;
 
    public WindowLocal() {
-      this.valueMap = new HashMap<Object, T>();
+      this.valueMap = new HashMap<>();
       windowKey = new WindowKey();
    }
 

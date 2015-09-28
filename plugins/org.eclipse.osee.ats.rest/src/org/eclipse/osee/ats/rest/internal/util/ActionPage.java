@@ -307,7 +307,7 @@ public class ActionPage {
 
    private List<String> getIgnoreWidgetNames() {
       if (ignoredWidgets == null) {
-         ignoredWidgets = new ArrayList<String>();
+         ignoredWidgets = new ArrayList<>();
          String configValue = atsServer.getConfigValue("IgnoredWidgetNames");
          if (Strings.isValid(configValue)) {
             for (String widgetName : configValue.split(";")) {

@@ -72,7 +72,7 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
-   private static final TxMonitorImpl<Branch> txMonitor = new TxMonitorImpl<Branch>(new TxMonitorCache<Branch>());
+   private static final TxMonitorImpl<Branch> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
 
    public static SkynetTransaction createTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
       Branch actualBranch = BranchManager.getBranch(branch);
@@ -82,7 +82,7 @@ public final class TransactionManager {
    }
 
    public static List<TransactionRecord> getTransaction(String comment) throws OseeCoreException {
-      ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
+      ArrayList<TransactionRecord> transactions = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_TRANSACTION_COMMENTS, comment);
@@ -112,7 +112,7 @@ public final class TransactionManager {
    }
 
    public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
-      ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
+      ArrayList<TransactionRecord> transactions = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
 
       try {
@@ -132,7 +132,7 @@ public final class TransactionManager {
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
-         transactionIds = new ArrayList<TransactionRecord>(5);
+         transactionIds = new ArrayList<>(5);
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
@@ -172,9 +172,8 @@ public final class TransactionManager {
     */
    public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
       long branchUuid = branch.getUuid();
-      int transactionNumber =
-         ConnectionHandler.runPreparedQueryFetchInt(-1, ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX),
-            branchUuid);
+      int transactionNumber = ConnectionHandler.runPreparedQueryFetchInt(-1,
+         ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchUuid);
       if (transactionNumber == -1) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchUuid);
       }
@@ -199,9 +198,8 @@ public final class TransactionManager {
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
-      TransactionRecord transactionId =
-         factory.createOrUpdate(getTransactionCache(), transactionNumber, branch.getUuid(), comment, transactionTime,
-            authorArtId, 0, txType, getBranchCache());
+      TransactionRecord transactionId = factory.createOrUpdate(getTransactionCache(), transactionNumber,
+         branch.getUuid(), comment, transactionTime, authorArtId, 0, txType, getBranchCache());
       return transactionId;
    }
 
@@ -270,10 +268,9 @@ public final class TransactionManager {
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             BranchCache branchCache = getBranchCache();
-            transactionRecord =
-               factory.createOrUpdate(txCache, txId, chStmt.getLong("branch_id"), chStmt.getString("osee_comment"),
-                  chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType,
-                  branchCache);
+            transactionRecord = factory.createOrUpdate(txCache, txId, chStmt.getLong("branch_id"),
+               chStmt.getString("osee_comment"), chStmt.getTimestamp("time"), chStmt.getInt("author"),
+               chStmt.getInt("commit_art_id"), txType, branchCache);
 
          } finally {
             if (useLocalConnection) {

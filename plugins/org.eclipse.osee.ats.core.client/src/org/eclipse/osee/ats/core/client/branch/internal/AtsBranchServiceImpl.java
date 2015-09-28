@@ -106,7 +106,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public Collection<ITransaction> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      List<ITransaction> transactions = new ArrayList<ITransaction>();
+      List<ITransaction> transactions = new ArrayList<>();
       for (TransactionRecord trans : TransactionManager.getCommittedArtifactTransactionIds((Artifact) teamWf.getStoreObject())) {
          transactions.add(trans);
       }

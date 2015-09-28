@@ -13,7 +13,7 @@ public class OTERestApplication extends Application {
 
    @Override
    public Set<Class<?>> getClasses() {
-      Set<Class<?>> classes = new HashSet<Class<?>>();
+      Set<Class<?>> classes = new HashSet<>();
       classes.add(OTEAvailableServersResource.class);
       return classes;
    }

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public class CacheConfiguration {
 
    private static final int DEFAULT_UNSET = -1;
-   private static final Pair<Long, TimeUnit> UNSET_EXPIRATION = new Pair<Long, TimeUnit>(-1L, TimeUnit.NANOSECONDS);
+   private static final Pair<Long, TimeUnit> UNSET_EXPIRATION = new Pair<>(-1L, TimeUnit.NANOSECONDS);
 
    private int initialCapacity = DEFAULT_UNSET;
    private long maxSize = DEFAULT_UNSET;
@@ -58,7 +58,7 @@ public class CacheConfiguration {
    }
 
    public void setExpireAfterAccess(long duration, TimeUnit timeUnit) {
-      this.expireAfterAccess = new Pair<Long, TimeUnit>(duration, timeUnit);
+      this.expireAfterAccess = new Pair<>(duration, timeUnit);
    }
 
    public boolean isExpireAfterWrite() {
@@ -66,7 +66,7 @@ public class CacheConfiguration {
    }
 
    public void setExpireAfterWrite(long duration, TimeUnit timeUnit) {
-      this.expireAfterWrite = new Pair<Long, TimeUnit>(duration, timeUnit);
+      this.expireAfterWrite = new Pair<>(duration, timeUnit);
    }
 
    public boolean isRefreshAfterWrite() {
@@ -74,7 +74,7 @@ public class CacheConfiguration {
    }
 
    public void setRefreshAfterWrite(long duration, TimeUnit timeUnit) {
-      this.refreshAfterWrite = new Pair<Long, TimeUnit>(duration, timeUnit);
+      this.refreshAfterWrite = new Pair<>(duration, timeUnit);
    }
 
    public int getInitialCapacity() {

@@ -28,8 +28,8 @@ import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 @ApplicationPath("orcs")
 public class OrcsApplication extends Application {
 
-   private final Set<Object> resources = new HashSet<Object>();
-   private final Set<Class<?>> classes = new HashSet<Class<?>>();
+   private final Set<Object> resources = new HashSet<>();
+   private final Set<Class<?>> classes = new HashSet<>();
    private static OrcsApi orcsApi;
 
    private IResourceManager resourceManager;

@@ -91,7 +91,7 @@ public class TransactionWriterTest {
 
       stores = Arrays.asList(dao1, dao2);
 
-      final Map<SqlOrderEnum, IdJoinQuery> joins = new LinkedHashMap<SqlOrderEnum, IdJoinQuery>();
+      final Map<SqlOrderEnum, IdJoinQuery> joins = new LinkedHashMap<>();
       joins.put(SqlOrderEnum.ARTIFACTS, join1);
       joins.put(SqlOrderEnum.ATTRIBUTES, join2);
 

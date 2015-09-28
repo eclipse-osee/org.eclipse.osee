@@ -44,11 +44,11 @@ public final class JaxRsMvcUtils {
       if (charset != null) {
          encoding = Charset.forName(charset);
       } else {
-         HashMap<String, String> params = new HashMap<String, String>(mediaType.getParameters());
+         HashMap<String, String> params = new HashMap<>(mediaType.getParameters());
          params.put(MediaType.CHARSET_PARAMETER, encoding.name());
          contentType = new MediaType(mediaType.getType(), mediaType.getSubtype(), params);
       }
-      ArrayList<Object> typeList = new ArrayList<Object>(1);
+      ArrayList<Object> typeList = new ArrayList<>(1);
       typeList.add(contentType.toString());
       httpHeaders.put(HttpHeaders.CONTENT_TYPE, typeList);
       return encoding;

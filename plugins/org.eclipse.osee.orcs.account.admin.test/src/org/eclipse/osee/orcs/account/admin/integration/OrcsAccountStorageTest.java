@@ -80,7 +80,7 @@ public class OrcsAccountStorageTest {
       username = String.format("userName-%s", methodName);
       active = true;
 
-      prefs = new HashMap<String, String>();
+      prefs = new HashMap<>();
       prefs.put("a", "1");
       prefs.put("b", "2");
       prefs.put("c", "true");
@@ -186,7 +186,7 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testSetAccountPreferences() {
-      Map<String, String> expected = new HashMap<String, String>();
+      Map<String, String> expected = new HashMap<>();
       expected.put("a", "x");
       expected.put("b", "y");
       expected.put("c", "z");

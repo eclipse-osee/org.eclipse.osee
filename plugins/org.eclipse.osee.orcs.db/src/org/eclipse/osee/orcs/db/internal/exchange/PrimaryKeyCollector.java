@@ -25,8 +25,8 @@ import org.eclipse.osee.orcs.db.internal.exchange.handler.BaseDbSaxHandler;
  */
 public class PrimaryKeyCollector extends BaseDbSaxHandler {
    private String primaryKey;
-   private final Map<Long, Boolean> primaryKeys = new HashMap<Long, Boolean>(50000);
-   private final HashCollection<String, Long> missingPrimaryKeys = new HashCollection<String, Long>();
+   private final Map<Long, Boolean> primaryKeys = new HashMap<>(50000);
+   private final HashCollection<String, Long> missingPrimaryKeys = new HashCollection<>();
 
    public void setPrimaryKey(String primaryKey) {
       this.primaryKey = primaryKey;
@@ -55,7 +55,7 @@ public class PrimaryKeyCollector extends BaseDbSaxHandler {
    }
 
    public Set<Long> getUnreferencedPrimaryKeys() {
-      Set<Long> unreferenced = new HashSet<Long>();
+      Set<Long> unreferenced = new HashSet<>();
       for (Entry<Long, Boolean> entry : primaryKeys.entrySet()) {
          if (!entry.getValue()) {
             unreferenced.add(entry.getKey());

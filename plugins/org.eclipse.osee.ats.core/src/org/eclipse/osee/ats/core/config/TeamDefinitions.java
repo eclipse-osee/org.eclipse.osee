@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 public class TeamDefinitions {
 
    public static Collection<String> getNames(Collection<? extends IAtsTeamDefinition> teamDefs) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (IAtsTeamDefinition named : teamDefs) {
          names.add(named.getName());
       }
@@ -44,7 +44,7 @@ public class TeamDefinitions {
    }
 
    public static List<IAtsTeamDefinition> getActive(Collection<IAtsTeamDefinition> teamDefs, Active active) {
-      List<IAtsTeamDefinition> results = new ArrayList<IAtsTeamDefinition>();
+      List<IAtsTeamDefinition> results = new ArrayList<>();
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (active == Active.Both) {
             results.add(teamDef);
@@ -62,7 +62,7 @@ public class TeamDefinitions {
    }
 
    public static Set<IAtsTeamDefinition> getChildren(IAtsTeamDefinition topTeamDef, boolean recurse) throws OseeCoreException {
-      Set<IAtsTeamDefinition> children = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> children = new HashSet<>();
       for (IAtsTeamDefinition child : topTeamDef.getChildrenTeamDefinitions()) {
          children.add(child);
          if (recurse) {
@@ -89,7 +89,7 @@ public class TeamDefinitions {
    }
 
    public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, config)) {
          if (teamDef.getVersions().size() > 0) {
             teamDefs.add(teamDef);
@@ -99,13 +99,13 @@ public class TeamDefinitions {
    }
 
    public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
-      Set<IAtsTeamDefinition> aiTeams = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> aiTeams = new HashSet<>();
       getTeamFromItemAndChildren(ai, aiTeams);
       return aiTeams;
    }
 
    public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsTeamDefinition teamDef) throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.add(teamDef);
       for (IAtsTeamDefinition child : teamDef.getChildrenTeamDefinitions()) {
          teamDefs.addAll(getTeamsFromItemAndChildren(child));
@@ -122,7 +122,7 @@ public class TeamDefinitions {
    }
 
    public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsConfig config) throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
@@ -132,7 +132,7 @@ public class TeamDefinitions {
    }
 
    public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsConfig config) throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
@@ -142,7 +142,7 @@ public class TeamDefinitions {
    }
 
    public static Collection<IAtsTeamDefinition> getImpactedTeamDefs(Collection<IAtsActionableItem> ais) throws OseeCoreException {
-      Set<IAtsTeamDefinition> resultTeams = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> resultTeams = new HashSet<>();
       for (IAtsActionableItem ai : ais) {
          resultTeams.addAll(getImpactedTeamDefInherited(ai));
       }

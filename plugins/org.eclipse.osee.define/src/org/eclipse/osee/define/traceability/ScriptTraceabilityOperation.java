@@ -67,11 +67,11 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private final Collection<TraceHandler> traceHandlers;
    private final File file;
    private final RequirementData requirementData;
-   private final ArrayList<String> noTraceabilityFiles = new ArrayList<String>(200);
-   private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<Artifact>();
-   private final HashCollection<Artifact, String> requirementToCodeUnitsMap = new HashCollection<Artifact, String>(
+   private final ArrayList<String> noTraceabilityFiles = new ArrayList<>(200);
+   private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<>();
+   private final HashCollection<Artifact, String> requirementToCodeUnitsMap = new HashCollection<>(
       false, LinkedHashSet.class);
-   private final HashSet<String> codeUnits = new HashSet<String>();
+   private final HashSet<String> codeUnits = new HashSet<>();
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
@@ -141,7 +141,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
 
       for (File sourceFile : Lib.recursivelyListFiles(directory, filePattern)) {
          CharBuffer buffer = Lib.fileToCharBuffer(sourceFile);
-         Collection<TraceMark> tracemarks = new LinkedList<TraceMark>();
+         Collection<TraceMark> tracemarks = new LinkedList<>();
          for (TraceHandler handler : traceHandlers) {
             Collection<TraceMark> marks = handler.getParser().getTraceMarks(buffer);
             tracemarks.addAll(marks);
@@ -189,7 +189,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
          String secondary = structuredRequirementMatcher.group(2);
 
          if (Strings.isValid(primary) != false) {
-            toReturn = new Pair<String, String>(primary, secondary);
+            toReturn = new Pair<>(primary, secondary);
          }
       }
       return toReturn;
@@ -325,7 +325,7 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
 
    @Override
    public Collection<Artifact> getTestUnitArtifacts(Artifact requirement) {
-      Collection<Artifact> toReturn = new HashSet<Artifact>();
+      Collection<Artifact> toReturn = new HashSet<>();
       Collection<String> scriptNames = requirementToCodeUnitsMap.getValues(requirement);
       if (scriptNames != null) {
          for (String script : scriptNames) {

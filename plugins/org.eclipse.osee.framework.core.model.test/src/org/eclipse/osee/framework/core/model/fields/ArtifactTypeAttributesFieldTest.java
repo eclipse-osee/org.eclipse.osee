@@ -53,7 +53,7 @@ public class ArtifactTypeAttributesFieldTest {
 
    @Test
    public void testGetSet() throws OseeCoreException {
-      Map<IOseeBranch, Collection<AttributeType>> input = new LinkedHashMap<IOseeBranch, Collection<AttributeType>>();
+      Map<IOseeBranch, Collection<AttributeType>> input = new LinkedHashMap<>();
       ArtifactTypeAttributesField field = new ArtifactTypeAttributesField(input);
 
       Assert.assertEquals(false, field.isDirty());
@@ -85,7 +85,7 @@ public class ArtifactTypeAttributesFieldTest {
    }
 
    private static Map<IOseeBranch, Collection<AttributeType>> map(IOseeBranch branch, AttributeType... attrs) {
-      Map<IOseeBranch, Collection<AttributeType>> map = new LinkedHashMap<IOseeBranch, Collection<AttributeType>>();
+      Map<IOseeBranch, Collection<AttributeType>> map = new LinkedHashMap<>();
       map.put(branch, Arrays.asList(attrs));
       return map;
    }

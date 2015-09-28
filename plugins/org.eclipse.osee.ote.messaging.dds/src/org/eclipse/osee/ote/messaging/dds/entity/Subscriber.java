@@ -128,7 +128,7 @@ public class Subscriber extends DomainEntity implements EntityFactory {
       if (dataReader != null) {
          CopyOnWriteArrayList<DataReader> readers = topicMap.get(topicDescription);
          if (readers == null) {
-            readers = new CopyOnWriteArrayList<DataReader>();
+            readers = new CopyOnWriteArrayList<>();
             topicMap.put(topicDescription, readers);
          }
          readers.add(dataReader);

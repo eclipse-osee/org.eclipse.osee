@@ -102,7 +102,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    public Set<IAtsWorkItem> query(@Context UriInfo uriInfo) throws Exception {
       MultivaluedMap<String, String> queryParameters = uriInfo.getQueryParameters(true);
-      Set<IAtsWorkItem> workItems = new HashSet<IAtsWorkItem>();
+      Set<IAtsWorkItem> workItems = new HashSet<>();
       for (String key : queryParameters.keySet()) {
          IAttributeType attrType = null;
          Long attrTypeId = Strings.isNumeric(key) ? Long.valueOf(key) : null;
@@ -164,7 +164,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (!Strings.isValid(actionableItems)) {
          return RestUtil.returnBadRequest("actionableItems is not valid");
       }
-      List<IAtsActionableItem> aias = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> aias = new ArrayList<>();
       ArtifactReadable aiArt = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.ActionableItem).andNameEquals(
          actionableItems).getResults().getOneOrNull();
       if (aiArt == null) {

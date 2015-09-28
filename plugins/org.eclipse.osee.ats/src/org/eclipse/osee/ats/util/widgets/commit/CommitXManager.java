@@ -63,7 +63,7 @@ public class CommitXManager extends XViewer {
    }
 
    public List<Object> getSelectedArtifacts() {
-      List<Object> arts = new ArrayList<Object>();
+      List<Object> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {

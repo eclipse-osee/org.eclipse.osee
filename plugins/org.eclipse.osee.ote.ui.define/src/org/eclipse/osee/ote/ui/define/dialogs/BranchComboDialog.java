@@ -128,7 +128,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
             if (branch != null && branch.hasParentBranch()) {
                String lastBranchSelected = Long.toString(branch.getUuid());
 
-               List<String> history = new ArrayList<String>(Arrays.asList(branchUuids));
+               List<String> history = new ArrayList<>(Arrays.asList(branchUuids));
                history.remove(lastBranchSelected);
                history.add(0, lastBranchSelected);
                if (history.size() > COMBO_HISTORY_LENGTH) {

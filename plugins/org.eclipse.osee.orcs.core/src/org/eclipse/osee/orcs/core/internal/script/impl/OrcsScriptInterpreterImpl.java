@@ -638,7 +638,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       ////////////////////////////// Call handler to get actual types ?;
       private Collection<IArtifactType> asArtifactTypes(List<OsExpression> expressions) {
-         Set<IArtifactType> toReturn = new LinkedHashSet<IArtifactType>();
+         Set<IArtifactType> toReturn = new LinkedHashSet<>();
 
          List<Class<?>> resolvedTypes = resolver.resolveTypes(expressions);
          for (int index = 0; index < resolvedTypes.size(); index++) {
@@ -656,7 +656,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       private Collection<IAttributeType> asAttributeTypes(List<OsExpression> expressions) {
-         Set<IAttributeType> toReturn = new LinkedHashSet<IAttributeType>();
+         Set<IAttributeType> toReturn = new LinkedHashSet<>();
          List<Class<?>> resolvedTypes = resolver.resolveTypes(expressions);
          for (int index = 0; index < resolvedTypes.size(); index++) {
             Class<?> clazz = resolvedTypes.get(index);
@@ -721,7 +721,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       private TransactionDetailsType[] asTxTypes(List<OsTxType> values) {
-         Set<TransactionDetailsType> toReturn = new LinkedHashSet<TransactionDetailsType>();
+         Set<TransactionDetailsType> toReturn = new LinkedHashSet<>();
          for (OsTxType value : values) {
             TransactionDetailsType type = TransactionDetailsType.Baselined;
             if (OsTxType.NON_BASELINE == value) {
@@ -733,7 +733,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       private BranchState[] asStates(List<OsBranchState> values) {
-         Set<BranchState> toReturn = new LinkedHashSet<BranchState>();
+         Set<BranchState> toReturn = new LinkedHashSet<>();
          for (OsBranchState value : values) {
             BranchState state = BranchState.valueOf(value.getName());
             toReturn.add(state);
@@ -742,7 +742,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       private BranchType[] asBranchTypes(List<OsBranchType> values) {
-         Set<BranchType> toReturn = new LinkedHashSet<BranchType>();
+         Set<BranchType> toReturn = new LinkedHashSet<>();
          for (OsBranchType value : values) {
             BranchType type = BranchType.valueOf(value.getName());
             toReturn.add(type);
@@ -751,7 +751,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       private QueryOption[] asQueryOptions(List<OsQueryOption> options) {
-         Set<QueryOption> toReturn = new LinkedHashSet<QueryOption>();
+         Set<QueryOption> toReturn = new LinkedHashSet<>();
          for (OsQueryOption op : options) {
             if (OsQueryOption.CONTAINS == op) {
                toReturn.add(QueryOption.CASE__IGNORE);

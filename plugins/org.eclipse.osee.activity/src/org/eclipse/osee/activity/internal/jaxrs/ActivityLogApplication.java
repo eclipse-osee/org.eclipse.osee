@@ -31,7 +31,7 @@ public final class ActivityLogApplication extends Application {
    }
 
    public void start() {
-      singletons = new HashSet<Object>();
+      singletons = new HashSet<>();
       singletons.add(new ActivityLogResource(activityLog));
    }
 

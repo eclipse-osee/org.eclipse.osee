@@ -77,7 +77,7 @@ public class AtsDslFormatter extends AbstractDeclarativeFormatter implements IIn
       c.setAutoLinewrap(120);
 
       Iterable<Keyword> keywords = GrammarUtil.containedKeywords(access.getGrammar());
-      Stack<Keyword> openBraceStack = new Stack<Keyword>();
+      Stack<Keyword> openBraceStack = new Stack<>();
 
       for (Keyword currentKeyword : keywords) {
          String current = currentKeyword.getValue();

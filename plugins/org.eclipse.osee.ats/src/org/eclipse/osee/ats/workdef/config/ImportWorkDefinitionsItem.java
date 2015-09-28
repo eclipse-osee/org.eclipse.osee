@@ -39,7 +39,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      List<WorkDefinitionSheet> importSheets = new ArrayList<WorkDefinitionSheet>();
+      List<WorkDefinitionSheet> importSheets = new ArrayList<>();
       for (WorkDefinitionSheet sheet : AtsWorkDefinitionSheetProviders.getWorkDefinitionSheets()) {
          if (!sheet.getName().endsWith("AIs_And_Teams")) {
             importSheets.add(sheet);
@@ -52,7 +52,7 @@ public class ImportWorkDefinitionsItem extends XNavigateItemAction {
          AtsChangeSet changes = new AtsChangeSet(getName());
          Artifact folder =
             OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.WorkDefinitionsFolder, AtsUtilCore.getAtsBranch());
-         Set<String> stateNames = new HashSet<String>();
+         Set<String> stateNames = new HashSet<>();
          AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(resultData, changes, folder, dialog.getSelection(),
             stateNames);
          if (!resultData.isErrors()) {

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 
 public class XNavigateEventManager {
 
-   private static final Set<IXNavigateEventListener> listeners = new HashSet<IXNavigateEventListener>();
+   private static final Set<IXNavigateEventListener> listeners = new HashSet<>();
 
    public static void register(IXNavigateEventListener listener) {
       listeners.add(listener);

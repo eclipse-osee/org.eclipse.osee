@@ -62,7 +62,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
       this.document = document;
       this.numberOfEndTags = 0;
       this.numberOfStartTags = 0;
-      this.pictureMap = new HashMap<String, Element>();
+      this.pictureMap = new HashMap<>();
 
       WordImageArtifactElementExtractor.START_IMAGE_CHECKSUM = -1;
       WordImageArtifactElementExtractor.END_IMAGE_CHECKSUM = -1;
@@ -88,7 +88,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    public List<WordExtractorData> extractElements(OseeLinkBuilder linkBuilder) throws DOMException, OseeCoreException {
-      final List<WordExtractorData> artifactElements = new LinkedList<WordExtractorData>();
+      final List<WordExtractorData> artifactElements = new LinkedList<>();
       Element rootElement = document.getDocumentElement();
       resetClassFields();
 
@@ -168,7 +168,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    private Node cloneWithoutArtifactEditImage(Element element, Side keepSide, OseeLinkBuilder linkBuilder) {
-      Collection<Node> removals = new LinkedList<Node>();
+      Collection<Node> removals = new LinkedList<>();
 
       Element clonedElement = (Element) element.cloneNode(true);
       boolean beforeEditTag = true;

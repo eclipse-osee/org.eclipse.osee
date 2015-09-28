@@ -60,7 +60,7 @@ public class RelationSorterTest {
 
    @Test
    public void testSort() {
-      List<IArtifact> actualToOrder = new ArrayList<IArtifact>();
+      List<IArtifact> actualToOrder = new ArrayList<>();
       actualToOrder.addAll(itemsToOrder);
       sorter.sort(actualToOrder, currentItems);
 
@@ -73,7 +73,7 @@ public class RelationSorterTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       data.add(createUnorderedSortTest("4", "2", "1", "5"));
       data.add(createUnorderedSortTest("$", "a", "!", "2"));
       data.add(createLexicographicalTest(SortMode.ASCENDING, "1", "2", "3", "4"));

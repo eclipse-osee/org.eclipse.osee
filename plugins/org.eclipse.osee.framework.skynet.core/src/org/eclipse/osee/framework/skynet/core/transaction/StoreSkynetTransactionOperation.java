@@ -54,8 +54,8 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    private static final String UPDATE_TXS_NOT_CURRENT =
       "UPDATE osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE branch_id = ? AND transaction_id = ? AND gamma_id = ?";
 
-   private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<String, Object[]>();
-   private final Map<Integer, String> dataInsertOrder = new HashMap<Integer, String>();
+   private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<>();
+   private final Map<Integer, String> dataInsertOrder = new HashMap<>();
 
    private final Branch branch;
    private final TransactionRecord transactionRecord;
@@ -122,7 +122,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    private void tagGammas() throws OseeCoreException {
-      Set<Long> gammasToTag = new LinkedHashSet<Long>();
+      Set<Long> gammasToTag = new LinkedHashSet<>();
       for (BaseTransactionData transactionData : txDatas) {
          if (!transactionData.getModificationType().isExistingVersionUsed() && transactionData instanceof AttributeTransactionData) {
             AttributeTransactionData attrData = (AttributeTransactionData) transactionData;
@@ -141,7 +141,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    private void executeTransactionDataItems(JdbcConnection connection) throws OseeCoreException {
-      List<Object[]> txNotCurrentData = new ArrayList<Object[]>();
+      List<Object[]> txNotCurrentData = new ArrayList<>();
       for (BaseTransactionData transactionData : txDatas) {
          // Collect inserts for attribute, relation, artifact, and artifact version tables
          transactionData.addInsertToBatch(this);
@@ -152,7 +152,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
-      List<Integer> keys = new ArrayList<Integer>(dataInsertOrder.keySet());
+      List<Integer> keys = new ArrayList<>(dataInsertOrder.keySet());
       Collections.sort(keys);
       for (int priority : keys) {
          String sqlKey = dataInsertOrder.get(priority);

@@ -24,7 +24,7 @@ public class BranchAliasesField extends CollectionField<String> {
 
    @Override
    protected Collection<String> checkInput(Collection<String> input) {
-      Collection<String> items = new HashSet<String>();
+      Collection<String> items = new HashSet<>();
       for (String alias : input) {
          items.add(alias.toLowerCase());
       }

@@ -47,7 +47,7 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
          return null;
       }
       // Add current user if no valid users specified
-      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      List<IAtsUser> users = new LinkedList<>();
       users.addAll(AtsClientService.get().getUserService().getUsersByUserIds(revDef.getAssignees()));
       if (users.isEmpty()) {
          users.add(AtsClientService.get().getUserService().getCurrentUser());

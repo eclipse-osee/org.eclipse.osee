@@ -70,12 +70,12 @@ public final class RevisionChangeLoader {
     */
    private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       Branch branch = artifact.getFullBranch();
-      Set<TransactionRecord> transactionIds = new LinkedHashSet<TransactionRecord>();
+      Set<TransactionRecord> transactionIds = new LinkedHashSet<>();
       boolean recurseThroughBranchHierarchy = true;
       loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
          recurseThroughBranchHierarchy);
 
-      Collection<Change> changes = new ArrayList<Change>();
+      Collection<Change> changes = new ArrayList<>();
 
       for (TransactionRecord transactionId : transactionIds) {
          loadChanges(null, transactionId, monitor, artifact, changes, loadChangeTypes);
@@ -125,11 +125,11 @@ public final class RevisionChangeLoader {
       }
       monitor.beginTask("Find Changes", 100);
 
-      Set<Integer> artIds = new HashSet<Integer>();
-      Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
+      Set<Integer> artIds = new HashSet<>();
+      Set<Integer> newAndDeletedArtifactIds = new HashSet<>();
       boolean isHistorical = sourceBranch == null;
 
-      ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
+      ArrayList<ChangeBuilder> changeBuilders = new ArrayList<>();
       for (LoadChangeType changeType : loadChangeTypes) {
          switch (changeType) {
             case artifact:
@@ -200,7 +200,7 @@ public final class RevisionChangeLoader {
       CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
          getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
 
-      Collection<Change> changes = new ArrayList<Change>();
+      Collection<Change> changes = new ArrayList<>();
       for (ChangeBuilder builder : changeBuilders) {
          Change toReturn = null;
          Artifact changeArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), builder.getArtId());

@@ -179,7 +179,7 @@ public class PageCreatorTest {
    @Test
    public void testArtifactSelectRule() {
       PageCreator page = new PageCreator(registry);
-      Set<String> types = new HashSet<String>();
+      Set<String> types = new HashSet<>();
       types.add("Software Requirement");
       ArtifactTypeOptionsRule rule = new ArtifactTypeOptionsRule("select", types, types);
       page.addSubstitution(rule);
@@ -190,7 +190,7 @@ public class PageCreatorTest {
 
    @Test
    public void realizePage_WithRule() {
-      Set<String> types = new HashSet<String>();
+      Set<String> types = new HashSet<>();
       types.add("Software Requirement");
       ArtifactTypeOptionsRule rule = new ArtifactTypeOptionsRule("select", types, types);
       PageCreator page = PageFactory.newPageCreatorWithRules(registry, ArtifactSelect, rule);

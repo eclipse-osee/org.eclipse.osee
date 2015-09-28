@@ -78,14 +78,14 @@ public class RelationExplorerWindow {
    public static final int REASON_NUM = 1;
 
    public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSideSorter group, boolean persistOnOk) {
-      this.validArtifacts = new ArrayList<Artifact>();
-      this.invalidArtifacts = new ArrayList<Artifact>();
+      this.validArtifacts = new ArrayList<>();
+      this.invalidArtifacts = new ArrayList<>();
 
-      this.urls = new ArrayList<String>();
-      this.names = new ArrayList<String>();
+      this.urls = new ArrayList<>();
+      this.names = new ArrayList<>();
 
-      this.invalidName = new ArrayList<String>();
-      this.invalidReason = new ArrayList<String>();
+      this.invalidName = new ArrayList<>();
+      this.invalidReason = new ArrayList<>();
 
       this.viewer = viewer;
       this.relationGroup = group;

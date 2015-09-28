@@ -80,7 +80,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    private boolean applyStyle = false;
    private final Map<Integer, String> mStyleMap;
-   private final Map<Integer, Integer> mColSpanMap = new HashMap<Integer, Integer>();
+   private final Map<Integer, Integer> mColSpanMap = new HashMap<>();
 
    private String[] rowBuffer;
    private int numColumns = -1;
@@ -116,7 +116,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
 
    public ExcelXmlWriter(Writer writer, String style, String emptyStringRepresentation, int defaultFontSize) throws IOException {
       out = new BufferedWriter(writer);
-      mStyleMap = new HashMap<Integer, String>();
+      mStyleMap = new HashMap<>();
       this.emptyStringRepresentation = emptyStringRepresentation;
       out.write(XML_HEADER);
 

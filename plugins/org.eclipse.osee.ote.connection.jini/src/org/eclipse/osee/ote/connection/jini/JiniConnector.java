@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.Network;
  */
 public abstract class JiniConnector implements IServiceConnector {
    protected final static String LINK_PROPERTY = "JINI_CONNECTOR_LINK";
-   private final HashMap<Object, ExportInfo> exports = new HashMap<Object, ExportInfo>();
+   private final HashMap<Object, ExportInfo> exports = new HashMap<>();
    private final EnhancedProperties properties;
    private final HashSet<IServicePropertyChangeListener> propertyChangeListeners =
       new HashSet<IServicePropertyChangeListener>();
@@ -101,7 +101,7 @@ public abstract class JiniConnector implements IServiceConnector {
    }
 
    protected Entry[] createEntries() {
-      LinkedList<Entry> entries = new LinkedList<Entry>();
+      LinkedList<Entry> entries = new LinkedList<>();
       return entries.toArray(new Entry[entries.size()]);
    }
 

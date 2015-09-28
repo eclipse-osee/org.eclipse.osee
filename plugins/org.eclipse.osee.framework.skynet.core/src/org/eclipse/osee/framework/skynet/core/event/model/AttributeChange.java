@@ -133,7 +133,7 @@ public class AttributeChange implements FrameworkEvent {
     */
    public List<String> getData() {
       if (data == null) {
-         data = new ArrayList<String>();
+         data = new ArrayList<>();
       }
       return this.data;
    }

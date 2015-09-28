@@ -89,7 +89,7 @@ public class UserArtifactEventListener implements IArtifactEventListener {
    }
 
    private Set<String> getKeysToInvalidate(Collection<Artifact> cacheArtifacts) {
-      Set<String> keys = new HashSet<String>();
+      Set<String> keys = new HashSet<>();
       for (Artifact artifact : cacheArtifacts) {
          if (artifact instanceof User) {
             User user = (User) artifact;

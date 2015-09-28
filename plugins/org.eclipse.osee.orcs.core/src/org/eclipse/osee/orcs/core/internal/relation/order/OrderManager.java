@@ -35,7 +35,7 @@ public class OrderManager implements HasOrderData {
 
    private static final OrderEntryComparator ENTRY_COMPARATOR = new OrderEntryComparator();
 
-   private final Map<IRelationTypeSide, OrderData> orderDataMap = new ConcurrentHashMap<IRelationTypeSide, OrderData>();
+   private final Map<IRelationTypeSide, OrderData> orderDataMap = new ConcurrentHashMap<>();
    private final OrderAccessor accessor;
    private final SorterProvider sorterProvider;
 
@@ -140,7 +140,7 @@ public class OrderManager implements HasOrderData {
    public void setOrder(IRelationTypeSide typeAndSide, IRelationSorterId sorterId, List<? extends Identifiable<String>> relativeSequence) throws OseeCoreException {
       List<String> sequence;
       if (!relativeSequence.isEmpty()) {
-         sequence = new ArrayList<String>();
+         sequence = new ArrayList<>();
          for (Identifiable<String> item : relativeSequence) {
             sequence.add(item.getGuid());
          }

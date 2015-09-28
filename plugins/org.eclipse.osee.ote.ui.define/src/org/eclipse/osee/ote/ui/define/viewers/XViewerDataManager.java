@@ -48,12 +48,12 @@ public class XViewerDataManager {
 
    public XViewerDataManager(XViewer xViewer) {
       super();
-      this.backingData = new ArrayList<DataItem>();
+      this.backingData = new ArrayList<>();
       this.isInitialized = false;
       this.xViewer = xViewer;
-      this.branchMap = new HashMap<IOseeBranch, DataItem>();
-      this.commitableItems = new ArrayList<DataItem>();
-      this.uncommitableItems = new ArrayList<DataItem>();
+      this.branchMap = new HashMap<>();
+      this.commitableItems = new ArrayList<>();
+      this.uncommitableItems = new ArrayList<>();
       this.listeners = Collections.synchronizedSet(new HashSet<IDataChangedListener>());
    }
 
@@ -182,7 +182,7 @@ public class XViewerDataManager {
    }
 
    private List<DataItem> getSelected() {
-      List<DataItem> toReturn = new ArrayList<DataItem>();
+      List<DataItem> toReturn = new ArrayList<>();
       TreeItem items[] = xViewer.getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -193,7 +193,7 @@ public class XViewerDataManager {
    }
 
    public List<Artifact> getSelectedArtifacts() {
-      List<Artifact> toReturn = new ArrayList<Artifact>();
+      List<Artifact> toReturn = new ArrayList<>();
       for (DataItem item : getSelected()) {
          Object object = item.getData();
          if (object instanceof Artifact) {
@@ -212,7 +212,7 @@ public class XViewerDataManager {
    }
 
    private Artifact[] getArtifactsFromDataItemList(List<DataItem> sourceList) {
-      List<Artifact> toReturn = new ArrayList<Artifact>();
+      List<Artifact> toReturn = new ArrayList<>();
       for (DataItem item : sourceList) {
          toReturn.add((Artifact) item.getData());
       }
@@ -220,7 +220,7 @@ public class XViewerDataManager {
    }
 
    public Artifact[] getSelectedForCommit() {
-      List<Artifact> toReturn = new ArrayList<Artifact>();
+      List<Artifact> toReturn = new ArrayList<>();
       for (DataItem item : getSelected()) {
          if (commitableItems.contains(item)) {
             toReturn.add((Artifact) item.getData());
@@ -236,7 +236,7 @@ public class XViewerDataManager {
    }
 
    private void removeArtifactsFromDataItemList(List<DataItem> sourceList, final Collection<Artifact> artifactsToRemove) {
-      List<DataItem> itemsToRemove = new ArrayList<DataItem>();
+      List<DataItem> itemsToRemove = new ArrayList<>();
       for (DataItem item : sourceList) {
          Object object = item.getData();
          if (artifactsToRemove.contains(object)) {

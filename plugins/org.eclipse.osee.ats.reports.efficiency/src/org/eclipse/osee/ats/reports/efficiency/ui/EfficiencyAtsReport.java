@@ -74,7 +74,7 @@ public class EfficiencyAtsReport implements AtsReport<IAtsTeamDefinition, Object
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(createTab("Team Efficiency", "reports/TeamEfficiencyBar.rptdesign"));
             tabs.add(createTab("Team Efficiency Trend", "reports/TeamEfficiencyLine.rptdesign"));
             return tabs;

@@ -74,7 +74,7 @@ public class IndexingTaskDatabaseTxCallableTest {
 
    @Test
    public void testTagging() throws Exception {
-      ArrayList<IndexedResource> sources = new ArrayList<IndexedResource>();
+      ArrayList<IndexedResource> sources = new ArrayList<>();
       sources.add(resource1);
       sources.add(resource2);
       when(resource1.getTypeUuid()).thenReturn(CoreAttributeTypes.Name.getGuid());

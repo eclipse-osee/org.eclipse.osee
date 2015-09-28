@@ -24,7 +24,7 @@ public enum ChangeType {
    Refinement;
 
    public static String[] getChangeTypes() {
-      ArrayList<String> types = new ArrayList<String>();
+      ArrayList<String> types = new ArrayList<>();
       for (ChangeType type : values()) {
          if (type != None) {
             types.add(type.name());

@@ -36,7 +36,7 @@ public class ExcelXmlArtifact implements RowProcessor {
    private final String staticId;
    private final IOseeBranch branch;
    private final ExcelSaxHandler excelHandler;
-   private final List<Worksheet> workbook = new ArrayList<Worksheet>();
+   private final List<Worksheet> workbook = new ArrayList<>();
    private Worksheet currentWorksheet = null;
    private boolean initialized = false;
 
@@ -116,7 +116,7 @@ public class ExcelXmlArtifact implements RowProcessor {
    }
 
    public static class Row {
-      private final List<String> row = new ArrayList<String>();
+      private final List<String> row = new ArrayList<>();
 
       public Row() {
          //
@@ -146,7 +146,7 @@ public class ExcelXmlArtifact implements RowProcessor {
    }
 
    public static class Worksheet {
-      private final List<Row> rows = new ArrayList<Row>();
+      private final List<Row> rows = new ArrayList<>();
       private Row headerRow = null;
       private final String name;
       private int rowCount = 0;

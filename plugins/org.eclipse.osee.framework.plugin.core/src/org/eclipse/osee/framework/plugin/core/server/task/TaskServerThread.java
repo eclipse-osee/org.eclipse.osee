@@ -40,7 +40,7 @@ public class TaskServerThread implements Runnable {
    public TaskServerThread(int magicNumber, Socket socket) {
       this.socket = socket;
       this.magicNumber = magicNumber;
-      this.commands = new HashMap<Integer, Command>();
+      this.commands = new HashMap<>();
       running = true;
    }
 

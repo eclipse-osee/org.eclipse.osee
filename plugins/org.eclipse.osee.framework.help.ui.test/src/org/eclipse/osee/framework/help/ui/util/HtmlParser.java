@@ -56,7 +56,7 @@ public class HtmlParser {
    }
 
    public Set<String> parse(URL url) throws Exception {
-      Set<String> entries = new HashSet<String>();
+      Set<String> entries = new HashSet<>();
       entries.clear();
 
       String pathPrefix = getPath(url.toString());

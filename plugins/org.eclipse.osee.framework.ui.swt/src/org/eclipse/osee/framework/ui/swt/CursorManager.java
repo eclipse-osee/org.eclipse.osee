@@ -20,7 +20,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class CursorManager {
 
-   private static final Map<Integer, Cursor> cursors = new HashMap<Integer, Cursor>();
+   private static final Map<Integer, Cursor> cursors = new HashMap<>();
 
    private CursorManager() {
    }

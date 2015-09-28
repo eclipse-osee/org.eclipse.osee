@@ -64,7 +64,7 @@ public class CompletedCancelledByColumn extends XViewerAtsColumn implements IXVi
                return CancelledByColumn.getInstance().getColumnText(element, column, columnIndex);
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<IAtsUser>();
+            Set<IAtsUser> users = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                IAtsUser user = team.getCompletedBy();
                if (((AbstractWorkflowArtifact) element).isCompleted()) {

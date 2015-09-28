@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.search.IndexerCollector;
  */
 public class IndexingTaskConsumerImpl implements IndexingTaskConsumer {
 
-   private final Map<Integer, Future<?>> futureTasks = new ConcurrentHashMap<Integer, Future<?>>();
+   private final Map<Integer, Future<?>> futureTasks = new ConcurrentHashMap<>();
 
    private final IndexerCallableFactory factory;
    private final ExecutorAdmin executorAdmin;

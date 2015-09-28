@@ -45,7 +45,7 @@ public class DirectoryPerson implements Comparable<Object>, Serializable {
    private boolean hasPolicy = false;
 
    public DirectoryPerson() {
-      policies = new ArrayList<Integer>();
+      policies = new ArrayList<>();
       bemsid = -1;
       bluesId = -1;
       building = "";

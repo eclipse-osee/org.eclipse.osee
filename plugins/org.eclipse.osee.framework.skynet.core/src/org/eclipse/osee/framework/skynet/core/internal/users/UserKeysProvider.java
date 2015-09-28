@@ -40,7 +40,7 @@ public class UserKeysProvider extends LazyObject<Iterable<? extends String>> imp
 
          @Override
          public Iterable<? extends String> call() throws Exception {
-            Set<String> userIds = new LinkedHashSet<String>();
+            Set<String> userIds = new LinkedHashSet<>();
             List<Artifact> artifacts =
                ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, CoreBranches.COMMON);
             for (Artifact artifact : artifacts) {

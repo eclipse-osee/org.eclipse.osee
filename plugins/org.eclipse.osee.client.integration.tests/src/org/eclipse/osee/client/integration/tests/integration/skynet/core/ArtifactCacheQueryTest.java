@@ -189,7 +189,7 @@ public class ArtifactCacheQueryTest {
             ex instanceof ArtifactDoesNotExist);
       }
 
-      Collection<Artifact> artifacts = new ArrayList<Artifact>();
+      Collection<Artifact> artifacts = new ArrayList<>();
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "testGetSingletonArtifactOrException");
       for (int index = 0; index < 2; index++) {
@@ -244,7 +244,7 @@ public class ArtifactCacheQueryTest {
     */
    @org.junit.Test
    public void testGetSingletonArtifactStringStringBranch() throws OseeCoreException {
-      List<Artifact> itemsCreated = new ArrayList<Artifact>();
+      List<Artifact> itemsCreated = new ArrayList<>();
 
       // create single artifact with eee staticId
       Artifact artifact =

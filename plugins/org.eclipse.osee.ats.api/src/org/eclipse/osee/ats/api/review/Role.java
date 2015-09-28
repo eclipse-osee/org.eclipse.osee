@@ -19,7 +19,7 @@ public enum Role {
    Reviewer,
    Author;
    public static Collection<String> strValues() {
-      Set<String> values = new HashSet<String>();
+      Set<String> values = new HashSet<>();
       for (Enum<Role> e : values()) {
          values.add(e.name());
       }

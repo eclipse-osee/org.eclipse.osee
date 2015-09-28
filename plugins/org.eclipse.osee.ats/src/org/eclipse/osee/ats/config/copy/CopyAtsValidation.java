@@ -55,13 +55,13 @@ public class CopyAtsValidation {
       ValidateResults results = new ValidateResults();
 
       // Validate AIs to TeamDefs
-      Set<Artifact> aias = new HashSet<Artifact>();
+      Set<Artifact> aias = new HashSet<>();
       aias.addAll(AtsClientService.get().getConfigArtifacts(
          ActionableItems.getActionableItemsFromItemAndChildren(configData.getActionableItem())));
       ValidateAtsDatabase.testActionableItemToTeamDefinition(aias, results);
 
       // Validate TeamDefs have Workflow Definitions
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       teamDefs.addAll(TeamDefinitions.getTeamsFromItemAndChildren(configData.getTeamDef()));
 
       results.addResultsMapToResultData(resultData);

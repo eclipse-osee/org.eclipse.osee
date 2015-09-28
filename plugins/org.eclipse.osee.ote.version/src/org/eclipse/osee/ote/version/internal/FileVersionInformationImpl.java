@@ -26,7 +26,7 @@ public class FileVersionInformationImpl implements FileVersionInformation {
 	private CopyOnWriteArrayList<FileVersionInformationProvider> providers;
 
 	public FileVersionInformationImpl(){
-		providers = new CopyOnWriteArrayList<FileVersionInformationProvider>();
+		providers = new CopyOnWriteArrayList<>();
 	}
 	
 	public void addFileVersionInformationProvider(FileVersionInformationProvider versionProvider){
@@ -39,7 +39,7 @@ public class FileVersionInformationImpl implements FileVersionInformation {
 
 	@Override
 	public Map<File, FileVersion> getFileVersions(List<File> files) {
-		Map<File, FileVersion> versions = new HashMap<File, FileVersion>(files.size());
+		Map<File, FileVersion> versions = new HashMap<>(files.size());
 		for(File file:files){
 			versions.put(file, null);
 		}

@@ -295,7 +295,7 @@ public final class FrameworkEventUtil {
    }
 
    public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      List<AttributeChange> attributeChanges = new ArrayList<AttributeChange>();
+      List<AttributeChange> attributeChanges = new ArrayList<>();
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }

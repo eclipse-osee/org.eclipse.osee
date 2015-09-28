@@ -44,7 +44,7 @@ public class DispoSetCopier {
    }
 
    public List<DispoItem> copyAllDispositions(Map<String, DispoItemData> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, OperationReport report) {
-      List<DispoItem> modifiedItems = new ArrayList<DispoItem>();
+      List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
       for (DispoItem sourceItem : sourceItems) {
@@ -189,7 +189,7 @@ public class DispoSetCopier {
    }
 
    private Set<String> getDefaultAnnotations(DispoItemData item) throws JSONException {
-      Set<String> defaultAnnotationLocations = new HashSet<String>();
+      Set<String> defaultAnnotationLocations = new HashSet<>();
       JSONArray annotations = item.getAnnotationsList();
       if (annotations == null) {
          annotations = new JSONArray();
@@ -235,7 +235,7 @@ public class DispoSetCopier {
    }
 
    private Map<Integer, String> generateLocationToTextMap(DispoItem item) throws JSONException {
-      Map<Integer, String> locationToText = new HashMap<Integer, String>();
+      Map<Integer, String> locationToText = new HashMap<>();
       JSONObject discrepancies = item.getDiscrepanciesList();
       @SuppressWarnings("unchecked")
       Iterator<String> iterator = discrepancies.keys();

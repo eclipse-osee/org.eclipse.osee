@@ -98,7 +98,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public List<IAtsUser> getUsers(Active active) {
       ensureLoaded();
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (Artifact user : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
          Boolean activeFlag = user.getSoleAttributeValue(CoreAttributeTypes.Active, true);
          if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
@@ -165,7 +165,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public Collection<? extends User> toOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
       ensureLoaded();
-      List<User> results = new LinkedList<User>();
+      List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
       }
@@ -175,7 +175,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public Collection<IAtsUser> getAtsUsers(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       ensureLoaded();
-      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      List<IAtsUser> users = new LinkedList<>();
       for (Artifact artifact : artifacts) {
          if (artifact instanceof User) {
             User user = (User) artifact;
@@ -189,7 +189,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public Collection<User> getOseeUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
       ensureLoaded();
-      List<User> results = new LinkedList<User>();
+      List<User> results = new LinkedList<>();
       for (IAtsUser user : users) {
          results.add(getOseeUser(user));
       }
@@ -219,7 +219,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public List<User> getOseeUsersSorted(Active active) {
       List<IAtsUser> activeUsers = getUsers(active);
-      List<User> oseeUsers = new ArrayList<User>();
+      List<User> oseeUsers = new ArrayList<>();
       oseeUsers.addAll(getOseeUsers(activeUsers));
       Collections.sort(oseeUsers);
       return oseeUsers;
@@ -227,7 +227,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
 
    @Override
    public List<IAtsUser> getSubscribed(IAtsWorkItem workItem) throws OseeCoreException {
-      ArrayList<IAtsUser> arts = new ArrayList<IAtsUser>();
+      ArrayList<IAtsUser> arts = new ArrayList<>();
       for (Artifact art : ((Artifact) workItem.getStoreObject()).getRelatedArtifacts(
          AtsRelationTypes.SubscribedUser_User)) {
          arts.add(getUserById((String) art.getSoleAttributeValue(CoreAttributeTypes.UserId)));

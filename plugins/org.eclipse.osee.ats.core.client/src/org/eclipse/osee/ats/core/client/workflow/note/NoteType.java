@@ -33,7 +33,7 @@ public enum NoteType {
    }
 
    public static List<String> getNames() {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       for (NoteType e : NoteType.values()) {
          names.add(e.name());
       }

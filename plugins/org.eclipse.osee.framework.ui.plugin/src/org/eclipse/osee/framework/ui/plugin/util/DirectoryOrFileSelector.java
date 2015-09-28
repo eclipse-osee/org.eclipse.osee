@@ -110,7 +110,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
          @Override
          public void widgetSelected(SelectionEvent e) {
             Iterable<File> files = selectFiles();
-            List<String> paths = new LinkedList<String>();
+            List<String> paths = new LinkedList<>();
             for (File file : files) {
                if (file != null && file.isFile()) {
                   paths.add(file.getPath());
@@ -154,7 +154,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
    }
 
    private Iterable<File> getFiles(String paths) {
-      List<File> toReturn = new LinkedList<File>();
+      List<File> toReturn = new LinkedList<>();
       for (String path : paths.split(FILE_SEPARATOR)) {
          toReturn.add(new File(path));
       }
@@ -220,7 +220,7 @@ public class DirectoryOrFileSelector extends Composite implements Listener {
 
       if (path != null) {
          String selectedPath = dialog.getFilterPath();
-         List<File> files = new LinkedList<File>();
+         List<File> files = new LinkedList<>();
          for (String filename : dialog.getFileNames()) {
             files.add(new File(selectedPath + IPath.SEPARATOR + filename));
          }

@@ -66,7 +66,7 @@ public class UserWorldSearchItem {
    }
 
    public Collection<AbstractWorkflowArtifact> performSearch() throws OseeCoreException {
-      Set<AbstractWorkflowArtifact> searchArts = new HashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> searchArts = new HashSet<>();
       if (options.contains(UserSearchOption.Originator)) {
          searchArts.addAll(getOriginatorArtifacts());
       } else if (options.contains(UserSearchOption.Subscribed)) {
@@ -84,7 +84,7 @@ public class UserWorldSearchItem {
          }
       }
 
-      Collection<Class<?>> filterClasses = new ArrayList<Class<?>>();
+      Collection<Class<?>> filterClasses = new ArrayList<>();
       if (!options.contains(UserSearchOption.IncludeReviews)) {
          filterClasses.add(AbstractReviewArtifact.class);
       }

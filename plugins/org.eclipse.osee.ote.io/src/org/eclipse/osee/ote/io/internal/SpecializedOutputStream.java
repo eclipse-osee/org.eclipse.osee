@@ -11,7 +11,7 @@ public class SpecializedOutputStream extends OutputStream {
    private CopyOnWriteArrayList<SystemOutputListener> listeners;
 
    public SpecializedOutputStream() {
-      this.listeners = new CopyOnWriteArrayList<SystemOutputListener>();
+      this.listeners = new CopyOnWriteArrayList<>();
    }
 
    public void add(SystemOutputListener listener){

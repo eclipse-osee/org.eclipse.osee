@@ -31,7 +31,7 @@ public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY> impl
 
    protected AbstractOseeType(KEY guid, String name) {
       super(guid, name);
-      this.fieldMap = new HashMap<String, IOseeField<?>>();
+      this.fieldMap = new HashMap<>();
       this.itemState = StorageState.CREATED;
 
       addField(UNIQUE_ID_FIELD_KEY, new UniqueIdField());

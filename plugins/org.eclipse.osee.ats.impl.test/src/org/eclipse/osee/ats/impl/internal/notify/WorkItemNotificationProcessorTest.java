@@ -80,7 +80,7 @@ public class WorkItemNotificationProcessorTest {
          false, false);
 
       when(teamWf.getName()).thenReturn(WorkItemNotificationProcessorTest.class.getSimpleName() + "-testNotify");
-      List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+      List<IAtsUser> assignees = new ArrayList<>();
       assignees.addAll(Arrays.asList(inactiveSteve, alex_NoValidEmail, jason_ValidEmail, kay_ValidEmail,
          joeSmith_CurrentUser));
       String atsId = "ATS003";
@@ -96,7 +96,7 @@ public class WorkItemNotificationProcessorTest {
 
       when(teamWf.getStateDefinition()).thenReturn(stateDef);
       when(teamWf.getTeamDefinition()).thenReturn(teamDef);
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       ais.add(ai);
       when(teamWf.getActionableItems()).thenReturn(ais);
 
@@ -150,10 +150,10 @@ public class WorkItemNotificationProcessorTest {
 
       // joe smith should be removed from list cause it's current user
       // alex should be removed cause not valid email
-      List<String> expectedUserIds = new ArrayList<String>();
+      List<String> expectedUserIds = new ArrayList<>();
       expectedUserIds.add(jason_ValidEmail.getUserId());
       expectedUserIds.add(kay_ValidEmail.getUserId());
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (String userId : event.getUserIds()) {
          users.add(userService.getUserById(userId));
       }

@@ -26,7 +26,7 @@ public class DispoSaxHandler extends AbstractSaxHandler {
    Map<String, ElementHandlers> handlers;
 
    public DispoSaxHandler() throws Exception {
-      handlers = new HashMap<String, ElementHandlers>();
+      handlers = new HashMap<>();
       addHandlers(new TestPoint());
       addHandlers(new Number());
       addHandlers(new Result());

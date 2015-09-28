@@ -121,7 +121,7 @@ public class OsArtifactTypeClauseImpl extends MinimalEObjectImpl.Container imple
   {
     if (types == null)
     {
-      types = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_ARTIFACT_TYPE_CLAUSE__TYPES);
+      types = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_ARTIFACT_TYPE_CLAUSE__TYPES);
     }
     return types;
   }

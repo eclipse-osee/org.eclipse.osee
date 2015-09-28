@@ -28,8 +28,8 @@ public abstract class AbstractArtifactRelationReport extends AbstractReport {
 
    public AbstractArtifactRelationReport() {
       super();
-      this.artifactsToCheck = new HashSet<Artifact>();
-      this.relationsToCheck = new ArrayList<IRelationTypeSide>();
+      this.artifactsToCheck = new HashSet<>();
+      this.relationsToCheck = new ArrayList<>();
    }
 
    public void setArtifacts(Collection<Artifact> artifacts) {

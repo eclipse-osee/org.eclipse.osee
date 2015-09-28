@@ -48,7 +48,7 @@ public class PropertyStoreRecord extends TestRecord {
 	
 	@JsonProperty
 	public Map<String, String> getProperties() {
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		if (store != null && !store.isEmpty()) {
 			for (String key : store.keySet()) {
 				if (nonEmptyString(store.get(key)) != null) {

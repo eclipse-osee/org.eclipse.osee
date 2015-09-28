@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.messaging.ReplyConnection;
 public class TestMessageListener extends OseeMessagingListener {
 
    private final int expectedCount;
-   private final List<Data> data = new ArrayList<Data>();
+   private final List<Data> data = new ArrayList<>();
    private volatile int currentCount;
    private volatile boolean wasUpdateReceived;
 

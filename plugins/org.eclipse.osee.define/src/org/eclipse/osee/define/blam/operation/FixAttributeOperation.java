@@ -77,7 +77,7 @@ public class FixAttributeOperation extends AbstractOperation {
       if (commitChangesBool) {
          transaction = TransactionManager.createTransaction(branch, "Fixing Duplicate Enumerated Types");
       }
-      List<String[]> rowData = new ArrayList<String[]>();
+      List<String[]> rowData = new ArrayList<>();
 
       for (Entry<Artifact, Collection<IAttributeType>> entry : artifactAttributeMap.entrySet()) {
          Artifact artifact = entry.getKey();
@@ -149,7 +149,7 @@ public class FixAttributeOperation extends AbstractOperation {
 
    private boolean hasDuplicates(List<Object> attributeValues) {
       boolean result = false;
-      Set<Object> set = new HashSet<Object>();
+      Set<Object> set = new HashSet<>();
       for (Object object : attributeValues) {
          if (!set.add(object)) {
             result = true;

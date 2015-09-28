@@ -47,7 +47,7 @@ public class CmAccessControlProviderImpl implements CmAccessControlProvider {
          return cmContainer.getAccessControl();
       } else {
          CmAccessControl cmToReturn;
-         Collection<CmAccessControl> applicableCms = new ArrayList<CmAccessControl>();
+         Collection<CmAccessControl> applicableCms = new ArrayList<>();
          for (CmAccessControl cmService : cmServices) {
             if (cmService.isApplicable(userArtifact, object)) {
                applicableCms.add(cmService);

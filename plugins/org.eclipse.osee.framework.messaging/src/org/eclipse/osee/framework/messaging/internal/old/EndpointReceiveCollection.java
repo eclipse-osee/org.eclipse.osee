@@ -23,7 +23,7 @@ public class EndpointReceiveCollection {
    private final List<EndpointReceive> receivers;
 
    public EndpointReceiveCollection() {
-      receivers = new CopyOnWriteArrayList<EndpointReceive>();
+      receivers = new CopyOnWriteArrayList<>();
    }
 
    public synchronized boolean add(EndpointReceive endpoint) {

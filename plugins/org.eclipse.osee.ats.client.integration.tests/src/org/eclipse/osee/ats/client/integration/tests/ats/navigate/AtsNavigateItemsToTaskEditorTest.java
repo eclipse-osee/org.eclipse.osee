@@ -70,7 +70,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       runGeneralTaskSearchOnCompletedCancelledTest(item, false, 0);
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 0);
       selectedUsers.clear();
-      List<String> teamDefs = new ArrayList<String>();
+      List<String> teamDefs = new ArrayList<>();
       teamDefs.add("SAW Code");
       Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
@@ -116,7 +116,7 @@ public class AtsNavigateItemsToTaskEditorTest {
       Artifact groupArt =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
             AtsUtilCore.getAtsBranch());
-      Set<Artifact> selectedUsers = new HashSet<Artifact>();
+      Set<Artifact> selectedUsers = new HashSet<>();
       TaskEditor editor = getSingleEditorOrFail();
       ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(selected);
       ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCancelledCheckbox(selected);

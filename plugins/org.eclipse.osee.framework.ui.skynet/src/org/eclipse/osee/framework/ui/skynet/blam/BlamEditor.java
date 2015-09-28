@@ -158,7 +158,7 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public static Collection<BlamEditor> getEditors() {
-      final List<BlamEditor> editors = new ArrayList<BlamEditor>();
+      final List<BlamEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {

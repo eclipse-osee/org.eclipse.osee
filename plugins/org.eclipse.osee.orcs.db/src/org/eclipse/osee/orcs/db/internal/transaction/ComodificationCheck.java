@@ -56,9 +56,9 @@ public class ComodificationCheck implements TransactionProcessor {
 
    private final class OnLoadChecker extends LoadDataHandlerAdapter implements OrcsVisitor {
 
-      private final Map<Integer, ArtifactData> artifacts = new HashMap<Integer, ArtifactData>();
-      private final Map<Integer, AttributeData> attributes = new HashMap<Integer, AttributeData>();
-      private final Map<Integer, RelationData> relations = new HashMap<Integer, RelationData>();
+      private final Map<Integer, ArtifactData> artifacts = new HashMap<>();
+      private final Map<Integer, AttributeData> attributes = new HashMap<>();
+      private final Map<Integer, RelationData> relations = new HashMap<>();
 
       public Collection<Integer> getArtifactIds() {
          return artifacts.keySet();

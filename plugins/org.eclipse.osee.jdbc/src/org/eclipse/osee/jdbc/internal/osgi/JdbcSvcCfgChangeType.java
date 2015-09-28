@@ -71,7 +71,7 @@ public enum JdbcSvcCfgChangeType {
    }
 
    private static Map<String, Object> jdbcEntries(Map<String, Object> original) {
-      Map<String, Object> toReturn = new HashMap<String, Object>();
+      Map<String, Object> toReturn = new HashMap<>();
       for (Entry<String, Object> entry : original.entrySet()) {
          if (entry.getKey().startsWith(JdbcConstants.NAMESPACE)) {
             toReturn.put(entry.getKey(), entry.getValue());

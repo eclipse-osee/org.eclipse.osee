@@ -32,7 +32,7 @@ public class ArtifactTreeViewerGlobalMenuHelper implements IGlobalMenuHelper {
 
    @Override
    public Collection<Artifact> getArtifacts() {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       if (treeViewer == null || treeViewer.getTree().isDisposed()) {
          return artifacts;
       }

@@ -82,7 +82,7 @@ public final class PropertyStoreTestUtil {
    }
 
    public static Map<String, Object> convertPropertiesToMap(Properties props) {
-      Map<String, Object> result = new TreeMap<String, Object>();
+      Map<String, Object> result = new TreeMap<>();
       for (Entry<Object, Object> entry : props.entrySet()) {
          result.put((String) entry.getKey(), entry.getValue());
       }

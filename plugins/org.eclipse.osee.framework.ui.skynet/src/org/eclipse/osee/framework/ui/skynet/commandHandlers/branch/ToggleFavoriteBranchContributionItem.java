@@ -44,7 +44,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider = getSelectionProvider();
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
+      ArrayList<IContributionItem> contributionItems = new ArrayList<>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();

@@ -50,7 +50,7 @@ public class PoolFactory {
    }
 
    public Map<String, String> getPoolStats() {
-      Map<String, String> stats = new LinkedHashMap<String, String>();
+      Map<String, String> stats = new LinkedHashMap<>();
 
       PoolingDriver driver = poolingDriver.get();
 

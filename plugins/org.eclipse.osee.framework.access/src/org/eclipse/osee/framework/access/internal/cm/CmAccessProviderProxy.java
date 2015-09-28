@@ -38,7 +38,7 @@ public final class CmAccessProviderProxy implements IAccessProvider {
    private final List<ServiceReference<CmAccessControl>> pending =
       new CopyOnWriteArrayList<ServiceReference<CmAccessControl>>();
 
-   private final Collection<CmAccessControl> cmServices = new CopyOnWriteArraySet<CmAccessControl>();
+   private final Collection<CmAccessControl> cmServices = new CopyOnWriteArraySet<>();
 
    private IAccessProvider accessProvider;
    private CmAccessControlProvider cmProvider;

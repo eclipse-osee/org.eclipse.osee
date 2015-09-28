@@ -99,7 +99,7 @@ public class MultipleIdSearchUi {
    public String processEntry(String entry) {
       String result = entry;
       if (multiLine) {
-         Set<String> entries = new HashSet<String>(50);
+         Set<String> entries = new HashSet<>(50);
          for (String line : entry.split(System.getProperty("line.separator"))) {
             line = line.replaceFirst("^ +", "");
             line = line.replaceFirst(" +$", "");

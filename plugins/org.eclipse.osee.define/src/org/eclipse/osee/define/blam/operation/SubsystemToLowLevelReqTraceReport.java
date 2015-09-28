@@ -59,9 +59,9 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    public SubsystemToLowLevelReqTraceReport() {
-      subsysToSubsysReqsMap = new HashMap<String, List<Artifact>>();
-      components = new HashSet<Artifact>();
-      lowLevelReqs = new ArrayList<Artifact>(1000);
+      subsysToSubsysReqsMap = new HashMap<>();
+      components = new HashSet<>();
+      lowLevelReqs = new ArrayList<>(1000);
    }
 
    private void init() throws IOException {

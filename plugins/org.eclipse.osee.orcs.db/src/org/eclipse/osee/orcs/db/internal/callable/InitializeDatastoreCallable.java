@@ -85,7 +85,7 @@ public class InitializeDatastoreCallable extends AbstractDatastoreCallable<DataS
    }
 
    private void addDefaultPermissions() throws OseeCoreException {
-      List<Object[]> data = new LinkedList<Object[]>();
+      List<Object[]> data = new LinkedList<>();
       for (PermissionEnum permission : PermissionEnum.values()) {
          data.add(new Object[] {permission.getPermId(), permission.getName()});
       }

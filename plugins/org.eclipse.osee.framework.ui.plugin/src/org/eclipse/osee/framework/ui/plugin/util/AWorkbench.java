@@ -82,7 +82,7 @@ public final class AWorkbench {
    }
 
    public static List<IEditorReference> getEditors(String editorId) {
-      List<IEditorReference> editors = new ArrayList<IEditorReference>();
+      List<IEditorReference> editors = new ArrayList<>();
       for (IEditorReference editor : getEditors()) {
          if (editor.getId().equals(editorId)) {
             editors.add(editor);
@@ -92,7 +92,7 @@ public final class AWorkbench {
    }
 
    public static List<IEditorReference> getEditors() {
-      List<IEditorReference> editors = new ArrayList<IEditorReference>();
+      List<IEditorReference> editors = new ArrayList<>();
       for (IWorkbenchPage page : PlatformUI.getWorkbench().getActiveWorkbenchWindow().getPages()) {
          for (IEditorReference editor : page.getEditorReferences()) {
             editors.add(editor);

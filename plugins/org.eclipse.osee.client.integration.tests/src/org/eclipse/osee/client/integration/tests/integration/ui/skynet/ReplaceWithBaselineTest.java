@@ -158,7 +158,7 @@ public final class ReplaceWithBaselineTest {
    @Parameters
    public static List<Object[]> getData() {
 
-      List<Object[]> data = new LinkedList<Object[]>();
+      List<Object[]> data = new LinkedList<>();
 
       data.add(new Object[] {"Case 0", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.NEW, false)), 0});
       data.add(new Object[] {"Case 1", Arrays.asList(new TestData(Item.ARTIFACT, ChangeItem.DELETED, true)), 0});
@@ -169,7 +169,7 @@ public final class ReplaceWithBaselineTest {
       data.add(new Object[] {"Case 5", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.DELETED, true)), 0});
       data.add(new Object[] {"Case 6", Arrays.asList(new TestData(Item.ATTRBUTE, ChangeItem.MODIFIED, true)), 0});
 
-      List<TestData> combinedCases = new ArrayList<TestData>(data.size());
+      List<TestData> combinedCases = new ArrayList<>(data.size());
 
       for (Object[] objects : data) {
          @SuppressWarnings("unchecked")
@@ -193,7 +193,7 @@ public final class ReplaceWithBaselineTest {
 
       Collection<Change> changesAfterRevert = getBranchChanges(workingBranch);
 
-      List<Artifact> artifactsToRevert = new ArrayList<Artifact>();
+      List<Artifact> artifactsToRevert = new ArrayList<>();
       Artifact artifactToRevert;
       for (TestData testData : testDatas) {
          artifactToRevert =
@@ -451,7 +451,7 @@ public final class ReplaceWithBaselineTest {
    }
 
    private void revertAttributes(Collection<Change> changes, Attribute<?> attributeToRevert) throws OseeCoreException {
-      List<Change> attrChanges = new ArrayList<Change>(1);
+      List<Change> attrChanges = new ArrayList<>(1);
 
       for (Change change : changes) {
          if (change.getChangeType() == LoadChangeType.attribute && change.getItemId() == attributeToRevert.getId()) {
@@ -462,7 +462,7 @@ public final class ReplaceWithBaselineTest {
    }
 
    private List<Change> getBranchChanges(IOseeBranch branch) throws OseeCoreException {
-      List<Change> changes = new ArrayList<Change>();
+      List<Change> changes = new ArrayList<>();
       Operations.executeWorkAndCheckStatus(ChangeManager.comparedToParent(branch, changes), MONITOR);
       return changes;
    }

@@ -45,7 +45,7 @@ public class TraceabilityResultsEditor extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      List<IResultsXViewerRow> artRows = new LinkedList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> artRows = new LinkedList<>();
       for (Artifact req : requirementArtifacts) {
          if (req.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
             artRows.add(new ResultsXViewerRow(new String[] {req.getName(), ""}, req));
@@ -56,7 +56,7 @@ public class TraceabilityResultsEditor extends AbstractOperation {
             "Requirement Artifact"), new XViewerColumn("Relation", "Relation", 75, SWT.LEFT, true, SortDataType.String,
             false, "Relation Type"));
 
-      final List<IResultsEditorTab> toReturn = new LinkedList<IResultsEditorTab>();
+      final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {
 
          @Override

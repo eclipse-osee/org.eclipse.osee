@@ -146,7 +146,7 @@ public class WordMlLinkHandler {
     * @return locations where WordMlLinks were found grouped by GUID
     */
    public static HashCollection<String, MatchRange> parseOseeWordMLLinks(String content) throws OseeCoreException {
-      HashCollection<String, MatchRange> matchMap = new HashCollection<String, MatchRange>();
+      HashCollection<String, MatchRange> matchMap = new HashCollection<>();
 
       OseeLinkParser linkParser = new OseeLinkParser();
       WORDML_LINK.reset(content);
@@ -177,7 +177,7 @@ public class WordMlLinkHandler {
    }
 
    private static List<String> getGuidsNotFound(List<String> guidsFromLinks, List<ArtifactReadable> artifactsFound) {
-      Set<String> artGuids = new HashSet<String>();
+      Set<String> artGuids = new HashSet<>();
       for (ArtifactReadable artifact : artifactsFound) {
          artGuids.add(artifact.getGuid());
       }
@@ -188,7 +188,7 @@ public class WordMlLinkHandler {
       IOseeBranch branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
-      List<String> guidsFromLinks = new ArrayList<String>(matchMap.keySet());
+      List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
       artifactsFromSearch = findArtifacts(queryFactory, source.getBranch(), guidsFromLinks);
       boolean isMergeBranch = queryFactory.branchQuery().andIds(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
@@ -198,7 +198,7 @@ public class WordMlLinkHandler {
             queryFactory.branchQuery().andUuids(branchReadable.getParentBranch()).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
-         List<ArtifactReadable> union = new ArrayList<ArtifactReadable>();
+         List<ArtifactReadable> union = new ArrayList<>();
          union.addAll(findArtifacts(queryFactory, sourceBranch, unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;

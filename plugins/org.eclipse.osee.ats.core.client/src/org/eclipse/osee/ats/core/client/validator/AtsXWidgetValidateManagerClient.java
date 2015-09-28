@@ -42,7 +42,7 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
    @Override
    public Collection<IAtsXWidgetValidator> getValidators() {
       if (atsValidators == null) {
-         atsValidators = new ArrayList<IAtsXWidgetValidator>();
+         atsValidators = new ArrayList<>();
          atsValidators.add(new AtsXHyperlinkMemberSelValidator());
          atsValidators.add(new AtsXDefectValidator());
          atsValidators.add(new AtsXUserRoleValidator());
@@ -70,7 +70,7 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
 
    public Collection<WidgetResult> validateTransition(AbstractWorkflowArtifact awa, IAtsStateDefinition toStateDef) throws OseeStateException {
       ensureLoaded();
-      List<WidgetResult> results = new ArrayList<WidgetResult>();
+      List<WidgetResult> results = new ArrayList<>();
       for (IAtsWidgetDefinition widgetDef : AtsClientService.get().getWorkDefinitionAdmin().getWidgetsFromLayoutItems(
          awa.getStateDefinition())) {
          ArtifactValueProvider provider = new ArtifactValueProvider(awa, widgetDef);

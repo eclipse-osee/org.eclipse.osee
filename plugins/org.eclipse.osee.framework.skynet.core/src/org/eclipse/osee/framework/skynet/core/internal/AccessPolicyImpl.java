@@ -203,7 +203,7 @@ public class AccessPolicyImpl implements AccessPolicy {
             java.util.Collections.singleton(relationTypeSide), PermissionEnum.WRITE, level);
 
       if (!status.matched()) {
-         ArrayList<IBasicArtifact<?>> artifacts = new ArrayList<IBasicArtifact<?>>();
+         ArrayList<IBasicArtifact<?>> artifacts = new ArrayList<>();
          artifacts.add(subject);
          if (toBeRelated != null) {
             artifacts.addAll(toBeRelated);

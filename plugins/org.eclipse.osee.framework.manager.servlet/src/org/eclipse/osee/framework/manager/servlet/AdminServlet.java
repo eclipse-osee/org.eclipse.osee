@@ -101,7 +101,7 @@ public class AdminServlet extends UnsecuredOseeHttpServlet {
    }
 
    private static Map<String, CommandProvider> getCommands(BundleContext context) {
-      Map<String, CommandProvider> data = new HashMap<String, CommandProvider>();
+      Map<String, CommandProvider> data = new HashMap<>();
       ServiceTracker<CommandProvider, CommandProvider> tracker =
          new ServiceTracker<CommandProvider, CommandProvider>(context, CommandProvider.class, null);
       tracker.open(true);

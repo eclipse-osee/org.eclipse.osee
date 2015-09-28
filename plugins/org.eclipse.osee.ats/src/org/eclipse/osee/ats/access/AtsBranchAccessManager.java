@@ -128,7 +128,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          return branchUuidToContextIdCache.get(branch.getUuid());
       }
 
-      Collection<IAccessContextId> contextIds = new ArrayList<IAccessContextId>();
+      Collection<IAccessContextId> contextIds = new ArrayList<>();
       branchUuidToContextIdCache.put(branch.getUuid(), contextIds);
       try {
          // don't access control common branch artifacts...yet
@@ -160,7 +160,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
     * Provided for testing purposes only.
     */
    public static Collection<IAccessContextId> internalGetFromWorkflow(TeamWorkFlowArtifact teamArt) {
-      Set<IAccessContextId> contextIds = new HashSet<IAccessContextId>();
+      Set<IAccessContextId> contextIds = new HashSet<>();
       try {
          contextIds.addAll(getFromArtifact(teamArt));
          if (contextIds.isEmpty()) {
@@ -191,7 +191,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
     * Recursively check artifact and all default hierarchy parents
     */
    private static Collection<IAccessContextId> getFromArtifact(Artifact artifact) {
-      Set<IAccessContextId> contextIds = new HashSet<IAccessContextId>();
+      Set<IAccessContextId> contextIds = new HashSet<>();
       try {
          for (String guid : artifact.getAttributesToStringList(CoreAttributeTypes.AccessContextId)) {
             // Do not use getOrCreateId here cause name represents where context ids came from
@@ -225,7 +225,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       return getAtsObjectEventFilters();
    }
 
-   private static final List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+   private static final List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static final ArtifactTypeEventFilter atsArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem);
 

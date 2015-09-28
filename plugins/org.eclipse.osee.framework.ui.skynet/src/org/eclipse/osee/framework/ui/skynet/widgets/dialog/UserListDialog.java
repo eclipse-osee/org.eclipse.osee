@@ -44,7 +44,7 @@ public class UserListDialog extends FilteredTreeArtifactDialog {
       } else if (active == Active.Active) {
          users = UserManager.getUsersSortedByName();
       } else {
-         users = new ArrayList<User>();
+         users = new ArrayList<>();
          for (User user : UserManager.getUsersAllSortedByName()) {
             if (!user.isActive()) {
                users.add(user);

@@ -47,7 +47,7 @@ public class TmoImporter implements DispoImporterApi {
 
    @Override
    public List<DispoItem> importDirectory(Map<String, DispoItem> exisitingItems, File tmoDirectory, OperationReport report) {
-      List<DispoItem> toReturn = new LinkedList<DispoItem>();
+      List<DispoItem> toReturn = new LinkedList<>();
       if (tmoDirectory.isDirectory()) {
 
          List<File> listOfFiles = Lib.recursivelyListFiles(tmoDirectory, Pattern.compile(".*\\.tmo"));
@@ -57,7 +57,7 @@ public class TmoImporter implements DispoImporterApi {
          int remainder = listOfFiles.size() % numThreads;
          int startIndex = 0;
          int endIndex = 0;
-         List<Future<List<DispoItem>>> futures = new LinkedList<Future<List<DispoItem>>>();
+         List<Future<List<DispoItem>>> futures = new LinkedList<>();
          for (int i = 0; i < numThreads; i++) {
             startIndex = endIndex;
             endIndex = startIndex + partitionSize;
@@ -102,7 +102,7 @@ public class TmoImporter implements DispoImporterApi {
 
       @Override
       public List<DispoItem> call() throws Exception {
-         List<DispoItem> fromThread = new LinkedList<DispoItem>();
+         List<DispoItem> fromThread = new LinkedList<>();
          for (File file : sublist) {
             InputStream inputStream = null;
             try {

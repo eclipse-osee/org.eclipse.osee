@@ -30,7 +30,7 @@ import org.eclipse.swt.SWT;
 public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreComputedColumn {
 
    public static final Integer DEFAULT_WIDTH = 45;
-   Map<Long, String> workItemUuidToColorTeam = new HashMap<Long, String>(100);
+   Map<Long, String> workItemUuidToColorTeam = new HashMap<>(100);
    boolean loading = false;
    public static ColorTeamColumnUI instance = new ColorTeamColumnUI();
 

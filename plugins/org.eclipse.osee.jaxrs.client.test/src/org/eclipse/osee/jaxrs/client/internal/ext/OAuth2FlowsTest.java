@@ -141,7 +141,7 @@ public class OAuth2FlowsTest {
       permission.setDefault(true);
       List<? extends Permission> permissions = Arrays.asList(permission);
 
-      appProperties = new HashMap<String, String>();
+      appProperties = new HashMap<>();
       appProperties.put("prop1", "a");
       appProperties.put("prop2", "b");
 

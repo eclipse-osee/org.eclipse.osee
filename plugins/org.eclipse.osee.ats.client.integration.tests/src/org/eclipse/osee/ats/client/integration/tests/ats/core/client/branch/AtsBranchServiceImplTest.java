@@ -105,8 +105,8 @@ public class AtsBranchServiceImplTest {
       TransactionRecord txRecord =
          new TransactionRecord(1234, branch.getUuid(), "comment", new Date(), UserManager.getUser().getArtId(),
             UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
-      Collection<ITransaction> commitTxs = new ArrayList<ITransaction>();
-      Collection<ICommitConfigItem> configArtSet = new HashSet<ICommitConfigItem>();
+      Collection<ITransaction> commitTxs = new ArrayList<>();
+      Collection<ICommitConfigItem> configArtSet = new HashSet<>();
       commitTxs.add(txRecord);
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().combineCommitTransactionsAndConfigItems(configArtSet, commitTxs);

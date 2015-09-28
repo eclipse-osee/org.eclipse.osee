@@ -409,7 +409,7 @@ public final class FrameworkXWidgetProvider {
             XArtifactTypeMultiChoiceSelect widget = new XArtifactTypeMultiChoiceSelect();
             String defaultType = xWidgetLayoutData.getDefaultValue();
             if (Strings.isValid(defaultType)) {
-               List<ArtifactType> types = new LinkedList<ArtifactType>();
+               List<ArtifactType> types = new LinkedList<>();
                for (String type : defaultType.split(",")) {
                   try {
                      types.add(ArtifactTypeManager.getType(type));

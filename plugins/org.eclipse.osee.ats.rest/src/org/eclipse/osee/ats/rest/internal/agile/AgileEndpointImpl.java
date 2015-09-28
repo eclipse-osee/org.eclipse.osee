@@ -83,7 +83,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public List<JaxAgileTeam> team() throws Exception {
-      List<JaxAgileTeam> teams = new ArrayList<JaxAgileTeam>();
+      List<JaxAgileTeam> teams = new ArrayList<>();
       for (IAgileTeam team : atsServer.getAgileService().getTeams()) {
          teams.add(toJaxTeam(team));
       }
@@ -151,7 +151,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public List<JaxAgileFeatureGroup> getFeatureGroups(long teamUuid) {
-      List<JaxAgileFeatureGroup> groups = new LinkedList<JaxAgileFeatureGroup>();
+      List<JaxAgileFeatureGroup> groups = new LinkedList<>();
       ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(teamUuid);
       for (ArtifactReadable child : agileTeamArt.getChildren()) {
          if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
@@ -262,7 +262,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (teamUuid <= 0) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "teamUuid is not valid");
       }
-      List<JaxAgileSprint> sprints = new ArrayList<JaxAgileSprint>();
+      List<JaxAgileSprint> sprints = new ArrayList<>();
       for (IAgileSprint sprint : atsServer.getAgileService().getSprintsForTeam(teamUuid)) {
          sprints.add(toJaxSprint(sprint));
       }
@@ -365,7 +365,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
 
    @Override
    public List<AgileItem> getBacklogItems(long teamUuid) {
-      List<AgileItem> items = new LinkedList<AgileItem>();
+      List<AgileItem> items = new LinkedList<>();
       IAgileTeam team = atsServer.getAgileService().getAgileTeam(teamUuid);
       IAgileBacklog backlog = atsServer.getAgileService().getAgileBacklog(team);
       if (backlog != null) {

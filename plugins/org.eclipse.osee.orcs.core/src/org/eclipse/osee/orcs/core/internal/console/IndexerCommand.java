@@ -106,7 +106,7 @@ public class IndexerCommand implements ConsoleCommand {
          long startTime = System.currentTimeMillis();
          boolean indexOnlyMissingitems = false;
 
-         Set<BranchReadable> branches = new HashSet<BranchReadable>();
+         Set<BranchReadable> branches = new HashSet<>();
          String[] uuids = params.getArray("branchUuids");
          if (uuids != null & uuids.length > 0) {
             for (String uuid : uuids) {
@@ -136,7 +136,7 @@ public class IndexerCommand implements ConsoleCommand {
                break;
             case ITEM_IDS:
                boolean printTags = params.getBoolean("debug");
-               Set<Long> ids = new LinkedHashSet<Long>();
+               Set<Long> ids = new LinkedHashSet<>();
                for (String value : params.getArray("ids")) {
                   ids.add(Long.parseLong(value));
                }

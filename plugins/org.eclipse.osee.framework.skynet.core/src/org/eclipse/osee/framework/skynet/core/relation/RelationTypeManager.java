@@ -45,7 +45,7 @@ public class RelationTypeManager {
 
    public static List<RelationType> getValidTypes(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       Collection<RelationType> relationTypes = getAllTypes();
-      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
+      List<RelationType> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
          int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
          int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);

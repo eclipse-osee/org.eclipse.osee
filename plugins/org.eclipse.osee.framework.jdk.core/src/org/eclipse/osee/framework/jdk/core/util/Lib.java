@@ -488,7 +488,7 @@ public final class Lib {
    public static final Pattern numberListPattern = Pattern.compile("\\d+");
 
    public static List<Integer> stringToIntegerList(String numberList) {
-      ArrayList<Integer> ints = new ArrayList<Integer>();
+      ArrayList<Integer> ints = new ArrayList<>();
       Matcher transactionIdMatcher = numberListPattern.matcher(numberList);
       while (transactionIdMatcher.find()) {
          ints.add(Integer.parseInt(transactionIdMatcher.group()));
@@ -741,7 +741,7 @@ public final class Lib {
    }
 
    public static ArrayList<String> readListFromDir(File directory, FilenameFilter filter, boolean keepExtension) {
-      ArrayList<String> list = new ArrayList<String>(400);
+      ArrayList<String> list = new ArrayList<>(400);
 
       if (directory == null) {
          System.out.println("Invalid path: " + directory);
@@ -775,7 +775,7 @@ public final class Lib {
    }
 
    public static ArrayList<String> readListFromFile(File file, boolean keepExtension) throws IOException {
-      ArrayList<String> list = new ArrayList<String>(120);
+      ArrayList<String> list = new ArrayList<>(120);
 
       BufferedReader in = null;
       try {
@@ -812,7 +812,7 @@ public final class Lib {
    }
 
    public static List<File> recursivelyListFilesAndDirectories(ArrayList<File> fileList, File rootPath, Pattern filePathP, boolean includeDirectories) {
-      LinkedList<File> dirList = new LinkedList<File>();
+      LinkedList<File> dirList = new LinkedList<>();
       dirList.add(rootPath);
 
       Matcher fileNameM = null;
@@ -1140,7 +1140,7 @@ public final class Lib {
     * matches till it finds the matching ')'.
     */
    public static String[] getArguments(String source) {
-      ArrayList<String> theResults = new ArrayList<String>();
+      ArrayList<String> theResults = new ArrayList<>();
       try {
          if (source.charAt(0) != '(') {
             System.err.println("In getArguments, first char must be \'(\'.");
@@ -1225,7 +1225,7 @@ public final class Lib {
     * () or {}.
     */
    public static String[] getCommaSeparatedItems(String source) {
-      ArrayList<String> theResults = new ArrayList<String>();
+      ArrayList<String> theResults = new ArrayList<>();
       int startPos = 0;
       int parensCount = 0;
 

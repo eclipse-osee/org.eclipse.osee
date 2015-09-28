@@ -41,7 +41,7 @@ public class MockUserRoleValueProvider implements IValueProvider {
 
    @Override
    public Collection<String> getValues() {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (UserRole item : roles) {
          values.add(AXml.addTagData("Role", item.toXml()));
       }

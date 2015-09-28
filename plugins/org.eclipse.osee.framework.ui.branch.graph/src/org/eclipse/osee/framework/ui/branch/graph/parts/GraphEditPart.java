@@ -79,11 +79,11 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    public GraphEditPart(GraphicalViewer viewer) {
       super();
       this.viewer = viewer;
-      this.branchFigureMap = new HashMap<Branch, BranchFigure>();
-      this.txNumberToTxModelMap = new HashMap<Long, TxModel>();
-      this.txNumberToTxFigureMap = new HashMap<Long, TxFigure>();
-      this.branchesByLevel = new HashCollection<Integer, BranchModel>();
-      this.connectionMap = new HashCollection<ConnectionType, Connection>();
+      this.branchFigureMap = new HashMap<>();
+      this.txNumberToTxModelMap = new HashMap<>();
+      this.txNumberToTxFigureMap = new HashMap<>();
+      this.branchesByLevel = new HashCollection<>();
+      this.connectionMap = new HashCollection<>();
       this.preferenceStore = Activator.getInstance().getPreferenceStore();
    }
 
@@ -123,7 +123,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    protected List<BranchModel> getModelChildren() {
       GraphCache graphCache = (GraphCache) getModel();
 
-      List<BranchModel> nodes = new ArrayList<BranchModel>();
+      List<BranchModel> nodes = new ArrayList<>();
       nodes.add(graphCache.getRootModel());
       nodes.addAll(graphCache.getRootModel().getAllChildrenBelow());
       Collections.sort(nodes, new Comparator<BranchModel>() {
@@ -159,7 +159,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          }
       });
 
-      List<BranchModel> toDraw = new ArrayList<BranchModel>();
+      List<BranchModel> toDraw = new ArrayList<>();
       for (int index = 0; index < nodes.size(); index++) {
          BranchModel model = nodes.get(index);
          model.setIndex(index);
@@ -313,7 +313,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       if (connectLevel < filters.length && connectLevel >= 0) {
          filter = filters[connectLevel];
       }
-      Set<ConnectionType> filtered = new HashSet<ConnectionType>();
+      Set<ConnectionType> filtered = new HashSet<>();
       switch (filter) {
          case FILTER_CHILD_BRANCH_CONNECTIONS:
             filtered.add(ConnectionType.PARENT_CHILD);

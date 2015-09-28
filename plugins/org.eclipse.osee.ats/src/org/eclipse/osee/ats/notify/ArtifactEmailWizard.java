@@ -36,12 +36,12 @@ public class ArtifactEmailWizard extends EmailWizard {
    }
 
    public static List<EmailGroup> getEmailableGroups(IAtsWorkItem workItem) throws OseeCoreException {
-      ArrayList<EmailGroup> groupNames = new ArrayList<EmailGroup>();
-      ArrayList<String> emails = new ArrayList<String>();
+      ArrayList<EmailGroup> groupNames = new ArrayList<>();
+      ArrayList<String> emails = new ArrayList<>();
       emails.add(workItem.getCreatedBy().getEmail());
       groupNames.add(new EmailGroup("Originator", emails));
       if (workItem.getStateMgr().getAssignees().size() > 0) {
-         emails = new ArrayList<String>();
+         emails = new ArrayList<>();
          for (IAtsUser user : workItem.getStateMgr().getAssignees()) {
             emails.add(user.getEmail());
          }

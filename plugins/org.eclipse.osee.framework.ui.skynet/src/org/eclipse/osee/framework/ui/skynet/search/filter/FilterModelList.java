@@ -17,8 +17,8 @@ import org.eclipse.osee.framework.ui.skynet.search.ui.IFilterListViewer;
 
 public class FilterModelList {
 
-   private ArrayList<FilterModel> filters = new ArrayList<FilterModel>();
-   private Set<IFilterListViewer> changeListeners = new HashSet<IFilterListViewer>();
+   private ArrayList<FilterModel> filters = new ArrayList<>();
+   private Set<IFilterListViewer> changeListeners = new HashSet<>();
    private boolean isAllSelected;
 
    /**
@@ -26,8 +26,8 @@ public class FilterModelList {
     */
    public FilterModelList() {
       super();
-      filters = new ArrayList<FilterModel>();
-      changeListeners = new HashSet<IFilterListViewer>();
+      filters = new ArrayList<>();
+      changeListeners = new HashSet<>();
    }
 
    /**

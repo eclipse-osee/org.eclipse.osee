@@ -156,7 +156,7 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createArtifactTypeSheet() {
-      Map<String, IArtifactType> types = new HashMap<String, IArtifactType>(100);
+      Map<String, IArtifactType> types = new HashMap<>(100);
       if (config == null) {
          for (IArtifactType type : orcsApi.getOrcsTypes().getArtifactTypes().getAll()) {
             types.put(type.getName(), type);
@@ -169,7 +169,7 @@ public class OrcsWriterCollectorGenerator {
             }
          }
       }
-      List<String> typeNames = new ArrayList<String>();
+      List<String> typeNames = new ArrayList<>();
       typeNames.addAll(types.keySet());
       Collections.sort(typeNames);
       for (String typeName : typeNames) {
@@ -180,12 +180,12 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createBranchSheet() {
-      Map<String, IOseeBranch> branches = new HashMap<String, IOseeBranch>(500);
+      Map<String, IOseeBranch> branches = new HashMap<>(500);
       for (IOseeBranch branch : orcsApi.getQueryFactory().branchQuery().getResults()) {
          branches.put(branch.getName(), branch);
       }
 
-      List<String> branchNames = new ArrayList<String>();
+      List<String> branchNames = new ArrayList<>();
       branchNames.addAll(branches.keySet());
       Collections.sort(branchNames);
       for (String branchName : branchNames) {
@@ -196,7 +196,7 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createAttributeTypeSheet() {
-      Map<String, IAttributeType> types = new HashMap<String, IAttributeType>(100);
+      Map<String, IAttributeType> types = new HashMap<>(100);
       if (config == null) {
          for (IAttributeType type : orcsApi.getOrcsTypes().getAttributeTypes().getAll()) {
             types.put(type.getName(), type);
@@ -211,7 +211,7 @@ public class OrcsWriterCollectorGenerator {
 
       }
 
-      List<String> typeNames = new ArrayList<String>();
+      List<String> typeNames = new ArrayList<>();
       typeNames.addAll(types.keySet());
       Collections.sort(typeNames);
       for (String typeName : typeNames) {
@@ -222,7 +222,7 @@ public class OrcsWriterCollectorGenerator {
    }
 
    private void createRelationTypeSheet() {
-      Map<String, IRelationType> types = new HashMap<String, IRelationType>(100);
+      Map<String, IRelationType> types = new HashMap<>(100);
       if (config == null) {
          for (IRelationType type : orcsApi.getOrcsTypes().getRelationTypes().getAll()) {
             types.put(type.getName(), type);
@@ -237,7 +237,7 @@ public class OrcsWriterCollectorGenerator {
          }
 
       }
-      List<String> typeNames = new ArrayList<String>();
+      List<String> typeNames = new ArrayList<>();
       typeNames.addAll(types.keySet());
       Collections.sort(typeNames);
       for (String typeName : typeNames) {

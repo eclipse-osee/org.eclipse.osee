@@ -32,8 +32,8 @@ public class RetryGroup extends CheckGroup {
 
    public RetryGroup(String groupName) {
       super(Operation.OR, groupName);
-      childElements = new ArrayList<Xmlizable>();
-      childStreamElements = new ArrayList<XmlizableStream>();
+      childElements = new ArrayList<>();
+      childStreamElements = new ArrayList<>();
    }
 
    @Override

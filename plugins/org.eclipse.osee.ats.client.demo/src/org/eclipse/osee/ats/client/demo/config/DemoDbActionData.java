@@ -47,7 +47,7 @@ public class DemoDbActionData {
    }
 
    public static List<DemoDbActionData> getNonReqSawActionData() {
-      List<DemoDbActionData> actionDatas = new ArrayList<DemoDbActionData>();
+      List<DemoDbActionData> actionDatas = new ArrayList<>();
       actionDatas.add(new DemoDbActionData(new String[] {"Workaround for"}, "Graph View", "1",
          new String[] {DemoDbAIs.Adapter.getAIName()}, TeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Working with"}, "Diagram Tree", "3",
@@ -56,7 +56,7 @@ public class DemoDbActionData {
    }
 
    public static List<DemoDbActionData> getGenericActionData() {
-      List<DemoDbActionData> actionDatas = new ArrayList<DemoDbActionData>();
+      List<DemoDbActionData> actionDatas = new ArrayList<>();
       actionDatas.add(new DemoDbActionData(new String[] {"Problem with the", "Can't see the"}, "Graph View", "1",
          new String[] {DemoDbAIs.Adapter.getAIName()}, TeamState.Implement));
       actionDatas.add(new DemoDbActionData(new String[] {"Problem in", "Can't load"}, "Diagram Tree", "3",

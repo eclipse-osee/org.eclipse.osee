@@ -127,7 +127,7 @@ public class CoreAtsUsersTest {
       IAtsUser mapToE = user1;
       IAtsUser alsoMapToE = user1;
 
-      HashMap<IAtsUser, Double> hash = new HashMap<IAtsUser, Double>();
+      HashMap<IAtsUser, Double> hash = new HashMap<>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
 

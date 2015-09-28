@@ -72,8 +72,8 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
    private static final ThreadPoolExecutor threadPool = new ThreadPoolExecutor(5, Integer.MAX_VALUE, 60 * 30,
       TimeUnit.SECONDS, new SynchronousQueue<Runnable>());
 
-   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> fastListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
-   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> slowListeners = new CopyOnWriteNoIteratorList<IOSEEMessageListener>(IOSEEMessageListener.class);
+   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> fastListeners = new CopyOnWriteNoIteratorList<>(IOSEEMessageListener.class);
+   private final CopyOnWriteNoIteratorList<IOSEEMessageListener> slowListeners = new CopyOnWriteNoIteratorList<>(IOSEEMessageListener.class);
    private volatile boolean disposed = false;
 
    /**
@@ -82,7 +82,7 @@ public class MessageSystemListener implements IOSEEMessageReaderListener, IOSEEM
     */
    public MessageSystemListener(Message<?, ?, ?> msg) {
       super();
-      this.message = new WeakReference<Message<?,?,?>>(msg);
+      this.message = new WeakReference<>(msg);
    }
 
    /**

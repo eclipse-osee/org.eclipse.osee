@@ -57,7 +57,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    }
 
    public Set<User> getStoredUsers() {
-      Set<User> users = new HashSet<User>();
+      Set<User> users = new HashSet<>();
       try {
          for (String userId : artifact.getAttributesToStringList(attributeType)) {
             try {
@@ -76,7 +76,7 @@ public class XHyperlabelMemberSelDam extends XHyperlabelMemberSelection implemen
    @Override
    public void saveToArtifact() {
       try {
-         Set<String> userIds = new HashSet<String>();
+         Set<String> userIds = new HashSet<>();
          for (User user : getSelectedUsers()) {
             userIds.add(user.getUserId());
          }

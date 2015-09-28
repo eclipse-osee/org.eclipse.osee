@@ -26,7 +26,7 @@ public class OteThreadManager {
    private final Map<String, OteThreadFactory> factories;
 
    private OteThreadManager() {
-      this.factories = new HashMap<String, OteThreadFactory>();
+      this.factories = new HashMap<>();
    }
 
    public static OteThreadManager getInstance() {

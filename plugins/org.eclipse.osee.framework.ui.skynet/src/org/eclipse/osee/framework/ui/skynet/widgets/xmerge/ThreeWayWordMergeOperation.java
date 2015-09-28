@@ -78,7 +78,7 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
       Artifact startArtifact = MergeUtility.getStartArtifact(attributeConflict);
       monitor.worked(5);
 
-      List<IFile> outputFiles = new ArrayList<IFile>();
+      List<IFile> outputFiles = new ArrayList<>();
 
       createMergeDiffFile(outputFiles, startArtifact, attributeConflict.getSourceArtifact());
       monitor.worked(15);

@@ -87,7 +87,7 @@ public class PolicyDialog extends Dialog {
       cmbUsers.setText("-Select Person-");
       cmbPermissionLevel.setText("-Select Permission-");
 
-      ArrayList<Artifact> subjectList = new ArrayList<Artifact>();
+      ArrayList<Artifact> subjectList = new ArrayList<>();
       subjectList.addAll(UserManager.getUsersSortedByName());
       subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
          BranchManager.getCommonBranch()));

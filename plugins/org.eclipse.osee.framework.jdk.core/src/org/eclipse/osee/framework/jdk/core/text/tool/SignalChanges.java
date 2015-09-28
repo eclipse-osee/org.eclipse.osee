@@ -38,7 +38,7 @@ public class SignalChanges {
 
    // return list of RpcrSignalChanges found in the dat files in the given directory
    public static ArrayList<Object> loadList(String path) throws IOException {
-      ArrayList<Object> list = new ArrayList<Object>(20);
+      ArrayList<Object> list = new ArrayList<>(20);
 
       File directory = new File(path);
       File[] files = directory.listFiles(new MatchFilter(".*\\.txt"));

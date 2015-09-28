@@ -25,7 +25,7 @@ public class XmlNode {
 
    public XmlNode(String name, Attributes attributes) {
       this.name = name;
-      this.attributes = new HashMap<String, String>(attributes.getLength());
+      this.attributes = new HashMap<>(attributes.getLength());
       for (int i = 0; i < attributes.getLength(); i++) {
          this.attributes.put(attributes.getQName(i), attributes.getValue(i));
       }

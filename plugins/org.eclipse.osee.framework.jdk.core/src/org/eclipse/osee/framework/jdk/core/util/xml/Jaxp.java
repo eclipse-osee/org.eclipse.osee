@@ -73,7 +73,7 @@ public class Jaxp {
     */
    public static List<Element> getChildDirects(Element element) {
       NodeList nl = element.getChildNodes();
-      List<Element> elementList = new ArrayList<Element>(nl.getLength()); // this may be oversized
+      List<Element> elementList = new ArrayList<>(nl.getLength()); // this may be oversized
       for (int i = 0; i < nl.getLength(); i++) {
          Node n = nl.item(i);
          if (n.getNodeType() == Node.ELEMENT_NODE) {
@@ -92,7 +92,7 @@ public class Jaxp {
     * children exist, an empty list is returned.
     */
    public static List<Element> getChildDirects(Element element, String childTagName) {
-      List<Element> elementList = new ArrayList<Element>();
+      List<Element> elementList = new ArrayList<>();
       NodeList nl = element.getChildNodes();
       for (int i = 0; i < nl.getLength(); i++) {
          Node n = nl.item(i);
@@ -192,7 +192,7 @@ public class Jaxp {
     * corresponding to the character data for one of the elements in the collection.
     */
    public static List<String> getElementsCharacterData(Collection<Element> elements) {
-      List<String> result = new ArrayList<String>(elements.size());
+      List<String> result = new ArrayList<>(elements.size());
       for (Element e : elements) {
          result.add(Jaxp.getElementCharacterData(e));
       }
@@ -204,7 +204,7 @@ public class Jaxp {
     * @return An ArrayList<String> of the text for all nodes
     */
    public static ArrayList<String> getChildrenTexts(NodeList nodes) {
-      ArrayList<String> retVal = new ArrayList<String>(nodes.getLength());
+      ArrayList<String> retVal = new ArrayList<>(nodes.getLength());
 
       for (int i = 0; i < nodes.getLength(); i++) {
          Element element = (Element) nodes.item(i);
@@ -253,7 +253,7 @@ public class Jaxp {
 
    private static void findElementsInternal(List<Element> source, LinkedList<String> path, List<Element> list) {
       String tag = path.poll();
-      LinkedList<String> childPath = new LinkedList<String>(path);
+      LinkedList<String> childPath = new LinkedList<>(path);
 
       for (Element e : source) {
          List<Element> children = getChildDirects(e, tag);
@@ -278,15 +278,15 @@ public class Jaxp {
     * @return All elements that match the specified path.
     */
    public static List<Element> findElements(Element element, List<String> elementPath, boolean firstIsRoot) {
-      List<Element> result = new LinkedList<Element>();
-      List<Element> source = new ArrayList<Element>(1);
+      List<Element> result = new LinkedList<>();
+      List<Element> source = new ArrayList<>(1);
       source.add(element);
 
       LinkedList<String> path;
       if (elementPath instanceof LinkedList<?>) {
          path = (LinkedList<String>) elementPath;
       } else {
-         path = new LinkedList<String>(elementPath);
+         path = new LinkedList<>(elementPath);
       }
 
       // Strip off the first item of elementPath and make sure it matches 'element'
@@ -306,7 +306,7 @@ public class Jaxp {
    }
 
    private static List<Element> findElements(Element e, String elementPath, boolean firstIsRoot) {
-      List<Element> result = new LinkedList<Element>();
+      List<Element> result = new LinkedList<>();
       String[] paths = elementPath.split("\\|");
 
       for (String path : paths) {
@@ -572,7 +572,7 @@ public class Jaxp {
    }
 
    public static final Collection<Node> selectNodesViaXPath(XPath xPath, Node startingNode, String xPathExpression) throws XPathExpressionException {
-      Collection<Node> data = new ArrayList<Node>();
+      Collection<Node> data = new ArrayList<>();
       XPathExpression expression = xPath.compile(xPathExpression);
       Object result = expression.evaluate(startingNode, XPathConstants.NODESET);
       NodeList nodeList = (NodeList) result;

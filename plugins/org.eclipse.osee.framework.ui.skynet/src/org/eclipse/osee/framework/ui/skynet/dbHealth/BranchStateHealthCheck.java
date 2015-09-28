@@ -38,7 +38,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       monitor.setTaskName("Loading Branch information");
-      List<BranchData> itemsToFix = new ArrayList<BranchData>();
+      List<BranchData> itemsToFix = new ArrayList<>();
 
       Collection<BranchData> branchDatas = getAllBranchData();
       monitor.worked(calculateWork(0.25));
@@ -102,7 +102,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       setItemsToFix(itemsToFix.size());
       if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
          monitor.setTaskName("Fixing Branch State data");
-         List<Object[]> data = new ArrayList<Object[]>();
+         List<Object[]> data = new ArrayList<>();
          for (BranchData branchData : itemsToFix) {
             data.add(new Object[] {branchData.getBranchState().getValue(), branchData.getId()});
          }
@@ -168,7 +168,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
    }
 
    private Collection<BranchData> getAllBranchData() throws OseeCoreException {
-      Map<Long, BranchData> data = new HashMap<Long, BranchData>();
+      Map<Long, BranchData> data = new HashMap<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_branch");

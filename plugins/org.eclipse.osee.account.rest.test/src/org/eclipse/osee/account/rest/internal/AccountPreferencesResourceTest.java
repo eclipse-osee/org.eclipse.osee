@@ -60,7 +60,7 @@ public class AccountPreferencesResourceTest {
 
    @Test
    public void testSetAccountPreferences() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");
@@ -76,7 +76,7 @@ public class AccountPreferencesResourceTest {
 
    @Test
    public void testSetAccountPreferencesNotModified() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");

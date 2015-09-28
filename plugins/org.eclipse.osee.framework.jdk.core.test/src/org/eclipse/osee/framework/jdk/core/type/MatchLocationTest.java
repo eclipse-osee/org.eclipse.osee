@@ -57,7 +57,7 @@ public class MatchLocationTest {
 
    @org.junit.Test
    public void testHashCorrectness() {
-      HashMap<MatchLocation, Double> hash = new HashMap<MatchLocation, Double>();
+      HashMap<MatchLocation, Double> hash = new HashMap<>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

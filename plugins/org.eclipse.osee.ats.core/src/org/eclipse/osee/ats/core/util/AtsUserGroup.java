@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.IAtsUserGroup;
  */
 public class AtsUserGroup implements IAtsUserGroup {
 
-   List<IAtsUser> users = new LinkedList<IAtsUser>();
+   List<IAtsUser> users = new LinkedList<>();
 
    public AtsUserGroup() {
    }

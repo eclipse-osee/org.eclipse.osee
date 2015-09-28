@@ -23,8 +23,8 @@ import java.util.concurrent.TimeUnit;
  */
 public final class FileWatcher {
    private final Timer timer = new Timer();
-   private final Map<File, Long> filesToWatch = new ConcurrentHashMap<File, Long>(128);
-   private final Set<IFileWatcherListener> listeners = new CopyOnWriteArraySet<IFileWatcherListener>();
+   private final Map<File, Long> filesToWatch = new ConcurrentHashMap<>(128);
+   private final Set<IFileWatcherListener> listeners = new CopyOnWriteArraySet<>();
    private final long interval;
 
    public FileWatcher(long time, TimeUnit unit) {

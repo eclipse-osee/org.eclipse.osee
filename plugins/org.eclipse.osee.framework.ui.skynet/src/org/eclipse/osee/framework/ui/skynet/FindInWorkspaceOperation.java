@@ -66,7 +66,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
    }
 
    private Map<String, Artifact> getGuidMap() {
-      Map<String, Artifact> guids = new HashMap<String, Artifact>();
+      Map<String, Artifact> guids = new HashMap<>();
       for (Artifact art : artifacts) {
          guids.put(art.getGuid(), art);
       }
@@ -75,7 +75,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
 
    private void findByName(Map<String, Artifact> guids, IProgressMonitor monitor) throws Exception {
       IContainer ws = ResourcesPlugin.getWorkspace().getRoot();
-      List<Artifact> toSearch = new LinkedList<Artifact>(guids.values());
+      List<Artifact> toSearch = new LinkedList<>(guids.values());
       for (Artifact artifact : toSearch) {
          if (artifact.getArtifactType().equals(CoreArtifactTypes.TestCase)) {
             String artifactName = artifact.getName();
@@ -83,7 +83,7 @@ public class FindInWorkspaceOperation extends AbstractOperation {
             if (endOfPackageName != -1) {
                String packageName = artifactName.substring(0, endOfPackageName);
                String fileName = artifactName.substring(endOfPackageName + 1) + ".java";
-               List<IResource> finds = new ArrayList<IResource>();
+               List<IResource> finds = new ArrayList<>();
                AWorkspace.recursiveFileFind(fileName, ws, finds);
                for (IResource find : finds) {
                   if (find.toString().contains(packageName)) {

@@ -35,7 +35,7 @@ public class OrcsScriptEngineFactory implements ScriptEngineFactory {
    private static List<String> mimeTypes;
    private static List<String> aliases;
    static {
-      List<String> names = new ArrayList<String>(6);
+      List<String> names = new ArrayList<>(6);
       names.add("orcs");
       names.add("OrcsScript");
       names.add(SCRIPT_NAME);
@@ -43,12 +43,12 @@ public class OrcsScriptEngineFactory implements ScriptEngineFactory {
       names.add("orcsdsl");
       aliases = Collections.unmodifiableList(names);
 
-      List<String> mimeTypes = new ArrayList<String>(4);
+      List<String> mimeTypes = new ArrayList<>(4);
       mimeTypes.add("application/orcsscript");
       mimeTypes.add("text/orcsscript");
       OrcsScriptEngineFactory.mimeTypes = Collections.unmodifiableList(mimeTypes);
 
-      List<String> extensions = new ArrayList<String>(1);
+      List<String> extensions = new ArrayList<>(1);
       extensions.add("orcs");
       OrcsScriptEngineFactory.extensions = Collections.unmodifiableList(extensions);
    }

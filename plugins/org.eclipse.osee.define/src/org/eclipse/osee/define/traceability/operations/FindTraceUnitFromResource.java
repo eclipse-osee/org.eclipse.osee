@@ -98,7 +98,7 @@ public final class FindTraceUnitFromResource {
    public static void search(Branch branch, IResource... resources) {
       HashCollection<IArtifactType, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
       if (!typeAndIds.isEmpty()) {
-         Set<Artifact> artifacts = new HashSet<Artifact>();
+         Set<Artifact> artifacts = new HashSet<>();
          for (IArtifactType artifactType : typeAndIds.keySet()) {
             Collection<ResourceIdentifier> items = typeAndIds.getValues(artifactType);
             if (items != null) {

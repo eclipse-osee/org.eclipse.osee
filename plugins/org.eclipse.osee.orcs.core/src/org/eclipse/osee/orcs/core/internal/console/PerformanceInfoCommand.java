@@ -60,7 +60,7 @@ public class PerformanceInfoCommand implements ConsoleCommand {
    }
 
    private Collection<StatsType> toStatusTypes(String[] stats) {
-      Collection<StatsType> statsType = new HashSet<StatsType>();
+      Collection<StatsType> statsType = new HashSet<>();
       boolean addAllStatTypes = false;
 
       if (stats != null && stats.length > 0) {

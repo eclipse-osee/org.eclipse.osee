@@ -39,7 +39,7 @@ public class WorkflowManagerCoreTest {
    @Mock private IAtsTask task;
    @Mock private IAtsUser Joe, Mary;
    // @formatter:on
-   List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+   List<IAtsUser> assignees = new ArrayList<>();
 
    @Before
    public void setup() {

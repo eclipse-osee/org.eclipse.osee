@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.Composite;
 public class EntryComboDialog extends EntryDialog {
 
    private final String comboMessage;
-   private List<String> options = new ArrayList<String>();
+   private List<String> options = new ArrayList<>();
    private String defaultSelection = null;
    private String selection = "";
 

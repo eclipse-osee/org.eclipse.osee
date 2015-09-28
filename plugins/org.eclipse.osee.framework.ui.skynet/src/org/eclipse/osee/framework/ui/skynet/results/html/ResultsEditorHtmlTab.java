@@ -115,7 +115,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
-            Set<Manipulations> manipulations = new HashSet<Manipulations>();
+            Set<Manipulations> manipulations = new HashSet<>();
             manipulations.add(Manipulations.NONE);
             Dialogs.emailDialog(resultsEditor.getTitle(), xResultPage.getManipulatedHtml(manipulations));
          }

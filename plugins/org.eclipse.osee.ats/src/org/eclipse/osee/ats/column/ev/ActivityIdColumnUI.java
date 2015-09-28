@@ -117,8 +117,8 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
 
    public static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
       boolean modified = false;
-      Set<IAtsWorkPackage> commonWorkPackageOptions = new HashSet<IAtsWorkPackage>();
-      Set<IAtsWorkPackage> uniqueWorkPackageOptions = new HashSet<IAtsWorkPackage>();
+      Set<IAtsWorkPackage> commonWorkPackageOptions = new HashSet<>();
+      Set<IAtsWorkPackage> uniqueWorkPackageOptions = new HashSet<>();
       Result result = getConfiguredWorkPackageOptions(awas, commonWorkPackageOptions, uniqueWorkPackageOptions);
       if (result.isFalse()) {
          AWorkbench.popup("Options Invalid", result.getText());
@@ -188,7 +188,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {

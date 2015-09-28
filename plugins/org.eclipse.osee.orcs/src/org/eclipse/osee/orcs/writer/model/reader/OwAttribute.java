@@ -34,7 +34,7 @@ public class OwAttribute {
 
    public List<Object> getValues() {
       if (values == null) {
-         values = new LinkedList<Object>();
+         values = new LinkedList<>();
       }
       return values;
    }

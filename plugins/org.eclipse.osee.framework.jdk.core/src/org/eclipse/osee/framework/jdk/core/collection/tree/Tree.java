@@ -15,11 +15,11 @@ public class Tree<treeType> {
    private final TreeNode<treeType> root;
 
    public Tree() {
-      this.root = new TreeNode<treeType>();
+      this.root = new TreeNode<>();
    }
 
    public Tree(treeType self) {
-      this.root = new TreeNode<treeType>(self);
+      this.root = new TreeNode<>(self);
    }
 
    public TreeNode<treeType> getRoot() {

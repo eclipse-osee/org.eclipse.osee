@@ -488,7 +488,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
       @Override
       public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-         artifacts = new LinkedList<Artifact>();
+         artifacts = new LinkedList<>();
          List<Conflict> conflicts = Handlers.getConflictsFromStructuredSelection(structuredSelection);
          for (Conflict conflict : conflicts) {
 

@@ -33,13 +33,13 @@ public class MessageRecorder {
    private static final int NUM_BUFFERS = 3;
    private WritableByteChannel channel;
 
-   private final ArrayList<IMessageEntry> msgsToRecord = new ArrayList<IMessageEntry>(64);
+   private final ArrayList<IMessageEntry> msgsToRecord = new ArrayList<>(64);
    private final Lock recLock = new ReentrantLock();
    private volatile boolean isRecording = false;
    private final IMessageEntryFactory factory;
 
    private final ExecutorService taskHandler = Executors.newFixedThreadPool(2);
-   private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<ByteBuffer>(NUM_BUFFERS);
+   private final ArrayBlockingQueue<ByteBuffer> bufferQueue = new ArrayBlockingQueue<>(NUM_BUFFERS);
 
    public MessageRecorder(IMessageEntryFactory factory) {
       this.factory = factory;

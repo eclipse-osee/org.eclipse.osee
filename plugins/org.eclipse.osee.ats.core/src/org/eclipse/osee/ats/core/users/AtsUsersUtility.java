@@ -31,7 +31,7 @@ public final class AtsUsersUtility {
    }
 
    public static Collection<IAtsUser> getValidEmailUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
-      Set<IAtsUser> validUsers = new HashSet<IAtsUser>();
+      Set<IAtsUser> validUsers = new HashSet<>();
       for (IAtsUser user : users) {
          if (isEmailValid(user.getEmail())) {
             validUsers.add(user);
@@ -41,7 +41,7 @@ public final class AtsUsersUtility {
    }
 
    public static Collection<IAtsUser> getActiveEmailUsers(Collection<? extends IAtsUser> users) throws OseeCoreException {
-      Set<IAtsUser> activeUsers = new HashSet<IAtsUser>();
+      Set<IAtsUser> activeUsers = new HashSet<>();
       for (IAtsUser user : users) {
          if (user.isActive()) {
             activeUsers.add(user);
@@ -58,7 +58,7 @@ public final class AtsUsersUtility {
    }
 
    public static Collection<? extends IAtsUser> getUsers(Collection<String> userIds, IAtsUserService userService) {
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      Set<IAtsUser> users = new HashSet<>();
       for (String userId : userIds) {
          users.add(userService.getUserById(userId));
       }

@@ -39,8 +39,8 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    public MetaDataSaxHandler(JdbcClient service) {
       this.service = service;
-      this.importMetadataMap = new HashMap<String, MetaData>();
-      this.targetMetadataMap = new HashMap<String, MetaData>();
+      this.importMetadataMap = new HashMap<>();
+      this.targetMetadataMap = new HashMap<>();
    }
 
    public MetaData getMetadata(String source) {
@@ -97,7 +97,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
    }
 
    private Map<String, MetaData> getTargetDbMetadata() throws SQLException, OseeCoreException {
-      Map<String, MetaData> targetDbMetadata = new HashMap<String, MetaData>();
+      Map<String, MetaData> targetDbMetadata = new HashMap<>();
       JdbcConnection connection = service.getConnection();
       try {
          DatabaseMetaData dbMetaData = connection.getMetaData();

@@ -79,7 +79,7 @@ public class OseeDslRoleContextProviderTest {
 
       Assert.assertEquals(2, contextIds.size());
       Iterator<? extends IAccessContextId> iterator = contextIds.iterator();
-      List<String> contextList = new LinkedList<String>();
+      List<String> contextList = new LinkedList<>();
       contextList.add(contextGuid1);
       contextList.add(contextGuid2);
       Assert.assertTrue(contextList.remove(iterator.next().getGuid()));

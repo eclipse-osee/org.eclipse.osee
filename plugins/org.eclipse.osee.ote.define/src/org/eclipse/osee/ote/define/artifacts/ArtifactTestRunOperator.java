@@ -35,10 +35,10 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
  * @author Roberto E. Escobar
  */
 public class ArtifactTestRunOperator implements TestRunOperator {
-   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER = new OteArtifactFetcher<Artifact>(
+   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER = new OteArtifactFetcher<>(
       CoreArtifactTypes.TestRun);
 
-   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER = new OteArtifactFetcher<Artifact>(
+   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER = new OteArtifactFetcher<>(
       CoreArtifactTypes.TestCase);
 
    private final Artifact artifact;

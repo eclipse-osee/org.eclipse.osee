@@ -53,7 +53,7 @@ public class TemplateManager {
    }
 
    public static List<Artifact> getAllTemplates() {
-      List<Artifact> templates = new ArrayList<Artifact>();
+      List<Artifact> templates = new ArrayList<>();
       try {
          for (ITemplateProvider provider : instance.templateProviders) {
             templates.addAll(provider.getAllTemplates());

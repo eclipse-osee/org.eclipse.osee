@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Donald G. Dunne
  */
 public class MassContentProvider implements ITreeContentProvider {
-   protected Collection<Artifact> rootSet = new HashSet<Artifact>();
+   protected Collection<Artifact> rootSet = new HashSet<>();
    private final MassXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
 

@@ -162,7 +162,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    @Override
    public Set<String> getKeys() throws OseeCoreException {
-      Set<String> keys = new HashSet<String>();
+      Set<String> keys = new HashSet<>();
       JdbcStatement chStmt = jdbcClient.getStatement();
       try {
          chStmt.runPreparedQuery(GET_KEYS_SQL);

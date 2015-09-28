@@ -39,8 +39,8 @@ public class PurgeTransactionOperation extends AbstractOperation {
       void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions);
    }
 
-   private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<PurgeTransactionListener>();
-   private final Collection<TransactionRecord> changedTransactions = new ArrayList<TransactionRecord>();
+   private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<>();
+   private final Collection<TransactionRecord> changedTransactions = new ArrayList<>();
 
    public PurgeTransactionOperation(List<Integer> txIdsToDelete) {
       super("Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, NullOperationLogger.getSingleton());

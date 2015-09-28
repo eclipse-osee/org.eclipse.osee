@@ -46,8 +46,8 @@ public class XWidgetDecorator {
    }
 
    public XWidgetDecorator() {
-      decoratorMap = new HashMap<XWidget, Decorator>();
-      providers = new ArrayList<DecorationProvider>();
+      decoratorMap = new HashMap<>();
+      providers = new ArrayList<>();
    }
 
    public void addWidget(XWidget xWidget) {

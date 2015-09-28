@@ -23,7 +23,7 @@ import org.eclipse.osee.jaxrs.server.internal.resources.JaxRsContributionsResour
 @ApplicationPath("jaxrs-admin")
 public class JaxRsAdminApplication extends Application {
 
-   private final Set<Object> singletons = new LinkedHashSet<Object>();
+   private final Set<Object> singletons = new LinkedHashSet<>();
 
    private JaxRsApplicationRegistry registry;
    private JaxRsResourceManager manager;

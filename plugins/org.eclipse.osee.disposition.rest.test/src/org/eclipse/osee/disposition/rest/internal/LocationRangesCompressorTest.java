@@ -21,7 +21,7 @@ import org.junit.Test;
 public class LocationRangesCompressorTest {
    @Test
    public void testRangeCompressor() {
-      List<Integer> locationPoints = new ArrayList<Integer>();
+      List<Integer> locationPoints = new ArrayList<>();
       locationPoints.add(83);
       locationPoints.add(84);
       String result = LocationRangesCompressor.compress(locationPoints);
@@ -45,7 +45,7 @@ public class LocationRangesCompressorTest {
       result = LocationRangesCompressor.compress(locationPoints);
       Assert.assertEquals("1-5, 21, 83-84, 89, 92-93", result);
 
-      List<Integer> locationPointsZero = new ArrayList<Integer>();
+      List<Integer> locationPointsZero = new ArrayList<>();
       locationPointsZero.add(0);
       result = LocationRangesCompressor.compress(locationPointsZero);
       Assert.assertEquals("0", result);

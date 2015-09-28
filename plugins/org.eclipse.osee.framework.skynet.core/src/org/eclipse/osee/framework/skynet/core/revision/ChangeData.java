@@ -59,7 +59,7 @@ public class ChangeData {
    }
 
    public Collection<Change> getArtifactChangesByName(String name) throws OseeCoreException {
-      Collection<Change> foundChanges = new HashSet<Change>();
+      Collection<Change> foundChanges = new HashSet<>();
       try {
          for (Change change : changes) {
             if (change instanceof ArtifactChange) {
@@ -93,10 +93,10 @@ public class ChangeData {
       Collection<ModificationType> modTypes = Collections.getAggregate(modificationType);
       Conditions.checkExpressionFailOnTrue(modTypes.isEmpty(), "ModificationType must be specified");
 
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
          if (!isEmpty()) {
-            HashMap<Integer, Boolean> excludeArtifact = new HashMap<Integer, Boolean>();
+            HashMap<Integer, Boolean> excludeArtifact = new HashMap<>();
             for (Change change : changes) {
                Artifact artifact = change.getChangeArtifact();
 
@@ -150,7 +150,7 @@ public class ChangeData {
                }
             }
             if ((artifactTypesToIgnore != null) && (!artifactTypesToIgnore.isEmpty())) {
-               Set<Artifact> excludeList = new HashSet<Artifact>();
+               Set<Artifact> excludeList = new HashSet<>();
                for (Artifact artifactToCheck : artifacts) {
                   Integer id = artifactToCheck.getArtId();
                   Boolean remove = excludeArtifact.get(id);

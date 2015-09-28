@@ -42,9 +42,9 @@ public class IdTranslator {
    IdTranslator(JdbcClient jdbcClient, String sequenceName, String... aliases) {
       this.jdbcClient = jdbcClient;
       this.sequenceName = sequenceName;
-      this.originalToMapped = new HashMap<Long, Long>();
-      this.newIds = new ArrayList<Long>();
-      this.aliases = new HashSet<String>();
+      this.originalToMapped = new HashMap<>();
+      this.newIds = new ArrayList<>();
+      this.aliases = new HashSet<>();
       if (aliases != null && aliases.length > 0) {
          for (String alias : aliases) {
             this.aliases.add(alias.toLowerCase());
@@ -146,7 +146,7 @@ public class IdTranslator {
 
    public void store(JdbcConnection connection, int sequenceId) throws OseeCoreException {
       if (hasItemsToStore()) {
-         List<Object[]> data = new ArrayList<Object[]>();
+         List<Object[]> data = new ArrayList<>();
          for (Long original : newIds) {
             Long mapped = originalToMapped.get(original);
             data.add(new Object[] {sequenceId, original, mapped});

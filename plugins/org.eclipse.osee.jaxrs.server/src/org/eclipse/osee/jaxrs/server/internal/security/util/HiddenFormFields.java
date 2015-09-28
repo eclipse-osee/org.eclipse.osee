@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public final class HiddenFormFields {
 
-   private final Map<String, String> data = new HashMap<String, String>();
+   private final Map<String, String> data = new HashMap<>();
 
    public static HiddenFormFields newForm() {
       return new HiddenFormFields();

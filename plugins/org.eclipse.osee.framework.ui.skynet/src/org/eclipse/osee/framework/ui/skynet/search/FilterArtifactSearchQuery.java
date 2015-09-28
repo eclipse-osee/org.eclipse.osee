@@ -50,7 +50,7 @@ public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery
          firstTime = false;
       }
 
-      List<Artifact> toReturn = new LinkedList<Artifact>();
+      List<Artifact> toReturn = new LinkedList<>();
       for (Artifact art : queryBuilderArtifact.getResults()) {
          toReturn.add(art);
       }

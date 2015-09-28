@@ -83,9 +83,9 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
             resultData.log("Report-Only, Changes are not persisted");
          }
 
-         newArtifacts = new HashSet<Artifact>(50);
-         existingArtifacts = new HashSet<Artifact>(50);
-         processedFromAis = new HashSet<Artifact>(10);
+         newArtifacts = new HashSet<>(50);
+         existingArtifacts = new HashSet<>(50);
+         processedFromAis = new HashSet<>(10);
 
          createTeamDefinitions(changes, data.getTeamDef(), data.getParentTeamDef());
          if (resultData.isErrors()) {

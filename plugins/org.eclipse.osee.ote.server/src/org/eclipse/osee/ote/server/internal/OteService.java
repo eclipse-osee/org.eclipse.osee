@@ -151,7 +151,7 @@ public class OteService implements IHostTestEnvironment {
    }
 
    public void updateDynamicInfo() throws RemoteException {
-      Collection<OSEEPerson1_4> userList = new LinkedList<OSEEPerson1_4>();
+      Collection<OSEEPerson1_4> userList = new LinkedList<>();
       StringBuilder sb = new StringBuilder();
       if (isEnvironmentAvailable()) {
          for(UUID sessionId:oteSessions.get()){

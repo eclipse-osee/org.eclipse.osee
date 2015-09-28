@@ -114,7 +114,7 @@ public class AtsOseeCmService implements IOseeCmService {
    public List<Artifact> getTaskArtifacts(Artifact pcrArtifact) {
       if (pcrArtifact instanceof AbstractTaskableArtifact) {
          try {
-            List<Artifact> arts = new ArrayList<Artifact>();
+            List<Artifact> arts = new ArrayList<>();
             arts.addAll(((AbstractTaskableArtifact) pcrArtifact).getTaskArtifacts());
             return arts;
          } catch (OseeCoreException ex) {

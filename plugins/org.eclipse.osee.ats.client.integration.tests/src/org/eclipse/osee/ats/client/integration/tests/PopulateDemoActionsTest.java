@@ -116,7 +116,7 @@ public class PopulateDemoActionsTest {
          "Joe Smith");
 
       // test tasks
-      List<String> taskNames = new ArrayList<String>();
+      List<String> taskNames = new ArrayList<>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(true));
       for (TaskArtifact task : codeTeamArt.getTaskArtifacts()) {
          testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());
@@ -178,7 +178,7 @@ public class PopulateDemoActionsTest {
       testReviewContents(revArt, "Review new logic", PeerToPeerReviewState.Completed.getName());
 
       //  - test tasks
-      List<String> taskNames = new ArrayList<String>();
+      List<String> taskNames = new ArrayList<>();
       taskNames.addAll(DemoTestUtil.getTaskTitles(false));
       for (TaskArtifact task : codeTeam.getTaskArtifacts()) {
          testTaskContents(task, TaskStates.InWork.getName(), TeamState.Implement.getName());

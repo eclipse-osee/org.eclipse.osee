@@ -27,8 +27,8 @@ public class ReportDataControl implements IReportData {
    private final ArrayList<ReportDataListener> queueListeners;
 
    public ReportDataControl() {
-      this.queueListeners = new ArrayList<ReportDataListener>();
-      ArrayList<String> queueHeaders = new ArrayList<String>();
+      this.queueListeners = new ArrayList<>();
+      ArrayList<String> queueHeaders = new ArrayList<>();
       queueHeaders.add("User");
       queueHeaders.add("Script");
       this.queueData = new ReportData(queueHeaders);
@@ -69,7 +69,7 @@ public class ReportDataControl implements IReportData {
       ArrayList<String> values;
       for (int i = 0; i < cmds.size(); i++) {
          TestEnvironmentCommand cmd = cmds.get(i);
-         values = new ArrayList<String>();
+         values = new ArrayList<>();
          values.add(cmd.getDescription().getDescription());
          queueData.addItem(cmd.getDescription().getGuid(), values);
       }

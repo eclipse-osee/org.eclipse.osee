@@ -52,7 +52,7 @@ import org.eclipse.osee.template.engine.OseeTemplateTokens;
 @ApplicationPath("ats")
 public class AtsApplication extends Application {
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
 
    private Log logger;
    private OrcsApi orcsApi;

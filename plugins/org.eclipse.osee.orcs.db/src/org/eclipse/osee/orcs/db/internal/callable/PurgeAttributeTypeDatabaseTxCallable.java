@@ -64,7 +64,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
    }
 
    private List<Object[]> retrieveGammaIds(JdbcConnection connection, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      List<Object[]> gammas = new LinkedList<Object[]>();
+      List<Object[]> gammas = new LinkedList<>();
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       try {
@@ -88,7 +88,7 @@ public final class PurgeAttributeTypeDatabaseTxCallable extends AbstractDatastor
    }
 
    private List<Object[]> retrieveBranchAndGammaIds(JdbcConnection connection, Collection<? extends IAttributeType> types) throws OseeCoreException {
-      List<Object[]> gammasAndBranchIds = new LinkedList<Object[]>();
+      List<Object[]> gammasAndBranchIds = new LinkedList<>();
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       IdJoinQuery joinQuery = joinFactory.createIdJoinQuery();
       try {

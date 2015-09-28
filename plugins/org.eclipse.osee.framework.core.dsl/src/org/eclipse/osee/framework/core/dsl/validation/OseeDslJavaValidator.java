@@ -85,7 +85,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
    @Check
    public void checkUuidValidity(OseeDsl oseeDsl) {
-      Map<String, OseeType> uuids = new HashMap<String, OseeType>();
+      Map<String, OseeType> uuids = new HashMap<>();
       EStructuralFeature feature = OseeDslPackage.Literals.OSEE_TYPE__UUID;
       int index = OseeDslPackage.OSEE_TYPE__UUID;
       for (EObject object : oseeDsl.eContents()) {
@@ -114,8 +114,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
 
    @Check
    public void checkTypeNameValidity(OseeDsl oseeDsl) {
-      Set<String> typeNames = new HashSet<String>(50);
-      Map<String, String> uuidToTypeName = new HashMap<String, String>(500);
+      Set<String> typeNames = new HashSet<>(50);
+      Map<String, String> uuidToTypeName = new HashMap<>(500);
       for (XAttributeType attrType : oseeDsl.getAttributeTypes()) {
          if (typeNames.contains(attrType.getName())) {
             String message = String.format("Duplicate attribute type name [%s]", attrType.getName());
@@ -177,7 +177,7 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    }
 
    private void checkHierarchyUnique(AccessContext accessContext, Collection<HierarchyRestriction> hierarchy) {
-      Map<String, XArtifactMatcher> references = new HashMap<String, XArtifactMatcher>();
+      Map<String, XArtifactMatcher> references = new HashMap<>();
       for (HierarchyRestriction restriction : hierarchy) {
          XArtifactMatcher artifactRef = restriction.getArtifactMatcherRef();
          String name = artifactRef.getName();
@@ -203,10 +203,10 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
    }
 
    private final class CheckSwitch extends OseeDslSwitch<Object> {
-      private final Map<String, XArtifactMatcher> artInstanceRestrictions = new HashMap<String, XArtifactMatcher>();
-      private final Map<String, XArtifactType> artifactTypeRestrictions = new HashMap<String, XArtifactType>();
-      private final Map<String, XRelationType> relationTypeRetrictions = new HashMap<String, XRelationType>();
-      private final Collection<AttributeTypeRestriction> attrTypeRetrictions = new HashSet<AttributeTypeRestriction>();
+      private final Map<String, XArtifactMatcher> artInstanceRestrictions = new HashMap<>();
+      private final Map<String, XArtifactType> artifactTypeRestrictions = new HashMap<>();
+      private final Map<String, XRelationType> relationTypeRetrictions = new HashMap<>();
+      private final Collection<AttributeTypeRestriction> attrTypeRetrictions = new HashSet<>();
 
       private final AccessContext accessContext;
 

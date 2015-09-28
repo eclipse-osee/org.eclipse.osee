@@ -63,7 +63,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    private int numSheets;
    private int querySheetNum;
    private final HeaderCollector headers = new HeaderCollector();
-   private final List<Map<String, Object>> providedData = new LinkedList<Map<String, Object>>();
+   private final List<Map<String, Object>> providedData = new LinkedList<>();
 
    public ExcelOutputHandler(ScriptContext context) {
       super();
@@ -106,7 +106,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
    @Override
    public void onError(Throwable th) {
       if (errors == null) {
-         errors = new ArrayList<Throwable>();
+         errors = new ArrayList<>();
       }
       errors.add(th);
    }
@@ -463,8 +463,8 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
 
    private static final class DebugInfo {
       public String scriptVersion;
-      public final List<LoadDescription> descriptions = new ArrayList<LoadDescription>();
-      private final List<QueryData> queries = new ArrayList<QueryData>();
+      public final List<LoadDescription> descriptions = new ArrayList<>();
+      private final List<QueryData> queries = new ArrayList<>();
 
       public void setScriptVersion(String version) {
          this.scriptVersion = version;
@@ -493,7 +493,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
 
    private static final class HeaderCollector {
 
-      private final List<List<String>> columnGroups = new ArrayList<List<String>>();
+      private final List<List<String>> columnGroups = new ArrayList<>();
       private volatile int totalSize = -1;
 
       public void clear() {
@@ -510,7 +510,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       private void processHelper(Map<String, Object> data, int index) {
          List<String> columns;
          if (index >= columnGroups.size()) {
-            columns = new ArrayList<String>(data.keySet());
+            columns = new ArrayList<>(data.keySet());
             columnGroups.add(columns);
          } else {
             columns = columnGroups.get(index);
@@ -545,7 +545,7 @@ public class ExcelOutputHandler extends OrcsScriptOutputHandler {
       }
 
       public Iterable<String> getHeaders() {
-         List<String> headings = new ArrayList<String>();
+         List<String> headings = new ArrayList<>();
          for (Collection<String> attributes : columnGroups) {
             for (String value : attributes) {
                headings.add(value);

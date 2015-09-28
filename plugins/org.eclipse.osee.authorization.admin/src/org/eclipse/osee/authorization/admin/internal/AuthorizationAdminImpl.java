@@ -38,7 +38,7 @@ public class AuthorizationAdminImpl implements AuthorizationAdmin {
    private static final Authority PERMIT_ALL_OVERRIDE = new PermitAllAuthority();
    private static final Authority DENY_ALL_OVERRIDE = new DenyAllAuthority();
 
-   private final Map<String, AuthorizationProvider> providers = new ConcurrentHashMap<String, AuthorizationProvider>();
+   private final Map<String, AuthorizationProvider> providers = new ConcurrentHashMap<>();
 
    private Log logger;
    private AuthorizationConfiguration config;

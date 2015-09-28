@@ -24,7 +24,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class TreeViewerReport {
 
    private final TreeViewer treeViewer;
-   private ArrayList<Integer> ignoreCols = new ArrayList<Integer>();
+   private ArrayList<Integer> ignoreCols = new ArrayList<>();
    private final String title;
 
    public TreeViewerReport(String title, TreeViewer treeViewer) {
@@ -71,7 +71,7 @@ public class TreeViewerReport {
       html += AHTML.addHeaderRowMultiColumnTable(colNames, width);
       // Get column widths and column name and setup the columns
       ITableLabelProvider labelProv = (ITableLabelProvider) treeViewer.getLabelProvider();
-      ArrayList<String[]> list = new ArrayList<String[]>();
+      ArrayList<String[]> list = new ArrayList<>();
       for (TreeItem item : items) {
          addRow(item, list, labelProv, cols.length, 1);
       }

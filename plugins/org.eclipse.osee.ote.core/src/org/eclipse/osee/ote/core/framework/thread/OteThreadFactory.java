@@ -26,7 +26,7 @@ public class OteThreadFactory implements ThreadFactory {
 
    protected OteThreadFactory(String threadName) {
       this.threadName = threadName;
-      this.threads = new CopyOnWriteArrayList<WeakReference<OteThread>>();
+      this.threads = new CopyOnWriteArrayList<>();
    }
 
    @Override
@@ -37,7 +37,7 @@ public class OteThreadFactory implements ThreadFactory {
    }
 
    public List<OteThread> getThreads() {
-      List<OteThread> toReturn = new ArrayList<OteThread>();
+      List<OteThread> toReturn = new ArrayList<>();
       for (WeakReference<OteThread> weak : threads) {
          OteThread thread = weak.get();
          if (thread != null) {

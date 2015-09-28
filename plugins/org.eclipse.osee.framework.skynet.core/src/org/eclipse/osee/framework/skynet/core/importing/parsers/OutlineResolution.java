@@ -86,7 +86,7 @@ public final class OutlineResolution {
     */
    public Set<String> generateNextSet(ReqNumbering lastNumberParagrah) {
 
-      Set<String> nextParagraphs = new HashSet<String>();
+      Set<String> nextParagraphs = new HashSet<>();
 
       String last = lastNumberParagrah.getNumberString();
       if (last.endsWith(".0")) {
@@ -117,7 +117,7 @@ public final class OutlineResolution {
 
       }
 
-      Set<String> dotEnding = new HashSet<String>(nextParagraphs.size());
+      Set<String> dotEnding = new HashSet<>(nextParagraphs.size());
       for (String next : nextParagraphs) {
          dotEnding.add(next + ".");
       }

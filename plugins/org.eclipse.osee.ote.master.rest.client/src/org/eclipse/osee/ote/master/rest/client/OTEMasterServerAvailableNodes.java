@@ -10,7 +10,7 @@ public class OTEMasterServerAvailableNodes extends OTEMasterServerResult {
    private List<OTEServer> oteServers;
    
    public OTEMasterServerAvailableNodes(){
-      oteServers = new ArrayList<OTEServer>();
+      oteServers = new ArrayList<>();
    }
    
    public List<OTEServer> getServers(){

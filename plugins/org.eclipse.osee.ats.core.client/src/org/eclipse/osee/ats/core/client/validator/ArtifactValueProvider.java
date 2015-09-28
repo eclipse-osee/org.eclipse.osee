@@ -80,7 +80,7 @@ public class ArtifactValueProvider implements IValueProvider {
    public Collection<Date> getDateValues() throws OseeCoreException {
       AttributeType attributeType = getAtributeType();
       if (attributeType != null) {
-         List<Date> dates = new ArrayList<Date>();
+         List<Date> dates = new ArrayList<>();
          for (Attribute<?> attr : artifact.getAttributes(attributeType)) {
             if (attr instanceof DateAttribute) {
                dates.add(((DateAttribute) attr).getValue());

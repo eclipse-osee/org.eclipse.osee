@@ -58,7 +58,7 @@ public class OseeProperties {
       String serverAddress = System.getProperty(OSEE_EMBEDDED_DB_SERVER, "");
       if (Strings.isValid(serverAddress)) {
          String[] hostPort = serverAddress.split(":");
-         addressAndPort = new Pair<String, Integer>(hostPort[0], Integer.parseInt(hostPort[1]));
+         addressAndPort = new Pair<>(hostPort[0], Integer.parseInt(hostPort[1]));
       }
       return addressAndPort;
    }
@@ -212,7 +212,7 @@ public class OseeProperties {
 
    @Override
    public String toString() {
-      List<String> list = new ArrayList<String>();
+      List<String> list = new ArrayList<>();
       toStringHelper(list, getClass());
       Collections.sort(list);
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", list);

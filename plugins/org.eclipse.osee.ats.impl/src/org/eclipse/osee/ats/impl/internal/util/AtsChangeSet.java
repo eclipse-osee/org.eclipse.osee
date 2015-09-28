@@ -235,7 +235,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          throw new UnsupportedOperationException("Can only set relations from A to B side");
       }
       ArtifactReadable artifact = getArtifact(object);
-      Set<ArtifactReadable> artifacts = new HashSet<ArtifactReadable>(objects.size());
+      Set<ArtifactReadable> artifacts = new HashSet<>(objects.size());
       for (Object obj : objects) {
          ArtifactReadable art = getArtifact(obj);
          if (art != null) {

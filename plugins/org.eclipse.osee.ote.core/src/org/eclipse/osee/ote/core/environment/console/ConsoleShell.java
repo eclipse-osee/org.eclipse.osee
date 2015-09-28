@@ -24,7 +24,7 @@ public abstract class ConsoleShell {
    private boolean saveLastCmdFlag = true;
 
    public ConsoleShell(ICommandManager manager) {
-      this.manager = new WeakReference<ICommandManager>(manager);
+      this.manager = new WeakReference<>(manager);
    }
 
    public abstract void println(String string);

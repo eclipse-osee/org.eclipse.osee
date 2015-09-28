@@ -52,7 +52,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
    }
 
    public Collection<User> getUsersSelected() {
-      Set<User> selected = new HashSet<User>();
+      Set<User> selected = new HashSet<>();
       for (FullyNamed art : getChecked()) {
          selected.add((User) art);
       }
@@ -119,7 +119,7 @@ public class UserCheckTreeDialog extends FilteredCheckboxTreeArtifactDialog {
     */
    public void setTeamMembers(Collection<? extends User> teamMembers) {
       if (this.teamMembers == null) {
-         this.teamMembers = new HashSet<User>();
+         this.teamMembers = new HashSet<>();
       }
       this.teamMembers.addAll(teamMembers);
    }

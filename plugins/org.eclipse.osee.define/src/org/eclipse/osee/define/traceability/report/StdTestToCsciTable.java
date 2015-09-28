@@ -134,7 +134,7 @@ public class StdTestToCsciTable implements ISimpleTable {
       }
 
       for (String partition : new TreeSet<String>(partitionToQualificationMethod.keySet())) {
-         List<String> units = new ArrayList<String>(partitionToQualificationMethod.getValues(partition));
+         List<String> units = new ArrayList<>(partitionToQualificationMethod.getValues(partition));
          Collections.sort(units);
          for (String codeUnit : units) {
             List<Artifact> artifacts =
@@ -145,7 +145,7 @@ public class StdTestToCsciTable implements ISimpleTable {
    }
 
    private HashCollection<Artifact, String> getQualificationMethods(RequirementTraceabilityData source) {
-      HashCollection<Artifact, String> toReturn = new HashCollection<Artifact, String>(false, LinkedList.class);
+      HashCollection<Artifact, String> toReturn = new HashCollection<>(false, LinkedList.class);
       HashCollection<Artifact, String> requirementsToCodeUnits = source.getRequirementsToCodeUnits();
 
       // Combine Test Scripts and Test Procedures
@@ -159,9 +159,9 @@ public class StdTestToCsciTable implements ISimpleTable {
    }
 
    private void processRow(ISheetWriter sheetWriter, String partition, String codeUnit, Collection<Artifact> artifacts) throws Exception {
-      List<String> paragraphTitles = new ArrayList<String>();
-      List<String> paragraphNumbers = new ArrayList<String>();
-      List<String> artifactTypes = new ArrayList<String>();
+      List<String> paragraphTitles = new ArrayList<>();
+      List<String> paragraphNumbers = new ArrayList<>();
+      List<String> artifactTypes = new ArrayList<>();
       for (Artifact artifact : artifacts) {
          ArtifactOperations operator = new ArtifactOperations(artifact);
          String name = operator.getName();

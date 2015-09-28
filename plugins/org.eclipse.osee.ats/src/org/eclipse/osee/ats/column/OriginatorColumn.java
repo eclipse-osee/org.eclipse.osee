@@ -136,7 +136,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             return ((AbstractWorkflowArtifact) element).getCreatedBy().getName();
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                strs.add(team.getCreatedBy().getName());
             }
@@ -155,7 +155,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
             return AtsUtil.getImage(Arrays.asList(((AbstractWorkflowArtifact) element).getCreatedBy()));
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<IAtsUser>();
+            Set<IAtsUser> users = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                users.add(team.getCreatedBy());
             }
@@ -171,7 +171,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {

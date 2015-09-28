@@ -49,7 +49,7 @@ public class AtsUtilClient {
       AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
    private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
       AtsArtifactTypes.TeamWorkflow);
-   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<IEventFilter>(2);
+   private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
    private static BranchUuidEventFilter commonBranchGuidEventFilter;
 
@@ -92,7 +92,7 @@ public class AtsUtilClient {
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> List<A> getActive(Collection<A> artifacts, Active active, Class<? extends Artifact> clazz) throws OseeCoreException {
-      List<A> results = new ArrayList<A>();
+      List<A> results = new ArrayList<>();
       Collection<? extends Artifact> artsOfClass =
          clazz != null ? Collections.castMatching(clazz, artifacts) : artifacts;
       for (Artifact art : artsOfClass) {

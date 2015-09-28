@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class RuleManager {
 
-   public List<String> rules = new ArrayList<String>();
+   public List<String> rules = new ArrayList<>();
 
    public List<String> getRules() {
       return rules;

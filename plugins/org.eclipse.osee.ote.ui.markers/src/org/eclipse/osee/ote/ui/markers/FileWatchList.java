@@ -38,7 +38,7 @@ public class FileWatchList {
    private final List<FileWatchItem> fileWatchItems;
 
    public FileWatchList() {
-      fileWatchItems = new CopyOnWriteArrayList<FileWatchItem>();
+      fileWatchItems = new CopyOnWriteArrayList<>();
    }
 
    public void put(IFile file, List<IMarker> markers) {

@@ -22,7 +22,7 @@ import org.junit.Test;
 public class CompositeKeyHashMapTest {
    @Test
    public void testEnumerateKeys() {
-      CompositeKeyHashMap<String, String, String> testMap = new CompositeKeyHashMap<String, String, String>();
+      CompositeKeyHashMap<String, String, String> testMap = new CompositeKeyHashMap<>();
       testMap.put("red", "blue", "value1");
       testMap.put("red", "green", "value2");
       testMap.put("red", "red", "value3");

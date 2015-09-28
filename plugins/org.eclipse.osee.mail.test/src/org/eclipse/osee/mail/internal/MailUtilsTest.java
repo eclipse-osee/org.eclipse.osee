@@ -176,7 +176,7 @@ public class MailUtilsTest {
    //@formatter:on
 
    private List<String> parseMultiPart(String actualMessage) {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       Matcher matcher = MULTI_PART_PATTERN.matcher(actualMessage);
       while (matcher.find()) {
          toReturn.add(matcher.group(1).trim());

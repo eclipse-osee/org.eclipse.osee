@@ -73,13 +73,13 @@ public class GoalSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs != null ? teamDefs.size() : 0);
+      Set<String> teamDefinitionGuids = new HashSet<>(teamDefs != null ? teamDefs.size() : 0);
       if (teamDefs != null) {
          for (IAtsTeamDefinition teamDef : teamDefs) {
             teamDefinitionGuids.add(AtsUtilCore.getGuid(teamDef));
          }
       }
-      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
       if (!teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
       }
@@ -91,7 +91,7 @@ public class GoalSearchItem extends WorldUISearchItem {
       List<Artifact> artifacts =
          ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), 1000, criteria);
 
-      Set<Artifact> resultGoalArtifacts = new HashSet<Artifact>();
+      Set<Artifact> resultGoalArtifacts = new HashSet<>();
       for (Artifact art : artifacts) {
 
          for (Artifact goalArt : new GoalManager().getCollectors(art, true)) {

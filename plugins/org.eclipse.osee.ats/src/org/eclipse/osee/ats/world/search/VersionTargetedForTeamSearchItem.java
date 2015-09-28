@@ -83,7 +83,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          throw new OseeArgumentException("Invalid release version");
       }
 
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
          getSearchVersionArtifact())) {
          if (returnAction) {

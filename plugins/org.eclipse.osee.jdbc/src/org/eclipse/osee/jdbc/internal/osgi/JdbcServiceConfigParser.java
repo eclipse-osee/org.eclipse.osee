@@ -31,10 +31,10 @@ import org.json.JSONObject;
 public final class JdbcServiceConfigParser {
 
    public Map<String, JdbcServiceConfig> parse(String source) {
-      Map<String, JdbcServiceConfig> toReturn = new LinkedHashMap<String, JdbcServiceConfig>();
+      Map<String, JdbcServiceConfig> toReturn = new LinkedHashMap<>();
       if (Strings.isValid(source)) {
          try {
-            Set<String> allBindings = new HashSet<String>();
+            Set<String> allBindings = new HashSet<>();
             JSONArray array = new JSONArray(source);
             for (int index = 0; index < array.length(); index++) {
                JSONObject object = array.getJSONObject(index);
@@ -69,7 +69,7 @@ public final class JdbcServiceConfigParser {
    }
 
    private Dictionary<String, Object> asDictionary(JSONObject object) throws JSONException {
-      Dictionary<String, Object> toReturn = new Hashtable<String, Object>();
+      Dictionary<String, Object> toReturn = new Hashtable<>();
       String[] names = JSONObject.getNames(object);
       for (String key : names) {
          Object value = object.get(key);
@@ -84,7 +84,7 @@ public final class JdbcServiceConfigParser {
    }
 
    private Set<String> asSet(String key, JSONArray array) throws JSONException {
-      Set<String> toReturn = new TreeSet<String>();
+      Set<String> toReturn = new TreeSet<>();
       for (int index = 0; index < array.length(); index++) {
          String name = array.getString(index);
          if (Strings.isValid(name)) {

@@ -26,7 +26,7 @@ public final class MockBranchProvider implements BranchProvider {
    private final static String ROOT_BRANCH_NAME = "ROOT";
 
    public static Collection<Branch> createTestBranches() throws OseeCoreException {
-      Collection<Branch> branches = new ArrayList<Branch>();
+      Collection<Branch> branches = new ArrayList<>();
       //create a root branch
       Branch root =
          new Branch(Lib.generateUuid(), ROOT_BRANCH_NAME, BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false, false);

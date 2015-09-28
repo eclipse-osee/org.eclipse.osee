@@ -50,13 +50,13 @@ public class FetchDatastoreInfoCallable extends AbstractDatastoreCallable<DataSt
    public DataStoreInfo call() throws Exception {
       DataStoreInfoImpl dataStoreInfo = new DataStoreInfoImpl();
 
-      Map<String, String> props = new HashMap<String, String>();
+      Map<String, String> props = new HashMap<>();
       addInfoProperties(props);
       addDbMetaData(props);
 
       dataStoreInfo.setProperties(props);
 
-      Set<URL> configResources = new HashSet<URL>();
+      Set<URL> configResources = new HashSet<>();
       dataStoreInfo.setConfigurationResources(configResources);
 
       for (JdbcMigrationResource resource : schemaProvider.get()) {

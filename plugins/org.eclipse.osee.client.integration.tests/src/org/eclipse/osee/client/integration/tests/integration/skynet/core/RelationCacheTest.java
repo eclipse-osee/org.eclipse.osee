@@ -83,7 +83,7 @@ public class RelationCacheTest {
       sourceLinksRelType1 = TestUtil.createLinks(4, branch1, relType1);
       sourceLinksRelType2 = TestUtil.createLinks(4, branch1, relType2);
 
-      sourceLinksRelType1AndType2 = new ArrayList<RelationLink>();
+      sourceLinksRelType1AndType2 = new ArrayList<>();
       sourceLinksRelType1AndType2.addAll(sourceLinksRelType1);
       sourceLinksRelType1AndType2.addAll(sourceLinksRelType2);
 

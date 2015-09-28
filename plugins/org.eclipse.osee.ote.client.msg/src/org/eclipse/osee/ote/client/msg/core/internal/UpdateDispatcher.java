@@ -35,7 +35,7 @@ public final class UpdateDispatcher {
    private static final int RECEIVE_BUFFER_SIZE = 1024 * 512;
 
    /** * Class Instance Fields ** */
-   private final Map<DataType, DatagramChannel> channelMap = new HashMap<DataType, DatagramChannel>();
+   private final Map<DataType, DatagramChannel> channelMap = new HashMap<>();
 
    private final InetSocketAddress remoteAddress;
    private final Object gate = new Object();

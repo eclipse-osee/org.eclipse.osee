@@ -86,7 +86,7 @@ public class OseAttributeOpClauseImpl extends OsAttributeClauseImpl implements O
   {
     if (options == null)
     {
-      options = new EDataTypeEList<OsQueryOption>(OsQueryOption.class, this, OrcsScriptDslPackage.OSE_ATTRIBUTE_OP_CLAUSE__OPTIONS);
+      options = new EDataTypeEList<>(OsQueryOption.class, this, OrcsScriptDslPackage.OSE_ATTRIBUTE_OP_CLAUSE__OPTIONS);
     }
     return options;
   }
@@ -100,7 +100,7 @@ public class OseAttributeOpClauseImpl extends OsAttributeClauseImpl implements O
   {
     if (values == null)
     {
-      values = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OSE_ATTRIBUTE_OP_CLAUSE__VALUES);
+      values = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OSE_ATTRIBUTE_OP_CLAUSE__VALUES);
     }
     return values;
   }

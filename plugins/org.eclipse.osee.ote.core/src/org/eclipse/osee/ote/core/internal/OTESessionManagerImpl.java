@@ -14,7 +14,7 @@ public class OTESessionManagerImpl implements OTESessionManager {
    private UUID activeUserId;
    
    public OTESessionManagerImpl(){
-      userMap = new ConcurrentHashMap<UUID, IUserSession>();
+      userMap = new ConcurrentHashMap<>();
    }
    
    @Override

@@ -88,15 +88,15 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       requirementData.initialize(monitor);
-      requirementToTestUnitsMap = new HashCollection<Artifact, String>();
+      requirementToTestUnitsMap = new HashCollection<>();
 
       List<Artifact> unitsOnBranch = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestCase, branch);
-      testUnits = new HashMap<String, Artifact>();
+      testUnits = new HashMap<>();
       for (Artifact unit : unitsOnBranch) {
          testUnits.put(convertToJavaFileName(unit.getName()), unit);
       }
 
-      List<Artifact> reqs = new ArrayList<Artifact>();
+      List<Artifact> reqs = new ArrayList<>();
       for (IArtifactType type : types) {
          if (withInheritance) {
             reqs.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(type, branch, DeletionFlag.EXCLUDE_DELETED));
@@ -107,7 +107,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
       for (Artifact req : reqs) {
          List<Artifact> verifiers = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
-         Collection<String> verifierNames = new HashSet<String>();
+         Collection<String> verifierNames = new HashSet<>();
          String inspection = getInspectionQual(req);
          if (Strings.isValid(inspection)) {
             verifierNames.add(inspection);

@@ -40,7 +40,7 @@ public class ExtensionDefinedReports {
    private static ExtensionDefinedReports instance = null;
 
    private ExtensionDefinedReports() {
-      this.reportMap = new HashMap<String, ReportData>();
+      this.reportMap = new HashMap<>();
       loadReports();
    }
 
@@ -54,7 +54,7 @@ public class ExtensionDefinedReports {
    @SuppressWarnings("unchecked")
    public Pair<String, String>[] getIdsAndNames() {
       if (idsAndNameMap == null) {
-         this.idsAndNameMap = new HashMap<String, Pair<String, String>>();
+         this.idsAndNameMap = new HashMap<>();
          Set<String> ids = reportMap.keySet();
          for (String id : ids) {
             ReportData data = reportMap.get(id);

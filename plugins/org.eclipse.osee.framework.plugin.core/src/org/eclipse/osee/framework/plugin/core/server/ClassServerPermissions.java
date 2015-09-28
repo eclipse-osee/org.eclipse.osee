@@ -24,7 +24,7 @@ public class ClassServerPermissions extends PermissionCollection {
    private final ArrayList<Permission> list;
 
    public ClassServerPermissions() {
-      list = new ArrayList<Permission>();
+      list = new ArrayList<>();
    }
 
    @Override

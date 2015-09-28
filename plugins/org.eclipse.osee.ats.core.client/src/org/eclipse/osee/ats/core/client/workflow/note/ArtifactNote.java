@@ -29,7 +29,7 @@ public class ArtifactNote implements INoteStorageProvider {
    private final WeakReference<Artifact> artifactRef;
 
    public ArtifactNote(Artifact artifact) {
-      this.artifactRef = new WeakReference<Artifact>(artifact);
+      this.artifactRef = new WeakReference<>(artifact);
    }
 
    @Override

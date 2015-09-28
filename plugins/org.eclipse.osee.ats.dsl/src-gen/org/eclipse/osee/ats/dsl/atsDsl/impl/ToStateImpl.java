@@ -129,7 +129,7 @@ public class ToStateImpl extends MinimalEObjectImpl.Container implements ToState
   {
     if (options == null)
     {
-      options = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TO_STATE__OPTIONS);
+      options = new EDataTypeEList<>(String.class, this, AtsDslPackage.TO_STATE__OPTIONS);
     }
     return options;
   }

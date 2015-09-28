@@ -857,7 +857,7 @@ public class DataLoaderFactoryImplTest {
       assertFalse(queryId.equals(-1));
       assertEquals(joinCaptor.getValue().getQueryId(), queryId);
 
-      List<Object> queryIdsToMatch = new ArrayList<Object>();
+      List<Object> queryIdsToMatch = new ArrayList<>();
       for (Object param : params) {
          if (param.equals(JQID)) {
             queryIdsToMatch.add(iterator.next());

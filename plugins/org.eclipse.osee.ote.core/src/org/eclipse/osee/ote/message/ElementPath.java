@@ -26,7 +26,7 @@ public class ElementPath implements Serializable {
    private final boolean isHeaderElement;
 
    public static ElementPath decode(String encodedPath) {
-      List<Object> path = new LinkedList<Object>();
+      List<Object> path = new LinkedList<>();
       String[] components = encodedPath.split("\\+");
 
       for (String component : components) {

@@ -67,7 +67,7 @@ public class AtsObjectLabelProvider extends LabelProvider {
          if (element instanceof IAtsObject) {
             IAtsObject artifact = (IAtsObject) element;
 
-            List<String> extraInfo = new ArrayList<String>();
+            List<String> extraInfo = new ArrayList<>();
             String name = artifact.getName();
             extraInfo.add(name != null ? name : "");
             result = Collections.toString(" ", extraInfo);

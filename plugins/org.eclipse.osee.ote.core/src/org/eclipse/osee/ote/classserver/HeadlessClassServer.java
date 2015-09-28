@@ -21,7 +21,7 @@ public class HeadlessClassServer {
 	public HeadlessClassServer(int port, InetAddress address, List<File> bundleFolders) throws IOException{
 //		Thread.currentThread().setName("BundleClassServer");
 		classServer = new ClassServer(port, address);
-		jars = new ArrayList<BundleInfo>();
+		jars = new ArrayList<>();
 		for(File dir:bundleFolders){
 			if(dir.exists() && dir.isDirectory()){
 				findJarFiles(dir, jars);

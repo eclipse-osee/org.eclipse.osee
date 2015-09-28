@@ -68,7 +68,7 @@ public class ReviewDefectManager {
 
    public void ensureLoaded() throws OseeCoreException {
       if (defectItems == null) {
-         defectItems = new HashSet<ReviewDefectItem>();
+         defectItems = new HashSet<>();
          for (String xml : valueProvider.getValues()) {
             defectMatcher.reset(xml);
             while (defectMatcher.find()) {
@@ -147,7 +147,7 @@ public class ReviewDefectManager {
    @SuppressWarnings("deprecation")
    private List<ReviewDefectItem> getStoredDefectItems(Artifact artifact) throws OseeCoreException {
       // Add new ones: items in userRoles that are not in dbuserRoles
-      List<ReviewDefectItem> storedDefectItems = new ArrayList<ReviewDefectItem>();
+      List<ReviewDefectItem> storedDefectItems = new ArrayList<>();
       for (Attribute<?> attr : artifact.getAttributes(REVIEW_STORAGE_TYPE)) {
          ReviewDefectItem storedRole = new ReviewDefectItem((String) attr.getValue());
          storedDefectItems.add(storedRole);

@@ -38,7 +38,7 @@ public class DemoDbGroups {
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Populate Demo DB - Create Groups");
 
       // Create group of all resulting objects
-      List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<TeamWorkFlowArtifact>();
+      List<TeamWorkFlowArtifact> codeWorkflows = new ArrayList<>();
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Create Groups and add objects");
       }

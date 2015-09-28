@@ -17,11 +17,11 @@ import java.util.List;
 public class AccessFilterFactory {
 
    public Collection<IAccessFilter> createFilter() {
-      List<IAccessFilter> filters = new ArrayList<IAccessFilter>();
+      List<IAccessFilter> filters = new ArrayList<>();
 
-      //		Collection<IOseeBranch> allowedBranches = new List<IOseeBranch>();
-      //		Collection<IBasicArtifact<T>> allowedArtifactType = new List<IArtifactType>();
-      //		Collection<IArtifactType> allowedArtifactType = new List<IArtifactType>();
+      //		Collection<IOseeBranch> allowedBranches = new List<>();
+      //		Collection<IBasicArtifact<T>> allowedArtifactType = new List<>();
+      //		Collection<IArtifactType> allowedArtifactType = new List<>();
       //
       //		filters.add(new BranchAccessFilter(artifact, branchPermission));
       //		filters.add(new ArtifactAccessFilter());

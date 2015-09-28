@@ -111,7 +111,7 @@ public class ArtifactLoaderTest {
          ArtifactCache.deCache(artifact);
       }
 
-      Collection<LoadArtifacts> tasks = new ArrayList<LoadArtifacts>();
+      Collection<LoadArtifacts> tasks = new ArrayList<>();
       for (int x = 1; x <= TOTAL_THREADS; x++) {
          tasks.add(new LoadArtifacts());
       }
@@ -163,7 +163,7 @@ public class ArtifactLoaderTest {
       // now, de-cache them
       ArtifactCache.deCache(testArt);
 
-      List<Callable<String>> callables = new LinkedList<Callable<String>>();
+      List<Callable<String>> callables = new LinkedList<>();
 
       int size = 4;
       //create 4 threads to load the same artifact
@@ -187,7 +187,7 @@ public class ArtifactLoaderTest {
 
    @Test(timeout = 5000)
    public void testLoadingNonExistingArtifactMultipleTimes() throws InterruptedException {
-      final List<Integer> artIds = new LinkedList<Integer>();
+      final List<Integer> artIds = new LinkedList<>();
       artIds.add(Integer.MAX_VALUE);
       artIds.add(Integer.MIN_VALUE);
       Job job1 = Operations.executeAsJob(new IOperation() {

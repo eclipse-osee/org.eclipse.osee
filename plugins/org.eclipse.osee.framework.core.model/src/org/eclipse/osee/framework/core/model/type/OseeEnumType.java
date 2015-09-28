@@ -33,7 +33,7 @@ public class OseeEnumType extends AbstractOseeIdType<Long> {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 
-   private final Collection<OseeEnumEntry> enumEntries = new HashSet<OseeEnumEntry>();
+   private final Collection<OseeEnumEntry> enumEntries = new HashSet<>();
 
    public OseeEnumType(Long guid, String enumTypeName) {
       super(guid, enumTypeName);
@@ -42,7 +42,7 @@ public class OseeEnumType extends AbstractOseeIdType<Long> {
 
    @Override
    public String toString() {
-      List<String> data = new ArrayList<String>();
+      List<String> data = new ArrayList<>();
       try {
          for (OseeEnumEntry entry : values()) {
             data.add(entry.toString());
@@ -55,7 +55,7 @@ public class OseeEnumType extends AbstractOseeIdType<Long> {
 
    public OseeEnumEntry[] values() throws OseeCoreException {
       Collection<OseeEnumEntry> values = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
-      List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>(values);
+      List<OseeEnumEntry> entries = new ArrayList<>(values);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
@@ -71,7 +71,7 @@ public class OseeEnumType extends AbstractOseeIdType<Long> {
    }
 
    public Set<String> valuesAsOrderedStringSet() throws OseeCoreException {
-      Set<String> values = new LinkedHashSet<String>();
+      Set<String> values = new LinkedHashSet<>();
       for (OseeEnumEntry oseeEnumEntry : values()) {
          values.add(oseeEnumEntry.getName());
       }
@@ -112,14 +112,14 @@ public class OseeEnumType extends AbstractOseeIdType<Long> {
    }
 
    public void addEntry(OseeEnumEntry entry) throws OseeCoreException {
-      List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+      List<OseeEnumEntry> entries = new ArrayList<>();
       entries.addAll(Arrays.asList(values()));
       entries.add(entry);
       setEntries(entries);
    }
 
    public void removeEntry(OseeEnumEntry entry) throws OseeCoreException {
-      List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+      List<OseeEnumEntry> entries = new ArrayList<>();
       entries.addAll(Arrays.asList(values()));
       if (!entries.remove(entry)) {
          throw new OseeArgumentException("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry, this);

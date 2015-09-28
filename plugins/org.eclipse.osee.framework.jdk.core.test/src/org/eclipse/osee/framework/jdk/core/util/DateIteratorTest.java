@@ -35,7 +35,7 @@ public class DateIteratorTest {
    private final int calendarFieldNormalize; //If normalize==false then this will be ignored
    private final int calendarValueNormalize; //If normalize==false then this will be ignored
 
-   //   private final List<Calendar> calsExpected = new ArrayList<Calendar>();
+   //   private final List<Calendar> calsExpected = new ArrayList<>();
 
    public DateIteratorTest(Calendar startCal, Calendar endCal, int calendarFieldIter, int iterRate, boolean normalize, int calendarFieldNormalize, int calendarValueNormalize) {
       this.startCal = startCal;
@@ -50,8 +50,8 @@ public class DateIteratorTest {
    @Test
    public void testDefaultDateIterationOverCenturyYearChange() {
       //Collection object to retain the iterated dates from the DateIterator
-      List<Calendar> calsFromIter = new ArrayList<Calendar>();
-      List<Calendar> calsExpected = new ArrayList<Calendar>();
+      List<Calendar> calsFromIter = new ArrayList<>();
+      List<Calendar> calsExpected = new ArrayList<>();
 
       //Generate expected output
       Calendar iCal = (Calendar) startCal.clone();
@@ -102,7 +102,7 @@ public class DateIteratorTest {
 
    @Parameters
    public static Collection<Object[]> dateIterationTestData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       Calendar startCal = Calendar.getInstance();
       Calendar endCal = Calendar.getInstance();
@@ -181,8 +181,8 @@ public class DateIteratorTest {
    //      String start = DateUtil.get(startCal.getTime());
    //      String end = DateUtil.get(endCal.getTime());
    //
-   //      List<Calendar> calsFromIter = new ArrayList<Calendar>();
-   //      List<Calendar> calsExpected = new ArrayList<Calendar>();
+   //      List<Calendar> calsFromIter = new ArrayList<>();
+   //      List<Calendar> calsExpected = new ArrayList<>();
    //
    //      //Populate calsExpected -
    //      // Every day between startCal and endCal
@@ -241,8 +241,8 @@ public class DateIteratorTest {
    //      String start = DateUtil.get(startCal.getTime());
    //      String end = DateUtil.get(endCal.getTime());
    //
-   //      List<Calendar> calsFromIter = new ArrayList<Calendar>();
-   //      List<Calendar> calsExpected = new ArrayList<Calendar>();
+   //      List<Calendar> calsFromIter = new ArrayList<>();
+   //      List<Calendar> calsExpected = new ArrayList<>();
    //
    //      //Populate calsExpected -
    //      // All Mondays between startCal and endCal.  Including first Monday prior to startCal and first Monday after endCal

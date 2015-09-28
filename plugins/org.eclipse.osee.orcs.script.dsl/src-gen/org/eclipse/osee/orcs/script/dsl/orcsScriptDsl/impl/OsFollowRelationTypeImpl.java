@@ -237,7 +237,7 @@ public class OsFollowRelationTypeImpl extends OsFollowStatementImpl implements O
   {
     if (criteria == null)
     {
-      criteria = new EObjectContainmentEList<OsItemCriteria>(OsItemCriteria.class, this, OrcsScriptDslPackage.OS_FOLLOW_RELATION_TYPE__CRITERIA);
+      criteria = new EObjectContainmentEList<>(OsItemCriteria.class, this, OrcsScriptDslPackage.OS_FOLLOW_RELATION_TYPE__CRITERIA);
     }
     return criteria;
   }

@@ -53,8 +53,8 @@ public class ApplicationServerManager implements IApplicationServerManager {
    private Timer timer;
 
    public ApplicationServerManager() {
-      this.oseeHttpServlets = new ConcurrentHashMap<String, InternalOseeHttpServlet>();
-      this.threadFactories = new ConcurrentHashMap<String, OseeServerThreadFactory>();
+      this.oseeHttpServlets = new ConcurrentHashMap<>();
+      this.threadFactories = new ConcurrentHashMap<>();
    }
 
    public void setLogger(Log logger) {
@@ -199,7 +199,7 @@ public class ApplicationServerManager implements IApplicationServerManager {
 
    @Override
    public List<String> getCurrentProcesses() {
-      List<String> processList = new ArrayList<String>();
+      List<String> processList = new ArrayList<>();
       for (String key : threadFactories.keySet()) {
          for (OseeServerThread thread : getThreadsFromFactory(key)) {
             State state = thread.getState();

@@ -34,7 +34,7 @@ public final class PurgeBranchHandler extends GeneralBranchHandler {
 
    @Override
    public void performOperation(List<Branch> branches) {
-      List<Branch> hasChildren = new LinkedList<Branch>();
+      List<Branch> hasChildren = new LinkedList<>();
       for (Branch branch : branches) {
          try {
             if (branch.getAllChildBranches(false).isEmpty()) {

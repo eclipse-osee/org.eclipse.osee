@@ -206,7 +206,7 @@ public class RuleImpl extends MinimalEObjectImpl.Container implements Rule
   {
     if (ruleLocation == null)
     {
-      ruleLocation = new EDataTypeEList<RuleLocation>(RuleLocation.class, this, AtsDslPackage.RULE__RULE_LOCATION);
+      ruleLocation = new EDataTypeEList<>(RuleLocation.class, this, AtsDslPackage.RULE__RULE_LOCATION);
     }
     return ruleLocation;
   }

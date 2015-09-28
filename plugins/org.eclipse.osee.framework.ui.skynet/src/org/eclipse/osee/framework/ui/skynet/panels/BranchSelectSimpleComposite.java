@@ -182,7 +182,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
          }
       }
 
-      List<String> branchUuidsToUse = new ArrayList<String>();
+      List<String> branchUuidsToUse = new ArrayList<>();
       for (String id : branchUuids) {
          try {
             Branch branch = BranchManager.getBranch(Long.parseLong(id));
@@ -232,7 +232,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
 
    public String[] getBranchIds() {
       String[] items = branchSelectCombo.getItems();
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       for (String item : items) {
          Branch branch = (Branch) branchSelectCombo.getData(item);
          if (branch != null) {

@@ -27,7 +27,7 @@ class OseeServerThreadFactory implements ThreadFactory {
 
    public OseeServerThreadFactory(String threadName, int priority) {
       this.threadName = threadName;
-      this.threads = new CopyOnWriteArrayList<WeakReference<OseeServerThread>>();
+      this.threads = new CopyOnWriteArrayList<>();
       this.priority = priority;
    }
 
@@ -44,7 +44,7 @@ class OseeServerThreadFactory implements ThreadFactory {
    }
 
    List<OseeServerThread> getThreads() {
-      List<OseeServerThread> toReturn = new ArrayList<OseeServerThread>();
+      List<OseeServerThread> toReturn = new ArrayList<>();
       for (WeakReference<OseeServerThread> weak : threads) {
          OseeServerThread thread = weak.get();
          if (thread != null) {

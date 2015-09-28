@@ -36,7 +36,7 @@ public class MembersResource {
    @GET
    @Produces(MediaType.TEXT_XML)
    public List<XmlMember> getMemberBrowser() {
-      List<XmlMember> todos = new ArrayList<XmlMember>();
+      List<XmlMember> todos = new ArrayList<>();
       for (Member member : ClusterRestApplication.getMembers()) {
          todos.add(ClusterUtil.fromMember(member));
       }
@@ -46,7 +46,7 @@ public class MembersResource {
    @GET
    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
    public List<XmlMember> getMembers() {
-      List<XmlMember> todos = new ArrayList<XmlMember>();
+      List<XmlMember> todos = new ArrayList<>();
       for (Member member : ClusterRestApplication.getMembers()) {
          todos.add(ClusterUtil.fromMember(member));
       }

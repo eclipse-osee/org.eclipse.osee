@@ -61,7 +61,7 @@ public class AttributeLineElement implements IAdaptable {
    }
 
    public AttributeMatch[] getMatches(AbstractArtifactSearchResult result) {
-      ArrayList<AttributeMatch> res = new ArrayList<AttributeMatch>();
+      ArrayList<AttributeMatch> res = new ArrayList<>();
       Match[] matches = result.getMatches(parent);
       for (int i = 0; i < matches.length; i++) {
          AttributeMatch curr = (AttributeMatch) matches[i];

@@ -52,7 +52,7 @@ public class UnitTestUtil {
    }
 
    public static Set<String> getAuthors(String fileContents) {
-      Set<String> authors = new HashSet<String>();
+      Set<String> authors = new HashSet<>();
       for (String line : fileContents.split("\n")) {
          if (line.contains("* @author")) {
             String author = line;

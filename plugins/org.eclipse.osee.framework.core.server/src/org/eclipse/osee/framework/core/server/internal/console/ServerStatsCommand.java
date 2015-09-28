@@ -36,7 +36,7 @@ import org.eclipse.osee.jdbc.JdbcService;
  */
 public class ServerStatsCommand implements ConsoleCommand {
 
-   private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<String, JdbcService>();
+   private final Map<String, JdbcService> jdbcServices = new ConcurrentHashMap<>();
    private IApplicationServerManager manager;
    private IAuthenticationManager authManager;
 
@@ -129,7 +129,7 @@ public class ServerStatsCommand implements ConsoleCommand {
 
          private void logServlets(IApplicationServerManager manager) {
             console.writeln("Servlets:");
-            List<String> contexts = new ArrayList<String>(manager.getRegisteredServlets());
+            List<String> contexts = new ArrayList<>(manager.getRegisteredServlets());
             Collections.sort(contexts);
             if (contexts.size() % 2 == 1) {
                contexts.add("");

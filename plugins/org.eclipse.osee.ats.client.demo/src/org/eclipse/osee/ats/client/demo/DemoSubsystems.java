@@ -37,7 +37,7 @@ public enum DemoSubsystems {
    }
 
    public static Collection<String> getSubsystems() {
-      ArrayList<String> subsystems = new ArrayList<String>();
+      ArrayList<String> subsystems = new ArrayList<>();
       for (DemoSubsystems subsystem : DemoSubsystems.values()) {
          subsystems.add(subsystem.name());
       }

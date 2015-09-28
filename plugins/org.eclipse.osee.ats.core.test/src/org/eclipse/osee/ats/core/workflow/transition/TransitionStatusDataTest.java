@@ -42,7 +42,7 @@ public class TransitionStatusDataTest {
    public void setup() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>();
+      List<IAtsWorkItem> workItems = new ArrayList<>();
       workItems.add(workItem);
       workItems.add(workItem2);
       data = new TransitionStatusData(workItems, false);

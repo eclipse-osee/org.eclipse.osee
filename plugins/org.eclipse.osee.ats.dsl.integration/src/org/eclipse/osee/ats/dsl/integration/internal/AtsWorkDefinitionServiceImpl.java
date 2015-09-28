@@ -137,7 +137,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public Collection<String> getStateNames(IAtsWorkDefinition workDef) {
-      List<String> names = new ArrayList<String>();
+      List<String> names = new ArrayList<>();
       for (IAtsStateDefinition state : workDef.getStates()) {
          names.add(state.getName());
       }
@@ -146,8 +146,8 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public List<IAtsStateDefinition> getStatesOrderedByOrdinal(IAtsWorkDefinition workDef) {
-      List<IAtsStateDefinition> orderedPages = new ArrayList<IAtsStateDefinition>();
-      List<IAtsStateDefinition> unOrderedPages = new ArrayList<IAtsStateDefinition>();
+      List<IAtsStateDefinition> orderedPages = new ArrayList<>();
+      List<IAtsStateDefinition> unOrderedPages = new ArrayList<>();
       for (int x = 1; x < workDef.getStates().size() + 1; x++) {
          for (IAtsStateDefinition state : workDef.getStates()) {
             if (state.getOrdinal() == x) {
@@ -188,7 +188,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
     */
    @Override
    public List<IAtsWidgetDefinition> getWidgetsFromLayoutItems(IAtsStateDefinition stateDef) {
-      List<IAtsWidgetDefinition> widgets = new ArrayList<IAtsWidgetDefinition>();
+      List<IAtsWidgetDefinition> widgets = new ArrayList<>();
       getWidgets(stateDef, widgets, stateDef.getLayoutItems());
       return widgets;
    }
@@ -251,7 +251,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public Collection<IAtsWorkDefinition> getAllWorkDefinitions(XResultData resultData) throws Exception {
-      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      List<IAtsWorkDefinition> workDefs = new ArrayList<>();
       for (Pair<String, String> entry : workDefStore.getWorkDefinitionStrings()) {
          String name = entry.getFirst();
          String workDefStr = entry.getSecond();
@@ -267,7 +267,7 @@ public class AtsWorkDefinitionServiceImpl implements IAtsWorkDefinitionService {
 
    @Override
    public Collection<String> getAllValidStateNames(XResultData resultData) throws Exception {
-      Set<String> allValidStateNames = new HashSet<String>();
+      Set<String> allValidStateNames = new HashSet<>();
       for (IAtsWorkDefinition workDef : getAllWorkDefinitions(resultData)) {
          for (String stateName : getStateNames(workDef)) {
             if (!allValidStateNames.contains(stateName)) {

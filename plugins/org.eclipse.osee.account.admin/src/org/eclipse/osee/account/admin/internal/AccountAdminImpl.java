@@ -256,7 +256,7 @@ public class AccountAdminImpl implements AccountAdmin {
       boolean modified = false;
       AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
-      HashMap<String, String> newPrefs = new HashMap<String, String>(original);
+      HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.put(key, value);
       if (Compare.isDifferent(original, newPrefs)) {
          getStorage().setAccountPreferences(prefs, newPrefs);
@@ -283,7 +283,7 @@ public class AccountAdminImpl implements AccountAdmin {
       boolean modified = false;
       AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
-      HashMap<String, String> newPrefs = new HashMap<String, String>(original);
+      HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.remove(key);
       if (Compare.isDifferent(original, newPrefs)) {
          getStorage().setAccountPreferences(prefs, newPrefs);

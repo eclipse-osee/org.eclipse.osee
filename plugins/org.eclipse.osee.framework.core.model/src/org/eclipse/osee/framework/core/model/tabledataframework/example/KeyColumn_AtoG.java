@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.tabledataframework.KeyColumn;
  * @author Shawn F. Cook
  */
 public class KeyColumn_AtoG implements KeyColumn {
-   List<String> listAtoG = new ArrayList<String>(Arrays.asList("A", "B", "C", "D", "E", "F", "G"));
+   List<String> listAtoG = new ArrayList<>(Arrays.asList("A", "B", "C", "D", "E", "F", "G"));
    private Integer currentIndex;
    private Integer nextIndex;
 
@@ -52,7 +52,7 @@ public class KeyColumn_AtoG implements KeyColumn {
 
    @Override
    public List<Object> getAll() {
-      List<Object> retList = new ArrayList<Object>();
+      List<Object> retList = new ArrayList<>();
       retList.addAll(listAtoG);
       return retList;
    }

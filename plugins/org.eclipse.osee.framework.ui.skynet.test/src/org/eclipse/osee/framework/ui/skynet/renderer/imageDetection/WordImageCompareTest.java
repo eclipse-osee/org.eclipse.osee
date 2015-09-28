@@ -75,7 +75,7 @@ public class WordImageCompareTest {
 
    private static List<WordmlPicture> createPictureList(String wordml) {
       int startIndex = 0;
-      List<WordmlPicture> pictures = new LinkedList<WordmlPicture>();
+      List<WordmlPicture> pictures = new LinkedList<>();
       while (wordml.indexOf("<w:pict>", startIndex) > 0) {
          int currentStartIndex = wordml.indexOf("<w:pict>", startIndex);
          int currentEndIndex = wordml.indexOf("</w:pict", currentStartIndex);

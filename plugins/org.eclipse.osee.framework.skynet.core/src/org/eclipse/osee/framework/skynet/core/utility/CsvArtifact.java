@@ -84,7 +84,7 @@ public class CsvArtifact {
    }
 
    public List<List<String>> getRows(boolean ignoreHeaderRow) throws OseeCoreException {
-      List<List<String>> rows = new ArrayList<List<String>>();
+      List<List<String>> rows = new ArrayList<>();
       String csvData = getCsvData();
       String[] csvLines = csvData.split("\n");
 
@@ -92,7 +92,7 @@ public class CsvArtifact {
       for (String csvLine : csvLines) {
          if ((ignoreHeaderRow && rowIndex > 0) || !ignoreHeaderRow) {
             String[] values = csvLine.split(",");
-            List<String> row = new ArrayList<String>();
+            List<String> row = new ArrayList<>();
             for (String value : values) {
                value = value.trim();
                row.add(value);

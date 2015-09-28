@@ -26,7 +26,7 @@ public class OrcsTransactionUtil {
       List<Integer> toReturn;
       if (Strings.isValid(rawValue)) {
          String[] entries = rawValue.split(",");
-         toReturn = new ArrayList<Integer>();
+         toReturn = new ArrayList<>();
          for (String entry : entries) {
             Integer value = Integer.parseInt(entry.trim());
             toReturn.add(value);

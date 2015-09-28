@@ -136,7 +136,7 @@ public class OsCollectObjectExpressionImpl extends OsCollectExpressionImpl imple
   {
     if (expressions == null)
     {
-      expressions = new EObjectContainmentEList<OsCollectExpression>(OsCollectExpression.class, this, OrcsScriptDslPackage.OS_COLLECT_OBJECT_EXPRESSION__EXPRESSIONS);
+      expressions = new EObjectContainmentEList<>(OsCollectExpression.class, this, OrcsScriptDslPackage.OS_COLLECT_OBJECT_EXPRESSION__EXPRESSIONS);
     }
     return expressions;
   }

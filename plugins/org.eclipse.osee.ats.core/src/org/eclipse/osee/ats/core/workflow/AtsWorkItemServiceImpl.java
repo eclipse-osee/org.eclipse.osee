@@ -65,7 +65,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      List<IAtsTask> tasks = new LinkedList<IAtsTask>();
+      List<IAtsTask> tasks = new LinkedList<>();
       for (IAtsTask task : services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task,
          IAtsTask.class)) {
          if (services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
@@ -98,7 +98,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      List<IAtsAbstractReview> reviews = new LinkedList<IAtsAbstractReview>();
+      List<IAtsAbstractReview> reviews = new LinkedList<>();
       for (IAtsAbstractReview review : services.getRelationResolver().getRelated(teamWf,
          AtsRelationTypes.TeamWorkflowToReview_Review, IAtsAbstractReview.class)) {
          if (services.getAttributeResolver().getSoleAttributeValue(review, AtsAttributeTypes.RelatedToState, "").equals(

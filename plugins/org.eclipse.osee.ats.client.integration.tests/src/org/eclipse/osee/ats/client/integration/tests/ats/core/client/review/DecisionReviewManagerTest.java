@@ -58,7 +58,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - Normal");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+      List<IAtsDecisionReviewOption> options = new ArrayList<>();
       options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
       options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
@@ -87,7 +87,7 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       AtsTestUtil.cleanupAndReset("DecisionReviewManagerTest - UnAssigned");
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
-      List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+      List<IAtsDecisionReviewOption> options = new ArrayList<>();
       options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
       options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));

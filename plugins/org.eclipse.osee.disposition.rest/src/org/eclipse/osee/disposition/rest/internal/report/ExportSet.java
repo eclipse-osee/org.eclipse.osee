@@ -148,7 +148,7 @@ public class ExportSet {
    }
 
    private Map<String, DispoAnnotationData> getDiscrepancyIdToCoveringAnnotation(DispoItem item) throws JSONException {
-      Map<String, DispoAnnotationData> toReturn = new HashMap<String, DispoAnnotationData>();
+      Map<String, DispoAnnotationData> toReturn = new HashMap<>();
       JSONArray annotationsList = item.getAnnotationsList();
       for (int i = 0; i < annotationsList.length(); i++) {
          DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationsList.getJSONObject(i));

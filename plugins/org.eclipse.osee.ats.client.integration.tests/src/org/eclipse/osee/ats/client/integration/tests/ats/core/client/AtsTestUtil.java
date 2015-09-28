@@ -420,7 +420,7 @@ public class AtsTestUtil {
    public static DecisionReviewArtifact getOrCreateDecisionReview(ReviewBlockType reviewBlockType, AtsTestUtilState relatedToState, IAtsChangeSet changes) throws OseeCoreException {
       ensureLoaded();
       if (decRevArt == null) {
-         List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+         List<IAtsDecisionReviewOption> options = new ArrayList<>();
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
          options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
             Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
@@ -567,7 +567,7 @@ public class AtsTestUtil {
     * Deletes all artifacts with names that start with any title given
     */
    public static void cleanupSimpleTest(Collection<String> titles) throws Exception {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       for (String title : titles) {
          artifacts.addAll(ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED,
             QueryOption.CONTAINS_MATCH_OPTIONS));

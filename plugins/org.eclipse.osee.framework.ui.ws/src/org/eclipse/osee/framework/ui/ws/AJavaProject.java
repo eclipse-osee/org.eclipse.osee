@@ -72,7 +72,7 @@ public final class AJavaProject {
    }
 
    public static ArrayList<File> getJavaProjectProjectDependancies(IJavaProject javaProject) {
-      ArrayList<File> urls = new ArrayList<File>();
+      ArrayList<File> urls = new ArrayList<>();
       try {
          IClasspathEntry[] paths = localGetResolvedClasspath(javaProject);
          for (int i = 0; i < paths.length; i++) {

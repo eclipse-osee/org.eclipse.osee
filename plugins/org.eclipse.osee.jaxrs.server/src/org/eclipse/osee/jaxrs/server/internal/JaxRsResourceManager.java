@@ -78,8 +78,8 @@ public final class JaxRsResourceManager implements BundleListener {
    }
 
    public void start(BundleContext context) {
-      pathToResource = new HashMap<String, Resource>();
-      bundleToKey = new HashMap<Bundle, Set<String>>();
+      pathToResource = new HashMap<>();
+      bundleToKey = new HashMap<>();
 
       context.addBundleListener(this);
 
@@ -170,7 +170,7 @@ public final class JaxRsResourceManager implements BundleListener {
    }
 
    private List<MediaType> getMediaTypesToSearch(ContainerRequestContext requestContext) {
-      List<MediaType> acceptableMediaTypes = new ArrayList<MediaType>();
+      List<MediaType> acceptableMediaTypes = new ArrayList<>();
       MediaType mediaType = requestContext.getMediaType();
       if (mediaType != null) {
          acceptableMediaTypes.add(mediaType);
@@ -267,7 +267,7 @@ public final class JaxRsResourceManager implements BundleListener {
                if (resourceUrls != null && !resourceUrls.isEmpty()) {
                   Set<String> paths = bundleToKey.get(bundle);
                   if (paths == null) {
-                     paths = new HashSet<String>();
+                     paths = new HashSet<>();
                      bundleToKey.put(bundle, paths);
                   }
                   for (URL url : resourceUrls) {
@@ -283,7 +283,7 @@ public final class JaxRsResourceManager implements BundleListener {
    }
 
    private List<URL> findUrls(Bundle bundle, String headerValue, boolean recurse, String... resources) {
-      List<URL> resourceUrls = new ArrayList<URL>();
+      List<URL> resourceUrls = new ArrayList<>();
       for (String resource : resources) {
          int index = resource.lastIndexOf('/');
          String path = index != -1 ? resource.substring(0, index) : "/";

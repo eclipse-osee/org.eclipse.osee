@@ -159,7 +159,7 @@ public class OrcsScriptCompilerImpl implements OrcsScriptCompiler {
       }
 
       private Map<String, Object> asMap(ScriptContext context) {
-         Map<String, Object> data = new LinkedHashMap<String, Object>();
+         Map<String, Object> data = new LinkedHashMap<>();
          for (Integer scope : context.getScopes()) {
             Bindings bindings = context.getBindings(scope);
             if (bindings != null) {

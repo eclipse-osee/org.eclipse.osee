@@ -106,7 +106,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    public static final String SUBSCRIBE = "Subscribe for Notifications";
    public static final String UN_SUBSCRIBE = "Un-Subscribe for Notifications";
    public final WorldXViewer thisXViewer = this;
-   public List<IMenuActionProvider> menuActionProviders = new ArrayList<IMenuActionProvider>();
+   public List<IMenuActionProvider> menuActionProviders = new ArrayList<>();
    protected final IDirtiableEditor editor;
    private GoalArtifact parentGoalArtifact;
    private SprintArtifact parentSprintArtifact;
@@ -249,7 +249,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return;
       }
-      final Set<Artifact> useArts = new HashSet<Artifact>();
+      final Set<Artifact> useArts = new HashSet<>();
       for (TreeItem item : treeItems) {
          Artifact art = (Artifact) item.getData();
          try {
@@ -437,7 +437,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    public List<Artifact> getLoadedArtifacts() {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       if (getRoot() != null) {
          for (Object artifact : (Collection<?>) getRoot()) {
             if (artifact instanceof Artifact) {
@@ -469,7 +469,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public List<Artifact> getSelectedArtifacts() {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -481,7 +481,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
-      List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
+      List<TaskArtifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -521,7 +521,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     */
    @Override
    public Set<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() {
-      Set<TeamWorkFlowArtifact> teamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teamArts = new HashSet<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -547,7 +547,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     */
    @Override
    public Set<AbstractWorkflowArtifact> getSelectedSMAArtifacts() {
-      Set<AbstractWorkflowArtifact> smaArts = new HashSet<AbstractWorkflowArtifact>();
+      Set<AbstractWorkflowArtifact> smaArts = new HashSet<>();
       try {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
          while (i.hasNext()) {
@@ -565,7 +565,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    public Set<ActionArtifact> getSelectedActionArtifacts() {
-      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+      Set<ActionArtifact> actionArts = new HashSet<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -600,7 +600,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
    }
 
    public List<Artifact> getSelectedArtifactItems() {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -648,7 +648,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();

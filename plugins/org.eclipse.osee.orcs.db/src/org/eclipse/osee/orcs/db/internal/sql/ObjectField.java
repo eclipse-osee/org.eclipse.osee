@@ -192,7 +192,7 @@ public enum ObjectField {
 
    public static ObjectField fromString(String value) {
       if (FIELD_BY_NAME == null) {
-         Map<String, ObjectField> fieldByName = new HashMap<String, ObjectField>();
+         Map<String, ObjectField> fieldByName = new HashMap<>();
          for (ObjectField field : ObjectField.values()) {
             fieldByName.put(field.name(), field);
          }

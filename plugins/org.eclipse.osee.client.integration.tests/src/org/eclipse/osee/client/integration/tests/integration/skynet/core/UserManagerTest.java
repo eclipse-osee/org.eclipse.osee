@@ -77,7 +77,7 @@ public final class UserManagerTest {
 
       transaction.execute();
 
-      Set<Artifact> groups = new HashSet<Artifact>();
+      Set<Artifact> groups = new HashSet<>();
 
       groups.addAll(lithium.getRelatedArtifacts(CoreRelationTypes.Users_Artifact));
       groups.addAll(sodium.getRelatedArtifacts(CoreRelationTypes.Users_Artifact));
@@ -85,7 +85,7 @@ public final class UserManagerTest {
 
       Assert.assertTrue(groups.size() > TEST_DEFAULT_GROUPS.length);
 
-      Set<String> verifiedNames = new HashSet<String>();
+      Set<String> verifiedNames = new HashSet<>();
       for (Artifact group : groups) {
          for (String groupName : TEST_DEFAULT_GROUPS) {
             if (group.getName().equals(groupName)) {

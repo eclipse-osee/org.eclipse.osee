@@ -48,7 +48,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       String input = variableMap.getString(ATS_ID_TX_WIDGET_NAME);
-      ArrayList<String> idTxs = new ArrayList<String>(Arrays.asList(input.split("\\r?\\n")));
+      ArrayList<String> idTxs = new ArrayList<>(Arrays.asList(input.split("\\r?\\n")));
       for (String idTx : idTxs) {
          String[] pairs = idTx.split("[,\\s]+");
          if (pairs.length == PAIR_SIZE) {

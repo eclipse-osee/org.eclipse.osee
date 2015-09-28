@@ -106,7 +106,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
    }
 
    private static Set<IAtsActionableItem> getActionableItemsByToken(Collection<IArtifactToken> aiArtifactTokens) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> aias = new HashSet<>();
       for (IArtifactToken token : aiArtifactTokens) {
          Artifact aiArt = ArtifactQuery.getArtifactFromId(token.getGuid(), AtsUtilCore.getAtsBranch());
 

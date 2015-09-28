@@ -87,7 +87,7 @@ public class TransactionCallableQueryFactory {
 
          @Override
          protected ResultSet<Integer> innerCall() throws Exception {
-            final Set<Integer> txs = new LinkedHashSet<Integer>();
+            final Set<Integer> txs = new LinkedHashSet<>();
             LoadDataHandler handler = new LoadDataHandlerAdapter() {
                @Override
                public void onData(TxOrcsData data) {
@@ -109,7 +109,7 @@ public class TransactionCallableQueryFactory {
       @Override
       public void onLoadStart() throws OseeCoreException {
          super.onLoadStart();
-         dataMap = new LinkedHashMap<Integer, T>();
+         dataMap = new LinkedHashMap<>();
       }
 
       @Override

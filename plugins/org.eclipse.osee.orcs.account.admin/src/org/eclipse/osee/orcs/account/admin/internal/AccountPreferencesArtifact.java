@@ -78,7 +78,7 @@ public class AccountPreferencesArtifact extends BaseIdentity<String> implements 
             } catch (Exception ex) {
                throw new OseeCoreException(ex);
             }
-            Map<String, String> map = new HashMap<String, String>();
+            Map<String, String> map = new HashMap<>();
             for (String key : storage.keySet()) {
                map.put(key, storage.get(key));
             }

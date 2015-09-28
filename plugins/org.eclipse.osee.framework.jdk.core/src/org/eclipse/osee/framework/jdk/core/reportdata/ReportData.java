@@ -29,7 +29,7 @@ public class ReportData implements Serializable {
     */
    public ReportData(List<String> headers) {
       this.headers = headers;
-      items = new ArrayList<ReportDataItem>();
+      items = new ArrayList<>();
    }
 
    /**

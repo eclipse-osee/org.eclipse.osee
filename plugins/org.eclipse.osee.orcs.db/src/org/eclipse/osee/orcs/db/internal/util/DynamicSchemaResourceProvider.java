@@ -36,7 +36,7 @@ public class DynamicSchemaResourceProvider implements Supplier<Iterable<JdbcMigr
 
    @Override
    public Iterable<JdbcMigrationResource> get() {
-      List<JdbcMigrationResource> resources = new ArrayList<JdbcMigrationResource>();
+      List<JdbcMigrationResource> resources = new ArrayList<>();
 
       Bundle bundle = FrameworkUtil.getBundle(this.getClass());
       BundleContext context = bundle.getBundleContext();

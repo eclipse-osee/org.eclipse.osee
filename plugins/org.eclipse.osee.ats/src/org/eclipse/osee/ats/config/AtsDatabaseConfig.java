@@ -94,7 +94,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    private void createSafetyConfig() {
-      List<String> versions = new ArrayList<String>();
+      List<String> versions = new ArrayList<>();
       AtsConfigOperation operation = new AtsConfigOperation("Configure Safety For ATS",
          AtsArtifactToken.SafetyTeamDefinition, versions, AtsArtifactToken.SafetyActionableItem);
       Operations.executeWorkAndCheckStatus(operation);

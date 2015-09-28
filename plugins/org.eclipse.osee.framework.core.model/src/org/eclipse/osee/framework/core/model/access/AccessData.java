@@ -44,7 +44,7 @@ public final class AccessData {
    }
 
    public Set<Object> keySet() {
-      Set<Object> toReturn = new HashSet<Object>();
+      Set<Object> toReturn = new HashSet<>();
       for (Pair<Object, Object> key : accessMap.keySet()) {
          toReturn.add(key.getFirst());
       }

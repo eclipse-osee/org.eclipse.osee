@@ -35,8 +35,8 @@ public class TxData implements HasSession {
 
    private final OrcsSession session;
    private final GraphData graph;
-   private final Map<String, Artifact> writeables = new HashMap<String, Artifact>();
-   private final Map<String, ArtifactReadable> readables = new HashMap<String, ArtifactReadable>();
+   private final Map<String, Artifact> writeables = new HashMap<>();
+   private final Map<String, ArtifactReadable> readables = new HashMap<>();
 
    private ArtifactReadable author;
    private String comment;

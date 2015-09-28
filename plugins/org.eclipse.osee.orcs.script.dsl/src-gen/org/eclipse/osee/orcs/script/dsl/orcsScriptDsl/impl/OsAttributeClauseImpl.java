@@ -98,7 +98,7 @@ public class OsAttributeClauseImpl extends MinimalEObjectImpl.Container implemen
   {
     if (types == null)
     {
-      types = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_ATTRIBUTE_CLAUSE__TYPES);
+      types = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_ATTRIBUTE_CLAUSE__TYPES);
     }
     return types;
   }

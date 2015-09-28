@@ -120,7 +120,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @SuppressWarnings({"unchecked", "deprecation"})
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      List<IAttribute<T>> attrs = new ArrayList<IAttribute<T>>();
+      List<IAttribute<T>> attrs = new ArrayList<>();
       for (Attribute<Object> attr : AtsClientService.get().getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add(new AttributeWrapper<T>((Attribute<T>) attr));
 

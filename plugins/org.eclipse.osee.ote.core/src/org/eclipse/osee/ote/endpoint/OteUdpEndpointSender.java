@@ -31,7 +31,7 @@ public class OteUdpEndpointSender implements OteEndpointSender {
    private volatile Thread thread;
 
    public OteUdpEndpointSender(InetSocketAddress address){
-      toSend = new ArrayBlockingQueue<AddressBuffer>(5000);
+      toSend = new ArrayBlockingQueue<>(5000);
       buffers = new ObjectPool<AddressBuffer>(new ObjectPoolConfiguration<AddressBuffer>(50,true) {
          @Override
          public AddressBuffer make() {

@@ -215,14 +215,14 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       IOseeBranch resultsBranch = variableMap.getBranch("Test Results Branch");
       versions = variableMap.getCollection(IAtsVersion.class, "Versions");
 
-      reqTaskMap = new CompositeKeyHashMap<String, String, RequirementStatus>();
-      legacyIdToImplementers = new HashCollection<String, IAtsUser>();
-      testRunArtifacts = new HashMap<String, Artifact>();
-      scriptCategories = new HashMap<String, String>();
-      testPocs = new HashSet<IAtsUser>();
-      requirementPocs = new HashSet<String>();
-      statusLines = new ArrayList<String[]>();
-      statuses = new ArrayList<RequirementStatus>(100);
+      reqTaskMap = new CompositeKeyHashMap<>();
+      legacyIdToImplementers = new HashCollection<>();
+      testRunArtifacts = new HashMap<>();
+      scriptCategories = new HashMap<>();
+      testPocs = new HashSet<>();
+      requirementPocs = new HashSet<>();
+      statusLines = new ArrayList<>();
+      statuses = new ArrayList<>(100);
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
       sumFormula = new StringBuilder();
@@ -269,7 +269,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    }
 
    private boolean blamReadyToExecute() {
-      final List<String> items = new ArrayList<String>();
+      final List<String> items = new ArrayList<>();
 
       if (selectedProgram == null) {
          items.add("program");
@@ -512,7 +512,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
 
    private HashCollection<String, Artifact> getTestProcedureTraceability(IOseeBranch testProcedureBranch, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Gathering test procedures");
-      HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<String, Artifact>();
+      HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<>();
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       List<Artifact> tpReqs =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, testProcedureBranch);
@@ -527,7 +527,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          }
          Set<Artifact> foundProcedures =
             new HashSet<Artifact>(tpRequirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
-         Set<Artifact> toAdd = new HashSet<Artifact>();
+         Set<Artifact> toAdd = new HashSet<>();
          toAdd = foundProcedures;
          requirementNameToTestProcedures.put(tpRequirement.getName(), toAdd);
       }
@@ -635,7 +635,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
     */
    private Collection<String> getAliases(Artifact artifact) {
       // TODO: this method should return history of names
-      ArrayList<String> aliases = new ArrayList<String>(1);
+      ArrayList<String> aliases = new ArrayList<>(1);
       aliases.add(artifact.getName());
       return aliases;
    }

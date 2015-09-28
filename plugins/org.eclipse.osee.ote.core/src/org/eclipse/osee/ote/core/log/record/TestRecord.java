@@ -41,11 +41,11 @@ import org.w3c.dom.Element;
  */
 public abstract class TestRecord extends LogRecord implements Xmlizable, XmlizableStream {
 	private static final long serialVersionUID = 2663140700880844240L;
-	private static final ArrayList<Pattern> stacktraceExcludes = new ArrayList<Pattern>(32);
-	private static final ArrayList<Pattern> stacktraceIncludes = new ArrayList<Pattern>(32);
+	private static final ArrayList<Pattern> stacktraceExcludes = new ArrayList<>(32);
+	private static final ArrayList<Pattern> stacktraceIncludes = new ArrayList<>(32);
 	private static boolean filterTheStacktrace = true;
 	private static boolean locationLogginOn = true;
-	private List<LogRecord> children = new ArrayList<LogRecord>();
+	private List<LogRecord> children = new ArrayList<>();
 
 	public static void setLocationLoggingOn(boolean on) {
 		locationLogginOn = on;
@@ -239,7 +239,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 
 	@JsonProperty
 	public List<String> getLocation() {
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		if (TestRecord.getLocationLoggingOn()) {
 			StackTraceElement[] stackTrace = this.throwable.getStackTrace();
 			result.addAll(filterStackTrace(stackTrace));
@@ -255,7 +255,7 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 		// include everything if not filtered, otherwise ... 
 		// default is to include unless explicitly excluded, but only if not
 		// explicitly included ... yuck
-		List<String> result = new ArrayList<String>();
+		List<String> result = new ArrayList<>();
 		for (StackTraceElement stackElement : stackTrace) {
 			final String className = stackElement.getClassName();
 			if (!filterTheStacktrace || included(className) || !excluded(className)) {

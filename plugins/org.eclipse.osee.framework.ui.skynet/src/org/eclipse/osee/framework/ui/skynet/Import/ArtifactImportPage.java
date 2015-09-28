@@ -92,7 +92,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    protected ArtifactImportPage(File defaultSourceFile, Artifact defaultDestinationArtifact) {
       super(PAGE_NAME);
-      selectedArtifactTypes = new ArrayList<IArtifactType>();
+      selectedArtifactTypes = new ArrayList<>();
       selectionLatch = new SelectionLatch();
       collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();

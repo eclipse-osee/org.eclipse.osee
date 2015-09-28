@@ -138,7 +138,7 @@ public class AuthenticationAdminImplTest {
       iterable = admin.getAllowedSchemes();
       assertEquals(false, iterable.iterator().hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -166,7 +166,7 @@ public class AuthenticationAdminImplTest {
       iterable = admin.getAllowedSchemes();
       assertEquals(false, iterable.iterator().hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -197,7 +197,7 @@ public class AuthenticationAdminImplTest {
       iterable = admin.getAllowedSchemes();
       assertEquals(false, iterable.iterator().hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -221,7 +221,7 @@ public class AuthenticationAdminImplTest {
       actual = admin.isSchemeAllowed(SCHEME_2);
       assertEquals(false, actual);
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 
@@ -246,7 +246,7 @@ public class AuthenticationAdminImplTest {
       Iterator<String> iterator = admin.getAllowedSchemes().iterator();
       assertEquals(false, iterator.hasNext());
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       admin.update(properties);
 
       iterator = admin.getAllowedSchemes().iterator();
@@ -278,7 +278,7 @@ public class AuthenticationAdminImplTest {
       actual = admin.isSchemeAllowed(SCHEME_2);
       assertEquals(false, actual);
 
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1);
       admin.update(properties);
 

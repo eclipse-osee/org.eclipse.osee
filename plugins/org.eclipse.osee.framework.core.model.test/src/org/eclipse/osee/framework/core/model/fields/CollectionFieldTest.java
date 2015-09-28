@@ -26,8 +26,8 @@ public class CollectionFieldTest {
 
    @Test
    public void testSetGetString() throws OseeCoreException {
-      List<String> values = new ArrayList<String>();
-      CollectionField<String> field = new CollectionField<String>(values);
+      List<String> values = new ArrayList<>();
+      CollectionField<String> field = new CollectionField<>(values);
       Assert.assertFalse(field.isDirty());
 
       FieldTestUtil.assertSetGet(field, Arrays.asList("a", "b", "c"), Arrays.asList("a", "b", "c"), true);
@@ -51,8 +51,8 @@ public class CollectionFieldTest {
 
    @Test
    public void testSetGetInteger() throws OseeCoreException {
-      List<Integer> values = new ArrayList<Integer>();
-      CollectionField<Integer> field = new CollectionField<Integer>(values);
+      List<Integer> values = new ArrayList<>();
+      CollectionField<Integer> field = new CollectionField<>(values);
       Assert.assertFalse(field.isDirty());
 
       FieldTestUtil.assertSetGet(field, Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3), true);

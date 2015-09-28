@@ -46,7 +46,7 @@ public class UriResourceContentFinder {
       this.sources = sources;
       this.isRecursionAllowed = isRecursionAllowed;
       this.isFileWithMultiplePaths = isFileWithMultiplePaths;
-      this.locatorMap = new HashCollection<IResourceLocator, IResourceHandler>();
+      this.locatorMap = new HashCollection<>();
    }
 
    public void addLocator(IResourceLocator locator, IResourceHandler... handler) {

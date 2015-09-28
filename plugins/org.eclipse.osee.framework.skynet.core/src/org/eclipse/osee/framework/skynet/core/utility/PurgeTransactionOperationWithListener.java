@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperation.
 public class PurgeTransactionOperationWithListener {
 
    public static IOperation getPurgeTransactionOperation(List<TransactionRecord> transactions) throws OseeCoreException {
-      List<Integer> txIdsToDelete = new ArrayList<Integer>();
+      List<Integer> txIdsToDelete = new ArrayList<>();
       for (TransactionRecord record : transactions) {
          txIdsToDelete.add(record.getId());
       }

@@ -43,7 +43,7 @@ public class Streams {
       int length = -1;
       long read = 0;
       byte[] data = new byte[ORACLE_BUFF_LENGTH];
-      LinkedList<byte[]> linkedByteArrays = new LinkedList<byte[]>();
+      LinkedList<byte[]> linkedByteArrays = new LinkedList<>();
 
       try {
          while ((length = stream.read(data)) != -1) {

@@ -37,7 +37,7 @@ public final class ServiceDependencyTracker implements Closeable {
    }
 
    public ServiceDependencyTracker(ServiceBinderFactory factory, BundleContext context, AbstractTrackingHandler handler) {
-      this.trackers = new ArrayList<ServiceTracker>();
+      this.trackers = new ArrayList<>();
       this.handler = handler;
       this.serviceBindFactory = factory;
    }

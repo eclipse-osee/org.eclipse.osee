@@ -45,7 +45,7 @@ public class DynamicObjectBuilder {
    private final Log logger;
    private final OrcsTypes orcsTypes;
    private final Options options;
-   private final Stack<ObjectMap> stack = new Stack<ObjectMap>();
+   private final Stack<ObjectMap> stack = new Stack<>();
 
    private DynamicDataHandler handler;
    private Iterable<? extends DynamicData> descriptors;
@@ -145,7 +145,7 @@ public class DynamicObjectBuilder {
    private final class ObjectMap {
       private DynamicObject descriptor;
       private Long hash = 37L;
-      private final Map<String, Object> data = new LinkedHashMap<String, Object>();
+      private final Map<String, Object> data = new LinkedHashMap<>();
       private Map<Long, ObjectMap> children;
       private Long typeId;
 
@@ -235,7 +235,7 @@ public class DynamicObjectBuilder {
             byTypeName.put(typeName, child.asMap());
          }
 
-         Map<String, Object> toReturn = new LinkedHashMap<String, Object>();
+         Map<String, Object> toReturn = new LinkedHashMap<>();
          for (Entry<String, Collection<Map<String, Object>>> entry : byTypeName.asMap().entrySet()) {
             Collection<Map<String, Object>> collection = entry.getValue();
             if (collection.size() == 1) {
@@ -258,7 +258,7 @@ public class DynamicObjectBuilder {
       }
 
       private Set<Map<String, Object>> asSetMap(Collection<ObjectMap> values) {
-         Set<Map<String, Object>> toReturn = new LinkedHashSet<Map<String, Object>>();
+         Set<Map<String, Object>> toReturn = new LinkedHashSet<>();
          for (ObjectMap child : values) {
             toReturn.add(child.asMap());
          }

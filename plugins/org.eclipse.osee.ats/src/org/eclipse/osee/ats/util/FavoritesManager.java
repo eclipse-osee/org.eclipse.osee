@@ -115,7 +115,7 @@ public class FavoritesManager {
    }
 
    public static List<User> getFavorites(AbstractWorkflowArtifact workflow) throws OseeCoreException {
-      ArrayList<User> arts = new ArrayList<User>();
+      ArrayList<User> arts = new ArrayList<>();
       for (Artifact art : workflow.getRelatedArtifactsUnSorted(AtsRelationTypes.FavoriteUser_User)) {
          arts.add((User) art);
       }

@@ -35,7 +35,7 @@ import org.junit.Test;
 public class ComputeNetChangeTest {
 
    public List<TestData> getTestData() {
-      List<TestData> data = new ArrayList<TestData>();
+      List<TestData> data = new ArrayList<>();
 
       // New Or Introduced
       data.add(createTest(1, entry(3L, NEW), entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
@@ -96,7 +96,7 @@ public class ComputeNetChangeTest {
    @Test
    public void testNetChange() throws Exception {
       List<TestData> data = getTestData();
-      List<ChangeItem> items = new ArrayList<ChangeItem>();
+      List<ChangeItem> items = new ArrayList<>();
       for (TestData testData : data) {
          items.add(testData.getItem());
       }
@@ -121,7 +121,7 @@ public class ComputeNetChangeTest {
    @Test(expected = OseeStateException.class)
    @Ignore
    public void testErrorStates() throws Exception {
-      List<ChangeItem> items = new ArrayList<ChangeItem>();
+      List<ChangeItem> items = new ArrayList<>();
 
       // Source to Non-Parent commit
       items.add(ChangeTestUtility.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));

@@ -107,8 +107,8 @@ public class DatabaseHealth extends AbstractBlam {
 
    private final class MasterDbHealthOperation extends AbstractOperation {
 
-      private final Set<DatabaseHealthOperation> fixOperations = new HashSet<DatabaseHealthOperation>();
-      private final Set<DatabaseHealthOperation> verifyOperations = new HashSet<DatabaseHealthOperation>();
+      private final Set<DatabaseHealthOperation> fixOperations = new HashSet<>();
+      private final Set<DatabaseHealthOperation> verifyOperations = new HashSet<>();
 
       public MasterDbHealthOperation(String operationName) {
          super(operationName, Activator.PLUGIN_ID);

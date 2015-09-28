@@ -130,7 +130,7 @@ public class TransactionCache implements IOseeLoadingCache<String, TransactionRe
 
    @Override
    public Collection<TransactionRecord> getAllDirty() {
-      Set<TransactionRecord> dirtys = new HashSet<TransactionRecord>();
+      Set<TransactionRecord> dirtys = new HashSet<>();
       for (TransactionRecord record : transactionIdCache.values()) {
          if (record.isDirty()) {
             dirtys.add(record);
@@ -180,7 +180,7 @@ public class TransactionCache implements IOseeLoadingCache<String, TransactionRe
    public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
       ensurePopulated();
 
-      List<Integer> toLoad = new LinkedList<Integer>();
+      List<Integer> toLoad = new LinkedList<>();
       for (Integer txId : transactionIds) {
          if (getById(txId) == null) {
             toLoad.add(txId);

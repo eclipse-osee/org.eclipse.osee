@@ -32,7 +32,7 @@ public class AtsConfigCacheProvider extends LazyObject<AtsArtifactConfigCache> i
    @Override
    protected FutureTask<AtsArtifactConfigCache> createLoaderTask() {
       Callable<AtsArtifactConfigCache> newCallable = new LoadAtsConfigCacheCallable(artifactStore);
-      FutureTask<AtsArtifactConfigCache> newTask = new FutureTask<AtsArtifactConfigCache>(newCallable);
+      FutureTask<AtsArtifactConfigCache> newTask = new FutureTask<>(newCallable);
       return newTask;
    }
 

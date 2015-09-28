@@ -75,7 +75,7 @@ public class StartDateColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public static String getDateStr(Object object) throws OseeCoreException {
-      Set<String> strs = new HashSet<String>();
+      Set<String> strs = new HashSet<>();
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
          for (TeamWorkFlowArtifact team : ActionManager.getTeams(object)) {
             Date date = getDate(team);

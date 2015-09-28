@@ -80,8 +80,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    }
 
    private Collection<ImportData> loadDataFromExtensions() throws OseeCoreException {
-      List<ImportData> toReturn = new ArrayList<ImportData>();
-      Map<String, String> selectedBranches = new HashMap<String, String>();
+      List<ImportData> toReturn = new ArrayList<>();
+      Map<String, String> selectedBranches = new HashMap<>();
       List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(EXTENSION_POINT, ELEMENT_NAME);
       for (IConfigurationElement element : elements) {
          String bundleName = element.getContributor().getName();
@@ -147,7 +147,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       public ImportData(File exchangeFile) {
          super();
          this.exchangeFile = exchangeFile;
-         this.selectedBranches = new HashSet<String>();
+         this.selectedBranches = new HashSet<>();
       }
 
       public void addSelectedBranch(String branchName) {

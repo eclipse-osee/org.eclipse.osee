@@ -28,8 +28,8 @@ public class MatchTokenOrderProcessor implements TokenOrderProcessor {
 
    public MatchTokenOrderProcessor() {
       super();
-      locations = new LinkedList<MatchLocation>();
-      tokensToSearch = new ArrayList<String>();
+      locations = new LinkedList<>();
+      tokensToSearch = new ArrayList<>();
    }
 
    @Override

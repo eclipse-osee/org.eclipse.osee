@@ -39,8 +39,8 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class PolicyTableViewer {
 
-   private final Map<String, AccessControlData> accessControlList = new HashMap<String, AccessControlData>();
-   private final Collection<AccessControlData> deleteControlList = new ArrayList<AccessControlData>();
+   private final Map<String, AccessControlData> accessControlList = new HashMap<>();
+   private final Collection<AccessControlData> deleteControlList = new ArrayList<>();
    private final Object object;
    private final Composite parent;
    private PermissionEnum maxModificationLevel = PermissionEnum.FULLACCESS;

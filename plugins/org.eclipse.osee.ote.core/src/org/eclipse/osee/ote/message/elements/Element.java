@@ -43,7 +43,7 @@ public abstract class Element implements ITimeout {
    private String elementPathAsString;
 
    public Element(Message<?, ?, ?> msg, String elementName, MessageData messageData, int byteOffset, int msb, int lsb, int originalMsb, int originalLsb) {
-      this.msg = new WeakReference<Message<?,?,?>>(msg);
+      this.msg = new WeakReference<>(msg);
       this.elementName = elementName;
       this.messageData = messageData;
       this.byteOffset = byteOffset;
@@ -51,7 +51,7 @@ public abstract class Element implements ITimeout {
       this.msb = msb;
       this.originalLsb = originalLsb;
       this.originalMsb = originalMsb;
-      elementPath = new ArrayList<Object>();
+      elementPath = new ArrayList<>();
       fullName = (msg != null ? msg.getName() : messageData.getName()) + "." + this.elementName;
    }
 

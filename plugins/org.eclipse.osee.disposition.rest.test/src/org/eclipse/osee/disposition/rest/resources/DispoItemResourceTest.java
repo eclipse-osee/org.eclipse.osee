@@ -60,7 +60,7 @@ public class DispoItemResourceTest {
    @Test
    public void testGetAll() throws Exception {
       // No Items
-      List<DispoItem> emptyResultSet = new ArrayList<DispoItem>();
+      List<DispoItem> emptyResultSet = new ArrayList<>();
       when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
       Response noItemsResponse = resource.getAllDispoItems(false);
       assertEquals(Response.Status.OK.getStatusCode(), noItemsResponse.getStatus());

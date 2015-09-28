@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 public class UserNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
 
    private final static UserNavigateViewItems instance = new UserNavigateViewItems();
-   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
 
    public static UserNavigateViewItems getInstance() {

@@ -66,7 +66,7 @@ public class ManagedFolderArea {
    }
    
    public List<BundleInfoLite> copyDeltasToManagedFolder(List<BundleInfoLite> copies) {
-      List<BundleInfoLite> bundlesAdded = new ArrayList<BundleInfoLite>();
+      List<BundleInfoLite> bundlesAdded = new ArrayList<>();
       for(BundleInfoLite info: copies){
          File folder = new File(bundleLocationFolder, info.getSymbolicName());
          folder.mkdirs();

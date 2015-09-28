@@ -38,7 +38,7 @@ public class DemoDbTasks {
       AtsChangeSet changes = new AtsChangeSet("Populate Demo DB - Create Tasks");
       boolean firstTaskWorkflow = true;
       for (TeamWorkFlowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
-         List<IAtsUser> demoUsers = new ArrayList<IAtsUser>();
+         List<IAtsUser> demoUsers = new ArrayList<>();
          if (firstTaskWorkflow) {
             demoUsers.add(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(
                DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith)));

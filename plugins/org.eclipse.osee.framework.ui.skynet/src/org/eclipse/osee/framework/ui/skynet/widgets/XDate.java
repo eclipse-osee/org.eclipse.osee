@@ -36,7 +36,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XDate extends XWidget {
 
-   private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
+   private final ArrayList<ModifyListener> listeners = new ArrayList<>();
    private String defaultFormat = DateUtil.MMDDYYHHMM;
    private boolean requireFutureDate = false;
    private CalendarWidget dateCombo;

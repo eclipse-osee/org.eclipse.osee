@@ -79,7 +79,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;
    protected Label showReleaseMetricsLabel;
-   private final Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>(200);
+   private final Set<TaskArtifact> taskArts = new HashSet<>(200);
 
    public TaskComposite(IXTaskViewer iXTaskViewer, Composite parent, int style) {
       super(parent, style);
@@ -182,7 +182,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
    public List<TaskArtifact> getSelectedTaskArtifactItems() {
       Iterator<?> i = ((IStructuredSelection) taskXViewer.getSelection()).iterator();
-      ArrayList<TaskArtifact> items = new ArrayList<TaskArtifact>();
+      ArrayList<TaskArtifact> items = new ArrayList<>();
       while (i.hasNext()) {
          Object obj = i.next();
          if (Artifacts.isOfType(obj, AtsArtifactTypes.Task)) {
@@ -255,7 +255,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             if (iXTaskViewer.getAwa() == null) {
                return;
             }
-            List<TaskArtifact> taskArts = new LinkedList<TaskArtifact>();
+            List<TaskArtifact> taskArts = new LinkedList<>();
             for (Artifact art : ((ArtifactData) e.data).getArtifacts()) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) art);

@@ -30,7 +30,7 @@ public class OTEConfiguration {
    private boolean install;
  
    public OTEConfiguration(){
-	   items = new ArrayList<OTEConfigurationItem>();
+	   items = new ArrayList<>();
 	   this.install = true;
    }
    

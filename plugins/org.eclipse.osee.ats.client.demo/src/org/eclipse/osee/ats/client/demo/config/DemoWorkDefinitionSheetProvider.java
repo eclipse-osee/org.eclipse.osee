@@ -25,7 +25,7 @@ public class DemoWorkDefinitionSheetProvider implements IAtsWorkDefinitionSheetP
 
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefinitionSheets() {
-      List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
+      List<WorkDefinitionSheet> sheets = new ArrayList<>();
       sheets.add(new WorkDefinitionSheet("WorkDef_Demo_AIs_And_Team_Definitions",
          AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID,
             "support/WorkDef_Demo_AIs_And_Team_Definitions.ats")));

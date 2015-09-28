@@ -63,7 +63,7 @@ public class RelationFilterUtilTest {
       List<RelationLink> sourceLinks = TestUtil.createLinks(4, branch1);
       Assert.assertEquals(4, sourceLinks.size());
 
-      List<RelationLink> destination = new ArrayList<RelationLink>();
+      List<RelationLink> destination = new ArrayList<>();
       RelationFilterUtil.filter(null, destination, null);
       Assert.assertEquals(0, destination.size());
 
@@ -78,7 +78,7 @@ public class RelationFilterUtilTest {
 
       RelationMatcher excludeDeleteds = RelationFilterUtil.createMatcher(DeletionFlag.EXCLUDE_DELETED);
 
-      List<RelationLink> destination = new ArrayList<RelationLink>();
+      List<RelationLink> destination = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination, excludeDeleteds);
       Assert.assertEquals(10, destination.size());
 
@@ -100,7 +100,7 @@ public class RelationFilterUtilTest {
    @Test
    public void testFindFirstRelationLinkIdFilter() {
       List<RelationLink> sourceLinks = TestUtil.createLinks(4, branch1);
-      List<RelationLink> destination = new ArrayList<RelationLink>();
+      List<RelationLink> destination = new ArrayList<>();
 
       int relationLinkToFind = 2;
       RelationMatcher relationLinkIdMatcher =
@@ -136,7 +136,7 @@ public class RelationFilterUtilTest {
       // Test Side A Match
       RelationMatcher sideAmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(55, RelationSide.SIDE_A);
 
-      List<RelationLink> destination = new ArrayList<RelationLink>();
+      List<RelationLink> destination = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination, sideAmatcher);
 
       Assert.assertEquals(1, destination.size());
@@ -144,7 +144,7 @@ public class RelationFilterUtilTest {
 
       // Test Side B Match
       RelationMatcher sideBmatcher = RelationFilterUtil.createFindFirstRelatedArtIdMatcher(55, RelationSide.SIDE_B);
-      List<RelationLink> destination2 = new ArrayList<RelationLink>();
+      List<RelationLink> destination2 = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination2, sideBmatcher);
 
       Assert.assertEquals(1, destination2.size());
@@ -166,7 +166,7 @@ public class RelationFilterUtilTest {
       // Find 3rd link since 2nd link is excluded because it is deleted
       RelationMatcher matcher1 = RelationFilterUtil.createMatcher(DeletionFlag.EXCLUDE_DELETED, sideBmatcher);
 
-      List<RelationLink> destination = new ArrayList<RelationLink>();
+      List<RelationLink> destination = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination, matcher1);
 
       Assert.assertEquals(1, destination.size());
@@ -174,7 +174,7 @@ public class RelationFilterUtilTest {
 
       // Find 2nd link since we are including deleteds
       RelationMatcher matcher2 = RelationFilterUtil.createMatcher(DeletionFlag.INCLUDE_DELETED, sideBmatcher);
-      List<RelationLink> destination2 = new ArrayList<RelationLink>();
+      List<RelationLink> destination2 = new ArrayList<>();
       RelationFilterUtil.filter(sourceLinks, destination2, matcher2);
 
       Assert.assertEquals(1, destination2.size());

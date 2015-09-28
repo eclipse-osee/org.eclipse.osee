@@ -106,7 +106,7 @@ public class AttributeExtensionManager {
    }
 
    private Map<String, Pair<String, String>> loadExtensions(String extensionPointId, String[] elementNames, String classNameAttribute) throws OseeStateException {
-      Map<String, Pair<String, String>> toReturn = new HashMap<String, Pair<String, String>>();
+      Map<String, Pair<String, String>> toReturn = new HashMap<>();
       for (String elementName : elementNames) {
          List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(extensionPointId, elementName);
          for (IConfigurationElement element : elements) {

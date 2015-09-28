@@ -22,7 +22,7 @@ public class OTELookupImpl implements OTELookup {
    private int timeoutSeconds = 60*3;
 
    public OTELookupImpl() {
-      servers = new CopyOnWriteArrayList<OTELookupServerEntry>();
+      servers = new CopyOnWriteArrayList<>();
    }
 
    @Override

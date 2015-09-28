@@ -74,7 +74,7 @@ public class ArtifactExtractorTest {
    }
 
    private List<TestData> getFileTestData() {
-      List<TestData> testDatas = new ArrayList<TestData>();
+      List<TestData> testDatas = new ArrayList<>();
       String separator = propertyStore.get("list.entry.separator");
       String[] tests = propertyStore.getArray("fileTestData");
       Assert.assertNotNull(tests);
@@ -136,7 +136,7 @@ public class ArtifactExtractorTest {
    }
 
    private List<ParseTestData> getParseTestData() {
-      List<ParseTestData> testDatas = new ArrayList<ParseTestData>();
+      List<ParseTestData> testDatas = new ArrayList<>();
       String separator = propertyStore.get("list.entry.separator");
       String[] tests = propertyStore.getArray("parseTestData");
       Assert.assertNotNull(tests);
@@ -173,7 +173,7 @@ public class ArtifactExtractorTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {new ExcelArtifactExtractor(), "ExcelArtifactExtractorTest.xml"});
       data.add(new Object[] {new NativeDocumentExtractor(), "NativeDocumentExtractorTest.xml"});

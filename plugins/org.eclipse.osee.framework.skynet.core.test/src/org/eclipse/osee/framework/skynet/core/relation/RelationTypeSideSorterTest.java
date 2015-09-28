@@ -164,7 +164,7 @@ public class RelationTypeSideSorterTest {
    public void test10AddItem() throws OseeCoreException {
       IArtifact itemToAdd = createArtifact("Item to Add", GUID.create());
 
-      List<IArtifact> startingArtifacts = new ArrayList<IArtifact>();
+      List<IArtifact> startingArtifacts = new ArrayList<>();
       List<String> startingOrder = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
       for (int index = 0; index < startingOrder.size(); index++) {
          String artifactGuid = startingOrder.get(index);
@@ -177,7 +177,7 @@ public class RelationTypeSideSorterTest {
       for (IRelationSorterId sorterId : sorterProvider.getAllRelationOrderIds()) {
          IRelationSorter relationSorter = sorterProvider.getRelationOrder(sorterId.getGuid());
 
-         List<IArtifact> itemsToOrder = new ArrayList<IArtifact>(startingArtifacts);
+         List<IArtifact> itemsToOrder = new ArrayList<>(startingArtifacts);
          itemsToOrder.add(itemToAdd);
          if (RelationOrderBaseTypes.USER_DEFINED != sorterId) {
             relationSorter.sort(itemsToOrder, null);
@@ -225,13 +225,13 @@ public class RelationTypeSideSorterTest {
       RelationOrderData data1 = new RelationOrderData(accessor, art1);
       RelationOrderData data2 = new RelationOrderData(accessor, art2);
 
-      List<Object[]> expected1 = new ArrayList<Object[]>();
-      List<Object[]> expected2 = new ArrayList<Object[]>();
+      List<Object[]> expected1 = new ArrayList<>();
+      List<Object[]> expected2 = new ArrayList<>();
 
       addData(cache, data1, expected1);
       addData(cache, data2, expected2);
 
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       data.add(new Object[] {provider, relationType1, RelationSide.SIDE_A, data1, expected1});
       data.add(new Object[] {provider, relationType2, RelationSide.SIDE_B, data2, expected2});
       return data;
@@ -283,7 +283,7 @@ public class RelationTypeSideSorterTest {
    }
 
    private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, String relationOrderIdGuid, String... guids) {
-      List<String> artGuids = new ArrayList<String>();
+      List<String> artGuids = new ArrayList<>();
       if (guids != null && guids.length > 0) {
          artGuids.addAll(Arrays.asList(guids));
       }
@@ -296,7 +296,7 @@ public class RelationTypeSideSorterTest {
 
       public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) {
          super(uniqueId, name, guid, branch, DataFactory.fromToken(artifactType));
-         this.relatedItemsMap = new HashMap<IRelationType, List<? extends IArtifact>>();
+         this.relatedItemsMap = new HashMap<>();
       }
 
       @Override

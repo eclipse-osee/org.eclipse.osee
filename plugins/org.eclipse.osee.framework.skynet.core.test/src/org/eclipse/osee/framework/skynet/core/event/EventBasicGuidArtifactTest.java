@@ -59,7 +59,7 @@ public class EventBasicGuidArtifactTest {
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      Set<EventBasicGuidArtifact> toAdd = new HashSet<EventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
@@ -67,7 +67,7 @@ public class EventBasicGuidArtifactTest {
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
 
-      Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> eventArts = new HashSet<>();
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());
@@ -106,7 +106,7 @@ public class EventBasicGuidArtifactTest {
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      Set<IBasicGuidArtifact> toAdd = new HashSet<IBasicGuidArtifact>();
+      Set<IBasicGuidArtifact> toAdd = new HashSet<>();
       toAdd.add(eventArt2);
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
@@ -114,7 +114,7 @@ public class EventBasicGuidArtifactTest {
       toAdd.add(eventArt1);
       Assert.assertEquals(2, toAdd.size());
 
-      Set<IBasicGuidArtifact> eventArts = new HashSet<IBasicGuidArtifact>();
+      Set<IBasicGuidArtifact> eventArts = new HashSet<>();
       eventArts.add(eventArt2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());

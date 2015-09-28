@@ -40,7 +40,7 @@ public class RelatedToPredicateHandler implements PredicateHandler {
       Conditions.checkNotNull(values, "values");
 
       Collection<IRelationTypeSide> types = PredicateHandlerUtil.getIRelationTypeSides(typeParameters);
-      Collection<Integer> localIds = new LinkedList<Integer>();
+      Collection<Integer> localIds = new LinkedList<>();
 
       for (String value : values) {
          if (GUID.isValid(value)) {

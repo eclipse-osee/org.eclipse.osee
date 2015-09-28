@@ -80,9 +80,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    public TraceUnitToArtifactProcessor(IOseeBranch importIntoBranch, boolean addGuidToSourceFile) {
       this.importIntoBranch = importIntoBranch;
-      this.reportTraceNotFound = new HashCollection<TraceUnit, TraceMark>(false, HashSet.class);
-      this.unknownRelationError = new HashCollection<String, String>(false, HashSet.class);
-      this.unRelatedUnits = new HashSet<String>();
+      this.reportTraceNotFound = new HashCollection<>(false, HashSet.class);
+      this.unknownRelationError = new HashCollection<>(false, HashSet.class);
+      this.unRelatedUnits = new HashSet<>();
       this.addGuidToSourceFile = addGuidToSourceFile;
    }
 
@@ -322,7 +322,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       private List<XViewerColumn> createColumns(String... columnNames) {
-         List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+         List<XViewerColumn> columns = new ArrayList<>();
          for (String name : columnNames) {
             columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
          }
@@ -332,7 +332,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private void addUnRelatedTraceUnit(List<IResultsEditorTab> toReturn) {
          if (!unRelatedUnits.isEmpty()) {
             List<XViewerColumn> columns = createColumns("Trace Unit Name");
-            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            List<IResultsXViewerRow> rows = new ArrayList<>();
             for (String artifactName : unRelatedUnits) {
                rows.add(new ResultsXViewerRow(new String[] {artifactName}));
             }
@@ -345,7 +345,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             List<XViewerColumn> columns =
                createColumns("Trace Unit Name", "Trace Unit Type", "Trace Mark Type", "Trace Mark");
 
-            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            List<IResultsXViewerRow> rows = new ArrayList<>();
             for (TraceUnit unit : reportTraceNotFound.keySet()) {
                Collection<TraceMark> traceMarks = reportTraceNotFound.getValues(unit);
                for (TraceMark traceMark : traceMarks) {
@@ -363,7 +363,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private void addRelationTypeNotFoundTab(List<IResultsEditorTab> toReturn) {
          if (!unknownRelationError.isEmpty()) {
             List<XViewerColumn> columns = createColumns("Artifact Type", "Trace Mark Type");
-            List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+            List<IResultsXViewerRow> rows = new ArrayList<>();
             for (String artifactType : unknownRelationError.keySet()) {
                Collection<String> traceTypes = unknownRelationError.getValues(artifactType);
                for (String traceType : traceTypes) {
@@ -376,7 +376,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
       @Override
       public List<IResultsEditorTab> getResultsEditorTabs() {
-         List<IResultsEditorTab> toReturn = new ArrayList<IResultsEditorTab>();
+         List<IResultsEditorTab> toReturn = new ArrayList<>();
          addTraceNotFoundTab(toReturn);
          addUnRelatedTraceUnit(toReturn);
          addRelationTypeNotFoundTab(toReturn);

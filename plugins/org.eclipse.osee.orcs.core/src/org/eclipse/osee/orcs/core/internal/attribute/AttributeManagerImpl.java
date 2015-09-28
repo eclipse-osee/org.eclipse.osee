@@ -170,7 +170,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
       List<Attribute<T>> attributes = getAttributesExcludeDeleted(attributeType);
 
-      List<T> values = new LinkedList<T>();
+      List<T> values = new LinkedList<>();
       for (Attribute<T> attribute : attributes) {
          T value = attribute.getValue();
          if (value != null) {
@@ -286,7 +286,7 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
 
    @Override
    public <T> void setAttributesFromValues(IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
-      AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<T>(attributes, this);
+      AttributeSetHelper<T, T> setter = new TypedValueAttributeSetHelper<>(attributes, this);
       setAttributesFromValuesHelper(setter, attributeType, values);
    }
 
@@ -413,9 +413,9 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    private <A, T> void setAttributesFromValuesHelper(AttributeSetHelper<A, T> helper, IAttributeType attributeType, Collection<T> values) throws OseeCoreException {
       ensureAttributesLoaded();
 
-      Set<T> uniqueItems = new LinkedHashSet<T>(values);
+      Set<T> uniqueItems = new LinkedHashSet<>(values);
       List<Attribute<A>> remainingAttributes = getAttributesExcludeDeleted(attributeType);
-      List<T> remainingNewValues = new ArrayList<T>(uniqueItems.size());
+      List<T> remainingNewValues = new ArrayList<>(uniqueItems.size());
 
       // all existing attributes matching a new value will be left untouched
       for (T newValue : uniqueItems) {

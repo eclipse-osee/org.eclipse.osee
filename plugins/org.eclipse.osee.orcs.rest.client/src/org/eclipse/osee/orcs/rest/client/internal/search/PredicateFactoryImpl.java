@@ -40,13 +40,13 @@ public class PredicateFactoryImpl implements PredicateFactory {
 
    @Override
    public Predicate createUuidSearch(Collection<String> ids) {
-      List<String> strIds = new LinkedList<String>(ids);
+      List<String> strIds = new LinkedList<>(ids);
       return createIdsSearch(SearchMethod.GUIDS, strIds);
    }
 
    @Override
    public Predicate createLocalIdsSearch(Collection<Integer> ids) {
-      List<String> strIds = new LinkedList<String>();
+      List<String> strIds = new LinkedList<>();
       for (Integer value : ids) {
          strIds.add(String.valueOf(value));
       }
@@ -55,7 +55,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
 
    @Override
    public Predicate createIdSearch(Collection<? extends Identity<String>> ids) {
-      List<String> values = new LinkedList<String>();
+      List<String> values = new LinkedList<>();
       for (Identity<String> token : ids) {
          values.add(token.getGuid());
       }
@@ -128,7 +128,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
 
    @Override
    public Predicate createRelatedToSearch(IRelationTypeSide relationTypeSide, Collection<?> ids) {
-      List<String> values = new LinkedList<String>();
+      List<String> values = new LinkedList<>();
       String side = relationTypeSide.getSide().isSideA() ? "A" : "B";
       for (Object id : ids) {
          if (id instanceof IArtifactToken) {
@@ -141,7 +141,7 @@ public class PredicateFactoryImpl implements PredicateFactory {
    }
 
    private List<String> getLongIds(Collection<? extends Identity<Long>> types) {
-      List<String> toReturn = new LinkedList<String>();
+      List<String> toReturn = new LinkedList<>();
       for (Identity<Long> type : types) {
          Long value = type.getGuid();
          toReturn.add(String.valueOf(value));

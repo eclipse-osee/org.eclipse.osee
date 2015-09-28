@@ -36,7 +36,7 @@ public class OteOutfileParser extends BaseOutfileParser {
 
    public OteOutfileParser() {
       super();
-      collectors = new ArrayList<SaxChunkCollector>();
+      collectors = new ArrayList<>();
       collectors.add(new SaxChunkCollector(new ConfigHandler(), "Config"));
       collectors.add(new SaxChunkCollector(new RuntimeVersionsHandler(), "RuntimeVersions"));
       collectors.add(new SaxChunkCollector(new SystemInfoHandler(), "SystemInfo"));

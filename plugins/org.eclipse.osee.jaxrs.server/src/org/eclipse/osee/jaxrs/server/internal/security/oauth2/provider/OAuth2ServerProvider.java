@@ -72,7 +72,7 @@ public class OAuth2ServerProvider {
 
    private static final String OAUTH2_APPLICATION_COMPONENT_NAME = qualify("application");
 
-   private final Set<String> registeredProviders = new HashSet<String>();
+   private final Set<String> registeredProviders = new HashSet<>();
    private List<String> audiences;
    private OAuth2DataProvider dataProvider;
    private NonceVerifier nonceVerifier;
@@ -154,7 +154,7 @@ public class OAuth2ServerProvider {
       filter = new OAuth2RequestFilter(logger, resourceManager, subjectProvider);
       bind(filter, dataProvider);
 
-      endpoints = new HashSet<Object>();
+      endpoints = new HashSet<>();
       endpoints.add(bind(new AccessTokenService(), dataProvider));
       endpoints.add(bind(new TokenRevocationService(), dataProvider));
 
@@ -175,13 +175,13 @@ public class OAuth2ServerProvider {
 
       application = new OAuth2Application(endpoints);
 
-      grantHandlers = new ArrayList<AccessTokenGrantHandler>();
+      grantHandlers = new ArrayList<>();
       grantHandlers.add(bind(new AuthorizationCodeGrantHandler(), dataProvider, new DigestCodeVerifier()));
       grantHandlers.add(bind(new ClientCredentialsGrantHandler(), dataProvider));
       grantHandlers.add(bind(new ResourceOwnerGrantHandler(), dataProvider, subjectProvider));
       grantHandlers.add(bind(new RefreshTokenGrantHandler(), dataProvider));
 
-      tokenValidators = new ArrayList<AccessTokenValidator>();
+      tokenValidators = new ArrayList<>();
       if (config.isHawkTokenSupported()) {
          NonceVerifierImpl nonceVerifier = new NonceVerifierImpl();
          NonceStore nonceStore = null;

@@ -10,7 +10,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
 
 public class ParentLogRecord extends LogRecord {
     private static final long serialVersionUID = 684361479587503820L;
-    private Collection<LogRecord> records = new ArrayList<LogRecord>();
+    private Collection<LogRecord> records = new ArrayList<>();
 
     public ParentLogRecord() {
         super(Level.OFF, "");

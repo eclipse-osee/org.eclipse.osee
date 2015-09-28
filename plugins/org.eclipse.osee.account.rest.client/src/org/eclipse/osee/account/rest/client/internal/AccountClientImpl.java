@@ -248,7 +248,7 @@ public class AccountClientImpl implements AccountClient {
       ResultSet<UnsubscribeInfo> toReturn = ResultSets.emptyResultSet();
       ResultSet<SubscriptionData> results = getSubscriptionsForAccount(userUuid);
       if (!results.isEmpty()) {
-         List<UnsubscribeInfo> infos = new ArrayList<UnsubscribeInfo>();
+         List<UnsubscribeInfo> infos = new ArrayList<>();
 
          UriBuilder builder = UriBuilder.fromUri(baseUri).path("unsubscribe").path("ui").path("{subscription-uuid}");
          for (SubscriptionData subscription : results) {

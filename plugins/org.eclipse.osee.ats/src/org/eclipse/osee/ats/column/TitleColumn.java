@@ -65,7 +65,7 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
          }
          if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
             Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(element);
-            Set<String> strs = new HashSet<String>();
+            Set<String> strs = new HashSet<>();
             strs.add(((Artifact) element).getName());
             for (TeamWorkFlowArtifact team : teams) {
                String str = getColumnText(team, column, columnIndex);

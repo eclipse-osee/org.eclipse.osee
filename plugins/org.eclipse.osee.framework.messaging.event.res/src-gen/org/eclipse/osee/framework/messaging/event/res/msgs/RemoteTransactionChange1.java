@@ -94,7 +94,7 @@ public class RemoteTransactionChange1 extends RemoteEvent {
     */
    public List<RemoteBasicGuidArtifact1> getArtifacts() {
       if (artifacts == null) {
-         artifacts = new ArrayList<RemoteBasicGuidArtifact1>();
+         artifacts = new ArrayList<>();
       }
       return this.artifacts;
    }

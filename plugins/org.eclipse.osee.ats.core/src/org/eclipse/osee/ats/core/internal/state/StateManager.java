@@ -55,10 +55,10 @@ public class StateManager implements IAtsStateManager {
 
    private final IAtsWorkItem workItem;
    private String currentStateName;
-   private final List<WorkState> states = new CopyOnWriteArrayList<WorkState>();
+   private final List<WorkState> states = new CopyOnWriteArrayList<>();
    private final WorkStateFactory factory;
    private Integer percentCompleteValue = 0;
-   private final List<IAtsUser> initialAssignees = new ArrayList<IAtsUser>();
+   private final List<IAtsUser> initialAssignees = new ArrayList<>();
    private boolean dirty = false;
    private final String instanceGuid;
    private final IAtsLogFactory logFactory;
@@ -254,9 +254,9 @@ public class StateManager implements IAtsStateManager {
       List<IAtsUser> currAssignees = currState.getAssignees();
 
       WorkState nextState = getState(stateName);
-      List<IAtsUser> nextAssignees = new ArrayList<IAtsUser>(assignees);
+      List<IAtsUser> nextAssignees = new ArrayList<>(assignees);
 
-      List<IAtsUser> notifyNewAssignees = new ArrayList<IAtsUser>(nextAssignees);
+      List<IAtsUser> notifyNewAssignees = new ArrayList<>(nextAssignees);
       notifyNewAssignees.removeAll(currAssignees);
 
       //Update assignees for state
@@ -437,7 +437,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public List<String> getVisitedStateNames() {
-      List<String> stateNames = new LinkedList<String>();
+      List<String> stateNames = new LinkedList<>();
       for (WorkState state : states) {
          stateNames.add(state.getName());
       }
@@ -606,7 +606,7 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public List<IAtsUser> getAssigneesAdded() throws OseeCoreException {
-      List<IAtsUser> added = new ArrayList<IAtsUser>();
+      List<IAtsUser> added = new ArrayList<>();
       List<IAtsUser> current = getAssignees();
       for (IAtsUser user : current) {
          if (!initialAssignees.contains(user)) {

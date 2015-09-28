@@ -36,11 +36,11 @@ public abstract class AbstractJaxRsContainer<H extends HttpServlet, C extends Ab
    private final HttpService httpService;
    private final Dictionary<String, Object> props;
 
-   private final ConcurrentHashMap<String, C> applications = new ConcurrentHashMap<String, C>();
-   private final ConcurrentHashMap<String, F> providers = new ConcurrentHashMap<String, F>();
+   private final ConcurrentHashMap<String, C> applications = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<String, F> providers = new ConcurrentHashMap<>();
 
-   private final Map<String, String> componentToContext = new ConcurrentHashMap<String, String>();
-   private final AtomicReference<String> servletContextName = new AtomicReference<String>();
+   private final Map<String, String> componentToContext = new ConcurrentHashMap<>();
+   private final AtomicReference<String> servletContextName = new AtomicReference<>();
    private final AtomicBoolean isRegistered = new AtomicBoolean(false);
 
    private volatile H baseJaxsRsServlet;

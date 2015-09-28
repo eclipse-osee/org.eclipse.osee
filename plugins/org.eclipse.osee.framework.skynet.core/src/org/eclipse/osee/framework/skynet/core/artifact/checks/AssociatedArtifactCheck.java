@@ -31,7 +31,7 @@ public class AssociatedArtifactCheck extends ArtifactCheck {
 
    @Override
    public IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
-      List<Integer> artIdsToCheck = new LinkedList<Integer>();
+      List<Integer> artIdsToCheck = new LinkedList<>();
       for (Artifact art : artifacts) {
          if (art.getBranch().equals(CoreBranches.COMMON)) {
             artIdsToCheck.add(art.getArtId());

@@ -28,7 +28,7 @@ public class TxMonitorCacheTest {
       Object key1 = new Object();
       Object key2 = new Object();
 
-      TxMonitorCache<Object> cache = new TxMonitorCache<Object>();
+      TxMonitorCache<Object> cache = new TxMonitorCache<>();
 
       MonitoredTx tx1 = createTx();
       MonitoredTx tx2 = createTx();

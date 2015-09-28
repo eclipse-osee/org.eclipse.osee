@@ -63,7 +63,7 @@ public class MultiServiceBinderTest {
 
    @Before
    public void setupTest() {
-      serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
+      serviceMap = new ConcurrentHashMap<>();
       serviceBinder = new MultiServiceBinder(serviceMap, context, handler);
       handler.reset();
    }

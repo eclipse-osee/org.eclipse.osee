@@ -33,7 +33,7 @@ public class BaseCommandManager implements ICommandManager {
       OteThreadManager threadManager = OteThreadManager.getInstance();
       commands = Executors.newSingleThreadExecutor(threadManager.createNewFactory("ote.command"));
       commandResponse = Executors.newSingleThreadExecutor(threadManager.createNewFactory("ote.command.response"));
-      cmdMap = new ConcurrentHashMap<ITestServerCommand, Future<ITestCommandResult>>();
+      cmdMap = new ConcurrentHashMap<>();
    }
 
    @Override

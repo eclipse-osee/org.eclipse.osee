@@ -27,7 +27,7 @@ public class Properties {
    private List<KeyValue> pairs;
  
    public Properties(){
-      pairs = new ArrayList<KeyValue>();
+      pairs = new ArrayList<>();
    }
    
    public Properties(String simpleName) {

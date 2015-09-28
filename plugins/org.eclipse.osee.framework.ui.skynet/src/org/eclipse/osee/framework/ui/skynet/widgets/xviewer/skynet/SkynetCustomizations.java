@@ -71,7 +71,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
    @Override
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {
       ensurePopulated(false);
-      List<CustomizeData> thisCustDatas = new ArrayList<CustomizeData>();
+      List<CustomizeData> thisCustDatas = new ArrayList<>();
       for (CustomizeData custData : custDatas) {
          if (custData.getNameSpace().equals(this.skynetXViewerFactory.getNamespace())) {
             thisCustDatas.add(custData);
@@ -215,7 +215,7 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
 
    private static List<CustomizeData> getArtifactCustomizations(Artifact customizationArtifact) throws OseeCoreException {
       //      ElapsedTime time = new ElapsedTime("getArtifactCustomizations");
-      List<CustomizeData> custDatas = new ArrayList<CustomizeData>();
+      List<CustomizeData> custDatas = new ArrayList<>();
       if (customizationArtifact != null) {
 
          Collection<Attribute<String>> attributes =

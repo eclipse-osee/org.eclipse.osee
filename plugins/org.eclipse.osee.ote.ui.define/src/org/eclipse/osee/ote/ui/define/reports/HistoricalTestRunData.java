@@ -40,8 +40,8 @@ public class HistoricalTestRunData implements ITestRunReport {
    private final Set<String> runsByName;
 
    public HistoricalTestRunData() {
-      this.runByCollection = new HashMap<Date, Map<String, TestRunOperator>>();
-      this.runsByName = new TreeSet<String>();
+      this.runByCollection = new HashMap<>();
+      this.runsByName = new TreeSet<>();
    }
 
    @Override
@@ -52,7 +52,7 @@ public class HistoricalTestRunData implements ITestRunReport {
             Date date = operator.getEndDate();
             Map<String, TestRunOperator> theMap = runByCollection.get(date);
             if (theMap == null) {
-               theMap = new HashMap<String, TestRunOperator>();
+               theMap = new HashMap<>();
                runByCollection.put(date, theMap);
             }
             String name = operator.getScriptSimpleName();
@@ -69,7 +69,7 @@ public class HistoricalTestRunData implements ITestRunReport {
       String[][] toReturn = new String[runByCollection.size() + 1][getHeader().length];
       int index = 0;
       toReturn[index++] = getTitleRow();
-      List<Date> dateList = new ArrayList<Date>(runByCollection.keySet());
+      List<Date> dateList = new ArrayList<>(runByCollection.keySet());
       Collections.sort(dateList);
       for (Date date : dateList) {
          Map<String, TestRunOperator> theMap = runByCollection.get(date);
@@ -79,7 +79,7 @@ public class HistoricalTestRunData implements ITestRunReport {
    }
 
    private String[] getRow(Date date, Map<String, TestRunOperator> theMap) {
-      List<String> row = new ArrayList<String>();
+      List<String> row = new ArrayList<>();
       row.add(formatter.format(date));
       for (String name : runsByName) {
          TestRunOperator operator = theMap.get(name);
@@ -107,7 +107,7 @@ public class HistoricalTestRunData implements ITestRunReport {
    }
 
    private String[] getTitleRow() {
-      List<String> header = new ArrayList<String>();
+      List<String> header = new ArrayList<>();
       header.add(ONE_SPACE_STRING);
       for (int index = 0; index < runsByName.size(); index++) {
          header.addAll(Arrays.asList(PER_SCRIPT_HEADER));
@@ -122,7 +122,7 @@ public class HistoricalTestRunData implements ITestRunReport {
 
    @Override
    public String[] getHeader() {
-      List<String> header = new ArrayList<String>();
+      List<String> header = new ArrayList<>();
       header.add(DATE_HEADER);
       for (String name : runsByName) {
          header.add(name);

@@ -146,7 +146,7 @@ public class AtsServerImpl implements IAtsServer {
 
    private volatile boolean emailEnabled = true;
 
-   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<IAtsNotifierServer>();
+   private final List<IAtsNotifierServer> notifiers = new CopyOnWriteArrayList<>();
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private IArtifactResolver artifactResolver;
@@ -415,7 +415,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public Collection<ArtifactReadable> getArtifacts(List<Long> uuids) {
-      Collection<ArtifactReadable> artifacts = new LinkedList<ArtifactReadable>();
+      Collection<ArtifactReadable> artifacts = new LinkedList<>();
       Iterator<ArtifactReadable> iterator =
          orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuids(uuids).getResults().iterator();
       while (iterator.hasNext()) {
@@ -426,7 +426,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public List<ArtifactReadable> getArtifactListByIds(String ids) {
-      List<ArtifactReadable> actions = new ArrayList<ArtifactReadable>();
+      List<ArtifactReadable> actions = new ArrayList<>();
       for (String id : ids.split(",")) {
          id = id.replaceAll("^ +", "");
          id = id.replaceAll(" +$", "");
@@ -497,7 +497,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public List<IAtsWorkItem> getWorkItemListByIds(String ids) {
-      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>();
+      List<IAtsWorkItem> workItems = new ArrayList<>();
       for (ArtifactReadable art : getArtifactListByIds(ids)) {
          IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
          if (workItem != null) {
@@ -540,7 +540,7 @@ public class AtsServerImpl implements IAtsServer {
 
    @Override
    public Collection<IArtifactType> getArtifactTypes() {
-      List<IArtifactType> types = new ArrayList<IArtifactType>();
+      List<IArtifactType> types = new ArrayList<>();
       types.addAll(orcsApi.getOrcsTypes().getArtifactTypes().getAll());
       return types;
    }

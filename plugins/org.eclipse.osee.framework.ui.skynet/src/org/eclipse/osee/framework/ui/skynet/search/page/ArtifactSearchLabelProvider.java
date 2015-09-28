@@ -56,7 +56,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
    public ArtifactSearchLabelProvider(AbstractArtifactSearchViewPage page, ArtifactDecorator artifactDecorator) {
       this.artifactDecorator = artifactDecorator;
-      this.disabledImageMap = new HashMap<Image, Image>();
+      this.disabledImageMap = new HashMap<>();
       fPage = page;
       fMatchComparator = new Comparator() {
          @Override

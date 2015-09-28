@@ -29,7 +29,7 @@ public final class ServiceBinderFactoryImpl implements ServiceBinderFactory {
 
    public ServiceBinderFactoryImpl(BundleContext context, AbstractTrackingHandler handler) {
       super();
-      Map<Class<?>, Collection<Object>> serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
+      Map<Class<?>, Collection<Object>> serviceMap = new ConcurrentHashMap<>();
       singleBinder = new SingletonServiceBinder(serviceMap, context, handler);
       multiBinder = new MultiServiceBinder(serviceMap, context, handler);
    }

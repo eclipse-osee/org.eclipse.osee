@@ -46,7 +46,7 @@ public class BranchUtilBranchReadableTest {
    @Test
    public void testConnectedBranchSorting() {
       initBranchParentageList();
-      List<BranchReadable> branchList = new LinkedList<BranchReadable>();
+      List<BranchReadable> branchList = new LinkedList<>();
       initOutOfOrderList(branchList);
       List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
       Assert.assertEquals("[ten, nine, eight, seven, six, five, four, three, two, one]", ordered.toString());
@@ -55,7 +55,7 @@ public class BranchUtilBranchReadableTest {
    @Test
    public void testDisjointBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> branchList = new LinkedList<BranchReadable>();
+      List<BranchReadable> branchList = new LinkedList<>();
       initDisjointOrderList(branchList);
       List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
       Assert.assertEquals("[four, three, two, seven, six, five, ten, nine, eight, one]", ordered.toString());
@@ -64,7 +64,7 @@ public class BranchUtilBranchReadableTest {
    @Test
    public void testDisjointOutOfOrderBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> branchList = new LinkedList<BranchReadable>();
+      List<BranchReadable> branchList = new LinkedList<>();
       initOutOfOrderList(branchList);
       List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
       Assert.assertEquals("[four, ten, seven, three, six, nine, eight, two, five, one]", ordered.toString());
@@ -72,7 +72,7 @@ public class BranchUtilBranchReadableTest {
 
    @Test
    public void testOutsideParentsBranchSorting() {
-      List<BranchReadable> branchList = new LinkedList<BranchReadable>();
+      List<BranchReadable> branchList = new LinkedList<>();
       initOutsideParentList();
       initOutOfOrderList(branchList);
       List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
@@ -171,7 +171,7 @@ public class BranchUtilBranchReadableTest {
    }
 
    private ResultSet<BranchReadable> makeResults(BranchReadable input) {
-      List<BranchReadable> list = new ArrayList<BranchReadable>();
+      List<BranchReadable> list = new ArrayList<>();
       list.add(input);
       ResultSet<BranchReadable> results = ResultSets.newResultSet(list);
       return results;

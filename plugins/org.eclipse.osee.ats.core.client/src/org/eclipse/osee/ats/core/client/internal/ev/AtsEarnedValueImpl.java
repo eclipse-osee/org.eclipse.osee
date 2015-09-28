@@ -56,7 +56,7 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
 
    @Override
    public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) throws OseeCoreException {
-      List<IAtsWorkPackage> workPackageOptions = new ArrayList<IAtsWorkPackage>();
+      List<IAtsWorkPackage> workPackageOptions = new ArrayList<>();
       getWorkPackageOptions(object, workPackageOptions);
       return workPackageOptions;
    }

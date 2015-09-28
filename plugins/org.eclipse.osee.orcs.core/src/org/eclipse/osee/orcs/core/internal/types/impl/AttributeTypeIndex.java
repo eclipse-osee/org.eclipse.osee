@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AttributeTypeIndex extends TokenTypeIndex<Long, IAttributeType, XAttributeType> {
 
-   private final Set<IAttributeType> taggables = new HashSet<IAttributeType>();
+   private final Set<IAttributeType> taggables = new HashSet<>();
 
    @Override
    public void put(IAttributeType token, XAttributeType dslType) {

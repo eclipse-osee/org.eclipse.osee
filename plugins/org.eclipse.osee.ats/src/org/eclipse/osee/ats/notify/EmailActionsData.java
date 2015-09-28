@@ -29,7 +29,7 @@ public class EmailActionsData {
 
    private String subject;
    private String body;
-   private final Set<Artifact> workflows = new HashSet<Artifact>(5);
+   private final Set<Artifact> workflows = new HashSet<>(5);
    private EmailRecipient emailRecipient = null;
 
    public String getSubject() {

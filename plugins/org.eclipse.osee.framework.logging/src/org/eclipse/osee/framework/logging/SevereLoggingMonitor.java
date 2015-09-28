@@ -18,7 +18,7 @@ import java.util.logging.Level;
 public class SevereLoggingMonitor implements ILoggerListener {
 
    private boolean ignore;
-   private final List<IHealthStatus> status = new CopyOnWriteArrayList<IHealthStatus>();
+   private final List<IHealthStatus> status = new CopyOnWriteArrayList<>();
 
    @Override
    public void log(String loggerName, Level level, String message, Throwable th) {
@@ -40,7 +40,7 @@ public class SevereLoggingMonitor implements ILoggerListener {
    }
 
    public List<IHealthStatus> getSevereLogs() {
-      List<IHealthStatus> severeStatus = new ArrayList<IHealthStatus>(status.size());
+      List<IHealthStatus> severeStatus = new ArrayList<>(status.size());
 
       //Remove all none severe levels
       for (IHealthStatus healthStatus : status) {
@@ -52,7 +52,7 @@ public class SevereLoggingMonitor implements ILoggerListener {
    }
 
    public List<IHealthStatus> getLogsAtLevel(Level level) {
-      List<IHealthStatus> warningStatus = new ArrayList<IHealthStatus>(status.size());
+      List<IHealthStatus> warningStatus = new ArrayList<>(status.size());
 
       //Remove all none severe levels
       for (IHealthStatus healthStatus : status) {

@@ -40,8 +40,8 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
 
    @Override
    public Collection<Artifact> getArtifacts() throws Exception {
-      List<Integer> artIds = new LinkedList<Integer>();
-      List<String> guids = new LinkedList<String>();
+      List<Integer> artIds = new LinkedList<>();
+      List<String> guids = new LinkedList<>();
       for (String id : Arrays.asList(searchString.split("[\\s,]+"))) {
          if (Strings.isNumeric(id)) {
             artIds.add(Integer.parseInt(id));
@@ -50,7 +50,7 @@ final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
          }
       }
 
-      List<Artifact> toReturn = new LinkedList<Artifact>();
+      List<Artifact> toReturn = new LinkedList<>();
 
       if (!artIds.isEmpty()) {
          QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(branchToSearch);

@@ -103,7 +103,7 @@ public class ConvertWorkDefinitionToAtsDslTest {
    @Test
    public void test_processWorkRulesForState() {
       StateDef dslState = AtsDslFactoryImpl.init().createStateDef();
-      List<String> rules = new ArrayList<String>();
+      List<String> rules = new ArrayList<>();
       XResultData resultData = new XResultData(false);
       ConvertWorkDefinitionToAtsDsl convert = new ConvertWorkDefinitionToAtsDsl(resultData);
 

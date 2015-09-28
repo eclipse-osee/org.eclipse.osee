@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
  * @author Ryan D. Brooks
  */
 public final class RendererManager {
-   private static final List<IRenderer> renderers = new ArrayList<IRenderer>(20);
+   private static final List<IRenderer> renderers = new ArrayList<>(20);
    private static boolean firstTimeThrough = true;
 
    private RendererManager() {
@@ -137,7 +137,7 @@ public final class RendererManager {
    }
 
    private static List<IRenderer> getApplicableRenderers(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      ArrayList<IRenderer> applicableRenderers = new ArrayList<IRenderer>();
+      ArrayList<IRenderer> applicableRenderers = new ArrayList<>();
       IRenderer bestRenderer = getBestRenderer(presentationType, artifact);
       int rendererMinimumRanking = bestRenderer.minimumRanking();
       int minimumRank = Math.max(rendererMinimumRanking, IRenderer.BASE_MATCH);

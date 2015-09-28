@@ -94,7 +94,7 @@ public class EmailWizardPage extends WizardPage {
       namesComp.setLayoutData(gd);
 
       // Fill names array
-      ArrayList<Object> names = new ArrayList<Object>();
+      ArrayList<Object> names = new ArrayList<>();
       if (groups != null) {
          names.addAll(groups);
          if (groups.size() > 0) {
@@ -325,7 +325,7 @@ public class EmailWizardPage extends WizardPage {
 
    public String[] getEmails(ListViewer list) throws OseeCoreException {
 
-      ArrayList<String> emails = new ArrayList<String>();
+      ArrayList<String> emails = new ArrayList<>();
       for (int x = 0; x < list.getList().getItemCount(); x++) {
          Object obj = list.getElementAt(x);
          if (obj instanceof User) {

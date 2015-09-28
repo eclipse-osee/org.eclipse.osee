@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
 
    private final static ReviewNavigateViewItems instance = new ReviewNavigateViewItems();
-   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
 
    public static ReviewNavigateViewItems getInstance() {

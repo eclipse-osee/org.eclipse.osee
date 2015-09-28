@@ -34,13 +34,13 @@ public class MailMessage {
    private String from;
 
    @XmlElement
-   private final Collection<String> replyToAddress = new LinkedHashSet<String>();
+   private final Collection<String> replyToAddress = new LinkedHashSet<>();
 
    @XmlElement
-   private final Collection<String> recepientAddresses = new LinkedHashSet<String>();
+   private final Collection<String> recepientAddresses = new LinkedHashSet<>();
 
    @XmlTransient
-   private final List<DataHandler> attachments = new ArrayList<DataHandler>();
+   private final List<DataHandler> attachments = new ArrayList<>();
 
    public void setId(String id) {
       this.id = id;
@@ -109,9 +109,9 @@ public class MailMessage {
 
       private String subject;
       private String from;
-      private final Collection<String> replyTos = new LinkedHashSet<String>();
-      private final Collection<String> recipients = new LinkedHashSet<String>();
-      private final List<DataHandler> attachments = new ArrayList<DataHandler>();
+      private final Collection<String> replyTos = new LinkedHashSet<>();
+      private final Collection<String> recipients = new LinkedHashSet<>();
+      private final List<DataHandler> attachments = new ArrayList<>();
 
       public MailMessage build() {
          MailMessage message = new MailMessage();

@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AtsLog implements IAtsLog {
 
    private boolean dirty = false;
-   private final List<IAtsLogItem> logItems = new ArrayList<IAtsLogItem>();
+   private final List<IAtsLogItem> logItems = new ArrayList<>();
    private String logId = "none";
 
    @Override
@@ -53,7 +53,7 @@ public class AtsLog implements IAtsLog {
 
    @Override
    public List<IAtsLogItem> getLogItemsReversed() throws OseeCoreException {
-      List<IAtsLogItem> logItems = new ArrayList<IAtsLogItem>(getLogItems());
+      List<IAtsLogItem> logItems = new ArrayList<>(getLogItems());
       Collections.reverse(logItems);
       return logItems;
    }

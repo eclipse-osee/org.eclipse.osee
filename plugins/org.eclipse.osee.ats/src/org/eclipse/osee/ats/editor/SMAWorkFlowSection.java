@@ -74,7 +74,7 @@ public class SMAWorkFlowSection extends SectionPart {
    private final StateXWidgetPage statePage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
    private Composite mainComp;
-   private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
+   private final List<XWidget> allXWidgets = new ArrayList<>();
    private boolean sectionCreated = false;
    private Section section;
    private final SMAEditor editor;
@@ -504,7 +504,7 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    public List<XWidget> getXWidgets(Class<?> clazz) {
-      List<XWidget> widgets = new ArrayList<XWidget>();
+      List<XWidget> widgets = new ArrayList<>();
       for (XWidget widget : allXWidgets) {
          if (clazz.isInstance(widget)) {
             widgets.add(widget);

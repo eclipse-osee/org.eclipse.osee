@@ -34,7 +34,7 @@ public class HttpBranchExchange {
       options.setAllAsRootBranches(allAsRootBranches);
 
       if (branchUuids != null && branchUuids.length > 0) {
-         List<Long> ids = new ArrayList<Long>();
+         List<Long> ids = new ArrayList<>();
          for (Long entry : branchUuids) {
             ids.add(entry);
          }

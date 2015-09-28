@@ -55,7 +55,7 @@ public class AtsDeleteManager {
 
    public static void handleDeletePurgeAtsObject(Collection<? extends Artifact> selectedArts, boolean forcePend, DeleteOption... deleteOption) throws OseeCoreException {
       final Collection<DeleteOption> deleteOptions = Collections.getAggregate(deleteOption);
-      List<Artifact> delArts = new ArrayList<Artifact>();
+      List<Artifact> delArts = new ArrayList<>();
       StringBuilder artBuilder = new StringBuilder();
 
       for (Artifact art : selectedArts) {
@@ -91,8 +91,8 @@ public class AtsDeleteManager {
 
       // Build list of related artifacts that will be deleted
       StringBuilder delBuilder = new StringBuilder();
-      final Set<Artifact> allDeleteArts = new HashSet<Artifact>(30);
-      Map<Artifact, Object> ignoredArts = new HashMap<Artifact, Object>();
+      final Set<Artifact> allDeleteArts = new HashSet<>(30);
+      Map<Artifact, Object> ignoredArts = new HashMap<>();
       getDeleteArtifacts(delArts, delBuilder, allDeleteArts, ignoredArts);
       final boolean purge = deleteOptions.contains(DeleteOption.Purge);
       // Get final confirmation of all seleted and related items to delete/purge
@@ -139,7 +139,7 @@ public class AtsDeleteManager {
    private static void getDeleteArtifacts(List<Artifact> delArts, StringBuilder delBuilder, final Set<Artifact> allDeleteArts, Map<Artifact, Object> ignoredArts) throws OseeCoreException {
       for (Artifact deleteArt : delArts) {
          allDeleteArts.add(deleteArt);
-         final Set<Artifact> relatedArts = new HashSet<Artifact>(30);
+         final Set<Artifact> relatedArts = new HashSet<>(30);
          delBuilder.append(String.format("\n<b>Selected</b>:[%s][%s][%s]", deleteArt.getArtifactTypeName(),
             AtsUtilClient.getAtsId(deleteArt), deleteArt.getName()) + "\n");
          if (deleteArt.isOfType(AtsArtifactTypes.Action)) {

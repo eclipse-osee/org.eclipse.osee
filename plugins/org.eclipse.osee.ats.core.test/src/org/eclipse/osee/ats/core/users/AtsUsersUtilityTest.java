@@ -26,7 +26,7 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
 
    @Test
    public void testGetValidEmailUsers() throws OseeCoreException {
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      Set<IAtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);
       users.add(alice);
@@ -42,7 +42,7 @@ public class AtsUsersUtilityTest extends AbstractUserTest {
 
    @Test
    public void testGetActiveEmailUsers() throws OseeCoreException {
-      Set<IAtsUser> users = new HashSet<IAtsUser>();
+      Set<IAtsUser> users = new HashSet<>();
       users.add(joe);
       users.add(steve);
       users.add(alice);

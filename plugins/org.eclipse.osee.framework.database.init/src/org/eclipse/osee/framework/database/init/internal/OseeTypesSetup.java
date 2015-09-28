@@ -76,7 +76,7 @@ public class OseeTypesSetup {
    }
 
    public Map<String, URL> getOseeTypeExtensions() {
-      Map<String, URL> oseeTypes = new HashMap<String, URL>();
+      Map<String, URL> oseeTypes = new HashMap<>();
       for (IConfigurationElement element : ExtensionPoints.getExtensionElements(OSEE_TYPES_EXTENSION_ID, "OseeTypes")) {
          String resourceName = element.getAttribute("resource");
          Bundle bundle = Platform.getBundle(element.getContributor().getName());
@@ -112,7 +112,7 @@ public class OseeTypesSetup {
    }
 
    private Map<String, URL> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
-      Map<String, URL> items = new LinkedHashMap<String, URL>();
+      Map<String, URL> items = new LinkedHashMap<>();
       Map<String, URL> extensions = getOseeTypeExtensions();
       for (String idsToImport : uniqueIdsToImport) {
          URL urlEntry = extensions.get(idsToImport);

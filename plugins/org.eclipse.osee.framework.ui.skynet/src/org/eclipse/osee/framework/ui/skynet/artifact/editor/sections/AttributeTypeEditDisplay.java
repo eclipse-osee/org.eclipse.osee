@@ -72,7 +72,7 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
       dialog.setInput(input);
       int result = dialog.open();
       if (result == Window.OK) {
-         toReturn = new ArrayList<IAttributeType>();
+         toReturn = new ArrayList<>();
          for (Object object : dialog.getResult()) {
             if (object instanceof IAttributeType) {
                toReturn.add((IAttributeType) object);

@@ -62,9 +62,9 @@ public class LisFileParser implements DispoImporterApi {
    private final DispoDataFactory dataFactory;
 
    private static final Pattern fileMethodLineNumberPattern = Pattern.compile("\\s*([0-9]+)\\s+([0-9]+)\\s+([0-9]+)");
-   private final Map<String, DispoItemData> datIdToItem = new HashMap<String, DispoItemData>();
-   private final Set<String> datIdsCoveredByException = new HashSet<String>();
-   private final Set<String> alreadyUsedDatIds = new HashSet<String>();
+   private final Map<String, DispoItemData> datIdToItem = new HashMap<>();
+   private final Set<String> datIdsCoveredByException = new HashSet<>();
+   private final Set<String> alreadyUsedDatIds = new HashSet<>();
 
    private final DispoConnector dispoConnector = new DispoConnector();
 
@@ -117,17 +117,17 @@ public class LisFileParser implements DispoImporterApi {
       // This is a reimport so we'll need to copy all the annotations
       if (!exisitingItems.isEmpty()) {
          DispoSetCopier copier = new DispoSetCopier(dispoConnector);
-         List<DispoItemData> itemsFromImport = new ArrayList<DispoItemData>();
+         List<DispoItemData> itemsFromImport = new ArrayList<>();
          itemsFromImport.addAll(values);
 
-         Map<String, DispoItemData> nameToItem = new HashMap<String, DispoItemData>();
+         Map<String, DispoItemData> nameToItem = new HashMap<>();
          for (DispoItemData item : itemsFromImport) {
             nameToItem.put(item.getName(), item);
          }
 
          toReturn = copier.copyAllDispositions(nameToItem, exisitingItems.values(), false, report);
       } else {
-         toReturn = new ArrayList<DispoItem>();
+         toReturn = new ArrayList<>();
          toReturn.addAll(values);
       }
       return toReturn;
@@ -154,7 +154,7 @@ public class LisFileParser implements DispoImporterApi {
    }
 
    private Collection<VCastInstrumentedFile> getInstrumentedFiles(VCastDataStore dataStore, OperationReport report) {
-      Collection<VCastInstrumentedFile> instrumentedFiles = new ArrayList<VCastInstrumentedFile>();
+      Collection<VCastInstrumentedFile> instrumentedFiles = new ArrayList<>();
       try {
          /**
           * Note: the LIS_file field of the instrumentedFiles may have a fictious absolute path - but the path is
@@ -227,7 +227,7 @@ public class LisFileParser implements DispoImporterApi {
             instrumentedFile.getId(), function.getId(), ex.getMessage());
       }
 
-      Map<String, JSONObject> discrepancies = new HashMap<String, JSONObject>();
+      Map<String, JSONObject> discrepancies = new HashMap<>();
 
       for (VCastStatementCoverage statementCoverageItem : statementCoverageItems) {
          processStatement(lisFile, lisFileParser, fileNum, functionNum, function, statementCoverageItem, discrepancies,

@@ -37,7 +37,7 @@ public class DoorsTableRowCollector {
    private final DoorsArtifactExtractor extractor;
    private final ArrayList<DoorsTableRow> rawRows = Lists.newArrayList();
    private final HashMap<DoorsColumnType, Integer> columns = Maps.newHashMap();
-   private final Stack<DoorsTableRow> stack = new Stack<DoorsTableRow>();
+   private final Stack<DoorsTableRow> stack = new Stack<>();
    private final static String UNKNOWN_STRING = "unknown";
 
    public DoorsTableRowCollector(DoorsArtifactExtractor extractor) {
@@ -77,7 +77,7 @@ public class DoorsTableRowCollector {
 
    public void createArtifacts(RoughArtifactCollector collector) {
       analyzeRows();
-      Queue<DoorsTableRow> queue = new LinkedList<DoorsTableRow>();
+      Queue<DoorsTableRow> queue = new LinkedList<>();
       DoorsArtifactBuilder dab = new DoorsArtifactBuilder(extractor, this);
 
       for (DoorsTableRow dr : getTableRows()) {

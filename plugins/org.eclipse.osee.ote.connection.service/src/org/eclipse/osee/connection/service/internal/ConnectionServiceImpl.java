@@ -23,7 +23,7 @@ import org.eclipse.osee.connection.service.IServiceConnector;
 
 class ConnectionServiceImpl implements IConnectionService {
 
-   private final HashSet<IServiceConnector> connectors = new HashSet<IServiceConnector>();
+   private final HashSet<IServiceConnector> connectors = new HashSet<>();
    private final EventNotifier eventNotifier = new EventNotifier();
 
    private boolean isStopped = false;
@@ -50,7 +50,7 @@ class ConnectionServiceImpl implements IConnectionService {
    @Override
    public synchronized List<IServiceConnector> findConnectors(IConnectorFilter[] filterChain) {
       checkState();
-      ArrayList<IServiceConnector> matchingConnectors = new ArrayList<IServiceConnector>();
+      ArrayList<IServiceConnector> matchingConnectors = new ArrayList<>();
       for (IServiceConnector connector : connectors) {
          boolean accepted = true;
          for (IConnectorFilter filter : filterChain) {

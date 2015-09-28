@@ -73,7 +73,7 @@ public class OsArtifactQueryByPredicateImpl extends OsArtifactQueryImpl implemen
   {
     if (criteria == null)
     {
-      criteria = new EObjectContainmentEList<OsItemCriteria>(OsItemCriteria.class, this, OrcsScriptDslPackage.OS_ARTIFACT_QUERY_BY_PREDICATE__CRITERIA);
+      criteria = new EObjectContainmentEList<>(OsItemCriteria.class, this, OrcsScriptDslPackage.OS_ARTIFACT_QUERY_BY_PREDICATE__CRITERIA);
     }
     return criteria;
   }

@@ -39,7 +39,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
    private final Collection<IAtsTeamDefinition> teamDefs;
    private final Collection<IAtsActionableItem> ais;
    private final Active activeWorkPkgs;
-   private final Set<Artifact> results = new HashSet<Artifact>();
+   private final Set<Artifact> results = new HashSet<>();
    private final boolean includeChildrenTeamDefs;
    private final boolean includeChildrenAis;
 
@@ -61,7 +61,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
          throw new OseeArgumentException("ERROR", "Must provide Team Definitions or Actionable Items");
       }
       checkForCancelledStatus(monitor);
-      List<String> guids = new ArrayList<String>();
+      List<String> guids = new ArrayList<>();
       addAllTeamDefGuids(monitor, teamDefs, includeChildrenTeamDefs, guids);
       addAllAisGuids(monitor, ais, includeChildrenAis, guids);
 
@@ -102,7 +102,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
    }
 
    public Set<IAtsWorkPackage> getResults() {
-      Set<IAtsWorkPackage> resultWorkPgks = new HashSet<IAtsWorkPackage>();
+      Set<IAtsWorkPackage> resultWorkPgks = new HashSet<>();
       for (Artifact art : results) {
          resultWorkPgks.add(new WorkPackageArtifact(art));
       }

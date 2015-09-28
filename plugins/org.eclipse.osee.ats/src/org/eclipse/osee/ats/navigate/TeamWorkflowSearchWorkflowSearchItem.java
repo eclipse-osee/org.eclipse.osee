@@ -194,7 +194,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
             }
 
             private List<String> getSortedVersions(IAtsTeamDefinition teamDefHoldingVersions) {
-               List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+               List<IAtsVersion> versions = new ArrayList<>();
                versions.addAll(teamDefHoldingVersions.getVersions());
                Collections.sort(versions, new Comparator<IAtsVersion>() {
 
@@ -208,7 +208,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
                      return aObj1.getName().compareTo(aObj2.getName());
                   }
                });
-               List<String> sorted = new ArrayList<String>();
+               List<String> sorted = new ArrayList<>();
                for (IAtsVersion version : versions) {
                   String postfix = "";
                   if (version.isNextVersion()) {

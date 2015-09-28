@@ -23,7 +23,7 @@ public class ConsoleLogger implements ILoggerListener {
    public Set<Logger> initializedLoggers;
 
    public ConsoleLogger() {
-      initializedLoggers = new HashSet<Logger>(64);
+      initializedLoggers = new HashSet<>(64);
    }
 
    @Override

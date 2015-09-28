@@ -34,8 +34,8 @@ public class DefaultHierarchySorter implements Comparator<Artifact> {
 
    @Override
    public int compare(Artifact firstArtifact, Artifact secondArtifact) {
-      List<Artifact> firstArtifactsParentList = new ArrayList<Artifact>();
-      List<Artifact> secondArtifactParentList = new ArrayList<Artifact>();
+      List<Artifact> firstArtifactsParentList = new ArrayList<>();
+      List<Artifact> secondArtifactParentList = new ArrayList<>();
 
       try {
          firstArtifactsParentList = populateParent(firstArtifact, firstArtifactsParentList);

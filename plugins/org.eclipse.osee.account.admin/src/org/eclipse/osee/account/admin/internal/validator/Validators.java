@@ -28,7 +28,7 @@ public final class Validators {
    }
 
    public static Validator newAccountValidator(Log logger, AccountStorage storage) {
-      Map<AccountField, FieldValidator> data = new HashMap<AccountField, FieldValidator>();
+      Map<AccountField, FieldValidator> data = new HashMap<>();
       addValidator(data, new UuidValidator());
       addValidator(data, new LocalIdValidator());
       addValidator(data, new DisplayNameValidator(storage));
@@ -38,7 +38,7 @@ public final class Validators {
    }
 
    public static Validator newSubscriptionValidator(Log logger, SubscriptionStorage storage) {
-      Map<AccountField, FieldValidator> data = new HashMap<AccountField, FieldValidator>();
+      Map<AccountField, FieldValidator> data = new HashMap<>();
       addValidator(data, new UuidValidator());
       addValidator(data, new LocalIdValidator());
       addValidator(data, new SubscriptionGroupNameValidator(storage));

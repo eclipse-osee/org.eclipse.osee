@@ -29,7 +29,7 @@ public class OseeInfo {
    public static final String DB_ID_KEY = "osee.db.guid";
    public static final String DB_TYPE_KEY = "osee.db.type";
 
-   private static Map<String, Pair<Long, String>> cache = new ConcurrentHashMap<String, Pair<Long, String>>();
+   private static Map<String, Pair<Long, String>> cache = new ConcurrentHashMap<>();
 
    public static String getValue(String key) throws OseeCoreException {
       return getValue(key, (long) Integer.MAX_VALUE);

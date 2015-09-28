@@ -116,7 +116,7 @@ class CommitJobDialog extends UIJob {
    }
 
    private final class TestRunTableLabelProvider extends BaseLabelProvider implements ITableLabelProvider {
-      private final HashSet<Object> unselectableItems = new HashSet<Object>();
+      private final HashSet<Object> unselectableItems = new HashSet<>();
       private final int DUMMY_COLUMNS = 1;
 
       public TestRunTableLabelProvider() {

@@ -90,7 +90,7 @@ public class ArtifactExplorerLinkNode {
    }
 
    public List<Artifact> getOppositeArtifacts() {
-      List<Artifact> oppositeArtifacts = new ArrayList<Artifact>();
+      List<Artifact> oppositeArtifacts = new ArrayList<>();
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
          if (link.getRelationType().getName().equals(relationTypeName)) {
             if (link.getAArtifactId() == artifactId) {

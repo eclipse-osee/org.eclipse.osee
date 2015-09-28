@@ -388,7 +388,7 @@ public class DecisionReviewDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (assigneeRefs == null)
     {
-      assigneeRefs = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.DECISION_REVIEW_DEF__ASSIGNEE_REFS);
+      assigneeRefs = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.DECISION_REVIEW_DEF__ASSIGNEE_REFS);
     }
     return assigneeRefs;
   }
@@ -425,7 +425,7 @@ public class DecisionReviewDefImpl extends MinimalEObjectImpl.Container implemen
   {
     if (options == null)
     {
-      options = new EObjectContainmentEList<DecisionReviewOpt>(DecisionReviewOpt.class, this, AtsDslPackage.DECISION_REVIEW_DEF__OPTIONS);
+      options = new EObjectContainmentEList<>(DecisionReviewOpt.class, this, AtsDslPackage.DECISION_REVIEW_DEF__OPTIONS);
     }
     return options;
   }

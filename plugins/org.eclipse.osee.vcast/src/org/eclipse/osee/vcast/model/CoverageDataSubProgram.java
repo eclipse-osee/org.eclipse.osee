@@ -22,7 +22,7 @@ public class CoverageDataSubProgram {
    private int complexity;
    private int covered;
    private int total;
-   private final List<LineNumToBranches> lineNumToBranches = new ArrayList<LineNumToBranches>();
+   private final List<LineNumToBranches> lineNumToBranches = new ArrayList<>();
 
    public CoverageDataSubProgram(String name) {
       super();

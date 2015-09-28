@@ -80,7 +80,7 @@ public class VersionListDialog extends FilteredTreeDialog {
       public Object[] getElements(Object inputElement) {
          if (inputElement instanceof Collection) {
             Collection list = (Collection) inputElement;
-            Collection<Object> verArts = new LinkedList<Object>();
+            Collection<Object> verArts = new LinkedList<>();
             for (Object obj : list.toArray(new IAtsVersion[list.size()])) {
                IAtsVersion verArt = (IAtsVersion) obj;
                if (showReleased || (!showReleased && !verArt.isReleased())) {

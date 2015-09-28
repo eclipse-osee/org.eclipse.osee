@@ -45,7 +45,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          new AICheckTreeDialog(getName(),
             "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
-         List<IAtsActionableItem> objs = new ArrayList<IAtsActionableItem>();
+         List<IAtsActionableItem> objs = new ArrayList<>();
          objs.addAll(AtsClientService.get().getConfigObjects(
             AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
                AtsRelationTypes.SubscribedUser_Artifact), IAtsActionableItem.class));

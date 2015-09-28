@@ -67,7 +67,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public static List<IAtsUser> getImplementersByState(AbstractWorkflowArtifact workflow, IStateToken state) throws OseeCoreException {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       if (workflow.isCancelled()) {
          users.add(workflow.getCancelledBy());
       } else {
@@ -104,7 +104,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    }
 
    public Set<IAtsTeamDefinition> getCorrespondingTeamDefinition() throws OseeCoreException {
-      Set<IAtsTeamDefinition> teamDefs = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
       if (getParentTeamWorkflow() != null) {
          teamDefs.add(getParentTeamWorkflow().getTeamDefinition());
       }

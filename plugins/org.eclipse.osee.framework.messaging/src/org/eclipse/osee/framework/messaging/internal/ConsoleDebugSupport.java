@@ -28,8 +28,8 @@ public class ConsoleDebugSupport {
 	private Map<String, Stats> receives;
 	
 	public ConsoleDebugSupport(){
-		sends = new ConcurrentHashMap<MessageID, Stats>();
-		receives = new ConcurrentHashMap<String, Stats>();
+		sends = new ConcurrentHashMap<>();
+		receives = new ConcurrentHashMap<>();
 	}
 
 	protected void setPrintSends(boolean printSends){

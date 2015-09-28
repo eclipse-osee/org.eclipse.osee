@@ -35,7 +35,7 @@ public abstract class AbstractPropertySource implements IPropertySource2 {
    @Override
    public IPropertyDescriptor[] getPropertyDescriptors() {
       if (descriptors == null) {
-         ArrayList<IPropertyDescriptor> list = new ArrayList<IPropertyDescriptor>();
+         ArrayList<IPropertyDescriptor> list = new ArrayList<>();
          addPropertyDescriptors(list);
          descriptors = new IPropertyDescriptor[list.size()];
          list.toArray(descriptors);

@@ -166,7 +166,7 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
   {
     if (superAccessContexts == null)
     {
-      superAccessContexts = new EObjectResolvingEList<AccessContext>(AccessContext.class, this, OseeDslPackage.ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS);
+      superAccessContexts = new EObjectResolvingEList<>(AccessContext.class, this, OseeDslPackage.ACCESS_CONTEXT__SUPER_ACCESS_CONTEXTS);
     }
     return superAccessContexts;
   }
@@ -203,7 +203,7 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
   {
     if (accessRules == null)
     {
-      accessRules = new EObjectContainmentEList<ObjectRestriction>(ObjectRestriction.class, this, OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES);
+      accessRules = new EObjectContainmentEList<>(ObjectRestriction.class, this, OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES);
     }
     return accessRules;
   }
@@ -217,7 +217,7 @@ public class AccessContextImpl extends MinimalEObjectImpl.Container implements A
   {
     if (hierarchyRestrictions == null)
     {
-      hierarchyRestrictions = new EObjectContainmentEList<HierarchyRestriction>(HierarchyRestriction.class, this, OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS);
+      hierarchyRestrictions = new EObjectContainmentEList<>(HierarchyRestriction.class, this, OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS);
     }
     return hierarchyRestrictions;
   }

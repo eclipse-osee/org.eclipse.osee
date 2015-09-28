@@ -29,7 +29,7 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 @ApplicationPath("define")
 public final class OseeReportApplication extends Application {
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
    private OrcsApi orcsApi;
    private Log logger;
    private DefineApi defineApi;

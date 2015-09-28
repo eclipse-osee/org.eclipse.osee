@@ -99,7 +99,7 @@ public class ChangeItemConflictTest {
 
    @Parameters
    public static List<Object[]> getData() {
-      List<Object[]> data = new LinkedList<Object[]>();
+      List<Object[]> data = new LinkedList<>();
 
       addArtifactTestCases(data);
       addAttributeTestCases(data);

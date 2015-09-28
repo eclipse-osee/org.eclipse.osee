@@ -62,10 +62,10 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       "update osee_txs%s set mod_type = ?, tx_current = ? where transaction_id = ? and gamma_id = ?";
 
    private List<Object[]> deleteArtifactVersionData;
-   private final List<Long> obsoleteGammas = new ArrayList<Long>();
-   private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
-   private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
-   private final List<Object[]> updateTxsCurrentModData = new ArrayList<Object[]>(5000);
+   private final List<Long> obsoleteGammas = new ArrayList<>();
+   private final List<Object[]> addressingToDelete = new ArrayList<>(13000);
+   private final List<Object[]> updateAddressingData = new ArrayList<>(5000);
+   private final List<Object[]> updateTxsCurrentModData = new ArrayList<>(5000);
    private ExportImportJoinQuery gammaJoin;
    private JdbcConnection connection;
    private int previousArtifactId;
@@ -87,7 +87,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
    }
 
    private void init() throws OseeCoreException {
-      deleteArtifactVersionData = new ArrayList<Object[]>(14000);
+      deleteArtifactVersionData = new ArrayList<>(14000);
       obsoleteGammas.clear();
       updateAddressingData.clear();
       addressingToDelete.clear();
@@ -115,7 +115,7 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
 
    private void findArtifactMods() throws OseeCoreException {
       ArtifactJoinQuery artifactJoinQuery = populateJoinTableWithArtifacts();
-      List<Address> mods = new ArrayList<Address>();
+      List<Address> mods = new ArrayList<>();
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
          while (chStmt.next()) {

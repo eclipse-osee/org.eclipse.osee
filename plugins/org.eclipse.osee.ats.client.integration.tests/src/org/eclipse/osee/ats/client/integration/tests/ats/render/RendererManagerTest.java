@@ -120,7 +120,7 @@ public class RendererManagerTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       addTest(data, Folder, GENERALIZED_EDIT, DefaultArtifactRenderer.class, Both);
       addTest(data, Folder, SPECIALIZED_EDIT, DefaultArtifactRenderer.class, Both);

@@ -35,7 +35,7 @@ final class OteEndpointSendRunnable implements Runnable {
       try {
          threadChannel = openAndInitializeDatagramChannel();
          boolean keepRunning = true;
-         final List<AddressBuffer> dataToSend = new ArrayList<AddressBuffer>(32);
+         final List<AddressBuffer> dataToSend = new ArrayList<>(32);
          System.setSecurityManager(null);
          while(keepRunning){
             try{

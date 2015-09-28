@@ -71,8 +71,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
 
    // Used to avoid garbage collection of artifacts until the transaction has been committed and determine attribute events;
-   private final Set<Artifact> modifiedArtifacts = new HashSet<Artifact>();
-   private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<Artifact>();
+   private final Set<Artifact> modifiedArtifacts = new HashSet<>();
+   private final Set<Artifact> alreadyProcessedArtifacts = new HashSet<>();
 
    private String comment;
    private User user;

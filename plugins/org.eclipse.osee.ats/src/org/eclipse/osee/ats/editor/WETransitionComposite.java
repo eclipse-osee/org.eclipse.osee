@@ -109,7 +109,7 @@ public class WETransitionComposite extends Composite {
 
       transitionToStateCombo = new XComboViewer("Transition To State Combo", SWT.NONE);
       transitionToStateCombo.setDisplayLabel(false);
-      List<Object> allPages = new ArrayList<Object>();
+      List<Object> allPages = new ArrayList<>();
       for (IAtsStateDefinition nextState : awa.getToStatesWithCompleteCancelReturnStates()) {
          if (!allPages.contains(nextState)) {
             allPages.add(nextState);
@@ -123,7 +123,7 @@ public class WETransitionComposite extends Composite {
       transitionToStateCombo.createWidgets(this, 1);
 
       // Set default page from workflow default
-      ArrayList<Object> defaultPage = new ArrayList<Object>();
+      ArrayList<Object> defaultPage = new ArrayList<>();
       if (workflowSection.getPage().getDefaultToPage() != null) {
          defaultPage.add(workflowSection.getPage().getDefaultToPage());
          transitionToStateCombo.setSelected(defaultPage);
@@ -399,7 +399,7 @@ public class WETransitionComposite extends Composite {
          for (IAtsStateDefinition toState : awa.getToStates()) {
             if (toState.getName().equals(transitionStateOverride)) {
                // Reset selection
-               ArrayList<Object> defaultPage = new ArrayList<Object>();
+               ArrayList<Object> defaultPage = new ArrayList<>();
                defaultPage.add(toState);
                transitionToStateCombo.setSelected(defaultPage);
                return;

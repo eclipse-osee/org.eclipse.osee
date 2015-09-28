@@ -57,7 +57,7 @@ public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IOseeBranch> checked = new HashSet<IOseeBranch>();
+      Set<IOseeBranch> checked = new HashSet<>();
       for (Object obj : getResult()) {
          checked.add((IOseeBranch) obj);
       }

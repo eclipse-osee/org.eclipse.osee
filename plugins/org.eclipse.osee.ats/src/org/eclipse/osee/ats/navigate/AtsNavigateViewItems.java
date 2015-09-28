@@ -112,7 +112,7 @@ import org.osgi.framework.Bundle;
  * @author Donald G. Dunne
  */
 public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
-   private final List<XNavigateItem> items = new CopyOnWriteArrayList<XNavigateItem>();
+   private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
 
    private final static AtsNavigateViewItems instance = new AtsNavigateViewItems();
@@ -345,7 +345,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          return;
       }
       IExtension[] extensions = point.getExtensions();
-      Map<String, XNavigateItem> nameToNavItem = new TreeMap<String, XNavigateItem>();
+      Map<String, XNavigateItem> nameToNavItem = new TreeMap<>();
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          String classname = null;

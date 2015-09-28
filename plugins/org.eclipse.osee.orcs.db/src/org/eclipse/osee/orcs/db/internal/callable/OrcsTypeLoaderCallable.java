@@ -60,7 +60,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
    }
 
    private Collection<String> findOseeTypeData() throws OseeCoreException {
-      Collection<String> paths = new LinkedHashSet<String>();
+      Collection<String> paths = new LinkedHashSet<>();
 
       Long artifactTypeId = CoreArtifactTypes.OseeTypeDefinition.getGuid();
       Long attributeTypeId = CoreAttributeTypes.UriGeneralStringData.getGuid();

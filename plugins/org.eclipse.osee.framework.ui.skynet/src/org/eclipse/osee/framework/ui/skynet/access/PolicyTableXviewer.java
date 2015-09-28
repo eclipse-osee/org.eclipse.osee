@@ -87,7 +87,7 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
       }
       TreeSelection treeSelection = (TreeSelection) getSelection();
       Iterator<?> elements = treeSelection.iterator();
-      ArrayList<AccessControlData> userData = new ArrayList<AccessControlData>();
+      ArrayList<AccessControlData> userData = new ArrayList<>();
       while (elements.hasNext()) {
          AccessControlData ac = (AccessControlData) elements.next();
          if (PermissionEnum.getMostRestrictive(ac.getPermission(), maxPermission).equals(ac.getPermission())) {

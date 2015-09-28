@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Label;
  */
 public abstract class XSelectFromDialog<T> extends XText {
 
-   private final List<T> selected = new ArrayList<T>();
-   private final List<T> input = new ArrayList<T>();
+   private final List<T> selected = new ArrayList<>();
+   private final List<T> input = new ArrayList<>();
    private int minSelectionRequired, maxSelectionRequired = 1;
    private Button selectionButton;
 
@@ -165,14 +165,14 @@ public abstract class XSelectFromDialog<T> extends XText {
       } else {
          try {
             FilteredCheckboxTreeDialog dialog = createDialog();
-            Set<T> choices = new HashSet<T>(selected);
+            Set<T> choices = new HashSet<>(selected);
             choices.addAll(input);
             dialog.setInput(choices);
             dialog.setInitialSelections(getSelected());
 
             int result = dialog.open();
             if (result == 0) {
-               List<T> dialogSelections = new ArrayList<T>();
+               List<T> dialogSelections = new ArrayList<>();
                for (Object obj : dialog.getResult()) {
                   dialogSelections.add((T) obj);
                }

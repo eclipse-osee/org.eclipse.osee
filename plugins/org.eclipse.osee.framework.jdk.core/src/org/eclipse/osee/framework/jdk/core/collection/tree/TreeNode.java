@@ -23,7 +23,7 @@ public class TreeNode<treeType> {
    protected TreeNode(TreeNode<treeType> parent, treeType myself) {
       this.parent = parent;
       this.myself = myself;
-      this.children = new ArrayList<TreeNode<treeType>>();
+      this.children = new ArrayList<>();
    }
 
    public TreeNode(treeType myself) {
@@ -47,7 +47,7 @@ public class TreeNode<treeType> {
    }
 
    public TreeNode<treeType> addChild(treeType child) {
-      TreeNode<treeType> newchild = new TreeNode<treeType>(this, child);
+      TreeNode<treeType> newchild = new TreeNode<>(this, child);
       this.children.add(newchild);
       return newchild;
    }

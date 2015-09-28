@@ -134,7 +134,7 @@ public class XArtifactMatcherImpl extends MinimalEObjectImpl.Container implement
   {
     if (conditions == null)
     {
-      conditions = new EObjectContainmentEList<Condition>(Condition.class, this, OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS);
+      conditions = new EObjectContainmentEList<>(Condition.class, this, OseeDslPackage.XARTIFACT_MATCHER__CONDITIONS);
     }
     return conditions;
   }
@@ -148,7 +148,7 @@ public class XArtifactMatcherImpl extends MinimalEObjectImpl.Container implement
   {
     if (operators == null)
     {
-      operators = new EDataTypeEList<XLogicOperator>(XLogicOperator.class, this, OseeDslPackage.XARTIFACT_MATCHER__OPERATORS);
+      operators = new EDataTypeEList<>(XLogicOperator.class, this, OseeDslPackage.XARTIFACT_MATCHER__OPERATORS);
     }
     return operators;
   }

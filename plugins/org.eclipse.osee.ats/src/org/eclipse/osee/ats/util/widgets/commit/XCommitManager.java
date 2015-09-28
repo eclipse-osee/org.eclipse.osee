@@ -158,12 +158,12 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         }
                         try {
                            // commit all branches in order
-                           Map<Long, Branch> branchUuidToBranchMap = new HashMap<Long, Branch>();
+                           Map<Long, Branch> branchUuidToBranchMap = new HashMap<>();
                            for (IOseeBranch destinationBranch : AtsClientService.get().getBranchService().getBranchesLeftToCommit(
                               teamArt)) {
                               branchUuidToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
                            }
-                           List<Long> branchUuids = new ArrayList<Long>();
+                           List<Long> branchUuids = new ArrayList<>();
                            branchUuids.addAll(branchUuidToBranchMap.keySet());
                            Arrays.sort(branchUuids.toArray(new Integer[branchUuids.size()]));
                            for (Long branchUuid : branchUuids) {
@@ -273,7 +273,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    @SuppressWarnings("rawtypes")
    public List<Branch> getSelectedBranches() {
-      List<Branch> items = new ArrayList<Branch>();
+      List<Branch> items = new ArrayList<>();
       if (xCommitManager == null) {
          return items;
       }

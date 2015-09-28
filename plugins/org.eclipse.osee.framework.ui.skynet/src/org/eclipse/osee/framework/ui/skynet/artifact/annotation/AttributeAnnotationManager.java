@@ -55,7 +55,7 @@ public class AttributeAnnotationManager {
          return Collections.emptySet();
       }
       ensureLoaded();
-      Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
+      Set<ArtifactAnnotation> annotations = new HashSet<>();
       for (IArtifactAnnotation annotation : extensionDefinedObjects.getObjects()) {
          annotation.getAnnotations(artifact, annotations);
       }
@@ -76,7 +76,7 @@ public class AttributeAnnotationManager {
     * annotation for this artifact as annotations can be added via extension point.
     */
    public List<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
-      List<ArtifactAnnotation> annotations = new ArrayList<ArtifactAnnotation>();
+      List<ArtifactAnnotation> annotations = new ArrayList<>();
       for (String value : artifact.getAttributesToStringList(CoreAttributeTypes.Annotation)) {
          ArtifactAnnotation annotation = new ArtifactAnnotation(value);
          annotations.add(annotation);

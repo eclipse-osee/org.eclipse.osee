@@ -95,7 +95,7 @@ public class TestDatabase {
    }
 
    private Dictionary<String, Object> newConfig(String dbPath) {
-      Map<String, Object> config = new LinkedHashMap<String, Object>();
+      Map<String, Object> config = new LinkedHashMap<>();
       config.put(JdbcConstants.JDBC_SERVICE__ID, Lib.generateUuid());
       config.put(JdbcConstants.JDBC_SERVER__DB_DATA_PATH, dbPath);
       config.put(JdbcConstants.JDBC_SERVER__USE_RANDOM_PORT, true);
@@ -103,7 +103,7 @@ public class TestDatabase {
       config.put(JdbcConstants.JDBC_POOL__MAX_ACTIVE_CONNECTIONS, 100);
       config.put(JdbcConstants.JDBC_POOL__MAX_IDLE_CONNECTIONS, 100);
 
-      Set<String> bindings = new HashSet<String>();
+      Set<String> bindings = new HashSet<>();
       for (String binding : osgiBindings) {
          bindings.add(binding);
       }
@@ -115,7 +115,7 @@ public class TestDatabase {
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
-      Hashtable<String, Object> data = new Hashtable<String, Object>();
+      Hashtable<String, Object> data = new Hashtable<>();
       data.put("serviceId", "org.eclipse.osee.jdbc.internal.osgi.JdbcComponentFactory");
       data.put(JdbcConstants.JDBC_SERVICE__CONFIGS, jsonArray.toString());
       return data;

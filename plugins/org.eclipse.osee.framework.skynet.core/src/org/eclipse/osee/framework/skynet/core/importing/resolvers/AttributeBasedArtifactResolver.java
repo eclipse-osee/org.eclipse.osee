@@ -77,7 +77,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
 
       if (roughParent != null) {
          List<Artifact> descendants = root.getDescendants();
-         Collection<Artifact> candidates = new LinkedList<Artifact>();
+         Collection<Artifact> candidates = new LinkedList<>();
 
          System.out.println(String.format("Resolved using: %s",
             !descendants.isEmpty() ? "root node." : "realParent descendants."));

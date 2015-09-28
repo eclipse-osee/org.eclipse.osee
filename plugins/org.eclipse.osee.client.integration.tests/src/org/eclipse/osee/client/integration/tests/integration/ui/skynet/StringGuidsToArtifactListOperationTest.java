@@ -55,7 +55,7 @@ public class StringGuidsToArtifactListOperationTest {
 
    private Branch testBranch;
 
-   private final Collection<Object> artifacts = new ArrayList<Object>(capacity);
+   private final Collection<Object> artifacts = new ArrayList<>(capacity);
    private final String[] guids = new String[capacity];
 
    @Before

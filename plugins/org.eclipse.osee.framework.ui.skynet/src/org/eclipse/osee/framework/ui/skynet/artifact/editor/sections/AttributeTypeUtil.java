@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 public class AttributeTypeUtil {
 
    public static List<IAttributeType> getEmptyTypes(Artifact artifact) throws OseeCoreException {
-      List<IAttributeType> items = new ArrayList<IAttributeType>();
+      List<IAttributeType> items = new ArrayList<>();
       for (IAttributeType type : artifact.getAttributeTypes()) {
          if (!CoreAttributeTypes.Name.equals(type) && artifact.getAttributes(type).isEmpty()) {
             items.add(type);
@@ -39,7 +39,7 @@ public class AttributeTypeUtil {
    }
 
    private static Set<AttributeType> toTypes(List<Attribute<?>> attributes) {
-      Set<AttributeType> types = new HashSet<AttributeType>();
+      Set<AttributeType> types = new HashSet<>();
       for (Attribute<?> attribute : attributes) {
          types.add(attribute.getAttributeType());
       }
@@ -47,7 +47,7 @@ public class AttributeTypeUtil {
    }
 
    public static List<IAttributeType> getTypesWithData(Artifact artifact) throws OseeCoreException {
-      List<IAttributeType> items = new ArrayList<IAttributeType>();
+      List<IAttributeType> items = new ArrayList<>();
 
       List<Attribute<?>> attributeInstances = artifact.getAttributes(artifact.isDeleted());
       Set<AttributeType> typesInExistence = toTypes(attributeInstances);

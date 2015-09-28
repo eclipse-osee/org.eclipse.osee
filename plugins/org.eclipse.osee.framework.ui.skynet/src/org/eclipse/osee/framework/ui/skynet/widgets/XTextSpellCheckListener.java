@@ -44,7 +44,7 @@ public class XTextSpellCheckListener implements ModifyListener {
 
    private final IDictionary dict;
    private final XText xText;
-   private final Set<ASpellWord> errors = new LinkedHashSet<ASpellWord>();
+   private final Set<ASpellWord> errors = new LinkedHashSet<>();
    private XTextSpellModifyDictionary modDict;
    private Integer maxLength = 50000;
 

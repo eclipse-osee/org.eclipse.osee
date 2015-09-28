@@ -36,8 +36,8 @@ public class ArtifactType extends AbstractOseeIdType<Long> implements IArtifactT
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
    public static final String ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY = "osee.artifact.type.attributes.field";
 
-   private final Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
-   private final Set<ArtifactType> childTypes = new HashSet<ArtifactType>();
+   private final Set<ArtifactType> superTypes = new HashSet<>();
+   private final Set<ArtifactType> childTypes = new HashSet<>();
    private final Map<IOseeBranch, Collection<AttributeType>> attributes =
       new HashMap<IOseeBranch, Collection<AttributeType>>();
 
@@ -64,7 +64,7 @@ public class ArtifactType extends AbstractOseeIdType<Long> implements IArtifactT
    }
 
    public void setSuperTypes(Set<ArtifactType> superType) throws OseeCoreException {
-      Set<ArtifactType> originals = new HashSet<ArtifactType>(superTypes);
+      Set<ArtifactType> originals = new HashSet<>(superTypes);
       setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
       for (ArtifactType supers : superType) {
          supers.childTypes.add(this);
@@ -85,7 +85,7 @@ public class ArtifactType extends AbstractOseeIdType<Long> implements IArtifactT
    }
 
    private Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed) throws OseeCoreException {
-      Collection<ArtifactType> descendants = new HashSet<ArtifactType>();
+      Collection<ArtifactType> descendants = new HashSet<>();
       populateDescendants(artifactType, descendants, isRecursionAllowed);
       return descendants;
    }
@@ -120,7 +120,7 @@ public class ArtifactType extends AbstractOseeIdType<Long> implements IArtifactT
 
    public Collection<IAttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
       // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
-      Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
+      Set<IAttributeType> attributeTypes = new HashSet<>();
       getAttributeTypes(attributeTypes, this, branch);
       return attributeTypes;
    }

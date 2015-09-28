@@ -132,7 +132,7 @@ public class CompositeImpl extends LayoutItemImpl implements Composite
   {
     if (layoutItems == null)
     {
-      layoutItems = new EObjectContainmentEList<LayoutItem>(LayoutItem.class, this, AtsDslPackage.COMPOSITE__LAYOUT_ITEMS);
+      layoutItems = new EObjectContainmentEList<>(LayoutItem.class, this, AtsDslPackage.COMPOSITE__LAYOUT_ITEMS);
     }
     return layoutItems;
   }
@@ -146,7 +146,7 @@ public class CompositeImpl extends LayoutItemImpl implements Composite
   {
     if (options == null)
     {
-      options = new EDataTypeEList<String>(String.class, this, AtsDslPackage.COMPOSITE__OPTIONS);
+      options = new EDataTypeEList<>(String.class, this, AtsDslPackage.COMPOSITE__OPTIONS);
     }
     return options;
   }

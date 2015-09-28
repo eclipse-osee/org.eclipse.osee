@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class EarnedValueReportOperation extends AbstractOperation {
 
    private final Collection<IAtsWorkPackage> workPackages;
-   private final List<EarnedValueReportResult> results = new ArrayList<EarnedValueReportResult>();
+   private final List<EarnedValueReportResult> results = new ArrayList<>();
 
    // @formatter:off
    public static final IColumn Work_Package_Id = new ColumnAdapter("ats.work.package.id", "Work Package Id", ColumnType.String, "");

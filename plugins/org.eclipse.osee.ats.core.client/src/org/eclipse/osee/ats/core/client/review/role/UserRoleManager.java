@@ -80,7 +80,7 @@ public class UserRoleManager {
 
    public void ensureLoaded() throws OseeCoreException {
       if (roles == null) {
-         roles = new ArrayList<UserRole>();
+         roles = new ArrayList<>();
          for (String xml : valueProvider.getValues()) {
             roleMatcher.reset(xml);
             while (roleMatcher.find()) {
@@ -97,7 +97,7 @@ public class UserRoleManager {
    }
 
    public List<UserRole> getUserRoles(Role role) throws OseeCoreException {
-      List<UserRole> roles = new ArrayList<UserRole>();
+      List<UserRole> roles = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role) {
             roles.add(uRole);
@@ -107,7 +107,7 @@ public class UserRoleManager {
    }
 
    public List<IAtsUser> getRoleUsers(Role role) throws OseeCoreException {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role && !users.contains(getUser(uRole))) {
             users.add(getUser(uRole));
@@ -119,7 +119,7 @@ public class UserRoleManager {
    @SuppressWarnings("deprecation")
    private List<UserRole> getStoredUserRoles(Artifact artifact) throws OseeCoreException {
       // Add new ones: items in userRoles that are not in dbuserRoles
-      List<UserRole> storedUserRoles = new ArrayList<UserRole>();
+      List<UserRole> storedUserRoles = new ArrayList<>();
       for (Attribute<?> attr : artifact.getAttributes(ATS_ROLE_STORAGE_TYPE)) {
          UserRole storedRole = new UserRole((String) attr.getValue());
          storedUserRoles.add(storedRole);

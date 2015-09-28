@@ -60,7 +60,7 @@ public class RelationTableViewer {
 
    public RelationTableViewer(Table validTable, Table invalidTable, IOseeBranch branch) {
       try {
-         fullDescriptorList = new ArrayList<ArtifactType>(ArtifactTypeManager.getValidArtifactTypes(branch));
+         fullDescriptorList = new ArrayList<>(ArtifactTypeManager.getValidArtifactTypes(branch));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

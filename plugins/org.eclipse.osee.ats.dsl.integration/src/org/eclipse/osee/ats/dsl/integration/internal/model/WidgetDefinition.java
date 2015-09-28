@@ -30,7 +30,7 @@ public class WidgetDefinition extends LayoutItem implements IAtsWidgetDefinition
    private String xWidgetName;
    private String defaultValue;
    private final WidgetOptionHandler options = new WidgetOptionHandler();
-   private final List<IAtsWidgetConstraint> constraints = new ArrayList<IAtsWidgetConstraint>();
+   private final List<IAtsWidgetConstraint> constraints = new ArrayList<>();
 
    public WidgetDefinition(String name) {
       super(name);

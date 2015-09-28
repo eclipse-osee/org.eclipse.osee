@@ -19,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class ActivityMonitorImpl implements ActivityMonitor {
 
-   private final ConcurrentHashMap<Thread, Object[]> threadToUser = new ConcurrentHashMap<Thread, Object[]>();
+   private final ConcurrentHashMap<Thread, Object[]> threadToUser = new ConcurrentHashMap<>();
 
    @Override
    public Object[] getThreadRootEntry() {

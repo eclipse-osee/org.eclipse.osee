@@ -43,7 +43,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       if (txDelta.areOnTheSameBranch()) {
          selectedBranch[0] = txDelta.getStartTx().getFullBranch();
       } else {
-         final Collection<Branch> selectable = new ArrayList<Branch>();
+         final Collection<Branch> selectable = new ArrayList<>();
          selectable.add(uiData.getTxDelta().getStartTx().getFullBranch());
          selectable.add(uiData.getTxDelta().getEndTx().getFullBranch());
          IStatus status = executeInUiThread(selectable, selectedBranch);

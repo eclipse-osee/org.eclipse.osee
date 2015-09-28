@@ -184,7 +184,7 @@ public class OsFieldResolverImpl implements IFieldResolver {
 
    @Override
    public Set<OsCollectType> getAllowedCollectTypes(EObject object) {
-      Set<OsCollectType> toReturn = new TreeSet<OsCollectType>();
+      Set<OsCollectType> toReturn = new TreeSet<>();
       if (object instanceof OsCollectClause) {
          EObject container = getCollectContainer(object);
          if (container instanceof OsBranchQueryStatement) {
@@ -200,14 +200,14 @@ public class OsFieldResolverImpl implements IFieldResolver {
 
    @Override
    public Set<? extends OsField> getDeclaredFields(EObject object) {
-      Set<OsField> toReturn = new LinkedHashSet<OsField>();
+      Set<OsField> toReturn = new LinkedHashSet<>();
       OsCollectObjectExpression container = EcoreUtil2.getContainerOfType(object, OsCollectObjectExpression.class);
       if (container != null) {
          String collectName = container.getName();
          OsCollectType type = OsCollectType.fromString(collectName);
          if (type != null) {
             Set<? extends OsField> allowed = getAllowedFieldsByType(object, type);
-            Map<String, OsField> fieldMap = new HashMap<String, OsField>();
+            Map<String, OsField> fieldMap = new HashMap<>();
             for (OsField item : allowed) {
                fieldMap.put(item.getLiteral(), item);
             }

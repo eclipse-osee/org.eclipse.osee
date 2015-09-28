@@ -77,7 +77,7 @@ public class DataServlet extends UnsecuredOseeHttpServlet {
       private final List<String> contexts;
 
       public UrlParser() {
-         this.contexts = new ArrayList<String>();
+         this.contexts = new ArrayList<>();
       }
 
       public void parse(String urlPath) {

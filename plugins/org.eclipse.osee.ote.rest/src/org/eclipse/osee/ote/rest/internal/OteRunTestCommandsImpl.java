@@ -11,7 +11,7 @@ public class OteRunTestCommandsImpl implements OteRunTestCommands {
    private Map<String,  WeakReference<RunTests>> tests;
    
    public OteRunTestCommandsImpl(){
-      tests = new HashMap<String, WeakReference<RunTests>>();
+      tests = new HashMap<>();
    }
    
    @Override

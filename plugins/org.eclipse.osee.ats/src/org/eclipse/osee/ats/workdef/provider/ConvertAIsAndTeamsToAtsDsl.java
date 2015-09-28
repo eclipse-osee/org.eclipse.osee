@@ -41,8 +41,8 @@ public class ConvertAIsAndTeamsToAtsDsl {
 
    private final XResultData resultData;
    private AtsDsl atsDsl;
-   private final Map<String, TeamDef> dslTeamDefs = new HashMap<String, TeamDef>();
-   private final Map<String, ActionableItemDef> dslAIDefs = new HashMap<String, ActionableItemDef>();
+   private final Map<String, TeamDef> dslTeamDefs = new HashMap<>();
+   private final Map<String, ActionableItemDef> dslAIDefs = new HashMap<>();
 
    public ConvertAIsAndTeamsToAtsDsl(XResultData resultData) {
       this.resultData = resultData;

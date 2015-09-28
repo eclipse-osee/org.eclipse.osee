@@ -28,7 +28,7 @@ public class StubBranchModel extends BranchModel {
 
    public StubBranchModel() {
       super(STUB_BRANCH);
-      this.stubs = new HashMap<Long, TxModel>();
+      this.stubs = new HashMap<>();
    }
 
    public TxModel addTx(Long value) {

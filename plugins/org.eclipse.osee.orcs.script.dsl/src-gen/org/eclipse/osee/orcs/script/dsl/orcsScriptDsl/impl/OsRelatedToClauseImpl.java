@@ -73,7 +73,7 @@ public class OsRelatedToClauseImpl extends OsRelationClauseImpl implements OsRel
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_RELATED_TO_CLAUSE__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_RELATED_TO_CLAUSE__IDS);
     }
     return ids;
   }

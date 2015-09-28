@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class MassXViewerEventManager implements IArtifactEventListener {
 
-   List<IMassViewerEventHandler> handlers = new CopyOnWriteArrayList<IMassViewerEventHandler>();
+   List<IMassViewerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static MassXViewerEventManager instance;
 
    public static void add(IMassViewerEventHandler iWorldEventHandler) {

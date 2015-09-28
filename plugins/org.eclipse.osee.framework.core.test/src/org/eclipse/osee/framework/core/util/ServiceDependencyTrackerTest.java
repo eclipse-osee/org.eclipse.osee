@@ -49,7 +49,7 @@ public class ServiceDependencyTrackerTest {
 
          @Override
          public Map<Class<?>, ServiceBindType> getConfiguredDependencies() {
-            Map<Class<?>, ServiceBindType> map = new LinkedHashMap<Class<?>, ServiceBindType>();
+            Map<Class<?>, ServiceBindType> map = new LinkedHashMap<>();
             map.putAll(super.getConfiguredDependencies());
             map.put(Integer.class, ServiceBindType.MANY);
             return map;
@@ -107,7 +107,7 @@ public class ServiceDependencyTrackerTest {
    }
 
    private final static class MockServiceBinderFactory implements ServiceBinderFactory {
-      private final Collection<MockServiceTracker> trackers = new ArrayList<MockServiceTracker>();
+      private final Collection<MockServiceTracker> trackers = new ArrayList<>();
 
       @Override
       public ServiceTracker createTracker(ServiceBindType bindType, Class<?> clazz) {

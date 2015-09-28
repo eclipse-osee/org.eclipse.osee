@@ -49,7 +49,7 @@ public class DemoDbUtil {
 
    public static List<TeamWorkFlowArtifact> getSampleCodeWorkflows() throws OseeCoreException {
       if (codeArts == null) {
-         codeArts = new ArrayList<TeamWorkFlowArtifact>();
+         codeArts = new ArrayList<>();
          for (String actionName : new String[] {
             "SAW (committed) Reqt Changes for Diagram View",
             "SAW (uncommitted) More Reqt Changes for Diagram View"}) {
@@ -121,7 +121,7 @@ public class DemoDbUtil {
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> aias = new HashSet<>();
       for (String str : aiasNames) {
          for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll(AtsClientService.get().getConfig())) {
             if (str.equals(aia.getName())) {

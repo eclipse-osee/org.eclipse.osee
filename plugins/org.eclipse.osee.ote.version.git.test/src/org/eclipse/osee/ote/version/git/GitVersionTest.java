@@ -91,7 +91,7 @@ public class GitVersionTest {
 			}
 			
 		});
-		List<File> files = new ArrayList<File>(200);
+		List<File> files = new ArrayList<>(200);
 		for(File folder:wpsfolders){
 			getJavaFiles(folder, files);
 		}

@@ -247,7 +247,7 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
                workflowDef)) {
                StateDefShape pageShape = getStateDefShape(stateDef);
                // Handle to pages
-               Set<IAtsStateDefinition> toPages = new HashSet<IAtsStateDefinition>();
+               Set<IAtsStateDefinition> toPages = new HashSet<>();
                toPages.addAll(pageShape.getStateDefinition().getToStates());
                List<IAtsStateDefinition> returnStateDefs =
                   pageShape.getStateDefinition().getOverrideAttributeValidationStates();

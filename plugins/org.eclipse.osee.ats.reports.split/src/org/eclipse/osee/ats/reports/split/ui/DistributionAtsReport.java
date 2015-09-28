@@ -69,7 +69,7 @@ public class DistributionAtsReport implements AtsReport<IAtsVersion, Object> {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(createTab("Actionable Item", "reports/aiDistribution.rptdesign"));
             tabs.add(createTab("Team-Work", "reports/teamWorkDistribution.rptdesign"));
             tabs.add(createTab("Workflow State", "reports/stateWorkDistribution.rptdesign"));

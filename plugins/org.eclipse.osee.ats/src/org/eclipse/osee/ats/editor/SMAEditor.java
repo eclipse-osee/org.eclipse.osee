@@ -104,7 +104,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
    private AttributesComposite attributesComposite;
    private boolean privilegedEditModeEnabled = false;
    private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
-   private final List<ISMAEditorListener> editorListeners = new ArrayList<ISMAEditorListener>();
+   private final List<ISMAEditorListener> editorListeners = new ArrayList<>();
    SMAEditorOutlinePage outlinePage;
 
    @Override
@@ -524,7 +524,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
    }
 
    public static List<SMAEditor> getSmaEditors() {
-      List<SMAEditor> results = new ArrayList<SMAEditor>();
+      List<SMAEditor> results = new ArrayList<>();
       IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {

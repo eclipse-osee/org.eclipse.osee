@@ -80,7 +80,7 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
    }
 
    private void logCounts(List<Artifact> configArts, ValidateResults results) {
-      CountingMap<String> typeToCount = new CountingMap<String>();
+      CountingMap<String> typeToCount = new CountingMap<>();
       for (Artifact art : configArts) {
          typeToCount.put(art.getArtifactTypeName());
       }

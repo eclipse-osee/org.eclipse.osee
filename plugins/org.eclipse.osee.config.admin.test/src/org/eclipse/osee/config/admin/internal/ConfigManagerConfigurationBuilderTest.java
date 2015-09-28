@@ -68,7 +68,7 @@ public class ConfigManagerConfigurationBuilderTest {
       try {
          System.setProperty(ConfigManagerConstants.CONFIGURATION_URI, "helloConfig");
 
-         Map<String, Object> properties = new HashMap<String, Object>();
+         Map<String, Object> properties = new HashMap<>();
          builder.properties(properties);
 
          ConfigManagerConfiguration actual = builder.build();
@@ -83,7 +83,7 @@ public class ConfigManagerConfigurationBuilderTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(ConfigManagerConstants.CONFIGURATION_URI, CONFIG_URI);
       properties.put(ConfigManagerConstants.CONFIGURATION_POLL_TIME, POLL_TIME);
       properties.put(ConfigManagerConstants.CONFIGURATION_POLL_TIME_UNIT, POLL_TIME_UNIT);

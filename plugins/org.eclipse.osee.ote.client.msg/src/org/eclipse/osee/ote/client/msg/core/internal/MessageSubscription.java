@@ -32,7 +32,7 @@ public class MessageSubscription implements IMessageSubscription {
 
    private ISubscriptionState currentState = null;
    private final MessageSubscriptionService msgService;
-   private final CopyOnWriteArraySet<ISubscriptionListener> listeners = new CopyOnWriteArraySet<ISubscriptionListener>();
+   private final CopyOnWriteArraySet<ISubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
    private String requestedDataType;
    

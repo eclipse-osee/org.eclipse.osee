@@ -58,7 +58,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    @Override
    public void onLoadStart() throws OseeCoreException {
       super.onLoadStart();
-      matches = new HashMap<Integer, ArtifactMatch>();
+      matches = new HashMap<>();
       results = null;
    }
 
@@ -104,7 +104,7 @@ public class ArtifactMatchDataHandler extends LoadDataHandlerDecorator {
    }
 
    private static <K, V> ListMultimap<K, V> newLinkedHashListMultimap() {
-      Map<K, Collection<V>> map = new LinkedHashMap<K, Collection<V>>();
+      Map<K, Collection<V>> map = new LinkedHashMap<>();
       return Multimaps.newListMultimap(map, new Supplier<List<V>>() {
          @Override
          public List<V> get() {

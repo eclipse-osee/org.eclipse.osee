@@ -41,7 +41,7 @@ public class ArtifactExportPage extends WizardDataTransferPage {
       super("Main");
 
       this.exportPath = OseeData.getPath().toFile();
-      selectedArtifacts = new ArrayList<Artifact>();
+      selectedArtifacts = new ArrayList<>();
       if (selection != null) {
          Iterator<?> selectionIterator = selection.iterator();
          while (selectionIterator.hasNext()) {

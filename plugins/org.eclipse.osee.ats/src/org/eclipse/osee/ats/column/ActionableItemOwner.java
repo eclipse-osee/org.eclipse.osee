@@ -67,7 +67,7 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
    }
 
    public static Set<User> getActionableItemOwners(Object element) throws OseeCoreException {
-      Set<User> users = new HashSet<User>();
+      Set<User> users = new HashSet<>();
       if (element instanceof ActionArtifact) {
          for (TeamWorkFlowArtifact teamArt : ((ActionArtifact) element).getTeams()) {
             users.addAll(getActionableItemOwners(teamArt));

@@ -73,7 +73,7 @@ public class LoggingPanel extends Composite {
 
    private void createControl(Composite parent) {
       LoggingLevel[] levels = LoggingLevel.values();
-      this.buttonMap = new HashMap<LoggingLevel, Button>();
+      this.buttonMap = new HashMap<>();
       Composite composite = new Composite(parent, SWT.NONE);
       GridLayout gl = new GridLayout();
       gl.marginHeight = 0;

@@ -43,14 +43,14 @@ public class XArtifactTypeComboViewer extends XComboViewer {
 
       try {
          Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-         List<ArtifactType> sortedArtifatTypes = new ArrayList<ArtifactType>();
+         List<ArtifactType> sortedArtifatTypes = new ArrayList<>();
          sortedArtifatTypes.addAll(artifactTypes);
          Collections.sort(sortedArtifatTypes);
          getComboViewer().setInput(sortedArtifatTypes);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      ArrayList<Object> defaultSelection = new ArrayList<Object>();
+      ArrayList<Object> defaultSelection = new ArrayList<>();
       defaultSelection.add("--select--");
       setSelected(defaultSelection);
       addXModifiedListener(new XModifiedListener() {

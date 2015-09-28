@@ -42,7 +42,7 @@ public class AttributeLocatorProviderTest {
    }
 
    private List<TestData> getTestGenerateLocatorData() {
-      List<TestData> cases = new ArrayList<TestData>();
+      List<TestData> cases = new ArrayList<>();
       cases.add(new TestData("1", "", null, true, null));
       cases.add(new TestData("2", null, null, true, null));
       cases.add(new TestData("3", null, "", true, null));
@@ -72,7 +72,7 @@ public class AttributeLocatorProviderTest {
    }
 
    private List<TestData> getTestGetResourceLocatorData() {
-      List<TestData> cases = new ArrayList<TestData>();
+      List<TestData> cases = new ArrayList<>();
       cases.add(new TestData("1", "", true, null));
       cases.add(new TestData("2", null, true, null));
       cases.add(new TestData("3", "$%#", true, null));

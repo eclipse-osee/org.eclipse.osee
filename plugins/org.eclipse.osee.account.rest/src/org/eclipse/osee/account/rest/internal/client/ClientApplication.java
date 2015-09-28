@@ -30,7 +30,7 @@ public final class ClientApplication extends Application {
    }
 
    public void start() {
-      singletons = new HashSet<Object>();
+      singletons = new HashSet<>();
       singletons.add(new ClientResource(jdbcService));
    }
 

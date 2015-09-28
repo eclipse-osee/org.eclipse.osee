@@ -34,7 +34,7 @@ public class AtsWorkDefinitionCacheProvider extends LazyObject<AtsWorkDefinition
    @Override
    protected FutureTask<AtsWorkDefinitionCache> createLoaderTask() {
       Callable<AtsWorkDefinitionCache> newCallable = new LoadAtsWorkDefinitionCacheCallable(workDefinitionService);
-      FutureTask<AtsWorkDefinitionCache> newTask = new FutureTask<AtsWorkDefinitionCache>(newCallable);
+      FutureTask<AtsWorkDefinitionCache> newTask = new FutureTask<>(newCallable);
       return newTask;
    }
 

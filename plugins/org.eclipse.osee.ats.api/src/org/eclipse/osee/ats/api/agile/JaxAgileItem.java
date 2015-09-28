@@ -20,8 +20,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class JaxAgileItem {
 
-   private final List<Long> uuids = new ArrayList<Long>();
-   private final List<Long> features = new ArrayList<Long>();
+   private final List<Long> uuids = new ArrayList<>();
+   private final List<Long> features = new ArrayList<>();
    private long sprintUuid = 0;
    private long backlogUuid = 0;
    private boolean setFeatures = false;

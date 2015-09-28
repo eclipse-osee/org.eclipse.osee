@@ -53,7 +53,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       this.collector = collector;
       this.cacheLimit = cacheLimit;
       this.isCacheAll = isCacheAll;
-      this.queryIds = new ArrayList<Integer>();
+      this.queryIds = new ArrayList<>();
       this.isOkToDispatch = false;
       this.currentJoinQuery = null;
    }
@@ -72,7 +72,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
          collector.onIndexTotalTaskItems(totalGammas);
       }
       isOkToDispatch = true;
-      futures = new LinkedList<Future<?>>();
+      futures = new LinkedList<>();
       return futures;
    }
 

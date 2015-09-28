@@ -57,11 +57,11 @@ public class ConvertWorkDefinitionToAtsDsl {
 
    private WorkDef dslWorkDef;
    private final XResultData resultData;
-   private final Map<String, WidgetDef> idToDslWidgetDefMap = new HashMap<String, WidgetDef>(15);
-   private final Map<String, StateDef> nameToDslStateDefMap = new HashMap<String, StateDef>(15);
-   private final Map<String, DecisionReviewDef> nameToDslDecisionReviewDefMap = new HashMap<String, DecisionReviewDef>(
+   private final Map<String, WidgetDef> idToDslWidgetDefMap = new HashMap<>(15);
+   private final Map<String, StateDef> nameToDslStateDefMap = new HashMap<>(15);
+   private final Map<String, DecisionReviewDef> nameToDslDecisionReviewDefMap = new HashMap<>(
       0);
-   private final Map<String, PeerReviewDef> nameToDslPeerReviewDefMap = new HashMap<String, PeerReviewDef>(0);
+   private final Map<String, PeerReviewDef> nameToDslPeerReviewDefMap = new HashMap<>(0);
 
    public ConvertWorkDefinitionToAtsDsl(XResultData resultData) {
       this.resultData = resultData;
@@ -136,7 +136,7 @@ public class ConvertWorkDefinitionToAtsDsl {
 
       // Process transitions (must do after all states are defined)
       for (IAtsStateDefinition stateDef : workDef.getStates()) {
-         Set<String> toStateNames = new HashSet<String>();
+         Set<String> toStateNames = new HashSet<>();
          StateDef dslStateDef = nameToDslStateDefMap.get(stateDef.getName());
          for (IAtsStateDefinition toStateDef : stateDef.getToStates()) {
             // skip states transitioning to themselves

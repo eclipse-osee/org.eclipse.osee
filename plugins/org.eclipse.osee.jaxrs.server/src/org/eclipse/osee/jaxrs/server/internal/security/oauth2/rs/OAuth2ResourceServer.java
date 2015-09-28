@@ -31,7 +31,7 @@ public class OAuth2ResourceServer {
 
    private JaxRsApplicationRegistry registry;
 
-   private final Set<String> registeredProviders = new HashSet<String>();
+   private final Set<String> registeredProviders = new HashSet<>();
    private final AtomicBoolean wasRegistered = new AtomicBoolean();
    private volatile JaxRsOAuthResourceServerFilter filter;
    private volatile List<String> audiences;

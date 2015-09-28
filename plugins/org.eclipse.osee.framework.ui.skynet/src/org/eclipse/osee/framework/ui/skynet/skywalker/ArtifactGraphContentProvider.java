@@ -33,7 +33,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ArtifactGraphContentProvider implements IGraphEntityContentProvider {
-   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
+   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<>(0);
    private final SkyWalkerOptions options;
 
    public ArtifactGraphContentProvider(SkyWalkerOptions options) {
@@ -43,7 +43,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
 
    @Override
    public Object[] getConnectedTo(Object entity) {
-      List<Artifact> otherItems = new LinkedList<Artifact>();
+      List<Artifact> otherItems = new LinkedList<>();
 
       // Don't want to create any links to artifacts that are NOT in displayArtifacts
       try {
@@ -87,7 +87,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       }
       return otherItems.toArray();
    }
-   private final Set<Artifact> displayArtifacts = new HashSet<Artifact>();
+   private final Set<Artifact> displayArtifacts = new HashSet<>();
 
    @Override
    public Object[] getElements(Object inputElement) {

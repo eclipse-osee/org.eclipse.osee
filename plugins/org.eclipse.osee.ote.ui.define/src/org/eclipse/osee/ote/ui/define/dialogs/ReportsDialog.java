@@ -101,7 +101,7 @@ public class ReportsDialog extends TitleAreaDialog {
 
    public ReportsDialog(Shell parent) {
       super(parent);
-      this.filesToDelete = new ArrayList<IFile>();
+      this.filesToDelete = new ArrayList<>();
       setShellStyle(SWT.SHELL_TRIM);
    }
 
@@ -302,7 +302,7 @@ public class ReportsDialog extends TitleAreaDialog {
       group.setFont(parent.getFont());
       group.setText(FORMAT_TITLE);
 
-      this.formatButtons = new HashMap<OutputFormat, Button>();
+      this.formatButtons = new HashMap<>();
       for (OutputFormat format : OutputFormat.values()) {
          Button button = new Button(group, SWT.RADIO);
          button.setText(format.name());

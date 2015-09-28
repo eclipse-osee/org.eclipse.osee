@@ -78,10 +78,10 @@ public class QuickSearchOptionComposite extends Composite {
 
    public QuickSearchOptionComposite(Composite parent, int style) {
       super(parent, style);
-      this.optionsButtons = new LinkedHashMap<SearchOption, Button>();
-      this.textAreas = new HashMap<SearchOption, Text>();
-      this.optionsMap = new LinkedHashMap<SearchOption, Boolean>();
-      this.configurableOptionSet = new HashMap<SearchOption, IOptionConfigurationHandler<?>>();
+      this.optionsButtons = new LinkedHashMap<>();
+      this.textAreas = new HashMap<>();
+      this.optionsMap = new LinkedHashMap<>();
+      this.configurableOptionSet = new HashMap<>();
 
       for (SearchOption option : SearchOption.values()) {
          this.optionsMap.put(option, false);
@@ -270,8 +270,8 @@ public class QuickSearchOptionComposite extends Composite {
    }
 
    public void loadState(IMemento memento) {
-      Map<SearchOption, String[]> configs = new HashMap<SearchOption, String[]>();
-      Map<SearchOption, Boolean> options = new HashMap<SearchOption, Boolean>();
+      Map<SearchOption, String[]> configs = new HashMap<>();
+      Map<SearchOption, Boolean> options = new HashMap<>();
 
       for (SearchOption option : SearchOption.values()) {
          options.put(option, new Boolean(memento.getString(OPTIONS_KEY_ID + option.name())));
@@ -377,7 +377,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       public static Map<SearchOption, IOptionConfigurationHandler<?>> getConfigurableOptions() {
          if (configurable == null) {
-            configurable = new HashMap<SearchOption, IOptionConfigurationHandler<?>>();
+            configurable = new HashMap<>();
             for (SearchOption option : SearchOption.values()) {
                if (option.isConfigurable()) {
                   configurable.put(option, option.getConfigHandler());
@@ -410,7 +410,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       public AttributeTypeFilterConfigHandler() {
          this.attrTypeComparator = new AttributeTypeComparator();
-         this.configuration = new ArrayList<IAttributeType>();
+         this.configuration = new ArrayList<>();
          this.configuration.add(getDefault());
       }
 
@@ -424,7 +424,7 @@ public class QuickSearchOptionComposite extends Composite {
             dialog.setSelectable(taggableItems);
             dialog.setShowSelectButtons(true);
 
-            List<IAttributeType> selectedElements = new ArrayList<IAttributeType>();
+            List<IAttributeType> selectedElements = new ArrayList<>();
             for (IAttributeType type : taggableItems) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);
@@ -515,7 +515,7 @@ public class QuickSearchOptionComposite extends Composite {
 
       public ArtifactTypeFilterConfigHandler() {
          this.artTypeComparator = new ArtifactTypeComparator();
-         this.configuration = new ArrayList<IArtifactType>();
+         this.configuration = new ArrayList<>();
       }
 
       @Override
@@ -528,7 +528,7 @@ public class QuickSearchOptionComposite extends Composite {
             dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 
-            List<IArtifactType> selectedElements = new ArrayList<IArtifactType>();
+            List<IArtifactType> selectedElements = new ArrayList<>();
             for (ArtifactType type : artifactTypes) {
                if (configuration.contains(type)) {
                   selectedElements.add(type);

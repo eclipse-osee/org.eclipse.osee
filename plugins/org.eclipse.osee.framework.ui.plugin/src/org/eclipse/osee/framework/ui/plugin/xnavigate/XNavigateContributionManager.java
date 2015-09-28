@@ -37,7 +37,7 @@ public final class XNavigateContributionManager {
 
    public static Set<XNavigateExtensionPointData> getNavigateItems(String viewIdToMatch) throws OseeCoreException {
       Conditions.checkNotNull(viewIdToMatch, "viewIdToMatch");
-      Set<XNavigateExtensionPointData> toReturn = new HashSet<XNavigateExtensionPointData>();
+      Set<XNavigateExtensionPointData> toReturn = new HashSet<>();
       List<IConfigurationElement> elements =
          ExtensionPoints.getExtensionElements(UiPluginConstants.PLUGIN_ID + ".XNavigateItem", "XNavigateItem");
       for (IConfigurationElement element : elements) {

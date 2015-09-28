@@ -36,7 +36,7 @@ public class ContextParser {
    private static final String HREF = "href";
    private static final String ID_TAG = "id";
 
-   public Map<String, ContextEntry> entries = new HashMap<String, ContextEntry>();
+   public Map<String, ContextEntry> entries = new HashMap<>();
    public String path;
 
    private String localName;
@@ -121,7 +121,7 @@ public class ContextParser {
 
    public final class ContextEntry {
       private final String id;
-      private final Set<String> references = new LinkedHashSet<String>();
+      private final Set<String> references = new LinkedHashSet<>();
 
       public ContextEntry(String id) {
          super();

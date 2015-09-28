@@ -55,7 +55,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsActionableItem> getActionableItems() {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       try {
          for (Object aiGuidObj : getArtifact().getAttributeValues(AtsAttributeTypes.ActionableItem)) {
             String aiGuid = (String) aiGuidObj;
@@ -90,7 +90,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions() {
-      Set<IAtsTeamDefinition> children = new HashSet<IAtsTeamDefinition>();
+      Set<IAtsTeamDefinition> children = new HashSet<>();
       try {
          for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
             IAtsTeamDefinition childTeamDef = atsServices.getConfigItemFactory().getTeamDef(childArt);
@@ -106,7 +106,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) {
-      Set<IAtsUser> leads = new HashSet<IAtsUser>();
+      Set<IAtsUser> leads = new HashSet<>();
       for (IAtsActionableItem aia : actionableItems) {
          if (this.equals(aia.getTeamDefinitionInherited())) {
             // If leads are specified for this aia, add them
@@ -132,7 +132,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsUser> getMembersAndLeads() {
-      Set<IAtsUser> results = new HashSet<IAtsUser>();
+      Set<IAtsUser> results = new HashSet<>();
       results.addAll(getLeads());
       results.addAll(getMembers());
       return results;
@@ -276,7 +276,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsVersion> getVersions() {
-      Set<IAtsVersion> results = new HashSet<IAtsVersion>();
+      Set<IAtsVersion> results = new HashSet<>();
       try {
          for (ArtifactReadable verArt : getArtifact().getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
             IAtsVersion version = (IAtsVersion) atsServer.getConfig().getSoleByUuid(verArt.getUuid());
@@ -305,7 +305,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsVersion> getVersionsLocked(VersionLockedType lockType) {
-      ArrayList<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions()) {
          if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
@@ -318,7 +318,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<IAtsVersion> getVersionsReleased(VersionReleaseType releaseType) {
-      ArrayList<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions()) {
          if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
@@ -371,7 +371,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
 
    @Override
    public Collection<String> getRules() {
-      Collection<String> rules = new ArrayList<String>();
+      Collection<String> rules = new ArrayList<>();
       try {
          rules = getArtifact().getAttributeValues(AtsAttributeTypes.RuleDefinition);
       } catch (OseeCoreException ex) {

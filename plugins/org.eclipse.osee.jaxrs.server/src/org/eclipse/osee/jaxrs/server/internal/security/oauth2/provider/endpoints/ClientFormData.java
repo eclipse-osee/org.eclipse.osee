@@ -29,7 +29,7 @@ public class ClientFormData extends BaseIdentity<String> implements Named {
    private String description;
    private String webUri;
    private String logoUri;
-   private List<String> certificates = new LinkedList<String>();
+   private List<String> certificates = new LinkedList<>();
 
    private List<String> redirectUris;
 
@@ -37,11 +37,11 @@ public class ClientFormData extends BaseIdentity<String> implements Named {
    private Map<String, String> logoParameters;
 
    private boolean isConfidential;
-   private List<String> allowedGrantTypes = new LinkedList<String>();
-   private List<String> allowedScopes = new LinkedList<String>();
-   private List<String> allowedAudiences = new LinkedList<String>();
+   private List<String> allowedGrantTypes = new LinkedList<>();
+   private List<String> allowedScopes = new LinkedList<>();
+   private List<String> allowedAudiences = new LinkedList<>();
 
-   private Map<String, String> properties = new HashMap<String, String>();
+   private Map<String, String> properties = new HashMap<>();
 
    public ClientFormData(String id) {
       super(id);

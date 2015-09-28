@@ -86,7 +86,7 @@ public class ConflictDeletionTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       Collection<Artifact> artifacts = ConflictTestManager.getArtifacts(true, ConflictTestManager.DELETION_TEST_QUERY);
-      Collection<Artifact> artifactsToCheck = new LinkedList<Artifact>();
+      Collection<Artifact> artifactsToCheck = new LinkedList<>();
       int deletionTransaction = 0;
       for (Artifact artifact : artifacts) {
          artifactsToCheck.add(artifact);

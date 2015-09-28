@@ -59,7 +59,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
    }
 
    public Collection<Artifact> getCollectors(Artifact artifact, boolean recurse) throws OseeCoreException {
-      Set<Artifact> collectors = new HashSet<Artifact>();
+      Set<Artifact> collectors = new HashSet<>();
       getCollectors(artifact, collectors, recurse);
       return collectors;
    }
@@ -106,7 +106,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
             AWorkbench.popup(String.format("New Order Number [%s] out of range 1..%d", newIndexStr, members.size()));
             return null;
          }
-         List<Artifact> reversed = new LinkedList<Artifact>(artifacts);
+         List<Artifact> reversed = new LinkedList<>(artifacts);
          Collections.reverse(reversed);
          for (Artifact artifact : reversed) {
             int currentIdx = members.indexOf(artifact);
@@ -129,7 +129,7 @@ public abstract class MembersManager<T extends CollectorArtifact> {
          return "";
       }
       Collection<Artifact> collectors = getCollectors(artifact, false);
-      List<Artifact> collectorsSorted = new ArrayList<Artifact>(collectors);
+      List<Artifact> collectorsSorted = new ArrayList<>(collectors);
       Collections.sort(collectorsSorted);
       StringBuffer sb = new StringBuffer();
       for (Artifact member : collectorsSorted) {

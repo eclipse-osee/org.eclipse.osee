@@ -31,7 +31,7 @@ public class MethodResultImpl implements IMethodResult {
    private ReturnCode returnCode;
 
    public MethodResultImpl(ReturnCode returnCode) {
-      statuses = new ArrayList<IHealthStatus>();
+      statuses = new ArrayList<>();
       this.returnCode = returnCode;
    }
 

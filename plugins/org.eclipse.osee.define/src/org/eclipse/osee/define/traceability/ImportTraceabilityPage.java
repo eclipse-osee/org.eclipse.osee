@@ -60,7 +60,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
       setTitle("Import traceability into OSEE Define");
       setDescription("Import relations between artifacts");
-      traceUnitHandlers = new HashMap<Button, Boolean>();
+      traceUnitHandlers = new HashMap<>();
 
       if (selection != null && selection.size() == 1) {
          Object firstElement = selection.getFirstElement();
@@ -163,7 +163,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    }
 
    public String[] getTraceUnitHandlerIds() {
-      List<String> selectedIds = new ArrayList<String>();
+      List<String> selectedIds = new ArrayList<>();
       for (Button button : traceUnitHandlers.keySet()) {
          Boolean value = traceUnitHandlers.get(button);
          if (value != null && value == true) {

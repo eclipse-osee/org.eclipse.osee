@@ -62,7 +62,7 @@ public class ChangeBranchArchivedStateDialog extends ListDialog {
       layout.marginWidth = 20;
       getTableViewer().getTable().getParent().setLayout(layout);
       if (selected != null) {
-         ArrayList<Object> sel = new ArrayList<Object>();
+         ArrayList<Object> sel = new ArrayList<>();
          sel.add(selected);
          getTableViewer().setSelection(new StructuredSelection(sel.toArray(new Object[sel.size()])));
          getTableViewer().getTable().setFocus();

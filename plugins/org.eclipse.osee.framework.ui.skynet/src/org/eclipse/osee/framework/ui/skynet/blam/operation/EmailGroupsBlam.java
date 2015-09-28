@@ -59,7 +59,7 @@ public class EmailGroupsBlam extends AbstractBlam {
    private XText subjectTextBox, replyToAddressTextBox;
    private XCheckBox isBodyHtmlCheckbox;
    private ExecutorService emailTheadPool;
-   private final Collection<Future<String>> futures = new ArrayList<Future<String>>(300);
+   private final Collection<Future<String>> futures = new ArrayList<>(300);
    private final XModifiedListener listener = new ModificationListerner();
 
    @Override
@@ -105,7 +105,7 @@ public class EmailGroupsBlam extends AbstractBlam {
       emailTheadPool = Executors.newFixedThreadPool(30);
       futures.clear();
 
-      TreeSet<Artifact> users = new TreeSet<Artifact>(data.getUserToGroupMap().keySet());
+      TreeSet<Artifact> users = new TreeSet<>(data.getUserToGroupMap().keySet());
       for (Artifact user : users) {
          sendEmailTo(data, (User) user);
       }
@@ -239,7 +239,7 @@ public class EmailGroupsBlam extends AbstractBlam {
                bodyTextBox.set(body);
             } else {
                XArtifactList groupList = (XArtifactList) xWidget;
-               Collection<Artifact> templates = new ArrayList<Artifact>();
+               Collection<Artifact> templates = new ArrayList<>();
                for (Object group : groupList.getSelected()) {
                   templates.addAll(((Artifact) group).getChildren());
                }

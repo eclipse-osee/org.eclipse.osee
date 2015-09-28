@@ -62,9 +62,9 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
 
-      List<Artifact> pcrIdArts = new ArrayList<Artifact>();
-      List<Artifact> teamDefArts = new ArrayList<Artifact>();
-      List<String> teamDefGuids = new ArrayList<String>();
+      List<Artifact> pcrIdArts = new ArrayList<>();
+      List<Artifact> teamDefArts = new ArrayList<>();
+      List<String> teamDefGuids = new ArrayList<>();
 
       if (isPcrIdsSet()) {
          LegacyPcrIdQuickSearch srch = new LegacyPcrIdQuickSearch(pcrIds);
@@ -77,7 +77,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       }
 
       // If both set, return intersection; else return just what was set
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       if (isPcrIdsSet() && isTeamDefsSet()) {
          arts = Collections.setIntersection(pcrIdArts, teamDefArts);
       } else if (isPcrIdsSet()) {
@@ -86,7 +86,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          arts = teamDefArts;
       }
 
-      List<IAtsWorkItem> workItems = new ArrayList<IAtsWorkItem>();
+      List<IAtsWorkItem> workItems = new ArrayList<>();
       for (Artifact art : arts) {
          workItems.add((IAtsWorkItem) art);
       }
@@ -95,7 +95,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          AtsClientService.get().getQueryService().createFilter(workItems).withOrValue(AtsAttributeTypes.LegacyPcrId,
             pcrIds).withOrValue(AtsAttributeTypes.TeamDefinition, teamDefGuids).isOfType(AtsArtifactTypes.TeamWorkflow);
 
-      List<Artifact> results = new ArrayList<Artifact>();
+      List<Artifact> results = new ArrayList<>();
       if (returnActions) {
          for (IAtsWorkItem workItem : filter.getItems()) {
             results.add(((AbstractWorkflowArtifact) workItem.getStoreObject()).getParentActionArtifact());

@@ -141,7 +141,7 @@ public final class WordOutlineAndStyleTest {
 
    @Parameters
    public static List<Object[]> getData() {
-      List<Object[]> data = new LinkedList<Object[]>();
+      List<Object[]> data = new LinkedList<>();
 
       data.add(new Object[] {"Case 1", CASE_1, Arrays.asList("A", "B", "C", "D")});
       data.add(new Object[] {"Case 2", CASE_2, Arrays.asList("A", "B")});
@@ -173,7 +173,7 @@ public final class WordOutlineAndStyleTest {
          IArtifactExtractor extractor = new WordOutlineExtractor();
          extractor.setDelegate(new WordOutlineExtractorDelegate());
 
-         List<IArtifactType> list = new ArrayList<IArtifactType>();
+         List<IArtifactType> list = new ArrayList<>();
          list.add(CoreArtifactTypes.HeadingMSWord);
 
          IOperation operation =

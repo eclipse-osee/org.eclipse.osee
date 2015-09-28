@@ -17,16 +17,16 @@ import java.util.Set;
 
 public class ArtifactModelList {
 
-   private ArrayList<ArtifactModel> artifacts = new ArrayList<ArtifactModel>();
-   private Set<IArtifactListViewer> changeListeners = new HashSet<IArtifactListViewer>();
+   private ArrayList<ArtifactModel> artifacts = new ArrayList<>();
+   private Set<IArtifactListViewer> changeListeners = new HashSet<>();
 
    /**
     * Constructor
     */
    public ArtifactModelList() {
       super();
-      artifacts = new ArrayList<ArtifactModel>();
-      changeListeners = new HashSet<IArtifactListViewer>();
+      artifacts = new ArrayList<>();
+      changeListeners = new HashSet<>();
    }
 
    /**

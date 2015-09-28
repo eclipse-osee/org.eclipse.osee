@@ -103,7 +103,7 @@ public class OteRunTestResource {
    }
    
    public List<IPropertyStore> propertyStoreConversion(List<Properties> properties){
-      List<IPropertyStore> stores = new ArrayList<IPropertyStore>();
+      List<IPropertyStore> stores = new ArrayList<>();
       for(Properties prop:properties){
          stores.add(propertyStoreConversion(prop));
       }

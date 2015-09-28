@@ -57,8 +57,8 @@ public class TraceRecord extends TestRecord implements Xmlizable {
       this.objectName = objectName;
       this.methodName = methodName;
       this.methodArguments = methodArguments;
-      this.additionalElements = new ArrayList<Xmlizable>();
-      this.additionalStreamElements = new ArrayList<XmlizableStream>();
+      this.additionalElements = new ArrayList<>();
+      this.additionalStreamElements = new ArrayList<>();
    }
 
    public TraceRecord(ITestEnvironmentAccessor source, String objectName2, String methodName2, MethodFormatter methodArguments2) {

@@ -25,7 +25,7 @@ public class CollectionParser extends AbstractSaxHandler implements ICollectionS
    }
 
    public CollectionParser() {
-      collectors = new ArrayList<SaxChunkCollector>();
+      collectors = new ArrayList<>();
    }
 
    @Override

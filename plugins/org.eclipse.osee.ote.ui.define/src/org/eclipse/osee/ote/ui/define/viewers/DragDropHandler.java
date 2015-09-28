@@ -136,7 +136,7 @@ public class DragDropHandler {
    }
 
    private URI[] toResourceArray(Object[] objects) {
-      List<URI> toReturn = new ArrayList<URI>();
+      List<URI> toReturn = new ArrayList<>();
       for (Object object : objects) {
          if (object instanceof IAdaptable) {
             Object resource = ((IAdaptable) object).getAdapter(IResource.class);
@@ -170,7 +170,7 @@ public class DragDropHandler {
 
    private void handleArtifactDrops(ArtifactData artifactData) throws OseeCoreException {
       Artifact[] artifactsDropped = artifactData.getArtifacts();
-      Set<Artifact> artifactsToAdd = new HashSet<Artifact>();
+      Set<Artifact> artifactsToAdd = new HashSet<>();
       for (Artifact artifact : artifactsDropped) {
          if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
             artifactsToAdd.add(artifact);

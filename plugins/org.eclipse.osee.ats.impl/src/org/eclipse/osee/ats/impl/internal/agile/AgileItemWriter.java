@@ -45,7 +45,7 @@ public class AgileItemWriter {
 
       if (newItem.isSetFeatures()) {
          Collection<IAgileFeatureGroup> features = agileService.getAgileFeatureGroups(newItem.getFeatures());
-         List<ArtifactReadable> featureArts = new LinkedList<ArtifactReadable>();
+         List<ArtifactReadable> featureArts = new LinkedList<>();
          for (IAgileFeatureGroup feature : features) {
             featureArts.add((ArtifactReadable) feature.getStoreObject());
          }

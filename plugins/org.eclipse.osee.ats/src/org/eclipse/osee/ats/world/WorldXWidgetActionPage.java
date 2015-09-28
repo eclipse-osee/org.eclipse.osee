@@ -444,7 +444,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final Set<Artifact> arts = new HashSet<Artifact>();
+               final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.add(art);
@@ -471,7 +471,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final Set<Artifact> goals = new HashSet<Artifact>();
+               final Set<Artifact> goals = new HashSet<>();
                new GoalManager().getCollectors(artifacts, goals, true);
                worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), goals);
             } catch (OseeCoreException ex) {
@@ -489,7 +489,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final Set<Artifact> arts = new HashSet<Artifact>();
+               final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      arts.addAll(ActionManager.getTeams(art));
@@ -516,7 +516,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final Set<Artifact> arts = new HashSet<Artifact>();
+               final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
@@ -542,7 +542,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
             try {
-               final Set<Artifact> arts = new HashSet<Artifact>();
+               final Set<Artifact> arts = new HashSet<>();
                for (Artifact art : artifacts) {
                   if (art.isOfType(AtsArtifactTypes.Action)) {
                      for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {

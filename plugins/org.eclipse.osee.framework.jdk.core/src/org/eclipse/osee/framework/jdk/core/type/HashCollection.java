@@ -50,9 +50,9 @@ public class HashCollection<K, V> {
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor) {
 
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Collection<V>>(initialCapacity, loadFactor);
+         map = new ConcurrentHashMap<>(initialCapacity, loadFactor);
       } else {
-         map = new HashMap<K, Collection<V>>(initialCapacity, loadFactor);
+         map = new HashMap<>(initialCapacity, loadFactor);
       }
 
       this.isSynchronized = isSynchronized;
@@ -68,9 +68,9 @@ public class HashCollection<K, V> {
     */
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity) {
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Collection<V>>(initialCapacity);
+         map = new ConcurrentHashMap<>(initialCapacity);
       } else {
-         map = new HashMap<K, Collection<V>>(initialCapacity);
+         map = new HashMap<>(initialCapacity);
       }
 
       this.isSynchronized = isSynchronized;
@@ -86,9 +86,9 @@ public class HashCollection<K, V> {
     */
    public HashCollection(boolean isSynchronized, Class<? extends Collection> collectionType) {
       if (isSynchronized) {
-         map = new ConcurrentHashMap<K, Collection<V>>();
+         map = new ConcurrentHashMap<>();
       } else {
-         map = new HashMap<K, Collection<V>>();
+         map = new HashMap<>();
       }
       this.isSynchronized = isSynchronized;
       this.collectionType = collectionType;
@@ -215,7 +215,7 @@ public class HashCollection<K, V> {
     * @return Return value collection reference
     */
    public List<V> getValues() {
-      List<V> values = new ArrayList<V>();
+      List<V> values = new ArrayList<>();
       for (Collection<V> objectPair : map.values()) {
          if (objectPair != null) {
             values.addAll(objectPair);

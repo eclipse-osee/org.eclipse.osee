@@ -25,8 +25,8 @@ public class SqlContextImpl implements SqlContext {
 
    private String sql;
    private ResultObjectDescription data;
-   private final List<Object> parameters = new ArrayList<Object>();
-   private final List<AbstractJoinQuery> joinTables = new ArrayList<AbstractJoinQuery>();
+   private final List<Object> parameters = new ArrayList<>();
+   private final List<AbstractJoinQuery> joinTables = new ArrayList<>();
    private final OrcsSession session;
    private final Options options;
 

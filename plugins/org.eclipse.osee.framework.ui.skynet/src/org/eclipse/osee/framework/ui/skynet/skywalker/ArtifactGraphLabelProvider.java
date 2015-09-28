@@ -61,7 +61,7 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
 
                Collection<RelationLink> links = dest.internalGetRelations(source);
 
-               Collection<String> linkNames = new ArrayList<String>(links.size());
+               Collection<String> linkNames = new ArrayList<>(links.size());
                for (RelationLink link : links) {
                   if (options.getLinkName() == LinkName.Phrasing_A_to_B) {
                      if (link.getArtifactA().equals(source)) {

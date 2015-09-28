@@ -98,7 +98,7 @@ public class ClientDashboardRequestHandler implements IHttpServerRequest {
    }
 
    private List<File> getLogFiles() {
-      List<File> files = new ArrayList<File>();
+      List<File> files = new ArrayList<>();
 
       File file = Platform.getLogFileLocation().removeFileExtension().toFile();
       file = new File(file, ".bak_0.log");

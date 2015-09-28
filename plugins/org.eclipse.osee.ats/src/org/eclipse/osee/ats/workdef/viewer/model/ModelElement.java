@@ -46,7 +46,7 @@ public abstract class ModelElement implements IPropertySource {
 
    protected void initializePropertyValues() {
       if (propertyValues == null) {
-         propertyValues = new HashMap<Object, Object>();
+         propertyValues = new HashMap<>();
       }
    }
 

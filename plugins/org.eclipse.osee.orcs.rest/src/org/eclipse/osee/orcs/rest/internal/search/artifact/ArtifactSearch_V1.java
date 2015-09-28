@@ -73,7 +73,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
       SearchResponse result = new SearchResponse();
       RequestType request = params.getRequestType();
       if (request != null) {
-         List<Integer> localIds = new LinkedList<Integer>();
+         List<Integer> localIds = new LinkedList<>();
          switch (request) {
             case COUNT:
                int total = builder.getCount();
@@ -88,7 +88,7 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
                break;
             case MATCHES:
                ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> matches = builder.getMatches();
-               List<SearchMatch> searchMatches = new LinkedList<SearchMatch>();
+               List<SearchMatch> searchMatches = new LinkedList<>();
                for (Match<ArtifactReadable, AttributeReadable<?>> match : matches) {
                   int artId = match.getItem().getLocalId();
                   localIds.add(artId);

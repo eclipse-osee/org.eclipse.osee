@@ -59,7 +59,7 @@ public class ArtifactTypeInheritanceTest {
    @Test
    public void testAttributeTypesOfDescendants() throws OseeCoreException {
       ArtifactType baseArtifactType = ArtifactTypeManager.getType(CoreArtifactTypes.Artifact);
-      Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());
+      Set<ArtifactType> allTypes = new HashSet<>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 
       Branch branch = BranchManager.getBranch(CoreBranches.SYSTEM_ROOT);

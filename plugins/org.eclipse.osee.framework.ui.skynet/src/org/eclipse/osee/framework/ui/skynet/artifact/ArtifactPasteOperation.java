@@ -107,7 +107,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
       if (!(source instanceof User)) {
          newArtifact = source.duplicate(destination.getBranch());
          destination.addChild(newArtifact);
-         List<Artifact> copiedChildren = new ArrayList<Artifact>();
+         List<Artifact> copiedChildren = new ArrayList<>();
          if (config.isIncludeChildrenOfCopiedElements()) {
             Collection<Artifact> children = source.getChildren();
             if (!children.isEmpty()) {

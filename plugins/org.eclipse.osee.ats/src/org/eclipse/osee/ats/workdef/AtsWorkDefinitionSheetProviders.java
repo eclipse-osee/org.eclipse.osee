@@ -68,7 +68,7 @@ public final class AtsWorkDefinitionSheetProviders {
          changes.add(folder);
       }
       List<WorkDefinitionSheet> sheets = getWorkDefinitionSheets();
-      Set<String> stateNames = new HashSet<String>();
+      Set<String> stateNames = new HashSet<>();
       importWorkDefinitionSheets(resultData, changes, folder, sheets, stateNames);
       createStateNameArtifact(stateNames, folder, changes);
       importTeamsAndAis(resultData, changes, folder, sheets);
@@ -80,7 +80,7 @@ public final class AtsWorkDefinitionSheetProviders {
     */
    public synchronized static Collection<? extends String> getAllValidStateNames() {
       if (allValidStateNames == null) {
-         allValidStateNames = new ArrayList<String>();
+         allValidStateNames = new ArrayList<>();
          try {
             Artifact artifact = null;
             try {
@@ -115,7 +115,7 @@ public final class AtsWorkDefinitionSheetProviders {
          ArtifactQuery.getArtifactFromToken(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
             AtsUtilCore.getAtsBranch());
       Collection<? extends String> currentStateNames = getAllValidStateNames();
-      Set<String> newStateNames = new HashSet<String>();
+      Set<String> newStateNames = new HashSet<>();
       newStateNames.addAll(currentStateNames);
       for (String name : stateNames) {
          if (!currentStateNames.contains(name)) {
@@ -176,7 +176,7 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
-      List<WorkDefinitionSheet> sheets = new ArrayList<WorkDefinitionSheet>();
+      List<WorkDefinitionSheet> sheets = new ArrayList<>();
       sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, getSupportFile(Activator.PLUGIN_ID,
          "support/WorkDef_Team_Default.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", getSupportFile(Activator.PLUGIN_ID,
@@ -214,7 +214,7 @@ public final class AtsWorkDefinitionSheetProviders {
       if (teamWorkflowExtensionItems != null) {
          return teamWorkflowExtensionItems;
       }
-      teamWorkflowExtensionItems = new HashSet<IAtsWorkDefinitionSheetProvider>();
+      teamWorkflowExtensionItems = new HashSet<>();
 
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWorkDefinitionSheetProvider");

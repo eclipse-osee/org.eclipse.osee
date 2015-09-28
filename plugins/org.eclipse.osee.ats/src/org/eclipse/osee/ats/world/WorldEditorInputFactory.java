@@ -39,7 +39,7 @@ public class WorldEditorInputFactory implements IElementFactory {
    @Override
    public IAdaptable createElement(IMemento memento) {
       long branchUuid = 0;
-      List<Integer> artUuids = new ArrayList<Integer>();
+      List<Integer> artUuids = new ArrayList<>();
       String title = memento.getString(TITLE);
       try {
          if (Strings.isValid(memento.getString(BRANCH_KEY))) {

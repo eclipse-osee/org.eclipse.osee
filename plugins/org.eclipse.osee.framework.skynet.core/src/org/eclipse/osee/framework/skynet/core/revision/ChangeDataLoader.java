@@ -275,7 +275,7 @@ public class ChangeDataLoader extends AbstractOperation {
    }
 
    private static Set<Integer> asArtIds(Collection<ChangeItem> changeItems) {
-      Set<Integer> artIds = new HashSet<Integer>();
+      Set<Integer> artIds = new HashSet<>();
       for (ChangeItem item : changeItems) {
          artIds.add(item.getArtId());
          if (item.getChangeType().isRelationChange()) {

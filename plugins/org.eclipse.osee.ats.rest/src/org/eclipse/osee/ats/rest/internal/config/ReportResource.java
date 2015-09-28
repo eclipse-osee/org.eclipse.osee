@@ -60,9 +60,9 @@ public class ReportResource {
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
    public Response getTypeCount(@QueryParam("branchUuid") long branchUuid, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) throws OseeCoreException {
       List<ChangeItem> changes = getChanges(branchUuid);
-      Set<Long> newArts = new HashSet<Long>();
-      Set<Long> modArts = new HashSet<Long>();
-      Set<Long> deletedArts = new HashSet<Long>();
+      Set<Long> newArts = new HashSet<>();
+      Set<Long> modArts = new HashSet<>();
+      Set<Long> deletedArts = new HashSet<>();
 
       Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges =
          new HashMap<Integer, Pair<ChangeItem, Set<ChangeItem>>>();
@@ -100,7 +100,7 @@ public class ReportResource {
             }
          } else if (changeType.isAttributeChange()) {
             if (!artToChanges.containsKey(artId)) {
-               Set<ChangeItem> changeSet = new HashSet<ChangeItem>();
+               Set<ChangeItem> changeSet = new HashSet<>();
                changeSet.add(change);
                artToChanges.put(artId, new Pair<>(null, changeSet));
             } else {

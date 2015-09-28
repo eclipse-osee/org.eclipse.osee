@@ -53,7 +53,7 @@ public class JaxRsConfigurationTest {
 
    @Test
    public void testDefaultProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       builder.properties(properties);
 
       JaxRsConfiguration actual = builder.build();
@@ -63,7 +63,7 @@ public class JaxRsConfigurationTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(JaxRsConstants.JAXRS_BASE_CONTEXT, BASE_CONTEXT_PATH);
 
       builder.properties(properties);

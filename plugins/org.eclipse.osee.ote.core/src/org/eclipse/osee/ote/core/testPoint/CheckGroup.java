@@ -43,7 +43,7 @@ public class CheckGroup implements ITestGroup {
     */
    public CheckGroup(Operation operation, String groupName) {
       super();
-      testPoints = new ArrayList<ITestPoint>();
+      testPoints = new ArrayList<>();
       // this.allTrue = allTrue;
       this.operation = operation;
       this.groupName = groupName;

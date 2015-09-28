@@ -43,11 +43,11 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
-   protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<String, IOseeBranch>();
-   protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<String, Long>(50);
+   protected static Map<String, IOseeBranch> idToWorkingBranchCache = new HashMap<>();
+   protected static Map<String, Long> idToWorkingBranchCacheUpdated = new HashMap<>(50);
    protected IAtsServices atsServices;
    private static final int SHORT_NAME_LIMIT = 35;
-   private static Set<IOseeBranch> branchesInCommit = new HashSet<IOseeBranch>();
+   private static Set<IOseeBranch> branchesInCommit = new HashSet<>();
    private ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
 
    public AbstractAtsBranchService() {
@@ -69,7 +69,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public Collection<IOseeBranch> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      Set<IOseeBranch> branches = new HashSet<IOseeBranch>();
+      Set<IOseeBranch> branches = new HashSet<>();
       for (ICommitConfigItem obj : getConfigArtifactsConfiguredToCommitTo(teamWf)) {
          if (isBranchValid(obj)) {
             branches.add(getBranch(obj));
@@ -199,7 +199,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public Collection<IOseeBranch> getBranchesCommittedTo(IAtsTeamWorkflow teamWf) {
-      Set<IOseeBranch> branches = new HashSet<IOseeBranch>();
+      Set<IOseeBranch> branches = new HashSet<>();
       for (ITransaction transId : getTransactionIds(teamWf, false)) {
          branches.add(getBranch(transId));
       }
@@ -208,7 +208,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public Collection<IOseeBranch> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf) {
-      Set<IOseeBranch> branchesLeft = new HashSet<IOseeBranch>();
+      Set<IOseeBranch> branchesLeft = new HashSet<>();
       Collection<IOseeBranch> committedTo = getBranchesCommittedTo(teamWf);
       for (IOseeBranch branchToCommit : getBranchesToCommitTo(teamWf)) {
          if (!committedTo.contains(branchToCommit) && !isNoCommitNeeded(teamWf, branchToCommit)) {
@@ -233,7 +233,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
    @Override
    public Collection<ICommitConfigItem> getConfigArtifactsConfiguredToCommitTo(IAtsTeamWorkflow teamWf) {
-      Set<ICommitConfigItem> configObjects = new HashSet<ICommitConfigItem>();
+      Set<ICommitConfigItem> configObjects = new HashSet<>();
       if (teamWf.getTeamDefinition().isTeamUsesVersions()) {
          if (atsServices.getVersionService().hasTargetedVersion(teamWf)) {
             atsServices.getVersionService().getTargetedVersion(teamWf).getParallelVersions(configObjects);
@@ -250,7 +250,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public Collection<ITransaction> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf) {
       Collection<ITransaction> committedTransactions = getCommittedArtifactTransactionIds(teamWf);
 
-      Collection<ITransaction> transactionIds = new ArrayList<ITransaction>();
+      Collection<ITransaction> transactionIds = new ArrayList<>();
       for (ITransaction transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
          IOseeBranch branch = getBranch(transactionId);
@@ -392,7 +392,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       // - first, we addAll configArtSet
       // - next, we loop through commitTxs and for any tx that has the same branch as ANY pre-existing commit
       //    in configArtSet we do NOT add it to commitMgrInputObjs.
-      Collection<Object> commitMgrInputObjs = new HashSet<Object>();
+      Collection<Object> commitMgrInputObjs = new HashSet<>();
       commitMgrInputObjs.addAll(configArtSet);
       //for each tx commit...
       for (ITransaction txRecord : commitTxs) {
@@ -566,7 +566,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       if (forMergeBranches) {
          IOseeBranch workingBranch = getWorkingBranch(teamWf);
          // grab only the transaction that had merge conflicts
-         Collection<ITransaction> transactionIds = new ArrayList<ITransaction>();
+         Collection<ITransaction> transactionIds = new ArrayList<>();
          for (ITransaction transactionId : getCommitTransactionsToUnarchivedBaselineBranchs(teamWf)) {
             if (isMergeBranchExists(teamWf, workingBranch, getBranch(transactionId))) {
                transactionIds.add(transactionId);

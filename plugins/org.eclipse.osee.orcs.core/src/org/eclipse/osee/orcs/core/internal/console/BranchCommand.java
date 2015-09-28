@@ -92,7 +92,7 @@ public final class BranchCommand implements ConsoleCommand {
       private BranchType[] toBranchType(String[] types, boolean alllIfEmpty) {
          BranchType[] toReturn = new BranchType[0];
          if (types != null && types.length > 0) {
-            Set<BranchType> data = new HashSet<BranchType>();
+            Set<BranchType> data = new HashSet<>();
             for (String type : types) {
                BranchType typeEnum = BranchType.valueOf(type.toUpperCase());
                data.add(typeEnum);
@@ -109,7 +109,7 @@ public final class BranchCommand implements ConsoleCommand {
       private BranchState[] toBranchState(String[] types, boolean alllIfEmpty) {
          BranchState[] toReturn = new BranchState[0];
          if (types != null && types.length > 0) {
-            Set<BranchState> data = new HashSet<BranchState>();
+            Set<BranchState> data = new HashSet<>();
             for (String type : types) {
                BranchState typeEnum = BranchState.valueOf(type.toUpperCase());
                data.add(typeEnum);

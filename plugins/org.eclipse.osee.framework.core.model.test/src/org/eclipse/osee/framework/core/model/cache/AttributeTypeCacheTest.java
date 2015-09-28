@@ -29,7 +29,7 @@ public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeT
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
-      attributeTypes = new ArrayList<AttributeType>();
+      attributeTypes = new ArrayList<>();
 
       attrCache = new AttributeTypeCache();
 

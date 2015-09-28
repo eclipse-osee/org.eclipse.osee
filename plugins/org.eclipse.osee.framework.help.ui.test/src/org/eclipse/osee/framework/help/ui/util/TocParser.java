@@ -32,7 +32,7 @@ public class TocParser {
    private static final String TOPIC = "topic";
    private static final String HREF = "href";
 
-   public Set<String> entries = new HashSet<String>();
+   public Set<String> entries = new HashSet<>();
    public String path;
 
    private String localName;

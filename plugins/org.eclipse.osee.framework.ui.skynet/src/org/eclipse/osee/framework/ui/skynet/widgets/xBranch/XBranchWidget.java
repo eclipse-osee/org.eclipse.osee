@@ -84,7 +84,7 @@ public class XBranchWidget extends GenericXWidget {
       this.searchRealTime = searchRealTime;
       this.selectedBranch = selectedBranch;
       this.menuListener = menuListener;
-      branchSelectedListeners = new CopyOnWriteArrayList<BranchSelectedListener>();
+      branchSelectedListeners = new CopyOnWriteArrayList<>();
       branchXViewerFactory = new BranchXViewerFactory();
    }
 
@@ -220,7 +220,7 @@ public class XBranchWidget extends GenericXWidget {
    }
 
    public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<Branch>();
+      ArrayList<Branch> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }
@@ -237,7 +237,7 @@ public class XBranchWidget extends GenericXWidget {
 
    @SuppressWarnings("rawtypes")
    public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      ArrayList<TransactionRecord> items = new ArrayList<TransactionRecord>();
+      ArrayList<TransactionRecord> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }

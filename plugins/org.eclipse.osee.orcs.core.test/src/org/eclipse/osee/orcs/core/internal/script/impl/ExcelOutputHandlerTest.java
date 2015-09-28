@@ -80,7 +80,7 @@ public class ExcelOutputHandlerTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      top = new LinkedHashMap<String, Object>();
+      top = new LinkedHashMap<>();
       resultBuffer = new StringWriter();
 
       when(context.getAttribute(OUTPUT_DEBUG)).thenAnswer(answer("true"));
@@ -173,10 +173,10 @@ public class ExcelOutputHandlerTest {
    private Object[] buildSetData() {
       Object[] data = new Object[values.length];
       for (int i = 0; i < values.length; ++i) {
-         Map<String, Object> element = new LinkedHashMap<String, Object>();
+         Map<String, Object> element = new LinkedHashMap<>();
          element.put("data", values[i]);
          element.put(innerName[0], innerName[1]);
-         Set<Map<String, Object>> dataset = new LinkedHashSet<Map<String, Object>>();
+         Set<Map<String, Object>> dataset = new LinkedHashSet<>();
          dataset.add(element);
          data[i] = dataset;
       }
@@ -186,7 +186,7 @@ public class ExcelOutputHandlerTest {
    private Object[] buildBadSetData() {
       Object[] data = new Object[values.length];
       for (int i = 0; i < values.length; ++i) {
-         Set<String> dataset = new LinkedHashSet<String>();
+         Set<String> dataset = new LinkedHashSet<>();
          dataset.add(values[i]);
          data[i] = dataset;
       }
@@ -205,12 +205,12 @@ public class ExcelOutputHandlerTest {
    }
 
    private void buildTestStructure(Object[] data, boolean deeper) {
-      Map<String, Object> groupContainer = new LinkedHashMap<String, Object>();
+      Map<String, Object> groupContainer = new LinkedHashMap<>();
       for (int j = groups.length - 1; j >= 0; --j) {
-         Map<String, Object> inner = new LinkedHashMap<String, Object>();
+         Map<String, Object> inner = new LinkedHashMap<>();
          for (int i = headings.length - 1; i >= 0; --i) {
             if (i == 2 && deeper) {
-               Map<String, Object> bottom = new LinkedHashMap<String, Object>();
+               Map<String, Object> bottom = new LinkedHashMap<>();
                bottom.put(innerName[0], data[i]);
                inner.put(headings[i], bottom);
             } else {

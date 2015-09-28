@@ -48,7 +48,7 @@ public class OteEventMessage extends Message<MessageSystemTestEnvironment, OteEv
    }
    
    protected <T extends Enum<T> & IEnumValue<T>> EnumeratedElement<T> createEnumeratedElement(String name, int size, Class<T> clazz) {
-      EnumeratedElement<T> el = new EnumeratedElement<T>(this, name, clazz, getDefaultMessageData(), currentOffset, 0, size*8-1);
+      EnumeratedElement<T> el = new EnumeratedElement<>(this, name, clazz, getDefaultMessageData(), currentOffset, 0, size*8-1);
       currentOffset+=size;
       return el;
    }

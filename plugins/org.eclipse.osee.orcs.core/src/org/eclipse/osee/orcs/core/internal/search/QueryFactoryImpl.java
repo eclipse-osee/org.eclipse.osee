@@ -92,7 +92,7 @@ public class QueryFactoryImpl implements QueryFactory {
       Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
       ArtifactReadable artifact = artifacts.iterator().next();
       IOseeBranch branch = artifact.getBranch();
-      Set<String> guids = new HashSet<String>();
+      Set<String> guids = new HashSet<>();
       for (ArtifactReadable art : artifacts) {
          guids.add(art.getGuid());
       }

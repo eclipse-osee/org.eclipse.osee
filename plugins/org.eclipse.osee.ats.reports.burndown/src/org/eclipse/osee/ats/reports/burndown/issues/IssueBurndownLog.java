@@ -31,8 +31,8 @@ public class IssueBurndownLog {
     * Constructor to initialise list of Work flow artifacts and Log entries
     */
    public IssueBurndownLog() {
-      this.artifacts = new ArrayList<AbstractWorkflowArtifact>();
-      this.entries = new ArrayList<IssueBurndownEntry>();
+      this.artifacts = new ArrayList<>();
+      this.entries = new ArrayList<>();
    }
 
    /**

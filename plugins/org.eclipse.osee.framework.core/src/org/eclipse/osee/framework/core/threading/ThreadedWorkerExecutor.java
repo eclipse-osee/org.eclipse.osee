@@ -40,7 +40,7 @@ public class ThreadedWorkerExecutor<T> {
 
    public List<T> executeWorkersBlocking() throws OseeCoreException {
       ExecutorService executor = Executors.newFixedThreadPool(numberOfWorkers);
-      List<T> toReturn = new LinkedList<T>();
+      List<T> toReturn = new LinkedList<>();
       Collection<Callable<T>> workers = createWorkers();
 
       try {
@@ -60,7 +60,7 @@ public class ThreadedWorkerExecutor<T> {
       int remainder = factory.getWorkSize() % numberOfWorkers;
       int startIndex = 0;
       int endIndex = 0;
-      Collection<Callable<T>> workers = new LinkedList<Callable<T>>();
+      Collection<Callable<T>> workers = new LinkedList<>();
       for (int i = 0; i < numberOfWorkers; i++) {
          startIndex = endIndex;
          endIndex = startIndex + partitionSize;

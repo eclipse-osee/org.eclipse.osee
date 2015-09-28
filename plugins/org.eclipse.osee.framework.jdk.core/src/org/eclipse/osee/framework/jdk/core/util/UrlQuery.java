@@ -31,7 +31,7 @@ public class UrlQuery {
    private final Map<String, List<String>> parameters;
 
    public UrlQuery() {
-      this.parameters = new TreeMap<String, List<String>>();
+      this.parameters = new TreeMap<>();
    }
 
    public UrlQuery clear() {
@@ -84,7 +84,7 @@ public class UrlQuery {
    private void innerPut(String name, String value, boolean overrite) {
       List<String> list = parameters.get(name);
       if (list == null) {
-         list = new ArrayList<String>();
+         list = new ArrayList<>();
          parameters.put(name, list);
       }
       if (overrite) {
@@ -160,7 +160,7 @@ public class UrlQuery {
    }
 
    public Map<String, String[]> getParameterMap() {
-      Map<String, String[]> map = new TreeMap<String, String[]>();
+      Map<String, String[]> map = new TreeMap<>();
       for (Map.Entry<String, List<String>> entry : parameters.entrySet()) {
          List<String> list = entry.getValue();
          String[] values = list != null ? list.toArray(new String[list.size()]) : null;

@@ -94,8 +94,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
    "ORDER BY art1.art_id, txs1.branch_id ";
    private boolean fixAttributeValues = false;
-   private final Set<String> atsIds = new HashSet<String>();
-   private final Map<String, String> legacyPcrIdToParentId = new HashMap<String, String>(50000);
+   private final Set<String> atsIds = new HashSet<>();
+   private final Map<String, String> legacyPcrIdToParentId = new HashMap<>(50000);
    private String emailOnComplete = null;
    private final ValidateResults results = new ValidateResults();
 
@@ -168,8 +168,8 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       //      elapsedTime.end();
 
       // Un-comment to process specific artifact from common - Test Mode
-      //      artIdLists = new ArrayList<Collection<Integer>>();
-      //      List<Integer> ids = new ArrayList<Integer>();
+      //      artIdLists = new ArrayList<>();
+      //      List<Integer> ids = new ArrayList<>();
       //      ids.add(new Integer(1070598));
       //      artIdLists.add(ids);
 
@@ -202,7 +202,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             // NOTE: Use DoesNotWorkItemAts to process list of IDs
 
             // remove all deleted/purged artifacts first
-            List<Artifact> artifacts = new ArrayList<Artifact>(allArtifacts.size());
+            List<Artifact> artifacts = new ArrayList<>(allArtifacts.size());
             for (Artifact artifact : allArtifacts) {
                if (!artifact.isDeleted()) {
                   artifacts.add(artifact);
@@ -265,7 +265,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private List<Collection<Integer>> getFromGuids() {
       List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
-      List<Integer> artIds = new ArrayList<Integer>();
+      List<Integer> artIds = new ArrayList<>();
       for (Artifact art : artifacts) {
          artIds.add(art.getArtId());
       }
@@ -445,7 +445,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               Map<String, Attribute<String>> stateNamesToStateStr = new HashMap<String, Attribute<String>>();
+               Map<String, Attribute<String>> stateNamesToStateStr = new HashMap<>();
                Attribute<String> currentStateAttr = awa.getSoleAttribute(AtsAttributeTypes.CurrentState);
                String currentStateStr = currentStateAttr.getValue();
                String currentStateName = currentStateStr.replaceAll(";.*$", "");
@@ -739,7 +739,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private List<Long> getInvalidUuids(List<Long> uuids) throws OseeCoreException {
-      List<Long> badUuids = new ArrayList<Long>();
+      List<Long> badUuids = new ArrayList<>();
       for (Long uuid : uuids) {
          if (AtsClientService.get().getArtifact(uuid.longValue()) == null) {
             badUuids.add(uuid);
@@ -828,7 +828,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private static List<Integer> getCommonArtifactIds(XResultData xResultData) throws OseeCoreException {
-      List<Integer> artIds = new ArrayList<Integer>();
+      List<Integer> artIds = new ArrayList<>();
       xResultData.log(null, "getCommonArtifactIds - Started " + DateUtil.getMMDDYYHHMM());
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -892,7 +892,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   "Error: Artifact: " + XResultDataUI.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
                   artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
                   artifact.getAttributesToString(attrType));
-            Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
+            Map<String, Attribute<?>> valuesAttrMap = new HashMap<>();
             int latestGamma = 0;
             StringBuffer fixInfo = new StringBuffer(" - FIX AVAILABLE");
             for (Attribute<?> attr : artifact.getAttributes(attrType)) {

@@ -166,8 +166,8 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
          colorColumn = AtsClientService.getConfigEndpoint().get().getColorColumns().getColumnById(getId());
          hasColorColumn = colorColumn != null;
          if (hasColorColumn) {
-            elementToForegroundColor = new HashMap<Object, String>(100);
-            elementToBackgroundColor = new HashMap<Object, String>(100);
+            elementToForegroundColor = new HashMap<>(100);
+            elementToBackgroundColor = new HashMap<>(100);
             hexColorToColor = new HashMap<>(25);
          }
       }

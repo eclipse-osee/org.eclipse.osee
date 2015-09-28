@@ -29,8 +29,8 @@ import com.google.common.collect.Multimaps;
  */
 public class SqlAliasManager {
 
-   private final HashMap<String, Alias> aliasCounter = new HashMap<String, Alias>();
-   private final List<AliasSet> usedAliases = new ArrayList<AliasSet>();
+   private final HashMap<String, Alias> aliasCounter = new HashMap<>();
+   private final List<AliasSet> usedAliases = new ArrayList<>();
    private int level = 0;
 
    public int getLevel() {

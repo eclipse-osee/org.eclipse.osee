@@ -92,7 +92,7 @@ public class OteSaxHandler extends AbstractSaxHandler {
    Map<String, ElementHandlers> handlers;
 
    public OteSaxHandler() throws Exception {
-      handlers = new HashMap<String, ElementHandlers>();
+      handlers = new HashMap<>();
       addHandlers(new Global());
       addHandlers(new AdditionalInfo());
       addHandlers(new Actual());

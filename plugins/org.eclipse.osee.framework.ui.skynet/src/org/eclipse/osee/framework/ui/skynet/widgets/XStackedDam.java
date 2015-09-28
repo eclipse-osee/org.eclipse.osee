@@ -58,7 +58,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
 
    public XStackedDam(String displayLabel) {
       super(displayLabel);
-      this.xWidgets = new LinkedHashMap<String, XWidget>();
+      this.xWidgets = new LinkedHashMap<>();
       this.artifact = null;
       this.xModifiedListener = new XModifiedListener() {
          @Override
@@ -94,7 +94,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
-      final Collection<String> values = new ArrayList<String>();
+      final Collection<String> values = new ArrayList<>();
       try {
          boolean attributeTypeIsPlainTextEditable = false;
          for (Attribute<Object> attribute : getArtifact().getAttributes(getAttributeType())) {
@@ -134,7 +134,7 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
    }
 
    public List<String> getInput() {
-      List<String> data = new ArrayList<String>();
+      List<String> data = new ArrayList<>();
       for (XWidget widget : xWidgets.values()) {
          if (widget instanceof XText) {
             data.add(((XText) widget).get());

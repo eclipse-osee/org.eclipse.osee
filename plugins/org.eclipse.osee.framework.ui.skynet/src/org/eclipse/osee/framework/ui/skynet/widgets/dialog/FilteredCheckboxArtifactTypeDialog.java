@@ -64,7 +64,7 @@ public class FilteredCheckboxArtifactTypeDialog extends FilteredCheckboxTreeDial
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IArtifactType> checked = new HashSet<IArtifactType>();
+      Set<IArtifactType> checked = new HashSet<>();
       for (Object obj : getResult()) {
          checked.add((IArtifactType) obj);
       }

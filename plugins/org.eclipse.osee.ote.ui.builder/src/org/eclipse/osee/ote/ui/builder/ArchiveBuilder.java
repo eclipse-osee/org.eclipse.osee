@@ -27,7 +27,7 @@ class ArchiveBuilder {
    public ArchiveBuilder(File workspaceArchiveHome, List<IPath> outputLocations) {
       this.workspaceArchiveHome = workspaceArchiveHome;
       this.outputLocations = outputLocations;
-      this.packages = new HashSet<IContainer>();
+      this.packages = new HashSet<>();
    }
 
    /**

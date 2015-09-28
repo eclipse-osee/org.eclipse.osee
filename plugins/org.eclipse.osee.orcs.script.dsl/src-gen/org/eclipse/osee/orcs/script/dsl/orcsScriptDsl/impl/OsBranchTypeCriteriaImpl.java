@@ -69,7 +69,7 @@ public class OsBranchTypeCriteriaImpl extends OsBranchCriteriaImpl implements Os
   {
     if (types == null)
     {
-      types = new EDataTypeEList<OsBranchType>(OsBranchType.class, this, OrcsScriptDslPackage.OS_BRANCH_TYPE_CRITERIA__TYPES);
+      types = new EDataTypeEList<>(OsBranchType.class, this, OrcsScriptDslPackage.OS_BRANCH_TYPE_CRITERIA__TYPES);
     }
     return types;
   }

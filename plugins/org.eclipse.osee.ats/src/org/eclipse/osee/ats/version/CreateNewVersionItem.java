@@ -79,7 +79,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
-         Set<String> newVersionNames = new HashSet<String>();
+         Set<String> newVersionNames = new HashSet<>();
          for (String str : ed.getEntry().split(System.getProperty("line.separator"))) {
             newVersionNames.add(str);
          }
@@ -107,7 +107,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    }
 
    public static Collection<IAtsVersion> createVersions(XResultData resultData, IAtsChangeSet changes, IAtsTeamDefinition teamDefHoldingVersions, Collection<String> newVersionNames) {
-      List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      List<IAtsVersion> versions = new ArrayList<>();
       for (String newVer : newVersionNames) {
          if (!Strings.isValid(newVer)) {
             resultData.error("Version name can't be blank");

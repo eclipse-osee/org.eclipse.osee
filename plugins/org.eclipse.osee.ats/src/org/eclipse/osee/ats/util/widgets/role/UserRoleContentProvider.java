@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class UserRoleContentProvider implements ITreeContentProvider {
 
-   protected Collection<UserRole> rootSet = new HashSet<UserRole>();
+   protected Collection<UserRole> rootSet = new HashSet<>();
    private final UserRoleXViewer xViewer;
 
    public UserRoleContentProvider(UserRoleXViewer WorldXViewer) {

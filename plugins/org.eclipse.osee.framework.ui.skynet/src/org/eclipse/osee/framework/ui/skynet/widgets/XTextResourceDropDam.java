@@ -73,7 +73,7 @@ public class XTextResourceDropDam extends XTextDam {
    }
 
    private void performDrop(DropTargetEvent e) {
-      Set<String> strs = new HashSet<String>();
+      Set<String> strs = new HashSet<>();
       if (e.data instanceof String) {
          strs.add((String) e.data);
       } else if (e.data instanceof String[]) {

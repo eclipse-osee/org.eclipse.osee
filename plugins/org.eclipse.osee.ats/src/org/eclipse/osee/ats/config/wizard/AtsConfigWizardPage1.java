@@ -56,7 +56,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
    }
 
    public List<String> getActionableItems() throws OseeCoreException {
-      List<String> aias = new ArrayList<String>();
+      List<String> aias = new ArrayList<>();
       for (String aia : ((String) getXWidget(ACTIONABLE_ITEMS).getData()).split(",")) {
          aia = aia.replaceAll("^ *", "");
          aia = aia.replaceAll(" *$", "");
@@ -68,7 +68,7 @@ public class AtsConfigWizardPage1 extends WizardPage {
    }
 
    public List<String> getVersions() throws OseeCoreException {
-      List<String> versions = new ArrayList<String>();
+      List<String> versions = new ArrayList<>();
       for (String version : ((String) getXWidget(VERSIONS).getData()).split(",")) {
          version = version.replaceAll("^ *", "");
          version = version.replaceAll(" *$", "");

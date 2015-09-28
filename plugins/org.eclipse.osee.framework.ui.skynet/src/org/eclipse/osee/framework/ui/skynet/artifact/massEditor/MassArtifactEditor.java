@@ -91,14 +91,14 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
    }
 
    public static void editArtifacts(final String name, final Collection<? extends Artifact> artifacts, TableLoadOption... tableLoadOptions) {
-      Set<TableLoadOption> options = new HashSet<TableLoadOption>();
+      Set<TableLoadOption> options = new HashSet<>();
       options.addAll(Arrays.asList(tableLoadOptions));
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
             boolean accessControlFilteredResults = false;
             try {
-               Set<Artifact> accessibleArts = new HashSet<Artifact>();
+               Set<Artifact> accessibleArts = new HashSet<>();
                for (Artifact artifact : artifacts) {
                   if (!AccessControlManager.hasPermission(artifact, PermissionEnum.READ)) {
                      OseeLog.log(Activator.class, Level.INFO,
@@ -339,7 +339,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
    }
 
    public static Collection<MassArtifactEditor> getEditors() {
-      final List<MassArtifactEditor> editors = new ArrayList<MassArtifactEditor>();
+      final List<MassArtifactEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {

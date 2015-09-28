@@ -43,7 +43,7 @@ public final class JaxRsExceptions {
     * Create exception handling providers
     */
    public static List<?> newExceptionProviders(Log logger) {
-      List<Object> providers = new ArrayList<Object>();
+      List<Object> providers = new ArrayList<>();
       providers.add(new ErrorResponseMessageBodyWriter());
       providers.add(new GenericExceptionMapper(logger));
       providers.add(new ForbiddenExceptionMapper(logger));

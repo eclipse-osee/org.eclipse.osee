@@ -59,7 +59,7 @@ public class EventHandlerConsumer {
    }
 
    public void registerHandler(EventHandler handler, Map<String, ?> properties) {
-      Hashtable<String, Object> serviceProps = new Hashtable<String, Object>();
+      Hashtable<String, Object> serviceProps = new Hashtable<>();
       serviceProps.putAll(properties);
       if (isReady()) {
          registerHelper(handler, serviceProps);

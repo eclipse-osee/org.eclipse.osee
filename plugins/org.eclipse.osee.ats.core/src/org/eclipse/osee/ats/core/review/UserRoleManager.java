@@ -45,7 +45,7 @@ public class UserRoleManager {
 
    public void ensureLoaded() throws OseeCoreException {
       if (roles == null) {
-         roles = new ArrayList<UserRole>();
+         roles = new ArrayList<>();
          for (String xml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.Role)) {
             roleMatcher.reset(xml);
             while (roleMatcher.find()) {
@@ -62,7 +62,7 @@ public class UserRoleManager {
    }
 
    public List<UserRole> getUserRoles(Role role) throws OseeCoreException {
-      List<UserRole> roles = new ArrayList<UserRole>();
+      List<UserRole> roles = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role) {
             roles.add(uRole);
@@ -72,7 +72,7 @@ public class UserRoleManager {
    }
 
    public List<IAtsUser> getRoleUsers(Role role) throws OseeCoreException {
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       for (UserRole uRole : getUserRoles()) {
          if (uRole.getRole() == role && !users.contains(userService.getUserById(uRole.getUserId()))) {
             users.add(userService.getUserById(uRole.getUserId()));

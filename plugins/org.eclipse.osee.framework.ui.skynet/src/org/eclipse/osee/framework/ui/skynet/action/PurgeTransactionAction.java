@@ -57,7 +57,7 @@ public class PurgeTransactionAction extends Action {
 
    @Override
    public void run() {
-      final List<TransactionRecord> useTransactions = new ArrayList<TransactionRecord>(transactions);
+      final List<TransactionRecord> useTransactions = new ArrayList<>(transactions);
       if (useTransactions.isEmpty()) {
          if (!getTransactions(useTransactions)) {
             return;

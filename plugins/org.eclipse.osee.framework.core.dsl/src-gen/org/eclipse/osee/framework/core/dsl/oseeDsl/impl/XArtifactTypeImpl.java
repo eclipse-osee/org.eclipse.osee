@@ -132,7 +132,7 @@ public class XArtifactTypeImpl extends OseeTypeImpl implements XArtifactType
   {
     if (superArtifactTypes == null)
     {
-      superArtifactTypes = new EObjectResolvingEList<XArtifactType>(XArtifactType.class, this, OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
+      superArtifactTypes = new EObjectResolvingEList<>(XArtifactType.class, this, OseeDslPackage.XARTIFACT_TYPE__SUPER_ARTIFACT_TYPES);
     }
     return superArtifactTypes;
   }
@@ -146,7 +146,7 @@ public class XArtifactTypeImpl extends OseeTypeImpl implements XArtifactType
   {
     if (validAttributeTypes == null)
     {
-      validAttributeTypes = new EObjectContainmentEList<XAttributeTypeRef>(XAttributeTypeRef.class, this, OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
+      validAttributeTypes = new EObjectContainmentEList<>(XAttributeTypeRef.class, this, OseeDslPackage.XARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
     }
     return validAttributeTypes;
   }

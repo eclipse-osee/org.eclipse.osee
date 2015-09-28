@@ -55,7 +55,7 @@ public class JdbcSvcCfgChangeTypeTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> tests = new ArrayList<Object[]>();
+      List<Object[]> tests = new ArrayList<>();
 
       //@formatter:off
       tests.add(row(NO_CHANGE, map("a", "1"), map("a", "1")));
@@ -76,7 +76,7 @@ public class JdbcSvcCfgChangeTypeTest {
    }
 
    private static Map<String, Object> map(Object... keyVals) {
-      Map<String, Object> data = new HashMap<String, Object>();
+      Map<String, Object> data = new HashMap<>();
       String key = null;
       boolean isKey = true;
       for (Object keyVal : keyVals) {

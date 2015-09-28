@@ -20,13 +20,13 @@ import org.junit.Assert;
 public class PairTest {
    private static Integer a = Integer.valueOf(144);
    private static Integer b = Integer.valueOf(233);
-   private static Pair<Integer, Integer> mapToPi = new Pair<Integer, Integer>(a, b);
-   private static Pair<Integer, Integer> mapToE = new Pair<Integer, Integer>(b, a);
-   private static Pair<Integer, Integer> alsoMapToPi = new Pair<Integer, Integer>(a, b);
-   private static Pair<Integer, Integer> alsoMapToE = new Pair<Integer, Integer>(b, a);
-   private static Pair<Integer, Integer> firstEntryNull = new Pair<Integer, Integer>(null, 144);
-   private static Pair<Integer, Integer> secondEntryNull = new Pair<Integer, Integer>(144, null);
-   private static Pair<Integer, Integer> nonNull = new Pair<Integer, Integer>(15, 144);
+   private static Pair<Integer, Integer> mapToPi = new Pair<>(a, b);
+   private static Pair<Integer, Integer> mapToE = new Pair<>(b, a);
+   private static Pair<Integer, Integer> alsoMapToPi = new Pair<>(a, b);
+   private static Pair<Integer, Integer> alsoMapToE = new Pair<>(b, a);
+   private static Pair<Integer, Integer> firstEntryNull = new Pair<>(null, 144);
+   private static Pair<Integer, Integer> secondEntryNull = new Pair<>(144, null);
+   private static Pair<Integer, Integer> nonNull = new Pair<>(15, 144);
 
    @org.junit.Test
    public void testConstructor() {
@@ -58,7 +58,7 @@ public class PairTest {
 
    @org.junit.Test
    public void testSetters() {
-      Pair<Integer, Integer> newPair = new Pair<Integer, Integer>(0, 0);
+      Pair<Integer, Integer> newPair = new Pair<>(0, 0);
       newPair.setFirst(a);
       newPair.setSecond(b);
       Assert.assertTrue(a.equals(newPair.getFirst()));
@@ -70,7 +70,7 @@ public class PairTest {
 
    @org.junit.Test
    public void testHashCorrectness() {
-      HashMap<Pair<Integer, Integer>, Double> hash = new HashMap<Pair<Integer, Integer>, Double>();
+      HashMap<Pair<Integer, Integer>, Double> hash = new HashMap<>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
       Assert.assertTrue(hash.get(mapToPi).equals(Math.PI));

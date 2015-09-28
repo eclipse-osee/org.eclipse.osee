@@ -18,8 +18,8 @@ import java.util.Vector;
 
 public class ScriptTaskList {
 
-   private final Set<ITaskListViewer> changeListeners = new HashSet<ITaskListViewer>();
-   private final Vector<ScriptTask> tasks = new Vector<ScriptTask>();
+   private final Set<ITaskListViewer> changeListeners = new HashSet<>();
+   private final Vector<ScriptTask> tasks = new Vector<>();
    private boolean isConnected = false;
 
    /**

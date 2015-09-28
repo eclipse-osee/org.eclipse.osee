@@ -222,7 +222,7 @@ public final class SkynetTransactionTest {
    private class WorkerThread extends Thread {
       private final IOseeBranch branch;
       private final Object lock;
-      private final Set<Artifact> data = new HashSet<Artifact>();
+      private final Set<Artifact> data = new HashSet<>();
       private Throwable ex;
       private final WorkerType workerType;
 

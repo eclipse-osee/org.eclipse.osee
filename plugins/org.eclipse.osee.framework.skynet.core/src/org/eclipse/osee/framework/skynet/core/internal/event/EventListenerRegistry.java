@@ -31,7 +31,7 @@ public class EventListenerRegistry {
 
    private final Map<EventQosType, EventListeners> qosToListeners =
       new ConcurrentHashMap<EventQosType, EventListeners>();
-   private final Set<IEventListener> listenerSet = new HashSet<IEventListener>();
+   private final Set<IEventListener> listenerSet = new HashSet<>();
 
    public void addListener(EventQosType qos, IEventListener listener) {
       if (listener != null) {
@@ -99,7 +99,7 @@ public class EventListenerRegistry {
 
    @Override
    public String toString() {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (EventQosType type : EventQosType.values()) {
          EventListeners registry = qosToListeners.get(type);
          for (Class<? extends FrameworkEvent> clazz : registry.keySet()) {
@@ -130,7 +130,7 @@ public class EventListenerRegistry {
       private void add(Class<? extends FrameworkEvent> clazz, IEventListener listener) {
          Set<IEventListener> items = eventClassToListeners.get(clazz);
          if (items == null) {
-            items = new HashSet<IEventListener>();
+            items = new HashSet<>();
             eventClassToListeners.put(clazz, items);
          }
          synchronized (items) {
@@ -181,7 +181,7 @@ public class EventListenerRegistry {
          if (items == null) {
             items = Collections.emptySet();
          } else {
-            Collection<D> copy = new HashSet<D>();
+            Collection<D> copy = new HashSet<>();
             copy.addAll(items);
             items = copy;
          }
@@ -190,7 +190,7 @@ public class EventListenerRegistry {
 
       @SuppressWarnings("unchecked")
       private Collection<Class<? extends FrameworkEvent>> getCompatibleEvents(IEventListener listener) {
-         Collection<Class<? extends FrameworkEvent>> events = new HashSet<Class<? extends FrameworkEvent>>();
+         Collection<Class<? extends FrameworkEvent>> events = new HashSet<>();
          Method[] methods = listener.getClass().getMethods();
          if (methods != null) {
             for (Method method : methods) {

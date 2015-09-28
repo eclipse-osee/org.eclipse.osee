@@ -116,7 +116,7 @@ public class MailServiceImpl implements MailService {
    @Override
    public List<MailStatus> sendMessages(Iterable<MailMessage> emails) {
       List<Future<MailStatus>> futures = sendAsyncMessages(emails);
-      List<MailStatus> toReturn = new ArrayList<MailStatus>();
+      List<MailStatus> toReturn = new ArrayList<>();
       for (Future<MailStatus> future : futures) {
          toReturn.add(executeAndGetStatus(future));
       }
@@ -151,7 +151,7 @@ public class MailServiceImpl implements MailService {
 
    @Override
    public List<Future<MailStatus>> sendAsyncMessages(MailCallback mailCallback, Iterable<MailMessage> emails) {
-      List<Future<MailStatus>> futures = new ArrayList<Future<MailStatus>>();
+      List<Future<MailStatus>> futures = new ArrayList<>();
       for (MailMessage mail : emails) {
          String uuid = mail.getId();
 

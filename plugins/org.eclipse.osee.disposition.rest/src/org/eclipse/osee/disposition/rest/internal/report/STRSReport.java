@@ -93,7 +93,7 @@ public class STRSReport {
    }
 
    private HashMap<String, DispoItem> convertToMap(List<DispoItem> list) {
-      HashMap<String, DispoItem> toReturn = new HashMap<String, DispoItem>();
+      HashMap<String, DispoItem> toReturn = new HashMap<>();
       for (DispoItem item : list) {
          toReturn.put(item.getName(), item);
       }
@@ -136,7 +136,7 @@ public class STRSReport {
    }
 
    private HashMap<String, Integer> convertToIssueTypeToCounttMap(JSONArray jsonArray) {
-      HashMap<String, Integer> toReturn = new HashMap<String, Integer>();
+      HashMap<String, Integer> toReturn = new HashMap<>();
       int codeCount = 0;
       int scriptCount = 0;
       int reqCount = 0;

@@ -80,7 +80,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
 
    @Override
    public List<JaxProgram> getObjects() {
-      List<JaxProgram> configs = new ArrayList<JaxProgram>();
+      List<JaxProgram> configs = new ArrayList<>();
       if (countryUuid == 0L) {
          for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
             configs.add(getConfigObject(art));

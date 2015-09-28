@@ -58,7 +58,7 @@ public class SimulatedTime extends TimerControl {
    private final Collection<CycleCountDown> scriptCycleCounters;
    private final IScriptControl scriptControl;
    private int cycleCount;
-   private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<Task>();
+   private final CopyOnWriteArrayList<Task> tasks = new CopyOnWriteArrayList<>();
 
    private final long sysTime;
 
@@ -68,8 +68,8 @@ public class SimulatedTime extends TimerControl {
    public SimulatedTime(IScriptControl scriptControl) throws IOException {
       super(3);
       this.scriptControl = scriptControl;
-      cycleCounters = new HashSet<CycleCountDown>(32);
-      scriptCycleCounters = new HashSet<CycleCountDown>(32);
+      cycleCounters = new HashSet<>(32);
+      scriptCycleCounters = new HashSet<>(32);
       cycleCount = 0;
       sysTime = System.currentTimeMillis();
    }

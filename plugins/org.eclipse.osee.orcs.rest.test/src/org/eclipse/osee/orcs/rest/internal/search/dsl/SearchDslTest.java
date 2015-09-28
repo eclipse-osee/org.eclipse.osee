@@ -54,7 +54,7 @@ public class SearchDslTest {
    public void setup() {
       MockitoAnnotations.initMocks(this);
 
-      Map<SearchMethod, PredicateHandler> handlers = new HashMap<SearchMethod, PredicateHandler>();
+      Map<SearchMethod, PredicateHandler> handlers = new HashMap<>();
       handlers.put(SearchMethod.ATTRIBUTE_TYPE, handler);
 
       dsl = new SearchQueryBuilder(handlers);

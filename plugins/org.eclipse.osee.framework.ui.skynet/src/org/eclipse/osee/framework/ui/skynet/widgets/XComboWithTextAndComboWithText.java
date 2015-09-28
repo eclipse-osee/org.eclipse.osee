@@ -220,7 +220,7 @@ public class XComboWithTextAndComboWithText extends XCombo {
 
    @Override
    public Collection<? extends XWidget> getChildrenXWidgets() {
-      List<XWidget> widgets = new ArrayList<XWidget>();
+      List<XWidget> widgets = new ArrayList<>();
       if (text != null) {
          widgets.add(text);
       }

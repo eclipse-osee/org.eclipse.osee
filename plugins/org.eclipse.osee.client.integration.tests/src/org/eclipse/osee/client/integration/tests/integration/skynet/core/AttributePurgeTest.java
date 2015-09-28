@@ -65,7 +65,7 @@ public class AttributePurgeTest {
       // Count rows and check that increased
       Asserts.assertThatIncreased(initialRowCount, TestUtil.getTableRowCounts(TABLES));
 
-      Set<Attribute<?>> attributesToPurge = new HashSet<Attribute<?>>();
+      Set<Attribute<?>> attributesToPurge = new HashSet<>();
       for (Artifact softArt : softArts) {
          attributesToPurge.addAll(softArt.getAttributes(CoreAttributeTypes.StaticId));
       }

@@ -48,7 +48,7 @@ public final class Artifacts {
    }
 
    public static Collection<Integer> toIds(Collection<? extends IArtifact> artifacts) {
-      Set<Integer> toReturn = new HashSet<Integer>(artifacts.size());
+      Set<Integer> toReturn = new HashSet<>(artifacts.size());
       for (IArtifact artifact : artifacts) {
          toReturn.add(artifact.getArtId());
       }
@@ -56,7 +56,7 @@ public final class Artifacts {
    }
 
    public static List<String> toGuids(Collection<? extends IArtifact> artifacts) {
-      List<String> guids = new ArrayList<String>(artifacts.size());
+      List<String> guids = new ArrayList<>(artifacts.size());
       for (IArtifact artifact : artifacts) {
          guids.add(artifact.getGuid());
       }
@@ -104,7 +104,7 @@ public final class Artifacts {
    }
 
    public static Collection<String> getNames(Collection<? extends Named> artifacts) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (Named namedArtifact : artifacts) {
          names.add(namedArtifact.getName());
       }
@@ -143,7 +143,7 @@ public final class Artifacts {
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> Set<A> getChildrenAndThisOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) throws OseeCoreException {
-      Set<A> thisAndChildren = new HashSet<A>();
+      Set<A> thisAndChildren = new HashSet<>();
       if (parentArtifact.getClass().equals(clazz)) {
          thisAndChildren.add((A) parentArtifact);
       }
@@ -153,7 +153,7 @@ public final class Artifacts {
 
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> Set<A> getChildrenOfTypeSet(Artifact parentArtifact, Class<A> clazz, boolean recurse) throws OseeCoreException {
-      Set<A> children = new HashSet<A>();
+      Set<A> children = new HashSet<>();
       for (Artifact child : parentArtifact.getChildren()) {
          if (child.getClass().equals(clazz)) {
             children.add((A) child);
@@ -166,7 +166,7 @@ public final class Artifacts {
    }
 
    public static Map<String, String> getDetailsKeyValues(Artifact artifact) throws OseeCoreException {
-      Map<String, String> details = new HashMap<String, String>();
+      Map<String, String> details = new HashMap<>();
       if (artifact != null) {
          details.put("UUID", String.valueOf(artifact.getArtId()));
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
@@ -220,7 +220,7 @@ public final class Artifacts {
    }
 
    public static HashCollection<IOseeBranch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
-      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<IOseeBranch, Artifact>();
+      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<>();
       for (Artifact artifact : artifacts) {
          branchMap.put(artifact.getBranch(), artifact);
       }
@@ -228,7 +228,7 @@ public final class Artifacts {
    }
 
    public static Collection<Artifact> getOfType(IArtifactType artifactType, Collection<? extends Artifact> artifacts) {
-      List<Artifact> results = new ArrayList<Artifact>();
+      List<Artifact> results = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(artifactType)) {
             results.add(art);
@@ -260,7 +260,7 @@ public final class Artifacts {
    }
 
    public static Collection<Long> toUuids(Set<Artifact> artifacts) {
-      List<Long> uuids = new ArrayList<Long>(artifacts.size());
+      List<Long> uuids = new ArrayList<>(artifacts.size());
       for (IArtifact artifact : artifacts) {
          uuids.add(artifact.getUuid());
       }

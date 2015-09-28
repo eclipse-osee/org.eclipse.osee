@@ -63,7 +63,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
    private TaskEditorXWidgetActionPage taskActionPage;
-   private final Collection<TaskArtifact> tasks = new CopyOnWriteArraySet<TaskArtifact>();
+   private final Collection<TaskArtifact> tasks = new CopyOnWriteArraySet<>();
    private boolean loading = false;
    public final static int TITLE_MAX_LENGTH = WorldEditor.TITLE_MAX_LENGTH;
 
@@ -91,7 +91,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
    }
 
    public static Collection<TaskEditor> getEditors() {
-      final List<TaskEditor> editors = new ArrayList<TaskEditor>();
+      final List<TaskEditor> editors = new ArrayList<>();
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -281,7 +281,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
          try {
             taskEditor.setLoading(true);
             taskEditor.getTaskActionPage().getTaskComposite().getTaskXViewer().clear(true);
-            final List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
+            final List<TaskArtifact> taskArts = new ArrayList<>();
             for (Artifact artifact : itaskEditorProvider.getTaskEditorTaskArtifacts()) {
                if (artifact.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) artifact);

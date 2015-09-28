@@ -36,7 +36,7 @@ public class MessageServiceImpl implements MessageService {
    private final ConnectionNodeFactory factory;
 
    public MessageServiceImpl(ConnectionNodeFactory factory) {
-      this.connectionNodes = new ConcurrentHashMap<NodeInfo, ConnectionNode>();
+      this.connectionNodes = new ConcurrentHashMap<>();
       this.factory = factory;
       defaultNode = new NodeInfo("osee-jms", getDefaultURI());
    }

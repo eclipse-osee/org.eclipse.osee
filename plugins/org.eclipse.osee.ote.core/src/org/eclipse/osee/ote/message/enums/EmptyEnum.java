@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.EnumBase;
 public class EmptyEnum extends EnumBase implements Comparable<EmptyEnum> {
 
    private static final long serialVersionUID = 1305742348409814145L;
-   private static final HashMap<Integer, EmptyEnum> valuesMap = new HashMap<Integer, EmptyEnum>(16);
+   private static final HashMap<Integer, EmptyEnum> valuesMap = new HashMap<>(16);
 
    private final int value;
 
@@ -57,7 +57,7 @@ public class EmptyEnum extends EnumBase implements Comparable<EmptyEnum> {
 
    @Override
    protected String[] getStringTable() {
-      List<String> retVal = new LinkedList<String>();
+      List<String> retVal = new LinkedList<>();
       for (EmptyEnum current : valuesMap.values()) {
          retVal.add("EMPTY_ENUM_" + current.getValue());
       }

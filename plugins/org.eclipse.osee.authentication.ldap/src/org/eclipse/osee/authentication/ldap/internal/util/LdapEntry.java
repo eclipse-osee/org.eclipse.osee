@@ -47,7 +47,7 @@ public final class LdapEntry {
    }
 
    public Map<String, String> asMap() throws NamingException {
-      Map<String, String> toReturn = new HashMap<String, String>();
+      Map<String, String> toReturn = new HashMap<>();
       for (String key : keySet()) {
          toReturn.put(key, get(key));
       }

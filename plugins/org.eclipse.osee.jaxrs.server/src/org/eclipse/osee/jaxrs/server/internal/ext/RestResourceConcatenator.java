@@ -27,7 +27,7 @@ import com.google.common.io.InputSupplier;
  * @author David W. Miller
  */
 public class RestResourceConcatenator {
-   private final Set<String> resources = new HashSet<String>();
+   private final Set<String> resources = new HashSet<>();
    private String header;
    private String footer;
    private Pattern resourcePattern = null;

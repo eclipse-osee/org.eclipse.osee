@@ -22,11 +22,11 @@ public class CountingMap<K> {
    private final HashMap<K, MutableInteger> countingMap;
 
    public CountingMap(int initialCapacity) {
-      countingMap = new HashMap<K, MutableInteger>(initialCapacity);
+      countingMap = new HashMap<>(initialCapacity);
    }
 
    public CountingMap() {
-      countingMap = new HashMap<K, MutableInteger>();
+      countingMap = new HashMap<>();
    }
 
    public int get(K key) {

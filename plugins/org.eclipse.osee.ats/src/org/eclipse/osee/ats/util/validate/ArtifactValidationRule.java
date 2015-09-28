@@ -35,7 +35,7 @@ public class ArtifactValidationRule extends AbstractValidationRule {
 
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
-      Collection<String> errorMessages = new ArrayList<String>();
+      Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       IStatus status = OseeValidator.getInstance().validate(IOseeValidator.LONG, artToValidate);
 

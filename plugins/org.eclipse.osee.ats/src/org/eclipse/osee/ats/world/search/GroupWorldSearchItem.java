@@ -42,7 +42,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
 
    public GroupWorldSearchItem(Artifact group) {
       super("Group Search", FrameworkImage.GROUP);
-      this.groups = new ArrayList<Artifact>();
+      this.groups = new ArrayList<>();
       this.groups.add(group);
       this.branch = group.getBranch();
    }
@@ -93,7 +93,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       if (getSearchGroups() == null) {
          return EMPTY_SET;
       }
-      Set<Artifact> arts = new HashSet<Artifact>(100);
+      Set<Artifact> arts = new HashSet<>(100);
       for (Artifact group : getSearchGroups()) {
          arts.addAll(group.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members));
       }
@@ -143,7 +143,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
     * @param selectedGroup the selectedGroup to set
     */
    public void setSelectedGroup(Artifact selectedGroup) {
-      this.selectedGroups = new ArrayList<Artifact>();
+      this.selectedGroups = new ArrayList<>();
       this.selectedGroups.add(selectedGroup);
    }
 

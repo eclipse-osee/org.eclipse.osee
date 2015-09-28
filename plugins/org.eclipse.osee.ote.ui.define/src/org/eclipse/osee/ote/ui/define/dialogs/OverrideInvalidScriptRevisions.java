@@ -34,7 +34,7 @@ public class OverrideInvalidScriptRevisions implements IOverrideHandler {
 
    @Override
    public Set<Object> getOverridableFromUnselectable(Set<Object> unselectable) throws OseeCoreException {
-      Set<Object> toReturn = new HashSet<Object>();
+      Set<Object> toReturn = new HashSet<>();
       for (Object object : unselectable) {
          if (object instanceof Artifact) {
             ArtifactTestRunOperator operator = new ArtifactTestRunOperator(((Artifact) object));

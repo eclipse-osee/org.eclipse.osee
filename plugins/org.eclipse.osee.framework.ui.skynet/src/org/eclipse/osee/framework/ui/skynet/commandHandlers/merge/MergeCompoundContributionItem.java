@@ -58,7 +58,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
    @Override
    protected IContributionItem[] getContributionItems() {
       ISelectionProvider selectionProvider = getSelectionProvider();
-      ArrayList<IContributionItem> contributionItems = new ArrayList<IContributionItem>(40);
+      ArrayList<IContributionItem> contributionItems = new ArrayList<>(40);
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
@@ -95,7 +95,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
    }
 
    private CommandContributionItem createCommand(Long branchUuid, String commandId) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, Long.toString(branchUuid));
       CommandContributionItem contributionItem;
       String label = branchUuid == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchUuid).getName();

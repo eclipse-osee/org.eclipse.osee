@@ -40,7 +40,7 @@ public class MockDefectValueProvider implements IValueProvider {
 
    @Override
    public Collection<String> getValues() {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (ReviewDefectItem item : defectItems) {
          values.add(AXml.addTagData("Item", item.toXml()));
       }

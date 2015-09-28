@@ -47,7 +47,7 @@ public class CriteriaArtifactType extends Criteria {
    public Collection<? extends IArtifactType> getTypes() throws OseeCoreException {
       Collection<? extends IArtifactType> toReturn;
       if (includeTypeInheritance) {
-         Collection<IArtifactType> typesToUse = new LinkedHashSet<IArtifactType>();
+         Collection<IArtifactType> typesToUse = new LinkedHashSet<>();
          for (IArtifactType type : getOriginalTypes()) {
             for (IArtifactType descendant : artTypeCache.getAllDescendantTypes(type)) {
                typesToUse.add(descendant);

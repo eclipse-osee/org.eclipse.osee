@@ -43,7 +43,7 @@ public final class IntegrationUtil {
    }
 
    private static Map<String, Object> createClientConfig() {
-      Map<String, Object> config = new HashMap<String, Object>();
+      Map<String, Object> config = new HashMap<>();
       config.put(OSEE_APPLICATION_SERVER, getOseeApplicationServer());
       return config;
    }

@@ -64,7 +64,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
    private String title;
-   private final Set<Artifact> artifacts = new HashSet<Artifact>(50);
+   private final Set<Artifact> artifacts = new HashSet<>(50);
    private final IDirtiableEditor editor;
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
    private final Composite parent;
@@ -88,7 +88,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       String colName = treeColumn.getText();
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       for (TreeItem item : treeItems) {
          artifacts.add((Artifact) item.getData());
       }
@@ -166,7 +166,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
          return;
       }
       // get attributes that can be deleted (from artifact and validity)
-      Set<IAttributeType> attrTypesUsed = new HashSet<IAttributeType>();
+      Set<IAttributeType> attrTypesUsed = new HashSet<>();
       for (Artifact art : artifacts) {
          // include attribute types that are used even if invalid
          for (Attribute<?> attr : art.getAttributes()) {
@@ -288,7 +288,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getItems();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -306,7 +306,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    }
 
    public ArrayList<Artifact> getSelectedArtifacts() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {

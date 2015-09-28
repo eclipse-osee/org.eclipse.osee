@@ -54,7 +54,7 @@ public class TxTypesSqlHandler extends SqlHandler<CriteriaTxType> {
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       Collection<TransactionDetailsType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Integer> ids = new HashSet<Integer>();
+         Set<Integer> ids = new HashSet<>();
          for (TransactionDetailsType type : types) {
             ids.add(type.getId());
          }

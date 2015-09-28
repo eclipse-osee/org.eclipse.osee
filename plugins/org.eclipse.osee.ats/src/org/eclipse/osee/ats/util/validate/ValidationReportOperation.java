@@ -51,7 +51,7 @@ public class ValidationReportOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       logf("<b>Validating Requirement Changes for %s</b>\n", teamArt.getName());
 
-      List<AbstractValidationRule> rulesSorted = new ArrayList<AbstractValidationRule>(rules);
+      List<AbstractValidationRule> rulesSorted = new ArrayList<>(rules);
       Collections.sort(rulesSorted, new ValidationRuleComparator());
 
       for (AbstractValidationRule rule : rulesSorted) {
@@ -67,7 +67,7 @@ public class ValidationReportOperation extends AbstractOperation {
 
          double total = changedArtifacts.size() + rules.size();
          if (total > 0) {
-            Collection<String> warnings = new ArrayList<String>();
+            Collection<String> warnings = new ArrayList<>();
 
             int workAmount = calculateWork(1 / total);
 

@@ -69,7 +69,7 @@ public final class ArtifactCache {
    }
 
    public static List<Artifact> getArtifactsByName(IArtifactType artifactType, String name) {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       for (Artifact artifact : getArtifactsByType(artifactType)) {
          if (artifact.getName().equals(name)) {
             arts.add(artifact);
@@ -117,7 +117,7 @@ public final class ArtifactCache {
    }
 
    public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
          Artifact art = getActive(guidArt);
          if (art != null) {
@@ -151,7 +151,7 @@ public final class ArtifactCache {
     */
    @SuppressWarnings("unchecked")
    public static <A extends Artifact> Collection<A> getActive(IBasicGuidRelation guidRel, Class<A> clazz) throws OseeCoreException {
-      List<A> arts = new ArrayList<A>();
+      List<A> arts = new ArrayList<>();
       Artifact artA = getActiveA(guidRel);
       if (artA != null) {
          if (clazz == null || clazz.isInstance(artA)) {
@@ -208,7 +208,7 @@ public final class ArtifactCache {
    }
 
    public static Collection<Artifact> getListByTextId(String key, IOseeBranch branch) throws OseeCoreException {
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, BranchManager.getBranch(branch));
       // decache any deleted artifacts
       for (Artifact artifact : cached) {

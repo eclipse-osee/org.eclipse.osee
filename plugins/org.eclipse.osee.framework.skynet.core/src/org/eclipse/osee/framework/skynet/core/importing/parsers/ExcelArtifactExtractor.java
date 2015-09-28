@@ -90,7 +90,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          GUID("GUID"),
          OTHER("");
 
-         private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<String, RowTypeEnum>();
+         private final static Map<String, RowTypeEnum> rawStringToRowType = new HashMap<>();
 
          public String _rowType;
 
@@ -108,7 +108,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
             return returnVal != null ? returnVal : OTHER;
          }
       }
-      private final Map<Integer, RowTypeEnum> rowIndexToRowTypeMap = new HashMap<Integer, RowTypeEnum>();
+      private final Map<Integer, RowTypeEnum> rowIndexToRowTypeMap = new HashMap<>();
 
       private final Matcher guidMatcher;
       private final RoughArtifactCollector collector;

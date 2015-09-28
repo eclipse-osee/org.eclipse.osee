@@ -117,7 +117,7 @@ public class StateManagerUtilityTest {
 
       // test no visited states
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, null)).thenReturn("Analyze;;;");
-      List<String> emptyVisitedNames = new ArrayList<String>();
+      List<String> emptyVisitedNames = new ArrayList<>();
       when(stateMgr.getVisitedStateNames()).thenReturn(emptyVisitedNames);
       result = StateManagerUtility.isDirtyResult(workItem, stateMgr, attrResolver, workStateFactory);
       Assert.assertFalse(result.isTrue());

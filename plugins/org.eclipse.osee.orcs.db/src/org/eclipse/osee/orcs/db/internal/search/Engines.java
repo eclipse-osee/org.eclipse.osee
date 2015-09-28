@@ -126,7 +126,7 @@ public final class Engines {
 
    public static TaggingEngine newTaggingEngine(Log logger) {
       TagProcessor tagProcessor = new TagProcessor(new EnglishLanguage(logger), new TagEncoder());
-      Map<String, Tagger> taggers = new HashMap<String, Tagger>();
+      Map<String, Tagger> taggers = new HashMap<>();
 
       StreamMatcher matcher = MatcherFactory.createMatcher();
       taggers.put("DefaultAttributeTaggerProvider", new TextStreamTagger(tagProcessor, matcher));

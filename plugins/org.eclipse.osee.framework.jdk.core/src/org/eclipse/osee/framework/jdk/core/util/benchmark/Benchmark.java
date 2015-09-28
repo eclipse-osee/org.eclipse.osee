@@ -38,8 +38,8 @@ public class Benchmark {
    private long longestSample;
    private long shortestSample;
    private long totalExceedAmount;
-   private static final Vector<Benchmark> list = new Vector<Benchmark>(16);
-   private final HashMap<String, Integer> exceeders = new HashMap<String, Integer>(100);
+   private static final Vector<Benchmark> list = new Vector<>(16);
+   private final HashMap<String, Integer> exceeders = new HashMap<>(100);
    private final String name;
 
    public Benchmark(String name) {

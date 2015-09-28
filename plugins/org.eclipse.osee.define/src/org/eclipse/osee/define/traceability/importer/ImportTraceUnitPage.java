@@ -107,8 +107,8 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       super(PAGE_NAME);
       setTitle(PAGE_TITLE);
       setDescription(PAGE_DESCRIPTION);
-      this.traceUnitHandlers = new HashMap<Button, Boolean>();
-      this.optionButtons = new HashMap<String, Button>();
+      this.traceUnitHandlers = new HashMap<>();
+      this.optionButtons = new HashMap<>();
 
       this.isFolderRecursionAllowed = new MutableBoolean(false);
       this.isArtifactPersistanceAllowed = new MutableBoolean(false);
@@ -116,7 +116,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       this.isAddGuidToSourceFileAllowed = new MutableBoolean(true);
 
       if (selection != null && selection.size() >= 1) {
-         currentResourceSelection = new LinkedList<IResource>();
+         currentResourceSelection = new LinkedList<>();
          Iterator<?> it = selection.iterator();
          while (it.hasNext()) {
             Object element = it.next();
@@ -342,7 +342,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    public Iterable<URI> getSourceURI() {
       List<URI> toReturn = null;
       if (isWidgetAccessible(directoryFileSelector)) {
-         toReturn = new LinkedList<URI>();
+         toReturn = new LinkedList<>();
          for (File file : directoryFileSelector.getSelection()) {
             toReturn.add(file.toURI());
          }
@@ -371,7 +371,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    }
 
    public String[] getTraceUnitHandlerIds() {
-      List<String> selectedIds = new ArrayList<String>();
+      List<String> selectedIds = new ArrayList<>();
       for (Button button : traceUnitHandlers.keySet()) {
          Boolean value = traceUnitHandlers.get(button);
          if (value != null && value == true) {
@@ -422,7 +422,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
 
          String[] traceHandlers = settings.getArray(SELECTED_TRACE_HANDLERS_KEY);
          if (traceHandlers != null && traceHandlers.length > 0) {
-            Set<String> traceIds = new HashSet<String>(Arrays.asList(traceHandlers));
+            Set<String> traceIds = new HashSet<>(Arrays.asList(traceHandlers));
             for (Button button : traceUnitHandlers.keySet()) {
                Object data = button.getData();
                if (data instanceof String) {

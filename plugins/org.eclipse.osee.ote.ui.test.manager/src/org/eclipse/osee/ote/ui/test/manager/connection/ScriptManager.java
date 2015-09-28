@@ -43,7 +43,7 @@ import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTaskList;
  * @author Andrew M. Finkbeiner
  */
 public abstract class ScriptManager implements Runnable {
-   private final Map<String, ScriptTask> guidToScriptTask = new HashMap<String, ScriptTask>();
+   private final Map<String, ScriptTask> guidToScriptTask = new HashMap<>();
    private TestManagerStatusListener statusListenerImpl;
    private final TestManagerEditor testManager;
 
@@ -58,7 +58,7 @@ public abstract class ScriptManager implements Runnable {
       this.testManager = testManager;
       this.stv = stv;
 
-      tasksToUpdate = new HashSet<ScriptTask>();
+      tasksToUpdate = new HashSet<>();
       updater = Executors.newScheduledThreadPool(1, new ThreadFactory() {
 
          @Override

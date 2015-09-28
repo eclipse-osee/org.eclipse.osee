@@ -88,7 +88,7 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
 
       @Override
       public Collection<ArtifactProxy> getHierarchy() {
-         Collection<ArtifactProxy> hierarchy = new HashSet<ArtifactProxy>();
+         Collection<ArtifactProxy> hierarchy = new HashSet<>();
          try {
             Artifact artifactPtr = self.getParent();
             while (artifactPtr != null) {

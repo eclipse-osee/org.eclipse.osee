@@ -29,12 +29,12 @@ public class DoorsCreator {
    /*
     * Collection of the display names which are merged into the branch.
     */
-   private final Set<String> nodeDisplayNamesAdded = new HashSet<String>();
+   private final Set<String> nodeDisplayNamesAdded = new HashSet<>();
 
    /*
     * Collection of the display names which cannot be merged into the branch.
     */
-   private final Set<String> nodeDisplayNamesnotAdded = new HashSet<String>();
+   private final Set<String> nodeDisplayNamesnotAdded = new HashSet<>();
 
    /**
     * @param url : Url of the module from DWA response

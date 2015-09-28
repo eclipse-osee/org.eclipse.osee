@@ -60,7 +60,7 @@ public class SelectionHelper {
    }
 
    public List<ArtifactTestRunOperator> getSelections(StructuredViewer viewer) {
-      List<ArtifactTestRunOperator> toReturn = new ArrayList<ArtifactTestRunOperator>();
+      List<ArtifactTestRunOperator> toReturn = new ArrayList<>();
       if (viewer != null) {
          IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
          if (selection != null && selection.isEmpty() != true) {

@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
  */
 public class MockWorkDefinition implements IAtsWorkDefinition {
 
-   private final List<IAtsStateDefinition> states = new ArrayList<IAtsStateDefinition>(5);
+   private final List<IAtsStateDefinition> states = new ArrayList<>(5);
    private String id;
    private IAtsStateDefinition startState;
    private String name;

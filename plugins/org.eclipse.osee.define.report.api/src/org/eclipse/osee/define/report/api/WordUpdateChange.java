@@ -21,7 +21,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class WordUpdateChange {
    Integer tx;
    Long branchUuid;
-   List<WordArtifactChange> changedArts = new LinkedList<WordArtifactChange>();
+   List<WordArtifactChange> changedArts = new LinkedList<>();
 
    public Integer getTx() {
       return tx;

@@ -28,7 +28,7 @@ public class AccessFilterChain {
    //attribute types
 
    public AccessFilterChain() {
-      this.filters = new LinkedList<IAccessFilter>();
+      this.filters = new LinkedList<>();
    }
 
    public void add(IAccessFilter filter) {

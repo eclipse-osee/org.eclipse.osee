@@ -33,7 +33,7 @@ public class SystemPreferencesImpl implements SystemPreferences {
    }
 
    public void start() {
-      cache = new ConcurrentHashMap<String, Pair<Long, String>>();
+      cache = new ConcurrentHashMap<>();
    }
 
    public void stop() {

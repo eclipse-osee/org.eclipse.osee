@@ -64,7 +64,7 @@ public final class ArtifactLoader {
    }
 
    public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
-      List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
+      List<Pair<Integer, Long>> toLoad = new LinkedList<>();
       Long branchUuid = branch.getUuid();
       for (Integer artId : new HashSet<Integer>(artIds)) {
          toLoad.add(new Pair<Integer, Long>(artId, branchUuid));
@@ -78,7 +78,7 @@ public final class ArtifactLoader {
    }
 
    private static List<Artifact> loadSelectedArtifacts(List<Pair<Integer, Long>> toLoad, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
-      Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+      Set<Artifact> artifacts = new LinkedHashSet<>();
       if (transactionId == null) {
          loadActiveArtifacts(toLoad, artifacts, loadLevel, reload, allowDeleted);
       } else {
@@ -254,7 +254,7 @@ public final class ArtifactLoader {
             data = loadedItems;
          } else {
             // Use a new list if loaded items already contains data to prevent artifact overwrites during loading
-            data = new ArrayList<Artifact>(joinQuery.size());
+            data = new ArrayList<>(joinQuery.size());
          }
          long time = System.currentTimeMillis();
          try {
@@ -282,7 +282,7 @@ public final class ArtifactLoader {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
-      List<Pair<Integer, Long>> toLoad = new LinkedList<Pair<Integer, Long>>();
+      List<Pair<Integer, Long>> toLoad = new LinkedList<>();
 
       try {
          chStmt.runPreparedQuery(artifactCountEstimate, sql, queryParameters);
@@ -336,7 +336,7 @@ public final class ArtifactLoader {
          joinQuery.add(artifact.getArtId(), artifact.getFullBranch().getUuid());
          joinQuery.store();
 
-         List<Artifact> artifacts = new ArrayList<Artifact>(1);
+         List<Artifact> artifacts = new ArrayList<>(1);
          artifacts.add(artifact);
          loadArtifactsData(joinQuery.getQueryId(), artifacts, loadLevel, LoadType.INCLUDE_CACHE, null,
             artifact.isDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED);

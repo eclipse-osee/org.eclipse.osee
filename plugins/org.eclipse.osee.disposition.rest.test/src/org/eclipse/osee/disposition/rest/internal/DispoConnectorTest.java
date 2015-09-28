@@ -53,7 +53,7 @@ public class DispoConnectorTest {
       dispoItem = new DispoItemData();
       dispoConnector = new DispoConnector();
 
-      Map<String, JSONObject> discrepancies = new HashMap<String, JSONObject>();
+      Map<String, JSONObject> discrepancies = new HashMap<>();
 
       for (int i = 1; i <= 5; i++) {
          Discrepancy discrepancy = new Discrepancy();
@@ -226,7 +226,7 @@ public class DispoConnectorTest {
 
    @Test
    public void testAllDiscrepanciesAnnotatedManyComplete() throws JSONException {
-      List<JSONObject> annotationsAsList = new ArrayList<JSONObject>();
+      List<JSONObject> annotationsAsList = new ArrayList<>();
       // Create 4 annotations, one for every discrepancy covered
       DispoAnnotationData annotationOne = new DispoAnnotationData();
       annotationOne.setLocationRefs("1-5");

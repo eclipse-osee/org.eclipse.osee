@@ -65,7 +65,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
          }
          sb.append("    WHERE txs.gamma_id = attr.gamma_id\n");
          if (types.size() > 1) {
-            Set<Long> typeIds = new HashSet<Long>();
+            Set<Long> typeIds = new HashSet<>();
             for (IAttributeType type : types) {
                typeIds.add(type.getGuid());
             }
@@ -115,7 +115,7 @@ public class AttributeTypeExistsSqlHandler extends SqlHandler<CriteriaAttributeT
 
       Collection<? extends IAttributeType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Long> typeIds = new HashSet<Long>();
+         Set<Long> typeIds = new HashSet<>();
          for (IAttributeType type : types) {
             typeIds.add(type.getGuid());
          }

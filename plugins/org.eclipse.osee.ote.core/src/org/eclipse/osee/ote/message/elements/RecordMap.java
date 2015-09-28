@@ -29,14 +29,14 @@ public class RecordMap<T extends RecordElement> extends RecordElement {
    public RecordMap(Message<?, ?, ?> message, MessageData messageData, String elementName, int numberOfRecords, IRecordFactory factory) {
       super(message, elementName, 1, messageData, 0, factory.getBitLength());
       NUMBER_OF_RECORDS = numberOfRecords;
-      records = new HashMap<Integer, T>(numberOfRecords);
+      records = new HashMap<>(numberOfRecords);
       this.factory = factory;
    }
 
    public RecordMap(Message<?, ?, ?> message, MessageData messageData, int firstRecordByteOffset, int recordByteSize, int numberOfRecords) {
       super(message, "", 1, messageData, 0, 0);
       NUMBER_OF_RECORDS = numberOfRecords;
-      records = new HashMap<Integer, T>(numberOfRecords);
+      records = new HashMap<>(numberOfRecords);
    }
 
    @Override

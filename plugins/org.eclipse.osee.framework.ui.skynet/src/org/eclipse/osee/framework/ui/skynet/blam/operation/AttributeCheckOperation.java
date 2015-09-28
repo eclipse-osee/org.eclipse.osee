@@ -63,7 +63,7 @@ public class AttributeCheckOperation extends AbstractOperation {
    }
 
    private String findMostPopularAttributeValue(List<Artifact> allDescendants, IProgressMonitor monitor) throws OseeCoreException {
-      CountingMap<String> countingMap = new CountingMap<String>();
+      CountingMap<String> countingMap = new CountingMap<>();
 
       for (Artifact child : allDescendants) {
          if (!monitor.isCanceled()) {

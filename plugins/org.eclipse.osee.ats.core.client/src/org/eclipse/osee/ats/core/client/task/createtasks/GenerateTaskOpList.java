@@ -39,7 +39,7 @@ public class GenerateTaskOpList {
     * If destTeamWf is NULL then all tasks will be CREATE.
     */
    public List<TaskMetadata> generate(ChangeData changeData, TeamWorkFlowArtifact destTeamWf) throws OseeCoreException {
-      List<TaskMetadata> metadatas = new ArrayList<TaskMetadata>();
+      List<TaskMetadata> metadatas = new ArrayList<>();
 
       // If task doesn't exist yet for a change then create it
       for (Change change : changeData.getChanges()) {

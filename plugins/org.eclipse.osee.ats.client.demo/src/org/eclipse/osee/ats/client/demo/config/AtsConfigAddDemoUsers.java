@@ -31,7 +31,7 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
    @Override
    public void run() throws OseeCoreException {
-      List<User> admins = new ArrayList<User>();
+      List<User> admins = new ArrayList<>();
 
       SkynetTransaction transaction =
          TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Dev Users");

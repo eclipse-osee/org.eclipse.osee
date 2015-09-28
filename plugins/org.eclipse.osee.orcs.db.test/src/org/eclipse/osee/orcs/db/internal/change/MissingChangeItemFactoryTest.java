@@ -76,7 +76,7 @@ public class MissingChangeItemFactoryTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      List<Object[]> params = new LinkedList<Object[]>();
+      List<Object[]> params = new LinkedList<>();
       params.add(testCase_missingAttribute());
       params.add(testCase_missingRelation());
       params.add(testCase_deletedAttribute());
@@ -175,7 +175,7 @@ public class MissingChangeItemFactoryTest {
     * This tests when a modified attribute causes its artifact and non-modified attribute to be introduced
     */
    private static Object[] testCase_missingAttribute() {
-      List<ChangeItem> changes = new LinkedList<ChangeItem>();
+      List<ChangeItem> changes = new LinkedList<>();
       final int ci1AttrId = 1;
       final int artId = 3;
       final long missingGamma = 9L;
@@ -185,17 +185,17 @@ public class MissingChangeItemFactoryTest {
          ChangeItemUtil.newAttributeChange(ci1AttrId, 2, artId, 4L, ModificationType.MODIFIED, Strings.EMPTY_STRING);
       changes.add(ci1);
 
-      List<AttributeData> attrDatas = new LinkedList<AttributeData>();
+      List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artId, ci1AttrId, 1L, ModificationType.MODIFIED);
       AttributeData attrData2 = createAttributeData(artId, ci1AttrId + 1, missingGamma, ModificationType.INTRODUCED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
-      List<ArtifactData> artData = new LinkedList<ArtifactData>();
+      List<ArtifactData> artData = new LinkedList<>();
       ArtifactData artData1 = createArtifactData(artId, artGamma, ModificationType.NEW);
       artData.add(artData1);
 
-      List<ChangeItem> expected = new LinkedList<ChangeItem>();
+      List<ChangeItem> expected = new LinkedList<>();
       expected.add(createExpected(attrData2));
       expected.add(createExpected(artData1));
 
@@ -206,7 +206,7 @@ public class MissingChangeItemFactoryTest {
     * create a relation change item who's artifact and other attributes and relations need to be introduced
     */
    private static Object[] testCase_missingRelation() {
-      List<ChangeItem> changes = new LinkedList<ChangeItem>();
+      List<ChangeItem> changes = new LinkedList<>();
       final int ci1AttrId = 22;
       final long missingGamma = 9L;
       long artGamma = 7L;
@@ -218,25 +218,25 @@ public class MissingChangeItemFactoryTest {
       ChangeItem ci1 = ChangeItemUtil.newRelationChange(relId, 0, srcGamma, ModificationType.NEW, artA, artB, "");
       changes.add(ci1);
 
-      List<AttributeData> attrDatas = new LinkedList<AttributeData>();
+      List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artA, ci1AttrId, 1L, ModificationType.MODIFIED);
       AttributeData attrData2 = createAttributeData(artA, ci1AttrId + 1, missingGamma, ModificationType.INTRODUCED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
-      List<ArtifactData> artData = new LinkedList<ArtifactData>();
+      List<ArtifactData> artData = new LinkedList<>();
       ArtifactData artData1 = createArtifactData(artA, artGamma, ModificationType.NEW);
       artData.add(artData1);
 
-      List<RelationData> relDatas = new LinkedList<RelationData>();
+      List<RelationData> relDatas = new LinkedList<>();
       RelationData relData1 = createRelationData(11, artA, artB + 1, 88, ModificationType.NEW);
       relDatas.add(relData1);
 
-      List<ArtifactData> destArtData = new LinkedList<ArtifactData>();
+      List<ArtifactData> destArtData = new LinkedList<>();
       ArtifactData destArt = createArtifactData(artB + 1, 99, ModificationType.NEW);
       destArtData.add(destArt);
 
-      List<ChangeItem> expected = new LinkedList<ChangeItem>();
+      List<ChangeItem> expected = new LinkedList<>();
       expected.add(createExpected(attrData1));
       expected.add(createExpected(attrData2));
       expected.add(createExpected(artData1));
@@ -249,24 +249,24 @@ public class MissingChangeItemFactoryTest {
     * create a deleted attribute who's artifact needs to be introduced
     */
    private static Object[] testCase_deletedAttribute() {
-      List<ChangeItem> changes = new LinkedList<ChangeItem>();
+      List<ChangeItem> changes = new LinkedList<>();
       final int artId = 3;
 
       ChangeItem ci1 =
          ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.DELETED, Strings.EMPTY_STRING);
       changes.add(ci1);
 
-      List<AttributeData> attrDatas = new LinkedList<AttributeData>();
+      List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artId, 33, 1L, ModificationType.MODIFIED);
       AttributeData attrData2 = createAttributeData(artId, 44 + 1, 67L, ModificationType.NEW);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
-      List<ArtifactData> artData = new LinkedList<ArtifactData>();
+      List<ArtifactData> artData = new LinkedList<>();
       ArtifactData artData1 = createArtifactData(artId, 89L, ModificationType.NEW);
       artData.add(artData1);
 
-      List<ChangeItem> expected = new LinkedList<ChangeItem>();
+      List<ChangeItem> expected = new LinkedList<>();
       expected.add(createExpected(attrData1));
       expected.add(createExpected(attrData2));
       expected.add(createExpected(artData1));
@@ -278,24 +278,24 @@ public class MissingChangeItemFactoryTest {
     * create an artifact_deleted attribute who's artifact needs to be introduced deleted
     */
    private static Object[] testCase_artifactDeletedAttribute() {
-      List<ChangeItem> changes = new LinkedList<ChangeItem>();
+      List<ChangeItem> changes = new LinkedList<>();
       final int artId = 3;
 
       ChangeItem ci1 =
          ChangeItemUtil.newAttributeChange(22, 2, artId, 4L, ModificationType.ARTIFACT_DELETED, Strings.EMPTY_STRING);
       changes.add(ci1);
 
-      List<AttributeData> attrDatas = new LinkedList<AttributeData>();
+      List<AttributeData> attrDatas = new LinkedList<>();
       AttributeData attrData1 = createAttributeData(artId, 33, 1L, ModificationType.ARTIFACT_DELETED);
       AttributeData attrData2 = createAttributeData(artId, 44 + 1, 67L, ModificationType.ARTIFACT_DELETED);
       attrDatas.add(attrData1);
       attrDatas.add(attrData2);
 
-      List<ArtifactData> artData = new LinkedList<ArtifactData>();
+      List<ArtifactData> artData = new LinkedList<>();
       ArtifactData artData1 = createArtifactData(artId, 89L, ModificationType.DELETED);
       artData.add(artData1);
 
-      List<ChangeItem> expected = new LinkedList<ChangeItem>();
+      List<ChangeItem> expected = new LinkedList<>();
       expected.add(createExpected(attrData1));
       expected.add(createExpected(attrData2));
       expected.add(createExpected(artData1));

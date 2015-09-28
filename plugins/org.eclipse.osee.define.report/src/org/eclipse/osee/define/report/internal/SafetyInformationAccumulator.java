@@ -256,7 +256,7 @@ public final class SafetyInformationAccumulator {
 
    public List<String> getAttributesToStringList(ArtifactReadable artifact, IAttributeType attributeType) {
 
-      List<String> items = new ArrayList<String>();
+      List<String> items = new ArrayList<>();
       for (AttributeReadable<?> attribute : artifact.getAttributes(attributeType)) {
          items.add(attribute.getDisplayableString());
       }

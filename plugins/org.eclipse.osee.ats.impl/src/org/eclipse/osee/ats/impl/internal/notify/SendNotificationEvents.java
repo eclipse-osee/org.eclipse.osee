@@ -60,7 +60,7 @@ public class SendNotificationEvents {
 
    public Result run() {
       try {
-         Set<IAtsUser> uniqueUusers = new HashSet<IAtsUser>();
+         Set<IAtsUser> uniqueUusers = new HashSet<>();
          for (AtsNotificationEvent notificationEvent : notificationEvents) {
             uniqueUusers.addAll(AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService));
          }
@@ -70,7 +70,7 @@ public class SendNotificationEvents {
                testingUserEmail);
          }
          for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
-            List<AtsNotificationEvent> notifyEvents = new ArrayList<AtsNotificationEvent>();
+            List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
             for (AtsNotificationEvent notificationEvent : notificationEvents) {
                if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(user)) {
                   notifyEvents.add(notificationEvent);

@@ -20,7 +20,7 @@ public class ProjectNatureTest implements IProjectNature {
 
    public static final String TEST_NATURE = "org.eclipse.osee.ote.ui.testnature";
 
-   private static List<IProject> testProjects = new ArrayList<IProject>();
+   private static List<IProject> testProjects = new ArrayList<>();
 
    private IProject project;
 

@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class RequirementData extends BaseTraceDataCache {
    private static final TraceabilityExtractor traceExtractor = TraceabilityExtractor.getInstance();
 
-   private final List<Artifact> directRequirements = new ArrayList<Artifact>();
-   private final HashMap<String, Artifact> allRequirementsMap = new HashMap<String, Artifact>();
+   private final List<Artifact> directRequirements = new ArrayList<>();
+   private final HashMap<String, Artifact> allRequirementsMap = new HashMap<>();
    private final TraceabilityExtractor extractor = TraceabilityExtractor.getInstance();
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
@@ -59,7 +59,7 @@ public class RequirementData extends BaseTraceDataCache {
 
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      List<Artifact> allSwRequirements = new ArrayList<Artifact>();
+      List<Artifact> allSwRequirements = new ArrayList<>();
       for (IArtifactType type : types) {
          if (withInheritance) {
             allSwRequirements.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(type, getBranch(),

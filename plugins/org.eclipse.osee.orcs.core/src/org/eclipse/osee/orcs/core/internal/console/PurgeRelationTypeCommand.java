@@ -79,7 +79,7 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
 
          private Set<IRelationType> getTypes(String[] typesToPurge) throws OseeCoreException {
             RelationTypes relationTypes = orcsTypes.getRelationTypes();
-            Set<IRelationType> toReturn = new HashSet<IRelationType>();
+            Set<IRelationType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = HexUtil.toLong(uuid);

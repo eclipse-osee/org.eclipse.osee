@@ -51,7 +51,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
    @Override
    public String getCriteriaLabel() {
       SearchOptions options = searchRequest.getOptions();
-      List<String> optionsList = new ArrayList<String>();
+      List<String> optionsList = new ArrayList<>();
       if (options.getDeletionFlag().areDeletedAllowed()) {
          optionsList.add("Include Deleted");
       }
@@ -133,7 +133,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
 
       private final AbstractTextSearchResult fResult;
       private ArrayList<Match> fCachedMatches;
-      private final Map<Integer, String> attrContent = new HashMap<Integer, String>();
+      private final Map<Integer, String> attrContent = new HashMap<>();
       private static final int HALF_LINE_CHAR_COUNT = 40;
 
       private ResultCollector(AbstractTextSearchResult result) {
@@ -266,7 +266,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
       }
 
       public void beginReporting() {
-         fCachedMatches = new ArrayList<Match>();
+         fCachedMatches = new ArrayList<>();
       }
 
       public void endReporting() {

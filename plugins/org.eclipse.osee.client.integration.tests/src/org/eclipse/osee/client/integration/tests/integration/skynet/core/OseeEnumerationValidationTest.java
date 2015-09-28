@@ -78,7 +78,7 @@ public class OseeEnumerationValidationTest {
 
    @Parameters
    public static Collection<Object[]> getData() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
 
       addTest(data, "Test 1: Null", null, errorStatus("No enum const [enum.req.gfe.cfe].[null]"));
       addTest(data, "Test 2: Empty String", "", errorStatus("No enum const [enum.req.gfe.cfe].[]"));

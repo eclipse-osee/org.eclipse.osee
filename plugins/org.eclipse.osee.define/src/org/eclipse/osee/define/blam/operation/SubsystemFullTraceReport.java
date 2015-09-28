@@ -64,7 +64,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    private HashCollection<Artifact, String> requirementsToCodeUnits;
    private static int SOFTWARE_REQUIREMENT_INDEX = 9;
    private static int TEST_INDEX = 13;
-   private final ArrayList<String> tests = new ArrayList<String>(50);
+   private final ArrayList<String> tests = new ArrayList<>(50);
 
    private final String SCRIPT_ROOT_DIR = "Script Root Directory";
    private final String USE_TRACE_IN_OSEE = "Use traceability from Subsystem Requirements";
@@ -97,7 +97,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
       Boolean checked = variableMap.getBoolean(USE_TRACE_IN_OSEE);
 
-      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
             TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
@@ -124,7 +124,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    }
 
    private List<Artifact> prepareSubsystemRequirements(List<Artifact> artifacts) throws OseeCoreException {
-      List<Artifact> subsystemRequirements = new ArrayList<Artifact>(400);
+      List<Artifact> subsystemRequirements = new ArrayList<>(400);
       for (Artifact artifact : artifacts) {
          if (artifact.isOfType(CoreArtifactTypes.Folder)) {
             subsystemRequirements.addAll(artifact.getDescendants());
@@ -217,7 +217,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_TRACE_IN_OSEE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
-      availableTraceHandlers = new LinkedList<String>();
+      availableTraceHandlers = new LinkedList<>();
       sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser (if script traceability needed):\" />");
       Collection<String> traceHandlerNames = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
       for (String handler : traceHandlerNames) {

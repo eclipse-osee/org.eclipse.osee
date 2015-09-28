@@ -39,7 +39,7 @@ public class PageManager {
    public PageManager(ITestManagerFactory factory, TestManagerEditor testManager) {
       this.factory = factory;
       this.testManager = testManager;
-      this.pages = new ArrayList<TestManagerPage>();
+      this.pages = new ArrayList<>();
    }
 
    protected void createPages(Composite parent) {

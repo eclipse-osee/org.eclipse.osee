@@ -36,7 +36,7 @@ public class XMembersList extends XListViewer {
    }
 
    public String[] getEmails() throws OseeCoreException {
-      ArrayList<String> v = new ArrayList<String>();
+      ArrayList<String> v = new ArrayList<>();
       for (Object obj : this.getSelected()) {
          User u = (User) obj;
          String name = u.getName();
@@ -51,7 +51,7 @@ public class XMembersList extends XListViewer {
    }
 
    public ArrayList<User> getUsers() {
-      ArrayList<User> v = new ArrayList<User>();
+      ArrayList<User> v = new ArrayList<>();
 
       for (Object obj : this.getSelected()) {
          v.add((User) obj);

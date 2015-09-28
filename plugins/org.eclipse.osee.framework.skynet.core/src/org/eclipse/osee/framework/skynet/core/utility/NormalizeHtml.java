@@ -84,7 +84,7 @@ public final class NormalizeHtml {
    }
 
    private static TreeMap<Integer, String> initializeFontMap() {
-      TreeMap<Integer, String> map = new TreeMap<Integer, String>();
+      TreeMap<Integer, String> map = new TreeMap<>();
       map.put(new Integer(8), "xx-small;");
       map.put(new Integer(11), "small;");
       map.put(new Integer(13), "medium;");
@@ -174,7 +174,7 @@ public final class NormalizeHtml {
       String[] tagsToCheck = {"li", "tr", "td", "table"};
       for (String select : tagsToCheck) {
          Elements theNode = doc.select(select);
-         ArrayList<Node> remove = new ArrayList<Node>();
+         ArrayList<Node> remove = new ArrayList<>();
          for (Element item : theNode) {
             List<Node> kids = item.childNodes();
             for (Node n : kids) {
@@ -242,7 +242,7 @@ public final class NormalizeHtml {
        */
 
       if (allowedAttributes == null) {
-         allowedAttributes = new ArrayList<String>();
+         allowedAttributes = new ArrayList<>();
          allowedAttributes.add("border");
          allowedAttributes.add("frame");
          allowedAttributes.add("rules");

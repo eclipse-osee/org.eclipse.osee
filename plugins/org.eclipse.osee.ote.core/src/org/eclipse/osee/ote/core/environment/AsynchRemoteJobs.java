@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AsynchRemoteJobs implements Runnable {
 
    private final LinkedList<Runnable> jobs;
-   private static WeakHashMap<Object, AsynchRemoteJobs> map = new WeakHashMap<Object, AsynchRemoteJobs>();
+   private static WeakHashMap<Object, AsynchRemoteJobs> map = new WeakHashMap<>();
 
    public static AsynchRemoteJobs getInstance(Object obj) {
       AsynchRemoteJobs asynchRemoteJobs = null;
@@ -31,7 +31,7 @@ public class AsynchRemoteJobs implements Runnable {
    }
 
    public AsynchRemoteJobs() {
-      jobs = new LinkedList<Runnable>();
+      jobs = new LinkedList<>();
       Thread th = new Thread(this);
       th.setName("AsynchRemoteJobs[Test Environment]");
       th.start();

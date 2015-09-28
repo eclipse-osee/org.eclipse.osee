@@ -65,7 +65,7 @@ public final class AtsBranchManager {
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
          Branch workingBranch = teamArt.getWorkingBranch();
-         List<Branch> destinationBranches = new ArrayList<Branch>();
+         List<Branch> destinationBranches = new ArrayList<>();
 
          if (workingBranch != null) {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
@@ -188,7 +188,7 @@ public final class AtsBranchManager {
     * Either return a single commit transaction or user must choose from a list of valid commit transactions
     */
    public static TransactionRecord getTransactionIdOrPopupChoose(TeamWorkFlowArtifact teamArt, String title, boolean showMergeManager) throws OseeCoreException {
-      Collection<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
+      Collection<TransactionRecord> transactionIds = new HashSet<>();
       Collection<ITransaction> transactions =
          AtsClientService.get().getBranchService().getTransactionIds(teamArt, showMergeManager);
       Collection<TransactionRecord> trs = Collections.castAll(transactions);
@@ -299,7 +299,7 @@ public final class AtsBranchManager {
       if (commitConfigArt != null && !isBaselinBranchConfigured(commitConfigArt)) {
          throw new OseeArgumentException("Parent Branch not configured for [%s]", commitConfigArt);
       }
-      Collection<Change> changes = new ArrayList<Change>();
+      Collection<Change> changes = new ArrayList<>();
 
       IOperation operation = null;
       if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {

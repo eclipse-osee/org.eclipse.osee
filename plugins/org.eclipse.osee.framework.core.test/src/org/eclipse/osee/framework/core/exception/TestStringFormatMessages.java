@@ -35,7 +35,7 @@ public class TestStringFormatMessages {
    private static final Pattern specifierPattern = Pattern.compile("%-?[\\d.]*(\\w)");
 
    private FindResultsIterator getResultsIterator() {
-      List<String> patterns = new ArrayList<String>(2);
+      List<String> patterns = new ArrayList<>(2);
       patterns.add(throwPattern);
       patterns.add(formatPattern);
 

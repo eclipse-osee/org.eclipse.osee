@@ -73,7 +73,7 @@ public class OsListLiteralImpl extends OsCollectionLiteralImpl implements OsList
   {
     if (elements == null)
     {
-      elements = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_LIST_LITERAL__ELEMENTS);
+      elements = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_LIST_LITERAL__ELEMENTS);
     }
     return elements;
   }

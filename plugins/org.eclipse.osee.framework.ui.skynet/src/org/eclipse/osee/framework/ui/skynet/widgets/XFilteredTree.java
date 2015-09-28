@@ -177,7 +177,7 @@ public class XFilteredTree extends GenericXWidget {
    }
 
    public Collection<Object> getSelected() {
-      List<Object> results = new ArrayList<Object>();
+      List<Object> results = new ArrayList<>();
       Iterator<?> i = ((IStructuredSelection) filteredTree.getViewer().getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();

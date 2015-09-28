@@ -433,7 +433,7 @@ public class AtsNavigateItemsToWorldViewTest {
       runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 10);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
       runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 10);
-      List<String> teamDefs = new ArrayList<String>();
+      List<String> teamDefs = new ArrayList<>();
       teamDefs.add("SAW Test");
       teamDefs.add("SAW Design");
       Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
@@ -576,8 +576,8 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    private void runGeneralXColTest(int expected, boolean isErrorCheck, IAttributeType attributeTypeToDelete, boolean testTaskTab) throws OseeCoreException {
-      List<Artifact> arts = new ArrayList<Artifact>();
-      List<Artifact> taskArts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
+      List<Artifact> taskArts = new ArrayList<>();
       List<XViewerColumn> columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
       ITableLabelProvider labelProv = (ITableLabelProvider) getXViewer().getLabelProvider();
       // want to check all valid children
@@ -629,7 +629,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    private void deleteAttributesForXColErrorTest(Collection<Artifact> arts, IAttributeType attributeTypeToDelete) throws Exception {
-      Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
+      Map<Artifact, Object> attributeValues = new HashMap<>();
       handleTableCustomization();
       getXViewer().expandAll(); // necessary after table customization for linux cause customization change collapsesAll
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Navigate Test");
@@ -654,7 +654,7 @@ public class AtsNavigateItemsToWorldViewTest {
    }
 
    private void verifyXColumnsHasErrors(ITableLabelProvider labelProv, List<Artifact> arts, List<XViewerColumn> columns, IAttributeType attributeTypeToDelete) {
-      List<String> actualErrorCols = new ArrayList<String>();
+      List<String> actualErrorCols = new ArrayList<>();
       for (XViewerColumn xCol : columns) {
          verifyArtifactsHasErrors(labelProv, arts, xCol,
             getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(xCol), actualErrorCols);

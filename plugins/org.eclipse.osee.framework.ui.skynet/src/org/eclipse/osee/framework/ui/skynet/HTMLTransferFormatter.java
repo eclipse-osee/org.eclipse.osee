@@ -55,7 +55,7 @@ public class HTMLTransferFormatter {
             sb.append("Version:1.0\r\nStartHTML:2\r\nEndHTML:170\r\nStartFragment:140\r\nEndFragment:160\r\n" + "StartSelection:140\r\nEndSelection:160\r\n<HTML><HEAD><TITLE> The HTML Clipboard</TITLE></HEAD><BODY>\r\n" + "<!--StartFragment -->\r\n");
          }
 
-         List<String> urls = new ArrayList<String>(artifacts.length);
+         List<String> urls = new ArrayList<>(artifacts.length);
          for (Artifact artifact : artifacts) {
             String link = null;
             try {

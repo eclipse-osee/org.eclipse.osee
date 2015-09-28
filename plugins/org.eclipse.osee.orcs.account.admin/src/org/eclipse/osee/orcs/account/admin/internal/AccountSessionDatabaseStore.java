@@ -85,7 +85,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
 
          @Override
          protected ResultSet<AccountSession> innerCall() throws Exception {
-            List<AccountSession> list = new LinkedList<AccountSession>();
+            List<AccountSession> list = new LinkedList<>();
             JdbcStatement chStmt = jdbcClient.getStatement();
             try {
                chStmt.runPreparedQuery(query, data);
@@ -115,7 +115,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
 
          @Override
          protected Integer innerCall() throws Exception {
-            List<Object[]> data = new ArrayList<Object[]>();
+            List<Object[]> data = new ArrayList<>();
             for (AccountSession session : datas) {
                data.add(asInsert(session));
             }
@@ -131,7 +131,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
 
          @Override
          protected Integer innerCall() throws Exception {
-            List<Object[]> data = new ArrayList<Object[]>();
+            List<Object[]> data = new ArrayList<>();
             for (AccountSession session : datas) {
                data.add(asUpdate(session));
             }

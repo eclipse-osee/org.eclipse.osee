@@ -36,7 +36,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
 
    @Override
    public Collection<ArtifactId> getRelated(ArtifactId artifact, IRelationTypeSide relationType) {
-      List<ArtifactId> results = new ArrayList<ArtifactId>();
+      List<ArtifactId> results = new ArrayList<>();
       if (artifact instanceof ArtifactReadable) {
          for (ArtifactReadable art : ((ArtifactReadable) artifact).getRelated(relationType)) {
             results.add(art);
@@ -53,7 +53,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    @SuppressWarnings("unchecked")
    @Override
    public <T extends IAtsObject> Collection<T> getRelated(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz) {
-      List<T> results = new ArrayList<T>();
+      List<T> results = new ArrayList<>();
       ArtifactReadable useArt = getArtifact(atsObject);
       if (useArt != null) {
          for (ArtifactReadable art : useArt.getRelated(relationType)) {

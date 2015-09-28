@@ -120,7 +120,7 @@ public class OsTxIdEqualsClauseImpl extends OsTxIdClauseImpl implements OsTxIdEq
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_ID_EQUALS_CLAUSE__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_ID_EQUALS_CLAUSE__IDS);
     }
     return ids;
   }

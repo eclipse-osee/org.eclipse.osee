@@ -73,10 +73,10 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       this.nodeInfo = nodeInfo;
       this.exceptionListener = exceptionListener;
       activeMqUtil = new ActiveMqUtil();
-      topicCache = new ConcurrentHashMap<String, Topic>();
-      messageProducerCache = new ConcurrentHashMap<Topic, MessageProducer>();
-      regularListeners = new CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener>(64, true);
-      replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
+      topicCache = new ConcurrentHashMap<>();
+      messageProducerCache = new ConcurrentHashMap<>();
+      regularListeners = new CompositeKeyHashMap<>(64, true);
+      replyListeners = new ConcurrentHashMap<>();
    }
 
    @Override
@@ -283,7 +283,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
       Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
-      List<MessageConsumer> consumersToRemove = new ArrayList<MessageConsumer>();
+      List<MessageConsumer> consumersToRemove = new ArrayList<>();
       if (listeners != null) {
          try {
             for (Entry<MessageConsumer, OseeMessagingListener> entry : listeners.entrySet()) {

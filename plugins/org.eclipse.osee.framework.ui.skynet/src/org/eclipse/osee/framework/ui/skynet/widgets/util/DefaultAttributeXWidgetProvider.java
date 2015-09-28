@@ -50,7 +50,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
 
    @Override
    public List<XWidgetRendererItem> getDynamicXWidgetLayoutData(IAttributeType attributeType) throws OseeCoreException {
-      List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<XWidgetRendererItem>();
+      List<XWidgetRendererItem> xWidgetLayoutData = new ArrayList<>();
 
       XWidgetRendererItem defaultData =
          createDynamicXWidgetLayout(attributeType, AttributeTypeManager.getMinOccurrences(attributeType));

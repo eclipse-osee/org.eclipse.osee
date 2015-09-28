@@ -119,7 +119,7 @@ public class DispoSetResourceTest {
    @Test
    public void testGetAll() throws JSONException {
       // No Sets
-      List<DispoSet> emptyResultSet = new ArrayList<DispoSet>();
+      List<DispoSet> emptyResultSet = new ArrayList<>();
       when(dispositionApi.getDispoSets(program)).thenReturn(emptyResultSet);
       Response noSetsResponse = resource.getAllDispoSets("testScript");
       String messageActual = (String) noSetsResponse.getEntity();

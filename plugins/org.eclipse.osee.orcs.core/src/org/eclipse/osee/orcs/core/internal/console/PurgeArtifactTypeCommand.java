@@ -79,7 +79,7 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
 
          private Set<IArtifactType> getTypes(String[] typesToPurge) throws OseeCoreException {
             ArtifactTypes artifactTypes = orcsTypes.getArtifactTypes();
-            Set<IArtifactType> toReturn = new HashSet<IArtifactType>();
+            Set<IArtifactType> toReturn = new HashSet<>();
             for (String uuid : typesToPurge) {
                try {
                   Long typeId = HexUtil.toLong(uuid);

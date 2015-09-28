@@ -86,7 +86,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             if (AccessControlManager.hasPermission(parentItem, PermissionEnum.READ)) {
                Collection<Artifact> children = parentItem.getChildren();
                List<RelationLink> relationsAll = parentItem.getRelationsAll(DeletionFlag.EXCLUDE_DELETED);
-               List<Object> allChildren = new ArrayList<Object>();
+               List<Object> allChildren = new ArrayList<>();
                if (children != null) {
                   allChildren.addAll(children);
                }
@@ -100,7 +100,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (parentElement instanceof ArtifactExplorerLinkNode) {
-         List<Artifact> children = new ArrayList<Artifact>();
+         List<Artifact> children = new ArrayList<>();
          ArtifactExplorerLinkNode artifactExplorerLinkNode = (ArtifactExplorerLinkNode) parentElement;
          children.addAll(artifactExplorerLinkNode.getOppositeArtifacts());
 
@@ -116,7 +116,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
    }
 
    private void addRelations(Artifact parentItem, List<RelationLink> relationsAll, List<Object> allChildren) {
-      Set<ArtifactExplorerLinkNode> relationTypes = new HashSet<ArtifactExplorerLinkNode>();
+      Set<ArtifactExplorerLinkNode> relationTypes = new HashSet<>();
       for (RelationLink link : relationsAll) {
          if (!link.isOfType(CoreRelationTypes.Default_Hierarchical__Child)) {
             if (link.getAArtifactId() == parentItem.getArtId()) {
@@ -126,7 +126,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
             }
          }
       }
-      List<ArtifactExplorerLinkNode> sortedRelationTypes = new ArrayList<ArtifactExplorerLinkNode>(relationTypes);
+      List<ArtifactExplorerLinkNode> sortedRelationTypes = new ArrayList<>(relationTypes);
       java.util.Collections.sort(sortedRelationTypes, new Comparator<ArtifactExplorerLinkNode>() {
 
          @Override

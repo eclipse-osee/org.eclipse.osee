@@ -40,7 +40,7 @@ public class AtsBulkLoad {
    private static AtomicBoolean atsTypeDataLoadedStarted = new AtomicBoolean(false);
 
    public static List<IOperation> getConfigLoadingOperations() {
-      List<IOperation> ops = new ArrayList<IOperation>();
+      List<IOperation> ops = new ArrayList<>();
       if (atsTypeDataLoadedStarted.compareAndSet(false, true) && DbConnectionUtility.isVersionSupported()) {
          IOperation op = new AbstractOperation("Re-load ATS Config", Activator.PLUGIN_ID) {
             @Override
@@ -64,8 +64,8 @@ public class AtsBulkLoad {
    }
 
    public static Set<Artifact> bulkLoadArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      List<Artifact> actions = new ArrayList<Artifact>();
-      List<Artifact> teams = new ArrayList<Artifact>();
+      List<Artifact> actions = new ArrayList<>();
+      List<Artifact> teams = new ArrayList<>();
       for (Artifact art : artifacts) {
          if (art instanceof ActionArtifact) {
             actions.add(art);

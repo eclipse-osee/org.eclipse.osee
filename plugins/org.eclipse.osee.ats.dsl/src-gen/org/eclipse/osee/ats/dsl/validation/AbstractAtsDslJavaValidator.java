@@ -14,7 +14,7 @@ public class AbstractAtsDslJavaValidator extends org.eclipse.xtext.validation.Ab
 
 	@Override
 	protected List<EPackage> getEPackages() {
-	    List<EPackage> result = new ArrayList<EPackage>();
+	    List<EPackage> result = new ArrayList<>();
 	    result.add(org.eclipse.osee.ats.dsl.atsDsl.AtsDslPackage.eINSTANCE);
 		return result;
 	}

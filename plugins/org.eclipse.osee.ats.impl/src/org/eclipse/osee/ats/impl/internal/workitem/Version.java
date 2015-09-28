@@ -43,7 +43,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public List<IAtsVersion> getParallelVersions() {
-      List<IAtsVersion> parallelVersions = new ArrayList<IAtsVersion>();
+      List<IAtsVersion> parallelVersions = new ArrayList<>();
       for (ArtifactReadable parallelVerArt : getArtifact().getRelated(AtsRelationTypes.ParallelVersion_Child)) {
          IAtsVersion parallelVer = atsServices.getConfigItemFactory().getVersion(parallelVerArt);
          parallelVersions.add(parallelVer);
@@ -66,7 +66,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
 
    @Override
    public String getCommitFullDisplayName() {
-      List<String> strs = new ArrayList<String>();
+      List<String> strs = new ArrayList<>();
       strs.add(getName());
       String fullName = getArtifact().getSoleAttributeValue(AtsAttributeTypes.FullName, "");
       if (Strings.isValid(fullName)) {

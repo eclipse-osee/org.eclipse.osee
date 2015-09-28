@@ -20,9 +20,9 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class CpaConfig {
 
-   private final List<String> applicabilityOptions = new ArrayList<String>();
+   private final List<String> applicabilityOptions = new ArrayList<>();
 
-   private final List<CpaConfigTool> tools = new ArrayList<CpaConfigTool>();
+   private final List<CpaConfigTool> tools = new ArrayList<>();
 
    public List<String> getApplicabilityOptions() {
       return applicabilityOptions;

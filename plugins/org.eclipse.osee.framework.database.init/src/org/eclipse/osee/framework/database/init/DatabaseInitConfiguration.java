@@ -24,8 +24,8 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
    private final List<String> oseeTypeIds;
 
    public DatabaseInitConfiguration() {
-      this.dbInitTasks = new ArrayList<String>();
-      this.oseeTypeIds = new ArrayList<String>();
+      this.dbInitTasks = new ArrayList<>();
+      this.oseeTypeIds = new ArrayList<>();
    }
 
    public void addTask(String taskId) {
@@ -46,7 +46,7 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
 
    @Override
    public List<String> getTaskExtensionIds() {
-      List<String> initTasks = new ArrayList<String>();
+      List<String> initTasks = new ArrayList<>();
       addDefaultTask(initTasks, DefaultDbInitTasks.BOOTSTRAP_TASK);
       initTasks.addAll(dbInitTasks);
       addDefaultTask(initTasks, DefaultDbInitTasks.DB_USER_CLEANUP);
@@ -57,7 +57,7 @@ public class DatabaseInitConfiguration implements IDatabaseInitConfiguration {
 
    @Override
    public List<String> getOseeTypeExtensionIds() {
-      Set<String> oseeTypes = new LinkedHashSet<String>();
+      Set<String> oseeTypes = new LinkedHashSet<>();
       oseeTypes.addAll(oseeTypeIds);
       return new ArrayList<String>(oseeTypes);
    }

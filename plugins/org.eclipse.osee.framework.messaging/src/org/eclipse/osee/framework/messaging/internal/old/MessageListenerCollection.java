@@ -24,8 +24,8 @@ public class MessageListenerCollection {
    private final ConcurrentListMap<MessageId, SendListener> sendListeners;
 
    public MessageListenerCollection() {
-      receiveListeners = new ConcurrentListMap<MessageId, ReceiveListener>();
-      sendListeners = new ConcurrentListMap<MessageId, SendListener>();
+      receiveListeners = new ConcurrentListMap<>();
+      sendListeners = new ConcurrentListMap<>();
    }
 
    public boolean addReceiveListener(MessageId messageId, ReceiveListener receiveListener) {

@@ -68,7 +68,7 @@ public class OseeAppletPage {
       CharSequence widgets = page.getValue("widgets");
       Matcher matcher = listAttributePattern.matcher(widgets);
 
-      CompositeRule<BranchReadable> dataListsRule = new CompositeRule<BranchReadable>("dataLists");
+      CompositeRule<BranchReadable> dataListsRule = new CompositeRule<>("dataLists");
       while (matcher.find()) {
          String listId = matcher.group(1);
          if (listId.equals("baselineBranches") || listId.equals("workingAndBaselineBranches")) {

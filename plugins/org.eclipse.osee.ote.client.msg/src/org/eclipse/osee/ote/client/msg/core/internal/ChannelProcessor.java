@@ -75,7 +75,7 @@ final public class ChannelProcessor {
    }
 
    public ChannelProcessor(int depth, int bufferSize, ExecutorService threadPool, AbstractMessageDataBase msgDb, DataType memType) {
-      this.queue = new ArrayBlockingQueue<Task>(depth);
+      this.queue = new ArrayBlockingQueue<>(depth);
       try {
          // fill the queue with pre-allocated tasks
          for (int i = 0; i < depth; i++) {

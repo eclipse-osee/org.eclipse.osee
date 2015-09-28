@@ -30,7 +30,7 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
 
    protected BaseExportImportSaxHandler() {
       super();
-      this.dataMap = new HashMap<String, String>();
+      this.dataMap = new HashMap<>();
    }
 
    @SuppressWarnings("unused")

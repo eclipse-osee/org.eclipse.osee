@@ -43,7 +43,7 @@ public final class DeleteTagSetDatabaseTxCallable extends AbstractDatastoreTxCal
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(SELECT_GAMMAS_FROM_TX_JOIN, queryId);
-         List<Object[]> datas = new ArrayList<Object[]>();
+         List<Object[]> datas = new ArrayList<>();
          while (chStmt.next()) {
             datas.add(new Object[] {chStmt.getLong("gamma_id")});
          }

@@ -144,7 +144,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andUuid(long... uuids) throws OseeCoreException {
-      List<Long> ids = new ArrayList<Long>(uuids.length);
+      List<Long> ids = new ArrayList<>(uuids.length);
       for (long id : uuids) {
          ids.add(id);
       }
@@ -165,8 +165,8 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    @SuppressWarnings("unchecked")
    @Override
    public T andGuids(Collection<String> ids) throws OseeCoreException {
-      Set<String> guids = new HashSet<String>();
-      Set<String> invalids = new HashSet<String>();
+      Set<String> guids = new HashSet<>();
+      Set<String> invalids = new HashSet<>();
       for (String id : ids) {
          if (GUID.isValid(id)) {
             guids.add(id);
@@ -279,7 +279,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andIds(Collection<? extends Identifiable<String>> ids) throws OseeCoreException {
-      Set<String> guids = new HashSet<String>();
+      Set<String> guids = new HashSet<>();
       for (Identity<String> id : ids) {
          guids.add(id.getGuid());
       }
@@ -293,7 +293,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
-      Set<Integer> ids = new HashSet<Integer>();
+      Set<Integer> ids = new HashSet<>();
       for (HasLocalId<Integer> token : artifacts) {
          ids.add(token.getLocalId());
       }
@@ -302,7 +302,7 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @Override
    public T andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException {
-      Set<Integer> ids = new HashSet<Integer>();
+      Set<Integer> ids = new HashSet<>();
       for (Integer id : artifactIds) {
          ids.add(id);
       }

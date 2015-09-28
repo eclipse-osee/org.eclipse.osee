@@ -114,7 +114,7 @@ public class ArtifactQueryTest {
    @Test
    public void testGetArtifactListFromType() throws OseeCoreException {
       // Should exist
-      Set<Artifact> searchedArtifacts = new LinkedHashSet<Artifact>();
+      Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
       List<Branch> branches = BranchManager.getBranches(new BranchFilter(BranchType.BASELINE));
       for (IOseeBranch branch : branches) {
          List<Artifact> results =
@@ -143,7 +143,7 @@ public class ArtifactQueryTest {
 
    @Test
    public void testNotTaggableGetArtifactListFromAttributeType() {
-      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
 
       criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common", QueryOption.TOKEN_DELIMITER__ANY));
       // test against a couple of attributes types that are not taggable; expect exception
@@ -215,8 +215,8 @@ public class ArtifactQueryTest {
    public void testQueryById() throws OseeCoreException {
       Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
 
-      List<Integer> newIdsInOrder = new LinkedList<Integer>();
-      Map<Integer, TransactionRecord> idToTxId = new HashMap<Integer, TransactionRecord>();
+      List<Integer> newIdsInOrder = new LinkedList<>();
+      Map<Integer, TransactionRecord> idToTxId = new HashMap<>();
       //create 3 artifacts, decache them
       for (int i = 0; i < 2; i++) {
          Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);

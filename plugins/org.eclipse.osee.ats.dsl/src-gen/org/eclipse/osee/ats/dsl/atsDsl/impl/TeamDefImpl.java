@@ -338,7 +338,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (teamDefOption == null)
     {
-      teamDefOption = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION);
+      teamDefOption = new EDataTypeEList<>(String.class, this, AtsDslPackage.TEAM_DEF__TEAM_DEF_OPTION);
     }
     return teamDefOption;
   }
@@ -421,7 +421,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (staticId == null)
     {
-      staticId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__STATIC_ID);
+      staticId = new EDataTypeEList<>(String.class, this, AtsDslPackage.TEAM_DEF__STATIC_ID);
     }
     return staticId;
   }
@@ -435,7 +435,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (lead == null)
     {
-      lead = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__LEAD);
+      lead = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.TEAM_DEF__LEAD);
     }
     return lead;
   }
@@ -449,7 +449,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (member == null)
     {
-      member = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__MEMBER);
+      member = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.TEAM_DEF__MEMBER);
     }
     return member;
   }
@@ -463,7 +463,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (privileged == null)
     {
-      privileged = new EObjectContainmentEList<UserRef>(UserRef.class, this, AtsDslPackage.TEAM_DEF__PRIVILEGED);
+      privileged = new EObjectContainmentEList<>(UserRef.class, this, AtsDslPackage.TEAM_DEF__PRIVILEGED);
     }
     return privileged;
   }
@@ -546,7 +546,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (accessContextId == null)
     {
-      accessContextId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID);
+      accessContextId = new EDataTypeEList<>(String.class, this, AtsDslPackage.TEAM_DEF__ACCESS_CONTEXT_ID);
     }
     return accessContextId;
   }
@@ -560,7 +560,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (version == null)
     {
-      version = new EObjectContainmentEList<VersionDef>(VersionDef.class, this, AtsDslPackage.TEAM_DEF__VERSION);
+      version = new EObjectContainmentEList<>(VersionDef.class, this, AtsDslPackage.TEAM_DEF__VERSION);
     }
     return version;
   }
@@ -574,7 +574,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (rules == null)
     {
-      rules = new EDataTypeEList<String>(String.class, this, AtsDslPackage.TEAM_DEF__RULES);
+      rules = new EDataTypeEList<>(String.class, this, AtsDslPackage.TEAM_DEF__RULES);
     }
     return rules;
   }
@@ -588,7 +588,7 @@ public class TeamDefImpl extends MinimalEObjectImpl.Container implements TeamDef
   {
     if (children == null)
     {
-      children = new EObjectContainmentEList<TeamDef>(TeamDef.class, this, AtsDslPackage.TEAM_DEF__CHILDREN);
+      children = new EObjectContainmentEList<>(TeamDef.class, this, AtsDslPackage.TEAM_DEF__CHILDREN);
     }
     return children;
   }

@@ -30,7 +30,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
    }
 
    public String[] getHeader() {
-      List<String> header = new ArrayList<String>();
+      List<String> header = new ArrayList<>();
       header.add("Name");
       header.add("Type");
       for (IRelationTypeSide relation : getRelationsToCheck()) {

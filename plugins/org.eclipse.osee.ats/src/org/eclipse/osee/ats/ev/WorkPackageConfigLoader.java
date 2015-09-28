@@ -35,11 +35,11 @@ public class WorkPackageConfigLoader {
    public Map<String, WorkPackageData> workPackageGuidToWorkPackageData;
 
    public void load() {
-      workPackageGuidToWorkPackageArt = new HashMap<String, Artifact>();
-      workPackageArtToActivityArt = new HashMap<Artifact, Artifact>();
-      activityArtToInsertionArt = new HashMap<Artifact, Artifact>();
-      insertionArtToProgramArt = new HashMap<Artifact, Artifact>();
-      programArtToCountryArt = new HashMap<Artifact, Artifact>();
+      workPackageGuidToWorkPackageArt = new HashMap<>();
+      workPackageArtToActivityArt = new HashMap<>();
+      activityArtToInsertionArt = new HashMap<>();
+      insertionArtToProgramArt = new HashMap<>();
+      programArtToCountryArt = new HashMap<>();
       workPackageGuidToWorkPackageData = new HashMap<>();
 
       loadWorkPackageConfiguration();

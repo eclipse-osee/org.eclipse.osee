@@ -50,9 +50,9 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
-      Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<Integer, ChangeBuilder>();
-      Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
-      Set<Integer> modifiedArtifacts = new HashSet<Integer>();
+      Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<>();
+      Map<Integer, ModificationType> artModTypes = new HashMap<>();
+      Set<Integer> modifiedArtifacts = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();

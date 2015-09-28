@@ -48,17 +48,17 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    private IAtsTeamDefinition parentTeamDef;
 
-   private final Set<String> staticIds = new HashSet<String>();
+   private final Set<String> staticIds = new HashSet<>();
    private final RuleManager ruleMgr = new RuleManager();
 
-   private final Set<IAtsUser> leads = new HashSet<IAtsUser>();
-   private final Set<IAtsUser> members = new HashSet<IAtsUser>();
-   private final Set<IAtsUser> priviledgedMembers = new HashSet<IAtsUser>();
-   private final Set<IAtsUser> subscribed = new HashSet<IAtsUser>();
+   private final Set<IAtsUser> leads = new HashSet<>();
+   private final Set<IAtsUser> members = new HashSet<>();
+   private final Set<IAtsUser> priviledgedMembers = new HashSet<>();
+   private final Set<IAtsUser> subscribed = new HashSet<>();
 
-   private final Set<IAtsTeamDefinition> childrenTeamDefinitions = new HashSet<IAtsTeamDefinition>();
-   private final Set<IAtsActionableItem> actionableItems = new HashSet<IAtsActionableItem>();
-   private final Set<IAtsVersion> versions = new HashSet<IAtsVersion>();
+   private final Set<IAtsTeamDefinition> childrenTeamDefinitions = new HashSet<>();
+   private final Set<IAtsActionableItem> actionableItems = new HashSet<>();
+   private final Set<IAtsVersion> versions = new HashSet<>();
    private String relatedPeerWorkflowDefinition;
 
    @Override
@@ -175,7 +175,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsUser> getLeads(Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
-      Set<IAtsUser> leads = new HashSet<IAtsUser>();
+      Set<IAtsUser> leads = new HashSet<>();
       for (IAtsActionableItem aia : actionableItems) {
          if (this.equals(aia.getTeamDefinitionInherited())) {
             // If leads are specified for this aia, add them
@@ -227,7 +227,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsVersion> getVersionsReleased(VersionReleaseType releaseType) {
-      ArrayList<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions()) {
          if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
@@ -240,7 +240,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsVersion> getVersionsLocked(VersionLockedType lockType) {
-      ArrayList<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      ArrayList<IAtsVersion> versions = new ArrayList<>();
       for (IAtsVersion version : getVersions()) {
          if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);

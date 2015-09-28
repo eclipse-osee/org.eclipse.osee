@@ -25,11 +25,11 @@ import org.junit.Test;
 public class RelationOrderMergerTest {
    @Test
    public void testCursorAlgorithmSuccess() {
-      RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
-      Collection<String> mergedSet = new HashSet<String>();
+      RelationOrderMerger<String> merger = new RelationOrderMerger<>();
+      Collection<String> mergedSet = new HashSet<>();
       Collections.addAll(mergedSet, new String[] {"Red", "Yellow", "Blue", "Purple", "Green", "Brown", "Black"});
 
-      List<String> leftOrder = new ArrayList<String>();
+      List<String> leftOrder = new ArrayList<>();
       leftOrder.add("Orange");
       leftOrder.add("Red");
       leftOrder.add("Yellow");
@@ -37,7 +37,7 @@ public class RelationOrderMergerTest {
       leftOrder.add("Black");
       leftOrder.add("Green");
 
-      List<String> rightOrder = new ArrayList<String>();
+      List<String> rightOrder = new ArrayList<>();
       rightOrder.add("Red");
       rightOrder.add("Yellow");
       rightOrder.add("Purple");
@@ -58,17 +58,17 @@ public class RelationOrderMergerTest {
 
    @Test
    public void testCursorAlgorithmFailure() {
-      RelationOrderMerger<String> merger = new RelationOrderMerger<String>();
-      Collection<String> mergedSet = new HashSet<String>();
+      RelationOrderMerger<String> merger = new RelationOrderMerger<>();
+      Collection<String> mergedSet = new HashSet<>();
       Collections.addAll(mergedSet, new String[] {"Red", "Yellow", "Green"});
 
-      List<String> leftOrder = new ArrayList<String>();
+      List<String> leftOrder = new ArrayList<>();
       leftOrder.add("Orange");
       leftOrder.add("Yellow");
       leftOrder.add("Red");
       leftOrder.add("Green");
 
-      List<String> rightOrder = new ArrayList<String>();
+      List<String> rightOrder = new ArrayList<>();
       rightOrder.add("Red");
       rightOrder.add("Yellow");
       rightOrder.add("Purple");

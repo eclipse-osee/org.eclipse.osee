@@ -410,7 +410,7 @@ public class TransitionManager implements IAtsTransitionManager {
          checkTasksCompletedForState = false;
       }
       if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
-         Set<IAtsTask> tasksToCheck = new HashSet<IAtsTask>();
+         Set<IAtsTask> tasksToCheck = new HashSet<>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
             tasksToCheck.addAll(workItemService.getTaskArtifacts(workItem));
@@ -532,7 +532,7 @@ public class TransitionManager implements IAtsTransitionManager {
    @Override
    public List<? extends IAtsUser> getToAssignees(IAtsWorkItem workItem, IAtsStateDefinition toState) throws OseeCoreException {
       if (toAssignees == null) {
-         toAssignees = new ArrayList<IAtsUser>();
+         toAssignees = new ArrayList<>();
          if (toState.getStateType().isWorkingState()) {
             Collection<? extends IAtsUser> requestedAssignees = helper.getToAssignees(workItem);
             if (requestedAssignees != null) {

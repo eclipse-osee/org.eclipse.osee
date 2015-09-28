@@ -63,7 +63,7 @@ public class AttributesComposite extends Composite {
    private Artifact artifact;
    private final IDirtiableEditor editor;
    private Label warningLabel;
-   private final ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<ModifyAttributesListener>();
+   private final ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<>();
    private MenuItem deleteItem;
    private final ToolBar toolBar;
 
@@ -246,7 +246,7 @@ public class AttributesComposite extends Composite {
       addItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Collection<IAttributeType> selectableTypes = new ArrayList<IAttributeType>();
+            Collection<IAttributeType> selectableTypes = new ArrayList<>();
             try {
                for (IAttributeType attrType : artifact.getAttributeTypes()) {
                   if (artifact.getRemainingAttributeCount(attrType) > 0) {

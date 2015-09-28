@@ -26,10 +26,10 @@ import org.eclipse.osee.orcs.db.internal.exchange.transform.ExchangeDataProcesso
  * @author Ryan D. Brooks
  */
 public class ReferentialIntegrityConstraint {
-   private final List<IExportItem> primaryItems = new ArrayList<IExportItem>();
-   private final List<String> primaryKeys = new ArrayList<String>();
-   private final List<IExportItem> foreignItems = new ArrayList<IExportItem>();
-   private final List<String[]> foreignKeys = new ArrayList<String[]>();
+   private final List<IExportItem> primaryItems = new ArrayList<>();
+   private final List<String> primaryKeys = new ArrayList<>();
+   private final List<IExportItem> foreignItems = new ArrayList<>();
+   private final List<String[]> foreignKeys = new ArrayList<>();
    private PrimaryKeyCollector collector;
    private Iterator<String> primaryKeyIterator;
    private Iterator<String[]> foreignKeyIterator;
@@ -54,7 +54,7 @@ public class ReferentialIntegrityConstraint {
    }
 
    public String getPrimaryKeyListing() {
-      List<String> primaryKeys = new ArrayList<String>(primaryItems.size());
+      List<String> primaryKeys = new ArrayList<>(primaryItems.size());
       for (IExportItem primaryTable : getPrimaryItems()) {
          primaryKeys.add(primaryTable + "." + getPrimaryKey());
       }

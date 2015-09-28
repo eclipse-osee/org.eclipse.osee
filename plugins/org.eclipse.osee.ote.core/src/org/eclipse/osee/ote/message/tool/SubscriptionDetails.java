@@ -29,7 +29,7 @@ public class SubscriptionDetails implements Serializable {
    public SubscriptionDetails(SubscriptionKey key, byte[] currentData, Set<DataType> availableMemTypes) {
       this.key = key;
       this.currentData = currentData;
-      this.availableMemTypes = new HashSet<DataType>(availableMemTypes);
+      this.availableMemTypes = new HashSet<>(availableMemTypes);
    }
 
    public SubscriptionKey getKey() {

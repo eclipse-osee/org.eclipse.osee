@@ -166,7 +166,7 @@ public final class OAuthUtil {
    private static final String SUBJECT_OSEE_GUID = "osee.guid";
 
    public static UserSubject newUserSubject(OseePrincipal subject) {
-      List<String> roles = new ArrayList<String>();
+      List<String> roles = new ArrayList<>();
       for (String role : subject.getRoles()) {
          roles.add(role);
       }
@@ -175,7 +175,7 @@ public final class OAuthUtil {
       data.setLogin(subject.getUserName());
       data.setRoles(roles);
 
-      Map<String, String> properties = new HashMap<String, String>();
+      Map<String, String> properties = new HashMap<>();
       properties.put(SUBJECT_USERNAME, subject.getUserName());
       String displayName = subject.getDisplayName();
       if (displayName.contains(",")) {
@@ -193,7 +193,7 @@ public final class OAuthUtil {
 
    public static OseePrincipal newOseePrincipal(UserSubject subject) {
       Long id = getUserSubjectUuid(subject);
-      Set<String> roles = new LinkedHashSet<String>();
+      Set<String> roles = new LinkedHashSet<>();
       List<String> sRoles = subject.getRoles();
       if (sRoles != null) {
          roles.addAll(sRoles);
@@ -228,7 +228,7 @@ public final class OAuthUtil {
          String name = principal != null ? principal.getName() : "UNKNOWN";
          List<String> roleNames = Collections.emptyList();
          if (securityContext instanceof LoginSecurityContext) {
-            roleNames = new ArrayList<String>();
+            roleNames = new ArrayList<>();
             Set<Principal> roles = ((LoginSecurityContext) securityContext).getUserRoles();
             for (Principal p : roles) {
                roleNames.add(p.getName());

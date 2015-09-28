@@ -75,7 +75,7 @@ public class HtmlRendererTest {
       Artifact htmlArtifact;
       renderer = new HTMLRenderer();
       // create example artifact
-      theArtifacts = new ArrayList<Artifact>();
+      theArtifacts = new ArrayList<>();
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);

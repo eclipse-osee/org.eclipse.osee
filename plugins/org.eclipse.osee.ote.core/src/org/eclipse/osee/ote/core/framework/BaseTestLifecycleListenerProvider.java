@@ -29,7 +29,7 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
 
    public BaseTestLifecycleListenerProvider(IEventDataProvider eventProvider) {
       this.eventProvider = eventProvider;
-      listeners = new CopyOnWriteArrayList<ITestLifecycleListener>();
+      listeners = new CopyOnWriteArrayList<>();
    }
 
    @Override

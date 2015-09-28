@@ -62,14 +62,14 @@ public class MockTrackingHandler extends AbstractTrackingHandler {
    public void onServiceAdded(BundleContext context, Class<?> clazz, Object services) {
       wasOnServiceAddedCalled = true;
       Assert.assertEquals(expContext, context);
-      serviceAdded = new Pair<Class<?>, Object>(clazz, services);
+      serviceAdded = new Pair<>(clazz, services);
    }
 
    @Override
    public void onServiceRemoved(BundleContext context, Class<?> clazz, Object services) {
       wasOnServiceRemovedCalled = true;
       Assert.assertEquals(expContext, context);
-      serviceRemoved = new Pair<Class<?>, Object>(clazz, services);
+      serviceRemoved = new Pair<>(clazz, services);
    }
 
    @Override

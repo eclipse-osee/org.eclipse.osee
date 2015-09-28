@@ -58,7 +58,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastBranchCoverage> getAllBranchCoverages() throws OseeCoreException {
-      Collection<VCastBranchCoverage> toReturn = new ArrayList<VCastBranchCoverage>();
+      Collection<VCastBranchCoverage> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -83,7 +83,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastBranchData> getAllBranchData() throws OseeCoreException {
-      Collection<VCastBranchData> toReturn = new ArrayList<VCastBranchData>();
+      Collection<VCastBranchData> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -104,7 +104,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastFunction> getAllFunctions() throws OseeCoreException {
-      Collection<VCastFunction> toReturn = new ArrayList<VCastFunction>();
+      Collection<VCastFunction> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -129,7 +129,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastInstrumentedFile> getAllInstrumentedFiles() throws OseeCoreException {
-      Collection<VCastInstrumentedFile> toReturn = new ArrayList<VCastInstrumentedFile>();
+      Collection<VCastInstrumentedFile> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -153,7 +153,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcCoverage> getAllMcdcCoverages() throws OseeCoreException {
-      Collection<VCastMcdcCoverage> toReturn = new ArrayList<VCastMcdcCoverage>();
+      Collection<VCastMcdcCoverage> toReturn = new ArrayList<>();
       JdbcStatement stmt = getStatement();
       try {
          stmt.runPreparedQuery("SELECT * FROM mcdc_coverage");
@@ -177,7 +177,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcCoverageCondition> getAllMcdcCoverageConditions() throws OseeCoreException {
-      Collection<VCastMcdcCoverageCondition> toReturn = new ArrayList<VCastMcdcCoverageCondition>();
+      Collection<VCastMcdcCoverageCondition> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -204,7 +204,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcCoveragePairRow> getAllMcdcCoveragePairRows() throws OseeCoreException {
-      Collection<VCastMcdcCoveragePairRow> toReturn = new ArrayList<VCastMcdcCoveragePairRow>();
+      Collection<VCastMcdcCoveragePairRow> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -227,7 +227,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcCoveragePair> getAllMcdcCoveragePairs() throws OseeCoreException {
-      Collection<VCastMcdcCoveragePair> toReturn = new ArrayList<VCastMcdcCoveragePair>();
+      Collection<VCastMcdcCoveragePair> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -248,7 +248,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcData> getAllMcdcData() throws OseeCoreException {
-      Collection<VCastMcdcData> toReturn = new ArrayList<VCastMcdcData>();
+      Collection<VCastMcdcData> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -271,7 +271,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastMcdcDataCondition> getAllMcdcDataConditions() throws OseeCoreException {
-      Collection<VCastMcdcDataCondition> toReturn = new ArrayList<VCastMcdcDataCondition>();
+      Collection<VCastMcdcDataCondition> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -292,7 +292,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastProjectFile> getAllProjectFiles() throws OseeCoreException {
-      Collection<VCastProjectFile> toReturn = new ArrayList<VCastProjectFile>();
+      Collection<VCastProjectFile> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -314,7 +314,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastProject> getAllProjects() throws OseeCoreException {
-      Collection<VCastProject> toReturn = new ArrayList<VCastProject>();
+      Collection<VCastProject> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -333,7 +333,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastResult> getAllResults() throws OseeCoreException {
-      Collection<VCastResult> toReturn = new ArrayList<VCastResult>();
+      Collection<VCastResult> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -357,7 +357,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastSetting> getAllSettings() throws OseeCoreException {
-      Collection<VCastSetting> toReturn = new ArrayList<VCastSetting>();
+      Collection<VCastSetting> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -376,7 +376,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastSourceFile> getAllSourceFiles() throws OseeCoreException {
-      Collection<VCastSourceFile> toReturn = new ArrayList<VCastSourceFile>();
+      Collection<VCastSourceFile> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -398,7 +398,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastStatementCoverage> getAllStatementCoverages() throws OseeCoreException {
-      Collection<VCastStatementCoverage> toReturn = new ArrayList<VCastStatementCoverage>();
+      Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -420,7 +420,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastStatementData> getAllStatementData() throws OseeCoreException {
-      Collection<VCastStatementData> toReturn = new ArrayList<VCastStatementData>();
+      Collection<VCastStatementData> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -503,7 +503,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastFunction> getFunctions(VCastInstrumentedFile instrumentedFile) throws OseeCoreException {
-      Collection<VCastFunction> toReturn = new ArrayList<VCastFunction>();
+      Collection<VCastFunction> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -529,7 +529,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastStatementCoverage> getStatementCoverageLines(VCastFunction function) throws OseeCoreException {
-      Collection<VCastStatementCoverage> toReturn = new ArrayList<VCastStatementCoverage>();
+      Collection<VCastStatementCoverage> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -550,7 +550,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastStatementData> getStatementData(VCastStatementCoverage statementCoverage) throws OseeCoreException {
-      Collection<VCastStatementData> toReturn = new ArrayList<VCastStatementData>();
+      Collection<VCastStatementData> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {
@@ -572,7 +572,7 @@ public class VCastDataStoreImpl implements VCastDataStore {
 
    @Override
    public Collection<VCastResult> getResults(VCastStatementData statementDataItem) throws OseeCoreException {
-      Collection<VCastResult> toReturn = new ArrayList<VCastResult>();
+      Collection<VCastResult> toReturn = new ArrayList<>();
 
       JdbcStatement stmt = getStatement();
       try {

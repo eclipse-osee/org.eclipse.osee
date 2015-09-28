@@ -52,8 +52,8 @@ public class MultiMessageCondition {
    private static final class Listener implements IOSEEMessageListener, ITimeout {
       private volatile boolean isTimedOut = false;
       private final Message[] messages;
-      private final HashSet<MessageData> messagesNotSeen = new HashSet<MessageData>();
-      private final HashMap<MessageData, MessageCounter> hitCount = new HashMap<MessageData, MessageCounter>();
+      private final HashSet<MessageData> messagesNotSeen = new HashSet<>();
+      private final HashMap<MessageData, MessageCounter> hitCount = new HashMap<>();
 
       private Listener(Message... messages) {
          this.messages = messages;
@@ -208,7 +208,7 @@ public class MultiMessageCondition {
          mf.add(msg.getName());
       }
       accessor.getLogger().methodCalledOnObject(accessor, "MultMessage", mf);
-      LinkedList<MessageCounter> msgsReceived = new LinkedList<MessageCounter>();
+      LinkedList<MessageCounter> msgsReceived = new LinkedList<>();
       MsgWaitResult result = waitForAnyTransmission(accessor, timeout, msgsReceived, messages);
       if (!result.isPassed()) {
          CheckPoint cp =
@@ -233,7 +233,7 @@ public class MultiMessageCondition {
          mf.add(msg.getName());
       }
       accessor.getLogger().methodCalledOnObject(accessor, "MultMessage", mf);
-      LinkedList<MessageCounter> msgsReceived = new LinkedList<MessageCounter>();
+      LinkedList<MessageCounter> msgsReceived = new LinkedList<>();
       MsgWaitResult result = waitForAnyTransmission(accessor, timeout, msgsReceived, messages);
       CheckPoint cp =
          new CheckPoint("MESSAGE_TRANSMISSION.ANY", "AT LEAST ONE", result.isPassed() ? "AT LEAST ONE" : "NONE",
@@ -249,7 +249,7 @@ public class MultiMessageCondition {
          mf.add(msg.getName());
       }
       accessor.getLogger().methodCalledOnObject(accessor, "MultMessage", mf);
-      LinkedList<MessageCounter> msgsReceived = new LinkedList<MessageCounter>();
+      LinkedList<MessageCounter> msgsReceived = new LinkedList<>();
       MsgWaitResult result = waitForAllTransmissions(accessor, timeout, msgsReceived, messages);
       if (result.isPassed()) {
          CheckPoint cp =

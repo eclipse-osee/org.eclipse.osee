@@ -43,7 +43,7 @@ public class RelationOrderData {
    private final IArtifact artifact;
 
    public RelationOrderData(IRelationOrderAccessor accessor, IArtifact artifact) {
-      this.lists = new CompositeKeyHashMap<String, String, Pair<String, List<String>>>();
+      this.lists = new CompositeKeyHashMap<>();
       this.accessor = accessor;
       this.artifact = artifact;
    }
@@ -174,8 +174,8 @@ public class RelationOrderData {
             result = o1.getValue().getFirst().compareTo(o2.getValue().getFirst());
          }
          if (result == 0) {
-            List<String> guids1 = new ArrayList<String>(o1.getValue().getSecond());
-            List<String> guids2 = new ArrayList<String>(o2.getValue().getSecond());
+            List<String> guids1 = new ArrayList<>(o1.getValue().getSecond());
+            List<String> guids2 = new ArrayList<>(o2.getValue().getSecond());
             result = guids1.size() - guids2.size();
             if (result == 0) {
                Collections.sort(guids1);

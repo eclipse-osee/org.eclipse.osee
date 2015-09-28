@@ -176,7 +176,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
   {
     if (overrideOptions == null)
     {
-      overrideOptions = new EObjectContainmentEList<AttributeOverrideOption>(AttributeOverrideOption.class, this, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS);
+      overrideOptions = new EObjectContainmentEList<>(AttributeOverrideOption.class, this, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDE_OPTIONS);
     }
     return overrideOptions;
   }

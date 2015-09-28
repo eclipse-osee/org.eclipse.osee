@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class ExecuteTaskOpList {
    public Map<TaskMetadata, IStatus> execute(List<TaskMetadata> metadatas, Map<TaskEnum, ITaskOperation> ops, IAtsChangeSet changes) throws OseeCoreException {
-      Map<TaskMetadata, IStatus> statusMap = new HashMap<TaskMetadata, IStatus>();
+      Map<TaskMetadata, IStatus> statusMap = new HashMap<>();
 
       for (TaskMetadata metadata : metadatas) {
          ITaskOperation operation = ops.get(metadata.getTaskEnum());

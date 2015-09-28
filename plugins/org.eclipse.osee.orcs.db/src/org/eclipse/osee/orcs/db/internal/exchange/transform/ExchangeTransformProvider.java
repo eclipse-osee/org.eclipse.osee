@@ -19,7 +19,7 @@ public class ExchangeTransformProvider implements IExchangeTransformProvider {
 
    @Override
    public Collection<IOseeExchangeVersionTransformer> getApplicableTransformers(Version versionToCheck) {
-      List<IOseeExchangeVersionTransformer> toReturn = new ArrayList<IOseeExchangeVersionTransformer>();
+      List<IOseeExchangeVersionTransformer> toReturn = new ArrayList<>();
 
       IOseeExchangeVersionTransformer[] transforms =
          new IOseeExchangeVersionTransformer[] {new V0_9_2Transformer(), new V0_9_4Transformer()};

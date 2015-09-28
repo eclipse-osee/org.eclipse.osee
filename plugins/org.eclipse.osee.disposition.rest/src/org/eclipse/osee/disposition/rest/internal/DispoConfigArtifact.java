@@ -35,7 +35,7 @@ public class DispoConfigArtifact implements DispoConfig {
 
    @Override
    public List<ResolutionMethod> getValidResolutions() {
-      List<ResolutionMethod> toReturn = new ArrayList<ResolutionMethod>();
+      List<ResolutionMethod> toReturn = new ArrayList<>();
       List<String> attributes = artifact.getAttributeValues(CoreAttributeTypes.GeneralStringData);
       String resolutionsJson = "[]";
 

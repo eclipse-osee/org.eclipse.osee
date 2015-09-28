@@ -99,7 +99,7 @@ public class OAuth2Flows {
    }
 
    public ClientAccessToken refreshFlow(ClientAccessToken data, String state) {
-      Map<String, String> extraParams = new HashMap<String, String>();
+      Map<String, String> extraParams = new HashMap<>();
       if (data.getParameters() != null) {
          extraParams.putAll(data.getParameters());
       }
@@ -180,7 +180,7 @@ public class OAuth2Flows {
    }
 
    protected ClientAccessToken exchangeCodeForToken(String sessionCookie, String authCode, String state, String scope, String redirectUri) {
-      Map<String, String> extraParams = new HashMap<String, String>();
+      Map<String, String> extraParams = new HashMap<>();
       if (state != null) {
          extraParams.put(OAuthConstants.STATE, state);
       }
@@ -274,7 +274,7 @@ public class OAuth2Flows {
       @Override
       public List<? extends Permission> getPermissionsRequested() {
          if (permissions == null) {
-            List<Permission> permissions = new ArrayList<Permission>();
+            List<Permission> permissions = new ArrayList<>();
             for (org.apache.cxf.rs.security.oauth2.common.Permission perm : data.getPermissions()) {
                permissions.add(asPermission(perm));
             }

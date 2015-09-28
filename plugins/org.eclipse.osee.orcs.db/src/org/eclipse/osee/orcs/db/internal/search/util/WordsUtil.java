@@ -62,7 +62,7 @@ public class WordsUtil {
    private static char[] PUNCTUATION = null;
 
    static {
-      Set<Character> combined = new HashSet<Character>();
+      Set<Character> combined = new HashSet<>();
       combined.addAll(Arrays.asList(DEFAULT_PUNCTUACTION));
       combined.addAll(ReservedCharacters.getChars());
       combined.remove('\'');
@@ -76,7 +76,7 @@ public class WordsUtil {
    }
 
    public static String[] splitOnPunctuation(String original) {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       StringBuffer buffer = new StringBuffer();
       for (int index = 0; index < original.length(); index++) {
          char c = original.charAt(index);

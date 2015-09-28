@@ -79,8 +79,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
     */
    @Override
    public void initialize() {
-      duplicateCatcher = new HashMap<String, RoughArtifact>();
-      roughArtMeta = new HashMap<String, String>();
+      duplicateCatcher = new HashMap<>();
+      roughArtMeta = new HashMap<>();
       lastHeaderNumber = new StringBuffer();
       lastHeaderName = new StringBuffer();
       lastContent = new StringBuffer();

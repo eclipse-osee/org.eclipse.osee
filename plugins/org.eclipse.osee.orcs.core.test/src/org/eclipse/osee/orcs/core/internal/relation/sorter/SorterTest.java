@@ -60,7 +60,7 @@ public class SorterTest {
 
    @Test
    public void testSort() {
-      List<Identifiable<String>> actualToOrder = new ArrayList<Identifiable<String>>();
+      List<Identifiable<String>> actualToOrder = new ArrayList<>();
       actualToOrder.addAll(itemsToOrder);
       sorter.sort(actualToOrder, currentItems);
 
@@ -72,7 +72,7 @@ public class SorterTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       data.add(createUnorderedSortTest("4", "2", "1", "5"));
       data.add(createUnorderedSortTest("$", "a", "!", "2"));
       data.add(createUserDefinedTest("1", "2", "3", "4"));
@@ -137,7 +137,7 @@ public class SorterTest {
       List<Identifiable<String>> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
       List<Identifiable<String>> expectedOrder = Arrays.asList(art1, art2, art3, art4);
 
-      List<String> relatives = new ArrayList<String>();
+      List<String> relatives = new ArrayList<>();
       for (Identifiable<String> item : Arrays.asList(art1, art2, art3, art4)) {
          relatives.add(item.getGuid());
       }

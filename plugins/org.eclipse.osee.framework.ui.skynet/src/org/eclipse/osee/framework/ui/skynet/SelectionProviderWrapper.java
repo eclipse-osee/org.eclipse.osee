@@ -28,7 +28,7 @@ public class SelectionProviderWrapper implements ISelectionProvider {
    @Override
    public void addSelectionChangedListener(ISelectionChangedListener listener) {
       if (selectionListeners == null) {
-         selectionListeners = new ArrayList<Object>(1);
+         selectionListeners = new ArrayList<>(1);
       }
       selectionListeners.add(listener);
       if (provider != null) {

@@ -86,7 +86,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
 
             Collection<Object> items = getCollectionInput();
             if (items != null && !items.isEmpty()) {
-               List<Object> modList = new ArrayList<Object>();
+               List<Object> modList = new ArrayList<>();
 
                while (iterator.hasNext()) {
                   modList.remove(iterator.next());
@@ -134,7 +134,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
    }
 
    public List<Artifact> getSelectedArtifacts() {
-      List<Object> selectedArtifacts = new ArrayList<Object>();
+      List<Object> selectedArtifacts = new ArrayList<>();
       Collections.flatten(getSelected(), selectedArtifacts);
       return Collections.castAll(Artifact.class, selectedArtifacts);
    }
@@ -143,7 +143,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
     * Adds artifacts to the viewer's input.
     */
    public void addToInput(Artifact... artifacts) {
-      List<Object> objects = new ArrayList<Object>();
+      List<Object> objects = new ArrayList<>();
       for (Artifact artifact : artifacts) {
          objects.add(artifact);
       }

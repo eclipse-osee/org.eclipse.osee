@@ -66,7 +66,7 @@ public class BarChartExample extends XNavigateItemAction {
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorChartTab("Chart", createMyChart()));
             tabs.add(getReportHtmlTab());
             return tabs;
@@ -122,7 +122,7 @@ public class BarChartExample extends XNavigateItemAction {
       yAxisPrimary.getLabel().getCaption().getFont().setRotation(90);
 
       // initialize a collection with the X-series data
-      List<String> vs = new ArrayList<String>();
+      List<String> vs = new ArrayList<>();
       vs.add("zero");
       vs.add("one");
       vs.add("two");
@@ -130,7 +130,7 @@ public class BarChartExample extends XNavigateItemAction {
       TextDataSet categoryValues = TextDataSetImpl.create(vs);
 
       // initialize a collection with the Y-series data
-      ArrayList<Double> vn1 = new ArrayList<Double>();
+      ArrayList<Double> vn1 = new ArrayList<>();
       vn1.add(new Double(25));
       vn1.add(new Double(35));
       vn1.add(new Double(-45));

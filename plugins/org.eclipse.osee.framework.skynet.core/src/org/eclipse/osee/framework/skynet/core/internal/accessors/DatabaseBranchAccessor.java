@@ -59,10 +59,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
 
    @Override
    public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
-      Map<Branch, Long> childToParent = new HashMap<Branch, Long>();
-      Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
-      Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
-      Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
+      Map<Branch, Long> childToParent = new HashMap<>();
+      Map<Branch, Integer> branchToBaseTx = new HashMap<>();
+      Map<Branch, Integer> branchToSourceTx = new HashMap<>();
+      Map<Branch, Integer> associatedArtifact = new HashMap<>();
 
       BranchCache brCache = (BranchCache) cache;
       loadBranches(brCache, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
@@ -116,7 +116,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    }
 
    private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
-      Set<Integer> transactionIds = new HashSet<Integer>();
+      Set<Integer> transactionIds = new HashSet<>();
       transactionIds.addAll(branchToSourceTx.values());
       transactionIds.addAll(branchToBaseTx.values());
       txCache.loadTransactions(transactionIds);

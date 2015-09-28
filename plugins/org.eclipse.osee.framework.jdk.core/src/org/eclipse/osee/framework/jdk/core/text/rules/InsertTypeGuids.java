@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
  */
 public class InsertTypeGuids extends Rule {
    private static final Pattern classDeclarationP = Pattern.compile("Type \"([^\"]*)\".*?\\{\\s*"); //Type "([^"]*)".*?\{
-   private static final Map<String, String> typeGuids = new HashMap<String, String>();
+   private static final Map<String, String> typeGuids = new HashMap<>();
 
    public InsertTypeGuids() {
       super(null);

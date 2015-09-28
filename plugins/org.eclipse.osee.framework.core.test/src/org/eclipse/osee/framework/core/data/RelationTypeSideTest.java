@@ -44,7 +44,7 @@ public class RelationTypeSideTest {
       IRelationTypeSide relTypeSide3 = create(uuid2, sideA, uuid2 + "_sideA");
       IRelationTypeSide relTypeSide4 = create(uuid2, sideB, uuid2 + "_sideB");
 
-      Map<IRelationType, String> data = new HashMap<IRelationType, String>();
+      Map<IRelationType, String> data = new HashMap<>();
       data.put(relTypeSide1, "a1");
       data.put(relTypeSide2, "b2");
       data.put(relTypeSide3, "c3");

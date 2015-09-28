@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class DynamicObject extends DynamicData {
 
-   private final ArrayList<DynamicData> children = new ArrayList<DynamicData>();
+   private final ArrayList<DynamicData> children = new ArrayList<>();
 
    public DynamicObject(String uid, String alias) {
       super(uid, alias);

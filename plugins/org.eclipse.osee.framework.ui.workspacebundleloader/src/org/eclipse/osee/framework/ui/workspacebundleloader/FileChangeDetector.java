@@ -28,7 +28,7 @@ public class FileChangeDetector {
    private final ConcurrentHashMap<URL, byte[]> bundleNameToMd5Map;
 
    public FileChangeDetector() {
-      bundleNameToMd5Map = new ConcurrentHashMap<URL, byte[]>();
+      bundleNameToMd5Map = new ConcurrentHashMap<>();
    }
 
    public boolean isChanged(URL url) {

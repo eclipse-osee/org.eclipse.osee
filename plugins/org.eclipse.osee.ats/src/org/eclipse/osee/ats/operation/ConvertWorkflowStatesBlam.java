@@ -93,7 +93,7 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
    }
 
    private Map<String, String> createFromToMap(String fromToMapStr) {
-      Map<String, String> fromToMap = new HashMap<String, String>();
+      Map<String, String> fromToMap = new HashMap<>();
       for (String line : fromToMapStr.split(";")) {
          String[] fromTo = line.split(":");
          if (fromTo.length != 2 || fromTo[0].isEmpty() || fromTo[1].isEmpty()) {

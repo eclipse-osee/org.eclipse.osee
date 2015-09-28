@@ -217,7 +217,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
             updateOKStatus();
          }
       });
-      List<Object> data = new ArrayList<Object>(1);
+      List<Object> data = new ArrayList<>(1);
       data.add(input);
       treeViewer.setInput(data);
       return treeViewer;

@@ -51,7 +51,7 @@ public class CreateNewAgileBacklog extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
 
-      List<Artifact> activeTeams = new LinkedList<Artifact>();
+      List<Artifact> activeTeams = new LinkedList<>();
       for (Artifact agTeam : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.AgileTeam,
          AtsUtilCore.getAtsBranch())) {
          if (agTeam.getSoleAttributeValue(AtsAttributeTypes.Active, true)) {

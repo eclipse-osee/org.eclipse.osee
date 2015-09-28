@@ -277,7 +277,7 @@ public class OTEFolderImpl implements OTEServerFolder{
 
    @Override
    public List<File> getRunningServerFolders() {
-      List<File> files = new ArrayList<File>();
+      List<File> files = new ArrayList<>();
       for(File serverDir:SERVERS.listFiles()){
          File running = new File(serverDir, RUNNING_MARKER);
          if(running.exists()){

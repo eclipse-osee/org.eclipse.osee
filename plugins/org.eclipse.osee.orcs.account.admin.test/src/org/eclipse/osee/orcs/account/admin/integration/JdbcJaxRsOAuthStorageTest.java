@@ -109,7 +109,7 @@ public class JdbcJaxRsOAuthStorageTest {
    public void testSetup() {
       initMocks(this);
 
-      applicationProperties = new LinkedHashMap<String, String>();
+      applicationProperties = new LinkedHashMap<>();
       applicationProperties.put("a", "1");
       applicationProperties.put("b", "2");
       applicationProperties.put("c", "3");

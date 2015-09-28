@@ -119,7 +119,7 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public List<UserRole> getSelectedUserRoleItems() {
-      List<UserRole> arts = new ArrayList<UserRole>();
+      List<UserRole> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
@@ -134,7 +134,7 @@ public class UserRoleXViewer extends XViewer {
       if (!xUserRoleViewer.isEditable()) {
          return;
       }
-      ArrayList<UserRole> userRoles = new ArrayList<UserRole>();
+      ArrayList<UserRole> userRoles = new ArrayList<>();
       for (TreeItem item : treeItems) {
          userRoles.add((UserRole) item.getData());
       }
@@ -160,7 +160,7 @@ public class UserRoleXViewer extends XViewer {
          // treeItem);
          XViewerColumn aCol = (XViewerColumn) treeColumn.getData();
          UserRole userRole = (UserRole) treeItem.getData();
-         List<UserRole> userRoles = new ArrayList<UserRole>();
+         List<UserRole> userRoles = new ArrayList<>();
          userRoles.add(userRole);
 
          if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(UserRoleXViewerFactory.Role_Col)) {

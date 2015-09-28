@@ -54,7 +54,7 @@ public class AttributeTypeManager {
 
    public static Collection<IAttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
       Branch branch = getBranchCache().get(branchToken);
-      Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>(100);
+      Set<IAttributeType> attributeTypes = new HashSet<>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          attributeTypes.addAll(artifactType.getAttributeTypes(branch));
       }
@@ -66,7 +66,7 @@ public class AttributeTypeManager {
    }
 
    public static Collection<IAttributeType> getTaggableTypes() throws OseeCoreException {
-      Collection<IAttributeType> taggableTypes = new ArrayList<IAttributeType>();
+      Collection<IAttributeType> taggableTypes = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.isTaggable()) {
             taggableTypes.add(type);
@@ -76,7 +76,7 @@ public class AttributeTypeManager {
    }
 
    public static Collection<IAttributeType> getSingleMultiplicityTypes() throws OseeCoreException {
-      Collection<IAttributeType> types = new ArrayList<IAttributeType>();
+      Collection<IAttributeType> types = new ArrayList<>();
       for (AttributeType type : getAllTypes()) {
          if (type.getMaxOccurrences() == 1) {
             types.add(type);
@@ -132,7 +132,7 @@ public class AttributeTypeManager {
    }
 
    public static Map<String, String> getEnumerationValueDescriptions(IAttributeType attributeType) throws OseeCoreException {
-      Map<String, String> values = new HashMap<String, String>();
+      Map<String, String> values = new HashMap<>();
       for (OseeEnumEntry entry : AttributeTypeManager.getType(attributeType).getOseeEnumType().values()) {
          values.put(entry.getName(), entry.getDescription());
       }

@@ -206,7 +206,7 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
    }
 
    public List<Date> getAllDates() {
-      List<Date> allDates = new ArrayList<Date>();
+      List<Date> allDates = new ArrayList<>();
       DateIterator di = (DateIterator) this.clone();
       while (di.hasNext()) {
          Calendar calendar = di.next();

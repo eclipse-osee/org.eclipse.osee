@@ -67,7 +67,7 @@ public class ArtifactTypeManager {
 
    public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
       Branch branch = getCacheService().getBranchCache().get(branchToken);
-      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
+      List<ArtifactType> artifactTypes = new ArrayList<>();
       for (ArtifactType artifactType : getAllTypes()) {
          if (artifactType.isValidAttributeType(attributeType, branch)) {
             artifactTypes.add(artifactType);
@@ -196,18 +196,18 @@ public class ArtifactTypeManager {
    public static void purgeArtifactTypesWithCheck(Collection<? extends IArtifactType> purgeArtifactTypes, IArtifactType newArtifactType) throws OseeCoreException {
       for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
-         Set<Artifact> artifacts = new LinkedHashSet<Artifact>();
+         Set<Artifact> artifacts = new LinkedHashSet<>();
          for (IOseeBranch branch : BranchManager.getBranches(new BranchFilter())) {
             artifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
                DeletionFlag.INCLUDE_DELETED));
          }
          if (artifacts.size() > 0) {
-            HashMap<Integer, Artifact> artifactMap = new HashMap<Integer, Artifact>();
+            HashMap<Integer, Artifact> artifactMap = new HashMap<>();
             for (Artifact artifact : artifacts) {
                artifactMap.put(artifact.getArtId(), artifact);
             }
             if (newArtifactType == null) {
-               HashSet<IOseeBranch> branches = new HashSet<IOseeBranch>();
+               HashSet<IOseeBranch> branches = new HashSet<>();
                for (Artifact artifact : artifacts) {
                   branches.add(artifact.getBranch());
                }

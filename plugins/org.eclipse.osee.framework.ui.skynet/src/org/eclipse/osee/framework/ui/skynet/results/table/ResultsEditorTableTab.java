@@ -189,7 +189,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
       item.addSelectionListener(new SelectionAdapter() {
 
          private List<String> getColumns() {
-            List<String> cols = new ArrayList<String>();
+            List<String> cols = new ArrayList<>();
             for (XViewerColumn col : columns) {
                cols.add(col.getName());
             }
@@ -197,7 +197,7 @@ public class ResultsEditorTableTab implements IResultsEditorTableTab {
          }
 
          private void writeRows(TableWriterAdaptor writerAdaptor) {
-            List<String> rws = new ArrayList<String>();
+            List<String> rws = new ArrayList<>();
             for (IResultsXViewerRow row : rows) {
                for (int i = 0; i < columns.size(); i++) {
                   rws.add(row.getValue(i));

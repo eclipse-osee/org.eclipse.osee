@@ -19,8 +19,8 @@ import java.util.Set;
 
 public class CompareData {
 
-   private final Map<String, String> dataToCompare = new LinkedHashMap<String, String>();
-   private final List<String> mergeList = new ArrayList<String>();
+   private final Map<String, String> dataToCompare = new LinkedHashMap<>();
+   private final List<String> mergeList = new ArrayList<>();
    private final String outputPath;
    private final String generatorScriptPath;
 

@@ -82,7 +82,7 @@ public class Collections {
    }
 
    public static <A> List<Collection<A>> subDivide(List<A> collection, int size) {
-      List<Collection<A>> result = new ArrayList<Collection<A>>();
+      List<Collection<A>> result = new ArrayList<>();
       for (int i = 0; i < collection.size() / size + 1; i++) {
          int maxLength;
          if (i * size + size > collection.size()) {
@@ -90,7 +90,7 @@ public class Collections {
          } else {
             maxLength = i * size + size;
          }
-         List<A> sublist = new ArrayList<A>();
+         List<A> sublist = new ArrayList<>();
          for (int j = i * size; j < maxLength; j++) {
             sublist.add(collection.get(j));
          }
@@ -100,7 +100,7 @@ public class Collections {
    }
 
    public static <A> Collection<A> unique(Collection<A> collection) {
-      Set<A> result = new HashSet<A>();
+      Set<A> result = new HashSet<>();
       result.addAll(collection);
       return result;
    }
@@ -129,7 +129,7 @@ public class Collections {
     * @return relative set complement of B in A.
     */
    public static <T> List<T> setComplement(Collection<T> set_A, Collection<T> set_B) {
-      ArrayList<T> complement = new ArrayList<T>(set_A.size());
+      ArrayList<T> complement = new ArrayList<>(set_A.size());
       for (T obj : set_A) {
          if (!set_B.contains(obj)) {
             complement.add(obj);
@@ -142,7 +142,7 @@ public class Collections {
     * @return The intersection of two sets A and B is the set of elements common to A and B
     */
    public static <T> ArrayList<T> setIntersection(Collection<T> listA, Collection<T> listB) {
-      ArrayList<T> intersection = new ArrayList<T>(listA.size());
+      ArrayList<T> intersection = new ArrayList<>(listA.size());
 
       for (T obj : listA) {
          if (listB.contains(obj)) {
@@ -156,7 +156,7 @@ public class Collections {
     * @return union of unique elements from the given lists
     */
    public static <T> Set<T> setUnion(Collection<T>... lists) {
-      Set<T> union = new HashSet<T>(lists[0].size() * 2);
+      Set<T> union = new HashSet<>(lists[0].size() * 2);
 
       for (int x = 0; x < lists.length; x++) {
          union.addAll(lists[x]);
@@ -179,7 +179,7 @@ public class Collections {
       if (collection instanceof Set) {
          set = (Set<T>) collection;
       } else {
-         set = new LinkedHashSet<T>();
+         set = new LinkedHashSet<>();
          set.addAll(collection);
       }
       return set;
@@ -189,7 +189,7 @@ public class Collections {
     * Convert an aggregate list of objects into a List
     */
    public static <T> List<T> getAggregate(T... objects) {
-      List<T> objs = new ArrayList<T>();
+      List<T> objs = new ArrayList<>();
       if (objects != null) {
          for (T obj : objects) {
             objs.add(obj);
@@ -202,7 +202,7 @@ public class Collections {
     * Convert objects to HashSet
     */
    public static <T> Set<T> asHashSet(T... objects) {
-      Set<T> objs = new HashSet<T>();
+      Set<T> objs = new HashSet<>();
       if (objects != null) {
          for (T obj : objects) {
             objs.add(obj);
@@ -228,12 +228,12 @@ public class Collections {
 
    private static ArrayList<Object> recursiveAggregateTree(List<Object> items, int maxPerList) {
       if (items.size() > maxPerList) {
-         ArrayList<Object> aggregateList = new ArrayList<Object>(maxPerList);
+         ArrayList<Object> aggregateList = new ArrayList<>(maxPerList);
          ArrayList<Object> childList = null;
 
          for (Object item : items) {
             if (childList == null || childList.size() == maxPerList) {
-               childList = new ArrayList<Object>(maxPerList);
+               childList = new ArrayList<>(maxPerList);
                aggregateList.add(childList);
             }
             childList.add(item);
@@ -264,7 +264,7 @@ public class Collections {
     */
    @SuppressWarnings("unchecked")
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
-      List<A> results = new ArrayList<A>(objects.size());
+      List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
          if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(object.getClass())) {
             results.add((A) object);
@@ -278,7 +278,7 @@ public class Collections {
     */
    @SuppressWarnings("unchecked")
    public static <A> List<A> castAll(Collection<?> objects) {
-      List<A> results = new ArrayList<A>(objects.size());
+      List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
          results.add((A) object);
       }
@@ -351,7 +351,7 @@ public class Collections {
    }
 
    public static <T> Set<T> hashSet(T... items) {
-      Set<T> result = new HashSet<T>();
+      Set<T> result = new HashSet<>();
       for (T item : items) {
          result.add(item);
       }

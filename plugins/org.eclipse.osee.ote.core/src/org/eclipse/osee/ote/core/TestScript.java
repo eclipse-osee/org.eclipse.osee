@@ -160,9 +160,9 @@ public abstract class TestScript implements ITimeout {
    private final boolean isMpLevel;
    private IScriptInitializer scriptInitializer;
    private final ScriptTypeEnum scriptType;
-   private final ArrayList<TestCase> selectiveRunList = new ArrayList<TestCase>(32);
+   private final ArrayList<TestCase> selectiveRunList = new ArrayList<>(32);
    private Date startTime;
-   private final ArrayList<TestCase> testCases = new ArrayList<TestCase>(32);
+   private final ArrayList<TestCase> testCases = new ArrayList<>(32);
    private final ITestPointTally testPointTally;
    protected CommandEndedStatusEnum status;
    private Throwable rootCause;
@@ -240,7 +240,7 @@ public abstract class TestScript implements ITimeout {
     * @return reference to arrayList testCases.
     */
    public/* TestCase */List<TestCase> getTestCases() {
-      ArrayList<TestCase> testCaseList = new ArrayList<TestCase>();
+      ArrayList<TestCase> testCaseList = new ArrayList<>();
       testCaseList.add(getSetupTestCase());
       testCaseList.addAll(testCases);
       testCaseList.add(getTearDownTestCase());

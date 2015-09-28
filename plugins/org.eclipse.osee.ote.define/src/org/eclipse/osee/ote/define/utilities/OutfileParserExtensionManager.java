@@ -44,8 +44,8 @@ public class OutfileParserExtensionManager {
    private static OutfileParserExtensionManager instance = null;
 
    private OutfileParserExtensionManager() {
-      contributions = new HashMap<String, BaseOutfileParser>();
-      extensionsToParsers = new HashCollection<String, BaseOutfileParser>(false, HashSet.class);
+      contributions = new HashMap<>();
+      extensionsToParsers = new HashCollection<>(false, HashSet.class);
    }
 
    public static OutfileParserExtensionManager getInstance() {
@@ -109,7 +109,7 @@ public class OutfileParserExtensionManager {
    }
 
    private Set<String> getSupportedExtensions(String rawExtensions) {
-      Set<String> toReturn = new HashSet<String>();
+      Set<String> toReturn = new HashSet<>();
       for (String value : rawExtensions.split(";")) {
          value = value.trim();
          if (Strings.isValid(value)) {

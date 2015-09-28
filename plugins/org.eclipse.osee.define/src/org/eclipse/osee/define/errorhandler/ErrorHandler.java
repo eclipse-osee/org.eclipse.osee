@@ -23,7 +23,7 @@ public class ErrorHandler {
     */
    public ErrorHandler() {
       super();
-      this.set = new HashSet<Resolver>();
+      this.set = new HashSet<>();
       this.value = new StateValue();
    }
 

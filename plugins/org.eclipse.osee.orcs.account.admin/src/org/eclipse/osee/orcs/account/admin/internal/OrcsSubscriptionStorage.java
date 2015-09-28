@@ -41,7 +41,7 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       ArtifactReadable account = accountResults.getExactlyOne();
 
       ResultSet<ArtifactReadable> allGroups = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
-      List<Subscription> subscriptions = new ArrayList<Subscription>();
+      List<Subscription> subscriptions = new ArrayList<>();
       for (ArtifactReadable group : allGroups) {
          boolean related = account.areRelated(CoreRelationTypes.Users_Artifact, group);
          subscriptions.add(SubscriptionUtil.fromArtifactData(account, group, related));

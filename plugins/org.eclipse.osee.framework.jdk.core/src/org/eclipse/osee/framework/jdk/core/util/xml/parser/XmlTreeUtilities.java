@@ -33,7 +33,7 @@ public class XmlTreeUtilities {
    }
 
    private Stack<String> processPath(String pattern) {
-      Stack<String> elementPath = new Stack<String>();
+      Stack<String> elementPath = new Stack<>();
       String[] path = pattern.split("/");
       for (int index = path.length - 1; index >= 0; index--) {
          String entry = path[index];
@@ -47,7 +47,7 @@ public class XmlTreeUtilities {
 
    public List<TreeNode<XmlNode>> getXmlNodesAt(String path, TreeNode<XmlNode> root) {
       Stack<String> elementPath = processPath(path);
-      List<TreeNode<XmlNode>> toReturn = new ArrayList<TreeNode<XmlNode>>();
+      List<TreeNode<XmlNode>> toReturn = new ArrayList<>();
       List<TreeNode<XmlNode>> nodes = root.getChildren();
       while (!elementPath.empty()) {
          String token = elementPath.pop();
@@ -61,7 +61,7 @@ public class XmlTreeUtilities {
    }
 
    private List<TreeNode<XmlNode>> collectNodesMatchingToken(String token, List<TreeNode<XmlNode>> nodes) {
-      List<TreeNode<XmlNode>> toReturn = new ArrayList<TreeNode<XmlNode>>();
+      List<TreeNode<XmlNode>> toReturn = new ArrayList<>();
 
       for (TreeNode<XmlNode> node : nodes) {
          if (token.equalsIgnoreCase("*")) {

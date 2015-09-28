@@ -37,7 +37,7 @@ public class VersionEfficiency {
     */
    public VersionEfficiency(final IAtsVersion version) {
       this.version = version;
-      this.efficiency = new HashMap<String, Double>();
+      this.efficiency = new HashMap<>();
    }
 
    /**
@@ -46,7 +46,7 @@ public class VersionEfficiency {
     * @throws OseeCoreException :
     */
    public void compute() throws OseeCoreException {
-      final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<String, List<TeamWorkFlowArtifact>>();
+      final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<>();
 
       // 1. For each team, collect the list of artifacts.
       for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(this.version)) {
@@ -54,7 +54,7 @@ public class VersionEfficiency {
          if (teams.containsKey(teamWorkflow.getTeamName())) {
             teams.get(teamWorkflow.getTeamName()).add(teamWorkflow);
          } else {
-            List<TeamWorkFlowArtifact> teamArt = new ArrayList<TeamWorkFlowArtifact>();
+            List<TeamWorkFlowArtifact> teamArt = new ArrayList<>();
             teamArt.add(teamWorkflow);
             teams.put(teamWorkflow.getTeamName(), teamArt);
          }

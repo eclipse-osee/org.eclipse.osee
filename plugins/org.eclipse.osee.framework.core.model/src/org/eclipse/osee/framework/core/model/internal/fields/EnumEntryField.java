@@ -32,9 +32,9 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
    @Override
    protected Collection<OseeEnumEntry> checkInput(Collection<OseeEnumEntry> input) throws OseeCoreException {
       checkEnumEntryIntegrity(input);
-      Set<OseeEnumEntry> toReturn = new HashSet<OseeEnumEntry>();
+      Set<OseeEnumEntry> toReturn = new HashSet<>();
 
-      Set<OseeEnumEntry> newEntries = new HashSet<OseeEnumEntry>();
+      Set<OseeEnumEntry> newEntries = new HashSet<>();
       Collection<OseeEnumEntry> currentEntries = get();
       for (OseeEnumEntry entry : input) {
          boolean wasFound = false;
@@ -63,8 +63,8 @@ public class EnumEntryField extends CollectionField<OseeEnumEntry> {
 
    private void checkEnumEntryIntegrity(Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
       // Use maps to speed up validation
-      Map<String, OseeEnumEntry> nameToEnum = new HashMap<String, OseeEnumEntry>();
-      Map<Integer, OseeEnumEntry> ordinalToEnum = new HashMap<Integer, OseeEnumEntry>();
+      Map<String, OseeEnumEntry> nameToEnum = new HashMap<>();
+      Map<Integer, OseeEnumEntry> ordinalToEnum = new HashMap<>();
       for (OseeEnumEntry entry : oseeEnumEntries) {
          Conditions.checkNotNullOrEmpty(entry.getName(), "Osee Enum Entry name");
 

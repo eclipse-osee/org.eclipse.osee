@@ -40,7 +40,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    private Artifact artifactRoot;
-   private final Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
+   private final Map<Object, Object> childToParentMap = new HashMap<>();
 
    @Override
    public void dispose() {

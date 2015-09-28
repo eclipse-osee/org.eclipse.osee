@@ -31,7 +31,7 @@ public class CreateTeamData {
 
    public CreateTeamData(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, CreateTeamOption... createTeamOption) {
       this.teamDef = teamDef;
-      this.actionableItems = new ArrayList<IAtsActionableItem>(actionableItems);
+      this.actionableItems = new ArrayList<>(actionableItems);
       this.assignees = assignees;
       this.createdDate = createdDate;
       this.createdBy = createdBy;

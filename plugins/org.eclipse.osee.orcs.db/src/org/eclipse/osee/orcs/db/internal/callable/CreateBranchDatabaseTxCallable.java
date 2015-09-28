@@ -232,7 +232,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private void populateBaseTransaction(double workAmount, JdbcConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
-         HashSet<Integer> gammas = new HashSet<Integer>(100000);
+         HashSet<Integer> gammas = new HashSet<>(100000);
          long parentBranchId = -1;
 
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
@@ -276,7 +276,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       int owner = PermissionEnum.OWNER.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);

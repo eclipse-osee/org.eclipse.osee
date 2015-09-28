@@ -36,7 +36,7 @@ public class ResultsEditorConverter {
    private final List<IEditorTabConverter> converters;
 
    public ResultsEditorConverter() {
-      converters = new ArrayList<IEditorTabConverter>();
+      converters = new ArrayList<>();
       converters.add(new HTMLEditorTabConverter());
       converters.add(new ExcelEditorTabConverter());
       converters.add(new MultiTypeEditorTabConverter("PDF"));

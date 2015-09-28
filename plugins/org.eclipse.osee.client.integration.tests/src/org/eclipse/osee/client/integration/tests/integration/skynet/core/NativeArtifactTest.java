@@ -52,7 +52,7 @@ public class NativeArtifactTest {
 
    private static final String ARTIFACT_NAME = NativeArtifactTest.class.getSimpleName();
 
-   private final Set<Artifact> testArtifacts = new HashSet<Artifact>();
+   private final Set<Artifact> testArtifacts = new HashSet<>();
 
    @After
    public void cleanup() throws Exception {

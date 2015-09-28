@@ -36,7 +36,7 @@ public final class MessageState implements Serializable {
       this.currentMemType = currentMemType;
       this.data = data;
 
-      this.availableMemTypes = new HashSet<DataType>(availableMemTypes);
+      this.availableMemTypes = new HashSet<>(availableMemTypes);
       this.mode = mode;
    }
 

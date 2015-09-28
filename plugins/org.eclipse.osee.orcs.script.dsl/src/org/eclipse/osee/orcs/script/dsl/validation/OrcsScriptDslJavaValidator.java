@@ -112,8 +112,8 @@ public class OrcsScriptDslJavaValidator extends org.eclipse.osee.orcs.script.dsl
     */
    @Check
    public void checkOsCollectClause(OsCollectClause clause) {
-      Set<String> aliases = new HashSet<String>();
-      Set<String> collisions = new HashSet<String>();
+      Set<String> aliases = new HashSet<>();
+      Set<String> collisions = new HashSet<>();
 
       OsCollectExpression expression = clause.getExpression();
       collectAliasHelper(expression, aliases, collisions);

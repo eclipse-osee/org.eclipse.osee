@@ -29,7 +29,7 @@ public class JaxRsTemplateApplication extends Application {
    }
 
    public void start() {
-      singletons = new HashSet<Object>();
+      singletons = new HashSet<>();
       singletons.add(new TemplateContributions(registry));
    }
 

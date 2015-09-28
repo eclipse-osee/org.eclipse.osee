@@ -74,7 +74,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
 
    @Override
    public Map<String, Session> load(Iterable<? extends String> sessionIds) throws OseeCoreException {
-      final Map<String, Session> sessions = new LinkedHashMap<String, Session>();
+      final Map<String, Session> sessions = new LinkedHashMap<>();
       ISessionCollector collector = new ISessionCollector() {
 
          @Override
@@ -107,7 +107,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
 
    @Override
    public Iterable<? extends String> getAllKeys() throws OseeCoreException {
-      final Set<String> ids = new LinkedHashSet<String>();
+      final Set<String> ids = new LinkedHashSet<>();
       ISessionCollector idCollector = new ISessionCollector() {
 
          @Override
@@ -151,7 +151,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       }
 
       private void create(JdbcConnection connection) throws OseeCoreException {
-         List<Object[]> insertData = new ArrayList<Object[]>();
+         List<Object[]> insertData = new ArrayList<>();
          for (Session session : sessions) {
             insertData.add(toInsert(session));
          }
@@ -161,7 +161,7 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
       }
 
       private void delete(JdbcConnection connection) throws OseeCoreException {
-         List<Object[]> deleteData = new ArrayList<Object[]>();
+         List<Object[]> deleteData = new ArrayList<>();
          for (Session session : sessions) {
             deleteData.add(toDelete(session));
          }

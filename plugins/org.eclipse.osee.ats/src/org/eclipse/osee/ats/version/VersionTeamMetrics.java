@@ -36,9 +36,9 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 public class VersionTeamMetrics {
 
    private final IAtsTeamDefinition verTeamDef;
-   private final List<VersionMetrics> releasedOrderedVersions = new ArrayList<VersionMetrics>();
-   private final Set<VersionMetrics> verMets = new HashSet<VersionMetrics>();
-   Map<Date, VersionMetrics> relDateToVerMet = new HashMap<Date, VersionMetrics>();
+   private final List<VersionMetrics> releasedOrderedVersions = new ArrayList<>();
+   private final Set<VersionMetrics> verMets = new HashSet<>();
+   Map<Date, VersionMetrics> relDateToVerMet = new HashMap<>();
 
    public VersionTeamMetrics(IAtsTeamDefinition verTeamDef) throws OseeCoreException {
       this.verTeamDef = verTeamDef;
@@ -61,7 +61,7 @@ public class VersionTeamMetrics {
 
    public Collection<TeamWorkFlowArtifact> getWorkflowsOriginatedBetween(Date startDate, Date endDate) throws OseeCoreException {
       if (teamWorkflowToOrigDate == null) {
-         teamWorkflowToOrigDate = new HashMap<TeamWorkFlowArtifact, Date>();
+         teamWorkflowToOrigDate = new HashMap<>();
          for (IAtsVersion verArt : verTeamDef.getVersions()) {
             for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
                Date origDate = team.getCreatedDate();
@@ -69,7 +69,7 @@ public class VersionTeamMetrics {
             }
          }
       }
-      Set<TeamWorkFlowArtifact> teams = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> teams = new HashSet<>();
       for (Entry<TeamWorkFlowArtifact, Date> entry : teamWorkflowToOrigDate.entrySet()) {
          if (entry.getValue() != null && entry.getValue().after(startDate) && entry.getValue().before(endDate)) {
             teams.add(entry.getKey());

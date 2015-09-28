@@ -64,7 +64,7 @@ public class DataRightBuilder {
    }
 
    private List<DataRightEntry> getOrderedList(DataRightInput request) {
-      List<DataRightEntry> orderedData = new ArrayList<DataRightEntry>();
+      List<DataRightEntry> orderedData = new ArrayList<>();
       orderedData.addAll(request.getData());
       Collections.sort(orderedData, new Comparator<DataRightEntry>() {
 
@@ -127,13 +127,13 @@ public class DataRightBuilder {
    }
 
    private Map<String, DataRight> getClassificationToDataRights(QueryBuilder query) {
-      Map<String, DataRight> toReturn = new HashMap<String, DataRight>();
+      Map<String, DataRight> toReturn = new HashMap<>();
 
       @SuppressWarnings("unchecked")
       ArtifactReadable footerMappingArt = query.andIds(MAPPING_ARTIFACT).getResults().getOneOrNull();
 
       if (footerMappingArt != null) {
-         List<String> footers = new ArrayList<String>();
+         List<String> footers = new ArrayList<>();
          footers = footerMappingArt.getAttributeValues(CoreAttributeTypes.GeneralStringData);
          for (String footer : footers) {
             String[] enumToFooter = footer.split("\\n", 2);

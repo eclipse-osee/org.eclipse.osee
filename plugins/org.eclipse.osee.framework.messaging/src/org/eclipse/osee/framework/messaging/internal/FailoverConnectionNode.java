@@ -49,8 +49,8 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
       this.connectionNode = connectionNode;
       this.exceptionListener = exceptionListener;
       exceptionListener.setListener(this);
-      savedSubscribes = new CopyOnWriteArrayList<SavedSubscribe>();
-      connectionListeners = new CopyOnWriteArrayList<ConnectionListener>();
+      savedSubscribes = new CopyOnWriteArrayList<>();
+      connectionListeners = new CopyOnWriteArrayList<>();
       this.scheduledExecutor = scheduledExecutor;
       itemToCancel = this.scheduledExecutor.scheduleAtFixedRate(this, 60, 15, TimeUnit.SECONDS);
    }

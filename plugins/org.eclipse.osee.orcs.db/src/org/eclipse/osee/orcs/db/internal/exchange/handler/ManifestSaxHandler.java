@@ -36,7 +36,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    public ManifestSaxHandler() {
       super();
-      this.filesToImport = new ArrayList<IExportItem>();
+      this.filesToImport = new ArrayList<>();
       this.typeModelFile = null;
       this.metadataFile = null;
       this.branchFile = null;

@@ -93,7 +93,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andLocalId(int... artifactId) {
-      Collection<Integer> ids = new LinkedList<Integer>();
+      Collection<Integer> ids = new LinkedList<>();
       for (int id : artifactId) {
          ids.add(id);
       }
@@ -225,7 +225,7 @@ public class QueryBuilderImpl implements QueryBuilder {
 
    @Override
    public QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) {
-      Collection<Integer> ids = new LinkedList<Integer>();
+      Collection<Integer> ids = new LinkedList<>();
       for (int id : artifactIds) {
          ids.add(id);
       }

@@ -46,7 +46,7 @@ public class ScriptRunJob extends Job {
    }
 
    public IStatus verifyOutfileLocations() {
-      final LinkedList<IStatus> failedLocations = new LinkedList<IStatus>();
+      final LinkedList<IStatus> failedLocations = new LinkedList<>();
       for (ScriptTask task : runTasks) {
          final String fileName = task.getScriptModel().getOutputModel().getRawFilename();
          final File file = new File(fileName);

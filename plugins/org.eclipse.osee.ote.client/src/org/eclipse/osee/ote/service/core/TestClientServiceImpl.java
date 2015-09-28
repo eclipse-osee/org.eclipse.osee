@@ -47,7 +47,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	private static final String NO_USER_MSG = "a user has not been set";
 	private final IConnectionService connectionService;
-	private final HashMap<String, IServiceConnector> testHosts = new HashMap<String, IServiceConnector>();
+	private final HashMap<String, IServiceConnector> testHosts = new HashMap<>();
 	private final ListenerNotifier listenerNotifier = new ListenerNotifier();
 	private final HashSet<ITestEnvironmentAvailibilityListener> hostAvailabilityListeners =
 			new HashSet<ITestEnvironmentAvailibilityListener>();
@@ -75,7 +75,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		final Set<Entry<String, IServiceConnector>> entrySet;
 		synchronized (this) {
 			if (hostAvailabilityListeners.add(listener)) {
-				entrySet = new HashSet<Entry<String,IServiceConnector>>(testHosts.entrySet());
+				entrySet = new HashSet<>(testHosts.entrySet());
 			} else {
 				entrySet = Collections.emptySet();
 			}
@@ -317,7 +317,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 
 	@Override
 	public synchronized List<IServiceConnector> getAvailableTestHosts() {
-		List<IServiceConnector> envs = new ArrayList<IServiceConnector>();
+		List<IServiceConnector> envs = new ArrayList<>();
 		for (IServiceConnector conn : testHosts.values()) {
 			envs.add(conn);
 		}

@@ -280,9 +280,9 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    private void computeTxFilterClause(Iterable<SqlHandler<?>> handlers) {
-      List<SqlHandler<?>> branchHandlers = new ArrayList<SqlHandler<?>>();
-      List<SqlHandler<?>> txHandlers = new ArrayList<SqlHandler<?>>();
-      List<SqlHandler<?>> artHandlers = new ArrayList<SqlHandler<?>>();
+      List<SqlHandler<?>> branchHandlers = new ArrayList<>();
+      List<SqlHandler<?>> txHandlers = new ArrayList<>();
+      List<SqlHandler<?>> artHandlers = new ArrayList<>();
 
       for (SqlHandler<?> handler : handlers) {
          if (handler.getPriority() <= SqlHandlerPriority.ALL_BRANCHES.ordinal()) {
@@ -333,8 +333,8 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    }
 
    private List<SqlHandler<?>> getFieldResolvers(Iterable<DynamicData> datas) {
-      List<SqlHandler<?>> toReturn = new ArrayList<SqlHandler<?>>();
-      Set<String> created = new HashSet<String>();
+      List<SqlHandler<?>> toReturn = new ArrayList<>();
+      Set<String> created = new HashSet<>();
       for (DynamicData data : datas) {
          int level = data.getLevel();
          ObjectField objectField = getObjectField(data);

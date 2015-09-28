@@ -82,7 +82,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       attributeTypeCache = new AttributeTypeCache();
       relationTypeCache = new RelationTypeCache();
 
-      caches = new ArrayList<IOseeCache<?, ?>>();
+      caches = new ArrayList<>();
       caches.add(branchCache);
       caches.add(txCache);
       caches.add(artifactTypeCache);

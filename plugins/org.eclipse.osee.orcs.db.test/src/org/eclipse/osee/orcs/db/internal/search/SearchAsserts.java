@@ -57,7 +57,7 @@ public final class SearchAsserts {
    }
 
    public static List<Pair<String, Long>> asTags(String word, long... entries) {
-      List<Pair<String, Long>> data = new ArrayList<Pair<String, Long>>();
+      List<Pair<String, Long>> data = new ArrayList<>();
       for (int index = 0; index < entries.length; index++) {
          data.add(new Pair<String, Long>(word, entries[index]));
       }
@@ -65,7 +65,7 @@ public final class SearchAsserts {
    }
 
    public static List<MatchLocation> asLocations(int... data) {
-      List<MatchLocation> locations = new ArrayList<MatchLocation>();
+      List<MatchLocation> locations = new ArrayList<>();
       if (data != null && data.length > 0) {
          for (int index = 0; index < data.length; index++) {
             locations.add(new MatchLocation(data[index], data[++index]));

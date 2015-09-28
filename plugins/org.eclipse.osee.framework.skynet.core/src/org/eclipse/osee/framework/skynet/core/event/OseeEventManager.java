@@ -161,7 +161,7 @@ public final class OseeEventManager {
 
    public static List<IEventFilter> getEventFiltersForBranch(final IOseeBranch branch) {
       try {
-         List<IEventFilter> eventFilters = new ArrayList<IEventFilter>(2);
+         List<IEventFilter> eventFilters = new ArrayList<>(2);
          eventFilters.add(new BranchUuidEventFilter(branch));
          return eventFilters;
       } catch (Exception ex) {

@@ -105,7 +105,7 @@ public class OrderParser {
                if (relationTypeName != null && orderType != null && relationSide != null) {
                   List<String> list = Collections.emptyList();
                   if (rawList != null) {
-                     list = new ArrayList<String>();
+                     list = new ArrayList<>();
                      StringTokenizer tokenizer = new StringTokenizer(rawList, ",");
                      while (tokenizer.hasMoreTokens()) {
                         list.add(tokenizer.nextToken());

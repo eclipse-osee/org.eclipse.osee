@@ -82,7 +82,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
     * @return All directly specified teamDefs plus if recurse, will get all children
     */
    private Set<IAtsActionableItem> getSearchActionableItems() throws OseeCoreException {
-      Set<IAtsActionableItem> srchTeamDefs = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> srchTeamDefs = new HashSet<>();
       for (IAtsActionableItem actionableItem : actionItems != null ? actionItems : selectedActionItems) {
          srchTeamDefs.add(actionableItem);
       }
@@ -97,11 +97,11 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       Set<IAtsActionableItem> items = getSearchActionableItems();
-      List<String> actionItemGuids = new ArrayList<String>(items.size());
+      List<String> actionItemGuids = new ArrayList<>(items.size());
       for (IAtsActionableItem ai : items) {
          actionItemGuids.add(AtsUtilCore.getGuid(ai));
       }
-      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
 
       criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem, actionItemGuids));
       // exclude completed or canceled
@@ -112,7 +112,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
       // show as actions
       if (selectedShowAction) {
-         Set<Artifact> arts = new HashSet<Artifact>();
+         Set<Artifact> arts = new HashSet<>();
          for (Artifact art : artifacts) {
             if (art.isOfType(AtsArtifactTypes.Action)) {
                arts.add(art);
@@ -148,7 +148,7 @@ public class ActionableItemWorldSearchItem extends WorldUISearchItem {
          selectedRecurseChildren = diag.isRecurseChildren();
          selectedShowAction = diag.isShowAction();
          if (selectedActionItems == null) {
-            selectedActionItems = new HashSet<IAtsActionableItem>();
+            selectedActionItems = new HashSet<>();
          } else {
             selectedActionItems.clear();
          }

@@ -74,7 +74,7 @@ public final class UtfReadingRuleTest {
 
    @Test
    public void testCharset() {
-      Stack<String> charsetStack = new Stack<String>();
+      Stack<String> charsetStack = new Stack<>();
       charsetStack.add("UnknownCharset");
       charsetStack.add("UTF-8");
 

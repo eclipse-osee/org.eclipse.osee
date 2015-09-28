@@ -28,7 +28,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ActionWalkerContentProvider implements IGraphEntityContentProvider {
-   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<Artifact>(0);
+   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<>(0);
 
    private final ActionWalkerView view;
 
@@ -43,7 +43,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
 
    @Override
    public Object[] getElements(Object entity) {
-      List<Object> objs = new ArrayList<Object>(5);
+      List<Object> objs = new ArrayList<>(5);
       try {
          if (!isTopArtifactGoal() && entity instanceof ActionArtifact) {
             objs.add(entity);
@@ -90,7 +90,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
          if (!isTopArtifactGoal() && inputElement instanceof ActionArtifact) {
             return ((ActionArtifact) inputElement).getTeams().toArray();
          } else if (inputElement instanceof TeamWorkFlowArtifact) {
-            List<Object> objs = new ArrayList<Object>(5);
+            List<Object> objs = new ArrayList<>(5);
             if (!isTopArtifactGoal()) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) inputElement;
                if (!view.isShowAll() && ReviewManager.getReviews(teamArt).size() > 4) {
@@ -114,7 +114,7 @@ public class ActionWalkerContentProvider implements IGraphEntityContentProvider 
             }
             return objs.toArray();
          } else if (inputElement instanceof GoalArtifact) {
-            List<Object> objs = new ArrayList<Object>(5);
+            List<Object> objs = new ArrayList<>(5);
             GoalArtifact goal = (GoalArtifact) inputElement;
             if (!view.isShowAll() && goal.getMembers().size() > 10) {
                objs.add(new GoalMemberWrapper(goal));

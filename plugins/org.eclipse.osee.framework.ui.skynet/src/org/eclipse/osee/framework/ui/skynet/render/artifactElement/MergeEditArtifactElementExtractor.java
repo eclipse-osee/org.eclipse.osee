@@ -39,8 +39,8 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
 
    @Override
    public Collection<WordExtractorData> extractElements() throws DOMException, OseeCoreException {
-      final Collection<WordExtractorData> artifactElements = new LinkedList<WordExtractorData>();
-      Collection<Element> sectList = new LinkedList<Element>();
+      final Collection<WordExtractorData> artifactElements = new LinkedList<>();
+      Collection<Element> sectList = new LinkedList<>();
       Element rootElement = document.getDocumentElement();
       oleDataElement = null;
 

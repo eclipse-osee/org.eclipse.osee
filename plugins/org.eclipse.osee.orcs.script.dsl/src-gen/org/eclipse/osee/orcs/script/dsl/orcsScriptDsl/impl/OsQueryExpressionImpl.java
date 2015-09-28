@@ -180,7 +180,7 @@ public class OsQueryExpressionImpl extends OsExpressionImpl implements OsQueryEx
   {
     if (clause == null)
     {
-      clause = new EObjectContainmentEList<OsClause>(OsClause.class, this, OrcsScriptDslPackage.OS_QUERY_EXPRESSION__CLAUSE);
+      clause = new EObjectContainmentEList<>(OsClause.class, this, OrcsScriptDslPackage.OS_QUERY_EXPRESSION__CLAUSE);
     }
     return clause;
   }

@@ -58,7 +58,7 @@ public class OteSendEventMessage {
    public <T extends OteEventMessage, R extends OteEventMessage> OteEventMessageFuture<T, R> asynchSendAndResponse(Class<R> clazz, T message, OteEventMessageCallable<T, R> callable, long timeout){
       int responseId = incrementSequenceNumber(message);
       String responseTopic = message.getHeader().RESPONSE_TOPIC.getValue();
-      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureImpl<T, R>(clazz, callable, message, responseTopic, responseId, timeout);
+      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureImpl<>(clazz, callable, message, responseTopic, responseId, timeout);
       OteEventMessageUtil.postEvent(message, eventAdmin);
       return response;
    }
@@ -71,7 +71,7 @@ public class OteSendEventMessage {
     * @return   a future that you should cancel when done listening so resources can be cleaned up.
     */
    public <R extends OteEventMessage> OteEventMessageResponseFuture<R> asynchResponse(Class<R> clazz, String topic, OteEventMessageResponseCallable<R> callable){
-      OteEventMessageResponseFutureImpl<R> response = new OteEventMessageResponseFutureImpl<R>(clazz, callable, topic);
+      OteEventMessageResponseFutureImpl<R> response = new OteEventMessageResponseFutureImpl<>(clazz, callable, topic);
       return response;
    }
    
@@ -90,7 +90,7 @@ public class OteSendEventMessage {
       try{
          int responseId = incrementSequenceNumber(message);
          message.getHeader().RESPONSE_TOPIC.setValue(responseTopic);
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(clazz, responseTopic, responseId, lock, responseReceived);
+         NotifyOnResponse<T> response = new NotifyOnResponse<>(clazz, responseTopic, responseId, lock, responseReceived);
          try{
             OteEventMessageUtil.postEvent(message, eventAdmin);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
@@ -125,7 +125,7 @@ public class OteSendEventMessage {
       try{
          int responseId = incrementSequenceNumber(sendMessage);
          sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
+         NotifyOnResponse<T> response = new NotifyOnResponse<>(responseMessage, responseId, lock, responseReceived);
          try{
             OteEventMessageUtil.postEvent(sendMessage, eventAdmin);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);

@@ -27,11 +27,11 @@ public class EnhancedProperties implements Serializable {
    private final HashMap<String, Serializable> map;
 
    public EnhancedProperties() {
-      map = new HashMap<String, Serializable>();
+      map = new HashMap<>();
    }
 
    public EnhancedProperties(int initialCapacity) {
-      map = new HashMap<String, Serializable>(initialCapacity);
+      map = new HashMap<>(initialCapacity);
    }
 
    public EnhancedProperties(EnhancedProperties props) {
@@ -69,7 +69,7 @@ public class EnhancedProperties implements Serializable {
    }
 
    public Collection<String> differences(EnhancedProperties otherProps) {
-      LinkedList<String> differences = new LinkedList<String>();
+      LinkedList<String> differences = new LinkedList<>();
       for (Entry<String, Serializable> entry : map.entrySet()) {
          Serializable value = otherProps.getProperty(entry.getKey());
          if (value == null) {

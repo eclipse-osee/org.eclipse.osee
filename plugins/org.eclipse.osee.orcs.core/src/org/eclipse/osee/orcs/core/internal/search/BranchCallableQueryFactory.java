@@ -111,13 +111,13 @@ public class BranchCallableQueryFactory {
       @Override
       public void onLoadStart() throws OseeCoreException {
          super.onLoadStart();
-         branchMap = new LinkedHashMap<Long, T>();
+         branchMap = new LinkedHashMap<>();
       }
 
       @Override
       public void onLoadEnd() throws OseeCoreException {
          super.onLoadEnd();
-         results = new LinkedList<T>(branchMap.values());
+         results = new LinkedList<>(branchMap.values());
          branchMap.clear();
       }
 

@@ -43,7 +43,7 @@ public class DuplicateWorkflowViaWorldEditorAction extends AbstractAtsAction {
    }
 
    private Collection<TeamWorkFlowArtifact> getSelectedTeamWorkflowArtifacts() throws OseeCoreException {
-      List<TeamWorkFlowArtifact> teams = new ArrayList<TeamWorkFlowArtifact>();
+      List<TeamWorkFlowArtifact> teams = new ArrayList<>();
       for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
          if (art instanceof TeamWorkFlowArtifact) {
             teams.add((TeamWorkFlowArtifact) art);

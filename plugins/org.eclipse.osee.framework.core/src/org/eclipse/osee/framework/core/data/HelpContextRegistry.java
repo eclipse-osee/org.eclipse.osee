@@ -17,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Roberto E. Escobar
  */
 public final class HelpContextRegistry {
-   private static final Map<String, HelpContext> contexts = new ConcurrentHashMap<String, HelpContext>();
+   private static final Map<String, HelpContext> contexts = new ConcurrentHashMap<>();
 
    public static HelpContext asContext(String pluginId, String name) {
       String key = HelpContext.asReference(pluginId, name);

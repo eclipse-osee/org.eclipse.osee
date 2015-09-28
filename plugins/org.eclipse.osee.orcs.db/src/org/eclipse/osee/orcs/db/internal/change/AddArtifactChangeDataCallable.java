@@ -29,15 +29,15 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
 
    @Override
    public List<ChangeItem> call() throws Exception {
-      Map<Integer, ChangeItem> artifactChanges = new HashMap<Integer, ChangeItem>();
+      Map<Integer, ChangeItem> artifactChanges = new HashMap<>();
       for (ChangeItem item : changeItems) {
          if (item.getChangeType().isArtifactChange()) {
             artifactChanges.put(item.getArtId(), item);
          }
       }
 
-      List<ChangeItem> attrItems = new ArrayList<ChangeItem>();
-      Map<Integer, ChangeItem> syntheticArtifactChanges = new HashMap<Integer, ChangeItem>();
+      List<ChangeItem> attrItems = new ArrayList<>();
+      Map<Integer, ChangeItem> syntheticArtifactChanges = new HashMap<>();
 
       for (ChangeItem item : changeItems) {
          if (item.getChangeType().isAttributeChange()) {

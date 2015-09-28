@@ -91,7 +91,7 @@ public class UpdateAtsConfiguration {
             rd.log("Creating VIEWS attribute\n");
          } else {
             // merge any new default view items to current database view items
-            List<AtsAttributeValueColumn> toAdd = new LinkedList<AtsAttributeValueColumn>();
+            List<AtsAttributeValueColumn> toAdd = new LinkedList<>();
             for (AtsAttributeValueColumn defaultView : defaultViews.getAttrColumns()) {
                boolean found = false;
                for (AtsAttributeValueColumn dbView : databaseViews.getAttrColumns()) {

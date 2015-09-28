@@ -69,7 +69,7 @@ public class DecisionLoader {
    }
 
    public List<CpaDecision> load() {
-      List<CpaDecision> decisions = new ArrayList<CpaDecision>();
+      List<CpaDecision> decisions = new ArrayList<>();
       QueryBuilder queryBuilder =
          atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow,
             "true");
@@ -83,7 +83,7 @@ public class DecisionLoader {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
             (open ? StateType.Working.name() : StateType.Completed.name()));
       }
-      HashCollection<String, CpaDecision> origPcrIdToDecision = new HashCollection<String, CpaDecision>();
+      HashCollection<String, CpaDecision> origPcrIdToDecision = new HashCollection<>();
       String pcrToolId = null;
       ElapsedTime time = new ElapsedTime("load cpa workflows");
       ResultSet<ArtifactReadable> results = queryBuilder.getResults();

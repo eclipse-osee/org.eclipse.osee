@@ -76,7 +76,7 @@ public class EarnedValueWorkPacakgeReportBlam extends AbstractBlam {
          AWorkbench.popup("ERROR", "Must drag in Work Packages(s).");
          return;
       }
-      List<IAtsWorkPackage> workPackages = new ArrayList<IAtsWorkPackage>();
+      List<IAtsWorkPackage> workPackages = new ArrayList<>();
       for (Artifact artifact : workPackageArts) {
          workPackages.add(new WorkPackageArtifact(artifact));
       }
@@ -106,7 +106,7 @@ public class EarnedValueWorkPacakgeReportBlam extends AbstractBlam {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
             if (tabs == null) {
-               tabs = new LinkedList<IResultsEditorTab>();
+               tabs = new LinkedList<>();
                tabs.add(createDataTab(results));
             }
             return tabs;
@@ -115,12 +115,12 @@ public class EarnedValueWorkPacakgeReportBlam extends AbstractBlam {
    }
 
    private static IResultsEditorTab createDataTab(List<EarnedValueReportResult> results) {
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+      List<XViewerColumn> columns = new ArrayList<>();
       for (IColumn column : EarnedValueReportOperation.columns) {
          columns.add(new XViewerIColumnAdapter(column));
       }
 
-      List<IResultsXViewerRow> rows = new ArrayList<IResultsXViewerRow>();
+      List<IResultsXViewerRow> rows = new ArrayList<>();
       for (EarnedValueReportResult result : results) {
          String strs[] = new String[EarnedValueReportOperation.columns.size()];
          int x = 0;

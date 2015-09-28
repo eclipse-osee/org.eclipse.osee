@@ -54,7 +54,7 @@ public class TreeNode implements ITreeNode, Serializable {
       if (objChildren == null) {
          this.children = new Object[0];
       } else {
-         Collection<Object> newChildren = new ArrayList<Object>(objChildren.length);
+         Collection<Object> newChildren = new ArrayList<>(objChildren.length);
 
          for (Object obj : objChildren) {
             newChildren.add(obj instanceof ITreeNode ? obj : getChild(obj));

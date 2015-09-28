@@ -279,7 +279,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private Set<ActionArtifact> createActions(List<DemoDbActionData> actionDatas, IArtifactToken versionToken, TeamState toStateOverride, IAtsChangeSet changes) throws Exception {
-      Set<ActionArtifact> actionArts = new HashSet<ActionArtifact>();
+      Set<ActionArtifact> actionArts = new HashSet<>();
       int currNum = 1;
       for (DemoDbActionData aData : actionDatas) {
          if (DEBUG) {
@@ -428,7 +428,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          }
 
          // Create Test Script Artifacts
-         Set<Artifact> verificationTests = new HashSet<Artifact>();
+         Set<Artifact> verificationTests = new HashSet<>();
          Artifact verificationHeader =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Verification Tests", branch);
          if (verificationHeader == null) {
@@ -445,7 +445,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
 
          // Create Validation Test Procedure Artifacts
-         Set<Artifact> validationTests = new HashSet<Artifact>();
+         Set<Artifact> validationTests = new HashSet<>();
          Artifact validationHeader =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Validation Tests", branch);
          if (validationHeader == null) {
@@ -462,7 +462,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
 
          // Create Integration Test Procedure Artifacts
-         Set<Artifact> integrationTests = new HashSet<Artifact>();
+         Set<Artifact> integrationTests = new HashSet<>();
          Artifact integrationHeader =
             ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, "Integration Tests", branch);
          if (integrationHeader == null) {

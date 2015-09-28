@@ -36,7 +36,7 @@ public class MessageInstance {
    private int refcount = 0;
    private boolean supported = true;
    private volatile boolean connected = false;
-   private HashSet<DataType> availableTypes = new HashSet<DataType>();
+   private HashSet<DataType> availableTypes = new HashSet<>();
 
    public MessageInstance(Message msg, MessageMode mode, DataType type) {
       this.msg = msg;

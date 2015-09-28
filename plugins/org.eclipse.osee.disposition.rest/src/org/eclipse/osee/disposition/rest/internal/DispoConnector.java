@@ -92,7 +92,7 @@ public class DispoConnector {
 
    @SuppressWarnings("unchecked")
    private ArrayList<Integer> createDiscrepanciesList(JSONObject discrepancies) throws JSONException {
-      ArrayList<Integer> toReturn = new ArrayList<Integer>();
+      ArrayList<Integer> toReturn = new ArrayList<>();
       Iterator<String> iterator = discrepancies.keys();
       while (iterator.hasNext()) {
          String key = iterator.next();
@@ -105,7 +105,7 @@ public class DispoConnector {
    }
 
    private HashSet<Integer> getAllCoveredDiscrepanciesFromAnnotations(JSONObject discrepancies, JSONArray annotations) throws JSONException {
-      HashSet<Integer> toReturn = new HashSet<Integer>();
+      HashSet<Integer> toReturn = new HashSet<>();
       int length = annotations.length();
       for (int j = 0; j < length; j++) {
          JSONObject annotationAsObject = annotations.getJSONObject(j);
@@ -128,7 +128,7 @@ public class DispoConnector {
       boolean isAllLocRefValid = true;
       HashMap<Integer, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
       List<LocationRange> listOfLocationRefs = sortList(annotation.getLocationRefs());
-      List<String> workingIdsOfCovered = new ArrayList<String>();
+      List<String> workingIdsOfCovered = new ArrayList<>();
 
       for (LocationRange singleLocationRef : listOfLocationRefs) {
          if (singleLocationRef.getStart() != singleLocationRef.getEnd()) {
@@ -171,7 +171,7 @@ public class DispoConnector {
 
    @SuppressWarnings("unchecked")
    private HashMap<Integer, String> getPointNumbersToIds(JSONObject discrepancies) throws JSONException {
-      HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
+      HashMap<Integer, String> toReturn = new HashMap<>();
       Iterator<String> iterator = discrepancies.keys();
       while (iterator.hasNext()) {
          String key = iterator.next();
@@ -191,9 +191,9 @@ public class DispoConnector {
       int firstUncoveredIndex = startIndex;
 
       Collections.reverse(allLocationRefs);
-      Stack<LocationRange> locationRefsStack = new Stack<LocationRange>();
+      Stack<LocationRange> locationRefsStack = new Stack<>();
       locationRefsStack.addAll(allLocationRefs);
-      List<LocationRange> allUncovered = new ArrayList<LocationRange>();
+      List<LocationRange> allUncovered = new ArrayList<>();
 
       while (locationRefsStack.size() > 0) {
          LocationRange locRef = locationRefsStack.pop();
@@ -244,7 +244,7 @@ public class DispoConnector {
 
    private List<LocationRange> sortList(String allLocationRefsString) {
       allLocationRefsString = allLocationRefsString.replaceAll("\\s*", "");
-      List<LocationRange> toReturn = new ArrayList<LocationRange>();
+      List<LocationRange> toReturn = new ArrayList<>();
       StringTokenizer tokenizer = new StringTokenizer(allLocationRefsString, ",");
       while (tokenizer.hasMoreTokens()) {
          String singleLocationRefString = tokenizer.nextToken();

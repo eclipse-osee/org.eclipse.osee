@@ -69,7 +69,7 @@ public class CreateTasksOperation extends AbstractOperation {
    }
 
    private Map<TaskEnum, ITaskOperation> createTaskOperationMap() {
-      Map<TaskEnum, ITaskOperation> toReturn = new HashMap<TaskEnum, ITaskOperation>();
+      Map<TaskEnum, ITaskOperation> toReturn = new HashMap<>();
 
       toReturn.put(TaskEnum.CREATE, new TaskOpCreate(taskTitleProvider));
       toReturn.put(TaskEnum.MODIFY, new TaskOpModify());
@@ -78,7 +78,7 @@ public class CreateTasksOperation extends AbstractOperation {
    }
 
    private Map<TaskEnum, ITaskOperation> createReportOnlyTaskOperationMap() {
-      Map<TaskEnum, ITaskOperation> toReturn = new HashMap<TaskEnum, ITaskOperation>();
+      Map<TaskEnum, ITaskOperation> toReturn = new HashMap<>();
 
       toReturn.put(TaskEnum.CREATE, new TaskOpDoNothing(taskTitleProvider));
       toReturn.put(TaskEnum.MODIFY, new TaskOpDoNothing(taskTitleProvider));

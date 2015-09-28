@@ -130,7 +130,7 @@ public final class LdapAuthenticationManager {
    }
 
    private Set<String> getRoles(LdapConnection connection, String username, LdapAccount account) {
-      Set<String> roles = new LinkedHashSet<String>();
+      Set<String> roles = new LinkedHashSet<>();
       try {
          Set<LdapGroup> groups = connection.findGroups(ldapFilter, username, account);
          if (Strings.isValid(groupNamespace)) {

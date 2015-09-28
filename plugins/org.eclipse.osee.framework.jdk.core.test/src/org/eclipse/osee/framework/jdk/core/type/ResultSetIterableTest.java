@@ -41,8 +41,8 @@ public class ResultSetIterableTest {
    public void init() {
       MockitoAnnotations.initMocks(this);
 
-      data = new LinkedHashSet<String>();
-      result = new ResultSetIterable<String>(data);
+      data = new LinkedHashSet<>();
+      result = new ResultSetIterable<>(data);
    }
 
    @Test

@@ -39,7 +39,7 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  */
 public class BlamInputSection extends BaseBlamSection {
-   private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<XWidgetRendererItem>();
+   private final Collection<XWidgetRendererItem> dynamicInputLayouts = new ArrayList<>();
 
    public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
@@ -104,7 +104,7 @@ public class BlamInputSection extends BaseBlamSection {
    }
 
    private List<XWidgetRendererItem> getDynamicXWidgetLayouts() throws Exception {
-      List<XWidgetRendererItem> itemsToReturn = new ArrayList<XWidgetRendererItem>();
+      List<XWidgetRendererItem> itemsToReturn = new ArrayList<>();
       itemsToReturn.addAll(getAbstractBlam().getLayoutDatas());
       itemsToReturn.addAll(dynamicInputLayouts);
       return itemsToReturn;

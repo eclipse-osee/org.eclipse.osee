@@ -168,7 +168,7 @@ public class InternalClientSessionManager {
    }
 
    private void internalReleaseSession(String sessionId) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put("operation", "release");
       parameters.put("sessionId", sessionId);
       try {
@@ -185,9 +185,9 @@ public class InternalClientSessionManager {
    }
 
    public List<String> getAuthenticationProtocols() {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       try {
-         Map<String, String> parameters = new HashMap<String, String>();
+         Map<String, String> parameters = new HashMap<>();
          String url =
             HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);
          if (Strings.isValid(url)) {
@@ -218,7 +218,7 @@ public class InternalClientSessionManager {
 
    private OseeSessionGrant internalAcquireSession(OseeCredential credential) throws OseeCoreException, MalformedURLException {
       OseeSessionGrant session = null;
-      Map<String, String> parameters = new HashMap<String, String>();
+      Map<String, String> parameters = new HashMap<>();
       parameters.put("operation", "create");
       String url =
          HttpUrlBuilderClient.getInstance().getOsgiServletServiceUrl(OseeServerContext.SESSION_CONTEXT, parameters);

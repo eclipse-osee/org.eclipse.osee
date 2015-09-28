@@ -21,11 +21,11 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
    private final HashMap<KeyOne, HashMap<KeyTwo, Value>> k1ToHashMap;
 
    public DoubleKeyHashMap() {
-      k1ToHashMap = new HashMap<KeyOne, HashMap<KeyTwo, Value>>();
+      k1ToHashMap = new HashMap<>();
    }
 
    public Map<KeyOne, KeyTwo> keySet() {
-      Map<KeyOne, KeyTwo> keySet = new HashMap<KeyOne, KeyTwo>();
+      Map<KeyOne, KeyTwo> keySet = new HashMap<>();
       for (KeyOne one : k1ToHashMap.keySet()) {
          for (KeyTwo two : k1ToHashMap.get(one).keySet()) {
             keySet.put(one, two);
@@ -57,7 +57,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
       if (o != null) {
          returnV = o.put(k2, v);
       } else {
-         o = new HashMap<KeyTwo, Value>(20);
+         o = new HashMap<>(20);
          returnV = o.put(k2, v);
          k1ToHashMap.put(k1, o);
       }
@@ -92,7 +92,7 @@ public class DoubleKeyHashMap<KeyOne, KeyTwo, Value> {
     * @return Return value collection
     */
    public Collection<Value> allValues() {
-      Collection<Value> values = new HashSet<Value>();
+      Collection<Value> values = new HashSet<>();
       for (HashMap<KeyTwo, Value> map : k1ToHashMap.values()) {
          values.addAll(map.values());
       }

@@ -322,7 +322,7 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
   {
     if (staticId == null)
     {
-      staticId = new EDataTypeEList<String>(String.class, this, AtsDslPackage.VERSION_DEF__STATIC_ID);
+      staticId = new EDataTypeEList<>(String.class, this, AtsDslPackage.VERSION_DEF__STATIC_ID);
     }
     return staticId;
   }
@@ -451,7 +451,7 @@ public class VersionDefImpl extends MinimalEObjectImpl.Container implements Vers
   {
     if (parallelVersion == null)
     {
-      parallelVersion = new EDataTypeEList<String>(String.class, this, AtsDslPackage.VERSION_DEF__PARALLEL_VERSION);
+      parallelVersion = new EDataTypeEList<>(String.class, this, AtsDslPackage.VERSION_DEF__PARALLEL_VERSION);
     }
     return parallelVersion;
   }

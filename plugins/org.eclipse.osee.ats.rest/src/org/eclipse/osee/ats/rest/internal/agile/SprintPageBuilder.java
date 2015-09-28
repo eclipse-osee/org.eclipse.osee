@@ -39,7 +39,7 @@ public class SprintPageBuilder {
    private double walkupCompleted = 0;
    private int numActionsStarted = 0;
    private int numActionsBacklog = 0;
-   TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<String, FeatureGroupSum>();
+   TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<>();
 
    public SprintPageBuilder(IAtsServer atsServer, ArtifactReadable sprint) {
       this.atsServer = atsServer;

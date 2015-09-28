@@ -24,7 +24,7 @@ public class MetaData {
    private String query;
 
    MetaData(String tableName) {
-      this.dataConversionMap = new LinkedHashMap<String, SQL3DataType>();
+      this.dataConversionMap = new LinkedHashMap<>();
       this.tableTarget = tableName;
       this.query = null;
    }

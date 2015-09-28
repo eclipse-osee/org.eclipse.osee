@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class ArtifactNameConflictHandler {
 
    public String resolve(IArtifact source) {
-      final Pair<String, String> beforeAfterNames = new Pair<String, String>("", "");
+      final Pair<String, String> beforeAfterNames = new Pair<>("", "");
 
       String startingName = source.getName();
       beforeAfterNames.setFirst(startingName);

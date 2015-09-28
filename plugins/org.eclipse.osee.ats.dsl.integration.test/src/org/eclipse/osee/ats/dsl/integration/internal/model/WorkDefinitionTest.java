@@ -75,7 +75,7 @@ public class WorkDefinitionTest {
       completed.setStateType(StateType.Completed);
 
       IAtsWorkDefinition def = new WorkDefinition("this");
-      List<IAtsStateDefinition> states = new LinkedList<IAtsStateDefinition>();
+      List<IAtsStateDefinition> states = new LinkedList<>();
       states.addAll(Arrays.asList(endorse, analyze));
       new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(2, states.size());
@@ -92,7 +92,7 @@ public class WorkDefinitionTest {
 
       IAtsWorkDefinition def = new WorkDefinition("this");
       endorse.setDefaultToState(endorse);
-      List<IAtsStateDefinition> states = new LinkedList<IAtsStateDefinition>();
+      List<IAtsStateDefinition> states = new LinkedList<>();
       states.addAll(Arrays.asList(analyze, completed));
       new AtsWorkDefinitionServiceImpl().getStatesOrderedByDefaultToState(def, endorse, states);
       Assert.assertEquals(3, states.size());

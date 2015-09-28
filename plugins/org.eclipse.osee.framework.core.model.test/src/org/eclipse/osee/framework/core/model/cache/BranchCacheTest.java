@@ -32,7 +32,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Long, Branch> {
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
-      branchData = new ArrayList<Branch>();
+      branchData = new ArrayList<>();
 
       BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
       cache = new BranchCache(branchAccessor, new TransactionCache());

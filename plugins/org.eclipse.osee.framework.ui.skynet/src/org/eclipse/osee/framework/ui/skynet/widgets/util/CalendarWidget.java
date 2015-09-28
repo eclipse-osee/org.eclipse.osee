@@ -50,7 +50,7 @@ public class CalendarWidget extends Composite {
       void dateChanged(Calendar calendar);
    }
 
-   private final List<CalendarListener> listeners = new CopyOnWriteArrayList<CalendarListener>();
+   private final List<CalendarListener> listeners = new CopyOnWriteArrayList<>();
    private Text text;
    private Calendar calendar;
 

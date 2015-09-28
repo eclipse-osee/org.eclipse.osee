@@ -69,7 +69,7 @@ public class OsTxTypeCriteriaImpl extends OsTxCriteriaImpl implements OsTxTypeCr
   {
     if (types == null)
     {
-      types = new EDataTypeEList<OsTxType>(OsTxType.class, this, OrcsScriptDslPackage.OS_TX_TYPE_CRITERIA__TYPES);
+      types = new EDataTypeEList<>(OsTxType.class, this, OrcsScriptDslPackage.OS_TX_TYPE_CRITERIA__TYPES);
     }
     return types;
   }

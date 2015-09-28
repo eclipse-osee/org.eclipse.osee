@@ -33,7 +33,7 @@ public class EmailGroupsData {
    private String subject;
    private String body;
    private boolean bodyIsHtml;
-   private final Set<Artifact> groups = new HashSet<Artifact>(5);
+   private final Set<Artifact> groups = new HashSet<>(5);
 
    public String getSubject() {
       return subject;
@@ -64,7 +64,7 @@ public class EmailGroupsData {
    }
 
    public HashCollection<Artifact, Artifact> getUserToGroupMap() throws OseeCoreException {
-      HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<Artifact, Artifact>();
+      HashCollection<Artifact, Artifact> userToGroupMap = new HashCollection<>();
       for (Artifact group : groups) {
          for (Artifact user : group.getRelatedArtifacts(CoreRelationTypes.Users_User)) {
             Boolean isActive = user.getSoleAttributeValue(CoreAttributeTypes.Active);
@@ -93,7 +93,7 @@ public class EmailGroupsData {
       if (groups.isEmpty()) {
          return new Result("No groups selected");
       }
-      Set<Artifact> groupArts = new HashSet<Artifact>();
+      Set<Artifact> groupArts = new HashSet<>();
       groupArts.addAll(getUserToGroupMap().getValues());
       if (groupArts.isEmpty()) {
          return new Result("No valid users in groups selected");
@@ -113,7 +113,7 @@ public class EmailGroupsData {
          html.append("</pre>");
       }
 
-      Set<String> groupsAllowed = new HashSet<String>();
+      Set<String> groupsAllowed = new HashSet<>();
       for (Artifact group : groups) {
          groupsAllowed.add(group.getName());
       }

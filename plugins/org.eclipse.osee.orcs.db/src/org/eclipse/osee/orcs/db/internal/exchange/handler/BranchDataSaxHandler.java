@@ -49,7 +49,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    private BranchDataSaxHandler(Log logger, JdbcClient service, boolean isCacheAll, int cacheLimit) {
       super(logger, service, isCacheAll, cacheLimit);
-      this.idToImportFileBranchData = new HashMap<Long, BranchData>();
+      this.idToImportFileBranchData = new HashMap<>();
       this.connection = null;
    }
 
@@ -77,7 +77,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    public boolean areAvailable(long... branchUuids) {
       boolean toReturn = false;
       if (branchUuids != null && branchUuids.length > 0) {
-         Set<Long> toCheck = new HashSet<Long>();
+         Set<Long> toCheck = new HashSet<>();
          for (long entry : branchUuids) {
             toCheck.add(entry);
          }
@@ -91,7 +91,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    private List<BranchData> getSelectedBranchesToImport(long... branchesToImport) {
-      List<BranchData> toReturn = new ArrayList<BranchData>();
+      List<BranchData> toReturn = new ArrayList<>();
       if (branchesToImport != null && branchesToImport.length > 0) {
          for (long branchUuid : branchesToImport) {
             BranchData data = this.idToImportFileBranchData.get(branchUuid);
@@ -152,7 +152,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    public void updateBaselineAndParentTransactionId(long[] branchesStored) throws OseeCoreException {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       for (BranchData branchData : branches) {
          long branchUuid = branchData.getId();
          int parentTransactionId = translateIntId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
@@ -191,7 +191,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    }
 
    private Collection<BranchData> checkTargetDbBranches(JdbcConnection connection, Collection<BranchData> selectedBranches) throws OseeCoreException {
-      Map<Long, BranchData> idToBranchData = new HashMap<Long, BranchData>();
+      Map<Long, BranchData> idToBranchData = new HashMap<>();
       for (BranchData data : selectedBranches) {
          idToBranchData.put(data.getId(), data);
       }

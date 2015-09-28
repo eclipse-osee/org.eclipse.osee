@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.lifecycle.AbstractLifecycleVisitor;
  */
 public class MockLifecycePoint extends AbstractLifecycleVisitor<MockHandler> {
 
-   public static final Type<MockHandler> TYPE = new Type<MockHandler>();
+   public static final Type<MockHandler> TYPE = new Type<>();
 
    private final String a;
    private final String b;

@@ -39,7 +39,7 @@ public class SavePointManager {
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
       "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
 
-   private final Map<String, SavePoint> savePoints = new LinkedHashMap<String, SavePoint>();
+   private final Map<String, SavePoint> savePoints = new LinkedHashMap<>();
 
    private final JdbcClient jdbcClient;
 
@@ -54,7 +54,7 @@ public class SavePointManager {
    }
 
    public void storeSavePoints(JdbcConnection connection, int importIdIndex) throws OseeCoreException {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       for (SavePoint savePoint : savePoints.values()) {
          int status = 1;
          String comment = "";
@@ -158,7 +158,7 @@ public class SavePointManager {
 
       public void addError(Throwable ex) {
          if (errors == null) {
-            errors = new ArrayList<Throwable>();
+            errors = new ArrayList<>();
          }
          if (!errors.contains(ex)) {
             errors.add(ex);

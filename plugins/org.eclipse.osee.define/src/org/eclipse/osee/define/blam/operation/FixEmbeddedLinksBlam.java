@@ -63,7 +63,7 @@ public class FixEmbeddedLinksBlam extends AbstractBlam {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.WholeWordContent)) {
             String content = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.WholeWordContent, "");
             if (Strings.isValid(content)) {
-               Set<String> unknownGuids = new HashSet<String>();
+               Set<String> unknownGuids = new HashSet<>();
                content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
                artifact.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, content);
                artifact.persist(tx);

@@ -20,7 +20,7 @@ public class LibraryChangeProvider<T extends JarCollectionNature> {
    private final List<IUserLibListener> listeners;
 
    public LibraryChangeProvider() {
-      listeners = new ArrayList<IUserLibListener>();
+      listeners = new ArrayList<>();
    }
 
    public void addListener(IUserLibListener listener) {

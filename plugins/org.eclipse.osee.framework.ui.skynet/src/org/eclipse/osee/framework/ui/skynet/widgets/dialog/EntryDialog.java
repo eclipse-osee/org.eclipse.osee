@@ -64,7 +64,7 @@ public class EntryDialog extends MessageDialog {
    private String label;
    private Integer textHeight = null;
 
-   private final List<IShellCloseEvent> closeEventListeners = new ArrayList<IShellCloseEvent>();
+   private final List<IShellCloseEvent> closeEventListeners = new ArrayList<>();
    private final String dialogTitle;
 
    public EntryDialog(String dialogTitle, String dialogMessage) {

@@ -34,7 +34,7 @@ public class MultiBranchProvider implements BranchProvider {
    }
 
    private Collection<Branch> getChildBranches(Branch branch) throws OseeCoreException {
-      Set<Branch> children = new HashSet<Branch>();
+      Set<Branch> children = new HashSet<>();
 
       branch.getChildBranches(children, true, filter);
       if (filter.matches(branch)) {
@@ -48,7 +48,7 @@ public class MultiBranchProvider implements BranchProvider {
       Conditions.checkNotNull(branches, "seeds");
       Set<Branch> result = branches;
       if (recursive) {
-         result = new HashSet<Branch>(branches);
+         result = new HashSet<>(branches);
          for (Branch b : branches) {
             result.addAll(getChildBranches(b));
          }

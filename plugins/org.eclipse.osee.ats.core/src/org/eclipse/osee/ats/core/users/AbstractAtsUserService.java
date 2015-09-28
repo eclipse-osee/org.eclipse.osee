@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public abstract class AbstractAtsUserService implements IAtsUserService {
 
-   protected final Map<String, IAtsUser> userIdToAtsUser = new HashMap<String, IAtsUser>(300);
-   protected final Map<String, Boolean> userIdToAdmin = new HashMap<String, Boolean>(300);
-   protected final Map<String, IAtsUser> nameToAtsUser = new HashMap<String, IAtsUser>(300);
+   protected final Map<String, IAtsUser> userIdToAtsUser = new HashMap<>(300);
+   protected final Map<String, Boolean> userIdToAdmin = new HashMap<>(300);
+   protected final Map<String, IAtsUser> nameToAtsUser = new HashMap<>(300);
    protected IAtsUser currentUser = null;
    protected String currentUserId = null;
    protected boolean loaded = false;
@@ -50,7 +50,7 @@ public abstract class AbstractAtsUserService implements IAtsUserService {
    @Override
    public Collection<IAtsUser> getUsersByUserIds(Collection<String> userIds) throws OseeCoreException {
       ensureLoaded();
-      List<IAtsUser> users = new LinkedList<IAtsUser>();
+      List<IAtsUser> users = new LinkedList<>();
       for (String userId : userIds) {
          IAtsUser user = getUserById(userId);
          if (user != null) {

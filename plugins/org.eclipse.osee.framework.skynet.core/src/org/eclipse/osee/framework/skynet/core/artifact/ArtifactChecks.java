@@ -30,7 +30,7 @@ public class ArtifactChecks {
 
    public static List<IArtifactCheck> getArtifactChecks() {
       if (checks == null) {
-         checks = new ArrayList<IArtifactCheck>();
+         checks = new ArrayList<>();
          checks.addAll(artifactCheckObjects.getObjects());
          checks.add(new UserArtifactCheck());
       }

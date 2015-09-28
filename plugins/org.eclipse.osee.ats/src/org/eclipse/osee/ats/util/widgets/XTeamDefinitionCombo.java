@@ -52,11 +52,11 @@ public class XTeamDefinitionCombo extends XComboViewer {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }
 
-      List<IAtsTeamDefinition> sortedTeamDefs = new ArrayList<IAtsTeamDefinition>();
+      List<IAtsTeamDefinition> sortedTeamDefs = new ArrayList<>();
       sortedTeamDefs.addAll(teamDefs);
       Collections.sort(sortedTeamDefs, new TeamDefinitionSorter());
       getComboViewer().setInput(sortedTeamDefs);
-      ArrayList<Object> defaultSelection = new ArrayList<Object>();
+      ArrayList<Object> defaultSelection = new ArrayList<>();
       defaultSelection.add("--select--");
       setSelected(defaultSelection);
       addXModifiedListener(new XModifiedListener() {

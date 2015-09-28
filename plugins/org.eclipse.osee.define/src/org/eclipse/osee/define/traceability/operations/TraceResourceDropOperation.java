@@ -80,7 +80,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
          }
          HierarchyHandler handler = new HierarchyHandler(transaction);
 
-         Map<Artifact, String> nameUpdateRequired = new TreeMap<Artifact, String>();
+         Map<Artifact, String> nameUpdateRequired = new TreeMap<>();
 
          for (URI resource : resources) {
             File file = new File(resource);

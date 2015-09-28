@@ -185,7 +185,7 @@ public class OrcsStorageImpl implements Storage {
          .andTypeEquals(DispoConstants.DispoSet)//
          .getResults();
 
-      List<DispoSet> toReturn = new ArrayList<DispoSet>();
+      List<DispoSet> toReturn = new ArrayList<>();
       for (ArtifactReadable art : results) {
          toReturn.add(new DispoSetArtifact(art));
       }
@@ -211,7 +211,7 @@ public class OrcsStorageImpl implements Storage {
       ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = setArt.getChildren();
 
-      List<DispoItem> toReturn = new ArrayList<DispoItem>();
+      List<DispoItem> toReturn = new ArrayList<>();
       for (ArtifactReadable art : results) {
          DispoItemArtifact dispoItemArtifact = new DispoItemArtifact(art);
          dispoItemArtifact.getAborted();
@@ -424,7 +424,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public List<IOseeBranch> getDispoBranches() {
-      List<IOseeBranch> dispoBranchesNormalized = new ArrayList<IOseeBranch>();
+      List<IOseeBranch> dispoBranchesNormalized = new ArrayList<>();
       BranchReadable dispoBranch = getQuery().branchQuery().andNameEquals("Dispo Parent").getResults().getExactlyOne();
 
       ResultSet<BranchReadable> dispoBranches =
@@ -444,7 +444,7 @@ public class OrcsStorageImpl implements Storage {
    public Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword) {
       ArtifactReadable dispoSetArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
 
-      Set<DispoItem> toReturn = new HashSet<DispoItem>();
+      Set<DispoItem> toReturn = new HashSet<>();
       ResultSet<ArtifactReadable> dispoArtifacts =
          getQuery()//
          .fromBranch(program.getUuid())//
@@ -528,7 +528,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private Map<String, ArtifactReadable> getChildrenRecurse(List<ArtifactReadable> descendants) {
-      Map<String, ArtifactReadable> toReturn = new HashMap<String, ArtifactReadable>();
+      Map<String, ArtifactReadable> toReturn = new HashMap<>();
 
       for (ArtifactReadable descendant : descendants) {
          if (!descendant.getAttributeValues(CoverageUtil.Item).isEmpty()) {

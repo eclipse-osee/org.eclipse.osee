@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
  * @author Donald G. Dunne
  */
 public class SkynetUserArtifactCustomizeDefaults {
-   Set<String> defaultGuids = new HashSet<String>();
+   Set<String> defaultGuids = new HashSet<>();
    private static String DEFAULT_CUST_GUID_TAG = "defaultCustGuid";
    private final User user;
 

@@ -36,7 +36,7 @@ public class HighLevelSummary implements ITestRunReport {
    private final Map<String, CollectedData> dataMap;
 
    public HighLevelSummary() {
-      this.dataMap = new HashMap<String, CollectedData>();
+      this.dataMap = new HashMap<>();
    }
 
    @Override
@@ -67,7 +67,7 @@ public class HighLevelSummary implements ITestRunReport {
    @Override
    public String[][] getBody() {
       int numRows = dataMap.size();
-      List<String> keys = new ArrayList<String>(dataMap.keySet());
+      List<String> keys = new ArrayList<>(dataMap.keySet());
       String[][] toReturn = new String[numRows][getHeader().length];
       for (int row = 0; row < numRows; row++) {
          String key = keys.get(row);
@@ -78,7 +78,7 @@ public class HighLevelSummary implements ITestRunReport {
    }
 
    private String[] addRow(CollectedData data) {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       values.add(data.getPartition());
       values.add(data.getSubsytem());
       values.add(Integer.toString(data.getScriptCount()));

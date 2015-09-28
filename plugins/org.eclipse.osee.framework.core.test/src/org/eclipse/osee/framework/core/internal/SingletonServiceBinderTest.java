@@ -66,7 +66,7 @@ public class SingletonServiceBinderTest {
 
    @Before
    public void setupTest() {
-      serviceMap = new ConcurrentHashMap<Class<?>, Collection<Object>>();
+      serviceMap = new ConcurrentHashMap<>();
       serviceBinder = new SingletonServiceBinder(serviceMap, context, handler);
       handler.reset();
    }

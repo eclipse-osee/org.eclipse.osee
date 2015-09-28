@@ -58,7 +58,7 @@ public class LoaderSqlHandlerFactoryUtilTest {
 
    @Test
    public void testQueryModuleFactory() throws Exception {
-      List<Criteria> criteria = new ArrayList<Criteria>();
+      List<Criteria> criteria = new ArrayList<>();
       criteria.add(new CriteriaArtifact());
       criteria.add(new CriteriaAttribute(null, null));
       criteria.add(new CriteriaRelation(null, null));

@@ -22,7 +22,7 @@ public class Scope implements Cloneable {
    private static final String LEGACY_SCOPE = "##";
    private static final String ARTIFACT_LOCK_SCOPE = "##**";
 
-   private final List<String> scopePath = new ArrayList<String>();
+   private final List<String> scopePath = new ArrayList<>();
 
    public Scope() {
       // Do nothing

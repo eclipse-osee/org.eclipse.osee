@@ -22,7 +22,7 @@ import org.eclipse.osee.mail.api.MailService;
 @ApplicationPath("mail")
 public class MailApplication extends Application {
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
    private MailService mailService;
 
    public void setMailService(MailService mailService) {

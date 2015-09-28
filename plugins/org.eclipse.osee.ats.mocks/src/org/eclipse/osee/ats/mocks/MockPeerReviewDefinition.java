@@ -28,7 +28,7 @@ public class MockPeerReviewDefinition implements IAtsPeerReviewDefinition {
    public String relatedToState;
    public ReviewBlockType blockingType;
    public StateEventType stateEventType;
-   public List<String> assignees = new ArrayList<String>();
+   public List<String> assignees = new ArrayList<>();
 
    public MockPeerReviewDefinition(String name) {
       this.name = name;

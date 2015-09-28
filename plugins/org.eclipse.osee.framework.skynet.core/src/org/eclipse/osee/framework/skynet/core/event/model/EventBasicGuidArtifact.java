@@ -54,7 +54,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       if (eventModType == EventModType.ChangeType) {
          throw new OseeArgumentException("Can't be used for ChangeType");
       }
-      Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> eventArts = new HashSet<>();
       for (IBasicGuidArtifact guidArt : basicGuidArtifacts) {
          eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt));
       }
@@ -65,7 +65,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       if (eventModType == EventModType.ChangeType) {
          throw new OseeArgumentException("Can't be used for ChangeType");
       }
-      Set<EventBasicGuidArtifact> eventArts = new HashSet<EventBasicGuidArtifact>();
+      Set<EventBasicGuidArtifact> eventArts = new HashSet<>();
       for (RemoteBasicGuidArtifact1 guidArt : basicGuidArtifacts) {
          eventArts.add(new EventBasicGuidArtifact(eventModType,
             FrameworkEventUtil.getBranchUuidFromRemoteEvent(guidArt.getBranchGuid()), guidArt.getArtTypeGuid(),

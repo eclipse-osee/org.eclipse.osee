@@ -47,13 +47,13 @@ public class XGoalCombo extends XComboViewer {
       try {
          Collection<Artifact> goalArtifacts =
             new GoalSearchItem("", new ArrayList<IAtsTeamDefinition>(), false, null).performSearchGetResults();
-         List<IAtsGoal> sortedGoals = new ArrayList<IAtsGoal>();
+         List<IAtsGoal> sortedGoals = new ArrayList<>();
          for (Artifact goalArt : goalArtifacts) {
             sortedGoals.add((IAtsGoal) goalArt);
          }
          Collections.sort(sortedGoals, new GoalSorter());
          getComboViewer().setInput(sortedGoals);
-         ArrayList<Object> defaultSelection = new ArrayList<Object>();
+         ArrayList<Object> defaultSelection = new ArrayList<>();
          defaultSelection.add("--select--");
          setSelected(defaultSelection);
          addXModifiedListener(new XModifiedListener() {

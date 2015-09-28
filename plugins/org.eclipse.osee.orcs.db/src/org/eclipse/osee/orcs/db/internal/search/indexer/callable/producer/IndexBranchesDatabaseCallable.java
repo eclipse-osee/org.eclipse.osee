@@ -80,7 +80,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
    public Integer call() throws Exception {
       getLogger().info(getParamInfo());
 
-      Set<Long> branchUuids = new HashSet<Long>();
+      Set<Long> branchUuids = new HashSet<>();
       for (BranchReadable branch : branches) {
          branchUuids.add(branch.getUuid());
       }

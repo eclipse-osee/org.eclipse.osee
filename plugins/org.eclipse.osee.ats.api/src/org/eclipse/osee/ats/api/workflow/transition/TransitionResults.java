@@ -26,7 +26,7 @@ public class TransitionResults {
 
    boolean cancelled;
 
-   private final List<ITransitionResult> results = new ArrayList<ITransitionResult>();
+   private final List<ITransitionResult> results = new ArrayList<>();
 
    private final Map<IAtsWorkItem, List<ITransitionResult>> workItemToResults =
       new HashMap<IAtsWorkItem, List<ITransitionResult>>();
@@ -34,7 +34,7 @@ public class TransitionResults {
    public void addResult(IAtsWorkItem workItem, ITransitionResult result) {
       List<ITransitionResult> results = workItemToResults.get(workItem);
       if (results == null) {
-         results = new ArrayList<ITransitionResult>();
+         results = new ArrayList<>();
          workItemToResults.put(workItem, results);
       }
       results.add(result);

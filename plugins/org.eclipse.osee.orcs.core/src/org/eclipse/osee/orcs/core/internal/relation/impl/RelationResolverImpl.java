@@ -47,14 +47,14 @@ public class RelationResolverImpl implements RelationResolver {
       List<T> toReturn = Collections.emptyList();
       if (!links.isEmpty()) {
          Set<Integer> toLoad = null;
-         LinkedHashMap<Integer, T> items = new LinkedHashMap<Integer, T>();
+         LinkedHashMap<Integer, T> items = new LinkedHashMap<>();
          for (Relation relation : links) {
             for (RelationSide side : sides) {
                int localId = relation.getLocalIdForSide(side);
                RelationNode node = graph.getNode(localId);
                if (node == null) {
                   if (toLoad == null) {
-                     toLoad = new LinkedHashSet<Integer>();
+                     toLoad = new LinkedHashSet<>();
                   }
                   toLoad.add(localId);
                }

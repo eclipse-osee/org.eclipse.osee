@@ -81,7 +81,7 @@ public class XListDropViewWithSave extends XListDropViewer implements IAttribute
    public Result isDirty() {
       if (isEditable()) {
          try {
-            List<Artifact> enteredValues = new ArrayList<Artifact>();
+            List<Artifact> enteredValues = new ArrayList<>();
             Collections.flatten(getArtifacts(), enteredValues);
             Collection<Artifact> storedValues = getStored();
             if (!Collections.isEqual(enteredValues, storedValues)) {

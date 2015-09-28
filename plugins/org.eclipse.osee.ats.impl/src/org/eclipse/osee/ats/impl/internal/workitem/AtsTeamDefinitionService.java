@@ -41,7 +41,7 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
 
    @Override
    public Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef) {
-      List<IAtsVersion> versions = new ArrayList<IAtsVersion>();
+      List<IAtsVersion> versions = new ArrayList<>();
       for (ArtifactReadable verArt : ((ArtifactReadable) teamDef.getStoreObject()).getRelated(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
          versions.add(atsServer.getConfigItemFactory().getVersion(verArt));
       }

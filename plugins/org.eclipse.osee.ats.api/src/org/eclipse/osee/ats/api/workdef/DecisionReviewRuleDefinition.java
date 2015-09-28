@@ -23,7 +23,7 @@ public class DecisionReviewRuleDefinition extends RuleDefinition implements IAts
    private String relatedState;
    private ReviewBlockType blockingType;
    private boolean autoTransitionToDecision = false;
-   private List<IAtsDecisionReviewOption> options = new ArrayList<IAtsDecisionReviewOption>();
+   private List<IAtsDecisionReviewOption> options = new ArrayList<>();
    private String title = "";
 
    @Override

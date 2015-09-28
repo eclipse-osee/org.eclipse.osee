@@ -66,9 +66,9 @@ public class SelectionComposite extends Composite {
    private final Object[] resources;
    private final boolean isSelectAllByDefault;
    private final Map<Object, MutableBoolean> selectableMap;
-   private final Set<Object> userSelectedResources = new HashSet<Object>();
-   private final Set<Object> notSelectableResources = new HashSet<Object>();
-   private final Set<Object> overridable = new HashSet<Object>();
+   private final Set<Object> userSelectedResources = new HashSet<>();
+   private final Set<Object> notSelectableResources = new HashSet<>();
+   private final Set<Object> overridable = new HashSet<>();
    private final String[] columnNames;
    private Label lblSelectedResourcesNumber;
    private IOverrideHandler overrideHandler;
@@ -82,7 +82,7 @@ public class SelectionComposite extends Composite {
       super(parent, style);
       this.columnNames = columnNames;
       this.tableLabelProvider = tableLabelProvider;
-      this.selectableMap = new HashMap<Object, MutableBoolean>();
+      this.selectableMap = new HashMap<>();
       this.resources = resources;
       this.isSelectAllByDefault = isSelectAllByDefault;
       if (userSelectedResources != null) {
@@ -261,7 +261,7 @@ public class SelectionComposite extends Composite {
    }
 
    private Object[] getSelectedItems(boolean thatMatchTrue) {
-      List<Object> toReturn = new ArrayList<Object>();
+      List<Object> toReturn = new ArrayList<>();
       for (Object key : selectableMap.keySet()) {
          if (selectableMap.get(key).getValue() == thatMatchTrue) {
             toReturn.add(key);

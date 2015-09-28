@@ -37,7 +37,7 @@ public class XHistoryViewer extends GenericXWidget {
    private HistoryXViewer xViewer;
    private ToolBar toolBar;
    protected final AbstractWorkflowArtifact awa;
-   protected final Collection<Change> changes = new ArrayList<Change>();
+   protected final Collection<Change> changes = new ArrayList<>();
 
    public XHistoryViewer(AbstractWorkflowArtifact awa) {
       super("");

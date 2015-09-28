@@ -75,7 +75,7 @@ public class WorkflowManager {
    }
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
-      List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
+      List<TeamWorkFlowArtifact> result = new ArrayList<>();
       for (IArtifactType artType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
          List<TeamWorkFlowArtifact> teamArts =
             org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
@@ -86,7 +86,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getCompletedCancelled(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (awa.isCompletedOrCancelled()) {
             artifactsToReturn.add(awa);
@@ -96,7 +96,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getInWork(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!awa.isCompletedOrCancelled()) {
             artifactsToReturn.add(awa);
@@ -106,7 +106,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> filterOutState(Collection<AbstractWorkflowArtifact> awas, Collection<String> stateNames) {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!stateNames.contains(awa.getStateMgr().getCurrentStateName())) {
             artifactsToReturn.add(awa);
@@ -116,7 +116,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> filterOutCompleted(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!awa.isCompleted()) {
             artifactsToReturn.add(awa);
@@ -126,7 +126,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> filterOutCancelled(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          if (!awa.isCancelled()) {
             artifactsToReturn.add(awa);
@@ -136,7 +136,7 @@ public class WorkflowManager {
    }
 
    public static Collection<Artifact> filterState(String selectedState, Collection<? extends Artifact> awas) {
-      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(awas.size());
+      List<Artifact> artifactsToReturn = new ArrayList<>(awas.size());
       if (!Strings.isValid(selectedState)) {
          artifactsToReturn.addAll(awas);
       } else {
@@ -150,7 +150,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> filterOutTypes(Collection<AbstractWorkflowArtifact> awas, Collection<Class<?>> classes) {
-      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<AbstractWorkflowArtifact>(awas.size());
+      List<AbstractWorkflowArtifact> artifactsToReturn = new ArrayList<>(awas.size());
       for (AbstractWorkflowArtifact awa : awas) {
          boolean found = false;
          for (Class<?> clazz : classes) {
@@ -166,7 +166,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getOpenAtDate(Date date, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          Date createDate = CreatedDateColumn.getDate(awa);
          Date completedCancelDate = null;
@@ -185,7 +185,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getCompletedCancelledBetweenDate(Date startDate, Date endDate, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          Date completedCancelDate = null;
          if (awa.isCompletedOrCancelled()) {
@@ -214,7 +214,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getStateAtDate(Date date, Collection<String> states, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          Date createDate = CreatedDateColumn.getDate(awa);
          if (createDate.after(date)) {
@@ -238,7 +238,7 @@ public class WorkflowManager {
     * Returns awa if change type, or parent team workflow's change type is in specified set
     */
    public static Collection<AbstractWorkflowArtifact> getChangeType(Collection<ChangeType> changeTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
          if (changeTypes.contains(ChangeTypeUtil.getChangeType(teamArt))) {
@@ -253,7 +253,7 @@ public class WorkflowManager {
     * Returns awa if priority type, or parent team workflow's priority type is in specified set
     */
    public static Collection<AbstractWorkflowArtifact> getPriorityType(Collection<String> priorityTypes, Collection<AbstractWorkflowArtifact> artifacts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> awas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> awas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : artifacts) {
          TeamWorkFlowArtifact teamArt = awa.getParentTeamWorkflow();
          if (priorityTypes.contains(PriorityUtil.getPriorityStr(teamArt))) {
@@ -265,7 +265,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsTeamDefinition> teamDefs) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> returnawas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
             continue;
@@ -278,7 +278,7 @@ public class WorkflowManager {
    }
 
    public static Collection<AbstractWorkflowArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<IAtsVersion> versionArts) throws OseeCoreException {
-      List<AbstractWorkflowArtifact> returnawas = new ArrayList<AbstractWorkflowArtifact>();
+      List<AbstractWorkflowArtifact> returnawas = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : getAwas(artifacts)) {
          if (awa.getParentTeamWorkflow() == null) {
             continue;
@@ -318,7 +318,7 @@ public class WorkflowManager {
    }
 
    public static List<StateXWidgetPage> getStatePagesOrderedByOrdinal(AbstractWorkflowArtifact awa) throws OseeStateException {
-      List<StateXWidgetPage> statePages = new ArrayList<StateXWidgetPage>();
+      List<StateXWidgetPage> statePages = new ArrayList<>();
       if (awa != null) {
          IAtsWorkDefinition definition = awa.getWorkDefinition();
          ATSXWidgetOptionResolver optionResolver = ATSXWidgetOptionResolver.getInstance();

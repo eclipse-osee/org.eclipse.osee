@@ -42,8 +42,8 @@ public class CatchTrackedChanges implements CommitAction {
 
    @Override
    public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
-      Set<Artifact> changedArtifacts = new HashSet<Artifact>();
-      Collection<Change> changes = new ArrayList<Change>();
+      Set<Artifact> changedArtifacts = new HashSet<>();
+      Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
 

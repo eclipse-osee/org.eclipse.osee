@@ -23,7 +23,7 @@ import org.eclipse.osee.jdbc.JdbcTransaction;
  */
 public class JdbcSequenceProvider {
 
-   private final HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
+   private final HashMap<String, SequenceRange> sequences = new HashMap<>(30);
 
    public synchronized void invalidate() {
       sequences.clear();

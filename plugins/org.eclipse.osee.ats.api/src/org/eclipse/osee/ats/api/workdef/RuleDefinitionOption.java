@@ -32,7 +32,7 @@ public enum RuleDefinitionOption {
    AllowTransitionWithoutTaskCompletion("StateDefinition Option: Allow tasks to transition to other InWork states without completion.", RuleLocations.StateDefinition);
 
    public final String description;
-   public List<RuleLocations> ruleLocs = new ArrayList<RuleLocations>();
+   public List<RuleLocations> ruleLocs = new ArrayList<>();
 
    public String getDescription() {
       return description;

@@ -39,15 +39,15 @@ public class TestUnitData extends BaseTraceDataCache {
 
    public TestUnitData(IOseeBranch branch) {
       super("Test Unit Data", branch);
-      this.testCaseMap = new HashMap<String, Artifact>();
-      this.testProcedureMap = new HashMap<String, Artifact>();
-      this.testSupportMap = new HashMap<String, Artifact>();
+      this.testCaseMap = new HashMap<>();
+      this.testProcedureMap = new HashMap<>();
+      this.testSupportMap = new HashMap<>();
 
-      this.testCases = new ArrayList<Artifact>();
-      this.testProcedures = new ArrayList<Artifact>();
-      this.testSupportItems = new ArrayList<Artifact>();
+      this.testCases = new ArrayList<>();
+      this.testProcedures = new ArrayList<>();
+      this.testSupportItems = new ArrayList<>();
 
-      this.allTestUnits = new TreeSet<Artifact>();
+      this.allTestUnits = new TreeSet<>();
    }
 
    @Override

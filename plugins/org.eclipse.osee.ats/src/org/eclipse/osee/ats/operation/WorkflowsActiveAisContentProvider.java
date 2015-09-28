@@ -37,7 +37,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getElements(Object inputElement) {
-      Collection<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+      Collection<IAtsActionableItem> ais = new ArrayList<>();
       if (inputElement instanceof TeamWorkFlowArtifact) {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) inputElement;
          ais.addAll(teamWf.getTeamDefinition().getActionableItems());
@@ -47,7 +47,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
 
    @Override
    public Object[] getChildren(Object inputElement) {
-      Collection<IAtsActionableItem> ais = new ArrayList<IAtsActionableItem>();
+      Collection<IAtsActionableItem> ais = new ArrayList<>();
       if (inputElement instanceof IAtsActionableItem) {
          IAtsActionableItem ai = (IAtsActionableItem) inputElement;
          for (IAtsActionableItem childAi : ai.getChildrenActionableItems()) {
@@ -76,7 +76,7 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
     * Add ai to results if owned by teamDef an matches active status
     */
    private static List<IAtsActionableItem> getActiveChildrenForTeamAndAi(IAtsTeamDefinition teamDef, Active active, IAtsActionableItem ai) {
-      List<IAtsActionableItem> results = new ArrayList<IAtsActionableItem>();
+      List<IAtsActionableItem> results = new ArrayList<>();
       if (ai.getTeamDefinition() == null || ai.getTeamDefinition().equals(teamDef)) {
          if (active == Active.Both) {
             results.add(ai);

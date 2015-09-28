@@ -39,7 +39,7 @@ public class TestMessage extends Message<UnitTestAccessor, TestMessageData, Test
       setDefaultMessageData(ethData);
       INT_ELEMENT_1 = new IntegerElement(this, "INT_ELEMENT_1", ethData, 0, 0, 15);
       STRING_ELEMENT_1 = new StringElement(this, "STRING_ELEMENT_1", ethData, 2, 0, 159);
-      ENUM_ELEMENT_1 = new EnumeratedElement<TestEnum>(this, "ENUM_ELEMENT_1", TestEnum.class, ethData, 22, 0, 7);
+      ENUM_ELEMENT_1 = new EnumeratedElement<>(this, "ENUM_ELEMENT_1", TestEnum.class, ethData, 22, 0, 7);
       FLOAT32_ELEMENT_1 = new Float32Element(this, "FLOAT32_ELEMENT_1", ethData, 23, 0, 31);
       RECORD_MAP_1 =
          new RecordMap<TestRecordElement>(this, ethData, "RECORD_MAP_1", 2, new RECORD_MAP_1_factory(ethData));

@@ -63,7 +63,7 @@ public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
             selected = Selection.ReplaceAll;
          }
       } catch (OseeCoreException ex) {
-         options = new HashSet<String>();
+         options = new HashSet<>();
          options.add(ex.getLocalizedMessage());
       }
 

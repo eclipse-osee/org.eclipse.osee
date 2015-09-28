@@ -84,7 +84,7 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public void open(final List<Artifact> artifacts, PresentationType presentationType) {
-      final List<Artifact> notMatched = new LinkedList<Artifact>();
+      final List<Artifact> notMatched = new LinkedList<>();
       final StringBuffer findErrorMessage = new StringBuffer();
 
       FindInWorkspaceCollector collector = new FindInWorkspaceCollector() {
@@ -159,8 +159,8 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      final List<IResource> matches = new LinkedList<IResource>();
-      final List<Artifact> notMatched = new LinkedList<Artifact>();
+      final List<IResource> matches = new LinkedList<>();
+      final List<Artifact> notMatched = new LinkedList<>();
 
       FindInWorkspaceCollector collector = new FindInWorkspaceCollector() {
 

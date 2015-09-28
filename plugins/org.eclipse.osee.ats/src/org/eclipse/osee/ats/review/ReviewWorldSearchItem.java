@@ -100,7 +100,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      Set<String> actionableItemGuids = new HashSet<String>(aias.size());
+      Set<String> actionableItemGuids = new HashSet<>(aias.size());
       for (IAtsActionableItem aia : aias) {
          if (recurseChildren) {
             for (IAtsActionableItem childTeamDef : ActionableItems.getActionableItemsFromItemAndChildren(aia)) {
@@ -110,7 +110,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
             actionableItemGuids.add(AtsUtilCore.getGuid(aia));
          }
       }
-      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
       if (actionableItemGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.ActionableItem));
       } else {
@@ -121,7 +121,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
 
-      Set<Artifact> resultSet = new HashSet<Artifact>();
+      Set<Artifact> resultSet = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(AtsArtifactTypes.ReviewArtifact) && includeReview(art) && isCompletedCancelledValid(art)) {
             resultSet.add(art);
@@ -188,7 +188,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
             if (!includeCancelled && !includeCompleted) {
                criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
             } else {
-               List<String> cancelOrComplete = new ArrayList<String>(2);
+               List<String> cancelOrComplete = new ArrayList<>(2);
                cancelOrComplete.add(StateType.Working.name());
                if (includeCompleted) {
                   cancelOrComplete.add(StateType.Completed.name());
@@ -202,7 +202,7 @@ public class ReviewWorldSearchItem extends WorldUISearchItem {
       } catch (OseeTypeDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          // Backward compatibility; remove after 0.9.7 release
-         List<String> cancelOrComplete = new ArrayList<String>(2);
+         List<String> cancelOrComplete = new ArrayList<>(2);
          if (!includeCancelled) {
             cancelOrComplete.add(TeamState.Cancelled.getName() + ";;;");
          }

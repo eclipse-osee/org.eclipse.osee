@@ -143,7 +143,7 @@ public class RelationOrderParser {
                List<String> guidsList = Collections.emptyList();
                if (list != null) {
                   String[] guids = list.split(",");
-                  guidsList = new ArrayList<String>();
+                  guidsList = new ArrayList<>();
                   Collections.addAll(guidsList, guids);
                }
                data.addOrderList(relationType, relationSide, orderType, guidsList);

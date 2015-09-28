@@ -55,7 +55,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    protected Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
 
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
-      Set<Artifact> artifacts = new HashSet<Artifact>(50);
+      Set<Artifact> artifacts = new HashSet<>(50);
       // Because user can be assigned directly to review or through being assigned to task, add in
       // all the original artifacts.
       artifacts.addAll(assigned);
@@ -67,7 +67,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
             "<" + user.getUserId() + ">", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS));
       }
 
-      List<Artifact> artifactsToReturn = new ArrayList<Artifact>(artifacts.size());
+      List<Artifact> artifactsToReturn = new ArrayList<>(artifacts.size());
       for (Artifact artifact : artifacts) {
          if (artifact instanceof AbstractReviewArtifact && (reviewState == ReviewState.All || reviewState == ReviewState.InWork && !((AbstractWorkflowArtifact) artifact).isCompletedOrCancelled())) {
             artifactsToReturn.add(artifact);

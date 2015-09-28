@@ -73,7 +73,7 @@ public class OsTxBranchIdCriteriaImpl extends OsTxCriteriaImpl implements OsTxBr
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_BRANCH_ID_CRITERIA__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_BRANCH_ID_CRITERIA__IDS);
     }
     return ids;
   }

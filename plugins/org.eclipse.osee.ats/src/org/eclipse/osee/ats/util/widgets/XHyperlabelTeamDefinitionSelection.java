@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlinkLabelCmdValueSelec
 public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueSelection {
 
    public static final String WIDGET_ID = XHyperlabelTeamDefinitionSelection.class.getSimpleName();
-   Collection<IAtsTeamDefinition> selectedTeamDefs = new HashSet<IAtsTeamDefinition>();
+   Collection<IAtsTeamDefinition> selectedTeamDefs = new HashSet<>();
    Collection<IAtsTeamDefinition> teamDefs;
    TeamDefinitionTreeWithChildrenDialog dialog = null;
 

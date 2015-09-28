@@ -30,7 +30,7 @@ public class BaseIOInstrumentation implements IOInstrumentation {
    private final DatagramChannel channel;
 
    public BaseIOInstrumentation() throws IOException {
-      addresses = new ArrayList<InetSocketAddress>();
+      addresses = new ArrayList<>();
       channel = DatagramChannel.open();
       channel.configureBlocking(true);
 

@@ -71,7 +71,7 @@ public class ChangeXViewer extends XViewer {
    }
 
    private ArrayList<Change> getSelectedChanges() {
-      ArrayList<Change> arts = new ArrayList<Change>();
+      ArrayList<Change> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
 
       if (items.length > 0) {

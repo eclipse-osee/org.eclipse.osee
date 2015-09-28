@@ -137,12 +137,12 @@ public class XBarGraphTable extends XButtonCommon {
       shell.setLayout(new GridLayout(1, false));
       shell.setText("Show results as a bar chart in Table");
 
-      List<XBarGraphLine> lines = new ArrayList<XBarGraphLine>();
+      List<XBarGraphLine> lines = new ArrayList<>();
       lines.add(XBarGraphLine.getPercentLine("Fix", 34));
       lines.add(XBarGraphLine.getPercentLine("Improvement", 100));
       lines.add(new XBarGraphLine("Support", SWT.COLOR_GREEN, SWT.COLOR_YELLOW, SWT.COLOR_RED, SWT.COLOR_YELLOW, 33,
          "33%", "67%"));
-      List<XBarGraphLineSegment> segments = new ArrayList<XBarGraphLineSegment>();
+      List<XBarGraphLineSegment> segments = new ArrayList<>();
       segments.add(XBarGraphLineSegment.getPercentSegment("23%", SWT.COLOR_GREEN, 23));
       segments.add(XBarGraphLineSegment.getPercentSegment("45%", SWT.COLOR_BLUE, 45));
       segments.add(XBarGraphLineSegment.getPercentSegment("20%", SWT.COLOR_YELLOW, 20));

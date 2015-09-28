@@ -24,7 +24,7 @@ import org.eclipse.osee.jdbc.internal.JdbcUtil;
  */
 public class JdbcServiceConfig {
 
-   private final Map<String, Object> data = new LinkedHashMap<String, Object>();
+   private final Map<String, Object> data = new LinkedHashMap<>();
 
    public String getId() {
       return JdbcUtil.getServiceId(data);
@@ -39,7 +39,7 @@ public class JdbcServiceConfig {
    }
 
    public Dictionary<String, Object> asDictionary() {
-      Dictionary<String, Object> toReturn = new Hashtable<String, Object>();
+      Dictionary<String, Object> toReturn = new Hashtable<>();
       for (Entry<String, Object> entry : data.entrySet()) {
          toReturn.put(entry.getKey(), entry.getValue());
       }

@@ -155,7 +155,7 @@ public final class ArtifactImportOperationFactory {
       builder.addOp(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,
          deleteUnmatchedArtifacts, extractor));
 
-      final List<Artifact> children = new ArrayList<Artifact>();
+      final List<Artifact> children = new ArrayList<>();
       builder.addOp(new FetchAndAddDescendantsOperation(children, destinationArtifact));
       builder.addOp(new ArtifactValidationCheckOperation(children, stopOnError));
       builder.addOp(new CompleteArtifactImportOperation(transaction, destinationArtifact));

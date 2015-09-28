@@ -80,7 +80,7 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
 
    @Override
    public DefaultActivityType[] getActivityTypes() {
-      final List<DefaultActivityType> types = new ArrayList<DefaultActivityType>();
+      final List<DefaultActivityType> types = new ArrayList<>();
       activityLog.queryActivityTypes(new ActivityTypeDataHandler() {
 
          @Override

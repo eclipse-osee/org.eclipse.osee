@@ -69,7 +69,7 @@ public class AttributeSqlHandler extends SqlHandler<CriteriaAttribute> {
    }
 
    private Collection<Long> getLocalTypeIds() throws OseeCoreException {
-      Collection<Long> toReturn = new HashSet<Long>();
+      Collection<Long> toReturn = new HashSet<>();
       for (Identity<Long> type : criteria.getTypes()) {
          toReturn.add(type.getGuid());
       }

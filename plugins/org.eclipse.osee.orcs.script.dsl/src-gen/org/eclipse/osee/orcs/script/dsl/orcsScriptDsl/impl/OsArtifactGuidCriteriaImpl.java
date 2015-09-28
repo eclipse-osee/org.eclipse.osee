@@ -73,7 +73,7 @@ public class OsArtifactGuidCriteriaImpl extends OsArtifactCriteriaImpl implement
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_ARTIFACT_GUID_CRITERIA__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_ARTIFACT_GUID_CRITERIA__IDS);
     }
     return ids;
   }

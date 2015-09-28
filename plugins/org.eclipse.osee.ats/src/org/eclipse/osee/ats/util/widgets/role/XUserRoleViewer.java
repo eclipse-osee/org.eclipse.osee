@@ -90,7 +90,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    private ToolBar toolBar;
    private UserRoleManager roleMgr;
 
-   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<PeerToPeerReviewArtifact, Integer>();
+   private static Map<PeerToPeerReviewArtifact, Integer> tableHeight = new HashMap<>();
 
    public XUserRoleViewer() {
       super("Roles");
@@ -353,7 +353,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
 
    @SuppressWarnings("rawtypes")
    public List<UserRole> getSelectedUserRoleItems() {
-      List<UserRole> items = new ArrayList<UserRole>();
+      List<UserRole> items = new ArrayList<>();
       if (xViewer == null) {
          return items;
       }

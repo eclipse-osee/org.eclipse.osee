@@ -121,7 +121,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
    }
 
    private void handleCreateActions(Collection<TaskArtifact> tasks, String title, Collection<IAtsActionableItem> aias, ChangeType changeType, String priority, IProgressMonitor monitor) throws OseeCoreException {
-      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
+      Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
       AtsChangeSet changes = new AtsChangeSet("Create Actions from Tasks");
       for (TaskArtifact task : tasks) {
          String useTitle = title;
@@ -213,7 +213,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
     * @param taskArtifacts the defaultTeamWorkflows to set
     */
    public void setDefaultTeamWorkflows(Collection<? extends TaskArtifact> taskArtifacts) {
-      this.taskArtifacts = new LinkedList<TaskArtifact>();
+      this.taskArtifacts = new LinkedList<>();
       this.taskArtifacts.addAll(taskArtifacts);
    }
 

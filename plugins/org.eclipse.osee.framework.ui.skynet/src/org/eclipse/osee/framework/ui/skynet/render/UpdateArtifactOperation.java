@@ -102,7 +102,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    }
 
    private Collection<AttributeChange> getAttributeChanges(Artifact artifact, WordArtifactChange change) {
-      List<AttributeChange> attributeChanges = new LinkedList<AttributeChange>();
+      List<AttributeChange> attributeChanges = new LinkedList<>();
       for (long attrTypeId : change.getChangedAttrTypes()) {
          AttributeType type = AttributeTypeManager.getTypeByGuid(attrTypeId);
          Attribute<?> attribute = artifact.getSoleAttribute(type);

@@ -37,7 +37,7 @@ public class UniqueIdFieldTest extends BaseOseeFieldTest {
    @SuppressWarnings("unchecked")
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       data.add(new Object[] {new OseeFieldTestData<Long>(new UniqueIdField(), //
          IOseeStorable.UNPERSISTED_VALUE, true, //
          new FieldGetSetTestData<Long>(false, IOseeStorable.UNPERSISTED_VALUE, IOseeStorable.UNPERSISTED_VALUE, true), //

@@ -48,7 +48,7 @@ public class ExtensionPoints {
       }
 
       IExtension[] extensions = point.getExtensions();
-      ArrayList<IConfigurationElement> elementsList = new ArrayList<IConfigurationElement>(extensions.length * 3);
+      ArrayList<IConfigurationElement> elementsList = new ArrayList<>(extensions.length * 3);
 
       for (IExtension extension : extensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
@@ -68,7 +68,7 @@ public class ExtensionPoints {
     * @param extensionPointUniqueIds array of unique ids
     */
    public static List<IExtension> getExtensionsByUniqueId(String extensionPointId, Collection<String> extensionPointUniqueIds) {
-      List<IExtension> extensions = new ArrayList<IExtension>();
+      List<IExtension> extensions = new ArrayList<>();
       for (String entensionPointUniqueId : extensionPointUniqueIds) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(entensionPointUniqueId);
          if (extension == null) {
@@ -88,7 +88,7 @@ public class ExtensionPoints {
    }
 
    public static List<String> getExtensionsPointUniqueIds(String extensionPointId) {
-      List<String> extensionPointIds = new ArrayList<String>();
+      List<String> extensionPointIds = new ArrayList<>();
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint(extensionPointId);
       if (point == null) {
          throw new IllegalArgumentException("The extension point " + extensionPointId + " does not exist");

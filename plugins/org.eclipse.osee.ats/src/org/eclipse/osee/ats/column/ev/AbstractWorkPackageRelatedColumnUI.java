@@ -75,7 +75,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       try {
-         Set<AbstractWorkflowArtifact> awas = new HashSet<AbstractWorkflowArtifact>();
+         Set<AbstractWorkflowArtifact> awas = new HashSet<>();
          for (TreeItem item : treeItems) {
             Artifact art = (Artifact) item.getData();
             if (art instanceof AbstractWorkflowArtifact) {
@@ -93,7 +93,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    }
 
    private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
-      List<String> guids = new ArrayList<String>();
+      List<String> guids = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : awas) {
          IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage(awa);
          if (workPkg != null) {

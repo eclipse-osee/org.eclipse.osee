@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 public class Versions {
 
    public static Collection<String> getNames(Collection<? extends IAtsVersion> versions) {
-      ArrayList<String> names = new ArrayList<String>();
+      ArrayList<String> names = new ArrayList<>();
       for (IAtsVersion version : versions) {
          names.add(version.getName());
       }

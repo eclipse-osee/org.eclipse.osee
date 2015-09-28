@@ -39,7 +39,7 @@ public class OteToAttributeMap {
    private static Map<TestRunField, IAttributeType> outfileFieldToAttributeMap;
 
    private OteToAttributeMap() {
-      outfileFieldToAttributeMap = new HashMap<TestRunField, IAttributeType>();
+      outfileFieldToAttributeMap = new HashMap<>();
 
       outfileFieldToAttributeMap.put(TestRunField.USER_ID, CoreAttributeTypes.UserId);
 

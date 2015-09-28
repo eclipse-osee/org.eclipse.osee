@@ -63,7 +63,7 @@ public class CancelledByColumn extends XViewerAtsColumn implements IXViewerValue
                return user.getName();
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<IAtsUser> users = new HashSet<IAtsUser>();
+            Set<IAtsUser> users = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                IAtsUser user = team.getCancelledBy();
                if (user != null) {

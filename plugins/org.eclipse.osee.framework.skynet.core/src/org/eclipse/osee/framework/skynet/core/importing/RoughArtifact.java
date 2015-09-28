@@ -40,7 +40,7 @@ public class RoughArtifact {
 
    public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this.attributes = new RoughAttributeSet();
-      this.children = new ArrayList<RoughArtifact>();
+      this.children = new ArrayList<>();
       this.roughArtifactKind = roughArtifactKind;
       setName(name);
    }
@@ -172,7 +172,7 @@ public class RoughArtifact {
    }
 
    public Collection<RoughArtifact> getDescendants() {
-      Collection<RoughArtifact> decendants = new ArrayList<RoughArtifact>();
+      Collection<RoughArtifact> decendants = new ArrayList<>();
       for (RoughArtifact child : getChildren()) {
          if (equals(child.roughParent)) {
             decendants.add(child);

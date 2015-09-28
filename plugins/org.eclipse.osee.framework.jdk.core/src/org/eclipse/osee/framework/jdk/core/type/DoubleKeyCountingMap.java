@@ -24,15 +24,15 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
    HashMap<KeyOne, HashMap<KeyTwo, MutableInteger>> k1ToHashMap;
 
    public DoubleKeyCountingMap() {
-      k1ToHashMap = new HashMap<KeyOne, HashMap<KeyTwo, MutableInteger>>();
+      k1ToHashMap = new HashMap<>();
    }
 
    public DoubleKeyCountingMap(int initialCapacity) {
-      k1ToHashMap = new HashMap<KeyOne, HashMap<KeyTwo, MutableInteger>>(initialCapacity);
+      k1ToHashMap = new HashMap<>(initialCapacity);
    }
 
    public Map<KeyOne, KeyTwo> keySet() {
-      Map<KeyOne, KeyTwo> keySet = new HashMap<KeyOne, KeyTwo>();
+      Map<KeyOne, KeyTwo> keySet = new HashMap<>();
       for (KeyOne one : k1ToHashMap.keySet()) {
          for (KeyTwo two : k1ToHashMap.get(one).keySet()) {
             keySet.put(one, two);
@@ -64,7 +64,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
       if (o != null) {
          returnV = o.put(k2, new MutableInteger(v));
       } else {
-         o = new HashMap<KeyTwo, MutableInteger>(20);
+         o = new HashMap<>(20);
          returnV = o.put(k2, new MutableInteger(v));
          k1ToHashMap.put(k1, o);
       }
@@ -83,7 +83,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
             o.put(k2, new MutableInteger(v));
          }
       } else {
-         o = new HashMap<KeyTwo, MutableInteger>(20);
+         o = new HashMap<>(20);
          returnV = o.put(k2, new MutableInteger(v));
          k1ToHashMap.put(k1, o);
       }
@@ -114,7 +114,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
     * @return Return value collection
     */
    public Collection<MutableInteger> allValues() {
-      Collection<MutableInteger> values = new HashSet<MutableInteger>();
+      Collection<MutableInteger> values = new HashSet<>();
       for (HashMap<KeyTwo, MutableInteger> map : k1ToHashMap.values()) {
          values.addAll(map.values());
       }
@@ -157,7 +157,7 @@ public class DoubleKeyCountingMap<KeyOne, KeyTwo> {
     * Test for DoubleKeyCountingMap
     */
    public static void main(String[] args) {
-      DoubleKeyCountingMap<String, String> map = new DoubleKeyCountingMap<String, String>(23);
+      DoubleKeyCountingMap<String, String> map = new DoubleKeyCountingMap<>(23);
       map.put("aaa", "now", 4);
       System.out.println("Value should be 4 and is -> " + map.get("aaa", "now"));
       for (int x = 1; x < 3; x++) {

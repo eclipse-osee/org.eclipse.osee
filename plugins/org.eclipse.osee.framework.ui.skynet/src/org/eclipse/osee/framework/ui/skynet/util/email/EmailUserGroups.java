@@ -51,7 +51,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    }
 
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
          BranchManager.getCommonBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          // Only add group if have read permissions
@@ -70,7 +70,7 @@ public class EmailUserGroups extends XNavigateItemAction {
             new FilteredCheckboxTreeArtifactDialog("Select Groups to Email", groupOptions);
          if (dialog.open() == 0) {
 
-            Set<String> emails = new HashSet<String>();
+            Set<String> emails = new HashSet<>();
             for (Artifact artifact : dialog.getChecked()) {
                if (artifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {

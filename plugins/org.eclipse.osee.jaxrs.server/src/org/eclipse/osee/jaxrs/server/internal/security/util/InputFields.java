@@ -64,7 +64,7 @@ public final class InputFields {
       return new InputFields(ContainerType.FORM_GROUP, false);
    }
 
-   private final Map<String, Data> data = new LinkedHashMap<String, Data>();
+   private final Map<String, Data> data = new LinkedHashMap<>();
    private final ContainerType containerType;
    private final boolean wrapInContainer;
 

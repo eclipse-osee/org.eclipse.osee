@@ -86,7 +86,7 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      networkButtons = new HashMap<InetAddress, Button>();
+      networkButtons = new HashMap<>();
 
       Button defaultButton = new Button(group, SWT.RADIO);
       defaultButton.setText("Default");

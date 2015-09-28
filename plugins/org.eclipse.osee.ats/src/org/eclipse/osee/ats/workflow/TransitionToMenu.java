@@ -63,8 +63,8 @@ public class TransitionToMenu {
    public static MenuManager createTransitionToMenuManager(final XViewer xViewer, String name, final Collection<TreeItem> selectedTreeItems) {
       MenuManager editMenuManager =
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
-      final Set<IAtsWorkItem> workItems = new HashSet<IAtsWorkItem>();
-      Set<IAtsStateDefinition> toStateDefs = new HashSet<IAtsStateDefinition>();
+      final Set<IAtsWorkItem> workItems = new HashSet<>();
+      Set<IAtsStateDefinition> toStateDefs = new HashSet<>();
       for (TreeItem treeItem : selectedTreeItems) {
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
@@ -87,7 +87,7 @@ public class TransitionToMenu {
 
          });
       } else {
-         Set<Integer> stateOrdinals = new HashSet<Integer>();
+         Set<Integer> stateOrdinals = new HashSet<>();
          for (final IAtsStateDefinition stateDef : toStateDefs) {
             stateOrdinals.add(stateDef.getOrdinal());
          }

@@ -35,10 +35,10 @@ import org.eclipse.osee.framework.jdk.core.util.io.MatchFilter;
 public class SourceCounter {
 
    private static int sourceFileCounter = 0, slocCounter = 0;
-   private static final CountingMap<String> authorToFileCount = new CountingMap<String>(10);
-   private static final CountingMap<String> authorToSlocCount = new CountingMap<String>(10);
-   private static final CountingMap<String> packageToSlocCount = new CountingMap<String>(10);
-   private static final CountingMap<String> productToSlocCount = new CountingMap<String>(10);
+   private static final CountingMap<String> authorToFileCount = new CountingMap<>(10);
+   private static final CountingMap<String> authorToSlocCount = new CountingMap<>(10);
+   private static final CountingMap<String> packageToSlocCount = new CountingMap<>(10);
+   private static final CountingMap<String> productToSlocCount = new CountingMap<>(10);
    private static List<String> gitRepos = Arrays.asList("C:\\UserData\\git_merge\\org.eclipse.osee\\plugins\\",
       "C:\\UserData\\git_merge\\lba.osee\\plugins\\");
 
@@ -47,7 +47,7 @@ public class SourceCounter {
       try {
          StringBuffer results = new StringBuffer();
          StringBuffer errors = new StringBuffer();
-         bundleNames = new HashSet<String>();
+         bundleNames = new HashSet<>();
          for (String dirNam : gitRepos) {
             File dir1 = new File(dirNam);
             for (String bundleMatchStr : Arrays.asList(".*\\.osee\\..*", ".*\\.ats\\..*", ".*\\.xviewer\\..*",
@@ -71,7 +71,7 @@ public class SourceCounter {
          results.append("\nAuthor, Count, Percent of Total\n");
          results.append("\nTotal, " + sourceFileCounter + "\n");
 
-         List<String> names = new ArrayList<String>();
+         List<String> names = new ArrayList<>();
          for (Entry<String, MutableInteger> entry : authorToFileCount.getCounts()) {
             System.out.println(String.format("Author [%s]", entry.getKey()));
             int count = entry.getValue().getValue();

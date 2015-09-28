@@ -97,7 +97,7 @@ public class ArtifactOperations {
 
    public List<String> getPartitions() {
       if (partitions == null) {
-         partitions = new ArrayList<String>();
+         partitions = new ArrayList<>();
          try {
             partitions.addAll(artifact.getAttributesToStringList(CoreAttributeTypes.Partition));
             if (partitions.isEmpty()) {
@@ -151,7 +151,7 @@ public class ArtifactOperations {
    }
 
    public static HashCollection<String, Artifact> sortByPartition(Collection<Artifact> source) {
-      HashCollection<String, Artifact> partitionMap = new HashCollection<String, Artifact>(false, TreeSet.class);
+      HashCollection<String, Artifact> partitionMap = new HashCollection<>(false, TreeSet.class);
       for (Artifact artifact : source) {
          ArtifactOperations operator = new ArtifactOperations(artifact);
          List<String> partitions = operator.getPartitions();
@@ -163,7 +163,7 @@ public class ArtifactOperations {
    }
 
    public static List<Artifact> sortByParagraphNumbers(Collection<Artifact> source) {
-      List<Artifact> toReturn = new ArrayList<Artifact>(source);
+      List<Artifact> toReturn = new ArrayList<>(source);
       Collections.sort(toReturn, new Comparator<Artifact>() {
          @Override
          public int compare(Artifact art1, Artifact art2) {
@@ -199,7 +199,7 @@ public class ArtifactOperations {
    }
 
    private static Integer[] getParagraphIndices(String paragraph) {
-      List<Integer> paragraphs = new ArrayList<Integer>();
+      List<Integer> paragraphs = new ArrayList<>();
       if (Strings.isValid(paragraph)) {
          String[] values = paragraph.split("\\.");
          for (int index = 0; index < values.length; index++) {

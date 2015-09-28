@@ -107,7 +107,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
 
    private boolean storeNonSingleton() throws OseeCoreException {
       boolean result = false;
-      Set<String> selected = new HashSet<String>();
+      Set<String> selected = new HashSet<>();
       for (Object obj : dialog.getResult()) {
          selected.add((String) obj);
       }

@@ -63,7 +63,7 @@ public class PropertyStoreWriter {
    }
 
    private void internalSave(PropertyStore store, XMLWriter out) {
-      Map<String, String> attributes = new HashMap<String, String>(2);
+      Map<String, String> attributes = new HashMap<>(2);
       String name = store.getId();
       attributes.put(TAG_NAME, name == null ? "" : name);
       out.startTag(TAG_SECTION, attributes);
@@ -105,7 +105,7 @@ public class PropertyStoreWriter {
    }
 
    private void processInnerStores(PropertyStore store, XMLWriter out) {
-      Map<String, String> attributes = new HashMap<String, String>(2);
+      Map<String, String> attributes = new HashMap<>(2);
       Map<String, Object> properties = store.getPropertyStores();
       for (Entry<String, Object> entry : properties.entrySet()) {
          String key = entry.getKey();
@@ -130,7 +130,7 @@ public class PropertyStoreWriter {
          isInTagList = false;
          valueList = null;
          tagListKey = null;
-         innerStoreStack = new Stack<Pair<String, PropertyStore>>();
+         innerStoreStack = new Stack<>();
       }
 
       private boolean isInNestedStore() {
@@ -221,7 +221,7 @@ public class PropertyStoreWriter {
          String value = reader.getAttributeValue(uri, TAG_VALUE);
          if (isInTagList) {
             if (valueList == null) {
-               valueList = new ArrayList<String>();
+               valueList = new ArrayList<>();
             }
             valueList.add(value);
          } else {

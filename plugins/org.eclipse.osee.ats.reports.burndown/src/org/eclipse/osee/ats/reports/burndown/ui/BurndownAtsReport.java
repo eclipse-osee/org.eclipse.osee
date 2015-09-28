@@ -72,7 +72,7 @@ public class BurndownAtsReport implements AtsReport<BurdownInputParameters, Obje
 
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() {
-            List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
+            List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(createTab("Hour Burndown", "reports/HourBurndown.rptdesign"));
             tabs.add(createTab("Issue Burndown", "reports/IssueBurndown.rptdesign"));
             return tabs;

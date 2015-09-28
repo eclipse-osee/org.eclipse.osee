@@ -66,7 +66,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
    private final String stateName;
    // If set attributeType will be searched for value
    private IAttributeType attrValueSearchType;
-   private final List<String> attrValueSearchOrValues = new ArrayList<String>();
+   private final List<String> attrValueSearchOrValues = new ArrayList<>();
 
    public TeamWorldSearchItem(String displayName, Collection<IAtsTeamDefinition> teamDefs, boolean includeCompleted, boolean includeCancelled, boolean showAction, boolean recurseChildren, IAtsVersion versionArt, IAtsUser userArt, ReleasedOption releasedOption, String stateName) {
       super(displayName, AtsImage.TEAM_WORKFLOW);
@@ -110,7 +110,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      Set<String> teamDefinitionGuids = new HashSet<String>(teamDefs.size());
+      Set<String> teamDefinitionGuids = new HashSet<>(teamDefs.size());
       for (IAtsTeamDefinition teamDef : teamDefs) {
          if (recurseChildren) {
             for (IAtsTeamDefinition childTeamDef : TeamDefinitions.getTeamsFromItemAndChildren(teamDef)) {
@@ -120,7 +120,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             teamDefinitionGuids.add(AtsUtilCore.getGuid(teamDef));
          }
       }
-      List<ArtifactSearchCriteria> criteria = new ArrayList<ArtifactSearchCriteria>();
+      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
 
       if (teamDefinitionGuids.isEmpty()) {
          criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition));
@@ -141,7 +141,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromCriteria(AtsUtilCore.getAtsBranch(), 1000, criteria);
 
-      Set<Artifact> resultSet = new HashSet<Artifact>();
+      Set<Artifact> resultSet = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) art;
@@ -195,7 +195,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             if (!includeCancelled && !includeCompleted) {
                criteria.add(new AttributeCriteria(AtsAttributeTypes.CurrentStateType, StateType.Working.name()));
             } else {
-               List<String> cancelOrComplete = new ArrayList<String>(2);
+               List<String> cancelOrComplete = new ArrayList<>(2);
                cancelOrComplete.add(StateType.Working.name());
                if (includeCompleted) {
                   cancelOrComplete.add(StateType.Completed.name());
@@ -209,7 +209,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
       } catch (OseeTypeDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          // Backward compatibility; remove after 0.9.7 release
-         List<String> cancelOrComplete = new ArrayList<String>(2);
+         List<String> cancelOrComplete = new ArrayList<>(2);
          if (!includeCancelled) {
             cancelOrComplete.add(TeamState.Cancelled.getName() + ";;;");
          }

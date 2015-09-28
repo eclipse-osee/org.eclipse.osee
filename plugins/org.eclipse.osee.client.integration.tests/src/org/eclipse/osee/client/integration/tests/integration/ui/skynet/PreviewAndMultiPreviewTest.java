@@ -48,7 +48,7 @@ public class PreviewAndMultiPreviewTest {
 
    private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
 
-   private final List<Artifact> testArtifacts = new ArrayList<Artifact>();
+   private final List<Artifact> testArtifacts = new ArrayList<>();
 
    @After
    public void tearDown() throws Exception {

@@ -144,7 +144,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
     */
    public List<RemoteAttributeChange1> getAttributes() {
       if (attributes == null) {
-         attributes = new ArrayList<RemoteAttributeChange1>();
+         attributes = new ArrayList<>();
       }
       return this.attributes;
    }

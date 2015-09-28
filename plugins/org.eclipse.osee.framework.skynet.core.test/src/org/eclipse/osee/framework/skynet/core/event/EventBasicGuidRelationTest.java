@@ -84,7 +84,7 @@ public class EventBasicGuidRelationTest {
 
       Assert.assertNotSame(eventRel1, eventRel2);
 
-      Set<EventBasicGuidRelation> toAdd = new HashSet<EventBasicGuidRelation>();
+      Set<EventBasicGuidRelation> toAdd = new HashSet<>();
       toAdd.add(eventRel2);
       toAdd.add(eventRel1);
       Assert.assertEquals(2, toAdd.size());
@@ -92,7 +92,7 @@ public class EventBasicGuidRelationTest {
       toAdd.add(eventRel1);
       Assert.assertEquals(2, toAdd.size());
 
-      Set<EventBasicGuidRelation> eventArts = new HashSet<EventBasicGuidRelation>();
+      Set<EventBasicGuidRelation> eventArts = new HashSet<>();
       eventArts.add(eventRel2);
       eventArts.addAll(toAdd);
       Assert.assertEquals(2, toAdd.size());

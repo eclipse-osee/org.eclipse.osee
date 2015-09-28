@@ -147,7 +147,7 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @SuppressWarnings("unchecked")
    @Override
    public <T> Collection<IAttribute<T>> getAttributes(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
-      Collection<IAttribute<T>> attrs = new ArrayList<IAttribute<T>>();
+      Collection<IAttribute<T>> attrs = new ArrayList<>();
       for (AttributeReadable<Object> attr : getArtifact(workItem).getAttributes(attributeType)) {
          attrs.add(new AttributeWrapper<T>((AttributeReadable<T>) attr));
       }

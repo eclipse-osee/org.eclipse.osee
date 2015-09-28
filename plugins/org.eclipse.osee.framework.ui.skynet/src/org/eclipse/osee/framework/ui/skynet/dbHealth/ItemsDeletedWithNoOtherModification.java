@@ -107,7 +107,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       boolean verify = !isFixOperationEnabled();
 
       if (verify || addressing == null) {
-         addressing = new HashSet<LocalValues>();
+         addressing = new HashSet<>();
          detectAndCollectErrors(monitor, TxChange.DELETED, ModificationType.DELETED);
          detectAndCollectErrors(monitor, TxChange.ARTIFACT_DELETED, ModificationType.ARTIFACT_DELETED);
       } else {
@@ -126,7 +126,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       setItemsToFix(addressing != null ? addressing.size() : 0);
 
       if (isFixOperationEnabled() && getItemsToFixCount() > 0) {
-         List<Object[]> insertParameters = new LinkedList<Object[]>();
+         List<Object[]> insertParameters = new LinkedList<>();
          for (LocalValues value : addressing) {
             insertParameters.add(new Object[] {value.gammaId, value.transactionId});
          }

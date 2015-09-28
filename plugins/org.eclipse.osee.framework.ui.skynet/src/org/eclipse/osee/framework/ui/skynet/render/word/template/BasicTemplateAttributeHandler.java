@@ -31,7 +31,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
    private final Set<String> ignoreAttributeExtensions;
 
    public BasicTemplateAttributeHandler() {
-      this.ignoreAttributeExtensions = new HashSet<String>();
+      this.ignoreAttributeExtensions = new HashSet<>();
    }
 
    @Override

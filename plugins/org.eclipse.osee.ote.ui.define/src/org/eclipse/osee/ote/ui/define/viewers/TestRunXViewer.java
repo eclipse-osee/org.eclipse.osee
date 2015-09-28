@@ -63,7 +63,7 @@ public class TestRunXViewer extends XViewer {
    private static final ImageDescriptor REMOVE_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.REMOVE);
    private static final ImageDescriptor REMOVE_ALL_IMAGE = ImageManager.getImageDescriptor(OteDefineImage.REMOVE_ALL);
    private XViewerDataManager dataManager;
-   private final List<AbstractActionHandler> actionList = new ArrayList<AbstractActionHandler>();
+   private final List<AbstractActionHandler> actionList = new ArrayList<>();
    private Action editDisposition;
 
    public TestRunXViewer(Composite parent) {
@@ -185,7 +185,7 @@ public class TestRunXViewer extends XViewer {
       }
 
       private Artifact[] getAllItemsList() {
-         List<Artifact> allItems = new ArrayList<Artifact>();
+         List<Artifact> allItems = new ArrayList<>();
          allItems.addAll(Arrays.asList(dataManager.getAllCommitable()));
          if (isOverrideAllowed() != false) {
             allItems.addAll(Arrays.asList(dataManager.getUnCommitable()));
@@ -242,7 +242,7 @@ public class TestRunXViewer extends XViewer {
       boolean returnValue = false;
       if (holder instanceof ArtifactItem) {
          if (xCol.equals(TestRunXViewerFactory.DISPOSITION)) {
-            ArrayList<Artifact> list = new ArrayList<Artifact>();
+            ArrayList<Artifact> list = new ArrayList<>();
             list.add(((ArtifactItem) holder).getData());
             try {
                returnValue = setDisposition(list);
@@ -256,7 +256,7 @@ public class TestRunXViewer extends XViewer {
 
    private boolean setDisposition(ArrayList<Artifact> selectedArtifacts) throws OseeCoreException {
       boolean returnValue = false;
-      ArrayList<Artifact> dispositionArtifacts = new ArrayList<Artifact>();
+      ArrayList<Artifact> dispositionArtifacts = new ArrayList<>();
       for (Artifact artifact : selectedArtifacts) {
          if (artifact.isOfType(CoreArtifactTypes.TestRun)) {
             String name = artifact.getName();
@@ -289,7 +289,7 @@ public class TestRunXViewer extends XViewer {
    }
 
    public ArrayList<Artifact> getSelectedArtifacts() {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {

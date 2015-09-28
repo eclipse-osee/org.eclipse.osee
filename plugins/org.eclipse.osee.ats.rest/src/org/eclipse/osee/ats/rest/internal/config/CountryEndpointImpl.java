@@ -71,7 +71,7 @@ public class CountryEndpointImpl extends BaseConfigEndpointImpl<JaxCountry> impl
 
    @Override
    public List<JaxCountry> getObjects() {
-      List<JaxCountry> configs = new ArrayList<JaxCountry>();
+      List<JaxCountry> configs = new ArrayList<>();
       for (ArtifactReadable art : atsServer.getQuery().andIsOfType(artifactType).getResults()) {
          configs.add(getConfigObject(art));
       }

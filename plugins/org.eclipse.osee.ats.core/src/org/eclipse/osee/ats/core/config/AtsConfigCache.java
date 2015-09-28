@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class AtsConfigCache implements IAtsConfig {
 
    // cache by guid and any other cachgeByTag item (like static id)
-   private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<IAtsConfigObject>();
+   private final List<IAtsConfigObject> configObjects = new CopyOnWriteArrayList<>();
    private final HashCollection<String, IAtsConfigObject> tagToConfigObject =
       new HashCollection<String, IAtsConfigObject>(true, CopyOnWriteArrayList.class);
    private final HashCollection<Long, IAtsConfigObject> idToConfigObject =
@@ -71,7 +71,7 @@ public class AtsConfigCache implements IAtsConfig {
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> getByTag(String tag, Class<A> clazz) {
       Conditions.checkNotNull(tag, "tag");
-      List<A> objs = new ArrayList<A>();
+      List<A> objs = new ArrayList<>();
       Collection<IAtsConfigObject> values = tagToConfigObject.getValues(tag);
       if (values != null) {
          for (IAtsConfigObject obj : values) {
@@ -86,7 +86,7 @@ public class AtsConfigCache implements IAtsConfig {
    @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> getById(long id, Class<A> clazz) {
-      List<A> objs = new ArrayList<A>();
+      List<A> objs = new ArrayList<>();
       Collection<IAtsConfigObject> values = idToConfigObject.getValues(id);
       if (values != null) {
          for (IAtsConfigObject obj : values) {
@@ -116,7 +116,7 @@ public class AtsConfigCache implements IAtsConfig {
    @Override
    @SuppressWarnings("unchecked")
    public final <A extends IAtsConfigObject> List<A> get(Class<A> clazz) {
-      List<A> objs = new ArrayList<A>();
+      List<A> objs = new ArrayList<>();
       for (IAtsConfigObject obj : configObjects) {
          if (clazz.isInstance(obj)) {
             objs.add((A) obj);
@@ -140,7 +140,7 @@ public class AtsConfigCache implements IAtsConfig {
    public void invalidate(IAtsConfigObject atsObject) {
       Conditions.checkNotNull(atsObject, "atsObject");
       configObjects.remove(atsObject);
-      List<String> keysToRemove = new ArrayList<String>();
+      List<String> keysToRemove = new ArrayList<>();
       for (Entry<String, Collection<IAtsConfigObject>> entry : tagToConfigObject.entrySet()) {
          if (entry.getValue().contains(atsObject)) {
             keysToRemove.add(entry.getKey());

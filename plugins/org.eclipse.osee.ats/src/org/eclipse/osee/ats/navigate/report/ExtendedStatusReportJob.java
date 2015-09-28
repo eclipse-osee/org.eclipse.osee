@@ -107,7 +107,7 @@ public class ExtendedStatusReportJob extends Job {
       }
 
       public static String[] getColumnNames() {
-         ArrayList<String> names = new ArrayList<String>();
+         ArrayList<String> names = new ArrayList<>();
          for (Columns col : values()) {
             names.add(col.toString());
          }
@@ -138,7 +138,7 @@ public class ExtendedStatusReportJob extends Job {
    }
 
    private static void addTableRow(StringBuilder sb, AbstractWorkflowArtifact sma) throws OseeCoreException {
-      List<String> values = new ArrayList<String>();
+      List<String> values = new ArrayList<>();
       for (Columns col : Columns.values()) {
          // System.out.println("col *" + col + "*");
          if (col == Columns.ActionId) {

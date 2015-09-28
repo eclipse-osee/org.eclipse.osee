@@ -59,7 +59,7 @@ public class IntroduceArtifactOperation {
 
    public List<Artifact> introduce(Collection<Artifact> sourceArtifacts) throws OseeCoreException {
       this.sourceArtifacts = sourceArtifacts;
-      destinationArtifacts = new ArrayList<Artifact>(sourceArtifacts.size());
+      destinationArtifacts = new ArrayList<>(sourceArtifacts.size());
 
       for (Artifact sourceArtifact : sourceArtifacts) {
          introduceArtifact(sourceArtifact);

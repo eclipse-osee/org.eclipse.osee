@@ -43,7 +43,7 @@ public abstract class AbstractTrackingHandler {
    }
 
    public Map<Class<?>, ServiceBindType> getConfiguredDependencies() {
-      Map<Class<?>, ServiceBindType> dependencyMap = new LinkedHashMap<Class<?>, ServiceBindType>();
+      Map<Class<?>, ServiceBindType> dependencyMap = new LinkedHashMap<>();
       Class<?>[] dependencies = getDependencies();
       if (dependencies != null) {
          for (Class<?> clazz : dependencies) {

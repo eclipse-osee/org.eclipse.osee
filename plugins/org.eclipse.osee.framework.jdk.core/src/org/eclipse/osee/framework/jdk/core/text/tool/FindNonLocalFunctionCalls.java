@@ -31,7 +31,7 @@ public class FindNonLocalFunctionCalls {
 
    public FindNonLocalFunctionCalls(File[] files) {
       this.files = files;
-      set = new LinkedHashSet<String>();
+      set = new LinkedHashSet<>();
    }
 
    public static void main(String[] args) {
@@ -55,7 +55,7 @@ public class FindNonLocalFunctionCalls {
    }
 
    private void look(CharSequence seq) {
-      ArrayList<String> localFunctions = new ArrayList<String>();
+      ArrayList<String> localFunctions = new ArrayList<>();
       Matcher functionDefM = functionDefPattern.matcher(seq);
       while (functionDefM.find()) {
          localFunctions.add(functionDefM.group(1));
@@ -74,7 +74,7 @@ public class FindNonLocalFunctionCalls {
    }
 
    public void print() {
-      ArrayList<String> list = new ArrayList<String>(set);
+      ArrayList<String> list = new ArrayList<>(set);
       Collections.sort(list);
       for (Iterator<String> iter = list.iterator(); iter.hasNext();) {
          System.out.println(iter.next());

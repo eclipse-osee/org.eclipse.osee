@@ -144,7 +144,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void load() throws OseeCoreException {
-      requirementsBulkLoad = new ArrayList<Artifact>();
+      requirementsBulkLoad = new ArrayList<>();
       for (Artifact input : inputArtifacts) {
          requirementsBulkLoad.addAll(input.getDescendants());
       }

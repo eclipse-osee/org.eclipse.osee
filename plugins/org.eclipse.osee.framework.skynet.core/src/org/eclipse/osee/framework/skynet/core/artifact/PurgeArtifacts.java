@@ -62,7 +62,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
 
    public PurgeArtifacts(Collection<? extends Artifact> artifactsToPurge, boolean recurseChildrenBranches) throws OseeCoreException {
       super(ConnectionHandler.getJdbcClient(), "Purge Artifact", Activator.PLUGIN_ID);
-      this.artifactsToPurge = new LinkedList<Artifact>(artifactsToPurge);
+      this.artifactsToPurge = new LinkedList<>(artifactsToPurge);
       this.success = false;
       this.recurseChildrenBranches = recurseChildrenBranches;
    }
@@ -76,7 +76,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       checkPurgeValid(connection);
 
       // now load the artifacts to be purged
-      Set<Artifact> childreArtifactsToPurge = new HashSet<Artifact>();
+      Set<Artifact> childreArtifactsToPurge = new HashSet<>();
       for (Artifact art : artifactsToPurge) {
          childreArtifactsToPurge.addAll(art.getDescendants(DeletionFlag.INCLUDE_DELETED));
       }
@@ -127,7 +127,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
-         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<EventBasicGuidArtifact>();
+         Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
          for (Artifact artifact : artifactsToPurge) {
             artifactChanges.add(new EventBasicGuidArtifact(EventModType.Purged, artifact));
          }

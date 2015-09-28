@@ -46,7 +46,7 @@ public class AccountSessionsResourceTest {
 
    @Test
    public void testGetAccountSessions() {
-      List<AccountSessionDetailsData> accesses = new ArrayList<AccountSessionDetailsData>();
+      List<AccountSessionDetailsData> accesses = new ArrayList<>();
       accesses.add(details);
       AccountSessionDetailsData[] expected = accesses.toArray(new AccountSessionDetailsData[] {});
       when(accountOps.getAccountSessionById(ACCOUNT_ID)).thenReturn(accesses);

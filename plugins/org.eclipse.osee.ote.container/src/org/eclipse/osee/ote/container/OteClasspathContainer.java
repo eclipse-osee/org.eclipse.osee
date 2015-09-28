@@ -101,12 +101,12 @@ public class OteClasspathContainer implements IClasspathContainer, IUserLibListe
 
    @Override
    public IClasspathEntry[] getClasspathEntries() {
-      List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+      List<IClasspathEntry> entries = new ArrayList<>();
       Collection<BundleInfo> runtimeLibUrls;
       try {
          runtimeLibUrls = locator.getRuntimeLibs();
-         classPaths = new ArrayList<ClassPathDescription>();
-         betterPaths = new ArrayList<BundleInfo>();
+         classPaths = new ArrayList<>();
+         betterPaths = new ArrayList<>();
          for (BundleInfo info : runtimeLibUrls) {
 
             String binaryFilePath = info.getSystemLocation().getFile();

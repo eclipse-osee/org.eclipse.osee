@@ -26,8 +26,8 @@ public class DatabaseHealthOpsExtensionManager {
    private static final String CLASS_ATTRIBUTE_NAME = "className";
    private static final String EXTENSION_POINT = Activator.PLUGIN_ID + "." + EXTENSION_ELEMENT;
 
-   private static final Map<String, DatabaseHealthOperation> fixOps = new TreeMap<String, DatabaseHealthOperation>();
-   private static final Map<String, DatabaseHealthOperation> verifyOps = new TreeMap<String, DatabaseHealthOperation>();
+   private static final Map<String, DatabaseHealthOperation> fixOps = new TreeMap<>();
+   private static final Map<String, DatabaseHealthOperation> verifyOps = new TreeMap<>();
 
    public static Set<String> getFixOperationNames() {
       return getOperationNames(true);

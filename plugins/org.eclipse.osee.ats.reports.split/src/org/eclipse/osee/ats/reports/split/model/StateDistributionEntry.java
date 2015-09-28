@@ -33,7 +33,7 @@ public class StateDistributionEntry {
     */
    public StateDistributionEntry(final Artifact ver) {
       this.versionArtifact = ver;
-      this.stateSplitMap = new HashMap<String, Double>();
+      this.stateSplitMap = new HashMap<>();
    }
 
    /**

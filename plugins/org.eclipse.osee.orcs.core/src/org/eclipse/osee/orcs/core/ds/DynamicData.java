@@ -71,7 +71,7 @@ public class DynamicData extends BaseIdentity<String> implements Named {
 
    public void put(String key, Object value) {
       if (properties == null) {
-         properties = new LinkedHashMap<String, Object>();
+         properties = new LinkedHashMap<>();
       }
       properties.put(key, value);
    }

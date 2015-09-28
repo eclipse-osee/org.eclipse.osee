@@ -48,7 +48,7 @@ public class CompareTest {
 
    @Parameters
    public static Collection<Object[]> data() {
-      Collection<Object[]> data = new ArrayList<Object[]>();
+      Collection<Object[]> data = new ArrayList<>();
       data.add(new Object[] {"abc", "abc", false});
       data.add(new Object[] {"abc", "abc1", true});
       data.add(new Object[] {null, "abc", true});
@@ -77,10 +77,10 @@ public class CompareTest {
    }
 
    private static Map<Object, Collection<Object>> map(Object key, Object... values) {
-      Map<Object, Collection<Object>> map = new HashMap<Object, Collection<Object>>();
+      Map<Object, Collection<Object>> map = new HashMap<>();
       Collection<Object> objects = map.get(key);
       if (objects == null) {
-         objects = new ArrayList<Object>();
+         objects = new ArrayList<>();
          map.put(key, objects);
       } else {
          objects.clear();

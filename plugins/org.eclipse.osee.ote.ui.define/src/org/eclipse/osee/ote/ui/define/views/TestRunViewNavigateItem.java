@@ -31,7 +31,7 @@ public class TestRunViewNavigateItem implements IXNavigateContainer {
 
    @Override
    public List<XNavigateItem> getNavigateItems() {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+      List<XNavigateItem> items = new ArrayList<>();
 
       XNavigateItem msgItem = new XNavigateItem(null, "Test Analysis", PluginUiImage.FOLDER);
       new XNavigateItemAction(msgItem, new OpenTestRunView(), OteDefineImage.TEST_RUN_VIEW, false);

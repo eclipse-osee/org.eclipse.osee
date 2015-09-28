@@ -43,7 +43,7 @@ public class AttributeValueQuickSearch {
     * Must match full value of given value
     */
    public Collection<Artifact> performSearch(boolean exactMatch) throws OseeCoreException {
-      List<Artifact> results = new ArrayList<Artifact>();
+      List<Artifact> results = new ArrayList<>();
       if (values != null && values.size() > 0) {
          for (String value : values) {
             List<Artifact> searchResult =

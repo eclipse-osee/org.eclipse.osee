@@ -37,12 +37,12 @@ public final class WorkUtility {
    }
 
    public static <INPUT, OUTPUT> List<Callable<Collection<OUTPUT>>> partitionWork(Iterable<INPUT> work, PartitionFactory<INPUT, OUTPUT> factory) throws Exception {
-      List<Callable<Collection<OUTPUT>>> callables = new LinkedList<Callable<Collection<OUTPUT>>>();
+      List<Callable<Collection<OUTPUT>>> callables = new LinkedList<>();
       int size = Iterables.size(work);
       if (size > 0) {
          int partitionSize = Math.max(1, size / NUM_PARTITIONS);
 
-         List<INPUT> subList = new LinkedList<INPUT>();
+         List<INPUT> subList = new LinkedList<>();
 
          int index = 0;
 
@@ -53,7 +53,7 @@ public final class WorkUtility {
             if (index != 0 && partitionSize != 0 && (index % partitionSize == 0)) {
                Callable<Collection<OUTPUT>> worker = factory.createWorker(subList);
                callables.add(worker);
-               subList = new LinkedList<INPUT>();
+               subList = new LinkedList<>();
             }
             index++;
          }
@@ -79,7 +79,7 @@ public final class WorkUtility {
    }
 
    public static <INPUT, OUTPUT> List<Future<Collection<OUTPUT>>> partitionAndScheduleWork(ExecutorAdmin executorAdmin, String executorId, PartitionFactory<INPUT, OUTPUT> factory, Iterable<INPUT> items, ExecutionCallback<Collection<OUTPUT>> callback) throws Exception {
-      List<Future<Collection<OUTPUT>>> futures = new LinkedList<Future<Collection<OUTPUT>>>();
+      List<Future<Collection<OUTPUT>>> futures = new LinkedList<>();
       List<Callable<Collection<OUTPUT>>> callables = partitionWork(items, factory);
       if (!callables.isEmpty()) {
          for (Callable<Collection<OUTPUT>> callable : callables) {

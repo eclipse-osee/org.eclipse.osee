@@ -134,7 +134,7 @@ public class StdCsciToTestTable implements ISimpleTable {
       String toReturn = "";
       Collection<String> codeUnits = source.getRequirementsToCodeUnits().getValues(artifact);
       if (codeUnits != null) {
-         List<String> units = new ArrayList<String>();
+         List<String> units = new ArrayList<>();
          for (String codeUnit : codeUnits) {
             if (Strings.isValid(codeUnit)) {
                int index = codeUnit.lastIndexOf(File.separator);

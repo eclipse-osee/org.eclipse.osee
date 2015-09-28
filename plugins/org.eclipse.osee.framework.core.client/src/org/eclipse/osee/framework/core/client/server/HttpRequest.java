@@ -53,10 +53,10 @@ public class HttpRequest {
 
    protected HttpRequest(Socket socket) throws Exception {
       this.socket = socket;
-      this.parameterMap = new HashMap<String, String>();
+      this.parameterMap = new HashMap<>();
       this.rawRequest = "";
       this.urlRequest = "";
-      this.httpHeader = new HashMap<String, String>();
+      this.httpHeader = new HashMap<>();
       this.httpMethod = HttpMethod.INVALID;
 
       this.inputStream = new BufferedInputStream(socket.getInputStream());

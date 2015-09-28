@@ -35,7 +35,7 @@ public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implemen
       };
 
    public CompositeKeyTripleHashMap() {
-      map = new HashMap<Triplet<KeyOne, KeyTwo, KeyThree>, Value>();
+      map = new HashMap<>();
    }
 
    public CompositeKeyTripleHashMap(Map<Triplet<KeyOne, KeyTwo, KeyThree>, Value> map) {
@@ -43,7 +43,7 @@ public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implemen
    }
 
    public CompositeKeyTripleHashMap(int initialCapacity) {
-      map = new HashMap<Triplet<KeyOne, KeyTwo, KeyThree>, Value>(initialCapacity);
+      map = new HashMap<>(initialCapacity);
    }
 
    @Override

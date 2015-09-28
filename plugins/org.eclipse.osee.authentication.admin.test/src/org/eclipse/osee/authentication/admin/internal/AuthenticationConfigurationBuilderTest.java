@@ -68,7 +68,7 @@ public class AuthenticationConfigurationBuilderTest {
 
    @Test
    public void testConfigProperties() {
-      Map<String, Object> properties = new HashMap<String, Object>();
+      Map<String, Object> properties = new HashMap<>();
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED, SCHEME_1 + "," + SCHEME_2);
       properties.put(AuthenticationConstants.AUTHENTICATION_SCHEME_ALLOWED_DEFAULT, SCHEME_2);
       builder.properties(properties);

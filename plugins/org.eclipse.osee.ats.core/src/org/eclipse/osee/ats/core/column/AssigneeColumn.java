@@ -40,8 +40,8 @@ public class AssigneeColumn {
       if (atsObject instanceof HasActions) {
          HasActions hasActions = (HasActions) atsObject;
          // ensure consistent order by using lists
-         List<IAtsUser> pocs = new ArrayList<IAtsUser>();
-         List<IAtsUser> implementers = new ArrayList<IAtsUser>();
+         List<IAtsUser> pocs = new ArrayList<>();
+         List<IAtsUser> implementers = new ArrayList<>();
          for (IAtsWorkItem action : hasActions.getActions()) {
             if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
                for (IAtsUser user : action.getImplementers()) {

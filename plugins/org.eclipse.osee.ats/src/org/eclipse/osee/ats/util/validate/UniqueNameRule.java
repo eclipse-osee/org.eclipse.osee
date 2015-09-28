@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class UniqueNameRule extends AbstractValidationRule {
 
    private final IArtifactType artifactType;
-   private final Collection<GuidPair> guidPairs = new LinkedList<GuidPair>();
+   private final Collection<GuidPair> guidPairs = new LinkedList<>();
 
    public UniqueNameRule(IArtifactType artifactType) {
       this.artifactType = artifactType;
@@ -45,7 +45,7 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    @Override
    protected ValidationResult validate(Artifact artToValidate, IProgressMonitor monitor) throws OseeCoreException {
-      Collection<String> errorMessages = new ArrayList<String>();
+      Collection<String> errorMessages = new ArrayList<>();
       boolean validationPassed = true;
       if (hasArtifactType(artToValidate.getArtifactType())) {
          // validate that no other artifact of the given Artifact Type has the same name.

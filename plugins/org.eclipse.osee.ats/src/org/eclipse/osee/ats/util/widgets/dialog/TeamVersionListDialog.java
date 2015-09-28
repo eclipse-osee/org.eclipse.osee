@@ -65,7 +65,7 @@ public class TeamVersionListDialog extends SelectionDialog {
    @Override
    protected Control createDialogArea(Composite container) {
 
-      ArrayList<Object> objs = new ArrayList<Object>();
+      ArrayList<Object> objs = new ArrayList<>();
       try {
          for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active,
             AtsClientService.get().getConfig())) {
@@ -95,7 +95,7 @@ public class TeamVersionListDialog extends SelectionDialog {
 
             @Override
             public void widgetSelected(SelectionEvent e) {
-               ArrayList<Object> objs = new ArrayList<Object>();
+               ArrayList<Object> objs = new ArrayList<>();
                try {
                   selectedTeamDef = (IAtsTeamDefinition) teamCombo.getSelected();
                   for (IAtsVersion pda : selectedTeamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
@@ -129,7 +129,7 @@ public class TeamVersionListDialog extends SelectionDialog {
          };
       });
       if (teamDef != null) {
-         objs = new ArrayList<Object>();
+         objs = new ArrayList<>();
          try {
             for (IAtsVersion pda : teamDef.getVersions(VersionReleaseType.Both, VersionLockedType.Both)) {
                objs.add(pda);

@@ -187,7 +187,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
 
       @Override
       public Object[] getChildren(Object element) {
-         List<Object> items = new ArrayList<Object>();
+         List<Object> items = new ArrayList<>();
          if (element instanceof SMAEditor) {
             add(items, ((SMAEditor) element).getAwa());
             items.add(new WrappedStateItems(AtsStateItemManager.getStateItems()));
@@ -455,7 +455,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       public Collection<RuleAndLocation> getRuleAndLocations() {
-         List<RuleAndLocation> result = new ArrayList<SMAEditorOutlinePage.RuleAndLocation>();
+         List<RuleAndLocation> result = new ArrayList<>();
          // get rules from stateDef
          for (String ruleDef : stateDef.getRules()) {
             result.add(new RuleAndLocation(ruleDef, "State Definition"));
@@ -637,11 +637,11 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
       }
 
       public Collection<Object> getTransitions() {
-         List<IAtsStateDefinition> defaultToStates = new ArrayList<IAtsStateDefinition>();
+         List<IAtsStateDefinition> defaultToStates = new ArrayList<>();
          if (stateDef.getDefaultToState() != null) {
             defaultToStates.add(stateDef.getDefaultToState());
          }
-         List<Object> items = new ArrayList<Object>();
+         List<Object> items = new ArrayList<>();
          items.add(new WrappedStates("DefaultToState", defaultToStates));
          items.add(new WrappedStates("ToStates", stateDef.getToStates()));
          items.add(new WrappedStates("OverrideAttrValidationStates", stateDef.getOverrideAttributeValidationStates()));

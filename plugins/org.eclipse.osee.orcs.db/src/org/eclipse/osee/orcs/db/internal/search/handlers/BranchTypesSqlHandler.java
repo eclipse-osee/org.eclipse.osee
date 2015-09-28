@@ -54,7 +54,7 @@ public class BranchTypesSqlHandler extends SqlHandler<CriteriaBranchType> {
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
       Collection<BranchType> types = criteria.getTypes();
       if (types.size() > 1) {
-         Set<Integer> ids = new HashSet<Integer>();
+         Set<Integer> ids = new HashSet<>();
          for (BranchType type : types) {
             ids.add(type.getValue());
          }

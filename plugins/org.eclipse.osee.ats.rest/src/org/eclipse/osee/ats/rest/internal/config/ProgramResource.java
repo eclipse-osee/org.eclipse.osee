@@ -71,7 +71,7 @@ public class ProgramResource extends AbstractConfigResource {
       }
       // get the insertions related to the given program
       ResultSet<ArtifactReadable> results = programArt.getRelated(AtsRelationTypes.ProgramToInsertion_Insertion);
-      List<IAtsConfigObject> insertions = new LinkedList<IAtsConfigObject>();
+      List<IAtsConfigObject> insertions = new LinkedList<>();
       for (ArtifactReadable insertion : results) {
          insertions.add(atsServer.getConfigItemFactory().getInsertion(insertion));
       }
@@ -159,7 +159,7 @@ public class ProgramResource extends AbstractConfigResource {
       // get the insertions related to the given program
       ResultSet<ArtifactReadable> results =
          insertion.getRelated(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity);
-      List<IAtsConfigObject> insertionActivitys = new LinkedList<IAtsConfigObject>();
+      List<IAtsConfigObject> insertionActivitys = new LinkedList<>();
       for (ArtifactReadable insertionActivity : results) {
          insertionActivitys.add(atsServer.getConfigItemFactory().getInsertionActivity(insertionActivity));
       }

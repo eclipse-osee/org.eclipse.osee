@@ -54,7 +54,7 @@ public class AtsConfig2Operation extends AbstractOperation {
          // Import Work Definition sheets
          data.getResultData().log("Importing Work Definitions");
          Artifact folder = getWorkDefinitionFolder();
-         Set<String> stateNames = new HashSet<String>();
+         Set<String> stateNames = new HashSet<>();
          AtsWorkDefinitionSheetProviders.importWorkDefinitionSheets(data.getResultData(), changes, folder,
             data.getWorkDefSheets(), stateNames);
 

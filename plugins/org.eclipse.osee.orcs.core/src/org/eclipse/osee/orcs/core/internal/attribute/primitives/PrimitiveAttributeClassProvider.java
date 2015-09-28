@@ -22,7 +22,7 @@ public class PrimitiveAttributeClassProvider implements AttributeClassProvider {
 
    @Override
    public List<Class<? extends Attribute<?>>> getClasses() {
-      List<Class<? extends Attribute<?>>> clazzes = new ArrayList<Class<? extends Attribute<?>>>();
+      List<Class<? extends Attribute<?>>> clazzes = new ArrayList<>();
 
       clazzes.add(BooleanAttribute.class);
       clazzes.add(IntegerAttribute.class);

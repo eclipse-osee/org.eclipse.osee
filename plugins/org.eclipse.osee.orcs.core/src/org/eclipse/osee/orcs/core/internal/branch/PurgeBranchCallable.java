@@ -53,7 +53,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch
 
       ResultSet<BranchReadable> branches = branchQuery.getResults();
 
-      List<IOseeBranch> purged = new LinkedList<IOseeBranch>();
+      List<IOseeBranch> purged = new LinkedList<>();
       List<BranchReadable> orderedBranches = BranchUtil.orderByParentReadable(queryFactory, branches);
       for (BranchReadable aBranch : orderedBranches) {
          checkForCancelled();

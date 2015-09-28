@@ -49,7 +49,7 @@ public class PurgeAttributeCommand extends AbstractDatastoreConsoleCommand {
    @Override
    public Callable<Void> createCallable(final Console console, final ConsoleParameters params) {
       String[] attrIds = params.getArray("attr_id");
-      Set<Long> longIds = new HashSet<Long>();
+      Set<Long> longIds = new HashSet<>();
       for (String id : attrIds) {
          longIds.add(Long.parseLong(id));
       }

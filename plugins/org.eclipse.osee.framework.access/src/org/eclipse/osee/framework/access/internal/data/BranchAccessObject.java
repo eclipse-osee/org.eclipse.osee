@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  */
 public class BranchAccessObject extends AccessObject {
    private final Long branchUuid;
-   private static final Map<Long, BranchAccessObject> cache = new HashMap<Long, BranchAccessObject>();
+   private static final Map<Long, BranchAccessObject> cache = new HashMap<>();
 
    @Override
    public int hashCode() {

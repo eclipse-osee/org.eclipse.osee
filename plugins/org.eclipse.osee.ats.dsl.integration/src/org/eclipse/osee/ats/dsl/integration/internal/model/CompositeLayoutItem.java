@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
 public class CompositeLayoutItem extends LayoutItem implements IAtsCompositeLayoutItem {
 
    private int numColumns;
-   private final List<IAtsLayoutItem> stateItems = new ArrayList<IAtsLayoutItem>(5);
+   private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
 
    public CompositeLayoutItem() {
       this(2);

@@ -48,7 +48,7 @@ public class OsExpressionResolver implements IExpressionResolver {
 
    @Override
    public <T> List<T> resolve(Class<T> clazz, List<OsExpression> expressions) {
-      List<T> toReturn = new ArrayList<T>();
+      List<T> toReturn = new ArrayList<>();
       for (OsExpression expression : expressions) {
          List<T> resolved = resolve(clazz, expression);
          toReturn.addAll(resolved);
@@ -58,7 +58,7 @@ public class OsExpressionResolver implements IExpressionResolver {
 
    @Override
    public List<Class<?>> resolveType(OsExpression expression) {
-      ExpressionTypeResolver<Class<?>> resolver = new ExpressionTypeResolver<Class<?>>(tsConverter, isCycleProtected());
+      ExpressionTypeResolver<Class<?>> resolver = new ExpressionTypeResolver<>(tsConverter, isCycleProtected());
       List<Class<?>> resolved = resolver.resolve(expression);
       return resolved != null ? resolved : Collections.<Class<?>> emptyList();
    }
@@ -71,7 +71,7 @@ public class OsExpressionResolver implements IExpressionResolver {
 
    @Override
    public List<Class<?>> resolveTypes(List<OsExpression> expressions) {
-      List<Class<?>> toReturn = new ArrayList<Class<?>>();
+      List<Class<?>> toReturn = new ArrayList<>();
       for (OsExpression expression : expressions) {
          List<Class<?>> resolved = resolveType(expression);
          toReturn.addAll(resolved);

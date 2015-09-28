@@ -16,8 +16,8 @@ import org.eclipse.team.svn.core.utility.SVNUtility;
 
 public class ScriptToProject {
 
-   private final Map<String, Set<String>> projectsScriptsMap = new HashMap<String, Set<String>>();
-   private final Map<String, File> scriptNameToScriptFileMap = new HashMap<String, File>();
+   private final Map<String, Set<String>> projectsScriptsMap = new HashMap<>();
+   private final Map<String, File> scriptNameToScriptFileMap = new HashMap<>();
    private final IProject[] workspaceProjects;
 
    public ScriptToProject(IProject[] workspaceProjects) {
@@ -52,7 +52,7 @@ public class ScriptToProject {
    public void addScriptListValue(String key, String value) {
       Set<String> values = projectsScriptsMap.get(key);
       if (values == null) {
-         values = new HashSet<String>();
+         values = new HashSet<>();
          projectsScriptsMap.put(key, values);
       }
       values.add(value);

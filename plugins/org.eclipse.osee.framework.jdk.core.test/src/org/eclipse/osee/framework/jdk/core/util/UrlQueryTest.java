@@ -66,7 +66,7 @@ public class UrlQueryTest {
       Assert.assertFalse(query.containsKey("dummy"));
 
       Enumeration<String> keys = query.getParameterNames();
-      Set<String> data = new HashSet<String>();
+      Set<String> data = new HashSet<>();
       while (keys.hasMoreElements()) {
          data.add(keys.nextElement());
       }
@@ -75,7 +75,7 @@ public class UrlQueryTest {
 
       for (Entry<String, List<String>> entry : expected.entrySet()) {
          String[] values = query.getParameterValues(entry.getKey());
-         List<String> actual = new ArrayList<String>();
+         List<String> actual = new ArrayList<>();
          actual.addAll(Arrays.asList(values));
          java.util.Collections.sort(actual);
 
@@ -87,7 +87,7 @@ public class UrlQueryTest {
 
       for (Entry<String, String[]> entry : query.getParameterMap().entrySet()) {
 
-         List<String> actual = new ArrayList<String>();
+         List<String> actual = new ArrayList<>();
          actual.addAll(Arrays.asList(entry.getValue()));
          java.util.Collections.sort(actual);
 
@@ -110,7 +110,7 @@ public class UrlQueryTest {
 
    @Parameters
    public static List<Object[]> getData() {
-      List<Object[]> data = new LinkedList<Object[]>();
+      List<Object[]> data = new LinkedList<>();
       add(data, "phrase=Hello+Dude&value1=%2212345%22&value2=4%3C6",
          new TestData().put("phrase", "Hello Dude").put("value1", "\"12345\"").put("value2", "4<6"));
       add(data, "query+name=Hello+dude&query+name=one+more+string",
@@ -123,12 +123,12 @@ public class UrlQueryTest {
    }
 
    private static final class TestData {
-      private final Map<String, List<String>> data = new TreeMap<String, List<String>>();
+      private final Map<String, List<String>> data = new TreeMap<>();
 
       public TestData put(String key, String... values) {
          List<String> vals = get(key);
          if (vals == null) {
-            vals = new ArrayList<String>();
+            vals = new ArrayList<>();
             data.put(key, vals);
          }
          for (String value : values) {

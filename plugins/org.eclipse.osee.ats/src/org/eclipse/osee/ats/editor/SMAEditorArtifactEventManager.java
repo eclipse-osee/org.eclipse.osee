@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
-   List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<ISMAEditorEventHandler>();
+   List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
 
    private SMAEditorArtifactEventManager() {

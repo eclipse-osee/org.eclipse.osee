@@ -45,7 +45,7 @@ public class HttpResponse {
 
    private static Map<Integer, String> codes;
    static {
-      HttpResponse.codes = new HashMap<Integer, String>();
+      HttpResponse.codes = new HashMap<>();
       codes.put(100, StatusCodes.STATUS_100);
       codes.put(101, StatusCodes.STATUS_101);
       codes.put(200, StatusCodes.STATUS_200);
@@ -96,7 +96,7 @@ public class HttpResponse {
    protected HttpResponse(Socket socket) throws Exception {
       this.socket = socket;
       this.outputStream = socket.getOutputStream();
-      this.responseHeaderMap = new LinkedHashMap<String, String>();
+      this.responseHeaderMap = new LinkedHashMap<>();
       this.printStream = new PrintStream(outputStream, true, "UTF-8");
    }
 

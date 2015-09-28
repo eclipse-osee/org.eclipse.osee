@@ -52,7 +52,7 @@ public class ExtractTestRelations {
    }
 
    public void run() {
-      ArrayList<String> patterns = new ArrayList<String>();
+      ArrayList<String> patterns = new ArrayList<>();
       patterns.add(scriptsDir);
       Find app = new Find("RequirementId\\(\\\"([^\\\"]+)\\\"", new File(scriptsDir), fileNamePattern);
       app.find(999999, true);

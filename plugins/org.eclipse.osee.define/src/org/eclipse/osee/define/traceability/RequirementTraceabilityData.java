@@ -48,8 +48,8 @@ public class RequirementTraceabilityData {
    private HashCollection<Artifact, String> requirementsToCodeUnits;
    private final HashCollection<String, Artifact> requirementNameToTestProcedures =
       new HashCollection<String, Artifact>();
-   private final Set<String> codeUnits = new TreeSet<String>();
-   private final Map<String, Artifact> testProcedures = new HashMap<String, Artifact>();
+   private final Set<String> codeUnits = new TreeSet<>();
+   private final Map<String, Artifact> testProcedures = new HashMap<>();
    private File testProcedureFilter;
 
    public RequirementTraceabilityData(IOseeBranch testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
@@ -93,7 +93,7 @@ public class RequirementTraceabilityData {
 
    private void getTestProcedureTraceability(IOseeBranch testProcedureBranch) throws OseeCoreException {
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
-      Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<String, Artifact>();
+      Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<>();
       for (Artifact tpRequirement : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement,
          testProcedureBranch)) {
          testProcedureBranchReqsToReqsBranchMap.put(tpRequirement.getName(), tpRequirement);
@@ -104,7 +104,7 @@ public class RequirementTraceabilityData {
          Artifact requirement = entry.getValue();
          Set<Artifact> foundProcedures =
             new HashSet<Artifact>(requirement.getRelatedArtifacts(CoreRelationTypes.Validation__Validator));
-         Set<Artifact> toAdd = new HashSet<Artifact>();
+         Set<Artifact> toAdd = new HashSet<>();
          if (testProceduresFilter.isEmpty() != true) {
             for (Artifact artifact : foundProcedures) {
                if (testProceduresFilter.contains(artifact.getName())) {
@@ -189,7 +189,7 @@ public class RequirementTraceabilityData {
    }
 
    private Set<String> getAllowedTestProcedures() {
-      Set<String> toReturn = new HashSet<String>();
+      Set<String> toReturn = new HashSet<>();
       File filter = getTestProcedureFilterFile();
       if (filter != null && filter.exists() && filter.canRead()) {
          BufferedReader reader = null;

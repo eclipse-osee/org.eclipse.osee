@@ -26,9 +26,9 @@ import javax.xml.namespace.NamespaceContext;
 
 public class SimpleNamespaceContext implements NamespaceContext {
 
-   private final Map<String, String> urisByPrefix = new HashMap<String, String>();
+   private final Map<String, String> urisByPrefix = new HashMap<>();
 
-   private final Map<String, Set<String>> prefixesByURI = new HashMap<String, Set<String>>();
+   private final Map<String, Set<String>> prefixesByURI = new HashMap<>();
 
    public SimpleNamespaceContext() {
       // prepopulate with xml and xmlns prefixes
@@ -42,7 +42,7 @@ public class SimpleNamespaceContext implements NamespaceContext {
       if (prefixesByURI.containsKey(namespaceURI)) {
          prefixesByURI.get(namespaceURI).add(prefix);
       } else {
-         Set<String> set = new HashSet<String>();
+         Set<String> set = new HashSet<>();
          set.add(prefix);
          prefixesByURI.put(namespaceURI, set);
       }

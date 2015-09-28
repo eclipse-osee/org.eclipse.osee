@@ -41,7 +41,7 @@ public class TransactionProcessorProviderImpl implements TransactionProcessorPro
    }
 
    private static <K, V> ListMultimap<K, V> newLinkedHashListMultimap() {
-      Map<K, Collection<V>> map = new LinkedHashMap<K, Collection<V>>();
+      Map<K, Collection<V>> map = new LinkedHashMap<>();
       return Multimaps.newListMultimap(map, new Supplier<List<V>>() {
          @Override
          public List<V> get() {

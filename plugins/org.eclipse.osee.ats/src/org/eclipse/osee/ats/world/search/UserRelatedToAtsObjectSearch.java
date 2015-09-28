@@ -55,7 +55,7 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
          return EMPTY_SET;
       }
 
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       if (activeObjectsOnly) {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), user.getUserId(),
             false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));

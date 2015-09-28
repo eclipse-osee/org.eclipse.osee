@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsArtifactQuery {
 
    public static Artifact getArtifactFromId(String guidOrAtsId) throws OseeCoreException {
-      List<Artifact> artifacts = new LinkedList<Artifact>();
+      List<Artifact> artifacts = new LinkedList<>();
 
       if (GUID.isValid(guidOrAtsId)) {
          artifacts.add(ArtifactQuery.getArtifactFromId(guidOrAtsId, AtsUtilCore.getAtsBranch()));
@@ -48,9 +48,9 @@ public class AtsArtifactQuery {
    }
 
    public static List<Artifact> getArtifactListFromIds(Collection<String> guidsOrAtsIds) throws OseeCoreException {
-      List<Artifact> toReturn = new LinkedList<Artifact>();
-      List<String> guids = new LinkedList<String>();
-      List<String> atsIds = new LinkedList<String>();
+      List<Artifact> toReturn = new LinkedList<>();
+      List<String> guids = new LinkedList<>();
+      List<String> atsIds = new LinkedList<>();
       for (String guidOrAtsId : guidsOrAtsIds) {
          if (GUID.isValid(guidOrAtsId)) {
             guids.add(guidOrAtsId);
@@ -79,8 +79,8 @@ public class AtsArtifactQuery {
    }
 
    public static List<Artifact> getArtifactListFromIds(List<Long> uuids) {
-      List<Artifact> toReturn = new LinkedList<Artifact>();
-      List<Integer> artIds = new LinkedList<Integer>();
+      List<Artifact> toReturn = new LinkedList<>();
+      List<Integer> artIds = new LinkedList<>();
 
       for (Long uuid : uuids) {
          artIds.add(uuid.intValue());

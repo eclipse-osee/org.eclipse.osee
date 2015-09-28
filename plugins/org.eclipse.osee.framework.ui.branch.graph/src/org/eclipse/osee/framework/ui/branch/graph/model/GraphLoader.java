@@ -61,7 +61,7 @@ public class GraphLoader {
    private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
-         List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
+         List<Branch> branches = new ArrayList<>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
             joinQuery.add(branch.getSourceTransaction().getId());
@@ -80,7 +80,7 @@ public class GraphLoader {
    private static void updateConnections(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) {
       TxModel systemRootTx = null;
 
-      List<BranchModel> models = new ArrayList<BranchModel>();
+      List<BranchModel> models = new ArrayList<>();
       //      models.addAll(current.getChildren());
       //      if (recurse) {
       models.addAll(current.getAllChildrenBelow());
@@ -141,7 +141,7 @@ public class GraphLoader {
    }
 
    private static List<TxData> getTxData(int queryId) throws OseeCoreException {
-      List<TxData> txDatas = new ArrayList<TxData>();
+      List<TxData> txDatas = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);

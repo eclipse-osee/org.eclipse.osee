@@ -24,7 +24,7 @@ class UserDefinedOrderComparator implements Comparator<IArtifact> {
    private final Map<String, Integer> value;
 
    UserDefinedOrderComparator(List<String> guidOrder) {
-      value = new HashMap<String, Integer>(guidOrder.size());
+      value = new HashMap<>(guidOrder.size());
       for (int i = 0; i < guidOrder.size(); i++) {
          value.put(guidOrder.get(i), i);
       }

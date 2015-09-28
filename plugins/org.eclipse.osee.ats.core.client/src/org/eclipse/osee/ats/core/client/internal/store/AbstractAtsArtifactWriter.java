@@ -40,7 +40,7 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
     */
    protected Collection<Artifact> setRelationsOfType(AtsArtifactConfigCache cache, Artifact artifact, Collection<? extends IAtsObject> atsObjects, IRelationTypeSide side) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
-      List<Artifact> newArts = new ArrayList<Artifact>();
+      List<Artifact> newArts = new ArrayList<>();
       for (IAtsObject version : atsObjects) {
          Artifact verArt = cache.getArtifact(version);
          newArts.add(verArt);

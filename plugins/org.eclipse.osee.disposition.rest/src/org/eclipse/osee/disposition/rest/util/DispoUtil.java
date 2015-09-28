@@ -146,7 +146,7 @@ public final class DispoUtil {
 
    @SuppressWarnings("unchecked")
    public static String discrepanciesToString(JSONObject discrepanciesList) {
-      List<Integer> discrepanciesPoints = new ArrayList<Integer>();
+      List<Integer> discrepanciesPoints = new ArrayList<>();
       Iterator<String> iterator = discrepanciesList.keys();
       while (iterator.hasNext()) {
          try {
@@ -393,7 +393,7 @@ public final class DispoUtil {
    }
 
    public static List<DispoAnnotationData> asAnnotationsList(JSONArray annotations) {
-      List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
+      List<DispoAnnotationData> toReturn = new ArrayList<>();
       for (int i = 0; i < annotations.length(); i++) {
          try {
             toReturn.add(jsonObjToDispoAnnotationData(annotations.getJSONObject(i)));

@@ -111,7 +111,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       private final AtomicBoolean executorStarted = new AtomicBoolean();
 
-      private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<AttributeData>();
+      private final LinkedBlockingQueue<AttributeData> dataToProcess = new LinkedBlockingQueue<>();
       private Future<?> future;
 
       public ConsumerImpl(HasCancellation cancellation, Set<CriteriaAttributeKeywords> criterias) {
@@ -168,7 +168,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             public Void call() throws Exception {
                boolean isEndOfQueue = false;
                while (!isEndOfQueue) {
-                  Set<AttributeData> toProcess = new HashSet<AttributeData>();
+                  Set<AttributeData> toProcess = new HashSet<>();
                   AttributeData entry = dataToProcess.take();
                   dataToProcess.drainTo(toProcess);
                   toProcess.add(entry);
@@ -235,7 +235,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
 
       private final Consumer consumer;
 
-      private final Set<Integer> acceptedArtIds = new ConcurrentSkipListSet<Integer>();
+      private final Set<Integer> acceptedArtIds = new ConcurrentSkipListSet<>();
 
       public AttributeDataProducer(LoadDataBuffer buffer, LoadDataHandler handler, Consumer consumer) {
          super(handler, buffer);

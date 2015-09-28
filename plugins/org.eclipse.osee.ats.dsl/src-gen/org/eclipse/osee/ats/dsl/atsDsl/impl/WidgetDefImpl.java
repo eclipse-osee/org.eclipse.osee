@@ -379,7 +379,7 @@ public class WidgetDefImpl extends MinimalEObjectImpl.Container implements Widge
   {
     if (option == null)
     {
-      option = new EDataTypeEList<String>(String.class, this, AtsDslPackage.WIDGET_DEF__OPTION);
+      option = new EDataTypeEList<>(String.class, this, AtsDslPackage.WIDGET_DEF__OPTION);
     }
     return option;
   }

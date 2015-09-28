@@ -41,7 +41,7 @@ import org.eclipse.swt.widgets.Label;
 public class XRadioButtons extends GenericXWidget {
 
    private Composite comp;
-   private final ArrayList<XRadioButton> xButtons = new ArrayList<XRadioButton>();
+   private final ArrayList<XRadioButton> xButtons = new ArrayList<>();
    private boolean multiSelect;
    private boolean vertical;
    private int verticalColumns;
@@ -122,7 +122,7 @@ public class XRadioButtons extends GenericXWidget {
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
 
-      Map<String, XRadioButton> nameToButton = new HashMap<String, XRadioButton>();
+      Map<String, XRadioButton> nameToButton = new HashMap<>();
       String names[] = new String[xButtons.size()];
       int x = 0;
       for (XRadioButton rb : xButtons) {
@@ -229,7 +229,7 @@ public class XRadioButtons extends GenericXWidget {
    }
 
    public Set<String> getSelectedNames() {
-      Set<String> names = new HashSet<String>();
+      Set<String> names = new HashSet<>();
       for (XRadioButton rb : xButtons) {
          if (rb.isSelected()) {
             names.add(rb.getLabel());

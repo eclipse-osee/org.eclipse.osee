@@ -45,10 +45,10 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
  */
 public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
-   protected final HashCollection<IAttributeType, String> andAttr = new HashCollection<IAttributeType, String>();
+   protected final HashCollection<IAttributeType, String> andAttr = new HashCollection<>();
    protected final HashCollection<IAttributeType, QueryOption> andAttrOptions =
       new HashCollection<IAttributeType, QueryOption>();
-   protected final HashMap<IRelationTypeSide, IAtsObject> andRels = new HashMap<IRelationTypeSide, IAtsObject>();
+   protected final HashMap<IRelationTypeSide, IAtsObject> andRels = new HashMap<>();
    protected IAtsTeamDefinition teamDef;
    protected StateType[] stateType;
    protected Class<? extends IAtsWorkItem> clazz;
@@ -123,7 +123,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    protected List<IArtifactType> getArtifactTypes() {
-      List<IArtifactType> artifactTypes = new LinkedList<IArtifactType>();
+      List<IArtifactType> artifactTypes = new LinkedList<>();
       if (IAtsTeamWorkflow.class.isAssignableFrom(clazz)) {
          artifactTypes.add(AtsArtifactTypes.TeamWorkflow);
       } else if (IAtsAction.class.isAssignableFrom(clazz)) {

@@ -62,8 +62,8 @@ public abstract class AbstractServiceBinder {
          if (areServicesReady()) {
             isReady = true;
 
-            Set<Object> servicesReported = new HashSet<Object>();
-            Map<Class<?>, Object> services = new HashMap<Class<?>, Object>();
+            Set<Object> servicesReported = new HashSet<>();
+            Map<Class<?>, Object> services = new HashMap<>();
             for (Entry<Class<?>, Collection<Object>> entry : serviceMap.entrySet()) {
                Object serviceObject = entry.getValue().iterator().next();
                servicesReported.add(serviceObject);

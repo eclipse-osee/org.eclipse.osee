@@ -46,7 +46,7 @@ public class ServletRegistrationHandler {
    private JdbcService jdbcService;
    private ActivityLog activityLog;
 
-   private final Set<String> contexts = new HashSet<String>();
+   private final Set<String> contexts = new HashSet<>();
 
    public void setSessionManager(ISessionManager sessionManager) {
       this.sessionManager = sessionManager;

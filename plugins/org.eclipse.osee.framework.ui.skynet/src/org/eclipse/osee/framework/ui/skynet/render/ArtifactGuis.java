@@ -42,7 +42,7 @@ public final class ArtifactGuis {
       Conditions.checkExpressionFailOnTrue(artifacts.isEmpty(), "Must have at least one artifact for checking");
 
       StringBuilder message = new StringBuilder();
-      Set<String> otherBranches = new HashSet<String>();
+      Set<String> otherBranches = new HashSet<>();
       int modifiedCount = artifactsModified(artifacts, otherBranches);
       if (modifiedCount > 0) {
          message.append(String.format(EDIT_MESSAGE, modifiedCount, artifacts.size()));

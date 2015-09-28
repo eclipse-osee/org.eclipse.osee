@@ -32,7 +32,7 @@ public class AtsXWidgetValidateManagerTest {
 
    @Test
    public void testValidateTransition_emptyValidators() {
-      List<WidgetResult> results = new LinkedList<WidgetResult>();
+      List<WidgetResult> results = new LinkedList<>();
 
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
       manager.validateTransition(results, ValidatorTestUtil.emptyValueProvider, null, null, null, atsServices);
@@ -41,7 +41,7 @@ public class AtsXWidgetValidateManagerTest {
 
    @Test
    public void testValidateTransition_validValidators() {
-      List<WidgetResult> results = new LinkedList<WidgetResult>();
+      List<WidgetResult> results = new LinkedList<>();
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsValidator()));
@@ -51,7 +51,7 @@ public class AtsXWidgetValidateManagerTest {
 
    @Test
    public void testValidateTransition_inValidValidators() {
-      List<WidgetResult> results = new LinkedList<WidgetResult>();
+      List<WidgetResult> results = new LinkedList<>();
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsErrorValidator()));
@@ -61,7 +61,7 @@ public class AtsXWidgetValidateManagerTest {
 
    @Test
    public void testValidateTransition_exceptoinValidators() {
-      List<WidgetResult> results = new LinkedList<WidgetResult>();
+      List<WidgetResult> results = new LinkedList<>();
       AtsXWidgetValidateManager manager = new AtsXWidgetValidateManager();
 
       manager.add(new TestValidatorProvider(new AtsExceptoinValidator()));
@@ -111,7 +111,7 @@ public class AtsXWidgetValidateManagerTest {
       private final LinkedList<IAtsXWidgetValidator> validators;
 
       public TestValidatorProvider(IAtsXWidgetValidator validator) {
-         validators = new LinkedList<IAtsXWidgetValidator>();
+         validators = new LinkedList<>();
          validators.add(validator);
       }
 

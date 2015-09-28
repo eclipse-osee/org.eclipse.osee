@@ -87,7 +87,7 @@ public class AtsNote {
       if (!storeProvder.isNoteable()) {
          return "";
       }
-      ArrayList<NoteItem> showNotes = new ArrayList<NoteItem>();
+      ArrayList<NoteItem> showNotes = new ArrayList<>();
       List<NoteItem> noteItems = getNoteItems();
 
       for (NoteItem li : noteItems) {

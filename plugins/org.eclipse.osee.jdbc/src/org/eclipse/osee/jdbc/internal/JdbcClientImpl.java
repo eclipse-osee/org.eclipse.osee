@@ -465,7 +465,7 @@ public final class JdbcClientImpl implements JdbcClient {
 
    @Override
    public List<IVariantData> runQuery(String query, Object... data) {
-      List<IVariantData> toReturn = new ArrayList<IVariantData>();
+      List<IVariantData> toReturn = new ArrayList<>();
       runQuery(new JdbcVariantDataProcessor(toReturn), query, data);
       return toReturn;
    }

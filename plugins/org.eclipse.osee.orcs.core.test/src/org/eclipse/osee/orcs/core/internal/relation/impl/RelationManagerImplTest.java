@@ -179,7 +179,7 @@ public class RelationManagerImplTest {
 
    @Test
    public void testGetValidRelationTypes() throws OseeCoreException {
-      final List<IRelationType> expected = new ArrayList<IRelationType>();
+      final List<IRelationType> expected = new ArrayList<>();
       when(node1.getArtifactType()).thenReturn(artifactType1);
       when(node2.getArtifactType()).thenReturn(artifactType2);
       when(validity.getValidRelationTypes(artifactType1)).thenAnswer(new Answer<List<IRelationType>>() {

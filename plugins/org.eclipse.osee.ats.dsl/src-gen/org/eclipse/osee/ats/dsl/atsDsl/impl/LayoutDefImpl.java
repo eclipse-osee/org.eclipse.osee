@@ -73,7 +73,7 @@ public class LayoutDefImpl extends LayoutTypeImpl implements LayoutDef
   {
     if (layoutItems == null)
     {
-      layoutItems = new EObjectContainmentEList<LayoutItem>(LayoutItem.class, this, AtsDslPackage.LAYOUT_DEF__LAYOUT_ITEMS);
+      layoutItems = new EObjectContainmentEList<>(LayoutItem.class, this, AtsDslPackage.LAYOUT_DEF__LAYOUT_ITEMS);
     }
     return layoutItems;
   }

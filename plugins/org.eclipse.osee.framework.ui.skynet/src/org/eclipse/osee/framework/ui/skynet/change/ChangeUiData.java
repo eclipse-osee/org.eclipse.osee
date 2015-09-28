@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
 public class ChangeUiData {
-   private final Collection<Change> changes = new ArrayList<Change>();
+   private final Collection<Change> changes = new ArrayList<>();
    private Artifact associatedArtifact;
    private boolean isLoaded;
    private boolean loadOnOpen;

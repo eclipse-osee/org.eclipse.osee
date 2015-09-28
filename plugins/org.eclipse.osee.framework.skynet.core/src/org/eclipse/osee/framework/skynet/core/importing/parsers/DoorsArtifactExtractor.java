@@ -44,7 +44,7 @@ import org.jsoup.nodes.Node;
  */
 public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
-   private final Vector<String> postProcessGuids = new Vector<String>();
+   private final Vector<String> postProcessGuids = new Vector<>();
    private String uriDirectoryName = "";
    private OperationLogger logger;
    private final static String NAME_TAG = "<a name=";

@@ -28,8 +28,8 @@ class StatusManager {
 
    public StatusManager() {
       this.services = Collections.synchronizedMap(new TreeMap<String, IHealthStatus>());
-      this.listeners = new CopyOnWriteArrayList<IStatusListener>();
-      this.filters = new ConcurrentHashMap<IStatusListener, IStatusListenerFilter>();
+      this.listeners = new CopyOnWriteArrayList<>();
+      this.filters = new ConcurrentHashMap<>();
    }
 
    public void report(IHealthStatus status) {

@@ -86,7 +86,7 @@ public class LdapClient implements ContextConfigProvider {
 
    @Override
    public Hashtable<String, String> getContextConfig() {
-      Hashtable<String, String> props = new Hashtable<String, String>();
+      Hashtable<String, String> props = new Hashtable<>();
       props.put(Context.INITIAL_CONTEXT_FACTORY, LDAP_INITIAL_CONTEXT_FACTORY);
       props.put(Context.PROVIDER_URL, getServerAddress());
       props.put(Context.REFERRAL, getReferralHandling().getContextReferralName());

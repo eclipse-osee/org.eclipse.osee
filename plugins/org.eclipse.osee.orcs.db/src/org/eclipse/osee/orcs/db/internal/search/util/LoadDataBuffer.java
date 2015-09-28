@@ -33,7 +33,7 @@ public class LoadDataBuffer {
    private final Multimap<Integer, RelationData> relations;
 
    public LoadDataBuffer(int initialSize) {
-      artifacts = new LinkedHashMap<Integer, ArtifactData>(initialSize);
+      artifacts = new LinkedHashMap<>(initialSize);
       attributes = newLinkedHashListMultimap(initialSize);
       relations = newLinkedHashListMultimap(initialSize);
    }
@@ -88,7 +88,7 @@ public class LoadDataBuffer {
    }
 
    private static <K, V> ListMultimap<K, V> newLinkedHashListMultimap(int fetchSize) {
-      Map<K, Collection<V>> map = new LinkedHashMap<K, Collection<V>>(fetchSize);
+      Map<K, Collection<V>> map = new LinkedHashMap<>(fetchSize);
       return Multimaps.newListMultimap(map, new Supplier<List<V>>() {
          @Override
          public List<V> get() {

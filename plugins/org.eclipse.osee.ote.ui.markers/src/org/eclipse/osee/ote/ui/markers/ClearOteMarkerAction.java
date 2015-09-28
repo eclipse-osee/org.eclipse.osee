@@ -26,7 +26,7 @@ public class ClearOteMarkerAction implements IEditorActionDelegate{
 	private IEditorPart editor;
 	
 	public ClearOteMarkerAction()  {
-		selections = new ArrayList<IResource>();
+		selections = new ArrayList<>();
 	}
 
 	@Override

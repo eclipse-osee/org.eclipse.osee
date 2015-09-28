@@ -44,7 +44,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("6", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       TaskArtifact taskArt = codeArt.getTaskArtifacts().iterator().next();
-      Collection<IAtsUser> taskAssignees = new HashSet<IAtsUser>();
+      Collection<IAtsUser> taskAssignees = new HashSet<>();
       taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, changes);

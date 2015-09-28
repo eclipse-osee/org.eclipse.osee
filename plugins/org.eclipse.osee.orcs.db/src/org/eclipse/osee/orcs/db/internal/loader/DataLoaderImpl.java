@@ -40,11 +40,11 @@ import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 public class DataLoaderImpl implements DataLoader {
 
-   private final Collection<Integer> attributeIds = new HashSet<Integer>();
-   private final Collection<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
+   private final Collection<Integer> attributeIds = new HashSet<>();
+   private final Collection<IAttributeType> attributeTypes = new HashSet<>();
 
-   private final Collection<Integer> relationIds = new HashSet<Integer>();
-   private final Collection<IRelationType> relationTypes = new HashSet<IRelationType>();
+   private final Collection<Integer> relationIds = new HashSet<>();
+   private final Collection<IRelationType> relationTypes = new HashSet<>();
 
    private final Log logger;
    private AbstractLoadExecutor loadExecutor;
@@ -245,7 +245,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private Collection<Integer> toCollection(int... ids) {
-      Set<Integer> toReturn = new HashSet<Integer>();
+      Set<Integer> toReturn = new HashSet<>();
       for (Integer id : ids) {
          toReturn.add(id);
       }
@@ -253,7 +253,7 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private <T> Collection<T> copy(Collection<T> source) {
-      Collection<T> toReturn = new HashSet<T>();
+      Collection<T> toReturn = new HashSet<>();
       for (T item : source) {
          toReturn.add(item);
       }

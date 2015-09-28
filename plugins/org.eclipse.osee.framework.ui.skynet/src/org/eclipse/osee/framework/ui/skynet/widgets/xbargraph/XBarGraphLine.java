@@ -47,7 +47,7 @@ public class XBarGraphLine {
 
    public XBarGraphLine(String name, int foreground, int background, long value, String valueStr) {
       this.name = name;
-      segments = new ArrayList<XBarGraphLineSegment>();
+      segments = new ArrayList<>();
       segments.add(new XBarGraphLineSegment(valueStr, foreground, background, value));
    }
 

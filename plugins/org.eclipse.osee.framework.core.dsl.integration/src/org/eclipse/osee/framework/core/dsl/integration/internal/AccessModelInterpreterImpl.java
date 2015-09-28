@@ -39,7 +39,7 @@ public class AccessModelInterpreterImpl implements AccessModelInterpreter {
    public AccessModelInterpreterImpl(ArtifactDataProvider provider, ArtifactMatchInterpreter matcher, RestrictionHandler<?>... restricitionHandlers) {
       this.provider = provider;
       this.matcher = matcher;
-      this.restrictionHandlers = new HashSet<RestrictionHandler<?>>();
+      this.restrictionHandlers = new HashSet<>();
       for (RestrictionHandler<?> handler : restricitionHandlers) {
          restrictionHandlers.add(handler);
       }

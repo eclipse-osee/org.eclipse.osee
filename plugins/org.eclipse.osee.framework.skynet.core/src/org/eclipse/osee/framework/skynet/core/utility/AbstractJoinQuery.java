@@ -36,7 +36,7 @@ public abstract class AbstractJoinQuery {
    private final Long expiresIn;
    private final int queryId;
 
-   protected final Set<IJoinRow> entries = new HashSet<IJoinRow>();
+   protected final Set<IJoinRow> entries = new HashSet<>();
 
    private boolean wasStored;
    private int storedSize;
@@ -72,7 +72,7 @@ public abstract class AbstractJoinQuery {
 
    public void store(JdbcConnection connection) throws OseeCoreException {
       if (!this.wasStored) {
-         List<Object[]> data = new ArrayList<Object[]>();
+         List<Object[]> data = new ArrayList<>();
          for (IJoinRow joinArray : entries) {
             data.add(joinArray.toArray());
          }

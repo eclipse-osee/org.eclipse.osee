@@ -41,7 +41,7 @@ public class NativeCommand extends Command {
       BufferedReader inError = new BufferedReader(new InputStreamReader(process.getErrorStream()));
       BufferedReader inOutput = new BufferedReader(new InputStreamReader(process.getInputStream()));
 
-      ArrayList<String> lines = new ArrayList<String>();
+      ArrayList<String> lines = new ArrayList<>();
       String line = null;
       while ((line = inOutput.readLine()) != null) {
          lines.add(line);

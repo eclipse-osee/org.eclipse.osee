@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 public class MockState {
 
    private final String name;
-   private final List<IAtsUser> assignees = new LinkedList<IAtsUser>();
+   private final List<IAtsUser> assignees = new LinkedList<>();
    private double hoursSpent = 0;
    private int percentComplete = 0;
 

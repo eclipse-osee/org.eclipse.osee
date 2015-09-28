@@ -145,7 +145,7 @@ public final class ArtifactImportWizardTest {
       // add paragraph number to sample artifacts, result should have copied that paragraph over...
 
       // copy paragraph over... because they will be matched on guid...
-      Map<String, String> answerParagraphNumbers = new HashMap<String, String>();
+      Map<String, String> answerParagraphNumbers = new HashMap<>();
       answerParagraphNumbers.put("B", "3");
       answerParagraphNumbers.put("D", "2");
 

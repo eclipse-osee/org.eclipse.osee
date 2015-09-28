@@ -67,12 +67,12 @@ public class STRSReportTest {
 
       STRSReport reportWriter = new STRSReport(dispoApi);
 
-      List<DispoItem> itemsForPrimary = new ArrayList<DispoItem>();
+      List<DispoItem> itemsForPrimary = new ArrayList<>();
       itemsForPrimary.add(item1);
       itemsForPrimary.add(item2);
       Mockito.when(dispoApi.getDispoItems(program, set1.getGuid())).thenReturn(itemsForPrimary);
 
-      List<DispoItem> itemsForSecondary = new ArrayList<DispoItem>();
+      List<DispoItem> itemsForSecondary = new ArrayList<>();
       itemsForSecondary.add(item1);
       itemsForSecondary.add(item2);
       Mockito.when(dispoApi.getDispoItems(program, set1.getGuid())).thenReturn(itemsForSecondary);
@@ -94,7 +94,7 @@ public class STRSReportTest {
       Pattern cellPattern = Pattern.compile("<Cell>.*?</Cell>");
       Matcher cellMatcher = cellPattern.matcher(firstItemRow);
 
-      List<String> cellsFirstRow = new ArrayList<String>();
+      List<String> cellsFirstRow = new ArrayList<>();
       int i = 0;
       while (cellMatcher.find()) {
          cellsFirstRow.add(i++, cellMatcher.group());
@@ -129,7 +129,7 @@ public class STRSReportTest {
       discrepanciesListItem1.put("two", DispoUtil.discrepancyToJsonObj(discrepancy2));
       item1.setDiscrepanciesList(discrepanciesListItem1);
 
-      List<JSONObject> annotationsItem1 = new ArrayList<JSONObject>();
+      List<JSONObject> annotationsItem1 = new ArrayList<>();
       DispoAnnotationData annotation1 = new DispoAnnotationData();
       annotation1.setLocationRefs("1");
       annotation1.setResolutionType("CODE");
@@ -164,7 +164,7 @@ public class STRSReportTest {
       discrepanciesListItem2.put("fff", DispoUtil.discrepancyToJsonObj(discrepancy4));
       item2.setDiscrepanciesList(discrepanciesListItem2);
 
-      List<JSONObject> annotationsItem2 = new ArrayList<JSONObject>();
+      List<JSONObject> annotationsItem2 = new ArrayList<>();
 
       DispoAnnotationData annotation3 = new DispoAnnotationData();
       annotation3.setLocationRefs("4");

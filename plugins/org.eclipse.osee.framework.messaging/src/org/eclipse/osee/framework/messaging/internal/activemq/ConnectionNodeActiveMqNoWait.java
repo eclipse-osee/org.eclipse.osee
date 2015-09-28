@@ -82,10 +82,10 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
       this.nodeInfo = nodeInfo;
       this.exceptionListener = exceptionListener;
       activeMqUtil = new ActiveMqUtil();
-      topicCache = new ConcurrentHashMap<String, Topic>();
-      messageProducerCache = new ConcurrentHashMap<Topic, MessageProducer>();
-      regularListeners = new CompositeKeyHashMap<String, MessageConsumer, OseeMessagingListener>(64, true);
-      replyListeners = new ConcurrentHashMap<String, OseeMessagingListener>();
+      topicCache = new ConcurrentHashMap<>();
+      messageProducerCache = new ConcurrentHashMap<>();
+      regularListeners = new CompositeKeyHashMap<>(64, true);
+      replyListeners = new ConcurrentHashMap<>();
    }
    
    @Override
@@ -360,7 +360,7 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 	   @Override
 	   public void run() {
 		   Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
-		   List<MessageConsumer> consumersToRemove = new ArrayList<MessageConsumer>();
+		   List<MessageConsumer> consumersToRemove = new ArrayList<>();
 		   if (listeners != null) {
 			   try {
 				   for (Entry<MessageConsumer, OseeMessagingListener> entry : listeners.entrySet()) {

@@ -22,7 +22,7 @@ import java.util.Set;
 public class Options implements Cloneable {
 
    private static final String EXCEPTION_MESSAGE = "No setting found for key: [%s]";
-   private final Map<String, Object> data = new HashMap<String, Object>();
+   private final Map<String, Object> data = new HashMap<>();
 
    protected Options() {
       super();

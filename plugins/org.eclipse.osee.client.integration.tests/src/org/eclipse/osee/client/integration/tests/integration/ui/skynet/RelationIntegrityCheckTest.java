@@ -112,7 +112,7 @@ public class RelationIntegrityCheckTest {
    }
 
    private void applyFix() throws OseeCoreException {
-      List<Object[]> rowsToDelete = new LinkedList<Object[]>();
+      List<Object[]> rowsToDelete = new LinkedList<>();
       for (LocalRelationLink relLink : map.allValues()) {
          rowsToDelete.add(new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
       }

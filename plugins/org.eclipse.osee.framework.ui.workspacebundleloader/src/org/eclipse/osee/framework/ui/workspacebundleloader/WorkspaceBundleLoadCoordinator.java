@@ -79,7 +79,7 @@ public class WorkspaceBundleLoadCoordinator {
 	private FrameworkWiring wiring;
 	
 	public WorkspaceBundleLoadCoordinator(File temporaryBundleLocationFolder) {
-		bundlesToCheck = new HashSet<String>();
+		bundlesToCheck = new HashSet<>();
 		this.managedFolderArea = new ManagedFolderArea(temporaryBundleLocationFolder);
 		managedFolderArea.initialize();
 		this.wiring = getFrameworkWiring();
@@ -277,7 +277,7 @@ public class WorkspaceBundleLoadCoordinator {
 	}
 	
 	private Set<String> determineManagedViews(List<BundleInfoLite> uninstallList){
-		Set<String> managedViewIds = new HashSet<String>();
+		Set<String> managedViewIds = new HashSet<>();
 		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
 		IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint("org.eclipse.ui.views");
 		IExtension[] extensions = extensionPoint.getExtensions();
@@ -353,7 +353,7 @@ public class WorkspaceBundleLoadCoordinator {
 	
 	
 	private List<BundleInfoLite> determineDeltasBetweenBundlesToLoad() {
-		List<BundleInfoLite> bundlesToOperateOn = new ArrayList<BundleInfoLite>();
+		List<BundleInfoLite> bundlesToOperateOn = new ArrayList<>();
 		for(String urlString:bundlesToCheck){
 			try {
 				URL newURL;
@@ -410,8 +410,8 @@ public class WorkspaceBundleLoadCoordinator {
 	
 	public synchronized void installLatestBundles(final IProgressMonitor subMonitor){
 		final List<BundleInfoLite> bundles = managedArea.getLatestBundles();
-		Collection<Bundle> bundlesToRefresh = new ArrayList<Bundle>();
-		List<BundleInfoLite> uninstallListAll = new ArrayList<BundleInfoLite>();
+		Collection<Bundle> bundlesToRefresh = new ArrayList<>();
+		List<BundleInfoLite> uninstallListAll = new ArrayList<>();
 		for(BundleInfoLite info:bundles){
 			if(!info.isInstalled()){
 			   List<BundleInfoLite> uninstallList = managedArea.getByBundleName(info.getSymbolicName());

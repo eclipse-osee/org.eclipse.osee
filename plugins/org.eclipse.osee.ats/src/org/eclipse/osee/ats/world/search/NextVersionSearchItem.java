@@ -87,7 +87,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition() + "\"");
          return EMPTY_SET;
       }
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       List<Artifact> castAll =
          Collections.castAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
             getTeamDefinition().getNextReleaseVersion()));

@@ -34,9 +34,9 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
 
    public ActiveArtifactCache(int initialCapacity) {
       super(initialCapacity);
-      byArtifactTypeCache = new CompositeKeyHashMap<IArtifactType, ArtifactKey, Object>(initialCapacity, true);
+      byArtifactTypeCache = new CompositeKeyHashMap<>(initialCapacity, true);
 
-      keyedArtifactCache = new CompositeKeyHashMap<String, IOseeBranch, Set<Object>>(200, true);
+      keyedArtifactCache = new CompositeKeyHashMap<>(200, true);
    }
 
    @Override
@@ -70,7 +70,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    }
 
    public List<Artifact> getByType(IArtifactType artifactType) {
-      List<Artifact> items = new ArrayList<Artifact>();
+      List<Artifact> items = new ArrayList<>();
       Collection<Object> cachedItems = byArtifactTypeCache.getValues(artifactType);
       if (cachedItems != null) {
          for (Object obj : cachedItems) {
@@ -123,7 +123,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       cache(artifact);
       Set<Object> objects = keyedArtifactCache.get(key, artifact.getBranch());
       if (objects == null) {
-         objects = new HashSet<Object>();
+         objects = new HashSet<>();
          keyedArtifactCache.put(key, artifact.getBranch(), objects);
       }
       if (objects.contains(artifact)) {

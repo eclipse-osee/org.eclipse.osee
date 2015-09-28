@@ -85,7 +85,7 @@ public class JarCollectionNature implements IProjectNature {
    }
 
    public Collection<URL> getBundles() {
-      Collection<URL> urls = new ArrayList<URL>();
+      Collection<URL> urls = new ArrayList<>();
 
       if (isClosing) {
          return urls;
@@ -154,7 +154,7 @@ public class JarCollectionNature implements IProjectNature {
       IWorkspaceRoot workspaceRoot = workspace.getRoot();
       IProject[] projects = workspaceRoot.getProjects();
 
-      Collection<T> natures = new LinkedList<T>();
+      Collection<T> natures = new LinkedList<>();
 
       for (IProject project : projects) {
          if (project.isOpen()) {

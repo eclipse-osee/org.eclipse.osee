@@ -32,8 +32,8 @@ public abstract class AbstractArtifactCache {
    }
 
    protected AbstractArtifactCache(int initialCapacity) {
-      idCache = new CompositeKeyHashMap<Integer, Long, Object>(initialCapacity, true);
-      guidCache = new CompositeKeyHashMap<String, Long, Object>(initialCapacity, true);
+      idCache = new CompositeKeyHashMap<>(initialCapacity, true);
+      guidCache = new CompositeKeyHashMap<>(initialCapacity, true);
    }
 
    public Object cache(Artifact artifact) {
@@ -69,7 +69,7 @@ public abstract class AbstractArtifactCache {
    }
 
    private Collection<Artifact> getItems(FilterType filterType) {
-      Collection<Artifact> artifacts = new HashSet<Artifact>();
+      Collection<Artifact> artifacts = new HashSet<>();
       for (Entry<Pair<String, Long>, Object> entry : guidCache.entrySet()) {
          Artifact art = asArtifact(entry.getValue());
          if (!isFiltered(art, filterType)) {

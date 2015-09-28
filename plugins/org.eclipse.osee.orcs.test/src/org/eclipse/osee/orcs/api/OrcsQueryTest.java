@@ -479,7 +479,7 @@ public class OrcsQueryTest {
    }
 
    private Set<String> getNames(ResultSet<ArtifactReadable> results) {
-      Set<String> names = new TreeSet<String>();
+      Set<String> names = new TreeSet<>();
       for (ArtifactReadable art : results) {
          names.add(art.getName());
       }

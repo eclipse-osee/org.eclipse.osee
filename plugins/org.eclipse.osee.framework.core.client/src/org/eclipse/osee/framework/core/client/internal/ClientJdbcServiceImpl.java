@@ -38,7 +38,7 @@ public class ClientJdbcServiceImpl implements JdbcService {
    private Set<String> bindings;
 
    public void start(Map<String, Object> props) {
-      bindings = new LinkedHashSet<String>();
+      bindings = new LinkedHashSet<>();
       String[] values = getBindings(props);
       for (String value : values) {
          bindings.add(value);

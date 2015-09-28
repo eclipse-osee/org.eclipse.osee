@@ -183,7 +183,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (imports == null)
     {
-      imports = new EObjectContainmentEList<Import>(Import.class, this, OseeDslPackage.OSEE_DSL__IMPORTS);
+      imports = new EObjectContainmentEList<>(Import.class, this, OseeDslPackage.OSEE_DSL__IMPORTS);
     }
     return imports;
   }
@@ -197,7 +197,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (artifactTypes == null)
     {
-      artifactTypes = new EObjectContainmentEList<XArtifactType>(XArtifactType.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_TYPES);
+      artifactTypes = new EObjectContainmentEList<>(XArtifactType.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_TYPES);
     }
     return artifactTypes;
   }
@@ -211,7 +211,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (relationTypes == null)
     {
-      relationTypes = new EObjectContainmentEList<XRelationType>(XRelationType.class, this, OseeDslPackage.OSEE_DSL__RELATION_TYPES);
+      relationTypes = new EObjectContainmentEList<>(XRelationType.class, this, OseeDslPackage.OSEE_DSL__RELATION_TYPES);
     }
     return relationTypes;
   }
@@ -225,7 +225,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (attributeTypes == null)
     {
-      attributeTypes = new EObjectContainmentEList<XAttributeType>(XAttributeType.class, this, OseeDslPackage.OSEE_DSL__ATTRIBUTE_TYPES);
+      attributeTypes = new EObjectContainmentEList<>(XAttributeType.class, this, OseeDslPackage.OSEE_DSL__ATTRIBUTE_TYPES);
     }
     return attributeTypes;
   }
@@ -239,7 +239,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (enumTypes == null)
     {
-      enumTypes = new EObjectContainmentEList<XOseeEnumType>(XOseeEnumType.class, this, OseeDslPackage.OSEE_DSL__ENUM_TYPES);
+      enumTypes = new EObjectContainmentEList<>(XOseeEnumType.class, this, OseeDslPackage.OSEE_DSL__ENUM_TYPES);
     }
     return enumTypes;
   }
@@ -253,7 +253,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (enumOverrides == null)
     {
-      enumOverrides = new EObjectContainmentEList<XOseeEnumOverride>(XOseeEnumOverride.class, this, OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES);
+      enumOverrides = new EObjectContainmentEList<>(XOseeEnumOverride.class, this, OseeDslPackage.OSEE_DSL__ENUM_OVERRIDES);
     }
     return enumOverrides;
   }
@@ -267,7 +267,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (artifactTypeOverrides == null)
     {
-      artifactTypeOverrides = new EObjectContainmentEList<XOseeArtifactTypeOverride>(XOseeArtifactTypeOverride.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES);
+      artifactTypeOverrides = new EObjectContainmentEList<>(XOseeArtifactTypeOverride.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_TYPE_OVERRIDES);
     }
     return artifactTypeOverrides;
   }
@@ -281,7 +281,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (artifactMatchRefs == null)
     {
-      artifactMatchRefs = new EObjectContainmentEList<XArtifactMatcher>(XArtifactMatcher.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS);
+      artifactMatchRefs = new EObjectContainmentEList<>(XArtifactMatcher.class, this, OseeDslPackage.OSEE_DSL__ARTIFACT_MATCH_REFS);
     }
     return artifactMatchRefs;
   }
@@ -295,7 +295,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (accessDeclarations == null)
     {
-      accessDeclarations = new EObjectContainmentEList<AccessContext>(AccessContext.class, this, OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS);
+      accessDeclarations = new EObjectContainmentEList<>(AccessContext.class, this, OseeDslPackage.OSEE_DSL__ACCESS_DECLARATIONS);
     }
     return accessDeclarations;
   }
@@ -309,7 +309,7 @@ public class OseeDslImpl extends MinimalEObjectImpl.Container implements OseeDsl
   {
     if (roleDeclarations == null)
     {
-      roleDeclarations = new EObjectContainmentEList<Role>(Role.class, this, OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS);
+      roleDeclarations = new EObjectContainmentEList<>(Role.class, this, OseeDslPackage.OSEE_DSL__ROLE_DECLARATIONS);
     }
     return roleDeclarations;
   }

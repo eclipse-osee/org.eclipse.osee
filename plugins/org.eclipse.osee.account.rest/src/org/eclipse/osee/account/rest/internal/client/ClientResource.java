@@ -80,7 +80,7 @@ public class ClientResource {
    @Produces({MediaType.APPLICATION_JSON})
    public Response getClientsForUser(@PathParam("userId") String userId) {
       Sessions sessions = new Sessions();
-      Map<String, Boolean> portToAlive = new HashMap<String, Boolean>();
+      Map<String, Boolean> portToAlive = new HashMap<>();
       String queryStr = "select * from osee_session where user_id = '" + userId + "' order by created_on desc";
       int x = 0;
       for (IVariantData data : jdbcService.getClient().runQuery(queryStr)) {
@@ -112,10 +112,10 @@ public class ClientResource {
    }
 
    private Map<ClientSession, ClientInfo> getActiveSessions() {
-      Map<ClientSession, ClientInfo> sessionToInfo = new HashMap<ClientSession, ClientInfo>(200);
+      Map<ClientSession, ClientInfo> sessionToInfo = new HashMap<>(200);
       String queryStr =
          "select * from osee_session where created_on > CURRENT_DATE - INTERVAL '7' DAY order by created_on desc ";
-      Set<String> pinged = new HashSet<String>(200);
+      Set<String> pinged = new HashSet<>(200);
       for (IVariantData data : jdbcService.getClient().runQuery(queryStr)) {
          ClientSession session = new ClientSession(data);
          String key = session.getClientAddress() + session.getClientPort();
@@ -135,7 +135,7 @@ public class ClientResource {
    private void addUserId(Map<String, Collection<String>> releaseToUserId, String release, String userId) {
       Collection<String> userIds = releaseToUserId.get(release);
       if (userIds == null) {
-         userIds = new HashSet<String>(100);
+         userIds = new HashSet<>(100);
       }
       userIds.add(userId);
       releaseToUserId.put(release, userIds);

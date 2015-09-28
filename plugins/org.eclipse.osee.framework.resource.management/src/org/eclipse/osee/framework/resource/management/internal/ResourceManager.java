@@ -33,8 +33,8 @@ public class ResourceManager implements IResourceManager {
    private final Collection<IResourceLocatorProvider> resourceLocatorProviders;
 
    public ResourceManager() {
-      this.resourceProviders = new CopyOnWriteArraySet<IResourceProvider>();
-      this.resourceLocatorProviders = new CopyOnWriteArraySet<IResourceLocatorProvider>();
+      this.resourceProviders = new CopyOnWriteArraySet<>();
+      this.resourceLocatorProviders = new CopyOnWriteArraySet<>();
    }
 
    private IResourceProvider getProvider(IResourceLocator locator) throws OseeCoreException {
@@ -86,7 +86,7 @@ public class ResourceManager implements IResourceManager {
 
    @Override
    public Collection<String> getProtocols() {
-      Set<String> protocols = new HashSet<String>();
+      Set<String> protocols = new HashSet<>();
       for (IResourceLocatorProvider provider : resourceLocatorProviders) {
          protocols.add(provider.getSupportedProtocol());
       }

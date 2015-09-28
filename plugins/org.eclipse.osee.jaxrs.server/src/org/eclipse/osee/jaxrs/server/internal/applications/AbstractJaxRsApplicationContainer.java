@@ -88,8 +88,8 @@ public abstract class AbstractJaxRsApplicationContainer implements JaxRsVisitabl
    }
 
    private final Application newCompositeApplication() {
-      final Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
-      final Set<Object> singletons = new LinkedHashSet<Object>();
+      final Set<Class<?>> classes = new LinkedHashSet<>();
+      final Set<Object> singletons = new LinkedHashSet<>();
       for (JaxRsApplicationEntry appEntry : applications.values()) {
          Application application = appEntry.getApplication();
          classes.addAll(application.getClasses());

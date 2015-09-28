@@ -70,7 +70,7 @@ public class WordTemplateManager {
 
    private String template;
    private final String artifactSetName;
-   private final List<ITemplateTask> tasks = new ArrayList<ITemplateTask>();
+   private final List<ITemplateTask> tasks = new ArrayList<>();
    private final List<ITemplateAttributeHandler> attributeHandlers;
 
    public WordTemplateManager(String template, List<ITemplateAttributeHandler> attributeHandlers) {
@@ -149,7 +149,7 @@ public class WordTemplateManager {
          tasks.add(new AddTemplateText(last, start, template));
          int end = headElementsMatcher.end();
          last = end;
-         List<ITemplateTask> innerTasks = new ArrayList<ITemplateTask>();
+         List<ITemplateTask> innerTasks = new ArrayList<>();
          String artifactSection = headElementsMatcher.group(4);
          String elementType = headElementsMatcher.group(3);
 
@@ -209,7 +209,7 @@ public class WordTemplateManager {
    }
 
    private List<Artifact> recurseArtifactChildren(List<Artifact> artifacts) throws OseeCoreException {
-      List<Artifact> arts = new ArrayList<Artifact>();
+      List<Artifact> arts = new ArrayList<>();
       for (Artifact art : artifacts) {
          recursiveChildResolver(art, arts);
       }
@@ -227,7 +227,7 @@ public class WordTemplateManager {
     * This method expands wildcard(*) attribute names into all of the attribute types of a particular artifact.
     */
    private List<ITemplateTask> preProcessTemplateTasks(List<ITemplateTask> tasks, Artifact artifact) throws OseeCoreException {
-      List<ITemplateTask> newTasks = new ArrayList<ITemplateTask>();
+      List<ITemplateTask> newTasks = new ArrayList<>();
       for (ITemplateTask task : tasks) {
          if (task instanceof TemplateAttribute && ((TemplateAttribute) task).isTypeNameWildcard()) {
             TemplateAttribute attributeTask = (TemplateAttribute) task;

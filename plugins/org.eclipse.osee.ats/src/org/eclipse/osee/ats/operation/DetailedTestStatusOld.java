@@ -96,14 +96,14 @@ public class DetailedTestStatusOld extends AbstractBlam {
       new CompositeKeyHashMap<String, String, RequirementStatus>();
    private final StringBuilder sumFormula = new StringBuilder(500);
    private HashCollection<Artifact, String> requirementToCodeUnitsMap;
-   private final HashMap<String, String> testProcedureInfo = new HashMap<String, String>();
-   private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<String, IAtsUser>();
-   private final HashMap<String, Artifact> testRunArtifacts = new HashMap<String, Artifact>();
-   private final HashMap<String, String> scriptCategories = new HashMap<String, String>();
-   private final HashSet<IAtsUser> testPocs = new HashSet<IAtsUser>();
-   private final HashSet<String> requirementPocs = new HashSet<String>();
-   private final ArrayList<String[]> statusLines = new ArrayList<String[]>();
-   private final ArrayList<RequirementStatus> statuses = new ArrayList<RequirementStatus>(100);
+   private final HashMap<String, String> testProcedureInfo = new HashMap<>();
+   private final HashCollection<String, IAtsUser> legacyIdToImplementers = new HashCollection<>();
+   private final HashMap<String, Artifact> testRunArtifacts = new HashMap<>();
+   private final HashMap<String, String> scriptCategories = new HashMap<>();
+   private final HashSet<IAtsUser> testPocs = new HashSet<>();
+   private final HashSet<String> requirementPocs = new HashSet<>();
+   private final ArrayList<String[]> statusLines = new ArrayList<>();
+   private final ArrayList<RequirementStatus> statuses = new ArrayList<>(100);
    private Collection<IAtsVersion> versions;
 
    private XBranchSelectWidget requirementsBranchWidget;
@@ -226,7 +226,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       IOseeBranch procedureBranch = variableMap.getBranch("Test Procedure Branch");
 
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
-      versions = new ArrayList<IAtsVersion>();
+      versions = new ArrayList<>();
       for (IAtsVersion version : variableMap.getCollection(IAtsVersion.class, "Versions")) {
          versions.add(version);
       }
@@ -234,7 +234,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       loadTestRunArtifacts(scriptsBranch);
 
-      Collection<TraceHandler> traceHandlers = new LinkedList<TraceHandler>();
+      Collection<TraceHandler> traceHandlers = new LinkedList<>();
       for (String handler : availableTraceHandlers) {
          if (variableMap.getBoolean(handler)) {
             TraceHandler traceHandler = TraceUnitExtensionManager.getInstance().getTraceHandlerByName(handler);
@@ -272,7 +272,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    }
 
    private boolean blamReadyToExecute() {
-      final List<String> items = new ArrayList<String>();
+      final List<String> items = new ArrayList<>();
 
       if (selectedProgram == null) {
          items.add("program");
@@ -563,7 +563,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
     */
    private Collection<String> getAliases(Artifact artifact) {
       // TODO: this method should return history of names
-      ArrayList<String> aliases = new ArrayList<String>(1);
+      ArrayList<String> aliases = new ArrayList<>(1);
       aliases.add(artifact.getName());
       return aliases;
    }
@@ -576,7 +576,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
 
-      availableTraceHandlers = new LinkedList<String>();
+      availableTraceHandlers = new LinkedList<>();
       sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
       for (String handler : traceHandlers) {

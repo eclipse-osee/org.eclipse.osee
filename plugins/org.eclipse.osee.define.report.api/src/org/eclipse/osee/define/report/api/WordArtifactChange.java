@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class WordArtifactChange {
    long artId;
-   List<Long> changedAttrTypes = new LinkedList<Long>();
+   List<Long> changedAttrTypes = new LinkedList<>();
    boolean changed = false;
    boolean created = false;
    boolean safetyRelated = false;

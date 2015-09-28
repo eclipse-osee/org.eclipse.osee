@@ -87,7 +87,7 @@ public class RelationOrderDataTest {
       data.load();
       Assert.assertTrue(accessor.wasLoadCalled());
 
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(data, expected, relationType1, RelationSide.SIDE_A, //
          RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
       checkData(data, expected);
@@ -103,7 +103,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testAddOrderList() {
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(expected);
       data.clear();
       Assert.assertFalse(data.hasEntries());
@@ -113,7 +113,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testGetCurrentSorterGuid() throws OseeCoreException {
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(expected);
       try {
          data.getCurrentSorterGuid(relationType1, null);
@@ -146,7 +146,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testGetOrderList() throws OseeCoreException {
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
       try {
@@ -182,7 +182,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testRemoveFromList() throws OseeCoreException {
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
       // Remove item that does not exist
@@ -204,7 +204,7 @@ public class RelationOrderDataTest {
 
    @Test
    public void testStore() throws OseeCoreException {
-      List<Object[]> expected = new ArrayList<Object[]>();
+      List<Object[]> expected = new ArrayList<>();
       addData(expected);
 
       accessor.clearStoreCalled();
@@ -260,7 +260,7 @@ public class RelationOrderDataTest {
    }
 
    private void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, String relationOrderIdGuid, String... guids) {
-      List<String> artGuids = new ArrayList<String>();
+      List<String> artGuids = new ArrayList<>();
       if (guids != null && guids.length > 0) {
          artGuids.addAll(Arrays.asList(guids));
       }

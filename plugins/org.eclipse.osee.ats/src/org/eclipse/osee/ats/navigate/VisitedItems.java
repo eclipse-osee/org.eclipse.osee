@@ -31,15 +31,15 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
  */
 public class VisitedItems extends XNavigateItemAction {
 
-   public static List<String> visitedGuids = new ArrayList<String>();
+   public static List<String> visitedGuids = new ArrayList<>();
 
    public static List<Artifact> getReverseVisited() throws OseeCoreException {
       // Search artifacts and hold on to references so don't get garbage collected
-      Map<String, Artifact> artifacts = new HashMap<String, Artifact>();
+      Map<String, Artifact> artifacts = new HashMap<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtilCore.getAtsBranch())) {
          artifacts.put(art.getGuid(), art);
       }
-      List<Artifact> revArts = new ArrayList<Artifact>();
+      List<Artifact> revArts = new ArrayList<>();
       for (int x = visitedGuids.size(); x <= 0; x--) {
          Artifact art = artifacts.get(visitedGuids.get(x));
          if (art != null) {

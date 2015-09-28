@@ -36,7 +36,7 @@ public class TranslationManager {
       this.jdbcClient = jdbcClient;
       this.useOriginalIds = true;
       this.translators = ExchangeDb.createTranslators(jdbcClient);
-      this.translatorMap = new HashMap<String, IdTranslator>();
+      this.translatorMap = new HashMap<>();
       for (IdTranslator translator : translators) {
          for (String alias : translator.getAliases()) {
             translatorMap.put(alias, translator);
@@ -57,7 +57,7 @@ public class TranslationManager {
    }
 
    public List<String> getSequenceNames() {
-      List<String> toReturn = new ArrayList<String>();
+      List<String> toReturn = new ArrayList<>();
       for (IdTranslator translatedIdMap : translators) {
          toReturn.add(translatedIdMap.getSequenceName());
       }
@@ -65,7 +65,7 @@ public class TranslationManager {
    }
 
    public void store(JdbcConnection connection, int importIdIndex) throws OseeCoreException {
-      List<Object[]> data = new ArrayList<Object[]>();
+      List<Object[]> data = new ArrayList<>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
             int importSeqId = (int) jdbcClient.getNextSequence(IMPORT_MAPPED_INDEX_SEQ);

@@ -68,7 +68,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
                return date;
             }
          } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> dates = new HashSet<String>();
+            Set<String> dates = new HashSet<>();
             for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
                IAtsStateDefinition state = team.getStateDefinitionByName(stateName);
                if (state != null) {

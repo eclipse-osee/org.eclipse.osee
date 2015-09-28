@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public class UserRefUtil {
 
    public static Set<String> getUserIds(EList<UserRef> userRefs) {
-      Set<String> userIds = new HashSet<String>();
+      Set<String> userIds = new HashSet<>();
       for (UserRef UserRef : userRefs) {
          if (UserRef instanceof UserByUserId) {
             userIds.add(((UserByUserId) UserRef).getUserId());
@@ -34,7 +34,7 @@ public class UserRefUtil {
    }
 
    public static Set<String> getUserNames(EList<UserRef> userRefs) {
-      Set<String> userNames = new HashSet<String>();
+      Set<String> userNames = new HashSet<>();
       for (UserRef UserRef : userRefs) {
          if (UserRef instanceof UserByName) {
             userNames.add(Strings.unquote(((UserByName) UserRef).getUserName()));

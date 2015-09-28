@@ -97,7 +97,7 @@ public class ExportItemFactory {
    }
 
    public List<AbstractExportItem> createTaskList(int joinId, PropertyStore options) throws OseeCoreException {
-      List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
+      List<AbstractExportItem> items = new ArrayList<>();
 
       processTxOptions(options);
 
@@ -137,7 +137,7 @@ public class ExportItemFactory {
    }
 
    private int createGammaJoin(JdbcClient jdbcClient, int exportJoinId, PropertyStore options) throws OseeCoreException {
-      List<Object> bindList = new ArrayList<Object>();
+      List<Object> bindList = new ArrayList<>();
       int gammaJoinId = new Random().nextInt();
       StringBuilder sql =
          new StringBuilder(
@@ -159,7 +159,7 @@ public class ExportItemFactory {
    }
 
    private static Object[] prepareQuery(ExportItem exportItem, StringBuilder query, PropertyStore options, int exportJoinId, int gammaJionId) throws OseeCoreException {
-      List<Object> bindData = new ArrayList<Object>();
+      List<Object> bindData = new ArrayList<>();
 
       if (exportItem.matches(ExportItem.OSEE_ARTIFACT_DATA, ExportItem.OSEE_ATTRIBUTE_DATA,
          ExportItem.OSEE_RELATION_LINK_DATA)) {

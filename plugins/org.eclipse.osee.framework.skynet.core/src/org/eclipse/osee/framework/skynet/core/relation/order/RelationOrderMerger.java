@@ -18,7 +18,7 @@ public class RelationOrderMerger<T> {
    private final List<T> starredList;
 
    public RelationOrderMerger() {
-      starredList = new ArrayList<T>();
+      starredList = new ArrayList<>();
    }
 
    public List<T> computeMergedOrder(List<T> leftOrder, List<T> rightOrder, Collection<T> mergedSet) {
@@ -55,7 +55,7 @@ public class RelationOrderMerger<T> {
    }
 
    private List<T> cursorAlgorithm(List<T> left, List<T> right, Collection<T> mergedSet) {
-      List<T> mergedOrder = new ArrayList<T>();
+      List<T> mergedOrder = new ArrayList<>();
       int leftIndex = 0;
       int rightIndex = 0;
       while (leftIndex < left.size() && rightIndex < right.size()) {

@@ -122,7 +122,7 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
    @Override
    public void onError(Throwable th) {
       if (errors == null) {
-         errors = new ArrayList<Throwable>();
+         errors = new ArrayList<>();
       }
       errors.add(th);
    }
@@ -371,8 +371,8 @@ public class JsonOutputHandler extends OrcsScriptOutputHandler {
 
    private static final class DebugInfo {
       public String scriptVersion;
-      public final List<LoadDescription> descriptions = new ArrayList<LoadDescription>();
-      private final List<QueryData> queries = new ArrayList<QueryData>();
+      public final List<LoadDescription> descriptions = new ArrayList<>();
+      private final List<QueryData> queries = new ArrayList<>();
 
       public void setScriptVersion(String version) {
          this.scriptVersion = version;

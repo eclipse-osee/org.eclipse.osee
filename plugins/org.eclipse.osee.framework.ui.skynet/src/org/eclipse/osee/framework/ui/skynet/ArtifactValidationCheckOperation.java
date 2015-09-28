@@ -33,7 +33,7 @@ public class ArtifactValidationCheckOperation extends AbstractOperation {
    public ArtifactValidationCheckOperation(final Collection<Artifact> itemsToCheck, boolean stopOnFirstError) {
       super("Validate Artifact(s)", Activator.PLUGIN_ID);
       this.stopOnFirstError = stopOnFirstError;
-      this.itemsToCheck = new ArrayList<Artifact>(itemsToCheck);
+      this.itemsToCheck = new ArrayList<>(itemsToCheck);
       if (itemsToCheck != null) {
          this.itemsToCheck.addAll(itemsToCheck);
       }

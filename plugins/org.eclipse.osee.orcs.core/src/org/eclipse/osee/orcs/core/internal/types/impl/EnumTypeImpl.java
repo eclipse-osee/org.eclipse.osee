@@ -61,7 +61,7 @@ public final class EnumTypeImpl extends FullyNamedIdentity<Long> implements Enum
 
    @Override
    public Set<String> valuesAsOrderedStringSet() {
-      Set<String> values = new LinkedHashSet<String>();
+      Set<String> values = new LinkedHashSet<>();
       for (EnumEntry oseeEnumEntry : values()) {
          values.add(oseeEnumEntry.getName());
       }

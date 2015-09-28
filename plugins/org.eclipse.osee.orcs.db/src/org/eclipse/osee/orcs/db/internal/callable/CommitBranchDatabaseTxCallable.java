@@ -154,7 +154,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private void insertCommitAddressing(Integer newTx, JdbcConnection connection) throws OseeCoreException {
-      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> insertData = new ArrayList<>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
          insertData.add(new Object[] {

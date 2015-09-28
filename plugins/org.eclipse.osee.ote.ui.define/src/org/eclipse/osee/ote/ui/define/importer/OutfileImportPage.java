@@ -73,7 +73,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
       this.treeSelectionMode = true;
       this.contentProvider = new WorkbenchContentProvider();
       this.labelProvider = new WorkbenchLabelProvider();
-      this.filters = new ArrayList<ViewerFilter>();
+      this.filters = new ArrayList<>();
       //      this.filters.add(new FileFilter());
       this.startingResourceSelection = selection;
    }
@@ -325,7 +325,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
 
    private URI[] getSelectedResources() {
       Object[] selected = treeViewer.getCheckedElements();
-      List<URI> selectedResources = new ArrayList<URI>();
+      List<URI> selectedResources = new ArrayList<>();
       for (Object object : selected) {
          if (object instanceof IFile) {
             IFile iFile = (IFile) object;

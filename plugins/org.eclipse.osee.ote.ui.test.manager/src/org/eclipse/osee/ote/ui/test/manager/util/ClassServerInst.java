@@ -117,7 +117,7 @@ public class ClassServerInst {
    }
 
    private String[] getAllProjects() {
-      ArrayList<String> list = new ArrayList<String>();
+      ArrayList<String> list = new ArrayList<>();
 
       IProject[] projects = AWorkspace.getProjects();
       for (IProject project : projects) {

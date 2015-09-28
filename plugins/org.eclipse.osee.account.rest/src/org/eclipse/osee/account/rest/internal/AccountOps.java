@@ -65,7 +65,7 @@ public class AccountOps {
 
    public List<AccountSessionDetailsData> getAccountSessionById(String accountId) {
       ResultSet<AccountSession> result = accountAdmin.getAccountSessionByUniqueField(accountId);
-      List<AccountSessionDetailsData> toReturn = new ArrayList<AccountSessionDetailsData>();
+      List<AccountSessionDetailsData> toReturn = new ArrayList<>();
       for (AccountSession session : result) {
          toReturn.add(AccountDataUtil.asAccountAccessData(session));
       }
@@ -120,7 +120,7 @@ public class AccountOps {
    }
 
    public List<AccountInfoData> getAllAccounts() {
-      List<AccountInfoData> toReturn = new ArrayList<AccountInfoData>();
+      List<AccountInfoData> toReturn = new ArrayList<>();
       ResultSet<Account> result = accountAdmin.getAllAccounts();
       for (Account account : result) {
          toReturn.add(AccountDataUtil.asAccountData(account));

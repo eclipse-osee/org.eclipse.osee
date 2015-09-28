@@ -62,7 +62,7 @@ public final class ArtifactImageManager {
 
    public synchronized static void loadCache() {
 
-      Set<IArtifactType> imageKeys = new HashSet<IArtifactType>();
+      Set<IArtifactType> imageKeys = new HashSet<>();
       imageKeys.addAll(providersOverrideImageMap.keySet());
       imageKeys.addAll(artifactTypeImageMap.keySet());
       imageKeys.addAll(artifactTypeImageProviderMap.keySet());

@@ -113,7 +113,7 @@ public class AttributeTypeEditPresenterTest {
 
       // None Selected
       display.setSelected();
-      List<IAttributeType> selectable = new ArrayList<IAttributeType>(Arrays.asList(selectableTypes));
+      List<IAttributeType> selectable = new ArrayList<>(Arrays.asList(selectableTypes));
       performOp(controller, operationType);
 
       Assert.assertNull(display.getAddWidgetsAttributeTypes());
@@ -262,7 +262,7 @@ public class AttributeTypeEditPresenterTest {
 
       @Override
       public void showInformation(String title, String message) {
-         showInfo = new Pair<String, String>(title, message);
+         showInfo = new Pair<>(title, message);
       }
 
       public Pair<String, String> getShowInfo() {

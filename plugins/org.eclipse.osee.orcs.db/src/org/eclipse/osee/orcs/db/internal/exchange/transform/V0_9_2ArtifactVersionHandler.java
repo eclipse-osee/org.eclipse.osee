@@ -20,8 +20,8 @@ import org.xml.sax.Attributes;
  * @author Ryan D. Brooks
  */
 public class V0_9_2ArtifactVersionHandler extends AbstractSaxHandler {
-   private final Map<Integer, Long> artIdToNetGammaId = new HashMap<Integer, Long>(14000);
-   private final Map<Long, Long> artifactGammaToNetGammaId = new HashMap<Long, Long>(14000);
+   private final Map<Integer, Long> artIdToNetGammaId = new HashMap<>(14000);
+   private final Map<Long, Long> artifactGammaToNetGammaId = new HashMap<>(14000);
 
    @Override
    public void endElementFound(String uri, String localName, String qName) {

@@ -33,7 +33,7 @@ public class VariantData implements IVariantData {
    private final Map<String, byte[]> byteArrayData;
 
    public VariantData() {
-      this.byteArrayData = new HashMap<String, byte[]>();
+      this.byteArrayData = new HashMap<>();
       this.storageData = new Properties();
       this.storageArrays = new Properties();
    }

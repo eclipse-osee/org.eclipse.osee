@@ -73,7 +73,7 @@ public class OsTxCommitIdEqualsClauseImpl extends OsTxCommitIdClauseImpl impleme
   {
     if (ids == null)
     {
-      ids = new EObjectContainmentEList<OsExpression>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_COMMIT_ID_EQUALS_CLAUSE__IDS);
+      ids = new EObjectContainmentEList<>(OsExpression.class, this, OrcsScriptDslPackage.OS_TX_COMMIT_ID_EQUALS_CLAUSE__IDS);
     }
     return ids;
   }

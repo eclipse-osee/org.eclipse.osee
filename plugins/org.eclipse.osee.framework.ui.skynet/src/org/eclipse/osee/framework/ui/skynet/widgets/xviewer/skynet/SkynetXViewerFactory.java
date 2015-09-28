@@ -88,7 +88,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
    }
 
    public static List<XViewerColumn> getAllAttributeColumns() throws OseeCoreException {
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
+      List<XViewerColumn> columns = new ArrayList<>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          columns.add(getAttributeColumn(attributeType));
       }
@@ -104,9 +104,9 @@ public class SkynetXViewerFactory extends XViewerFactory {
     * @return columns for attributes valid for at least on of the given artifacts; those with content first
     */
    public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
-      List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
-      Set<IAttributeType> attrTypesUsed = new HashSet<IAttributeType>();
-      Set<IAttributeType> attributeTypes = new HashSet<IAttributeType>();
+      List<XViewerColumn> columns = new ArrayList<>();
+      Set<IAttributeType> attrTypesUsed = new HashSet<>();
+      Set<IAttributeType> attributeTypes = new HashSet<>();
       try {
          for (Artifact art : artifacts) {
             attributeTypes.addAll(art.getAttributeTypes());
@@ -119,7 +119,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      Set<String> attrNames = new HashSet<String>();
+      Set<String> attrNames = new HashSet<>();
       // Add Name first
       columns.add(new ArtifactNameColumn(true));
       attrNames.add("Name");

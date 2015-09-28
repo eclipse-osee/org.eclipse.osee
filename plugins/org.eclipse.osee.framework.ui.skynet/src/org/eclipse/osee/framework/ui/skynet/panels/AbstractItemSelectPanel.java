@@ -48,7 +48,7 @@ public abstract class AbstractItemSelectPanel<T> {
    private final IContentProvider contentProvider;
 
    protected AbstractItemSelectPanel(IBaseLabelProvider labelProvider, IContentProvider contentProvider) {
-      listeners = new HashSet<Listener>();
+      listeners = new HashSet<>();
       this.labelProvider = labelProvider;
       this.contentProvider = contentProvider;
    }

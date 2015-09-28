@@ -364,7 +364,7 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
   {
     if (transitionStates == null)
     {
-      transitionStates = new EObjectContainmentEList<ToState>(ToState.class, this, AtsDslPackage.STATE_DEF__TRANSITION_STATES);
+      transitionStates = new EObjectContainmentEList<>(ToState.class, this, AtsDslPackage.STATE_DEF__TRANSITION_STATES);
     }
     return transitionStates;
   }
@@ -378,7 +378,7 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
   {
     if (rules == null)
     {
-      rules = new EDataTypeEList<String>(String.class, this, AtsDslPackage.STATE_DEF__RULES);
+      rules = new EDataTypeEList<>(String.class, this, AtsDslPackage.STATE_DEF__RULES);
     }
     return rules;
   }
@@ -392,7 +392,7 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
   {
     if (decisionReviews == null)
     {
-      decisionReviews = new EObjectContainmentEList<DecisionReviewRef>(DecisionReviewRef.class, this, AtsDslPackage.STATE_DEF__DECISION_REVIEWS);
+      decisionReviews = new EObjectContainmentEList<>(DecisionReviewRef.class, this, AtsDslPackage.STATE_DEF__DECISION_REVIEWS);
     }
     return decisionReviews;
   }
@@ -406,7 +406,7 @@ public class StateDefImpl extends MinimalEObjectImpl.Container implements StateD
   {
     if (peerReviews == null)
     {
-      peerReviews = new EObjectContainmentEList<PeerReviewRef>(PeerReviewRef.class, this, AtsDslPackage.STATE_DEF__PEER_REVIEWS);
+      peerReviews = new EObjectContainmentEList<>(PeerReviewRef.class, this, AtsDslPackage.STATE_DEF__PEER_REVIEWS);
     }
     return peerReviews;
   }

@@ -88,7 +88,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    public Artifact[] getArtifacts() {
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
       Iterator<?> i = selection.iterator();
-      List<Artifact> artifacts = new ArrayList<Artifact>();
+      List<Artifact> artifacts = new ArrayList<>();
       while (i.hasNext()) {
          Object object = i.next();
          if (object instanceof GroupExplorerItem) {
@@ -196,7 +196,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                   else {
                      IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
                      Iterator<?> iterator = selectedItem.iterator();
-                     final Set<Artifact> insertArts = new HashSet<Artifact>();
+                     final Set<Artifact> insertArts = new HashSet<>();
                      while (iterator.hasNext()) {
                         Object obj = iterator.next();
                         if (obj instanceof GroupExplorerItem) {
@@ -228,7 +228,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                   if (((ArtifactData) event.data).getSource().equals(viewId)) {
                      IStructuredSelection selectedItem = (IStructuredSelection) treeViewer.getSelection();
                      Iterator<?> iterator = selectedItem.iterator();
-                     Set<Artifact> insertArts = new HashSet<Artifact>();
+                     Set<Artifact> insertArts = new HashSet<>();
                      while (iterator.hasNext()) {
                         Object obj = iterator.next();
                         if (obj instanceof GroupExplorerItem) {

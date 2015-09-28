@@ -104,7 +104,7 @@ public final class BranchImportCommand implements ConsoleCommand {
             throw new OseeArgumentException("Files to import were not specified");
          }
 
-         List<IOseeBranch> branches = new LinkedList<IOseeBranch>();
+         List<IOseeBranch> branches = new LinkedList<>();
          for (String branchUuidString : branchUuids) {
             IOseeBranch branch = branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
             branches.add(branch);

@@ -179,7 +179,7 @@ public class ServiceHealth {
     */
    public List<ServiceDescriptionPair> getServiceDescription() {
       if (serviceDescription == null) {
-         serviceDescription = new ArrayList<ServiceDescriptionPair>();
+         serviceDescription = new ArrayList<>();
       }
       return this.serviceDescription;
    }

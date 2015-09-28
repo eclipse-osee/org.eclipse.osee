@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * @author Ryan D. Brooks
  */
 public class VariableMap {
-   private final Map<String, Object> variableMap = new HashMap<String, Object>();
+   private final Map<String, Object> variableMap = new HashMap<>();
 
    public VariableMap() {
       // provides a constructor that does not throw OseeArgumentException
@@ -105,7 +105,7 @@ public class VariableMap {
 
    @SuppressWarnings("unchecked")
    public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) throws OseeArgumentException {
-      List<T> results = new ArrayList<T>();
+      List<T> results = new ArrayList<>();
       for (Object obj : getValue(Collection.class, parameterName)) {
          if (clazz.isInstance(obj)) {
             results.add((T) obj);

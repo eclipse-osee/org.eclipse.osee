@@ -27,13 +27,13 @@ public class MockStateDefinition implements IAtsStateDefinition {
 
    private StateType StateType;
    private int ordinal = 0;
-   private final List<IAtsLayoutItem> stateItems = new ArrayList<IAtsLayoutItem>(5);
+   private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
    private final MockRuleManager ruleMgr = new MockRuleManager();
-   private final List<IAtsStateDefinition> toStates = new ArrayList<IAtsStateDefinition>(5);
+   private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private IAtsStateDefinition defaultToState;
-   private final List<IAtsStateDefinition> overrideAttributeValidationStates = new ArrayList<IAtsStateDefinition>(5);
-   private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<IAtsDecisionReviewDefinition>();
-   private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<IAtsPeerReviewDefinition>();
+   private final List<IAtsStateDefinition> overrideAttributeValidationStates = new ArrayList<>(5);
+   private final List<IAtsDecisionReviewDefinition> decisionReviews = new ArrayList<>();
+   private final List<IAtsPeerReviewDefinition> peerReviews = new ArrayList<>();
    private IAtsWorkDefinition workDefinition;
    private int stateWeight = 0;
    private Integer recommendedPercentComplete = null;

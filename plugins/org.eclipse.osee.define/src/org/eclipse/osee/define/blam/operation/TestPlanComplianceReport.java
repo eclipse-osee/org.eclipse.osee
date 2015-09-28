@@ -114,7 +114,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private void writeRow(String testPlan, List<String> perfSpecs, List<String> pids, List<String> testProcNames, List<String> testProcStatuses, List<String> testResultNames, List<String> errors) throws IOException {
-      List<List<List<String>>> allPartitions = new LinkedList<List<List<String>>>();
+      List<List<List<String>>> allPartitions = new LinkedList<>();
       allPartitions.add(Lists.partition(perfSpecs, maxRowsPerCell));
       allPartitions.add(Lists.partition(pids, maxRowsPerCell));
       allPartitions.add(Lists.partition(testProcNames, maxRowsPerCell));
@@ -161,9 +161,9 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private TestStatusAndResults calculateTestStatusAndResults(List<Artifact> testProcedures) {
-      List<String> testProcStatus = new LinkedList<String>();
-      List<String> testResultNames = new LinkedList<String>();
-      List<String> errors = new LinkedList<String>();
+      List<String> testProcStatus = new LinkedList<>();
+      List<String> testResultNames = new LinkedList<>();
+      List<String> errors = new LinkedList<>();
       for (Artifact testProc : testProcedures) {
          String status = testProc.getSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, BLANK_SPACE);
          Collection<Artifact> testResults =
@@ -215,7 +215,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private List<String> getRequirementsAsString(Artifact testPlan, IRelationTypeSide rts) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts = testPlan.getRelatedArtifacts(rts);
-      List<String> requirementNames = new ArrayList<String>();
+      List<String> requirementNames = new ArrayList<>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
          requirementNames.add(paragraphNumber + BLANK_SPACE + req.getName());
@@ -280,7 +280,7 @@ public final class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private void load() throws OseeCoreException {
-      testPlans = new ArrayList<Artifact>();
+      testPlans = new ArrayList<>();
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }

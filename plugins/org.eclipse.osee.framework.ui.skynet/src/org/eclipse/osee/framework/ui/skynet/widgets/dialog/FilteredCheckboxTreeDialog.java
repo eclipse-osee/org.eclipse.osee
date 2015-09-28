@@ -255,7 +255,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
 
    @SuppressWarnings("unchecked")
    public <T> Collection<T> getChecked() {
-      List<T> checked = new ArrayList<T>();
+      List<T> checked = new ArrayList<>();
       for (Object obj : getResult()) {
          checked.add((T) obj);
       }

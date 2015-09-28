@@ -32,7 +32,7 @@ public class StackedViewer extends Composite {
 
    public StackedViewer(Composite parent, int style) {
       super(parent, style);
-      compositeMap = new HashMap<String, Control>();
+      compositeMap = new HashMap<>();
       create();
    }
 

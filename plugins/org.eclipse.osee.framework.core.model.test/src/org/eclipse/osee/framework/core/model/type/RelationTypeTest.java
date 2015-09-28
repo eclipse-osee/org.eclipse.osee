@@ -74,7 +74,7 @@ public class RelationTypeTest {
    //      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
    //         ArtifactType baseType = cache.getUniqueByName("BaseArtifactType");
    //
-   //         Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
+   //         Set<ArtifactType> baseSuperType = new HashSet<>();
    //         baseSuperType.add(baseType);
    //         // 0<-1
    //         cache.cacheArtifactSuperType(cache.getByGuid("111"), baseSuperType);

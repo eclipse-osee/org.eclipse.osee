@@ -50,7 +50,7 @@ public final class ModelUtil {
       Resource resource = resourceSet.createResource(URI.createURI(uri));
       resource.getContents().add(model);
 
-      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      Map<String, Boolean> options = new HashMap<>();
       SaveOptions saveOptions = SaveOptions.getOptions(options);
       resource.save(outputStream, saveOptions.toOptionsMap());
    }

@@ -97,7 +97,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration_NonZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1."));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.1"));
+      Set<String> expected = new HashSet<>(Arrays.asList("2.0", "1.1", "1.0.1"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);
       Assert.assertTrue(expected.isEmpty());
@@ -106,7 +106,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration_ZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.1"));
+      Set<String> expected = new HashSet<>(Arrays.asList("2.0", "1.1", "1.0.1"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);
       Assert.assertTrue(expected.isEmpty());
@@ -115,7 +115,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration_ZeroExtendedBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0.1"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.2"));
+      Set<String> expected = new HashSet<>(Arrays.asList("2.0", "1.1", "1.0.2"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);
       Assert.assertTrue(expected.isEmpty());
@@ -124,7 +124,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration_DoubleDigitZeroBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.0.10"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.1", "1.0.11", "1.0.10.1", "1.0.10.0.1"));
+      Set<String> expected = new HashSet<>(Arrays.asList("2.0", "1.1", "1.0.11", "1.0.10.1", "1.0.10.0.1"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);
       Assert.assertTrue(expected.isEmpty());
@@ -133,7 +133,7 @@ public final class OutlineResolutionAndNumberTest {
    @Test
    public void testNextSetGeneration_DoubleDigitHigherBased() {
       Set<String> nextPossibleSet = outlineResolution.generateNextSet(new ReqNumbering("1.23"));
-      Set<String> expected = new HashSet<String>(Arrays.asList("2.0", "1.24", "1.23.1", "1.23.0.1"));
+      Set<String> expected = new HashSet<>(Arrays.asList("2.0", "1.24", "1.23.1", "1.23.0.1"));
       addDotEndingSet(expected);
       expected.removeAll(nextPossibleSet);
       Assert.assertTrue(expected.isEmpty());
@@ -156,7 +156,7 @@ public final class OutlineResolutionAndNumberTest {
    }
 
    private void addDotEndingSet(Set<String> inputSet) {
-      Set<String> dotEnding = new HashSet<String>(inputSet.size());
+      Set<String> dotEnding = new HashSet<>(inputSet.size());
       for (String item : inputSet) {
          dotEnding.add(item + ".");
       }

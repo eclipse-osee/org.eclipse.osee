@@ -28,7 +28,7 @@ public class OTETestRun {
    private List<Properties> tests;
  
    public OTETestRun(){
-      tests = new ArrayList<Properties>();
+      tests = new ArrayList<>();
       globalProperties = new Properties();
    }
    

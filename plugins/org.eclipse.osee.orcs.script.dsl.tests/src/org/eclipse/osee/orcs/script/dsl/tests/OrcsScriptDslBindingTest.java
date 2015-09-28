@@ -48,7 +48,7 @@ public class OrcsScriptDslBindingTest {
 
       OrcsScript model = resource.getModel();
 
-      Map<String, Object> binding = new HashMap<String, Object>();
+      Map<String, Object> binding = new HashMap<>();
       binding.put("key-1", "hello");
 
       OrcsScriptUtil.bind(model, binding);

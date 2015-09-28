@@ -51,7 +51,7 @@ public class FilteredTreeDialog extends MessageDialog {
    private ViewerSorter viewerSorter;
    private boolean multiSelect = true;
    private PatternFilter patternFilter;
-   List<Object> selected = new ArrayList<Object>();
+   List<Object> selected = new ArrayList<>();
 
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider) {
       this(dialogTitle, dialogMessage, contentProvider, labelProvider, null);
@@ -179,7 +179,7 @@ public class FilteredTreeDialog extends MessageDialog {
    }
 
    public List<TreeItem> getVisibleItems() {
-      List<TreeItem> toReturn = new ArrayList<TreeItem>();
+      List<TreeItem> toReturn = new ArrayList<>();
       getVisibleItems(toReturn, treeViewer.getViewer().getTree().getItems());
       return toReturn;
    }

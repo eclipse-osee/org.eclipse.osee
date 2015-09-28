@@ -70,7 +70,7 @@ public class Handlers {
     * @return Returns a list of objects from the sturctruedSelection that are an instance of the Class
     */
    public static <E> List<E> processSelectionObjects(Class<E> clazz, IStructuredSelection structuredSelection) {
-      List<E> objects = new LinkedList<E>();
+      List<E> objects = new LinkedList<>();
       Iterator<?> iterator = structuredSelection.iterator();
 
       while (iterator.hasNext()) {

@@ -49,7 +49,7 @@ public final class TransitionListeners {
     */
    public synchronized static List<ITransitionListener> getListeners() {
       if (!loaded) {
-         listeners = new ArrayList<ITransitionListener>();
+         listeners = new ArrayList<>();
          listeners.add(new DecisionReviewDefinitionManager());
          listeners.add(new PeerReviewDefinitionManager());
 

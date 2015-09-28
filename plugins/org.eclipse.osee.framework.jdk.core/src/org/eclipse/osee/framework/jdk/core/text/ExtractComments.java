@@ -29,7 +29,7 @@ public class ExtractComments {
    public ExtractComments() {
       in = null;
       line = null;
-      comments = new ArrayList<String>();
+      comments = new ArrayList<>();
    }
 
    public Object[] extract(String sourceFile) {

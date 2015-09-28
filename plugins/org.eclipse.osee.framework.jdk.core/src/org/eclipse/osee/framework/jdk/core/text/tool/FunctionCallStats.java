@@ -35,7 +35,7 @@ public class FunctionCallStats {
          return;
       }
 
-      ArrayList<String> patterns = new ArrayList<String>();
+      ArrayList<String> patterns = new ArrayList<>();
       patterns.add("\\W(\\w+)\\s*\\([^;{]*?\\)\\s*;");
 
       BufferedWriter out = new BufferedWriter(new FileWriter("results.csv"));

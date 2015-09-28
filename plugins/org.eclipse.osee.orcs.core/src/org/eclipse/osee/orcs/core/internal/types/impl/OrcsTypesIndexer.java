@@ -210,7 +210,7 @@ public class OrcsTypesIndexer {
 
    private EnumType createEnumType(XOseeEnumType dslType) throws OseeCoreException {
       int lastOrdinal = 0;
-      List<EnumEntry> entries = new LinkedList<EnumEntry>();
+      List<EnumEntry> entries = new LinkedList<>();
       for (XOseeEnumEntry entry : dslType.getEnumEntries()) {
          String ordinal = entry.getOrdinal();
          if (Strings.isValid(ordinal)) {
@@ -262,7 +262,7 @@ public class OrcsTypesIndexer {
          public Void caseRemoveAttribute(RemoveAttribute removeOption) {
             XAttributeType attribute = removeOption.getAttribute();
             String guidToMatch = attribute.getUuid();
-            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
                String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
@@ -277,7 +277,7 @@ public class OrcsTypesIndexer {
          public Void caseUpdateAttribute(UpdateAttribute updateAttribute) {
             XAttributeTypeRef refToUpdate = updateAttribute.getAttribute();
             String guidToMatch = refToUpdate.getValidAttributeType().getUuid();
-            List<XAttributeTypeRef> toRemove = new LinkedList<XAttributeTypeRef>();
+            List<XAttributeTypeRef> toRemove = new LinkedList<>();
             for (XAttributeTypeRef xAttributeTypeRef : validAttributeTypes) {
                String itemGuid = xAttributeTypeRef.getValidAttributeType().getUuid();
                if (guidToMatch.equals(itemGuid)) {
@@ -322,7 +322,7 @@ public class OrcsTypesIndexer {
          public Void caseRemoveEnum(RemoveEnum removeEnum) {
             XOseeEnumEntry enumEntry = removeEnum.getEnumEntry();
             String nameToMatch = enumEntry.getName();
-            List<XOseeEnumEntry> toRemove = new LinkedList<XOseeEnumEntry>();
+            List<XOseeEnumEntry> toRemove = new LinkedList<>();
             for (XOseeEnumEntry item : enumEntries) {
                String toMatch = item.getName();
                if (nameToMatch.equals(toMatch)) {

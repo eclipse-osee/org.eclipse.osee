@@ -49,7 +49,7 @@ public class AccountsResourceTest {
 
    @Test
    public void testGetAccounts() {
-      List<AccountInfoData> accesses = new ArrayList<AccountInfoData>();
+      List<AccountInfoData> accesses = new ArrayList<>();
       accesses.add(account);
       AccountInfoData[] expected = accesses.toArray(new AccountInfoData[] {});
       when(accountOps.getAllAccounts()).thenReturn(accesses);

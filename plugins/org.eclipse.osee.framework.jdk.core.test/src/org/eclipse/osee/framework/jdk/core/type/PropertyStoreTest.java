@@ -158,10 +158,10 @@ public class PropertyStoreTest {
          PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
       store1.put("key9", nested);
 
-      Set<String> set1 = new TreeSet<String>(store1.keySet());
+      Set<String> set1 = new TreeSet<>(store1.keySet());
       PropertyStoreTestUtil.checkArrays(new String[] {"key1", "key2", "key3", "key4", "key5", "key6", "key6.5"},
          set1.toArray(new String[set1.size()]));
-      Set<String> set2 = new TreeSet<String>(store1.arrayKeySet());
+      Set<String> set2 = new TreeSet<>(store1.arrayKeySet());
       PropertyStoreTestUtil.checkArrays(new String[] {"key7", "key8"}, set2.toArray(new String[set2.size()]));
 
       Assert.assertEquals("myId", store1.getId());

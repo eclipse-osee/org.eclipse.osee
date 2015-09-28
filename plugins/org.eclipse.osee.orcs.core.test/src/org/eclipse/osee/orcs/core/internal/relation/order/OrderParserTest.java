@@ -206,7 +206,7 @@ public class OrderParserTest {
    @Test
    public void testToXml() throws OseeCoreException {
       //@formatter:off
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<IRelationTypeSide, OrderData>();
+      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED, ORDER_LIST_2);
       add(data, REL_TYPE_2_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, ORDER_LIST_3);
       //@formatter:on
@@ -219,7 +219,7 @@ public class OrderParserTest {
 
    @Test
    public void testToXmlEmptyEntries() throws OseeCoreException {
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<IRelationTypeSide, OrderData>();
+      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 
       String actual = parser.toXml(hasOrderData);
@@ -228,7 +228,7 @@ public class OrderParserTest {
 
    @Test
    public void testToXmlEmptyList() throws OseeCoreException {
-      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<IRelationTypeSide, OrderData>();
+      Map<IRelationTypeSide, OrderData> data = new LinkedHashMap<>();
       add(data, REL_TYPE_1_ID, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
       when(hasOrderData.iterator()).thenReturn(data.entrySet().iterator());
 

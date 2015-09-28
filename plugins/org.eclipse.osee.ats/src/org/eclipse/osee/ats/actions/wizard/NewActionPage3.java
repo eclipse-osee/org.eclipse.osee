@@ -46,7 +46,7 @@ public class NewActionPage3 extends WizardPage {
    private XWidgetPage page;
    private Composite comp;
    protected final NewActionWizard wizard;
-   private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<IAtsWizardItem>();
+   private static Set<IAtsWizardItem> wizardExtensionItems = new HashSet<>();
 
    public NewActionPage3(NewActionWizard wizard) {
       this(wizard, "Create new ATS Action", "Create ATS Action");

@@ -61,7 +61,7 @@ public class OteEndpointSendEventMessage {
    public <T extends OteEventMessage, R extends OteEventMessage> OteEventMessageFuture<T, R> asynchSendAndResponse(Class<R> clazz, T message, OteEventMessageCallable<T, R> callable, long timeout){
       int responseId = updateHeaderInfo(message);
       String responseTopic = message.getHeader().RESPONSE_TOPIC.getValue();
-      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureImpl<T, R>(clazz, callable, message, responseTopic, responseId, timeout);
+      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureImpl<>(clazz, callable, message, responseTopic, responseId, timeout);
       endpoint.getOteEndpointThreadedSender(destination).send(message);
       return response;
    }
@@ -82,7 +82,7 @@ public class OteEndpointSendEventMessage {
    public <T extends OteEventMessage, R extends OteEventMessage> OteEventMessageFuture<T, R> asynchSendAndMultipleResponse(Class<R> clazz, T message, OteEventMessageCallable<T, R> callable, long timeout){
       int responseId = updateHeaderInfo(message);
       String responseTopic = message.getHeader().RESPONSE_TOPIC.getValue();
-      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureMultipleResponseImpl<T,R>(clazz, callable, message, responseTopic, responseId, timeout);
+      OteEventMessageFutureImpl<T, R> response = new OteEventMessageFutureMultipleResponseImpl<>(clazz, callable, message, responseTopic, responseId, timeout);
       endpoint.getOteEndpointThreadedSender(destination).send(message);
       return response;
    }
@@ -95,7 +95,7 @@ public class OteEndpointSendEventMessage {
     * @return   a future that you should cancel when done listening so resources can be cleaned up.
     */
    public <R extends OteEventMessage> OteEventMessageResponseFuture<R> asynchResponse(Class<R> clazz, String topic, OteEventMessageResponseCallable<R> callable){
-      OteEventMessageResponseFutureImpl<R> response = new OteEventMessageResponseFutureImpl<R>(clazz, callable, topic);
+      OteEventMessageResponseFutureImpl<R> response = new OteEventMessageResponseFutureImpl<>(clazz, callable, topic);
       return response;
    }
 
@@ -114,7 +114,7 @@ public class OteEndpointSendEventMessage {
       try{
          int responseId = updateHeaderInfo(message);
          message.getHeader().RESPONSE_TOPIC.setValue(responseTopic);
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(clazz, responseTopic, responseId, lock, responseReceived);
+         NotifyOnResponse<T> response = new NotifyOnResponse<>(clazz, responseTopic, responseId, lock, responseReceived);
          try{
             endpoint.getOteEndpointThreadedSender(destination).send(message);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
@@ -149,7 +149,7 @@ public class OteEndpointSendEventMessage {
       try{
          int responseId = updateHeaderInfo(sendMessage);
          sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
+         NotifyOnResponse<T> response = new NotifyOnResponse<>(responseMessage, responseId, lock, responseReceived);
          try{
             endpoint.getOteEndpointThreadedSender(destination).send(sendMessage);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);
@@ -205,7 +205,7 @@ public class OteEndpointSendEventMessage {
       try{
          int responseId = updateHeaderInfo(sendMessage);
          sendMessage.getHeader().RESPONSE_TOPIC.setValue(responseMessage.getHeader().TOPIC.getValue());
-         NotifyOnResponse<T> response = new NotifyOnResponse<T>(responseMessage, responseId, lock, responseReceived);
+         NotifyOnResponse<T> response = new NotifyOnResponse<>(responseMessage, responseId, lock, responseReceived);
          try{
             endpoint.getOteEndpointInlineSender(destination).send(sendMessage);
             long nanos = TimeUnit.MILLISECONDS.toNanos(timeout);

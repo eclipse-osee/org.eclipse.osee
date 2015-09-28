@@ -30,7 +30,7 @@ public class RunTestListener implements EventHandler {
    
    public RunTestListener(EventAdmin eventAdmin, OteUdpEndpoint oteEndpoint, OTEApi oteApi) {
       this.oteApi = oteApi;
-      handles = new ConcurrentHashMap<String, ICommandHandle>();
+      handles = new ConcurrentHashMap<>();
    }
 
    @Override

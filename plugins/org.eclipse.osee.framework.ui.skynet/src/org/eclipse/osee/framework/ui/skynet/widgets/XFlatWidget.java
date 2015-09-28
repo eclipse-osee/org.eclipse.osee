@@ -284,10 +284,10 @@ public abstract class XFlatWidget<T> extends XLabel {
    private final class FlatControl {
       private final List<String> pageIds;
       private Composite flatComposite;
-      private final Map<String, Composite> pages = new HashMap<String, Composite>();
+      private final Map<String, Composite> pages = new HashMap<>();
 
       public FlatControl() {
-         this.pageIds = new ArrayList<String>();
+         this.pageIds = new ArrayList<>();
       }
 
       private void createControl(Composite parent) {
@@ -371,7 +371,7 @@ public abstract class XFlatWidget<T> extends XLabel {
          if (minPage <= numberOfPages && maxPage >= numberOfPages) {
             status = Status.OK_STATUS;
          } else {
-            List<String> message = new ArrayList<String>();
+            List<String> message = new ArrayList<>();
             if (numberOfPages < minPage) {
                message.add(String.format("Must have at least [%s] page%s", minPage, minPage == 1 ? "" : "s"));
             }

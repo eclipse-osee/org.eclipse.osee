@@ -34,7 +34,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      changes = new ArrayList<Change>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
+      changes = new ArrayList<>(Handlers.getArtifactChangesFromStructuredSelection(structuredSelection));
       if (changes.size() == 1) {
          Artifact sampleArtifact = changes.iterator().next().getChangeArtifact();
          return AccessControlManager.hasPermission(sampleArtifact, PermissionEnum.READ);

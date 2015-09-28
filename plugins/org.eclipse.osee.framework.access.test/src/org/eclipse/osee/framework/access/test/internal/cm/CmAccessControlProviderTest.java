@@ -65,7 +65,7 @@ public class CmAccessControlProviderTest {
    }
 
    private static void assertCMProvider(IBasicArtifact<?> user, Object objectToCheck, MockConfigurationManagement expectedCM, MockConfigurationManagement... extraCms) throws OseeCoreException {
-      Collection<CmAccessControl> cmServices = new HashSet<CmAccessControl>();
+      Collection<CmAccessControl> cmServices = new HashSet<>();
       for (CmAccessControl extraCm : extraCms) {
          cmServices.add(extraCm);
       }

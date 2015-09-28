@@ -37,8 +37,8 @@ import com.google.common.collect.Sets.SetView;
 public final class SqlFieldResolver {
 
    private final SqlAliasManager aliasManager;
-   private final List<DynamicData> unresolved = new ArrayList<DynamicData>();
-   private final CountingMap<String> counter = new CountingMap<String>();
+   private final List<DynamicData> unresolved = new ArrayList<>();
+   private final CountingMap<String> counter = new CountingMap<>();
    private final Iterable<SelectSet> selectSets;
    private boolean selectsProcessed;
 
@@ -62,7 +62,7 @@ public final class SqlFieldResolver {
    }
 
    public Iterable<String> getSortFields() {
-      Map<ObjectField, String> fieldToColumn = new LinkedHashMap<ObjectField, String>();
+      Map<ObjectField, String> fieldToColumn = new LinkedHashMap<>();
       for (SelectSet selectSet : selectSets) {
          DynamicData data = selectSet.getData();
          if (data != null) {
@@ -70,8 +70,8 @@ public final class SqlFieldResolver {
          }
       }
 
-      List<String> toReturn = new ArrayList<String>();
-      Set<Family> processed = new HashSet<Family>();
+      List<String> toReturn = new ArrayList<>();
+      Set<Family> processed = new HashSet<>();
       for (Entry<ObjectField, String> entry : fieldToColumn.entrySet()) {
          ObjectField key = entry.getKey();
          Family family = key.getFamily();
@@ -101,7 +101,7 @@ public final class SqlFieldResolver {
    }
 
    public ResultObjectDescription getResult() {
-      final List<DynamicData> datas = new ArrayList<DynamicData>();
+      final List<DynamicData> datas = new ArrayList<>();
       for (SelectSet selectSet : selectSets) {
          DynamicData data = selectSet.getData();
          if (data != null) {
@@ -154,7 +154,7 @@ public final class SqlFieldResolver {
    private void addRequiredFields(DynamicObject object) {
       Family family = null;
       int level = object.getLevel();
-      Set<ObjectField> fields = new HashSet<ObjectField>();
+      Set<ObjectField> fields = new HashSet<>();
       for (DynamicData child : object.getChildren()) {
          String fieldId = child.getGuid();
          if (fieldId != null) {

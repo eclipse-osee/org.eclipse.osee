@@ -65,14 +65,14 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               final List<IAtsUser> assignees = new ArrayList<IAtsUser>();
+               final List<IAtsUser> assignees = new ArrayList<>();
                for (Artifact art : variableMap.getArtifacts(ASSIGNEES)) {
                   if (art instanceof User) {
                      IAtsUser atsUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) art);
                      assignees.add(atsUser);
                   }
                }
-               final List<String> titles = new ArrayList<String>();
+               final List<String> titles = new ArrayList<>();
                for (String title : variableMap.getString(TASK_IMPORT_TITLES).split("\n")) {
                   title = title.replaceAll("\r", "");
                   if (!title.equals("")) {

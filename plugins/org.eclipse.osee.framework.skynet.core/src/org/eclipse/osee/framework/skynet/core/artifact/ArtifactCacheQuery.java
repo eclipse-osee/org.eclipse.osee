@@ -34,7 +34,7 @@ public class ArtifactCacheQuery {
     * before returning.
     */
    public static Set<Artifact> getArtifactsFromArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch, boolean queryIfNotFound) throws OseeCoreException {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+      Set<Artifact> artifacts = new HashSet<>();
       // Retrieve cached artifacts first
       for (Artifact artifact : ArtifactCache.getListByTextId(text, branch)) {
          if (artifact.isOfType(artifactType) && !artifact.isDeleted()) {

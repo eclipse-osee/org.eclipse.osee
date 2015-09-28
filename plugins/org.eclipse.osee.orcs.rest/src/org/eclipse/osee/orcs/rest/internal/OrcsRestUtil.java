@@ -56,7 +56,7 @@ public final class OrcsRestUtil {
    }
 
    public static List<Transaction> asTransactions(ResultSet<? extends TransactionReadable> results) {
-      List<Transaction> toReturn = new ArrayList<Transaction>(results.size());
+      List<Transaction> toReturn = new ArrayList<>(results.size());
       for (TransactionReadable data : results) {
          toReturn.add(asTransaction(data));
       }
@@ -64,7 +64,7 @@ public final class OrcsRestUtil {
    }
 
    public static List<Branch> asBranches(ResultSet<? extends BranchReadable> results) {
-      List<Branch> toReturn = new ArrayList<Branch>(results.size());
+      List<Branch> toReturn = new ArrayList<>(results.size());
       for (BranchReadable data : results) {
          toReturn.add(asBranch(data));
       }
@@ -102,7 +102,7 @@ public final class OrcsRestUtil {
       List<Integer> toReturn;
       if (Strings.isValid(rawValue)) {
          String[] entries = rawValue.split(",");
-         toReturn = new ArrayList<Integer>();
+         toReturn = new ArrayList<>();
          for (String entry : entries) {
             Integer value = Integer.parseInt(entry.trim());
             toReturn.add(value);
@@ -117,7 +117,7 @@ public final class OrcsRestUtil {
       List<Long> toReturn;
       if (Strings.isValid(rawValue)) {
          String[] entries = rawValue.split(",");
-         toReturn = new ArrayList<Long>();
+         toReturn = new ArrayList<>();
          for (String entry : entries) {
             Long value = Long.parseLong(entry.trim());
             toReturn.add(value);

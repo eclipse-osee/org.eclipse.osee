@@ -31,7 +31,7 @@ public class ExtractReqPriority implements RowProcessor {
    private final HashMap<String, String> reqPriorities;
 
    public ExtractReqPriority(String excelMlPath) throws UnsupportedEncodingException, FileNotFoundException, IOException, SAXException {
-      this.reqPriorities = new HashMap<String, String>();
+      this.reqPriorities = new HashMap<>();
 
       File file = new File(excelMlPath);
 

@@ -30,7 +30,7 @@ public final class DispoApplication extends Application {
 
    private DispoApi dispoApi;
 
-   private final Set<Object> singletons = new HashSet<Object>();
+   private final Set<Object> singletons = new HashSet<>();
 
    public void setDispoApi(DispoApi dispoApi) {
       this.dispoApi = dispoApi;

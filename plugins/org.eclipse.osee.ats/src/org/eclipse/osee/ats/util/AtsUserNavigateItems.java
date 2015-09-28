@@ -36,7 +36,7 @@ public class AtsUserNavigateItems implements IUserNavigateItem {
 
    @Override
    public List<XNavigateItem> getNavigateItems(XNavigateItem parentItem) {
-      List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+      List<XNavigateItem> items = new ArrayList<>();
       if (AtsUtilClient.isAtsAdmin()) {
          items.add(new XNavigateItemBlam(parentItem, new PurgeUser(), FrameworkImage.X_RED));
          items.add(new XNavigateItemBlam(parentItem, new ReAssignATSObjectsToUser(), AtsImage.ACTION));

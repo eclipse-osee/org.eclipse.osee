@@ -88,13 +88,13 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    public Collection<IAtsWorkDefinition> convert() {
-      List<IAtsWorkDefinition> workDefs = new ArrayList<IAtsWorkDefinition>();
+      List<IAtsWorkDefinition> workDefs = new ArrayList<>();
       for (WorkDef dslWorkDef : atsDsl.getWorkDef()) {
          WorkDefinition workDef = new WorkDefinition(Strings.unquote(dslWorkDef.getName()));
          workDef.setId(dslWorkDef.getId().iterator().next());
 
          List<IAtsWidgetDefinition> widgetDefs = retrieveWigetDefs(atsDsl, dslWorkDef, name);
-         Map<IAtsStateDefinition, String> copyLayoutFromMap = new HashMap<IAtsStateDefinition, String>();
+         Map<IAtsStateDefinition, String> copyLayoutFromMap = new HashMap<>();
 
          // Process and define all states
          for (StateDef dslState : dslWorkDef.getStates()) {
@@ -322,7 +322,7 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    private Collection<String> getAssigneesFromUserRefs(EList<UserRef> UserRefs) {
-      Set<String> userIds = new HashSet<String>();
+      Set<String> userIds = new HashSet<>();
       for (UserRef UserRef : UserRefs) {
          if (UserRef instanceof UserByName) {
             UserByName byName = (UserByName) UserRef;
@@ -364,7 +364,7 @@ public class ConvertAtsDslToWorkDefinition {
    }
 
    private List<IAtsWidgetDefinition> retrieveWigetDefs(AtsDsl atsDsl, WorkDef dslWorkDef, String SHEET_NAME) {
-      List<IAtsWidgetDefinition> widgetDefs = new ArrayList<IAtsWidgetDefinition>();
+      List<IAtsWidgetDefinition> widgetDefs = new ArrayList<>();
       for (WidgetDef dslWidgetDef : dslWorkDef.getWidgetDefs()) {
          IAtsWidgetDefinition widgetDef = convertDslWidgetDef(dslWidgetDef, SHEET_NAME);
          widgetDefs.add(widgetDef);

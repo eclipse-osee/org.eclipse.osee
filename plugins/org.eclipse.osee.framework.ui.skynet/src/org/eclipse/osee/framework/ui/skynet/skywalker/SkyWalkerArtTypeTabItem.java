@@ -142,7 +142,7 @@ public class SkyWalkerArtTypeTabItem {
    }
 
    public void storeSelected() {
-      Set<IArtifactType> selected = new HashSet<IArtifactType>();
+      Set<IArtifactType> selected = new HashSet<>();
       for (Object obj : treeViewer.getCheckedElements()) {
          if (obj instanceof IArtifactType) {
             selected.add((IArtifactType) obj);

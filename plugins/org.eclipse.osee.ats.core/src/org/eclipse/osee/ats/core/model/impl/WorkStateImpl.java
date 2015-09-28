@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class WorkStateImpl implements WorkState {
 
    private String name;
-   private final List<IAtsUser> assignees = new LinkedList<IAtsUser>();
+   private final List<IAtsUser> assignees = new LinkedList<>();
    private double hoursSpent = 0;
    private int percentComplete = 0;
 

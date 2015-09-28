@@ -17,7 +17,7 @@ import java.util.Collection;
  * @author Shawn F. Cook
  */
 public abstract class ColumnAbstract implements Column {
-   private final Collection<ColumnAbstract> requiredCols = new ArrayList<ColumnAbstract>();
+   private final Collection<ColumnAbstract> requiredCols = new ArrayList<>();
    private final String headerString;
    private final boolean isVisible;
 

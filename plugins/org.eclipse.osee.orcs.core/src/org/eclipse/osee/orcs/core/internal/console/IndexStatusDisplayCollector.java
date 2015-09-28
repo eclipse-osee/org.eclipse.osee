@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.search.IndexerCollectorAdapter;
 public final class IndexStatusDisplayCollector extends IndexerCollectorAdapter {
    private final int DEFAULT_STATS_PRINT_FREQUENCY = 1000;
 
-   private final List<Integer> taskIds = new CopyOnWriteArrayList<Integer>();
+   private final List<Integer> taskIds = new CopyOnWriteArrayList<>();
    private int attributesProcessed;
    private int queriesProcessed;
    private final long startTime;

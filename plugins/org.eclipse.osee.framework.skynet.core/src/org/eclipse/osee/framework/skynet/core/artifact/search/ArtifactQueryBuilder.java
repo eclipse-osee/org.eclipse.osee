@@ -165,7 +165,7 @@ public class ArtifactQueryBuilder {
          if (guids.size() == 1) {
             this.guid = guids.get(0);
          } else {
-            this.guids = new ArrayList<String>();
+            this.guids = new ArrayList<>();
             for (String id : guids) {
                if (GUID.isValid(id)) {
                   this.guids.add(id);
@@ -356,7 +356,7 @@ public class ArtifactQueryBuilder {
 
    private static final class LocalIdQueryBuilder implements InvocationHandler {
 
-      private final Set<Integer> localIds = new LinkedHashSet<Integer>();
+      private final Set<Integer> localIds = new LinkedHashSet<>();
       private DeletionFlag allowDeleted = EXCLUDE_DELETED;
       private int txId = -1;
       private final IOseeBranch branch;
@@ -413,7 +413,7 @@ public class ArtifactQueryBuilder {
       @SuppressWarnings("unused")
       public SearchResult getSearchResult() throws OseeCoreException {
          SearchResponse response = new SearchResponse();
-         List<Integer> ids = new LinkedList<Integer>(localIds);
+         List<Integer> ids = new LinkedList<>(localIds);
          response.setIds(ids);
          return response;
       }

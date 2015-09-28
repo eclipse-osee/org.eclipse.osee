@@ -78,7 +78,7 @@ public final class ViewWordChangeAndDiffTest {
       Artifact newerArtifact = loadHistorical(artifacts.get(0));
       Artifact baseArtifact = loadHistorical(artifacts.get(1));
 
-      final Collection<CompareData> testDatas = new ArrayList<CompareData>();
+      final Collection<CompareData> testDatas = new ArrayList<>();
 
       CompareDataCollector collector = new CompareDataCollector() {
 
@@ -139,7 +139,7 @@ public final class ViewWordChangeAndDiffTest {
    }
 
    private static Collection<Change> getChanges(IOseeBranch testBranch) throws OseeCoreException {
-      Collection<Change> changes = new ArrayList<Change>();
+      Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);
       return changes;
@@ -161,7 +161,7 @@ public final class ViewWordChangeAndDiffTest {
    }
 
    private static ArrayList<Artifact> asArtifacts(Collection<Change> changes) {
-      ArrayList<Artifact> arts = new ArrayList<Artifact>();
+      ArrayList<Artifact> arts = new ArrayList<>();
       for (Change artifactChange : changes) {
          arts.add(artifactChange.getChangeArtifact());
       }

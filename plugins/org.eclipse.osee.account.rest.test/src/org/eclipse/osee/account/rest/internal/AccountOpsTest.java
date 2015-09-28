@@ -82,7 +82,7 @@ public class AccountOpsTest {
       String name = "myName";
       boolean active = true;
 
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");
@@ -240,7 +240,7 @@ public class AccountOpsTest {
    @Test
    public void testGetAccountDetailsData() {
       Account account = mockAccount(789L, "GHI", "acc3", "acc3@email.com", "u3", true);
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");
@@ -270,7 +270,7 @@ public class AccountOpsTest {
 
    @Test
    public void testGetAccountPreferencesData() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");
@@ -352,7 +352,7 @@ public class AccountOpsTest {
 
    @Test
    public void testSetAccountPreferences() {
-      Map<String, String> map = new HashMap<String, String>();
+      Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
       map.put("c", "3");

@@ -47,7 +47,7 @@ public class JaxRsTemplateContribution {
    @XmlElement
    public Set<JaxRsTemplateLink> getTemplates() {
       if (templates == null) {
-         templates = new TreeSet<JaxRsTemplateLink>();
+         templates = new TreeSet<>();
       }
       return templates;
    }

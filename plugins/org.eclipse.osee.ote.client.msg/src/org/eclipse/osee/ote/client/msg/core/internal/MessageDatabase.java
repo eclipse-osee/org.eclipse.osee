@@ -35,7 +35,7 @@ public class MessageDatabase extends AbstractMessageDataBase {
    @Override
    protected Message createMessage(Class<? extends Message> msgClass) throws Exception {
       Message msg = msgClass.newInstance();
-      LinkedList<MessageData> source = new LinkedList<MessageData>();
+      LinkedList<MessageData> source = new LinkedList<>();
       Map<DataType, Class<? extends Message>[]> messages = msg.getAssociatedMessages();
       Set<Entry<DataType, Class<? extends Message>[]>> entrySet = messages.entrySet();
       for (Entry<DataType, Class<? extends Message>[]> entry : entrySet) {

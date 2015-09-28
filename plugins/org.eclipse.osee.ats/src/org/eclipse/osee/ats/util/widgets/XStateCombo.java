@@ -39,7 +39,7 @@ public class XStateCombo extends XComboDam {
    }
 
    private String[] getStateNames() {
-      List<String> validStates = new ArrayList<String>();
+      List<String> validStates = new ArrayList<>();
       try {
          IAtsWorkDefinition workDef = null;
          if (getArtifact() instanceof AbstractWorkflowArtifact && ((AbstractWorkflowArtifact) getArtifact()).getParentTeamWorkflow() != null) {

@@ -67,7 +67,7 @@ public class AtsDslJavaValidator extends AbstractAtsDslJavaValidator {
       if (atsDsl.getWorkDef() == null) {
          return;
       }
-      Set<Integer> ordinals = new HashSet<Integer>();
+      Set<Integer> ordinals = new HashSet<>();
       for (WorkDef workDef : atsDsl.getWorkDef()) {
          for (StateDef state : workDef.getStates()) {
             if (ordinals.contains(state.getOrdinal())) {

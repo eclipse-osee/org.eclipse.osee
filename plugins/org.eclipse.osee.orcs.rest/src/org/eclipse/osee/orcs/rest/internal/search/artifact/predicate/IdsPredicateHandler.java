@@ -35,7 +35,7 @@ public class IdsPredicateHandler implements PredicateHandler {
 
       Conditions.checkNotNull(values, "values");
 
-      Collection<Long> rawIds = new HashSet<Long>();
+      Collection<Long> rawIds = new HashSet<>();
       for (String value : values) {
          if (value.matches("\\d+")) {
             rawIds.add(Long.parseLong(value));

@@ -93,7 +93,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.addAssignees("endorse", null);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       stateMgr.addAssignees("endorse", users);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
@@ -125,7 +125,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.setAssignee(null);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 
-      List<IAtsUser> users = new ArrayList<IAtsUser>();
+      List<IAtsUser> users = new ArrayList<>();
       stateMgr.setAssignees("endorse", users);
       Assert.assertTrue(stateMgr.getAssignees().isEmpty());
 

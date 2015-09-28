@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.model.IActionGroup;
  */
 public class AtsActionGroup extends AtsObject implements IActionGroup {
 
-   List<IAtsWorkItem> actions = new ArrayList<IAtsWorkItem>();
+   List<IAtsWorkItem> actions = new ArrayList<>();
 
    public AtsActionGroup(String guid, String name, long uuid) {
       super(guid, uuid);

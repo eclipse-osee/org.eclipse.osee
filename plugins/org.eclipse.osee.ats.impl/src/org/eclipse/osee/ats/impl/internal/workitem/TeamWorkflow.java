@@ -32,7 +32,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
 
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
-      Set<IAtsActionableItem> ais = new HashSet<IAtsActionableItem>();
+      Set<IAtsActionableItem> ais = new HashSet<>();
       for (Object aiGuidObj : artifact.getAttributeValues(AtsAttributeTypes.ActionableItem)) {
          String aiGuid = (String) aiGuidObj;
          Long uuid = getAtsServer().getStoreService().getUuidFromGuid(aiGuid);

@@ -108,7 +108,7 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Collection<ISession> getSessionByClientAddress(String clientAddress) throws OseeCoreException {
       Conditions.checkNotNull(clientAddress, "clientAddress");
-      Set<ISession> sessions = new HashSet<ISession>();
+      Set<ISession> sessions = new HashSet<>();
       Iterable<Session> all = null;
       try {
          all = sessionCache.getAll();
@@ -128,7 +128,7 @@ public final class SessionManagerImpl implements ISessionManager {
    @Override
    public Collection<ISession> getSessionsByUserId(String userId) throws OseeCoreException {
       Conditions.checkNotNull(userId, "userId");
-      Collection<ISession> toReturn = new HashSet<ISession>();
+      Collection<ISession> toReturn = new HashSet<>();
       for (ISession session : getAllSessions()) {
          if (session.getUserId().equals(userId)) {
             toReturn.add(session);
@@ -139,7 +139,7 @@ public final class SessionManagerImpl implements ISessionManager {
 
    @Override
    public Collection<ISession> getAllSessions() throws OseeCoreException {
-      Collection<ISession> toReturn = new HashSet<ISession>();
+      Collection<ISession> toReturn = new HashSet<>();
       try {
          Iterable<Session> all = sessionCache.getAll();
          for (Session session : all) {
@@ -155,7 +155,7 @@ public final class SessionManagerImpl implements ISessionManager {
    public void releaseSessionImmediate(String... sessionIds) throws OseeCoreException {
       Conditions.checkNotNull(sessionIds, "sessionIds");
 
-      Set<Session> sessions = new HashSet<Session>();
+      Set<Session> sessions = new HashSet<>();
       for (String sessionId : sessionIds) {
          Session session = getSessionById(sessionId);
          if (session != null) {

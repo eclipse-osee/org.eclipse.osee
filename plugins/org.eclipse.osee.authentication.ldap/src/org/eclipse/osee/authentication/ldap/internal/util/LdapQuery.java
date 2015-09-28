@@ -41,7 +41,7 @@ public final class LdapQuery {
    private LdapSearchScope searchScope;
    private VariablePattern pattern;
 
-   private final Set<String> itemsToReturn = new HashSet<String>();
+   private final Set<String> itemsToReturn = new HashSet<>();
 
    public LdapQuery(Log logger) {
       this.logger = logger;
@@ -97,7 +97,7 @@ public final class LdapQuery {
       if (!itemsToReturn.isEmpty()) {
          attributesToReturn = itemsToReturn.toArray(new String[itemsToReturn.size()]);
       }
-      List<LdapEntry> results = new LinkedList<LdapEntry>();
+      List<LdapEntry> results = new LinkedList<>();
       search(results, connection, base, searchPattern, searchBindings, attributesToReturn, searchDepth);
       return ResultSets.newResultSet(results);
    }
@@ -150,7 +150,7 @@ public final class LdapQuery {
    private static abstract class AttributeProcessor {
 
       public LdapEntry process(SearchResult rSet) {
-         Map<String, Attribute> attributes = new HashMap<String, Attribute>();
+         Map<String, Attribute> attributes = new HashMap<>();
 
          String distinguishedName = rSet.getNameInNamespace();
          Attribute attribute = new BasicAttribute(LdapEntry.LDAP_ENTRY__DISTINGUISHED_NAME_KEY, distinguishedName);

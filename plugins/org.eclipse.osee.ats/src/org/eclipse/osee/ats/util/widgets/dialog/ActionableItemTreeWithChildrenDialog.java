@@ -54,7 +54,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
     * @return selected AIs and children if recurseChildren was checked
     */
    public Collection<IAtsActionableItem> getResultAndRecursedAIs() throws OseeCoreException {
-      Set<IAtsActionableItem> aias = new HashSet<IAtsActionableItem>(10);
+      Set<IAtsActionableItem> aias = new HashSet<>(10);
       for (Object obj : getResult()) {
          IAtsActionableItem ai = (IAtsActionableItem) obj;
          aias.add(ai);

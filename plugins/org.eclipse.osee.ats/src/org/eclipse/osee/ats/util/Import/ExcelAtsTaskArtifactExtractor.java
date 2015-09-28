@@ -304,7 +304,7 @@ public class ExcelAtsTaskArtifactExtractor {
       }
 
       private void processAssignees(String[] row, TaskArtifact taskArt, int i) throws OseeCoreException {
-         Set<IAtsUser> assignees = new HashSet<IAtsUser>();
+         Set<IAtsUser> assignees = new HashSet<>();
          for (String userName : row[i].split(";")) {
             userName = userName.replaceAll("^\\s+", "");
             userName = userName.replaceAll("\\+$", "");

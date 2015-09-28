@@ -99,7 +99,7 @@ public final class JdbcClientBuilder extends JdbcClientConfig {
    }
 
    private JdbcConnectionProvider getConnectionProvider(JdbcPoolConfig poolConfig) {
-      Map<String, JdbcConnectionFactory> factories = new ConcurrentHashMap<String, JdbcConnectionFactory>();
+      Map<String, JdbcConnectionFactory> factories = new ConcurrentHashMap<>();
       JdbcConnectionFactoryManager manager = new JdbcConnectionFactoryManager(factories);
 
       JdbcConnectionProvider connectionProvider;

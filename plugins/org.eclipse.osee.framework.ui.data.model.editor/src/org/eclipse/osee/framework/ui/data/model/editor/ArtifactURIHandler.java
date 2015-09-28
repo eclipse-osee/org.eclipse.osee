@@ -88,7 +88,7 @@ public class ArtifactURIHandler extends URIHandlerImpl {
 
    @Override
    public Map<String, ?> getAttributes(URI uri, Map<?, ?> options) {
-      Map<String, Object> result = new HashMap<String, Object>();
+      Map<String, Object> result = new HashMap<>();
       Set<String> requestedAttributes = getRequestedAttributes(options);
       if (requestedAttributes == null || requestedAttributes.contains(URIConverter.ATTRIBUTE_READ_ONLY)) {
          result.put(URIConverter.ATTRIBUTE_READ_ONLY, false);
