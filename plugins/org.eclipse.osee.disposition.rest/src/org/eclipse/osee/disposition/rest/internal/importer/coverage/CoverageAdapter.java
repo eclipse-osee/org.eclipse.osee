@@ -110,7 +110,7 @@ public class CoverageAdapter {
             newAnnotation.setIndex(annotations.size());
             newAnnotation.setLocationRefs(lineNumberFromCoverage);
             newAnnotation.setCustomerNotes(textFromCoverage);
-            newAnnotation.setResolution("");
+            newAnnotation.setResolution("n/a");
             newAnnotation.setDeveloperNotes("");
             try {
                dispoConnector.connectAnnotation(newAnnotation, dest.getDiscrepanciesList());
