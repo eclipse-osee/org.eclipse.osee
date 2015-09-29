@@ -59,6 +59,7 @@ import org.eclipse.osee.ats.core.ai.ActionableItemManager;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
+import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
@@ -96,7 +97,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -108,7 +108,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public class AtsServerImpl implements IAtsServer {
+public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
    public static String PLUGIN_ID = "org.eclipse.osee.ats.rest";
    private OrcsApi orcsApi;
@@ -508,22 +508,6 @@ public class AtsServerImpl implements IAtsServer {
    }
 
    @Override
-   public String getAtsId(Object obj) {
-      ArtifactReadable art = null;
-      if (obj instanceof ArtifactReadable) {
-         art = (ArtifactReadable) obj;
-      } else if (obj instanceof IAtsObject) {
-         art = (ArtifactReadable) ((IAtsObject) obj).getStoreObject();
-      }
-      Conditions.checkNotNull(art, "artifact");
-      String toReturn = art.getSoleAttributeAsString(AtsAttributeTypes.AtsId, AtsUtilCore.DEFAULT_ATS_ID_VALUE);
-      if (AtsUtilCore.DEFAULT_ATS_ID_VALUE.equals(toReturn)) {
-         toReturn = art.getGuid();
-      }
-      return toReturn;
-   }
-
-   @Override
    public void setChangeType(IAtsObject atsObject, ChangeType changeType, IAtsChangeSet changes) {
       ChangeTypeUtil.setChangeType(atsObject, changeType, changes);
    }
@@ -531,11 +515,6 @@ public class AtsServerImpl implements IAtsServer {
    @Override
    public ChangeType getChangeType(IAtsAction fromAction) {
       return ChangeTypeUtil.getChangeType(fromAction);
-   }
-
-   @Override
-   public String getAtsId(IAtsAction action) {
-      return getAtsId(action);
    }
 
    @Override

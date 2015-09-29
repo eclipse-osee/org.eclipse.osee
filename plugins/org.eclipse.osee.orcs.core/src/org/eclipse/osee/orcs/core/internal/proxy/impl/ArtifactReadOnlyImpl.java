@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -296,6 +297,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    @Override
    public final String toStringWithId() {
       return String.format("[%s][%s]", getName(), getUuid());
+   }
+
+   @Override
+   public ArtifactId getStoreObject() {
+      return this;
    }
 
 }

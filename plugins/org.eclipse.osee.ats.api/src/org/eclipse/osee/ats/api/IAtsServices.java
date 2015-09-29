@@ -64,7 +64,9 @@ public interface IAtsServices {
 
    ChangeType getChangeType(IAtsAction fromAction);
 
-   String getAtsId(IAtsAction action);
+   String getAtsId(ArtifactId artifact);
+
+   String getAtsId(IAtsObject atsObject);
 
    Collection<IArtifactType> getArtifactTypes();
 

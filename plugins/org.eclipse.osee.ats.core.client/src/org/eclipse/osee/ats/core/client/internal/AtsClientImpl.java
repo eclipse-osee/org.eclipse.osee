@@ -105,6 +105,7 @@ import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
+import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
@@ -136,7 +137,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public class AtsClientImpl implements IAtsClient {
+public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    private IAtsStateFactory stateFactory;
    private IAtsWorkDefinitionService workDefService;
@@ -260,6 +261,10 @@ public class AtsClientImpl implements IAtsClient {
          userService, attributeResolverService, atsStateFactory, configProxy, getServices());
       taskService = new AtsTaskService(this);
 
+   }
+
+   public void setAttributeResolverService(IAttributeResolver attributeResolverService) {
+      this.attributeResolverService = attributeResolverService;
    }
 
    @Override
@@ -648,11 +653,6 @@ public class AtsClientImpl implements IAtsClient {
    @Override
    public ChangeType getChangeType(IAtsAction fromAction) {
       return ChangeTypeUtil.getChangeType(fromAction);
-   }
-
-   @Override
-   public String getAtsId(IAtsAction action) {
-      return getAtsId(action);
    }
 
    @Override

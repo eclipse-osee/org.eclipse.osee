@@ -26,7 +26,7 @@ public final class OrcsUtil {
       return new ArtifactToken(uuid, guid, name);
    }
 
-   private static class ArtifactToken extends NamedIdentity<String> implements ArtifactId {
+   private static class ArtifactToken extends NamedIdentity<String>implements ArtifactId {
       private final long uuid;
 
       public ArtifactToken(long uuid, String guid, String name) {
@@ -37,6 +37,16 @@ public final class OrcsUtil {
       @Override
       public long getUuid() {
          return uuid;
+      }
+
+      @Override
+      public String toStringWithId() {
+         return String.format("[%s][%s]", getName(), getUuid());
+      }
+
+      @Override
+      public ArtifactId getStoreObject() {
+         return this;
       }
    }
 

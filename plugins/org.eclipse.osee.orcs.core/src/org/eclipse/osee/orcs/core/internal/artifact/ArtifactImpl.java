@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -167,7 +168,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranchUuid());
+         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(),
+            getBranchUuid());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -229,6 +231,16 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public long getUuid() {
       return getLocalId();
+   }
+
+   @Override
+   public String toStringWithId() {
+      return String.format("[%s][%s]", getName(), getUuid());
+   }
+
+   @Override
+   public ArtifactId getStoreObject() {
+      return this;
    }
 
 }

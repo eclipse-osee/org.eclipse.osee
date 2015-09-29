@@ -260,6 +260,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    /*
     * Provide easy way to display/report [name][uuid]
     */
+   @Override
    public final String toStringWithId() {
       return String.format("[%s][%s]", getSafeName(), getUuid());
    }
@@ -1746,6 +1747,11 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          // do nothing
       }
       return artifact;
+   }
+
+   @Override
+   public ArtifactId getStoreObject() {
+      return this;
    }
 
 }
