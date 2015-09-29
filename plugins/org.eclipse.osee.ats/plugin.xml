@@ -250,14 +250,6 @@
       </Operation>
    </extension>
    <extension
-         id="ATSIDCheckBlam"
-         name="ATSIDCheckBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.operation.AtsIdCheckBlam">
-      </Operation>
-   </extension>
-   <extension
          id="ModifyActionableItemsBlam"
          name="ModifyActionableItemsBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
