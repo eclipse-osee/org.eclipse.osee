@@ -422,12 +422,6 @@
       </Operation>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.ats.health.ValidateAtsIds">
-      </Operation>
-   </extension>
-   <extension
          id="org.eclipse.osee.ats.WEEditorInputFactory"
          name="WEEditor Input Factory"
          point="org.eclipse.ui.elementFactories">
