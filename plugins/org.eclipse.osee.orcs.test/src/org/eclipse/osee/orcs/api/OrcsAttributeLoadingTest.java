@@ -63,8 +63,6 @@ public class OrcsAttributeLoadingTest {
       ArtifactReadable art8 = lookup.get(8);
 
       //Test loading name attributes
-      assertEquals(art6.getSoleAttributeAsString(CoreAttributeTypes.Name),
-         "org.eclipse.osee.coverage.OseeTypes_Coverage");
       assertEquals(art7.getSoleAttributeAsString(CoreAttributeTypes.Name), "User Groups");
       assertEquals(art8.getSoleAttributeAsString(CoreAttributeTypes.Name), "Everyone");
 

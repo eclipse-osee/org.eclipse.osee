@@ -15,9 +15,6 @@
 	<feature url="features/org.eclipse.osee.core.runtime.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.23.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-	<feature url="features/org.eclipse.osee.coverage.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.coverage.feature.source" version="0.23.0.qualifier">
-      <category name="org.eclipse.osee.client.all"/>
-   </feature>
 	<feature url="features/org.eclipse.osee.ats.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="0.23.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>

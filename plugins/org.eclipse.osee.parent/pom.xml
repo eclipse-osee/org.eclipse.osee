@@ -1059,7 +1059,6 @@
 
 				<osee-ote-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ote.p2/target/repository</osee-ote-site>
 				<osee-client-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.client.p2/target/repository</osee-client-site>
-				<osee-coverage-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.coverage.p2/target/repository</osee-coverage-site>
 				<osee-ats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ats.p2/target/repository</osee-ats-site>
 			</properties>
 			<repositories>

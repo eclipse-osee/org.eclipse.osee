@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="start" deactivate="stop" name="org.eclipse.osee.coverage.internal.ServiceProvider">
-   <implementation class="org.eclipse.osee.coverage.internal.ServiceProvider"/>
-   <reference bind="setOseeCmService" cardinality="1..1" interface="org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService" name="IOseeCmService" policy="static"/>
-</scr:component>

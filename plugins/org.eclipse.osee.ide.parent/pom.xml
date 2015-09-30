@@ -21,7 +21,6 @@
 		<module>../../plugins/org.eclipse.osee.ote.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.parent</module>
 		<module>../../plugins/org.eclipse.osee.ats.parent</module>
-		<module>../../plugins/org.eclipse.osee.coverage.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.all.parent</module>
 	</modules>
 

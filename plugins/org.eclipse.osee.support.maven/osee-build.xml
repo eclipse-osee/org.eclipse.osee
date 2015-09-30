@@ -60,10 +60,6 @@
 				<property name="osee-build-stage" value="osee-client" />
 				<property name="osee-build-directory" value="org.eclipse.osee.client.parent" />
 			</case>
-			<case value="coverage">
-				<property name="osee-build-stage" value="osee-coverage-client" />
-				<property name="osee-build-directory" value="org.eclipse.osee.coverage.parent" />
-			</case>
 			<case value="ats-client">
 				<property name="osee-build-stage" value="osee-ats-client" />
 				<property name="osee-build-directory" value="org.eclipse.osee.ats.parent" />
@@ -136,18 +132,6 @@
 			<equals arg1="${input-static-analysis}" arg2="y" />
 			<then>
 				<var name="build-options" value="${build-options} -Dwith-static-analysis" />
-			</then>
-		</if>
-
-		<!--	COVERAGE -->
-		<input message="${tab}[input] Perform Code Coverage Analysis?" validargs="y,n" defaultvalue="${default-coverage-analysis}" addproperty="input-coverage-analysis">
-			<handler classname="org.apache.tools.ant.input.DefaultInputHandler" />
-		</input>
-		<echo message="${tab}${tab}Selected: [${input-coverage-analysis}]" />
-		<if>
-			<equals arg1="${input-coverage-analysis}" arg2="y" />
-			<then>
-				<var name="build-options" value="${build-options} -Dwith-code-coverage" />
 			</then>
 		</if>
 
