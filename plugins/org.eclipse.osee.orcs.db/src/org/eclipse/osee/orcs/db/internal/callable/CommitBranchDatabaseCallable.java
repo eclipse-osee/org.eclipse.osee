@@ -10,9 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
@@ -69,29 +71,37 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
          mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranchId);
       }
 
-      Callable<List<ChangeItem>> loadChanges =
-         new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory,
-            sourceHead.getBranchId(), destinationHead.getBranchId(), destinationHead.getGuid(), mergeBranchId,
-            mergeTxId);
+      Callable<List<ChangeItem>> loadChanges = new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(),
+         joinFactory, sourceHead.getBranchId(), destinationHead.getBranchId(), destinationHead.getGuid(), mergeBranchId,
+         mergeTxId);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceHead,
-         destinationHead));
+      changes.addAll(
+         missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceHead, destinationHead));
 
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
-      return callAndCheckForCancel(computeChanges);
+
+      List<ChangeItem> computedChanges = new ArrayList<>();
+      for (ChangeItem item : callAndCheckForCancel(computeChanges)) {
+         if (isAllowableChange(item.getIgnoreType())) {
+            computedChanges.add(item);
+         }
+      }
+      return computedChanges;
+   }
+
+   private boolean isAllowableChange(ChangeIgnoreType type) {
+      return (type.isNone() || type.isResurrected());
    }
 
    @Override
    public Integer call() throws Exception {
-      Long mergeBranchUuid =
-         getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID, source.getGuid(),
-            destination.getGuid());
+      Long mergeBranchUuid = getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID,
+         source.getGuid(), destination.getGuid());
       List<ChangeItem> changes = callComputeChanges(mergeBranchUuid);
 
-      CancellableCallable<Integer> commitCallable =
-         new CommitBranchDatabaseTxCallable(getLogger(), getSession(), getJdbcClient(), joinFactory, idManager,
-            getUserArtId(), source, destination, mergeBranchUuid, changes);
+      CancellableCallable<Integer> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),
+         getJdbcClient(), joinFactory, idManager, getUserArtId(), source, destination, mergeBranchUuid, changes);
       Integer newTx = callAndCheckForCancel(commitCallable);
 
       return newTx;

@@ -27,7 +27,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ChangeItemUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ChangeItemUtilTest {
@@ -109,19 +109,22 @@ public class ChangeItemUtilTest {
 
       ChangeVersion deletedCurrent = ChangeTestUtility.createChange(3333L, ModificationType.DELETED);
       ChangeItem item = ChangeTestUtility.createItem(200, null, isNew, deletedCurrent, null, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertFalse(item.getIgnoreType().isNone());
 
       ChangeVersion current = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       ChangeVersion destination = ChangeTestUtility.createChange(3333L, ModificationType.INTRODUCED);
       item = ChangeTestUtility.createItem(200, null, null, current, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertFalse(item.getIgnoreType().isNone());
 
       ChangeVersion dest;
 
       current = ChangeTestUtility.createChange(2222L, ModificationType.DELETED);
       dest = null;
       item = ChangeTestUtility.createItem(200, null, null, current, dest, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertFalse(item.getIgnoreType().isNone());
 
       // Test resurrected Cases, Deleted on Destination but resurrected (Introduced or New) on Current
       ChangeVersion baseline = ChangeTestUtility.createChange(6234L, ModificationType.DELETED);
@@ -130,38 +133,45 @@ public class ChangeItemUtilTest {
       destination = ChangeTestUtility.createChange(4444L, ModificationType.DELETED);
 
       item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
 
       current = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
 
       item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
 
       // Not a resurrection case, should be IgnoreCase
       current = ChangeTestUtility.createChange(3333L, ModificationType.MODIFIED);
       baseline = ChangeTestUtility.createChange(6234L, ModificationType.MODIFIED);
 
       item = ChangeTestUtility.createItem(200, baseline, null, current, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertFalse(item.getIgnoreType().isNone());
 
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       destination = ChangeTestUtility.createChange(3333L, ModificationType.NEW);
       item = ChangeTestUtility.createItem(200, null, null, isNew, destination, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
 
       //destination Equal Or Newer Than Current
       isNew = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       ChangeVersion isIntroduced = ChangeTestUtility.createChange(2222L, ModificationType.NEW);
       dest = ChangeTestUtility.createChange(1111L, ModificationType.NEW);
       item = ChangeTestUtility.createItem(200, null, null, isNew, dest, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
 
       item = ChangeTestUtility.createItem(200, null, null, isIntroduced, dest, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
 
       ChangeVersion isNotNew = ChangeTestUtility.createChange(2222L, ModificationType.MODIFIED);
       item = ChangeTestUtility.createItem(200, null, null, isNotNew, dest, null);
-      assertFalse(ChangeItemUtil.isIgnoreCase(item));
+      ChangeItemUtil.checkAndSetIgnoreCase(item);
+      assertTrue(item.getIgnoreType().isNone());
    }
 
    @Test

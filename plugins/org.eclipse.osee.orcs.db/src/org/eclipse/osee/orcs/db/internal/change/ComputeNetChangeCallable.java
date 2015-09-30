@@ -35,21 +35,17 @@ public class ComputeNetChangeCallable extends CancellableCallable<List<ChangeIte
          while (iterator.hasNext()) {
             checkForCancelled();
             ChangeItem change = iterator.next();
-            if (ChangeItemUtil.isIgnoreCase(change)) {
-               iterator.remove();
+            ChangeItemUtil.checkAndSetIgnoreCase(change);
+            if (!ChangeItemUtil.isModType(change.getNetChange(), ModificationType.MERGED)) {
+               ModificationType netModType = getNetModType(change);
+               if (netModType == null) {
+                  throw new OseeStateException("Net Mod Type was null");
+               }
+               change.getNetChange().copy(change.getCurrentVersion());
+               change.getNetChange().setModType(netModType);
             } else {
-
-               if (!ChangeItemUtil.isModType(change.getNetChange(), ModificationType.MERGED)) {
-                  ModificationType netModType = getNetModType(change);
-                  if (netModType == null) {
-                     throw new OseeStateException("Net Mod Type was null");
-                  }
+               if (ChangeItemUtil.isDeleted(change.getCurrentVersion())) {
                   change.getNetChange().copy(change.getCurrentVersion());
-                  change.getNetChange().setModType(netModType);
-               } else {
-                  if (ChangeItemUtil.isDeleted(change.getCurrentVersion())) {
-                     change.getNetChange().copy(change.getCurrentVersion());
-                  }
                }
             }
          }

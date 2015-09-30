@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -29,7 +30,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ComputeNetChangeCallable}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeTest {
@@ -39,8 +40,8 @@ public class ComputeNetChangeTest {
 
       // New Or Introduced
       data.add(createTest(1, entry(3L, NEW), entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
-      data.add(createTest(2, entry(3L, NEW), entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED),
-         false));
+      data.add(
+         createTest(2, entry(3L, NEW), entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED), false));
       data.add(createTest(3, entry(3L, NEW), null, entry(7693330L, INTRODUCED), entry(7693330L, NEW),
          entry(7693330L, INTRODUCED), false));
 
@@ -110,7 +111,9 @@ public class ComputeNetChangeTest {
          TestData testData = data.get(index);
          String message = String.format("Test: %s", index + 1);
          if (testData.isRemoved()) {
-            Assert.assertFalse(message, items.contains(testData.getItem()));
+            if (testData.getIgnoreType().isNone()) {
+               Assert.assertFalse(message, items.contains(testData.getItem()));
+            }
          } else {
             Assert.assertTrue(message, items.contains(testData.getItem()));
             ChangeTestUtility.checkChange(message, testData.getExpectedNet(), testData.getItem().getNetChange());
@@ -165,6 +168,10 @@ public class ComputeNetChangeTest {
 
       public boolean isRemoved() {
          return isRemoved;
+      }
+
+      public ChangeIgnoreType getIgnoreType() {
+         return item.getIgnoreType();
       }
    }
 }

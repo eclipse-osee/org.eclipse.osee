@@ -20,6 +20,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -117,26 +119,55 @@ public final class ArtifactImageManager {
       ModificationType modType = null;
       if (change.getItemKind().equals("Artifact")) {
          modType = change.getModificationType();
-         keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+            keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+         } else {
+            ChangeItem changeItem = change.getChangeItem();
+            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+               keyedImage = FrameworkImage.DELETE;
+               modType = ModificationType.DELETED_ON_DESTINATION;
+            } else {
+               keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+            }
+         }
       }
       if (change.getItemKind().equals("Attribute")) {
+         modType = change.getModificationType();
          if (ChangeImageType.CHANGE_TYPE == changeImageType) {
-            modType = change.getModificationType();
             keyedImage = FrameworkImage.ATTRIBUTE_MOLECULE;
          } else {
-            modType = change.getModificationType();
-            keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+            ChangeItem changeItem = change.getChangeItem();
+            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+               keyedImage = FrameworkImage.DELETE;
+               modType = ModificationType.DELETED_ON_DESTINATION;
+            } else {
+               keyedImage = BaseImage.getBaseImageEnum(change.getArtifactType());
+            }
          }
       }
       if (change.getItemKind().equals("Relation")) {
-         keyedImage = FrameworkImage.RELATION;
          modType = change.getModificationType();
+         if (ChangeImageType.CHANGE_TYPE == changeImageType) {
+            keyedImage = FrameworkImage.RELATION;
+         } else {
+            ChangeItem changeItem = change.getChangeItem();
+            if (changeItem != null && isArtDeletedOnDestination(changeItem.getIgnoreType())) {
+               keyedImage = FrameworkImage.DELETE;
+               modType = ModificationType.DELETED_ON_DESTINATION;
+            } else {
+               keyedImage = FrameworkImage.RELATION;
+            }
+         }
       }
       if (keyedImage != null && modType != null) {
          KeyedImage overlay = FrameworkImage.valueOf("OUTGOING_" + modType.toString());
          toReturn = ImageManager.getImage(ImageManager.setupImageWithOverlay(keyedImage, overlay, Location.TOP_LEFT));
       }
       return toReturn;
+   }
+
+   private static boolean isArtDeletedOnDestination(ChangeIgnoreType type) {
+      return type.isDeletedOnDestAndNotResurrected() || type.isDeletedOnDestination();
    }
 
    public static Image getImage(IArtifactType artifactType) {
@@ -167,8 +198,8 @@ public final class ArtifactImageManager {
    }
 
    public static Image getImage(Artifact artifact, KeyedImage overlay, Location location) {
-      return ImageManager.getImage(ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay,
-         location));
+      return ImageManager.getImage(
+         ImageManager.setupImageWithOverlay(BaseImage.getBaseImageEnum(artifact), overlay, location));
    }
 
    public synchronized static String setupImage(KeyedImage imageEnum) {
@@ -248,14 +279,15 @@ public final class ArtifactImageManager {
          baseImageEnum = BaseImage.getBaseImageEnum(castedArtifact);
 
          if (AccessControlManager.hasLock(castedArtifact)) {
-            KeyedImage overlay =
-               AccessControlManager.hasLockAccess(castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
+            KeyedImage overlay = AccessControlManager.hasLockAccess(
+               castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
             return ImageManager.setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT).getImageKey();
          }
 
          AttributeAnnotationManager.get(castedArtifact);
          if (AttributeAnnotationManager.isAnnotationWarning(castedArtifact)) {
-            return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT).getImageKey();
+            return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY,
+               Location.BOT_LEFT).getImageKey();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

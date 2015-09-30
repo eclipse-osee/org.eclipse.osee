@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.core.model.change.ChangeVersion;
@@ -197,8 +199,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       switch (item.getChangeType()) {
          case ARTIFACT_CHANGE:
-            change =
-            new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
+            change = new ArtifactChange(startTxBranch, itemGammaId, itemId, txDelta, netModType, isHistorical,
                changeArtifact, artifactDelta);
             break;
          case ATTRIBUTE_CHANGE:
@@ -224,9 +225,8 @@ public class ChangeDataLoader extends AbstractOperation {
                   }
                }
             }
-            change =
-               new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue, itemId,
-                  attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
+            change = new AttributeChange(startTxBranch, itemGammaId, artId, txDelta, netModType, isValue, wasValue,
+               itemId, attributeType, netModType, isHistorical, changeArtifact, artifactDelta);
             break;
          case RELATION_CHANGE:
             RelationType relationType = RelationTypeManager.getTypeByGuid(item.getItemTypeId());
@@ -291,9 +291,25 @@ public class ChangeDataLoader extends AbstractOperation {
 
       try {
          CompareResults results = proxy.compareTxs(txDelta.getStartTx().getId(), txDelta.getEndTx().getId());
-         return results.getChanges();
+         List<ChangeItem> changes = new ArrayList<>();
+         for (ChangeItem item : results.getChanges()) {
+            if (isAllowableChange(item.getIgnoreType())) {
+               changes.add(item);
+            }
+         }
+         return changes;
+
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
       }
    }
+
+   private static boolean isAllowableChange(ChangeIgnoreType ignoreType) {
+      return //
+      ignoreType.isNone() || //
+      ignoreType.isResurrected() || //
+      ignoreType.isDeletedOnDestAndNotResurrected() || //
+      ignoreType.isDeletedOnDestination();
+   }
+
 }

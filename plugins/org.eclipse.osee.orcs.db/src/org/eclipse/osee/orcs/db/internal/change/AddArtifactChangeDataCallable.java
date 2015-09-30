@@ -79,7 +79,7 @@ public class AddArtifactChangeDataCallable extends CancellableCallable<List<Chan
             ChangeItemUtil.copy(attribute.getNetChange(), artifact.getNetChange());
             artifact.getNetChange().setModType(ModificationType.MODIFIED);
          }
-
+         ChangeItemUtil.checkAndSetIgnoreCase(artifact);
       } catch (Exception ex) {
          ex.printStackTrace();
       }

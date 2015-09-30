@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
+import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuis;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
@@ -50,9 +51,11 @@ public class ViewWordChangeReportHandler extends CommandHandler {
          }
          Collection<ArtifactDelta> artifactDeltas = ChangeManager.getCompareArtifacts(changes);
 
-         String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
-         IRenderer preferredRenderer = new WordTemplateRenderer();
-         RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer);
+         if (ArtifactGuis.checkDeletedOnParent(artifacts)) {
+            String pathPrefix = RenderingUtil.getAssociatedArtifactName(localChanges);
+            IRenderer preferredRenderer = new WordTemplateRenderer();
+            RendererManager.diffInJobWithPreferedRenderer(artifactDeltas, pathPrefix, preferredRenderer);
+         }
       }
       return null;
    }

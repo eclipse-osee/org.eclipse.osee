@@ -15,6 +15,7 @@ package org.eclipse.osee.framework.core.model.change;
  */
 public class ChangeItem implements Comparable<ChangeItem> {
 
+   private ChangeIgnoreType ignoreType = ChangeIgnoreType.NONE;
    private ChangeType changeType = ChangeType.UNKNOWN_CHANGE;
    private int artId = -1;
    private int itemId = -1;
@@ -32,6 +33,14 @@ public class ChangeItem implements Comparable<ChangeItem> {
 
    public ChangeItem() {
       super();
+   }
+
+   public ChangeIgnoreType getIgnoreType() {
+      return ignoreType;
+   }
+
+   public void setIgnoreType(ChangeIgnoreType type) {
+      this.ignoreType = type;
    }
 
    public void setSynthetic(boolean synthetic) {
@@ -125,9 +134,9 @@ public class ChangeItem implements Comparable<ChangeItem> {
    @Override
    public String toString() {
       return String.format(
-         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s",
+         "ChangeItem - itemId:[%s] artId:%s typeId:%s base:%s first:%s current:%s destination:%s net:%s synthetic:%s ignoreType:%s",
          itemId, getArtId(), getItemTypeId(), getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(),
-         getDestinationVersion(), getNetChange(), isSynthetic());
+         getDestinationVersion(), getNetChange(), isSynthetic(), getItemTypeId());
    }
 
    @Override

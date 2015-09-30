@@ -18,6 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -63,7 +65,12 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          if (change instanceof ErrorChange) {
             return "";
          } else if (cCol.equals(ChangeXViewerFactory.Change_Type)) {
-            return change.getModificationType().getDisplayName();
+            ChangeItem changeItem = change.getChangeItem();
+            if (changeItem != null && changeItem.getIgnoreType().isDeletedOnDestAndNotResurrected()) {
+               return ModificationType.DELETED_ON_DESTINATION.getDisplayName();
+            } else {
+               return change.getModificationType().getDisplayName();
+            }
          } else if (cCol.equals(ChangeXViewerFactory.Item_Kind)) {
             return change.getItemKind();
          } else if (cCol.equals(ChangeXViewerFactory.Item_Type)) {

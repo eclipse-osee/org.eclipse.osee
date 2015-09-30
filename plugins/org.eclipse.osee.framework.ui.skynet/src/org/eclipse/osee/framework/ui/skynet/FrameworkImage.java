@@ -150,6 +150,7 @@ public enum FrameworkImage implements KeyedImage {
    MERGE_CAUTION("icon_warning.gif"),
    OPEN("open.gif"),
    OSEE_32_RUN("osee_32_run.gif"),
+   OUTGOING_DELETED_ON_DESTINATION("OUTGOING_Deleted.gif"),
    OUTGOING_ARTIFACT_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_DELETED("OUTGOING_Deleted.gif"),
    OUTGOING_INTRODUCED("OUTGOING_New.gif"),
