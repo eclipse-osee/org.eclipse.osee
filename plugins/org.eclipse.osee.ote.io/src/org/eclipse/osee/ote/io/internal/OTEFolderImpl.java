@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream.GetField;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,13 +40,25 @@ public class OTEFolderImpl implements OTEServerFolder{
    private static final String RESULTS_FILE = ".result";
    private static final String RUNNING_MARKER = ".running";
    
-   private static File OTESERVER = new File(OtePropertiesCore.userHome.getValue() + File.separator + "OTESERVER");
+   private static File OTESERVER = determineOteServerFolder();
    private static File BATCHES = new File(OTESERVER, "batches");
    private static File JARCACHE = new File(OTESERVER, "runtimeCache");
    private static File SERVERS = new File(OTESERVER, "servers");
    private static SimpleDateFormat format = new SimpleDateFormat("yyyy_MM_dd___kk_mm_ss");
    
    private File currentServerFolder; 
+   
+   private static File determineOteServerFolder() {
+      File oteStationParent = new File(OtePropertiesCore.oteServerFolder.getValue("undefined"));
+      if (!oteStationParent.exists() || !oteStationParent.isDirectory()) {
+         OseeLog.log(OTEFolderImpl.class, Level.WARNING, "ote server folder parent does not exist folder -" + oteStationParent.getAbsolutePath());
+         oteStationParent = new File(OtePropertiesCore.userHome.getValue(), "stations");
+         return new File(oteStationParent, OtePropertiesCore.oteStationName.getValue("unknown-station"));
+      }
+      File stationsFolder = new File(oteStationParent, "stations");
+      File stationFolder = new File(stationsFolder, OtePropertiesCore.oteStationName.getValue("unknown-station"));
+      return new File(stationFolder, OtePropertiesCore.userName.getValue());
+   }
    
    public OTEFolderImpl(){
       currentServerFolder = getNewServerFolder();

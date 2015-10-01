@@ -24,6 +24,8 @@ public enum OtePropertiesCore implements OteProperties {
    timeDebugTimeout("ote.time.debug.timeout", 250000),
    userHome("user.home"),
    userName("user.name"),
+   oteServerFolder("osee.ote.server.folder"),
+   oteStationName("osee.ote.station.name"),
    useLookup("osee.ote.use.lookup");
       
    private String key;
