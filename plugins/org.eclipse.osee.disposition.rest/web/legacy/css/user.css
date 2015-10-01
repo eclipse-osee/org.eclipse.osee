@@ -38,7 +38,8 @@ p#itemSelectedText {
 }
 
 #annotationsGrid {
-background-color: lightslategray;
+	    margin-top: 20px;
+		background-color: lightslategray;
 }
 
 .textarea {
@@ -46,8 +47,11 @@ background-color: lightslategray;
 }
 
 #itemSelectedBar {
-	min-height: 30px;
-	background-color: lightcyan;
+    height: 25px;
+    width: 100%;
+    position: fixed;
+    background-color: lightcyan;
+    border-bottom: 3px solid Black;
 }
 
 

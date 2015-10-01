@@ -38,18 +38,22 @@
          </div>
          <div id="bottom-content">
             <div ng-dblclick="getSourceFlie()" id="itemSelectedBar">
-               Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "N/A"}}
+               Item: {{ selectedItem.name || "Select an Item"}} Failures: {{ selectedItem.discrepanciesAsRanges || "None"}}
             </div>
             <div id="annotationsGrid">
                <table class="table subTable">
+               	<th width="50px" ng-show="type == 'codeCoverage'">Method</th>
                   <th ng-click="sort()">{{ annotationHeaders.locationRefs }}</th>
                   <th>{{ annotationHeaders.resolutionType }}</th>
                   <th>{{ annotationHeaders.resolution }}</th>
                   <th>Developer Notes</th>
-                  <th ng-show="type != 'codeCoverage'"Customer Notes</th>
+                  <th ng-show="type != 'codeCoverage'">Customer Notes</th>
                   <th ng-show="type == 'codeCoverage'">Text</th>                 
                   <th width="50px;">Delete</th>
                   <tr ng-repeat="annotation in annotations">
+                     <td ng-show="type == 'codeCoverage'">
+                        <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-disabled="true" ng-model="selectedItem.methodNumber" type=text></textarea>
+                     </td>
                      <td>
                         <textarea ng-class="{annotationInput: true, invalid: getInvalidLocRefs(annotation), details: annotation.showDeets}" ng-disabled="isDefaultResolution(annotation);" ng-model="annotation.locationRefs" type=text ng-model-onblur ng-change="editAnnotation(annotation); saveLastFocused(this);" ng-dblclick="toggleDetails(annotation)"></textarea>
                      </td>
