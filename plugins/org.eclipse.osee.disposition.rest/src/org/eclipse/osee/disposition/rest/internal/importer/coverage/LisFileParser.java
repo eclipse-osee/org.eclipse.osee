@@ -130,7 +130,30 @@ public class LisFileParser implements DispoImporterApi {
          toReturn = new ArrayList<>();
          toReturn.addAll(values);
       }
+
+      for (DispoItem item : toReturn) {
+         if (item.getStatus().equalsIgnoreCase("incomplete")) {
+            createPlaceHolderAnnotations((DispoItemData) item);
+         }
+      }
       return toReturn;
+   }
+
+   private void createPlaceHolderAnnotations(DispoItemData item) {
+      JSONObject discrepanciesList = item.getDiscrepanciesList();
+      @SuppressWarnings("rawtypes")
+      Iterator keys = discrepanciesList.keys();
+      while (keys.hasNext()) {
+         String key = (String) keys.next();
+         try {
+            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
+            addBlankAnnotationForForUncoveredLine(item, Integer.toString(discrepancy.getLocation()),
+               discrepancy.getText());
+
+         } catch (JSONException ex) {
+            throw new OseeCoreException(ex);
+         }
+      }
    }
 
    private void processExceptionHandled(OperationReport report) throws JSONException {
@@ -339,6 +362,26 @@ public class LisFileParser implements DispoImporterApi {
          }
       }
       return toReturn;
+   }
+
+   private void addBlankAnnotationForForUncoveredLine(DispoItemData item, String location, String text) throws JSONException {
+      DispoAnnotationData newAnnotation = new DispoAnnotationData();
+      dataFactory.initAnnotation(newAnnotation);
+      String idOfNewAnnotation = dataFactory.getNewId();
+      newAnnotation.setId(idOfNewAnnotation);
+
+      newAnnotation.setIsDefault(false);
+      newAnnotation.setLocationRefs(location);
+      newAnnotation.setResolutionType("");
+      newAnnotation.setResolution("");
+      newAnnotation.setIsResolutionValid(false);
+      newAnnotation.setCustomerNotes(text);
+      dispoConnector.connectAnnotation(newAnnotation, item.getDiscrepanciesList());
+
+      JSONArray annotationsList = item.getAnnotationsList();
+      int newIndex = annotationsList.length();
+      newAnnotation.setIndex(newIndex);
+      annotationsList.put(newIndex, DispoUtil.annotationToJsonObj(newAnnotation));
    }
 
    private void addAnnotationForForCoveredLine(DispoItemData item, String location, String resolutionType, String coveringFile, String text) throws JSONException {
