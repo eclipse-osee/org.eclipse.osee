@@ -899,21 +899,48 @@ public class OrcsTransactionTest {
    }
 
    @Test
+   public void testAttributeCommitOnlyAffectNewStripe() throws OseeCoreException {
+      // create artifact and check exists and name set
+      TransactionBuilder tx1 = createTx();
+      ArtifactId art1 = tx1.createArtifact(Component, "orig name");
+      TransactionReadable rec1 = tx1.commit();
+      assertNotNull(rec1);
+      art1 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("orig name", art1.getName());
+
+      // change name
+      ArtifactId art2 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      TransactionBuilder tx2 = createTx();
+      tx2.setName(art2, "new name");
+      TransactionReadable rec2 = tx2.commit();
+      assertNotNull(rec2);
+
+      // verify that change only exists on new stripe?
+      ArtifactId art3 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      assertEquals("orig name", art1.getName());
+      // this should be same name cause we didn't re-query it and the tx didn't change the model?
+      assertEquals("orig name", art2.getName());
+      // since art3 is a re-query, it should show the same name
+      assertEquals("new name", art3.getName());
+   }
+
+   @Test
    public void testUnrelateFromAll() throws OseeCoreException {
-      ArtifactReadable artifact1;
-      ArtifactReadable artifact2;
-      ArtifactReadable artifact3;
-      ArtifactReadable artifact4;
+      ArtifactReadable artifact1 = null;
+      ArtifactReadable artifact2 = null;
+      ArtifactReadable artifact3 = null;
+      ArtifactReadable artifact4 = null;
 
       TransactionBuilder tx1 = createTx();
       ArtifactId art1 = tx1.createArtifact(Component, "A component");
-      ArtifactId art2 = tx1.createArtifact(Component, "C component");
-      ArtifactId art3 = tx1.createArtifact(Component, "B component");
+      ArtifactId art2 = tx1.createArtifact(Component, "B component");
+      ArtifactId art3 = tx1.createArtifact(Component, "C component");
       tx1.addChildren(art1, art2, art3);
 
       ArtifactId art4 = tx1.createArtifact(GeneralDocument, "Document");
       tx1.relate(art1, Dependency__Dependency, art4);
-      tx1.commit();
+      TransactionReadable rec1 = tx1.commit();
+      assertNotNull(rec1);
 
       artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
@@ -922,25 +949,23 @@ public class OrcsTransactionTest {
       assertEquals(art1, artifact1);
 
       Iterator<ArtifactReadable> iterator = artifact1.getChildren().iterator();
-      assertEquals(art3, iterator.next());
       assertEquals(art2, iterator.next());
+      assertEquals(art3, iterator.next());
 
       TransactionBuilder tx2 = createTx();
       tx2.unrelateFromAll(art1);
-      tx2.commit();
+      TransactionReadable rec2 = tx2.commit();
+      assertNotNull(rec2);
 
-      ResultSet<ArtifactReadable> arts =
-         query.fromBranch(COMMON).andIds(art1, art2, art3, art4).includeDeletedArtifacts().getResults();
-      Iterator<ArtifactReadable> iterator2 = arts.iterator();
-      artifact1 = iterator2.next();
-      artifact2 = iterator2.next();
-      artifact3 = iterator2.next();
-      artifact4 = iterator2.next();
-
-      assertEquals(art1, artifact1);
-      assertEquals(art2, artifact2);
-      assertEquals(art3, artifact3);
-      assertEquals(art4, artifact4);
+      artifact1 =
+         query.fromBranch(COMMON).andUuid(art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
+      assertNotNull(artifact1);
+      artifact2 = query.fromBranch(COMMON).andUuid(art2.getUuid()).getResults().getAtMostOneOrNull();
+      assertNotNull(artifact2);
+      artifact3 = query.fromBranch(COMMON).andUuid(art3.getUuid()).getResults().getAtMostOneOrNull();
+      assertNotNull(artifact3);
+      artifact4 = query.fromBranch(COMMON).andUuid(art4.getUuid()).getResults().getAtMostOneOrNull();
+      assertNotNull(artifact4);
 
       assertEquals(true, artifact1.getChildren().isEmpty());
       assertEquals(true, artifact1.getRelated(Dependency__Dependency).isEmpty());
