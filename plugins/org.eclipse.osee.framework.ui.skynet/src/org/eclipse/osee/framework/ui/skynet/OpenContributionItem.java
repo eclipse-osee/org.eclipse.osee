@@ -189,10 +189,20 @@ public class OpenContributionItem extends ContributionItem {
    private Collection<IContributionItem> createOpenWithItems() {
       clearOpenWithItems();
       List<Artifact> artifacts = getSelectedArtifacts();
+      boolean readOnly = false;
       if (!artifacts.isEmpty()) {
+         for (Artifact art : artifacts) {
+            if (art.isReadOnly()) {
+               readOnly = true;
+               break;
+            }
+         }
          Artifact testArtifact = artifacts.iterator().next();
          try {
             CommandGroup[] groups = IRenderer.CommandGroup.values();
+            if (readOnly) {
+               groups = IRenderer.CommandGroup.getReadOnly();
+            }
             CommandGroup lastGroup = groups[groups.length - 1];
             for (CommandGroup commandGroup : groups) {
 

@@ -52,6 +52,10 @@ public interface IRenderer {
       EDIT(PresentationType.SPECIALIZED_EDIT),
       SHOW(PresentationType.SPECIALIZED_EDIT);
 
+      public static CommandGroup[] getReadOnly() {
+         return new CommandGroup[] {PREVIEW, SHOW};
+      }
+
       PresentationType presentationType;
 
       CommandGroup(PresentationType type) {
