@@ -37,6 +37,7 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
       ITALICS,
       ERROR,
       CENTERED,
+      WRAPPED
    };
 
    public static final String WrappedStyle = "OseeWraped";
@@ -317,6 +318,9 @@ public final class ExcelXmlWriter extends AbstractSheetWriter {
             break;
          case CENTERED:
             mStyleMap.put(cellIndex, "OseeCentered");
+            break;
+         case WRAPPED:
+            mStyleMap.put(cellIndex, WrappedStyle);
             break;
       }
    }
