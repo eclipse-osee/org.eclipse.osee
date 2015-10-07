@@ -39,7 +39,7 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
  * Dynamically provides a list of merge branches based on a selected branch
- * 
+ *
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
@@ -48,7 +48,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
    private ICommandService commandService;
 
    public MergeCompoundContributionItem() {
-      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    public MergeCompoundContributionItem(String id) {
@@ -70,7 +70,8 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
                try {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getUuid());
-                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getUuid())) {
+                  if (selectedBranch.getParentBranch() != null && !selectedBranch.getBranchType().isMergeBranch() && !destBranches.contains(
+                     selectedBranch.getParentBranch().getUuid())) {
                      destBranches.add(selectedBranch.getParentBranch().getUuid());
                   }
 
@@ -100,10 +101,9 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       CommandContributionItem contributionItem;
       String label = branchUuid == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchUuid).getName();
 
-      contributionItem =
-         new CommandContributionItem(new CommandContributionItemParameter(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
-            label, null, null, SWT.NONE, null, false));
+      contributionItem = new CommandContributionItem(
+         new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
+            parameters, null, null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

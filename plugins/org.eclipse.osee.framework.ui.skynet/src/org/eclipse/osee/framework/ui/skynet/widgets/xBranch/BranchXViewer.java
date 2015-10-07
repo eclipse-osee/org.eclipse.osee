@@ -15,7 +15,9 @@ import java.util.Collection;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.PromptChangeUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchWidget.IBranchWidgetMenuListener;
+import org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -51,9 +54,19 @@ public class BranchXViewer extends XViewer {
       ArrayList<Branch> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
          for (Branch branch : branches) {
-            if (!branch.getBranchType().isSystemRootBranch()) {
-               ArtifactExplorer.exploreBranch(branch);
-               BranchManager.setLastBranch(branch);
+            BranchType type = branch.getBranchType();
+            if (!type.isSystemRootBranch()) {
+               if (!type.isMergeBranch()) {
+                  ArtifactExplorer.exploreBranch(branch);
+                  BranchManager.setLastBranch(branch);
+               } else {
+                  if (branch instanceof MergeBranch) {
+                     MergeBranch mergeBranch = (MergeBranch) branch;
+                     Branch source = mergeBranch.getSourceBranch();
+                     Branch destination = mergeBranch.getDestinationBranch();
+                     MergeView.openView(source, destination, source.getBaseTransaction());
+                  }
+               }
             }
          }
       }
