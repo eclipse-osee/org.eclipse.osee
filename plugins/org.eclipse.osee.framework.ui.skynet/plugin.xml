@@ -553,7 +553,7 @@
            <with
                  variable="activePartId">
               <equals
-                    value="org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView">
+                    value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
               </equals>
            </with>
            <with
@@ -765,14 +765,58 @@
    <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OpenHandler"
          commandId="org.eclipse.osee.framework.ui.skynet.open.command">
-      <enabledWhen>
-         <with
-               variable="selection">
-            <count
-                  value="+">
-            </count>
-         </with>
-      </enabledWhen>
+      <activeWhen>
+         <or>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.framework.ui.skynet.ArtifactExplorer">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.ats.world.WorldEditor">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.search.ui.views.SearchView">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.framework.ui.skynet.results.ResultsEditor">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.ats.editor.TaskEditor">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.ats.editor.SMAEditor">
+               </equals>
+            </with>
+            <with
+                  variable="activePartId">
+               <equals
+                     value="org.eclipse.osee.framework.ui.skynet.change.ChangeReportEditor">
+               </equals>
+            </with>
+         </or>
+      </activeWhen>
    </handler>
    <handler
          class="org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.OtherEditorHandler"
