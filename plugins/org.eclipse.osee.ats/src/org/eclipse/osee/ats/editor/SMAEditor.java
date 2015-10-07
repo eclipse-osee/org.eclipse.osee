@@ -48,8 +48,6 @@ import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
-import org.eclipse.osee.ats.world.IWorldEditor;
-import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.util.Result;
@@ -79,7 +77,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
@@ -95,7 +92,7 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
@@ -487,7 +484,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
             IEditorReference editors[] = page.getEditorReferences();
             for (int j = 0; j < editors.length; j++) {
                IEditorReference editor = editors[j];
-               if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(((SMAEditor) editor.getPart(false)).getAwa())) {
+               if (editor.getPart(false) instanceof SMAEditor && artifacts.contains(
+                  ((SMAEditor) editor.getPart(false)).getAwa())) {
                   ((SMAEditor) editor.getPart(false)).closeEditor();
                }
             }
@@ -516,7 +514,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
       IEditorReference editors[] = page.getEditorReferences();
       for (int j = 0; j < editors.length; j++) {
          IEditorReference editor = editors[j];
-         if (editor.getPart(false) instanceof SMAEditor && ((SMAEditor) editor.getPart(false)).getAwa().equals(artifact)) {
+         if (editor.getPart(false) instanceof SMAEditor && ((SMAEditor) editor.getPart(false)).getAwa().equals(
+            artifact)) {
             return (SMAEditor) editor.getPart(false);
          }
       }
@@ -730,36 +729,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IWorldEditor, I
          return Arrays.asList((TaskArtifact) awa);
       }
       return java.util.Collections.emptyList();
-   }
-
-   @Override
-   public void reflow() {
-      // do nothing
-   }
-
-   @Override
-   public void setTableTitle(String title, boolean warning) {
-      // do nothing
-   }
-
-   @Override
-   public void reSearch() {
-      // do nothing
-   }
-
-   @Override
-   public IWorldEditorProvider getWorldEditorProvider() {
-      return null;
-   }
-
-   @Override
-   public void createToolBarPulldown(Menu menu) {
-      // do nothing
-   }
-
-   @Override
-   public String getCurrentTitleLabel() {
-      return null;
    }
 
 }

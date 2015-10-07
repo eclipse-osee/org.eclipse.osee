@@ -17,7 +17,8 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
-import org.eclipse.osee.ats.editor.IMemberProvider;
+import org.eclipse.osee.ats.goal.AbstractMemberProvider;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class SprintMemberProvider implements IMemberProvider {
+public class SprintMemberProvider extends AbstractMemberProvider {
 
    private final IAgileSprint sprint;
 
@@ -116,6 +117,11 @@ public class SprintMemberProvider implements IMemberProvider {
          builder.append("\nItems can only belong to 1 Sprint.  Move items to this Sprint?");
       }
       return new Result(false, builder.toString());
+   }
+
+   @Override
+   public void deCacheArtifact() {
+      AtsClientService.get().getSprintItemsCache().decache(getArtifact());
    }
 
 }

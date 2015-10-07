@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.List;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -48,4 +49,9 @@ public interface IMemberProvider {
    Result isAddValid(List<Artifact> artifacts);
 
    String getMembersName();
+
+   void deCacheArtifact();
+
+   void deCacheAndReload(boolean pend, IJobChangeListener listener);
+
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.editor.IMemberProvider;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.util.Result;
@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 /**
  * @author Donald G. Dunne
  */
-public class GoalMemberProvider implements IMemberProvider {
+public class GoalMemberProvider extends AbstractMemberProvider {
 
    private final IAtsGoal goal;
 
@@ -120,6 +120,11 @@ public class GoalMemberProvider implements IMemberProvider {
 
    private boolean isBacklog() {
       return AgileUtilClient.isBacklog(getArtifact());
+   }
+
+   @Override
+   public void deCacheArtifact() {
+      AtsClientService.get().getGoalMembersCache().decache(getArtifact());
    }
 
 }

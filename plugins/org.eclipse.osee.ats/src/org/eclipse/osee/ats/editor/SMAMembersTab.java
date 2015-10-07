@@ -50,6 +50,8 @@ import org.eclipse.osee.ats.goal.RemoveFromCollectorAction.RemovedFromCollectorH
 import org.eclipse.osee.ats.goal.SetCollectorOrderAction;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
+import org.eclipse.osee.ats.world.IWorldEditor;
+import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
 import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
@@ -91,6 +93,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Menu;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -99,7 +102,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
+public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
    private IManagedForm managedForm;
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
@@ -261,9 +264,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
     */
    private boolean createMembersBody() {
       if (!Widgets.isAccessible(worldComposite)) {
-         worldComposite =
-            new WorldComposite("workflow.edtor.members.tab", editor,
-               provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
+         worldComposite = new WorldComposite("workflow.edtor.members.tab", this,
+            provider.getXViewerFactory(provider.getArtifact()), bodyComp, SWT.BORDER, false);
 
          new MembersDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
 
@@ -319,8 +321,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                });
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
-               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Exception loading %s",
-                  provider.getCollectorName()), ex);
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  String.format("Exception loading %s", provider.getCollectorName()), ex);
             }
             return Status.OK_STATUS;
          }
@@ -469,7 +471,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
 
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
-      if (goalMemberReordered.contains(provider.getArtifact()) || sprintMemberReordered.contains(provider.getArtifact())) {
+      if (goalMemberReordered.contains(provider.getArtifact()) || sprintMemberReordered.contains(
+         provider.getArtifact())) {
          reload();
       } else if (relModifiedArts.contains(provider.getArtifact())) {
          refresh();
@@ -595,7 +598,8 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
                }
                provider.getArtifact().persist(SMAMembersTab.class.getSimpleName());
             } else if (!dropValid) {
-               AWorkbench.popup("Drag/Drop is disabled when table is filtered or sorted.\n\nSwitch to default table customization and try again.");
+               AWorkbench.popup(
+                  "Drag/Drop is disabled when table is filtered or sorted.\n\nSwitch to default table customization and try again.");
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
@@ -661,6 +665,45 @@ public class SMAMembersTab extends FormPage implements ISelectedAtsArtifacts, IW
          }
       }
       return tasks;
+   }
+
+   @Override
+   public void reflow() {
+      // do nothing
+   }
+
+   @Override
+   public void setTableTitle(String title, boolean warning) {
+      // do nothing
+   }
+
+   @Override
+   public void reSearch() throws OseeCoreException {
+      JobChangeAdapter listener = new JobChangeAdapter() {
+
+         @Override
+         public void done(IJobChangeEvent event) {
+            super.done(event);
+            reload();
+         }
+
+      };
+      provider.deCacheAndReload(false, listener);
+   }
+
+   @Override
+   public IWorldEditorProvider getWorldEditorProvider() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void createToolBarPulldown(Menu menu) {
+      // do nothing
+   }
+
+   @Override
+   public String getCurrentTitleLabel() {
+      return null;
    }
 
 }
