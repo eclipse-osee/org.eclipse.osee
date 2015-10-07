@@ -26,6 +26,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -63,9 +66,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -530,8 +530,10 @@ public class OrcsTransactionTest {
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
       Iterator<ArtifactReadable> iter = artifacts.iterator();
-      ArtifactReadable artifactActual = iter.next();
       ArtifactReadable artifact1Actual = iter.next();
+      if (!artifact1Actual.equals(artifact2)) {
+         artifact1Actual = iter.next();
+      }
       builder = query.fromBranch(CoreBranches.COMMON);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -558,8 +560,10 @@ public class OrcsTransactionTest {
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
       Iterator<ArtifactReadable> iter = artifacts.iterator();
-      ArtifactReadable artifactActual = iter.next();
       ArtifactReadable artifact1Actual = iter.next();
+      if (!artifact1Actual.equals(artifact2)) {
+         artifact1Actual = iter.next();
+      }
       builder = query.fromBranch(CoreBranches.COMMON);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -586,8 +590,10 @@ public class OrcsTransactionTest {
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       verifyHistoricalArtifacts(artifacts, artifact1, artifact2);
       Iterator<ArtifactReadable> iter = artifacts.iterator();
-      ArtifactReadable artifactActual = iter.next();
       ArtifactReadable artifact1Actual = iter.next();
+      if (!artifact1Actual.equals(artifact2)) {
+         artifact1Actual = iter.next();
+      }
       builder = query.fromBranch(CoreBranches.COMMON);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
