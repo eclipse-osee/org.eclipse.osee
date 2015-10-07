@@ -695,4 +695,12 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       return getTree() == null || getTree().isDisposed();
    }
 
+   @Override
+   public void refresh() {
+      if (isDisposed()) {
+         return;
+      }
+      super.refreshColumnsWithPreCompute(getInput());
+   }
+
 }
