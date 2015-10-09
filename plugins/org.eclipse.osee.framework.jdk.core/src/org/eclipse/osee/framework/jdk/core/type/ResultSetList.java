@@ -56,7 +56,8 @@ public class ResultSetList<T> implements ResultSet<T> {
       return result;
    }
 
-   private List<T> getList() {
+   @Override
+   public List<T> getList() {
       return data;
    }
 
@@ -88,4 +89,5 @@ public class ResultSetList<T> implements ResultSet<T> {
       Collections.sort(getList(), comparator);
       return this;
    }
+
 }

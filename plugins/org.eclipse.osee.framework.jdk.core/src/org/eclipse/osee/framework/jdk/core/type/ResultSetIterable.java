@@ -102,13 +102,18 @@ public class ResultSetIterable<T> implements ResultSet<T> {
 
    @Override
    public ResultSet<T> sort(Comparator<T> comparator) {
-      List<T> list = new LinkedList<>();
-      for (T item : data) {
-         list.add(item);
-      }
-
+      List<T> list = getList();
       Collections.sort(list, comparator);
       data = list;
       return this;
+   }
+
+   @Override
+   public List<T> getList() {
+      List<T> items = new LinkedList<>();
+      for (T obj : data) {
+         items.add(obj);
+      }
+      return items;
    }
 }
