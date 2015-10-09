@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.query;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,16 +27,17 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -45,9 +47,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSets;
  */
 public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
-   protected final HashCollection<IAttributeType, String> andAttr = new HashCollection<>();
-   protected final HashCollection<IAttributeType, QueryOption> andAttrOptions =
-      new HashCollection<IAttributeType, QueryOption>();
+   protected final List<AtsAttributeQuery> andAttr = new ArrayList<>();
    protected final HashMap<IRelationTypeSide, IAtsObject> andRels = new HashMap<>();
    protected IAtsTeamDefinition teamDef;
    protected StateType[] stateType;
@@ -85,13 +85,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... options) throws OseeCoreException {
-      for (Object value : values) {
-         andAttr.put(attributeType, String.valueOf(value));
-      }
-      for (QueryOption option : options) {
-         andAttrOptions.put(attributeType, option);
-      }
+   public IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
+      andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
 
@@ -144,22 +139,38 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return artifactTypes;
    }
 
-   protected QueryOption[] getQueryOptions(IAttributeType key) {
-      Collection<QueryOption> values = andAttrOptions.getValues(key);
-      if (values != null) {
-         return values.toArray(new QueryOption[values.size()]);
-      }
-      return new QueryOption[0];
-   }
-
    @Override
    public IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption) {
       return andAttr(attributeType, Collections.singleton(value), queryOption);
    }
-   
+
    @Override
    public <T extends IAtsWorkItem> ResultSet<T> getResults() {
       return ResultSets.newResultSet(getItems());
+   }
+
+   @Override
+   public IAtsQuery isGoal() {
+      return isOfType(AtsArtifactTypes.Goal);
+   }
+
+   @Override
+   public IAtsQuery andAssignee(IAtsUser... assignees) {
+      List<String> userIds = new ArrayList<>();
+      for (IAtsUser user : assignees) {
+         userIds.add("<" + user.getUserId() + ">");
+      }
+      return andAttr(AtsAttributeTypes.CurrentState, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public <T extends ArtifactId> ResultSet<T> getResultArtifacts() {
+      List<T> items = new ArrayList<>();
+      for (IAtsWorkItem workItem : getResults()) {
+         items.add((T) workItem.getStoreObject());
+      }
+      return ResultSets.newResultSet(items);
    }
 
 }

@@ -14,7 +14,9 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -35,7 +37,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
-   IAtsQuery andAttr(IAttributeType attributeType, Collection<? extends Object> values, QueryOption... queryOption) throws OseeCoreException;
+   IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOption) throws OseeCoreException;
 
    IAtsQuery andAtsIds(Collection<String> atsIds);
 
@@ -50,7 +52,13 @@ public interface IAtsQuery {
    IAtsQuery andUuids(Long... uuid);
 
    IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption);
-   
+
    <T extends IAtsWorkItem> ResultSet<T> getResults();
+
+   IAtsQuery isGoal();
+
+   IAtsQuery andAssignee(IAtsUser... assignees);
+
+   <T extends ArtifactId> ResultSet<T> getResultArtifacts();
 
 }

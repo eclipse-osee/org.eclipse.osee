@@ -24,10 +24,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
+import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -85,8 +85,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
       // attributes
       if (!andAttr.isEmpty()) {
-         for (Entry<IAttributeType, Collection<String>> entry : andAttr.entrySet()) {
-            query.and(entry.getKey(), entry.getValue(), getQueryOptions(entry.getKey()));
+         for (AtsAttributeQuery attrQuery : andAttr) {
+            query.and(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
          }
       }
 

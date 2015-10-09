@@ -17,17 +17,15 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
+import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -85,9 +83,8 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
       // attributes
       if (!andAttr.isEmpty()) {
-         for (Entry<IAttributeType, Collection<String>> entry : andAttr.entrySet()) {
-            QueryOption[] opts = getQueryOptions(entry.getKey());
-            query.and(entry.getKey(), entry.getValue(), opts);
+         for (AtsAttributeQuery attrQuery : andAttr) {
+            query.and(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
          }
       }
 
