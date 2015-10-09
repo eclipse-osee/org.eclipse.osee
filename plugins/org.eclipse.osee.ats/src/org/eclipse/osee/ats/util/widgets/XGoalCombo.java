@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.core.config.GoalSorter;
 import org.eclipse.osee.ats.internal.Activator;
@@ -45,8 +44,7 @@ public class XGoalCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<Artifact> goalArtifacts =
-            new GoalSearchItem("", new ArrayList<IAtsTeamDefinition>(), false, null).performSearchGetResults();
+         Collection<Artifact> goalArtifacts = new GoalSearchItem("", null, false, null).performSearchGetResults();
          List<IAtsGoal> sortedGoals = new ArrayList<>();
          for (Artifact goalArt : goalArtifacts) {
             sortedGoals.add((IAtsGoal) goalArt);

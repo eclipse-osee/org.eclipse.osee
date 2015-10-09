@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.navigate;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -327,8 +326,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createGoalsSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem goalItem = new XNavigateItem(parent, "Goals", AtsImage.GOAL);
-         new SearchNavigateItem(goalItem,
-            new GoalSearchItem("InWork Goals", new ArrayList<IAtsTeamDefinition>(), false, null));
+         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", null, false, null));
          new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
          new SearchNavigateItem(goalItem,
             new MyFavoritesGoalsSearchItem("Favorites", AtsClientService.get().getUserService().getCurrentUser()));

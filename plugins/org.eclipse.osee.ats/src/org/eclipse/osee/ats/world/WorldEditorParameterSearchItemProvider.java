@@ -93,6 +93,8 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
          AWorkbench.popup("Already Loading, Please Wait");
          return;
       }
+      worldParameterSearchItem.createSearchItem();
+
       LoadTableJob job = null;
       job = new LoadTableJob(worldEditor, worldParameterSearchItem, searchType, tableLoadOptions, forcePend);
       job.setUser(false);

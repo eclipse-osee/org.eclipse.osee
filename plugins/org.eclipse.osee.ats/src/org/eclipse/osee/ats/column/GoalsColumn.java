@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -22,7 +21,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
@@ -108,8 +106,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       for (Artifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
-      Collection<Artifact> allGoals =
-         new GoalSearchItem("", new ArrayList<IAtsTeamDefinition>(), false, null).performSearchGetResults();
+      Collection<Artifact> allGoals = new GoalSearchItem("", null, false, null).performSearchGetResults();
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {

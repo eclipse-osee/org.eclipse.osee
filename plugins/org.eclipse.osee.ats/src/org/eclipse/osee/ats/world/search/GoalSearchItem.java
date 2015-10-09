@@ -11,107 +11,60 @@
 
 package org.eclipse.osee.ats.world.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.artifact.GoalManager;
-import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.TeamDefinitions;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
-import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeCriteria;
 
 /**
  * @author Donald G. Dunne
  */
 public class GoalSearchItem extends WorldUISearchItem {
 
-   private final Collection<IAtsTeamDefinition> teamDefs;
-   private boolean showFinished;
-   private final User userArt;
+   private final boolean showCompletedCancelled;
+   private final IAtsUser user;
+   private final String title;
 
-   public GoalSearchItem(String displayName, Collection<IAtsTeamDefinition> teamDefs, boolean showFinished, User userArt) {
+   public GoalSearchItem(String displayName, String title, boolean showCompletedCancelled, IAtsUser user) {
       super(displayName, AtsImage.GOAL);
-      this.userArt = userArt;
-      this.teamDefs = teamDefs;
-      this.showFinished = showFinished;
+      this.title = title;
+      this.user = user;
+      this.showCompletedCancelled = showCompletedCancelled;
    }
 
    public GoalSearchItem(GoalSearchItem goalWorldUISearchItem) {
       super(goalWorldUISearchItem, AtsImage.GOAL);
-      this.userArt = null;
-      this.teamDefs = goalWorldUISearchItem.teamDefs;
-      this.showFinished = goalWorldUISearchItem.showFinished;
-   }
-
-   public String getProductSearchName() {
-      if (teamDefs != null && teamDefs.size() > 0) {
-         return String.valueOf(TeamDefinitions.getNames(teamDefs));
-      }
-      return "";
+      this.user = goalWorldUISearchItem.user;
+      this.title = goalWorldUISearchItem.title;
+      this.showCompletedCancelled = goalWorldUISearchItem.showCompletedCancelled;
    }
 
    @Override
    public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      String prodName = getProductSearchName();
-      if (Strings.isValid(prodName)) {
-         return String.format("%s - %s", super.getSelectedName(searchType), prodName);
-      }
       return super.getSelectedName(searchType);
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      Set<String> teamDefinitionGuids = new HashSet<>(teamDefs != null ? teamDefs.size() : 0);
-      if (teamDefs != null) {
-         for (IAtsTeamDefinition teamDef : teamDefs) {
-            teamDefinitionGuids.add(AtsUtilCore.getGuid(teamDef));
-         }
+      IAtsQuery query = AtsClientService.get().getQueryService().createQuery().isGoal();
+      if (user != null) {
+         query.andAssignee(user);
       }
-      List<ArtifactSearchCriteria> criteria = new ArrayList<>();
-      if (!teamDefinitionGuids.isEmpty()) {
-         criteria.add(new AttributeCriteria(AtsAttributeTypes.TeamDefinition, teamDefinitionGuids));
+      if (!showCompletedCancelled) {
+         query.isStateType(StateType.Working);
       }
-
-      if (!showFinished) {
-         TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, false, false);
+      if (Strings.isValid(title)) {
+         query.andAttr(AtsAttributeTypes.Title, title, QueryOption.CONTAINS_MATCH_OPTIONS);
       }
-
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromTypeAnd(AtsArtifactTypes.Goal, AtsUtilCore.getAtsBranch(), 1000, criteria);
-
-      Set<Artifact> resultGoalArtifacts = new HashSet<>();
-      for (Artifact art : artifacts) {
-
-         for (Artifact goalArt : new GoalManager().getCollectors(art, true)) {
-            AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) goalArt;
-            // don't include if userArt specified and userArt not assignee
-            if (userArt != null && !awa.getStateMgr().getAssignees().contains(userArt)) {
-               continue;
-            }
-            if (!showFinished && awa.isCompletedOrCancelled()) {
-               continue;
-            }
-            resultGoalArtifacts.add(goalArt);
-         }
-      }
-      return resultGoalArtifacts;
-
-   }
-
-   public void setShowFinished(boolean showFinished) {
-      this.showFinished = showFinished;
+      return Collections.castAll(query.getResultArtifacts().getList());
    }
 
    @Override

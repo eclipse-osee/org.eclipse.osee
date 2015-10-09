@@ -59,6 +59,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    protected Section resultsSection;
    protected ScrolledForm scrolledForm;
    private String title;
+   private String xWidgetXml;
 
    public AtsXWidgetActionFormPage(FormEditor editor, String id, String name) {
       super(editor, id, name);
@@ -78,8 +79,9 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       body.setLayout(new GridLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
 
+      xWidgetXml = getXWidgetsXml();
       try {
-         if (Strings.isValid(getXWidgetsXml())) {
+         if (Strings.isValid(xWidgetXml)) {
             managedForm.addPart(new SectionPart(createParametersSection(managedForm, body)));
          }
          managedForm.addPart(new SectionPart(createResultsSection(body)));
@@ -142,7 +144,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       List<XWidgetRendererItem> layoutDatas = null;
       dynamicXWidgetLayout = new SwtXWidgetRenderer(getDynamicWidgetLayoutListener(), getXWidgetOptionResolver());
       try {
-         layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, getXWidgetsXml());
+         layoutDatas = XWidgetParser.extractWorkAttributes(dynamicXWidgetLayout, xWidgetXml);
          if (layoutDatas != null && !layoutDatas.isEmpty()) {
             dynamicXWidgetLayout.addWorkLayoutDatas(layoutDatas);
             dynamicXWidgetLayout.createBody(managedForm, paramComp, null, null, true);
