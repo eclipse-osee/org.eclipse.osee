@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
  */
 public class VersionDataImpl implements VersionData {
 
-   private Long branchUuid = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
    private int txId = RelationalConstants.TRANSACTION_SENTINEL;
    private long gamma = RelationalConstants.GAMMA_SENTINEL;
    private boolean historical = RelationalConstants.IS_HISTORICAL_DEFAULT;
@@ -59,13 +59,13 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public long getBranchId() {
-      return branchUuid;
+   public Long getBranchId() {
+      return branchId;
    }
 
    @Override
-   public void setBranchId(long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranchId(Long branchUuid) {
+      this.branchId = branchUuid;
    }
 
    @Override
@@ -87,7 +87,7 @@ public class VersionDataImpl implements VersionData {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + branchUuid.hashCode();
+      result = prime * result + branchId.hashCode();
       result = prime * result + (int) (gamma ^ (gamma >>> 32));
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId;
@@ -107,7 +107,7 @@ public class VersionDataImpl implements VersionData {
          return false;
       }
       VersionDataImpl other = (VersionDataImpl) obj;
-      if (branchUuid != other.branchUuid) {
+      if (branchId != other.branchId) {
          return false;
       }
       if (gamma != other.gamma) {
@@ -127,7 +127,7 @@ public class VersionDataImpl implements VersionData {
 
    @Override
    public String toString() {
-      return "Version [branchUuid=" + branchUuid + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
+      return "Version [branchUuid=" + branchId + ", txId=" + txId + ", gamma=" + gamma + ", historical=" + historical + ", stripeId=" + stripeId + "]";
    }
 
    @Override

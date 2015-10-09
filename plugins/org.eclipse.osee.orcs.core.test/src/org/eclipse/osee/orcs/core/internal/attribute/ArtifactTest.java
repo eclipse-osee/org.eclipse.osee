@@ -34,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -59,12 +58,11 @@ public class ArtifactTest {
    @Mock private ArtifactData artifactData;
    @Mock private AttributeFactory attributeFactory;
    @Mock private ArtifactTypes types;
-   @Mock private BranchProvider branchProvider;
 
    @Mock private VersionData version;
    @Mock private AttributeData attributeData;
    @Mock private BranchReadable branch;
-   
+
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute;
    @SuppressWarnings("rawtypes")
@@ -73,7 +71,7 @@ public class ArtifactTest {
    @Mock private Attribute deleted;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute differentType;
-   
+
    @Mock private GraphData graph;
    // @formatter:on
 
@@ -85,18 +83,18 @@ public class ArtifactTest {
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
-      artifact = new ArtifactImpl(types, artifactData, attributeFactory, branchProvider);
+      artifact = new ArtifactImpl(types, artifactData, attributeFactory);
       artifact.setGraph(graph);
 
-      when(types.isValidAttributeType(any(IArtifactType.class), any(Branch.class), any(IAttributeType.class))).thenReturn(
-         true);
+      when(
+         types.isValidAttributeType(any(IArtifactType.class), any(Branch.class), any(IAttributeType.class))).thenReturn(
+            true);
       when(attributeFactory.getMaxOccurrenceLimit(any(IAttributeType.class))).thenReturn(1);
 
       when(attributeFactory.createAttribute(any(AttributeManager.class), any(AttributeData.class))).thenReturn(
          attribute);
-      when(
-         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
-            any(IAttributeType.class))).thenReturn(attribute);
+      when(attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
+         any(IAttributeType.class))).thenReturn(attribute);
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
       when(artifactData.getGuid()).thenReturn(guid);
@@ -104,7 +102,6 @@ public class ArtifactTest {
       when(artifactData.getTypeUuid()).thenReturn(artifactType.getGuid());
       when(artifactData.getLocalId()).thenReturn(0);
       when(version.getBranchId()).thenReturn(55L);
-      when(branchProvider.getBranch(55L)).thenReturn(branch);
 
       when(deleted.isDeleted()).thenReturn(true);
       when(notDeleted.getOrcsData()).thenReturn(attributeData);
@@ -201,9 +198,8 @@ public class ArtifactTest {
    public void testSetName() throws OseeCoreException {
       Attribute attr = mock(Attribute.class);
       when(attr.getOrcsData()).thenReturn(attributeData);
-      when(
-         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
-            eq(CoreAttributeTypes.Name))).thenReturn(attr);
+      when(attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
+         eq(CoreAttributeTypes.Name))).thenReturn(attr);
       artifact.setName("test");
       verify(attr).setFromString("test");
    }
@@ -273,13 +269,13 @@ public class ArtifactTest {
    @Test
    public void testIsAttributeTypeValid() throws OseeCoreException {
       artifact.isAttributeTypeValid(CoreAttributeTypes.Afha);
-      verify(types).isValidAttributeType(artifactType, branch, CoreAttributeTypes.Afha);
+      verify(types).isValidAttributeType(eq(artifactType), any(), eq(CoreAttributeTypes.Afha));
    }
 
    @Test
    public void testGetValidAttributeTypes() throws OseeCoreException {
       artifact.getValidAttributeTypes();
-      verify(types).getAttributeTypes(artifactType, branch);
+      verify(types).getAttributeTypes(eq(artifactType), any());
    }
 
    @Test
@@ -304,9 +300,8 @@ public class ArtifactTest {
 
       Attribute attr = mock(Attribute.class);
       when(attr.getOrcsData()).thenReturn(attributeData);
-      when(
-         attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
-            eq(CoreAttributeTypes.Name))).thenReturn(attr);
+      when(attributeFactory.createAttributeWithDefaults(any(AttributeManager.class), any(ArtifactData.class),
+         eq(CoreAttributeTypes.Name))).thenReturn(attr);
       when(attr.getValue()).thenReturn("test");
       artifact.add(CoreAttributeTypes.Name, attr);
       artifact.setName("test");
@@ -454,8 +449,8 @@ public class ArtifactTest {
 
       when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
 
-      when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(ArtifactData.class), eq(attributeType))).thenReturn(
-         one, two, three);
+      when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(ArtifactData.class),
+         eq(attributeType))).thenReturn(one, two, three);
       artifact.setAttributesFromStrings(attributeType, "one", "two", "three");
       verify(one).setFromString("one");
       verify(two).setFromString("two");
@@ -472,8 +467,8 @@ public class ArtifactTest {
 
       when(attributeFactory.getMaxOccurrenceLimit(attributeType)).thenReturn(3);
 
-      when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(ArtifactData.class), eq(attributeType))).thenReturn(
-         two);
+      when(attributeFactory.createAttributeWithDefaults(eq(artifact), any(ArtifactData.class),
+         eq(attributeType))).thenReturn(two);
       artifact.add(attributeType, one);
       artifact.setAttributesFromStrings(attributeType, "1", "2");
       verify(one).setFromString("1");

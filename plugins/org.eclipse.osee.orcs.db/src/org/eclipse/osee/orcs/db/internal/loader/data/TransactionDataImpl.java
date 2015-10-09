@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOrcsData {
 
    private int authorId = RelationalConstants.ART_ID_SENTINEL;
-   private Long branchUuid = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
    private String comment = RelationalConstants.DEFAULT_COMMENT;
    private int commitId = RelationalConstants.ART_ID_SENTINEL;
    private TransactionDetailsType type = TransactionDetailsType.INVALID;
@@ -39,7 +39,7 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
 
    @Override
    public Long getBranchId() {
-      return branchUuid;
+      return branchId;
    }
 
    @Override
@@ -68,8 +68,8 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
    }
 
    @Override
-   public void setBranchId(long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranchId(Long branchId) {
+      this.branchId = branchId;
    }
 
    @Override
@@ -94,7 +94,7 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
 
    @Override
    public String toString() {
-      return "TransactionDataImpl [id=" + getGuid() + ", authorId=" + authorId + ", branchUuid=" + branchUuid + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
+      return "TransactionDataImpl [id=" + getGuid() + ", authorId=" + authorId + ", branchUuid=" + branchId + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
    }
 
    @Override

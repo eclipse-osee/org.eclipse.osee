@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.Component;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralDocument;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Dependency__Artifact;
@@ -26,9 +27,6 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -37,7 +35,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -66,6 +63,9 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -110,7 +110,7 @@ public class OrcsTransactionTest {
       tx.commit();
 
       ResultSet<ArtifactReadable> results =
-         query.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
+         query.fromBranch(COMMON_ID).andIsOfType(CoreArtifactTypes.SoftwareRequirementPlainText).getResults();
 
       Optional<ArtifactReadable> item = Iterables.tryFind(results, new Predicate<ArtifactReadable>() {
          @Override
@@ -136,13 +136,11 @@ public class OrcsTransactionTest {
       String expectedAnnotation = "Annotate It";
 
       BranchQuery branchQuery = query.branchQuery();
-      org.eclipse.osee.orcs.data.BranchReadable branchReadable =
-         branchQuery.andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
       TransactionQuery transactionQuery = query.transactionQuery();
-      TransactionReadable previousTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
+      TransactionReadable previousTx = transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(branchReadable, userArtifact, comment);
+      TransactionBuilder tx = txFactory.createTransaction(COMMON_ID, userArtifact, comment);
 
       ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.Folder, expectedName);
 
@@ -152,14 +150,14 @@ public class OrcsTransactionTest {
       TransactionReadable newTx = tx.commit();
       assertFalse(tx.isCommitInProgress());
 
-      TransactionReadable newHeadTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
+      TransactionReadable newHeadTx = transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
 
       assertEquals(newTx.getGuid().intValue(), newHeadTx.getLocalId().intValue());
 
       TransactionReadable newTxReadable = transactionQuery.andTxId(newTx.getGuid()).getResults().getExactlyOne();
-      checkTransaction(previousTx, newTxReadable, branchReadable, comment, userArtifact);
+      checkTransaction(previousTx, newTxReadable, COMMON_ID, comment, userArtifact);
 
-      ResultSet<ArtifactReadable> result = query.fromBranch(CoreBranches.COMMON).andIds(artifactId).getResults();
+      ResultSet<ArtifactReadable> result = query.fromBranch(COMMON_ID).andIds(artifactId).getResults();
 
       ArtifactReadable artifact = result.getExactlyOne();
 
@@ -177,13 +175,11 @@ public class OrcsTransactionTest {
       String expectedQualifaction = "Test";
 
       BranchQuery branchQuery = query.branchQuery();
-      org.eclipse.osee.orcs.data.BranchReadable branchReadable =
-         branchQuery.andIds(CoreBranches.COMMON).getResults().getExactlyOne();
 
       TransactionQuery transactionQuery = query.transactionQuery();
-      TransactionReadable previousTx = transactionQuery.andIsHead(branchReadable).getResults().getExactlyOne();
+      TransactionReadable previousTx = transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
 
-      TransactionBuilder tx = txFactory.createTransaction(branchReadable, userArtifact, comment);
+      TransactionBuilder tx = txFactory.createTransaction(COMMON_ID, userArtifact, comment);
 
       ArtifactId artifactId = tx.createArtifact(CoreArtifactTypes.SubsystemRequirementHTML, expectedName);
 
@@ -194,7 +190,7 @@ public class OrcsTransactionTest {
       TransactionReadable newTx = tx.commit();
 
       ArtifactReadable artifactReadable =
-         query.fromBranch(CoreBranches.COMMON).andIds(artifactId).getResults().getExactlyOne();
+         query.fromBranch(COMMON_ID).andIds(artifactId).getResults().getExactlyOne();
       assertEquals(expectedName, artifactReadable.getName());
       assertEquals(expectedQualifaction,
          artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.QualificationMethod));
@@ -204,13 +200,13 @@ public class OrcsTransactionTest {
    @Test
    public void testCopyArtifact() throws Exception {
       ArtifactReadable user =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       // duplicate on same branch
       TransactionBuilder transaction1 = createTx();
       ArtifactId duplicate = transaction1.copyArtifact(user);
       transaction1.commit();
-      ArtifactReadable userDup = query.fromBranch(CoreBranches.COMMON).andIds(duplicate).getResults().getExactlyOne();
+      ArtifactReadable userDup = query.fromBranch(COMMON_ID).andIds(duplicate).getResults().getExactlyOne();
 
       assertNotSame(SystemUser.Anonymous.getGuid(), userDup.getGuid());
       assertEquals(SystemUser.Anonymous.getName(), userDup.getName());
@@ -234,7 +230,7 @@ public class OrcsTransactionTest {
    @Test
    public void testIntroduceArtifact() throws Exception {
       ArtifactReadable user =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       IOseeBranch branchToken = TokenFactory.createBranch("IntroduceArtifact tests");
       BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
@@ -252,7 +248,7 @@ public class OrcsTransactionTest {
    @Test
    public void testIntroduceOnSameBranch() throws OseeCoreException {
       ArtifactReadable user =
-         query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       TransactionBuilder tx = createTx();
 
@@ -262,7 +258,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testReadAfterWrite() throws OseeCoreException {
-      QueryBuilder queryBuilder = query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.Anonymous);
+      QueryBuilder queryBuilder = query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous);
 
       ArtifactReadable originalGuest = queryBuilder.getResults().getExactlyOne();
 
@@ -282,14 +278,14 @@ public class OrcsTransactionTest {
       ArtifactId artifact = tx.createArtifact(CoreArtifactTypes.AccessControlModel, "deleteMe");
       tx.commit();
 
-      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).getResults().getExactlyOne();
+      ArtifactReadable toDelete = query.fromBranch(COMMON_ID).andIds(artifact).getResults().getExactlyOne();
 
-      tx = txFactory.createTransaction(CoreBranches.COMMON, userArtifact, testName.getMethodName());
+      tx = txFactory.createTransaction(COMMON_ID, userArtifact, testName.getMethodName());
       tx.deleteArtifact(toDelete);
       tx.commit();
 
       toDelete =
-         query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
+         query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
    }
@@ -306,32 +302,32 @@ public class OrcsTransactionTest {
       tx.deleteAttributes(artifact, CoreAttributeTypes.GeneralStringData);
       tx.commit();
 
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.andExists(CoreAttributeTypes.GeneralStringData);
       builder.andIds(artifact);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
       assertEquals(0, artifacts.size());
-      builder = query.fromBranch(CoreBranches.COMMON);
+      builder = query.fromBranch(COMMON_ID);
       builder.andExists(CoreAttributeTypes.GeneralStringData);
       builder.andIds(artifact);
       builder.includeDeletedAttributes();
       artifacts = builder.getResults();
       assertEquals(1, artifacts.size());
-      builder = query.fromBranch(CoreBranches.COMMON);
+      builder = query.fromBranch(COMMON_ID);
       builder.andExists(CoreAttributeTypes.Annotation);
       builder.andIds(artifact);
       builder.includeDeletedAttributes();
       artifacts = builder.getResults();
       assertEquals(0, artifacts.size());
 
-      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact).getResults().getExactlyOne();
+      ArtifactReadable toDelete = query.fromBranch(COMMON_ID).andIds(artifact).getResults().getExactlyOne();
 
       tx = createTx();
       tx.deleteArtifact(toDelete);
       tx.commit();
 
       toDelete =
-         query.fromBranch(CoreBranches.COMMON).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
+         query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
 
@@ -353,7 +349,7 @@ public class OrcsTransactionTest {
       tx.deleteAttributes(artifact1, CoreAttributeTypes.GeneralStringData);
       TransactionReadable tx2 = tx.commit();
 
-      ArtifactReadable toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact1).getResults().getExactlyOne();
+      ArtifactReadable toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).getResults().getExactlyOne();
 
       tx = createTx();
       tx.deleteArtifact(toDelete);
@@ -361,14 +357,14 @@ public class OrcsTransactionTest {
       tx.unrelate(artifact2, Default_Hierarchical__Parent, artifact1);
       TransactionReadable tx3 = tx.commit();
 
-      toDelete = query.fromBranch(CoreBranches.COMMON).andIds(artifact2).getResults().getExactlyOne();
+      toDelete = query.fromBranch(COMMON_ID).andIds(artifact2).getResults().getExactlyOne();
 
       tx = createTx();
       tx.deleteArtifact(toDelete);
       TransactionReadable tx4 = tx.commit();
 
       toDelete =
-         query.fromBranch(CoreBranches.COMMON).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
+         query.fromBranch(COMMON_ID).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
       int[] toReturn = {tx1.getGuid(), tx2.getGuid(), tx3.getGuid(), tx4.getGuid()};
@@ -382,7 +378,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[0]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -397,7 +393,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andIds(artifact1, artifact2);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
@@ -411,7 +407,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -429,7 +425,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1);
@@ -444,7 +440,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1);
@@ -460,7 +456,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact2, artifact1);
@@ -476,7 +472,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andIds(artifact1, artifact2);
       ResultSet<ArtifactReadable> artifacts = builder.getResults();
@@ -490,7 +486,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -506,7 +502,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.PublishInline, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -522,7 +518,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact2, artifact1);
@@ -534,7 +530,7 @@ public class OrcsTransactionTest {
       if (!artifact1Actual.equals(artifact2)) {
          artifact1Actual = iter.next();
       }
-      builder = query.fromBranch(CoreBranches.COMMON);
+      builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -552,7 +548,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact2, artifact1);
@@ -564,7 +560,7 @@ public class OrcsTransactionTest {
       if (!artifact1Actual.equals(artifact2)) {
          artifact1Actual = iter.next();
       }
-      builder = query.fromBranch(CoreBranches.COMMON);
+      builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -582,7 +578,7 @@ public class OrcsTransactionTest {
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
       ArtifactId artifact2 = theArtifacts[1];
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact2, artifact1);
@@ -594,7 +590,7 @@ public class OrcsTransactionTest {
       if (!artifact1Actual.equals(artifact2)) {
          artifact1Actual = iter.next();
       }
-      builder = query.fromBranch(CoreBranches.COMMON);
+      builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[2]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
       builder.andIds(artifact1, artifact2);
@@ -638,7 +634,7 @@ public class OrcsTransactionTest {
       String guid = tx.createArtifact(CoreArtifactTypes.Component, "A component").getGuid();
       int startingTx = tx.commit().getGuid();
 
-      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andGuid(guid).getResults().getExactlyOne();
+      ArtifactReadable artifact = query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
       assertEquals(startingTx, artifact.getTransaction());
 
       TransactionBuilder tx2 = createTx();
@@ -648,7 +644,7 @@ public class OrcsTransactionTest {
       assertTrue(startingTx != lastTx);
 
       ArtifactReadable currentArtifact =
-         query.fromBranch(CoreBranches.COMMON).andGuid(guid).getResults().getExactlyOne();
+         query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
       assertEquals(lastTx, currentArtifact.getTransaction());
    }
 
@@ -660,7 +656,7 @@ public class OrcsTransactionTest {
       tx1.relate(art1, CoreRelationTypes.Users_User, art2);
       tx1.commit();
 
-      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable artifact = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
 
       ResultSet<ArtifactReadable> related = artifact.getRelated(CoreRelationTypes.Users_User);
@@ -689,7 +685,7 @@ public class OrcsTransactionTest {
       tx1.addChildren(art1, art2, art3);
       int tx1Id = tx1.commit().getGuid();
 
-      QueryBuilder art1Query = query.fromBranch(CoreBranches.COMMON).andIds(art1);
+      QueryBuilder art1Query = query.fromBranch(COMMON_ID).andIds(art1);
 
       ArtifactReadable artifact = art1Query.getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
@@ -730,7 +726,7 @@ public class OrcsTransactionTest {
       tx1.addChildren(art1, art2);
       tx1.commit();
 
-      ArtifactReadable artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable artifact1 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact1.getName());
 
       ResultSet<ArtifactReadable> children = artifact1.getChildren();
@@ -747,7 +743,7 @@ public class OrcsTransactionTest {
       tx2.setRelations(art1, Default_Hierarchical__Child, Arrays.asList(art3, art4));
       tx2.commit();
 
-      artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      artifact1 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact1.getName());
 
       children = artifact1.getChildren();
@@ -766,7 +762,7 @@ public class OrcsTransactionTest {
       assertEquals(art3, artifact3);
       assertEquals(art4, artifact4);
 
-      artifact2 = query.fromBranch(CoreBranches.COMMON).andIds(art2).getResults().getExactlyOne();
+      artifact2 = query.fromBranch(COMMON_ID).andIds(art2).getResults().getExactlyOne();
       assertEquals("B component", artifact2.getName());
       assertNull(artifact2.getParent());
       assertEquals(art2, artifact2);
@@ -784,7 +780,7 @@ public class OrcsTransactionTest {
       tx2.addChildren(art1, art2, art3);
       tx2.commit();
 
-      ArtifactReadable artifact1 = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable artifact1 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact1.getName());
 
       ResultSet<ArtifactReadable> children = artifact1.getChildren();
@@ -817,7 +813,7 @@ public class OrcsTransactionTest {
 
       tx1.commit();
 
-      ArtifactReadable artifact = query.fromBranch(CoreBranches.COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable artifact = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
 
       ResultSet<ArtifactReadable> children = artifact.getChildren();
@@ -844,7 +840,7 @@ public class OrcsTransactionTest {
       tx1.relate(art1, Dependency__Dependency, art4);
       tx1.commit();
 
-      ArtifactReadable artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
+      ArtifactReadable artifact4 = query.fromBranch(COMMON_ID).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
       ArtifactReadable artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
@@ -859,7 +855,7 @@ public class OrcsTransactionTest {
       tx2.unrelate(art1, Default_Hierarchical__Child, art2);
       tx2.commit();
 
-      artifact4 = query.fromBranch(CoreBranches.COMMON).andIds(art4).getResults().getExactlyOne();
+      artifact4 = query.fromBranch(COMMON_ID).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
       artifact1 = artifact4.getRelated(CoreRelationTypes.Dependency__Artifact).getExactlyOne();
@@ -880,7 +876,7 @@ public class OrcsTransactionTest {
       tx1.relate(art1, Dependency__Dependency, art4);
       tx1.commit();
 
-      ArtifactReadable artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      ArtifactReadable artifact4 = query.fromBranch(COMMON_ID).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
       ArtifactReadable artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
@@ -895,7 +891,7 @@ public class OrcsTransactionTest {
       tx2.unrelateFromAll(Default_Hierarchical__Parent, art1);
       tx2.commit();
 
-      artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      artifact4 = query.fromBranch(COMMON_ID).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
       artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
@@ -911,18 +907,18 @@ public class OrcsTransactionTest {
       ArtifactId art1 = tx1.createArtifact(Component, "orig name");
       TransactionReadable rec1 = tx1.commit();
       assertNotNull(rec1);
-      art1 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      art1 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("orig name", art1.getName());
 
       // change name
-      ArtifactId art2 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactId art2 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       TransactionBuilder tx2 = createTx();
       tx2.setName(art2, "new name");
       TransactionReadable rec2 = tx2.commit();
       assertNotNull(rec2);
 
       // verify that change only exists on new stripe?
-      ArtifactId art3 = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactId art3 = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       assertEquals("orig name", art1.getName());
       // this should be same name cause we didn't re-query it and the tx didn't change the model?
       assertEquals("orig name", art2.getName());
@@ -948,7 +944,7 @@ public class OrcsTransactionTest {
       TransactionReadable rec1 = tx1.commit();
       assertNotNull(rec1);
 
-      artifact4 = query.fromBranch(COMMON).andIds(art4).getResults().getExactlyOne();
+      artifact4 = query.fromBranch(COMMON_ID).andIds(art4).getResults().getExactlyOne();
       assertEquals(art4, artifact4);
 
       artifact1 = artifact4.getRelated(Dependency__Artifact).getExactlyOne();
@@ -964,13 +960,14 @@ public class OrcsTransactionTest {
       assertNotNull(rec2);
 
       artifact1 =
-         query.fromBranch(COMMON).andUuid(art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
+         query.fromBranch(COMMON_ID).andUuid(
+            art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
       assertNotNull(artifact1);
-      artifact2 = query.fromBranch(COMMON).andUuid(art2.getUuid()).getResults().getAtMostOneOrNull();
+      artifact2 = query.fromBranch(COMMON_ID).andUuid(art2.getUuid()).getResults().getAtMostOneOrNull();
       assertNotNull(artifact2);
-      artifact3 = query.fromBranch(COMMON).andUuid(art3.getUuid()).getResults().getAtMostOneOrNull();
+      artifact3 = query.fromBranch(COMMON_ID).andUuid(art3.getUuid()).getResults().getAtMostOneOrNull();
       assertNotNull(artifact3);
-      artifact4 = query.fromBranch(COMMON).andUuid(art4.getUuid()).getResults().getAtMostOneOrNull();
+      artifact4 = query.fromBranch(COMMON_ID).andUuid(art4.getUuid()).getResults().getAtMostOneOrNull();
       assertNotNull(artifact4);
 
       assertEquals(true, artifact1.getChildren().isEmpty());
@@ -1005,13 +1002,13 @@ public class OrcsTransactionTest {
       tx.setSoleAttributeFromString(art1, CoreAttributeTypes.Annotation, "write5");
       TransactionReadable lastTx = tx.commit();
 
-      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       ResultSet<? extends AttributeReadable<Object>> attributes = art.getAttributes(CoreAttributeTypes.Annotation);
 
       assertEquals(1, attributes.size());
       assertEquals("write5", attributes.getExactlyOne().getValue());
 
-      QueryBuilder builder = query.fromBranch(COMMON).fromTransaction(lastTx.getGuid()).andIds(art1);
+      QueryBuilder builder = query.fromBranch(COMMON_ID).fromTransaction(lastTx.getGuid()).andIds(art1);
       ResultSet<ArtifactReadable> results = builder.getResults();
       art = results.getExactlyOne();
       attributes = art.getAttributes(CoreAttributeTypes.Annotation);
@@ -1043,7 +1040,7 @@ public class OrcsTransactionTest {
       tx.setRationale(art1, CoreRelationTypes.Users_User, art2, "rationale5");
       TransactionReadable lastTx = tx.commit();
 
-      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       ResultSet<ArtifactReadable> related = art.getRelated(CoreRelationTypes.Users_User);
       assertEquals(1, related.size());
       ArtifactReadable other = related.getExactlyOne();
@@ -1051,7 +1048,7 @@ public class OrcsTransactionTest {
 
       assertEquals("rationale5", rationale);
 
-      art = query.fromBranch(COMMON).fromTransaction(lastTx.getGuid()).andIds(art1).getResults().getExactlyOne();
+      art = query.fromBranch(COMMON_ID).fromTransaction(lastTx.getGuid()).andIds(art1).getResults().getExactlyOne();
       related = art.getRelated(CoreRelationTypes.Users_User);
       assertEquals(1, related.size());
       other = related.getExactlyOne();
@@ -1068,7 +1065,7 @@ public class OrcsTransactionTest {
       tx.relate(art1, CoreRelationTypes.Users_User, art2, "rationale1");
       tx.commit();
 
-      ArtifactReadable art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      ArtifactReadable art = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       ArtifactReadable otherSide = art.getRelated(CoreRelationTypes.Users_User).getExactlyOne();
       assertEquals(true, art.areRelated(CoreRelationTypes.Users_User, otherSide));
 
@@ -1076,7 +1073,7 @@ public class OrcsTransactionTest {
       tx.unrelate(art1, CoreRelationTypes.Users_User, art2);
       tx.commit();
 
-      art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      art = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       ResultSet<ArtifactReadable> otherSideResults = art.getRelated(CoreRelationTypes.Users_User);
       assertEquals(true, otherSideResults.isEmpty());
 
@@ -1084,7 +1081,7 @@ public class OrcsTransactionTest {
       tx.relate(art1, CoreRelationTypes.Users_User, art2);
       tx.commit();
 
-      art = query.fromBranch(COMMON).andIds(art1).getResults().getExactlyOne();
+      art = query.fromBranch(COMMON_ID).andIds(art1).getResults().getExactlyOne();
       otherSide = art.getRelated(CoreRelationTypes.Users_User).getExactlyOne();
       assertEquals(true, art.areRelated(CoreRelationTypes.Users_User, otherSide));
    }
@@ -1126,17 +1123,17 @@ public class OrcsTransactionTest {
    }
 
    private TransactionBuilder createTx() throws OseeCoreException {
-      return txFactory.createTransaction(COMMON, userArtifact, testName.getMethodName());
+      return txFactory.createTransaction(COMMON_ID, userArtifact, testName.getMethodName());
    }
 
    private ArtifactReadable getSystemUser() throws OseeCoreException {
-      return query.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return query.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
-   private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, org.eclipse.osee.orcs.data.BranchReadable branch, String comment, ArtifactReadable user) throws OseeCoreException {
+   private void checkTransaction(TransactionReadable previousTx, TransactionReadable newTx, Long branchId, String comment, ArtifactReadable user) throws OseeCoreException {
       assertTrue(previousTx.getLocalId() < newTx.getLocalId());
       assertEquals(comment, newTx.getComment());
-      assertEquals(branch.getUuid(), newTx.getBranchId());
+      assertEquals(branchId, newTx.getBranchId());
       assertEquals(TransactionDetailsType.NonBaselined, newTx.getTxType());
       assertEquals(user.getLocalId().intValue(), newTx.getAuthorId());
       assertEquals(0, newTx.getCommit());

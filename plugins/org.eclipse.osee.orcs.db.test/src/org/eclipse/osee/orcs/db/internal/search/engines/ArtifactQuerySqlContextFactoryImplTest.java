@@ -140,7 +140,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
-      criteriaSet.add(new CriteriaBranch(CoreBranches.COMMON));
+      criteriaSet.add(new CriteriaBranch(CoreBranches.COMMON.getUuid()));
       queryData = new QueryData(criteriaSet, options);
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");

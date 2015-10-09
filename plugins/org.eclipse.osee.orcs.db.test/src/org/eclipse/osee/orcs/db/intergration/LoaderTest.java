@@ -62,7 +62,7 @@ public class LoaderTest {
    // @formatter:off
 //	@OsgiService private JdbcClient jdbcClient;
 	@OsgiService private OrcsDataStore dataStore;
-   @Mock private LoadDataHandler builder; 
+   @Mock private LoadDataHandler builder;
    @Captor private ArgumentCaptor<LoadDescription> descriptorCaptor;
 	@Captor private ArgumentCaptor<ArtifactData> artifactCaptor;
 	@Captor private ArgumentCaptor<AttributeData> attributeCaptor;
@@ -75,6 +75,8 @@ public class LoaderTest {
 
    private HasCancellation cancellation;
    private DataLoaderFactory loaderFactory;
+
+   private static final Long commonBranchId = CoreBranches.COMMON.getUuid();
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -102,7 +104,7 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoad() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, commonBranchId, 5, 6, 7);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.load(cancellation, builder);
@@ -112,7 +114,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
+      assertEquals(commonBranchId, descriptor.getBranchId());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(7)).onData(attributeCaptor.capture());
@@ -153,7 +155,7 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoadByTypes() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, commonBranchId, 5, 6, 7);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeTypes(Name);
@@ -166,7 +168,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
+      assertEquals(commonBranchId, descriptor.getBranchId());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(3)).onData(attributeCaptor.capture());
@@ -178,7 +180,7 @@ public class LoaderTest {
       // @formatter:off
 		verifyData(arts.next(), 5, "AkA10I4aUSDLuFNIaegA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 15L);
 		verifyData(arts.next(), 6, "AkA10LiAPEZLR4+jdFQA",  NEW, OseeTypeDefinition.getGuid(), 570L,5, -1, 16L);
-		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L); 
+		verifyData(arts.next(), 7, "AkA2AcT6AXe6ivMFRhAA",  NEW, Folder.getGuid(), 570L,6, -1, 43L);
 		// @formatter:on
 
       sort(attributeCaptor.getAllValues());
@@ -202,7 +204,7 @@ public class LoaderTest {
 
    @org.junit.Test
    public void testLoadByIds() throws OseeCoreException {
-      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, CoreBranches.COMMON, 5, 6, 7);
+      DataLoader loader = loaderFactory.newDataLoaderFromIds(session, commonBranchId, 5, 6, 7);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.withAttributeIds(11, 14);
@@ -215,7 +217,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
+      assertEquals(commonBranchId, descriptor.getBranchId());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(2)).onData(attributeCaptor.capture());
@@ -250,7 +252,7 @@ public class LoaderTest {
    @org.junit.Test
    public void testLoadByGuids() throws OseeCoreException {
       String[] ids = new String[] {"AkA10I4aUSDLuFNIaegA", "AkA10LiAPEZLR4+jdFQA", "AkA2AcT6AXe6ivMFRhAA"};
-      DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, CoreBranches.COMMON, ids);
+      DataLoader loader = loaderFactory.newDataLoaderFromGuids(session, commonBranchId, ids);
       loader.withLoadLevel(LoadLevel.ALL);
 
       loader.load(cancellation, builder);
@@ -260,7 +262,7 @@ public class LoaderTest {
       verify(builder).onLoadEnd();
 
       LoadDescription descriptor = descriptorCaptor.getValue();
-      assertEquals(CoreBranches.COMMON, descriptor.getBranch());
+      assertEquals(commonBranchId, descriptor.getBranchId());
 
       verify(builder, times(3)).onData(artifactCaptor.capture());
       verify(builder, times(7)).onData(attributeCaptor.capture());

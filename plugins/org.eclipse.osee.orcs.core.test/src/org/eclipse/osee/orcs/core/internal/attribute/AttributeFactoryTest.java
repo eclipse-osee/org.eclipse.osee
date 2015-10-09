@@ -20,7 +20,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.lang.ref.WeakReference;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -43,7 +42,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeFactory}
- * 
+ *
  * @author John Misinco
  */
 public class AttributeFactoryTest {
@@ -55,10 +54,10 @@ public class AttributeFactoryTest {
    @Mock private AttributeClassResolver classResolver;
    @Mock private AttributeTypes cache;
    @Mock private AttributeDataFactory dataFactory;
-   
+
    @Mock private AttributeData attributeData;
    @Mock private VersionData attrVersionData;
-   
+
    @Mock private IAttributeType attributeType;
    @Mock private Attribute<Object> attribute;
    @Mock private Attribute<Object> destinationAttribute;
@@ -69,7 +68,7 @@ public class AttributeFactoryTest {
 
    private AttributeFactory factory;
    private long expectedGuid;
-   private final IOseeBranch branch = CoreBranches.COMMON;
+   private final Long branchId = CoreBranches.COMMON.getUuid();
 
    @Before
    public void init() throws OseeCoreException {
@@ -142,18 +141,18 @@ public class AttributeFactoryTest {
    public void testCopyAttribute() throws OseeCoreException {
       AttributeData copiedAttributeData = mock(AttributeData.class);
 
-      when(dataFactory.copy(branch, attributeData)).thenReturn(copiedAttributeData);
+      when(dataFactory.copy(branchId, attributeData)).thenReturn(copiedAttributeData);
       when(copiedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(copiedAttributeData.getDataProxy()).thenReturn(proxy);
 
       ArgumentCaptor<ResourceNameResolver> resolverCapture = ArgumentCaptor.forClass(ResourceNameResolver.class);
       ArgumentCaptor<WeakReference> refCapture = ArgumentCaptor.forClass(WeakReference.class);
 
-      Attribute<Object> actual = factory.copyAttribute(attributeData, branch, container);
+      Attribute<Object> actual = factory.copyAttribute(attributeData, branchId, container);
 
       assertTrue(attribute == actual);
 
-      verify(dataFactory).copy(branch, attributeData);
+      verify(dataFactory).copy(branchId, attributeData);
 
       verify(proxy).setResolver(resolverCapture.capture());
       verify(attribute).internalInitialize(eq(cache), refCapture.capture(), eq(copiedAttributeData), eq(true),
@@ -167,7 +166,7 @@ public class AttributeFactoryTest {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(false);
 
-      Attribute<Object> actual = factory.introduceAttribute(attributeData, branch, container);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, branchId, container);
       assertNull(actual);
    }
 
@@ -178,16 +177,16 @@ public class AttributeFactoryTest {
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(true);
 
-      when(dataFactory.introduce(branch, attributeData)).thenReturn(introducedAttributeData);
+      when(dataFactory.introduce(branchId, attributeData)).thenReturn(introducedAttributeData);
       when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
       when(container.getAttributeById(attributeData, DeletionFlag.INCLUDE_DELETED)).thenReturn(destinationAttribute);
 
-      Attribute<Object> actual = factory.introduceAttribute(attributeData, branch, container);
+      Attribute<Object> actual = factory.introduceAttribute(attributeData, branchId, container);
       assertNotNull(actual);
 
-      verify(dataFactory).introduce(branch, attributeData);
+      verify(dataFactory).introduce(branchId, attributeData);
 
       assertEquals(actual, destinationAttribute);
    }

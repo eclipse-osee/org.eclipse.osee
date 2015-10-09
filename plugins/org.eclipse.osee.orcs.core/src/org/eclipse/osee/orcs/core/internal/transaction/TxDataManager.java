@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -52,9 +51,9 @@ public class TxDataManager {
 
    public interface TxDataLoader {
 
-      GraphData createGraph(OrcsSession session, IOseeBranch branch) throws OseeCoreException;
+      GraphData createGraph(OrcsSession session, Long branch) throws OseeCoreException;
 
-      ResultSet<Artifact> loadArtifacts(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException;
+      ResultSet<Artifact> loadArtifacts(OrcsSession session, Long branchId, Collection<ArtifactId> artifactIds) throws OseeCoreException;
 
       ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> singleton) throws OseeCoreException;
 
@@ -72,7 +71,7 @@ public class TxDataManager {
       this.loader = loader;
    }
 
-   public TxData createTxData(OrcsSession session, IOseeBranch branch) throws OseeCoreException {
+   public TxData createTxData(OrcsSession session, Long branch) throws OseeCoreException {
       GraphData graphData = loader.createGraph(session, branch);
       return new TxData(session, graphData);
    }
@@ -158,7 +157,7 @@ public class TxDataManager {
 
    private boolean isFromSameStripe(TxData txData, Artifact artifact) {
       boolean result = false;
-      if (artifact != null && txData.getBranch().equals(artifact.getBranch())) {
+      if (artifact != null && txData.getBranchId().equals(artifact.getBranchUuid())) {
          int txId = txData.getGraph().getTransaction();
          if (txId == artifact.getTransaction()) {
             result = true;
@@ -183,9 +182,9 @@ public class TxDataManager {
       return artifact;
    }
 
-   private Artifact getSourceArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   private Artifact getSourceArtifact(TxData txData, Long fromBranchId, ArtifactId artifactId) throws OseeCoreException {
       Artifact source = null;
-      if (txData.getBranch().equals(fromBranch)) {
+      if (txData.getBranchId().equals(fromBranchId)) {
          source = txData.getWriteable(artifactId);
       }
 
@@ -193,12 +192,12 @@ public class TxDataManager {
          Artifact artifactSrc = null;
          if (artifactId instanceof Artifact) {
             Artifact external = (Artifact) artifactId;
-            if (fromBranch.equals(external.getBranch())) {
+            if (fromBranchId.equals(external.getBranchUuid())) {
                artifactSrc = external;
             }
          } else if (artifactId instanceof ArtifactReadable) {
             ArtifactReadable external = (ArtifactReadable) artifactId;
-            if (fromBranch.equals(external.getBranch())) {
+            if (fromBranchId.equals(external.getBranchUuid())) {
                artifactSrc = proxyManager.asInternalArtifact(external);
             }
          }
@@ -209,7 +208,7 @@ public class TxDataManager {
       }
       if (source == null) {
          ResultSet<Artifact> loadArtifacts =
-            loader.loadArtifacts(txData.getSession(), fromBranch, singleton(artifactId));
+            loader.loadArtifacts(txData.getSession(), fromBranchId, singleton(artifactId));
          source = loadArtifacts.getExactlyOne();
       }
       return source;
@@ -237,7 +236,7 @@ public class TxDataManager {
 
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(txData.getSession(), txData.getBranchId(), artifactType, guid);
       artifact.setName(name);
       return asExternalArtifact(txData, artifact);
    }
@@ -245,49 +244,48 @@ public class TxDataManager {
    public ArtifactReadable createArtifact(TxData txData, IArtifactType artifactType, String name, String guid, long uuid) throws OseeCoreException {
       checkChangesAllowed(txData);
       Artifact artifact =
-         artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), artifactType, guid, uuid);
+         artifactFactory.createArtifact(txData.getSession(), txData.getBranchId(), artifactType, guid, uuid);
       artifact.setName(name);
       return asExternalArtifact(txData, artifact);
    }
 
-   public ArtifactReadable copyArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   public ArtifactReadable copyArtifact(TxData txData, Long fromBranchId, ArtifactId artifactId) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
+      Artifact source = getSourceArtifact(txData, fromBranchId, artifactId);
       return copyArtifactHelper(txData, source, source.getExistingAttributeTypes());
    }
 
-   public ArtifactReadable copyArtifact(TxData txData, IOseeBranch fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactReadable copyArtifact(TxData txData, Long fromBranchId, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Artifact source = getSourceArtifact(txData, fromBranch, artifactId);
+      Artifact source = getSourceArtifact(txData, fromBranchId, artifactId);
       return copyArtifactHelper(txData, source, attributesToDuplicate);
    }
 
    private ArtifactReadable copyArtifactHelper(TxData txData, Artifact source, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       Artifact copy =
-         artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranch());
+         artifactFactory.copyArtifact(txData.getSession(), source, attributesToDuplicate, txData.getBranchId());
       return asExternalArtifact(txData, copy);
    }
 
-   public ArtifactReadable introduceArtifact(TxData txData, IOseeBranch fromBranch, ArtifactReadable source, ArtifactReadable destination) throws OseeCoreException {
+   public ArtifactReadable introduceArtifact(TxData txData, Long fromBranchId, ArtifactReadable source, ArtifactReadable destination) throws OseeCoreException {
       checkChangesAllowed(txData);
-      Artifact src = getSourceArtifact(txData, fromBranch, source);
+      Artifact src = getSourceArtifact(txData, fromBranchId, source);
       Artifact dest = null;
       if (destination == null) {
-         dest =
-            artifactFactory.createArtifact(txData.getSession(), txData.getBranch(), src.getArtifactType(),
-               src.getGuid());
-         dest.setGraph(loader.createGraph(txData.getSession(), txData.getBranch()));
+         dest = artifactFactory.createArtifact(txData.getSession(), txData.getBranchId(), src.getArtifactType(),
+            src.getGuid());
+         dest.setGraph(loader.createGraph(txData.getSession(), txData.getBranchId()));
       } else {
-         dest = getSourceArtifact(txData, fromBranch, destination);
+         dest = getSourceArtifact(txData, fromBranchId, destination);
       }
-      artifactFactory.introduceArtifact(txData.getSession(), src, dest, txData.getBranch());
-      relationManager.introduce(txData.getSession(), txData.getBranch(), src, dest);
+      artifactFactory.introduceArtifact(txData.getSession(), src, dest, txData.getBranchId());
+      relationManager.introduce(txData.getSession(), txData.getBranchId(), src, dest);
       addAdjacencies(txData, dest);
       return asExternalArtifact(txData, dest);
    }
 
-   public ArtifactReadable replaceWithVersion(TxData txData, IOseeBranch fromBranch, ArtifactReadable readable, ArtifactReadable destination) throws OseeCoreException {
-      return introduceArtifact(txData, fromBranch, readable, destination);
+   public ArtifactReadable replaceWithVersion(TxData txData, Long fromBranchId, ArtifactReadable readable, ArtifactReadable destination) throws OseeCoreException {
+      return introduceArtifact(txData, fromBranchId, readable, destination);
    }
 
    private void addAdjacencies(TxData txData, Artifact dest) {
@@ -410,27 +408,27 @@ public class TxDataManager {
          relationManager.accept(session, graph, artifact, builder);
       }
       OrcsChangeSet changeSet = builder.getChangeSet();
-      return new TransactionDataImpl(txData.getBranch(), txData.getAuthor(), txData.getComment(), changeSet);
+      return new TransactionDataImpl(txData.getBranchId(), txData.getAuthor(), txData.getComment(), changeSet);
    }
 
    private static final class TransactionDataImpl implements TransactionData {
 
-      private final IOseeBranch branch;
+      private final Long branchId;
       private final ArtifactReadable author;
       private final String comment;
       private final OrcsChangeSet changeSet;
 
-      public TransactionDataImpl(IOseeBranch branch, ArtifactReadable author, String comment, OrcsChangeSet changeSet) {
+      public TransactionDataImpl(Long branchId, ArtifactReadable author, String comment, OrcsChangeSet changeSet) {
          super();
-         this.branch = branch;
+         this.branchId = branchId;
          this.author = author;
          this.comment = comment;
          this.changeSet = changeSet;
       }
 
       @Override
-      public IOseeBranch getBranch() {
-         return branch;
+      public Long getBranchId() {
+         return branchId;
       }
 
       @Override
@@ -450,7 +448,7 @@ public class TxDataManager {
 
       @Override
       public String toString() {
-         return "TransactionDataImpl [branch=" + branch + ", author=" + author + ", comment=" + comment + ", changeSet=" + changeSet + "]";
+         return "TransactionDataImpl [branch=" + branchId + ", author=" + author + ", comment=" + comment + ", changeSet=" + changeSet + "]";
       }
 
    }

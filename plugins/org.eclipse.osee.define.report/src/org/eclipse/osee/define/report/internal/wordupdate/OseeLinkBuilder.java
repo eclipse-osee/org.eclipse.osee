@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -76,21 +75,21 @@ public class OseeLinkBuilder {
       "5r02CRpYI5HheF3UM0UhBZCR907SRkdOCR7muHF0sPClCVJ+87X1/uQe3q5J+a6bFRbvqSUUUV55" +
       "YUUUUAFZV54Y8P6jdPdX2h6Zc3MmN809pG7tgYGSRk8AD8KKKuFScHeDt6Ba5owQRW0EcEESRQxK" +
       "EjjjUKqKBgAAcAAdqkooqG76sAooooAKKKKAP//Z";
-   
+
    private static final String PIC_TAG_DATA =
       "<w:r><w:pict>" +
       "<v:shapetype id=\"_x0000_t75\" coordsize=\"21600,21600\" o:spt=\"75\" o:preferrelative=\"t\""+
       " path=\"m@4@5l@4@11@9@11@9@5xe\" filled=\"f\" stroked=\"f\">" +
-      "<v:stroke joinstyle=\"miter\"/>" + 
+      "<v:stroke joinstyle=\"miter\"/>" +
       "<v:formulas><v:f eqn=\"if lineDrawn pixelLineWidth 0\"/><v:f eqn=\"sum @0 1 0\"/>" +
       "<v:f eqn=\"sum 0 0 @1\"/><v:f eqn=\"prod @2 1 2\"/><v:f eqn=\"prod @3 21600 pixelWidth\"/>" +
       "<v:f eqn=\"prod @3 21600 pixelHeight\"/><v:f eqn=\"sum @0 0 1\"/><v:f eqn=\"prod @6 1 2\"/>" +
-      "<v:f eqn=\"prod @7 21600 pixelWidth\"/><v:f eqn=\"sum @8 21600 0\"/>" + 
+      "<v:f eqn=\"prod @7 21600 pixelWidth\"/><v:f eqn=\"sum @8 21600 0\"/>" +
       "<v:f eqn=\"prod @7 21600 pixelHeight\"/><v:f eqn=\"sum @10 21600 0\"/></v:formulas>" +
       "<v:path o:extrusionok=\"f\" gradientshapeok=\"t\" o:connecttype=\"rect\"/>"+
       "<o:lock v:ext=\"edit\" aspectratio=\"t\"/></v:shapetype>" +
       "<w:binData w:name=\"wordml://%s\">%s</w:binData>" +
-      "<v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\">" + 
+      "<v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\">" +
       "<v:imagedata src=\"wordml://%s\" o:title=\"%s\"/></v:shape></w:pict></w:r>";
    // @formatter:on
 
@@ -98,19 +97,14 @@ public class OseeLinkBuilder {
       super();
    }
 
-   public String getUnknownArtifactLink(String guid, IOseeBranch branch) {
+   public String getUnknownArtifactLink(String guid, Long branch) {
       String processType = "unknown";
-      return getArtifactLinkWithMessage(
-         processType,
-         guid,
-         branch,
-         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid,
-            branch.getUuid()));
+      return getArtifactLinkWithMessage(processType, guid, branch,
+         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch));
    }
 
-   private String getArtifactLinkWithMessage(String processType, String guid, IOseeBranch branch, String message) {
-      String internalLink =
-         String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
+   private String getArtifactLinkWithMessage(String processType, String guid, Long branch, String message) {
+      String internalLink = String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch);
       return String.format(WORDML_LINK_FORMAT, internalLink, message);
    }
 

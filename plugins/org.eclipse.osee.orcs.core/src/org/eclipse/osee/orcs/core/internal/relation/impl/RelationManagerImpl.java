@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -466,7 +465,7 @@ public class RelationManagerImpl implements RelationManager {
    }
 
    @Override
-   public void introduce(OrcsSession session, IOseeBranch branch, RelationNode source, RelationNode destination) throws OseeCoreException {
+   public void introduce(OrcsSession session, Long branch, RelationNode source, RelationNode destination) throws OseeCoreException {
       ensureRelationsInitialized(session, source.getGraph(), source);
 
       Collection<? extends IRelationType> validRelationTypes = getValidRelationTypes(session, destination);
@@ -498,7 +497,7 @@ public class RelationManagerImpl implements RelationManager {
       }
    }
 
-   private ArtifactReadable doesRelatedArtifactExist(OrcsSession session, Relation rel, RelationNode destination, IOseeBranch branch) {
+   private ArtifactReadable doesRelatedArtifactExist(OrcsSession session, Relation rel, RelationNode destination, Long branch) {
       // need to check if the related artifact exists
       int artIdA = rel.getOrcsData().getArtIdA();
       int artIdB = rel.getOrcsData().getArtIdB();

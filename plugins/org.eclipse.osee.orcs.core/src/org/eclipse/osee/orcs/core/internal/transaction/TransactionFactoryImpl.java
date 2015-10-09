@@ -66,8 +66,8 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public TransactionBuilder createTransaction(long uuid, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
-      IOseeBranch branch = TokenFactory.createBranch(uuid, "");
+   public TransactionBuilder createTransaction(Long branchId, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
+      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
       return createTransaction(branch, userArtifact, comment);
    }
 
@@ -77,7 +77,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
       Conditions.checkNotNull(author, "author");
       Conditions.checkNotNullOrEmpty(comment, "comment");
 
-      TxData txData = txDataManager.createTxData(session, branch);
+      TxData txData = txDataManager.createTxData(session, branch.getUuid());
       TransactionBuilderImpl orcsTxn = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query);
       orcsTxn.setComment(comment);
       orcsTxn.setAuthor(author);
@@ -102,7 +102,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    }
 
    @Override
-   public boolean replaceWithBaselineTxVersion(String userId, long branchId, int txId, int artId, String comment) {
+   public boolean replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment) {
       boolean introduced = false;
       ArtifactReadable userReadable =
          queryFactory.fromBranch(CoreBranches.COMMON).andGuid(userId).getResults().getOneOrNull();

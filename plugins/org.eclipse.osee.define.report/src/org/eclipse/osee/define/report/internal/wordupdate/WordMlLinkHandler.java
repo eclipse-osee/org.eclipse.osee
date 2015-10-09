@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -55,6 +54,7 @@ import com.google.common.collect.Lists;
  * <pre>
  *    OSEE_LINK([artifact_guid])
  * </pre>
+ *
  * <li><b>Legacy style links:</b>
  *
  * <pre>
@@ -76,8 +76,8 @@ import com.google.common.collect.Lists;
 public class WordMlLinkHandler {
 
    private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
-   private static final Matcher WORDML_LINK = Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>",
-      Pattern.DOTALL).matcher("");
+   private static final Matcher WORDML_LINK =
+      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\".*?</w:hlink\\s*>", Pattern.DOTALL).matcher("");
 
    private static final OseeLinkBuilder linkBuilder = new OseeLinkBuilder();
 
@@ -164,11 +164,11 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, IOseeBranch branch, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, Long branchId, List<String> guidsFromLinks) throws OseeCoreException {
 
       List<ArtifactReadable> arts = Lists.newLinkedList();
       for (String guid : guidsFromLinks) {
-         ArtifactReadable art = queryFactory.fromBranch(branch.getUuid()).andGuid(guid).getResults().getOneOrNull();
+         ArtifactReadable art = queryFactory.fromBranch(branchId).andGuid(guid).getResults().getOneOrNull();
          if (art != null) {
             arts.add(art);
          }
@@ -185,21 +185,20 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
-      IOseeBranch branch = source.getBranch();
+      Long branchId = source.getBranchUuid();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
-      artifactsFromSearch = findArtifacts(queryFactory, source.getBranch(), guidsFromLinks);
-      boolean isMergeBranch = queryFactory.branchQuery().andIds(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
+      artifactsFromSearch = findArtifacts(queryFactory, branchId, guidsFromLinks);
+      boolean isMergeBranch =
+         queryFactory.branchQuery().andUuids(branchId).andIsOfType(BranchType.MERGE).getCount() > 0;
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
-         BranchReadable branchReadable = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne();
-         BranchReadable sourceBranch =
-            queryFactory.branchQuery().andUuids(branchReadable.getParentBranch()).getResults().getExactlyOne();
+         BranchReadable branchReadable = queryFactory.branchQuery().andUuids(branchId).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<ArtifactReadable> union = new ArrayList<>();
-         union.addAll(findArtifacts(queryFactory, sourceBranch, unknownGuids));
+         union.addAll(findArtifacts(queryFactory, branchReadable.getParentBranch(), unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;
       }
@@ -219,7 +218,7 @@ public class WordMlLinkHandler {
             // Items not found
             for (String guid : unknownGuids) {
                for (MatchRange match : matchMap.getValues(guid)) {
-                  String link = linkBuilder.getUnknownArtifactLink(guid, branch);
+                  String link = linkBuilder.getUnknownArtifactLink(guid, branchId);
                   changeSet.replace(match.start(), match.end(), link);
                }
             }

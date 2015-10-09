@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -59,7 +58,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for @{link ArtifactReadOnlyImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactReadOnlyImplTest {
@@ -70,15 +69,15 @@ public class ArtifactReadOnlyImplTest {
    @Mock private OrcsSession session;
    @Mock private Artifact proxiedObject;
    @Mock private GraphData graph;
-   
+
    @Mock private IAttributeType attributeType;
    @Mock private IArtifactType artifactType;
-   
+
    @Mock private ArtifactReadable readable1;
    @Mock private Artifact artifact1;
-   
+
    @Mock private AttributeId attributeId;
-   
+
    @Mock private Attribute<Object> attribute1;
    @Mock private AttributeReadable<Object> attributeReadable1;
    //@formatter:on
@@ -105,13 +104,13 @@ public class ArtifactReadOnlyImplTest {
    }
 
    @Test
-   public void testGetBranch() throws OseeCoreException {
-      when(proxiedObject.getBranch()).thenReturn(COMMON);
+   public void testGetBranchUuid() {
+      when(proxiedObject.getBranchUuid()).thenReturn(COMMON.getUuid());
 
-      IOseeBranch actual = readOnly.getBranch();
+      Long actual = readOnly.getBranchUuid();
 
-      assertEquals(COMMON, actual);
-      verify(proxiedObject).getBranch();
+      assertEquals(COMMON.getUuid(), actual);
+      verify(proxiedObject).getBranchUuid();
    }
 
    @Test

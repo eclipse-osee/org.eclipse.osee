@@ -429,9 +429,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorCycle() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
       manager.relate(session, node1, typeAndSide1, node1);
@@ -439,9 +436,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorMultiplicityInvalid() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Not valid to relate [%s] to itself", node1));
       manager.relate(session, node1, typeAndSide1, node1);
@@ -449,9 +443,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorTypeInvalidNode1() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       OseeCoreException myException = new OseeCoreException("Test Type Exception");
 
       doThrow(myException).when(validity).checkRelationTypeValid(TYPE_1, node1, SIDE_A);
@@ -466,9 +457,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorTypeInvalidNode2() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(container1.getResultSet(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
@@ -487,9 +475,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorMultiplicityNode1() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       thrown.expect(OseeStateException.class);
 
       when(node1.getArtifactType()).thenReturn(artifactType1);
@@ -505,9 +490,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorMultiplicityNode2() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(relationFactory.createRelation(node1, TYPE_1, node2)).thenReturn(relation1);
       when(container1.getResultSet(TYPE_1, INCLUDE_DELETED, node1, SIDE_A)).thenReturn(rSet1);
       when(rSet1.getOneOrNull()).thenReturn(relation1);
@@ -536,9 +518,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateWithSorting() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -564,9 +543,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateNoSorting() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -595,9 +571,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateWithSortingUserDefined() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -638,9 +611,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testAddChild() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -667,9 +637,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testAddChildren() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, TYPE_1, node2, INCLUDE_DELETED)).thenReturn(null);
 
@@ -696,9 +663,6 @@ public class RelationManagerImplTest {
 
    @Test
    public void testAddPreviouslyDeletedChild() throws OseeCoreException {
-      when(node1.getBranch()).thenReturn(COMMON);
-      when(node2.getBranch()).thenReturn(COMMON);
-
       when(container1.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(null);
       when(container2.getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED)).thenReturn(relation1);
 

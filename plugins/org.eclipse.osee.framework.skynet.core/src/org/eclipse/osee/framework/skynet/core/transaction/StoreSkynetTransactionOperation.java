@@ -78,7 +78,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    }
 
    @Override
-   public long getBranchId() {
+   public Long getBranchId() {
       return branch.getUuid();
    }
 

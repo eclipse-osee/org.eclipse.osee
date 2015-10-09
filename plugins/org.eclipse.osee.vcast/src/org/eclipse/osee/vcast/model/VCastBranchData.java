@@ -16,15 +16,15 @@ package org.eclipse.osee.vcast.model;
 public class VCastBranchData {
 
    private final int id;
-   private final long branchUuid;
+   private final Long branchId;
    private final int resultId;
    private final int resultLine;
    private final Boolean taken;
 
-   public VCastBranchData(int id, long branchUuid, int resultId, int resultLine, Boolean taken) {
+   public VCastBranchData(int id, Long branchId, int resultId, int resultLine, Boolean taken) {
       super();
       this.id = id;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.resultId = resultId;
       this.resultLine = resultLine;
       this.taken = taken;
@@ -34,8 +34,8 @@ public class VCastBranchData {
       return id;
    }
 
-   public long getBranchId() {
-      return branchUuid;
+   public Long getBranchId() {
+      return branchId;
    }
 
    public int getResultId() {

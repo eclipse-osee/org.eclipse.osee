@@ -35,8 +35,6 @@ import org.eclipse.osee.orcs.core.ds.DataModule;
 import org.eclipse.osee.orcs.core.ds.OrcsDataStore;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory.BranchProviderFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassRegistry;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeClassResolver;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
@@ -69,7 +67,6 @@ import org.eclipse.osee.orcs.core.internal.transaction.TxDataManager.TxDataLoade
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesModule;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
@@ -161,8 +158,7 @@ public class OrcsApiImpl implements OrcsApi {
          new AttributeFactory(resolver, module.getDataFactory(), orcsTypes.getAttributeTypes());
 
       ArtifactFactory artifactFactory =
-         new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes(),
-            new BranchProviderFactoryImpl());
+         new ArtifactFactory(module.getDataFactory(), attributeFactory, orcsTypes.getArtifactTypes());
 
       RelationFactory relationFactory = new RelationFactory(orcsTypes.getRelationTypes(), module.getDataFactory());
 
@@ -189,14 +185,13 @@ public class OrcsApiImpl implements OrcsApi {
       };
 
       RelationNodeLoader nodeLoader = new RelationNodeLoaderImpl(module.getDataLoaderFactory(), graphBuilderFactory);
-      RelationManager relationManager =
-         RelationManagerFactory.createRelationManager(logger, orcsTypes.getRelationTypes(), relationFactory,
-            nodeLoader, queryModuleProvider, proxyProvider);
+      RelationManager relationManager = RelationManagerFactory.createRelationManager(logger,
+         orcsTypes.getRelationTypes(), relationFactory, nodeLoader, queryModuleProvider, proxyProvider);
 
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, IOseeBranch branch, int transactionId) throws OseeCoreException {
+         public GraphData getGraph(OrcsSession session, Long branch, int transactionId) throws OseeCoreException {
             return graphFactory.createGraph(session, branch, transactionId);
          }
       };
@@ -206,21 +201,19 @@ public class OrcsApiImpl implements OrcsApi {
       TransactionProvider txProvider = new TransactionProvider() {
 
          @Override
-         public int getHeadTransaction(OrcsSession session, IOseeBranch branch) {
+         public int getHeadTransaction(OrcsSession session, Long branch) {
             QueryFactory queryFactory = queryModule.createQueryFactory(session);
             return queryFactory.transactionQuery().andIsHead(branch).getResultsAsIds().getExactlyOne();
          }
       };
 
-      TxDataLoader txDataLoader =
-         new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory, graphProvider,
-            txProvider);
+      TxDataLoader txDataLoader = new TxDataLoaderImpl(module.getDataLoaderFactory(), graphFactory, graphBuilderFactory,
+         graphProvider, txProvider);
       txDataManager = new TxDataManager(proxyManager, artifactFactory, relationManager, txDataLoader);
       txCallableFactory = new TxCallableFactory(logger, module.getTxDataStore(), txDataManager);
 
-      queryModule =
-         new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
-            orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes(), proxyManager);
+      queryModule = new QueryModule(logger, module.getQueryEngine(), graphBuilderFactory, graphProvider,
+         orcsTypes.getArtifactTypes(), orcsTypes.getAttributeTypes(), proxyManager);
 
       indexerModule = new IndexerModule(logger, preferences, executorAdmin, dataStore.getQueryEngineIndexer());
       indexerModule.start(getSystemSession(), orcsTypes.getAttributeTypes());
@@ -260,7 +253,8 @@ public class OrcsApiImpl implements OrcsApi {
                @SuppressWarnings("unchecked")
                @Override
                public ArtifactReadable call() throws Exception {
-                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+                  return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+                     SystemUser.OseeSystem).getResults().getExactlyOne();
 
                }
             };
@@ -268,8 +262,7 @@ public class OrcsApiImpl implements OrcsApi {
          }
       };
       QueryFactory queryFactory = getQueryFactory();
-      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser,
-         getOrcsTypes());
+      return new OrcsBranchImpl(logger, session, module.getBranchDataStore(), queryFactory, systemUser, getOrcsTypes());
    }
 
    @Override
@@ -316,29 +309,6 @@ public class OrcsApiImpl implements OrcsApi {
    private OrcsSession createSession() {
       String sessionId = GUID.create();
       return new OrcsSessionImpl(sessionId);
-   }
-
-   private class BranchProviderFactoryImpl implements BranchProviderFactory {
-
-      @Override
-      public BranchProvider createBranchProvider(final OrcsSession session) {
-         BranchProvider provider = new BranchProvider() {
-
-            BranchReadable cached = null;
-
-            @Override
-            public BranchReadable getBranch(Long branchUuid) {
-               if (cached == null || !cached.getUuid().equals(branchUuid)) {
-                  BranchQuery query = queryModule.createQueryFactory(session).branchQuery();
-                  cached = query.andUuids(branchUuid).getResults().getExactlyOne();
-               }
-               return cached;
-            }
-
-         };
-         return provider;
-      }
-
    }
 
    @Override

@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -71,19 +70,19 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    }
 
    private QuerySqlContext createContext(OrcsSession session, QueryData queryData) throws OseeCoreException {
-      IOseeBranch branch = getBranchToSearch(queryData);
+      Long branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
       return new ArtifactQuerySqlContext(session, branch, queryData.getOptions());
    }
 
    private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
-      IOseeBranch branch = getBranchToSearch(queryData);
+      Long branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
-      return new ArtifactQuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, branch.getUuid());
+      return new ArtifactQuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, branch);
    }
 
-   private IOseeBranch getBranchToSearch(QueryData queryData) throws OseeCoreException {
-      IOseeBranch branch = null;
+   private Long getBranchToSearch(QueryData queryData) throws OseeCoreException {
+      Long branch = null;
 
       Iterable<? extends Criteria> criterias = queryData.getAllCriteria();
       Optional<? extends Criteria> item = Iterables.tryFind(criterias, new Predicate<Criteria>() {
@@ -96,7 +95,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       });
       if (item.isPresent()) {
          HasBranch criteria = (HasBranch) item.get();
-         branch = criteria.getBranch();
+         branch = criteria.getBranchUuid();
       }
       return branch;
    }

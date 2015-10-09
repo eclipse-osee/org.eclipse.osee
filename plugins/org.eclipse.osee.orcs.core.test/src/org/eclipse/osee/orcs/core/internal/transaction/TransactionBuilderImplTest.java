@@ -73,7 +73,7 @@ import org.mockito.Mockito;
 
 /**
  * Test Case for {@link TransactionFactoryImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class TransactionBuilderImplTest {
@@ -90,9 +90,9 @@ public class TransactionBuilderImplTest {
    @Mock private QueryFactory queryFactory;
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
-   
+
    @Mock private IOseeBranch branch;
-   
+
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private ArtifactReadable expectedDestination;
    @Mock private ArtifactReadable node1;
@@ -103,11 +103,12 @@ public class TransactionBuilderImplTest {
    @Mock private AttributeReadable attrId;
    @SuppressWarnings("rawtypes")
    @Mock private Attribute attribute;
-   
+
    @Mock private TxData txData;
    // @formatter:on
 
    private final IOseeBranch expectedBranch = CoreBranches.COMMON;
+   private final Long BRANCH_ID = expectedBranch.getUuid();
    private TransactionBuilderImpl factory;
    private String guid;
 
@@ -121,16 +122,6 @@ public class TransactionBuilderImplTest {
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);
       when(artifact.getAttributeById(attrId)).thenReturn(attribute);
       when(query.createQueryFactory(session)).thenReturn(queryFactory);
-   }
-
-   @Test
-   public void testGetBranch() {
-      when(factory.getBranch()).thenReturn(expectedBranch);
-
-      IOseeBranch branch = factory.getBranch();
-
-      assertEquals(expectedBranch, branch);
-      verify(txData).getBranch();
    }
 
    @Test
@@ -175,40 +166,38 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testCopyArtifact() throws OseeCoreException {
-      when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
+      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
 
       factory.copyArtifact(expectedAuthor);
 
-      verify(txDataManager).copyArtifact(txData, expectedBranch, expectedAuthor);
+      verify(txDataManager).copyArtifact(txData, BRANCH_ID, expectedAuthor);
    }
 
    @Test
    public void testCopyArtifactWithList() throws OseeCoreException {
       Collection<? extends IAttributeType> attributesToDuplicate = Arrays.asList(Name, Annotation);
-      when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
+      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
 
-      verify(txDataManager).copyArtifact(txData, expectedBranch, expectedAuthor, attributesToDuplicate);
+      verify(txDataManager).copyArtifact(txData, BRANCH_ID, expectedAuthor, attributesToDuplicate);
    }
 
    @Test
    public void testIntroduceArtifactBranchException() throws OseeCoreException {
-      when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
-      when(txData.getBranch()).thenReturn(expectedBranch);
+      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(txData.getBranchId()).thenReturn(BRANCH_ID);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Source branch is same branch as transaction branch[" + expectedBranch + "]");
+      thrown.expectMessage("Source branch is same branch as transaction branch[" + BRANCH_ID + "]");
       factory.introduceArtifact(expectedBranch, expectedAuthor);
    }
 
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
-      when(expectedAuthor.getBranch()).thenReturn(expectedBranch);
-      when(txData.getBranch()).thenReturn(branch);
-
       when(query.createQueryFactory(null)).thenReturn(queryFactory);
-      when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
+      when(queryFactory.fromBranch(any(Long.class))).thenReturn(builder);
+
       when(queryFactory.fromBranch(branch)).thenReturn(builder);
       when(builder.includeDeletedArtifacts()).thenReturn(builder);
       when(builder.andGuid(anyString())).thenReturn(builder);
@@ -218,7 +207,7 @@ public class TransactionBuilderImplTest {
 
       factory.introduceArtifact(expectedBranch, expectedAuthor);
 
-      verify(txDataManager).introduceArtifact(txData, expectedBranch, expectedAuthor, expectedAuthor);
+      verify(txDataManager).introduceArtifact(txData, BRANCH_ID, expectedAuthor, expectedAuthor);
    }
 
    @Test

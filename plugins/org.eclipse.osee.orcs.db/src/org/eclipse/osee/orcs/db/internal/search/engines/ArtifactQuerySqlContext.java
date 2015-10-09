@@ -10,36 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactQuerySqlContext extends QuerySqlContext implements HasBranch {
+public class ArtifactQuerySqlContext extends QuerySqlContext {
 
-   private final IOseeBranch branch;
+   private final Long branchId;
 
-   public ArtifactQuerySqlContext(OrcsSession session, IOseeBranch branch, Options options) {
+   public ArtifactQuerySqlContext(OrcsSession session, Long branchId, Options options) {
       super(session, options, ObjectQueryType.ARTIFACT);
-      this.branch = branch;
+      this.branchId = branchId;
    }
 
-   @Override
-   public IOseeBranch getBranch() {
-      return branch;
-   }
-
-   @Override
    public long getBranchUuid() {
-      return branch.getUuid();
+      return branchId;
    }
 
    @Override
    public String toString() {
-      return "ArtifactQuerySqlContext [branch=" + branch + "(" + super.toString() + ")]";
+      return "ArtifactQuerySqlContext [branch=" + branchId + "(" + super.toString() + ")]";
    }
 }

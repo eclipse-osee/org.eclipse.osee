@@ -28,7 +28,7 @@ public abstract class BaseTransactionData {
 
       int getTransactionNumber();
 
-      long getBranchId();
+      Long getBranchId();
 
       void internalAddInsertToBatch(int insertPriority, String insertSql, Object... data);
    }

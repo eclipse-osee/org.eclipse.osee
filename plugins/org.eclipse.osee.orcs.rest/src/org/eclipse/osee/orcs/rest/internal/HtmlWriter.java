@@ -78,15 +78,15 @@ public class HtmlWriter {
       data.put("Name", artifact.getName());
       data.put("Artifact Id", artifact.getUuid());
       data.put("Tx Id", artifact.getTransaction());
-      IOseeBranch branch = artifact.getBranch();
+      Long branchId = artifact.getBranchUuid();
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
-         uri = uriInfo.getAbsolutePathBuilder().path("../../{uuid}").build(branch.getUuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("../../{uuid}").build(branchId);
       } else {
-         uri = uriInfo.getAbsolutePathBuilder().path("../../../{uuid}").build(branch.getUuid());
+         uri = uriInfo.getAbsolutePathBuilder().path("../../../{uuid}").build(branchId);
       }
-      data.put("Branch", asLink(uri.getPath(), branch.getName()));
+      data.put("Branch", asLink(uri.toASCIIString(), "Branch " + branchId));
 
       Collection<? extends IAttributeType> types = artifact.getExistingAttributeTypes();
       for (IAttributeType type : types) {
@@ -147,7 +147,8 @@ public class HtmlWriter {
    }
 
    private IOseeBranch getBranchFromUuid(long uuid) {
-      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(uuid).getResultsAsId().getExactlyOne();
+      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(
+         uuid).getResultsAsId().getExactlyOne();
    }
 
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {

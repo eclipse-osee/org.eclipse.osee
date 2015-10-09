@@ -51,5 +51,5 @@ public interface TransactionEndpoint {
 
    @PUT
    @Path("{user}/branch/{branch-id}/transaction/{tx-id}/artifact/{art-id}/comment/{comment}")
-   Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") long branchId, @PathParam("tx-id") int txId, @PathParam("art-id") int artId, @PathParam("comment") String comment);
+   Response replaceWithBaselineTxVersion(@PathParam("user") String userId, @PathParam("branch-id") Long branchId, @PathParam("tx-id") int txId, @PathParam("art-id") int artId, @PathParam("comment") String comment);
 }

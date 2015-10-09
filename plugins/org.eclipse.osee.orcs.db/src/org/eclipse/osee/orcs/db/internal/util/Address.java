@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
  * @author Ryan D. Brooks
  */
 public final class Address implements Comparable<Address> {
-   private final long branchUuid;
+   private final Long branchId;
    private final int itemId;
    private final int transactionId;
    private final long gammaId;
@@ -27,9 +27,9 @@ public final class Address implements Comparable<Address> {
    private TxChange correctedTxCurrent;
    private boolean purge;
 
-   public Address(boolean isBaseline, long branchUuid, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
+   public Address(boolean isBaseline, Long branchId, int itemId, int transactionId, long gammaId, ModificationType modType, TxChange txCurrent) {
       super();
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.itemId = itemId;
       this.transactionId = transactionId;
       this.gammaId = gammaId;
@@ -43,7 +43,7 @@ public final class Address implements Comparable<Address> {
    }
 
    public boolean isSimilar(Address other) {
-      return other != null && other.itemId == itemId && other.branchUuid == branchUuid;
+      return other != null && other.itemId == itemId && other.branchId == branchId;
    }
 
    public boolean isSameTransaction(Address other) {
@@ -91,8 +91,8 @@ public final class Address implements Comparable<Address> {
       this.purge = purge;
    }
 
-   public long getBranchId() {
-      return branchUuid;
+   public Long getBranchId() {
+      return branchId;
    }
 
    public int getItemId() {
@@ -125,7 +125,7 @@ public final class Address implements Comparable<Address> {
 
    @Override
    public String toString() {
-      return "Address [branchUuid=" + branchUuid + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
+      return "Address [branchUuid=" + branchId + ", gammaId=" + gammaId + ", itemId=" + itemId + ", modType=" + modType + ", transactionId=" + transactionId + ", txCurrent=" + txCurrent + "]";
    }
 
    @Override

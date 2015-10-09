@@ -15,7 +15,6 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -44,13 +43,13 @@ import org.mockito.Mock;
 
 /**
  * Test Case for @{link GraphBuilderImpl}
- * 
+ *
  * @author Megumi Telles
  */
 public class GraphBuilderImplTest {
 
    private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
-   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
+   private static final Long BRANCH_ID = CoreBranches.COMMON.getUuid();
    private static final int TRANSACTION_ID = 231214214;
 
    @Rule
@@ -61,21 +60,21 @@ public class GraphBuilderImplTest {
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
-   
+
    @Mock private OrcsSession session;
    @Mock private GraphProvider graphProvider;
    @Mock private GraphData graphData;
-   
+
    @Mock private LoadDescription description;
-   
+
    @Mock private ArtifactData artifactData;
    @Mock private AttributeData attributeData;
    @Mock private RelationData relationData;
-   
+
    @Mock private Artifact artifact;
    @Mock private Artifact container;
-   @Mock private Relation relation;   
-   
+   @Mock private Relation relation;
+
    // @formatter:on
 
    private GraphBuilder builder;
@@ -89,9 +88,9 @@ public class GraphBuilderImplTest {
       builder = new GraphBuilderImpl(logger, artifactFactory, attributeFactory, relationFactory, graphProvider);
 
       when(description.getSession()).thenReturn(session);
-      when(description.getBranch()).thenReturn(BRANCH);
+      when(description.getBranchId()).thenReturn(BRANCH_ID);
       when(description.getTransaction()).thenReturn(TRANSACTION_ID);
-      when(graphProvider.getGraph(session, BRANCH, TRANSACTION_ID)).thenReturn(graphData);
+      when(graphProvider.getGraph(session, BRANCH_ID, TRANSACTION_ID)).thenReturn(graphData);
 
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
@@ -118,7 +117,7 @@ public class GraphBuilderImplTest {
       builder.onLoadDescription(description);
       builder.onLoadEnd();
 
-      verify(description).getBranch();
+      verify(description).getBranchId();
       verify(description).getTransaction();
    }
 

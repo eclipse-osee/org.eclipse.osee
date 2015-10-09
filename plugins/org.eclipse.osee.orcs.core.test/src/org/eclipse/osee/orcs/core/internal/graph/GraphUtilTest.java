@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -27,12 +27,12 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link GraphUtil}
- * 
+ *
  * @author Megumi Telles
  */
 public class GraphUtilTest {
 
-   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
+   private static final Long BRANCH_ID = CoreBranches.COMMON.getUuid();
    private static final int TRANSACTION_ID = 231214214;
 
    @Rule
@@ -50,17 +50,8 @@ public class GraphUtilTest {
       initMocks(this);
       provider = GraphUtil.asProvider(graph);
 
-      when(graph.getBranch()).thenReturn(BRANCH);
+      when(graph.getBranchUuid()).thenReturn(BRANCH_ID);
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
-   }
-
-   @Test
-   public void testAsProviderNullBranch() throws OseeCoreException {
-      assertNotNull(provider);
-
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("branch cannot be null - Invalid branch - can't provide graph");
-      provider.getGraph(session, null, TRANSACTION_ID);
    }
 
    @Test
@@ -68,8 +59,9 @@ public class GraphUtilTest {
       assertNotNull(provider);
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid branch - Graph's branch[Common] does not equals requested branch[System Root Branch]");
-      provider.getGraph(session, CoreBranches.SYSTEM_ROOT, TRANSACTION_ID);
+      thrown.expectMessage(String.format("Invalid branch - Graph's branch[%s] does not equals requested branch[%s]",
+         BRANCH_ID, SYSTEM_ROOT.getUuid()));
+      provider.getGraph(session, SYSTEM_ROOT.getUuid(), TRANSACTION_ID);
    }
 
    @Test
@@ -79,13 +71,14 @@ public class GraphUtilTest {
       int txId = 123456789;
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid transactionId - Graph's transactionId[231214214] does not equals requested transactionId[123456789]");
-      provider.getGraph(session, BRANCH, txId);
+      thrown.expectMessage(
+         "Invalid transactionId - Graph's transactionId[231214214] does not equals requested transactionId[123456789]");
+      provider.getGraph(session, BRANCH_ID, txId);
    }
 
    @Test
    public void testAsProviderGetName() throws OseeCoreException {
       assertNotNull(provider);
-      assertEquals(graph, provider.getGraph(session, BRANCH, TRANSACTION_ID));
+      assertEquals(graph, provider.getGraph(session, BRANCH_ID, TRANSACTION_ID));
    }
 }

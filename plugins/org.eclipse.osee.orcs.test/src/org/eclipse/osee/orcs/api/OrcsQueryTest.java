@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -56,7 +56,6 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
 import com.google.common.collect.Ordering;
-
 /**
  * @author Roberto E. Escobar
  */
@@ -84,7 +83,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testAllArtifactsFromBranch() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
       assertEquals(26, builder.getCount());
 
       assertEquals(26, builder.getResults().size());
@@ -92,21 +91,21 @@ public class OrcsQueryTest {
 
    @Test
    public void testNameAttributeNotExists() {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andNotExists(CoreAttributeTypes.Name);
       assertEquals(0, builder.getCount());
    }
 
    @Test
    public void testAttributeNotExists() {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andNotExists(CoreAttributeTypes.Afha);
       assertEquals(26, builder.getCount());
    }
 
    @Test
    public void testQueryByIds() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andGuid("AkA2AmNuEDDL4VolM9AA");
+      QueryBuilder builder = factory.fromBranch(COMMON_ID).andGuid("AkA2AmNuEDDL4VolM9AA");
       assertEquals(1, builder.getCount());
 
       ArtifactReadable artifact = builder.getResults().getExactlyOne();
@@ -115,7 +114,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryArtifactType() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.Folder);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID).andIsOfType(CoreArtifactTypes.Folder);
 
       assertEquals(2, builder.getCount());
 
@@ -160,7 +159,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryArtifactTypesMatch() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.andTypeEquals(CoreArtifactTypes.OseeTypeDefinition, CoreArtifactTypes.Folder);
 
       assertEquals(6, builder.getCount());
@@ -182,7 +181,7 @@ public class OrcsQueryTest {
 
    @Test
    public void testQueryAttributeValue() throws OseeCoreException {
-      QueryBuilder builder = factory.fromBranch(CoreBranches.COMMON);
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
       builder.and(CoreAttributeTypes.Name, "User Groups");
 
       assertEquals(1, builder.getCount());
@@ -340,8 +339,8 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType1() throws Exception {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
-      .andIsOfType(CoreArtifactTypes.RootArtifact)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
+         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(8, results.size());
@@ -360,9 +359,9 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType2() throws Exception {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
-      .andIsOfType(CoreArtifactTypes.RootArtifact)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .andIsOfType(CoreArtifactTypes.Component);
+         .andIsOfType(CoreArtifactTypes.RootArtifact)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .andIsOfType(CoreArtifactTypes.Component);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -373,9 +372,9 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationType3() throws Exception {
       QueryBuilder builder = factory.fromBranch(TestBranches.SAW_Bld_1) //
-      .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
+         .and(CoreAttributeTypes.Name, "collaboration", QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.CASE__IGNORE)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .and(CoreAttributeTypes.Name, "object", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = builder.getResults();
       assertEquals(1, results.size());
@@ -386,10 +385,10 @@ public class OrcsQueryTest {
    @Test
    public void testFollowRelationTypeHistorical() throws Exception {
       QueryBuilder query = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
-      .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
-      .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement)//
+         .followRelation(CoreRelationTypes.Default_Hierarchical__Child)//
+         .and(CoreAttributeTypes.Name, "Robot", QueryOption.CONTAINS_MATCH_OPTIONS);
 
       ResultSet<ArtifactReadable> results = query.getResults();
       assertEquals(2, results.size());
@@ -400,7 +399,7 @@ public class OrcsQueryTest {
 
       // Add a child
       ArtifactReadable parent = results.iterator().next().getParent();
-      author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
       TransactionBuilder tx =
          orcsApi.getTransactionFactory().createTransaction(TestBranches.SAW_Bld_2, author, "FollowTest");
       ArtifactId child = tx.createArtifact(CoreArtifactTypes.SoftwareRequirement, "Dummy Robot");
@@ -429,19 +428,19 @@ public class OrcsQueryTest {
    public void testRelatedTo() {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       // create a tx on branch
       ArtifactReadable author =
-         factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+         factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
       TransactionBuilder tx = txFactory.createTransaction(TestBranches.SAW_Bld_2, author, "Simple Tx");
       tx.createArtifact(CoreArtifactTypes.Folder, "Just a Folder");
       tx.commit();
 
       // do another query on branch
       ArtifactReadable robotInt = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+         .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       // see if artifact from query 1 is related to artifact from query 2
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, robotInt));
@@ -451,11 +450,11 @@ public class OrcsQueryTest {
    public void testMultipleTxs() {
       // do a query on branch
       ArtifactReadable robotApi = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andNameEquals("Robot API") //
-      .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
+         .andNameEquals("Robot API") //
+         .andIsOfType(CoreArtifactTypes.SoftwareRequirement).getResults().getExactlyOne();
 
       ArtifactReadable author =
-         factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+         factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
 
       // create a tx on branch
       TransactionBuilder tx1 = txFactory.createTransaction(TestBranches.SAW_Bld_2, author, "Simple Tx1");
@@ -470,10 +469,10 @@ public class OrcsQueryTest {
 
       // do another query on branch
       ArtifactReadable robotInt = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
+         .andNameEquals("Robot Interfaces").getResults().getExactlyOne();
 
       ArtifactReadable folderArt = factory.fromBranch(TestBranches.SAW_Bld_2) //
-      .andIds(folder).getResults().getExactlyOne();
+         .andIds(folder).getResults().getExactlyOne();
       // robotApi should be related to folder
       Assert.assertTrue(robotApi.areRelated(CoreRelationTypes.Default_Hierarchical__Child, folderArt));
    }
@@ -487,7 +486,7 @@ public class OrcsQueryTest {
    }
 
    private BranchReadable setupNameEqualsArtifacts() throws Exception {
-      author = factory.fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      author = factory.fromBranch(COMMON_ID).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
       IOseeBranch branchToken = TokenFactory.createBranch("TestAndNameEquals");
       BranchReadable branch = branchApi.createTopLevelBranch(branchToken, author).call();
       TransactionBuilder tx = txFactory.createTransaction(branch, author, "add folders");

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.jdk.core.util.Compare.isDifferent;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranch;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asBranches;
@@ -36,7 +37,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -116,10 +116,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return orcsApi.getBranchOps();
    }
 
-   private ArtifactReadable getArtifactById(IOseeBranch branch, int id) {
+   private ArtifactReadable getArtifactById(Long branchId, int id) {
       ArtifactReadable artifact = null;
       if (id > 0) {
-         artifact = newQuery().fromBranch(branch).andUuid(id).getResults().getExactlyOne();
+         artifact = newQuery().fromBranch(branchId).andUuid(id).getResults().getExactlyOne();
       }
       return artifact;
    }
@@ -132,9 +132,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private BranchReadable getBranchById(long branchUuid) {
       ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return results.getExactlyOne();
    }
 
@@ -150,9 +150,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return asBranches(results);
    }
 
@@ -213,20 +213,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBaselineBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.BASELINE)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.BASELINE)//
+         .getResults();
       return asBranches(results);
    }
 
    @Override
    public List<Branch> getWorkingBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.WORKING)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.WORKING)//
+         .getResults();
       return asBranches(results);
    }
 
@@ -279,8 +279,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
 
-      createData.setUserArtifact(getArtifactById(CoreBranches.COMMON, data.getAuthorId()));
-      createData.setAssociatedArtifact(getArtifactById(CoreBranches.COMMON, data.getAssociatedArtifactId()));
+      createData.setUserArtifact(getArtifactById(COMMON_ID, data.getAuthorId()));
+      createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
 
       createData.setFromTransaction(TokenFactory.createTransaction(data.getSourceTransactionId()));
       createData.setParentBranchUuid(getBranchUuidFromTxId(data.getSourceTransactionId()));
@@ -327,7 +327,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable srcBranch = getBranchById(branchUuid);
       BranchReadable destBranch = getBranchById(destinationBranchUuid);
 
-      ArtifactReadable committer = getArtifactById(CoreBranches.COMMON, options.getCommitterId());
+      ArtifactReadable committer = getArtifactById(COMMON_ID, options.getCommitterId());
       Callable<TransactionReadable> op = getBranchOps().commitBranch(committer, srcBranch, destBranch);
       TransactionReadable tx = executeCallable(op);
 
@@ -508,9 +508,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
       ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
-      .includeArchived()//
-      .includeDeleted()//
-      .getResultsAsId();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResultsAsId();
       return Lists.newLinkedList(resultsAsId);
    }
 
@@ -555,8 +555,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
       if (isDifferent(branch.getAssociatedArtifactId(), artifactId)) {
-         ArtifactReadable artifact =
-            newQuery().fromBranch(CoreBranches.COMMON).andUuid(artifactId).getResults().getExactlyOne();
+         ArtifactReadable artifact = newQuery().fromBranch(COMMON_ID).andUuid(artifactId).getResults().getExactlyOne();
          Callable<?> op = getBranchOps().associateBranchToArtifact(branch, artifact);
          executeCallable(op);
          modified = true;

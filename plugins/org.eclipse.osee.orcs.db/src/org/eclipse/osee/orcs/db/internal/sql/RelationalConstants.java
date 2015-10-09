@@ -22,7 +22,7 @@ public final class RelationalConstants {
    }
 
    public static final int JOIN_QUERY_ID_SENTINEL = -1;
-   public static final long BRANCH_SENTINEL = -1L;
+   public static final Long BRANCH_SENTINEL = -1L;
    public static final int TRANSACTION_SENTINEL = -1;
    public static final long GAMMA_SENTINEL = -1;
    public static final boolean IS_HISTORICAL_DEFAULT = false;

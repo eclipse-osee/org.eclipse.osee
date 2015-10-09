@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -39,14 +38,14 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
    private final SqlJoinFactory joinFactory;
    private final OrcsSession session;
-   private final IOseeBranch branch;
+   private final Long branchId;
    private final Collection<String> artifactIds;
 
-   public UuidsLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, IOseeBranch branch, Collection<String> artifactIds) {
+   public UuidsLoadExecutor(SqlObjectLoader loader, JdbcClient jdbcClient, SqlJoinFactory joinFactory, OrcsSession session, Long branchId, Collection<String> artifactIds) {
       super(loader, jdbcClient);
       this.joinFactory = joinFactory;
       this.session = session;
-      this.branch = branch;
+      this.branchId = branchId;
       this.artifactIds = artifactIds;
    }
 
@@ -55,7 +54,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
       checkCancelled(cancellation);
       if (!artifactIds.isEmpty()) {
          ArtifactJoinQuery join = createIdJoin(getJdbcClient(), options);
-         LoadSqlContext loadContext = new LoadSqlContext(session, options, branch);
+         LoadSqlContext loadContext = new LoadSqlContext(session, options, branchId);
          int fetchSize = LoadUtil.computeFetchSize(artifactIds.size());
          getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
       }
@@ -80,7 +79,7 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
             chStmt.runPreparedQuery(artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
             while (chStmt.next()) {
                Integer artId = chStmt.getInt("art_id");
-               toReturn.add(artId, branch.getUuid(), transactionId);
+               toReturn.add(artId, branchId, transactionId);
             }
          } finally {
             Lib.close(chStmt);

@@ -47,7 +47,7 @@ public final class OrcsConditions {
    }
 
    public static void checkBranch(RelationNode node1, RelationNode node2) throws OseeCoreException {
-      boolean areEqual = node1.getBranchUuid() == node2.getBranchUuid();
+      boolean areEqual = node1.getBranchUuid().equals(node2.getBranchUuid());
       checkExpressionFailOnTrue(!areEqual, "Cross branch linking is not yet supported.");
    }
 

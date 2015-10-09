@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -47,13 +46,13 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid) throws OseeCoreException {
+   public ArtifactData create(Long branch, IArtifactType token, String guid) throws OseeCoreException {
       return this.create(branch, token, guid, idFactory.getNextArtifactId());
    }
 
    @Override
-   public ArtifactData create(IOseeBranch branch, IArtifactType token, String guid, long uuid) throws OseeCoreException {
-      Conditions.checkNotNull(branch, "branch");
+   public ArtifactData create(Long branchId, IArtifactType token, String guid, long artifactId) throws OseeCoreException {
+      Conditions.checkNotNull(branchId, "branch");
 
       Conditions.checkExpressionFailOnTrue(artifactCache.isAbstract(token),
          "Cannot create an instance of abstract type [%s]", token);
@@ -64,15 +63,16 @@ public class DataFactoryImpl implements DataFactory {
          "Invalid guid [%s] during artifact creation [type: %s]", guidToSet, token);
 
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(branch.getUuid());
+      version.setBranchId(branchId);
 
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
-      ArtifactData artifactData = objectFactory.createArtifactData(version, (int) uuid, token, modType, guidToSet);
+      ArtifactData artifactData =
+         objectFactory.createArtifactData(version, (int) artifactId, token, modType, guidToSet);
       return artifactData;
    }
 
    @Override
-   public ArtifactData copy(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
+   public ArtifactData copy(Long destination, ArtifactData source) throws OseeCoreException {
       ArtifactData copy = objectFactory.createCopy(source);
       updateDataForCopy(destination, copy);
       copy.setGuid(idFactory.getUniqueGuid(null));
@@ -81,7 +81,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData introduce(IOseeBranch destination, AttributeData source) throws OseeCoreException {
+   public AttributeData introduce(Long destination, AttributeData source) throws OseeCoreException {
       AttributeData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -98,7 +98,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public AttributeData copy(IOseeBranch destination, AttributeData orcsData) throws OseeCoreException {
+   public AttributeData copy(Long destination, AttributeData orcsData) throws OseeCoreException {
       AttributeData copy = objectFactory.createCopy(orcsData);
       updateDataForCopy(destination, copy);
       copy.setLocalId(RelationalConstants.DEFAULT_ITEM_ID);
@@ -106,7 +106,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public ArtifactData introduce(IOseeBranch destination, ArtifactData source) throws OseeCoreException {
+   public ArtifactData introduce(Long destination, ArtifactData source) throws OseeCoreException {
       ArtifactData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -114,9 +114,9 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
+   public RelationData createRelationData(IRelationType relationType, Long branchId, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException {
       VersionData version = objectFactory.createDefaultVersionData();
-      version.setBranchId(branch.getUuid());
+      version.setBranchId(branchId);
       ModificationType modType = RelationalConstants.DEFAULT_MODIFICATION_TYPE;
       Integer relationId = RelationalConstants.DEFAULT_ITEM_ID;
       return objectFactory.createRelationData(version, relationId, relationType, modType, aArt.getLocalId(),
@@ -124,7 +124,7 @@ public class DataFactoryImpl implements DataFactory {
    }
 
    @Override
-   public RelationData introduce(IOseeBranch destination, RelationData source) {
+   public RelationData introduce(Long destination, RelationData source) {
       RelationData newVersion = objectFactory.createCopy(source);
       newVersion.setUseBackingData(true);
       updateDataForIntroduce(destination, newVersion);
@@ -146,9 +146,9 @@ public class DataFactoryImpl implements DataFactory {
       return objectFactory.createCopy(source);
    }
 
-   private void updateDataForCopy(IOseeBranch destination, OrcsData data) throws OseeCoreException {
+   private void updateDataForCopy(Long destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(destination.getUuid());
+      version.setBranchId(destination);
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
       version.setHistorical(false);
@@ -157,9 +157,9 @@ public class DataFactoryImpl implements DataFactory {
       data.setModType(ModificationType.NEW);
    }
 
-   private void updateDataForIntroduce(IOseeBranch destination, OrcsData data) throws OseeCoreException {
+   private void updateDataForIntroduce(Long destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
-      version.setBranchId(destination.getUuid());
+      version.setBranchId(destination);
       version.setHistorical(false);
       version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
       // do not clear gammaId for introduce case so we reuse the same version

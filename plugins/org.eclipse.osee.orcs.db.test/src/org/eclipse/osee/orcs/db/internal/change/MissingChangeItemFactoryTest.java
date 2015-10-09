@@ -20,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeItemUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -58,8 +57,8 @@ public class MissingChangeItemFactoryTest {
    @Mock private DataLoaderFactory dataLoaderFactory;
    @Mock private DataLoader sourceDataLoader;
    @Mock private DataLoader destDataLoader;
-   @Mock private Branch sourceBranch;
-   @Mock private Branch destBranch;
+   @Mock private Long sourceBranch;
+   @Mock private Long destBranch;
    @Mock private TransactionReadable sourceTx;
    @Mock private TransactionReadable destTx;
    @Mock private OrcsSession session;
@@ -100,12 +99,12 @@ public class MissingChangeItemFactoryTest {
 
       String sessionGuid = GUID.create();
       when(session.getGuid()).thenReturn(sessionGuid);
-      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch), any(Collection.class))).thenReturn(
-         sourceDataLoader);
-      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch), any(Collection.class))).thenReturn(
-         destDataLoader);
-      when(sourceTx.getBranchId()).thenReturn(sourceBranch.getGuid());
-      when(destTx.getBranchId()).thenReturn(destBranch.getGuid());
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(sourceBranch),
+         any(Collection.class))).thenReturn(sourceDataLoader);
+      when(dataLoaderFactory.newDataLoaderFromIds(any(OrcsSession.class), eq(destBranch),
+         any(Collection.class))).thenReturn(destDataLoader);
+      when(sourceTx.getBranchId()).thenReturn(sourceBranch);
+      when(destTx.getBranchId()).thenReturn(destBranch);
       changeItemFactory = new MissingChangeItemFactoryImpl(dataLoaderFactory);
    }
 

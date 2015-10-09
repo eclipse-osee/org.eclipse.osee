@@ -31,7 +31,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TransactionBuilder {
 
-   IOseeBranch getBranch();
+   Long getBranchId();
 
    Identifiable<String> getAuthor();
 

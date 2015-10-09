@@ -59,8 +59,8 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public IOseeBranch getBranch() {
-      return txData.getBranch();
+   public Long getBranchId() {
+      return txData.getBranchId();
    }
 
    @Override
@@ -107,37 +107,45 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranch(), sourceArtifact);
+      return copyArtifact(sourceArtifact.getBranchUuid(), sourceArtifact);
    }
 
    @Override
    public ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
-      return txManager.copyArtifact(txData, fromBranch, artifactId);
+      return copyArtifact(fromBranch.getUuid(), artifactId);
+   }
+
+   private ArtifactId copyArtifact(Long fromBranchId, ArtifactId artifactId) throws OseeCoreException {
+      return txManager.copyArtifact(txData, fromBranchId, artifactId);
    }
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranch(), sourceArtifact, attributesToDuplicate);
+      return copyArtifact(sourceArtifact.getBranchUuid(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
    public ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+      return copyArtifact(fromBranch.getUuid(), artifactId, attributesToDuplicate);
+   }
+
+   private ArtifactId copyArtifact(Long fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return txManager.copyArtifact(txData, fromBranch, artifactId, attributesToDuplicate);
    }
 
    @Override
    public ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
-      checkAreOnDifferentBranches(txData, fromBranch);
-      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch, sourceArtifact);
+      checkAreOnDifferentBranches(txData, fromBranch.getUuid());
+      ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch.getUuid(), sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");
       ArtifactReadable destination =
-         getArtifactReadable(txData.getSession(), query, txData.getBranch(), sourceArtifact);
-      return txManager.introduceArtifact(txData, fromBranch, source, destination);
+         getArtifactReadable(txData.getSession(), query, txData.getBranchId(), sourceArtifact);
+      return txManager.introduceArtifact(txData, fromBranch.getUuid(), source, destination);
    }
 
    @Override
    public ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
-      return txManager.replaceWithVersion(txData, sourceArtifact.getBranch(), sourceArtifact, destination);
+      return txManager.replaceWithVersion(txData, sourceArtifact.getBranchUuid(), sourceArtifact, destination);
    }
 
    @Override
@@ -325,13 +333,13 @@ public class TransactionBuilderImpl implements TransactionBuilder {
       return tx;
    }
 
-   private void checkAreOnDifferentBranches(TxData txData, IOseeBranch sourceBranch) throws OseeCoreException {
-      boolean isOnSameBranch = txData.getBranch().equals(sourceBranch);
+   private void checkAreOnDifferentBranches(TxData txData, Long sourceBranch) throws OseeCoreException {
+      boolean isOnSameBranch = txData.getBranchId().equals(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
-         txData.getBranch());
+         txData.getBranchId());
    }
 
-   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, IOseeBranch branch, ArtifactId id) {
+   protected ArtifactReadable getArtifactReadable(OrcsSession session, QueryModule query, Long branch, ArtifactId id) {
       return query.createQueryFactory(session).fromBranch(branch).includeDeletedArtifacts().andGuid(
          id.getGuid()).getResults().getOneOrNull();
    }

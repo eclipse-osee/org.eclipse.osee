@@ -32,7 +32,7 @@ public final class TransactionDelta {
    }
 
    public boolean areOnTheSameBranch() {
-      return startTx.getBranchId() == endTx.getBranchId();
+      return startTx.getBranchId().equals(endTx.getBranchId());
    }
 
    @Override

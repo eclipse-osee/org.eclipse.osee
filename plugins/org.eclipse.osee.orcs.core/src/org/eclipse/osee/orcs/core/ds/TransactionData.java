@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 public interface TransactionData extends HasOrcsChangeSet {
 
-   IOseeBranch getBranch();
+   Long getBranchId();
 
    ArtifactReadable getAuthor();
 

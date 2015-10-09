@@ -29,7 +29,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -63,7 +62,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link RelationManagerFactory}
- * 
+ *
  * @author Megumi Telles
  */
 public class RelationManagerTest {
@@ -79,33 +78,32 @@ public class RelationManagerTest {
    @Mock private QueryFactory factory;
    @Mock private QueryModuleProvider provider;
    @Mock private ProxyProvider proxy;
-   
+
    @Mock private RelationNodeLoader loader;
    @Mock private OrcsSession session;
    @Mock private GraphData graph;
-   @Mock private IOseeBranch branch;
-   
+
    @Mock private RelationNode node1;
    @Mock private RelationNode node2;
    @Mock private RelationNode node3;
    @Mock private RelationNode node4;
    @Mock private RelationNode node5;
    @Mock private RelationNode node6;
-   
+
    @Mock private RelationNodeAdjacencies adjancies1;
    @Mock private RelationNodeAdjacencies adjancies2;
-   
+
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
    @Mock private Relation relation4;
    @Mock private IRelationType relationType;
-   
+
    @Mock private RelationData data1;
    @Mock private RelationData data2;
    @Mock private RelationData data3;
    @Mock private RelationData data4;
-   
+
    @Captor private ArgumentCaptor<Collection<Integer>> captor;
    // @formatter:on
 
@@ -200,9 +198,8 @@ public class RelationManagerTest {
       when(types.getByUuid(DEFAULT_HIERARCHY.getGuid())).thenReturn(relationType);
       when(types.getDefaultOrderTypeGuid(DEFAULT_HIERARCHY)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
       when(types.getDefaultOrderTypeGuid(relationType)).thenReturn(LEXICOGRAPHICAL_DESC.getGuid());
-      when(types.getAll()).thenReturn(
-         new ArrayList(Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child,
-            CoreRelationTypes.Default_Hierarchical__Parent)));
+      when(types.getAll()).thenReturn(new ArrayList(
+         Arrays.asList(CoreRelationTypes.Default_Hierarchical__Child, CoreRelationTypes.Default_Hierarchical__Parent)));
    }
 
    private void setupAdjacencies(RelationNode node, Relation... relations) throws OseeCoreException {
@@ -307,14 +304,14 @@ public class RelationManagerTest {
 
    @Test
    public void testIntroduce() throws OseeCoreException {
-      when(
-         types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
-            CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
+      Long branchId = 1L;
+      when(types.isArtifactTypeAllowed(CoreRelationTypes.Default_Hierarchical__Parent, RelationSide.SIDE_A,
+         CoreArtifactTypes.SoftwareRequirement)).thenReturn(true);
       when(types.getMultiplicity(CoreRelationTypes.Default_Hierarchical__Parent)).thenReturn(
          RelationTypeMultiplicity.ONE_TO_MANY);
-      when(relationFactory.introduce(branch, data1)).thenReturn(relation1);
+      when(relationFactory.introduce(branchId, data1)).thenReturn(relation1);
 
-      manager.introduce(session, branch, node2, node3);
+      manager.introduce(session, branchId, node2, node3);
       RelationNodeAdjacencies node2Adj = node2.getGraph().getAdjacencies(node2);
       RelationNodeAdjacencies node3Adj = node3.getGraph().getAdjacencies(node3);
 

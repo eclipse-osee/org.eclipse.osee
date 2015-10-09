@@ -14,7 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -36,17 +36,11 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    private EditState objectEditState;
    private ArtifactData artifactData;
    private GraphData graph;
-   private final BranchProvider branchProvider;
 
-   public static interface BranchProvider {
-      IOseeBranch getBranch(Long branchUuid);
-   }
-
-   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory, BranchProvider branchProvider) {
+   public ArtifactImpl(ArtifactTypes artifactTypeCache, ArtifactData artifactData, AttributeFactory attributeFactory) {
       super(artifactData.getGuid(), attributeFactory);
       this.artifactTypeCache = artifactTypeCache;
       this.artifactData = artifactData;
-      this.branchProvider = branchProvider;
       this.objectEditState = EditState.NO_CHANGE;
    }
 
@@ -95,12 +89,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public IOseeBranch getBranch() throws OseeCoreException {
-      return branchProvider.getBranch(getBranchUuid());
-   }
-
-   @Override
-   public long getBranchUuid() {
+   public Long getBranchUuid() {
       return artifactData.getVersion().getBranchId();
    }
 
@@ -157,12 +146,13 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
+      return artifactTypeCache.isValidAttributeType(getArtifactType(), TokenFactory.createBranch(getBranchUuid(), ""),
+         attributeType);
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
+      return artifactTypeCache.getAttributeTypes(getArtifactType(), TokenFactory.createBranch(getBranchUuid(), ""));
    }
 
    @Override
@@ -222,7 +212,8 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String toString() {
       try {
-         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(), getBranch());
+         return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(),
+            getBranchUuid());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }

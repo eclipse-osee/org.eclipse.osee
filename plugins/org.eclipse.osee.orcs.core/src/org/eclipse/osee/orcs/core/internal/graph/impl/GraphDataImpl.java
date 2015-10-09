@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.HasLocalId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -29,20 +28,15 @@ public class GraphDataImpl implements GraphData {
    private final Map<Integer, GraphNode> nodesById = new ConcurrentHashMap<>();
    private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
 
-   private final IOseeBranch branch;
+   private final Long branchId;
    private final int txId;
    private final OrcsSession orcsSession;
 
-   public GraphDataImpl(OrcsSession session, IOseeBranch branch, int txId) {
+   public GraphDataImpl(OrcsSession session, Long branchId, int txId) {
       super();
       this.orcsSession = session;
-      this.branch = branch;
+      this.branchId = branchId;
       this.txId = txId;
-   }
-
-   @Override
-   public IOseeBranch getBranch() {
-      return branch;
    }
 
    @Override
@@ -63,7 +57,7 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public void addNode(GraphNode node, boolean useBackingData) throws OseeCoreException {
-      boolean sameBranches = getBranchUuid() == node.getBranchUuid();
+      boolean sameBranches = getBranchUuid().equals(node.getBranchUuid());
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
             node.getExceptionString());
@@ -126,16 +120,14 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public String toString() {
-      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranch(), getTransaction(),
+      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranchUuid(), getTransaction(),
          nodesById.size(), adjacenciesById.size());
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
-      int result = 1;
-      IOseeBranch branch = getBranch();
-      result = prime * result + ((branch == null) ? 0 : branch.hashCode());
+      int result = getBranchUuid().hashCode();
       result = prime * result + getTransaction();
       return result;
    }
@@ -145,20 +137,11 @@ public class GraphDataImpl implements GraphData {
       if (this == obj) {
          return true;
       }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
+      if (!(obj instanceof GraphData)) {
          return false;
       }
       GraphData other = (GraphData) obj;
-      IOseeBranch branch = getBranch();
-      IOseeBranch otherbranch = other.getBranch();
-      if (branch == null) {
-         if (otherbranch != null) {
-            return false;
-         }
-      } else if (!branch.equals(otherbranch)) {
+      if (!getBranchUuid().equals(other.getBranchUuid())) {
          return false;
       }
       if (getTransaction() != other.getTransaction()) {
@@ -173,7 +156,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public long getBranchUuid() {
-      return branch.getUuid();
+   public Long getBranchUuid() {
+      return branchId;
    }
 }

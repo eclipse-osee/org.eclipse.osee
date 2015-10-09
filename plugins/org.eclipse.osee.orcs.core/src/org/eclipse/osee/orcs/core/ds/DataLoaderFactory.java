@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.ds;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -25,12 +24,12 @@ public interface DataLoaderFactory {
 
    DataLoader newDataLoader(QueryContext queryContext) throws OseeCoreException;
 
-   DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Integer... artifactIds) throws OseeCoreException;
+   DataLoader newDataLoaderFromIds(OrcsSession session, Long branchId, Integer... artifactIds) throws OseeCoreException;
 
-   DataLoader newDataLoaderFromIds(OrcsSession session, IOseeBranch branch, Collection<Integer> artifactIds) throws OseeCoreException;
+   DataLoader newDataLoaderFromIds(OrcsSession session, Long branchId, Collection<Integer> artifactIds) throws OseeCoreException;
 
-   DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, String... artifactGuids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, Long branchId, String... artifactGuids) throws OseeCoreException;
 
-   DataLoader newDataLoaderFromGuids(OrcsSession session, IOseeBranch branch, Collection<String> artifactGuids) throws OseeCoreException;
+   DataLoader newDataLoaderFromGuids(OrcsSession session, Long branchId, Collection<String> artifactGuids) throws OseeCoreException;
 
 }

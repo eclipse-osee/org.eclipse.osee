@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.writer;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.orcs.OrcsApi;
 
 /**
@@ -33,7 +33,7 @@ public class OrcsValidationHelperAdapter implements IOrcsValidationHelper {
 
    @Override
    public boolean isUserExists(String userId) {
-      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).and(CoreAttributeTypes.UserId,
+      return orcsApi.getQueryFactory().fromBranch(COMMON_ID).and(CoreAttributeTypes.UserId,
          userId).getResults().getAtMostOneOrNull() != null;
    }
 

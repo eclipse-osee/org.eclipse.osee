@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -29,10 +28,10 @@ public final class GraphUtil {
       return new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, IOseeBranch branch, int transactionId) throws OseeCoreException {
-            Conditions.checkNotNull(branch, "branch", "Invalid branch - can't provide graph");
-            Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getBranch(), branch),
-               "Invalid branch - Graph's branch[%s] does not equals requested branch[%s]", graph.getBranch(), branch);
+         public GraphData getGraph(OrcsSession session, Long branchId, int transactionId) throws OseeCoreException {
+            Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getBranchUuid(), branchId),
+               "Invalid branch - Graph's branch[%s] does not equals requested branch[%s]", graph.getBranchUuid(),
+               branchId);
             Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getTransaction(), transactionId),
                "Invalid transactionId - Graph's transactionId[%s] does not equals requested transactionId[%s]",
                graph.getTransaction(), transactionId);

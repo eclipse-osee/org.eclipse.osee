@@ -41,7 +41,7 @@ public interface TxOrcsData extends TransactionReadable {
 
    void setAuthorId(int authorId);
 
-   void setBranchId(long branchUuid);
+   void setBranchId(Long branchId);
 
    void setComment(String comment);
 

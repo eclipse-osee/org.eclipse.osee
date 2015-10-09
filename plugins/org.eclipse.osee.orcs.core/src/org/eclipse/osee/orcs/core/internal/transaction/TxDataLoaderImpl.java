@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -43,7 +42,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    private final TransactionProvider txProvider;
 
    public static interface TransactionProvider {
-      int getHeadTransaction(OrcsSession session, IOseeBranch branch);
+      int getHeadTransaction(OrcsSession session, Long branch);
    }
 
    public TxDataLoaderImpl(DataLoaderFactory dataLoaderFactory, GraphFactory graphFactory, GraphBuilderFactory graphBuilderFactory, GraphProvider graphProvider, TransactionProvider txProvider) {
@@ -55,12 +54,12 @@ public class TxDataLoaderImpl implements TxDataLoader {
       this.txProvider = txProvider;
    }
 
-   private DataLoader createLoader(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
+   private DataLoader createLoader(OrcsSession session, Long branchId, Collection<ArtifactId> artifactIds) throws OseeCoreException {
       Set<String> ids = new LinkedHashSet<>();
       for (ArtifactId artifactId : artifactIds) {
          ids.add(artifactId.getGuid());
       }
-      DataLoader loader = dataLoaderFactory.newDataLoaderFromGuids(session, branch, ids);
+      DataLoader loader = dataLoaderFactory.newDataLoaderFromGuids(session, branchId, ids);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedAttributes();
       loader.includeDeletedRelations();
@@ -68,8 +67,8 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public ResultSet<Artifact> loadArtifacts(OrcsSession session, IOseeBranch branch, Collection<ArtifactId> artifactIds) throws OseeCoreException {
-      DataLoader loader = createLoader(session, branch, artifactIds);
+   public ResultSet<Artifact> loadArtifacts(OrcsSession session, Long branchId, Collection<ArtifactId> artifactIds) throws OseeCoreException {
+      DataLoader loader = createLoader(session, branchId, artifactIds);
       GraphBuilder handler = graphBuilderFactory.createGraphBuilder(graphProvider);
       loader.load(null, handler);
       return ResultSets.newResultSet(handler.getArtifacts());
@@ -77,7 +76,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
 
    @Override
    public ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds) throws OseeCoreException {
-      DataLoader loader = createLoader(session, graph.getBranch(), artifactIds);
+      DataLoader loader = createLoader(session, graph.getBranchUuid(), artifactIds);
       loader.fromTransaction(graph.getTransaction());
       GraphBuilder handler = graphBuilderFactory.createBuilderForGraph(graph);
       loader.load(null, handler);
@@ -85,7 +84,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    }
 
    @Override
-   public GraphData createGraph(OrcsSession session, IOseeBranch branch) throws OseeCoreException {
+   public GraphData createGraph(OrcsSession session, Long branch) throws OseeCoreException {
       int headTransaction = txProvider.getHeadTransaction(session, branch);
       return graphFactory.createGraph(session, branch, headTransaction);
    }

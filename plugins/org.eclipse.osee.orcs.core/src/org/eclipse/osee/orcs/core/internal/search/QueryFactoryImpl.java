@@ -54,11 +54,11 @@ public class QueryFactoryImpl implements QueryFactory {
       this.txCriteriaFactory = txCriteriaFactory;
    }
 
-   private QueryBuilder createBuilder(IOseeBranch branch) {
+   private QueryBuilder createBuilder(Long branchId) {
       Options options = OptionsUtil.createOptions();
       CriteriaSet criteriaSet = new CriteriaSet();
-      if (branch != null) {
-         criteriaSet.add(new CriteriaBranch(branch));
+      if (branchId != null) {
+         criteriaSet.add(new CriteriaBranch(branchId));
       }
       QueryData queryData = new QueryData(criteriaSet, options);
       QueryBuilder builder = new QueryBuilderImpl(queryFctry, criteriaFctry, context, queryData);
@@ -77,13 +77,13 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
-      return createBuilder(branch);
+      return createBuilder(branch.getUuid());
    }
 
    @Override
-   public QueryBuilder fromBranch(long branchUuid) throws OseeCoreException {
-      String name = String.format("uuid:[%s] name:[N/A] - %s.fromBranch(long)", branchUuid, getClass().getSimpleName());
-      IOseeBranch branch = TokenFactory.createBranch(branchUuid, name);
+   public QueryBuilder fromBranch(Long branchId) throws OseeCoreException {
+      String name = String.format("uuid:[%s] name:[N/A] - %s.fromBranch(long)", branchId, getClass().getSimpleName());
+      IOseeBranch branch = TokenFactory.createBranch(branchId, name);
       return fromBranch(branch);
    }
 
@@ -91,12 +91,11 @@ public class QueryFactoryImpl implements QueryFactory {
    public QueryBuilder fromArtifacts(Collection<? extends ArtifactReadable> artifacts) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(artifacts, "artifacts");
       ArtifactReadable artifact = artifacts.iterator().next();
-      IOseeBranch branch = artifact.getBranch();
       Set<String> guids = new HashSet<>();
       for (ArtifactReadable art : artifacts) {
          guids.add(art.getGuid());
       }
-      return fromBranch(branch).andGuids(guids);
+      return fromBranch(artifact.getBranchUuid()).andGuids(guids);
    }
 
    @Override

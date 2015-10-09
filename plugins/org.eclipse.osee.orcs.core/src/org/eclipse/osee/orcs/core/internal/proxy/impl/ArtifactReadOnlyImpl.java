@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
-import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
@@ -55,10 +53,6 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
       return relationManager;
    }
 
-   private GraphData getGraphData() {
-      return getProxiedObject().getGraph();
-   }
-
    @Override
    public String getGuid() {
       return getProxiedObject().getGuid();
@@ -80,13 +74,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    }
 
    @Override
-   public IOseeBranch getBranch() throws OseeCoreException {
-      return getProxiedObject().getBranch();
-   }
-
-   @Override
-   public long getBranchUuid() {
-      return getBranch().getUuid();
+   public Long getBranchUuid() {
+      return getProxiedObject().getBranchUuid();
    }
 
    @Override

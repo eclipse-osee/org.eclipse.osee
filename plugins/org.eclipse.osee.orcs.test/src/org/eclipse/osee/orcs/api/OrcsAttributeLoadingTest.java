@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -18,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -51,7 +51,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testAttributeLoading() throws Exception {
-      QueryBuilder builder = query.fromBranch(CoreBranches.COMMON).andUuids(Arrays.asList(6L, 7L, 8L));
+      QueryBuilder builder = query.fromBranch(COMMON_ID).andUuids(Arrays.asList(6L, 7L, 8L));
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(3, resultSet.size());

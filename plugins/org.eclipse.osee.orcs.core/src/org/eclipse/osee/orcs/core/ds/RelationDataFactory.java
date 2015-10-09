@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.HasLocalId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -20,9 +19,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface RelationDataFactory {
 
-   RelationData createRelationData(IRelationType relationType, IOseeBranch branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException;
+   RelationData createRelationData(IRelationType relationType, Long branch, HasLocalId<Integer> aArt, HasLocalId<Integer> bArt, String rationale) throws OseeCoreException;
 
    RelationData clone(RelationData source) throws OseeCoreException;
 
-   RelationData introduce(IOseeBranch branch, RelationData source) throws OseeCoreException;
+   RelationData introduce(Long branch, RelationData source) throws OseeCoreException;
 }

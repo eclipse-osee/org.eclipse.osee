@@ -10,15 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-
 /**
  * @author Roberto E. Escobar
  */
 public interface HasBranch {
-
-   IOseeBranch getBranch() throws OseeCoreException;
-
-   long getBranchUuid();
+   Long getBranchUuid();
 }

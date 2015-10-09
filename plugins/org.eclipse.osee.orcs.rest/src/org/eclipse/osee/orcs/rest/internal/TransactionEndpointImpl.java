@@ -65,7 +65,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    }
 
    @Override
-   public Response replaceWithBaselineTxVersion(String userId, long branchId, int txId, int artId, String comment) {
+   public Response replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment) {
       return OrcsRestUtil.asResponse(orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId,
          txId, artId, comment));
    }

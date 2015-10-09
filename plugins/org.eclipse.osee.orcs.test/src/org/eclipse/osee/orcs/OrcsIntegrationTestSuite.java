@@ -30,13 +30,13 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   OrcsQueryTest.class,
    OrcsValidationHelperAdapterTest.class,
    OrcsAttributeLoadingTest.class,
    OrcsAttributeSearchTest.class,
    OrcsBranchQueryTest.class,
    OrcsBranchTest.class,
    OrcsPortingTest.class,
-   OrcsQueryTest.class,
    OrcsRelationLoadingTest.class,
    OrcsScriptScopeTest.class,
    OrcsScriptTest.class,

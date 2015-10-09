@@ -65,13 +65,6 @@ public class TransactionFactoryImplTest {
    }
 
    @Test
-   public void testNullBranch() throws OseeCoreException {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("branch cannot be null");
-      factory.createTransaction(null, expectedAuthor, "my comment");
-   }
-
-   @Test
    public void testNullAuthor() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("author cannot be null");
@@ -96,14 +89,14 @@ public class TransactionFactoryImplTest {
    public void testCreateTransaction() throws OseeCoreException {
       String expectedComment = "This is my comment";
 
-      when(txDataManager.createTxData(session, expectedBranch)).thenReturn(txData);
+      when(txDataManager.createTxData(session, expectedBranch.getUuid())).thenReturn(txData);
       when(txData.getAuthor()).thenReturn(expectedAuthor);
-      when(txData.getBranch()).thenReturn(expectedBranch);
+      when(txData.getBranchId()).thenReturn(expectedBranch.getUuid());
       when(txData.getComment()).thenReturn(expectedComment);
 
       TransactionBuilder tx = factory.createTransaction(expectedBranch, expectedAuthor, expectedComment);
       assertNotNull(tx);
-      assertEquals(expectedBranch, tx.getBranch());
+      assertEquals(expectedBranch.getUuid(), tx.getBranchId());
       assertEquals(expectedAuthor, tx.getAuthor());
       assertEquals(expectedComment, tx.getComment());
    }

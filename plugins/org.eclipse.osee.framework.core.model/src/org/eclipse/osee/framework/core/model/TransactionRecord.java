@@ -56,7 +56,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
       return branchUuid != NON_EXISTING_BRANCH;
    }
 
-   public long getBranchId() {
+   public Long getBranchId() {
       return branchUuid;
    }
 

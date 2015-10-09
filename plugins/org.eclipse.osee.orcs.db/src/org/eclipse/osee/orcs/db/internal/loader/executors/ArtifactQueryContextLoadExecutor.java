@@ -50,7 +50,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
 
       ArtifactJoinQuery join = createArtifactIdJoin(getJdbcClient(), cancellation, fetchSize);
 
-      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranch());
+      LoadSqlContext loadContext = new LoadSqlContext(queryContext.getSession(), options, queryContext.getBranchUuid());
       getLoader().loadArtifacts(cancellation, handler, join, criteria, loadContext, fetchSize);
    }
 

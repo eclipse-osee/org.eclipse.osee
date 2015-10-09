@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.writer;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -47,7 +47,7 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsBranchExists() {
-      Assert.assertTrue(helper.isBranchExists(CoreBranches.COMMON.getGuid()));
+      Assert.assertTrue(helper.isBranchExists(COMMON_ID));
 
       Assert.assertFalse(helper.isBranchExists(34598L));
    }
@@ -61,11 +61,11 @@ public class OrcsValidationHelperAdapterTest {
 
    @Test
    public void testIsArtifactExists() {
-      ArtifactReadable artifact =
-         orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).getResults().iterator().next();
-      Assert.assertTrue(helper.isArtifactExists(CoreBranches.COMMON.getUuid(), artifact.getUuid()));
+      ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(COMMON_ID).andIsOfType(
+         CoreArtifactTypes.User).getResults().iterator().next();
+      Assert.assertTrue(helper.isArtifactExists(COMMON_ID, artifact.getUuid()));
 
-      Assert.assertFalse(helper.isArtifactExists(CoreBranches.COMMON.getUuid(), 999999L));
+      Assert.assertFalse(helper.isArtifactExists(COMMON_ID, 999999L));
    }
 
    @Test

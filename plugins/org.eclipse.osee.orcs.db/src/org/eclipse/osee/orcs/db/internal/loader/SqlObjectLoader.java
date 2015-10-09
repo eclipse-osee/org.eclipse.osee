@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -192,16 +191,16 @@ public class SqlObjectLoader {
    protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) throws OseeCoreException {
       OrcsSession session = loadContext.getSession();
       Options options = loadContext.getOptions();
-      IOseeBranch branch = loadContext.getBranch();
+      Long branchId = loadContext.getBranchUuid();
 
       int transactionLoaded;
       if (OptionsUtil.isHeadTransaction(options)) {
-         transactionLoaded = loadHeadTransactionId(branch);
+         transactionLoaded = loadHeadTransactionId(branchId);
       } else {
          transactionLoaded = OptionsUtil.getFromTransaction(options);
       }
 
-      LoadDescription description = createDescription(session, options, branch, transactionLoaded);
+      LoadDescription description = createDescription(session, options, branchId, transactionLoaded);
       builder.onLoadDescription(description);
    }
 
@@ -229,10 +228,9 @@ public class SqlObjectLoader {
       }
    }
 
-   protected int loadHeadTransactionId(IOseeBranch branch) throws OseeCoreException {
+   protected int loadHeadTransactionId(Long branchId) throws OseeCoreException {
       String sql = sqlProvider.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql,
-         branch.getUuid());
+      return getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql, branchId);
    }
 
    protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
@@ -283,11 +281,11 @@ public class SqlObjectLoader {
       return createDescription(session, options, null, -1, data);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final IOseeBranch branch, final int transactionLoaded) {
-      return createDescription(session, options, branch, transactionLoaded, null);
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final Long branchId, final int transactionLoaded) {
+      return createDescription(session, options, branchId, transactionLoaded, null);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final IOseeBranch branch, final int transactionLoaded, final ResultObjectDescription data) {
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final Long branchId, final int transactionLoaded, final ResultObjectDescription data) {
       return new LoadDescription() {
 
          @Override
@@ -301,13 +299,8 @@ public class SqlObjectLoader {
          }
 
          @Override
-         public IOseeBranch getBranch() {
-            return branch;
-         }
-
-         @Override
-         public long getBranchUuid() {
-            return branch.getUuid();
+         public Long getBranchId() {
+            return branchId;
          }
 
          @Override
@@ -317,7 +310,7 @@ public class SqlObjectLoader {
 
          @Override
          public boolean isMultiBranch() {
-            return getBranch() == null;
+            return getBranchId() == null;
          }
 
          @Override

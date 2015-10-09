@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.artifact;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -33,8 +31,6 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.ArtifactDataFactory;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactFactory.BranchProviderFactory;
-import org.eclipse.osee.orcs.core.internal.artifact.ArtifactImpl.BranchProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.Attribute;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeFactory;
 import org.eclipse.osee.orcs.core.internal.attribute.AttributeManager;
@@ -54,7 +50,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link ArtifactFactory}
- * 
+ *
  * @author John Misinco
  */
 public class ArtifactFactoryTest {
@@ -67,20 +63,18 @@ public class ArtifactFactoryTest {
    @Mock private IArtifactType artifactType;
    @Mock private ArtifactData artifactData;
    @Mock private VersionData artifactVersion;
-   
+
    @Mock private ArtifactDataFactory dataFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
    @Mock private ArtifactTypes artifactTypeCache;
-   @Mock private BranchProviderFactory branchProviderFactory;
-   @Mock private BranchProvider branchProvider;
-   
+
    @Mock private Attribute<Object> attribute;
    @Mock private AttributeData attributeData;
    @Mock private Artifact source;
    @Mock private Artifact destination;
    @Mock private OrcsSession session;
-   
+
    @Mock private ArtifactData otherArtifactData;
    // @formatter:on
 
@@ -88,12 +82,13 @@ public class ArtifactFactoryTest {
    private ArtifactFactory artifactFactory;
    private List<IAttributeType> types;
 
+   private final Long BRANCH_ID = 23L;
+
    @Before
    public void init() throws OseeCoreException {
       MockitoAnnotations.initMocks(this);
 
-      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache, branchProviderFactory);
-      when(branchProviderFactory.createBranchProvider(any(OrcsSession.class))).thenReturn(branchProvider);
+      artifactFactory = new ArtifactFactory(dataFactory, attributeFactory, artifactTypeCache);
 
       guid = GUID.create();
 
@@ -106,30 +101,28 @@ public class ArtifactFactoryTest {
       when(artifactData.getGuid()).thenReturn(guid);
       when(artifactData.getTypeUuid()).thenReturn(65L);
       when(artifactData.getVersion()).thenReturn(artifactVersion);
-      when(artifactVersion.getBranchId()).thenReturn(23L);
-      when(branch.getGuid()).thenReturn(23L);
+      when(artifactVersion.getBranchId()).thenReturn(BRANCH_ID);
+      when(source.getOrcsData()).thenReturn(artifactData);
 
-      when(
-         attributeFactory.copyAttribute(any(AttributeData.class), any(IOseeBranch.class), any(AttributeManager.class))).thenReturn(
-         attribute);
+      when(attributeFactory.copyAttribute(any(AttributeData.class), any(Long.class),
+         any(AttributeManager.class))).thenReturn(attribute);
 
       when(otherArtifactData.getLocalId()).thenReturn(45);
       when(otherArtifactData.getGuid()).thenReturn(guid);
       when(otherArtifactData.getTypeUuid()).thenReturn(65L);
       when(otherArtifactData.getVersion()).thenReturn(artifactVersion);
 
-      when(branchProvider.getBranch(23L)).thenReturn(branch);
-
       when(artifactTypeCache.getByUuid(65L)).thenReturn(artifactType);
+
    }
 
    @Test
    public void testCreateArtifactFromBranchTypeAndGuid() throws OseeCoreException {
-      when(dataFactory.create(branch, artifactType, guid)).thenReturn(artifactData);
+      when(dataFactory.create(BRANCH_ID, artifactType, guid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, branch, artifactType, guid);
+      Artifact artifact = artifactFactory.createArtifact(session, BRANCH_ID, artifactType, guid);
 
-      verify(dataFactory).create(branch, artifactType, guid);
+      verify(dataFactory).create(BRANCH_ID, artifactType, guid);
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
@@ -137,11 +130,11 @@ public class ArtifactFactoryTest {
    @Test
    public void testCreateArtifactFromBranchTypeAndGuidAndUuid() throws OseeCoreException {
       long uuid = 93456L;
-      when(dataFactory.create(branch, artifactType, guid, uuid)).thenReturn(artifactData);
+      when(dataFactory.create(BRANCH_ID, artifactType, guid, uuid)).thenReturn(artifactData);
 
-      Artifact artifact = artifactFactory.createArtifact(session, branch, artifactType, guid, uuid);
+      Artifact artifact = artifactFactory.createArtifact(session, BRANCH_ID, artifactType, guid, uuid);
 
-      verify(dataFactory).create(branch, artifactType, guid, uuid);
+      verify(dataFactory).create(BRANCH_ID, artifactType, guid, uuid);
       assertEquals(artifactType, artifact.getArtifactType());
       assertEquals(guid, artifact.getGuid());
    }
@@ -156,21 +149,22 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testCopyArtifact() throws OseeCoreException {
-      when(source.getOrcsData()).thenReturn(artifactData);
-      when(dataFactory.copy(branch, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.copy(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
+
+      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(IOseeBranch.class),
+         eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(session, source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, BRANCH_ID);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
       verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
-      verify(attributeFactory).copyAttribute(eq(attributeData), eq(branch), implCapture.capture());
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(BRANCH_ID), implCapture.capture());
 
       Assert.assertTrue(implCapture.getValue().isLoaded());
       Assert.assertTrue(actual == implCapture.getValue());
@@ -178,44 +172,40 @@ public class ArtifactFactoryTest {
 
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
-      Branch otherBranch = mock(Branch.class);
-
-      when(source.getBranch()).thenReturn(otherBranch);
-      when(source.getOrcsData()).thenReturn(artifactData);
-
-      when(dataFactory.introduce(branch, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.introduce(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(DeletionFlag.INCLUDE_DELETED)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(
+         true);
       when(attribute.getAttributeType()).thenReturn(CoreAttributeTypes.Annotation);
       when(destination.isAttributeTypeValid(CoreAttributeTypes.Annotation)).thenReturn(true);
 
-      Artifact actual = artifactFactory.introduceArtifact(session, source, destination, branch);
+      Artifact actual = artifactFactory.introduceArtifact(session, source, destination, BRANCH_ID);
 
-      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(branch), eq(destination));
+      verify(attributeFactory).introduceAttribute(eq(attributeData), eq(BRANCH_ID), eq(destination));
       Assert.assertTrue(actual == destination);
    }
 
    @Test
    public void testClone() throws OseeCoreException {
-      when(source.getOrcsData()).thenReturn(artifactData);
-      when(dataFactory.copy(branch, artifactData)).thenReturn(otherArtifactData);
+      when(dataFactory.copy(BRANCH_ID, artifactData)).thenReturn(otherArtifactData);
 
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(artifactType, branch, CoreAttributeTypes.Annotation)).thenReturn(true);
+      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(IOseeBranch.class),
+         eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
 
-      Artifact actual = artifactFactory.copyArtifact(session, source, types, branch);
+      Artifact actual = artifactFactory.copyArtifact(session, source, types, BRANCH_ID);
 
       verify(source, times(0)).getAttributes(CoreAttributeTypes.RelationOrder);
       verify(source, times(0)).getAttributes(CoreAttributeTypes.City);
       verify(source, times(1)).getAttributes(CoreAttributeTypes.Annotation);
-      verify(attributeFactory).copyAttribute(eq(attributeData), eq(branch), implCapture.capture());
+      verify(attributeFactory).copyAttribute(eq(attributeData), eq(BRANCH_ID), implCapture.capture());
       Assert.assertTrue(implCapture.getValue().isLoaded());
       Assert.assertTrue(actual == implCapture.getValue());
    }

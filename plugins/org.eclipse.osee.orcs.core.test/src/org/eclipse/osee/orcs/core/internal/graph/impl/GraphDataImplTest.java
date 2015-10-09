@@ -59,12 +59,12 @@ public class GraphDataImplTest {
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
-   
+
    @Mock private GraphProvider graphProvider;
    @Mock private GraphData graphData;
-   
+
    @Mock private LoadDescription description;
-   
+
    @Mock private ArtifactData artifactData;
    @Mock private ArtifactData artifactData1;
    @Mock private ArtifactData artifactData2;
@@ -72,21 +72,21 @@ public class GraphDataImplTest {
    @Mock private AttributeData attributeData1;
    @Mock private AttributeData attributeData2;
    @Mock private RelationData relationData;
-   
+
    @Mock private Artifact artifact;
    @Mock private Artifact artifact1;
    @Mock private Artifact artifact2;
    @Mock private Artifact container;
    @Mock private Artifact container1;
    @Mock private Artifact container2;
-   
+
    @Mock private Relation relation;
    @Mock private Relation relation1;
    @Mock private Relation relation2;
    @Mock private Relation relation3;
-   
+
    @Mock private OrcsSession session;
-   
+
    // @formatter:on
 
    private GraphDataImpl graph;
@@ -96,12 +96,12 @@ public class GraphDataImplTest {
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
 
-      graph = new GraphDataImpl(session, branch, TRANSACTION_ID);
+      graph = new GraphDataImpl(session, branch.getUuid(), TRANSACTION_ID);
    }
 
    @Test
-   public void testGetBranch() {
-      assertEquals(branch, graph.getBranch());
+   public void testGetBranchUuid() {
+      assertEquals(branch.getUuid(), graph.getBranchUuid());
    }
 
    @Test
@@ -112,7 +112,6 @@ public class GraphDataImplTest {
    @Test
    public void testAddNodeArtifact() throws OseeCoreException {
       when(artifact.getLocalId()).thenReturn(10);
-      when(artifact.getBranch()).thenReturn(branch);
       when(artifactData.getLocalId()).thenReturn(10);
 
       graph.addNode(artifact, false);
@@ -123,7 +122,6 @@ public class GraphDataImplTest {
    @Test
    public void testAddNodeAttribute() throws OseeCoreException {
       when(container.getLocalId()).thenReturn(11);
-      when(container.getBranch()).thenReturn(branch);
       when(attributeData.getLocalId()).thenReturn(11);
 
       graph.addNode(container, false);
@@ -137,11 +135,6 @@ public class GraphDataImplTest {
       when(artifact2.getLocalId()).thenReturn(21);
       when(container1.getLocalId()).thenReturn(30);
       when(container2.getLocalId()).thenReturn(31);
-
-      when(artifact1.getBranch()).thenReturn(branch);
-      when(artifact2.getBranch()).thenReturn(branch);
-      when(container1.getBranch()).thenReturn(branch);
-      when(container2.getBranch()).thenReturn(branch);
 
       graph.addNode(artifact1, false);
       graph.addNode(artifact2, false);
@@ -171,11 +164,6 @@ public class GraphDataImplTest {
       when(attributeData1.getLocalId()).thenReturn(30);
       when(attributeData2.getLocalId()).thenReturn(31);
 
-      when(artifact1.getBranch()).thenReturn(branch);
-      when(artifact2.getBranch()).thenReturn(branch);
-      when(container1.getBranch()).thenReturn(branch);
-      when(container2.getBranch()).thenReturn(branch);
-
       graph.addNode(artifact1, false);
       graph.addNode(artifact2, false);
       graph.addNode(container1, false);
@@ -203,11 +191,6 @@ public class GraphDataImplTest {
       when(artifactData2.getLocalId()).thenReturn(21);
       when(attributeData1.getLocalId()).thenReturn(30);
       when(attributeData2.getLocalId()).thenReturn(31);
-
-      when(artifact1.getBranch()).thenReturn(branch);
-      when(artifact2.getBranch()).thenReturn(branch);
-      when(container1.getBranch()).thenReturn(branch);
-      when(container2.getBranch()).thenReturn(branch);
 
       graph.addNode(artifact1, false);
       graph.addNode(artifact2, false);

@@ -95,6 +95,4 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasBr
 
    String getRationale(IRelationTypeSide typeAndSide, ArtifactReadable readable) throws OseeCoreException;
 
-   String toStringWithId();
-
 }

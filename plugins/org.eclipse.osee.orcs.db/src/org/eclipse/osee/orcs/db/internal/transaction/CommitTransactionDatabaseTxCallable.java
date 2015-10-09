@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -75,11 +74,11 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       // TODO:
       // 1. Make this whole method a critical region on a per branch basis - can only write to a branch on one thread at time
       String comment = transactionData.getComment();
-      IOseeBranch branch = transactionData.getBranch();
+      Long branchId = transactionData.getBranchId();
       ArtifactReadable author = transactionData.getAuthor();
       OrcsChangeSet changeSet = transactionData.getChangeSet();
 
-      Conditions.checkNotNull(branch, "branch");
+      Conditions.checkNotNull(branchId, "branch");
       Conditions.checkNotNull(author, "transaction author");
       Conditions.checkNotNullOrEmpty(comment, "transaction comment");
       TransactionResult result = null;
@@ -87,11 +86,10 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
 
          process(TxWritePhaseEnum.BEFORE_TX_WRITE);
 
-         TransactionReadable txRecord = createTransactionRecord(branch, author, comment, getNextTransactionId());
+         TransactionReadable txRecord = createTransactionRecord(branchId, author, comment, getNextTransactionId());
          writer.write(connection, txRecord, changeSet);
 
-         Object[] params =
-            new Object[] {BranchState.MODIFIED.getValue(), branch.getUuid(), BranchState.CREATED.getValue()};
+         Object[] params = new Object[] {BranchState.MODIFIED.getValue(), branchId, BranchState.CREATED.getValue()};
          getJdbcClient().runPreparedUpdate(connection, UPDATE_BRANCH_STATE, params);
 
          result = new TransactionResultImpl(txRecord, changeSet);
@@ -111,14 +109,14 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(IOseeBranch branch, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
+   private TransactionReadable createTransactionRecord(Long branchId, ArtifactReadable author, String comment, int transactionNumber) throws OseeCoreException {
       int authorArtId = author.getLocalId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
       TransactionDataImpl created = new TransactionDataImpl();
       created.setAuthorId(authorArtId);
-      created.setBranchId(branch.getUuid());
+      created.setBranchId(branchId);
       created.setComment(comment);
       created.setCommit(RelationalConstants.ART_ID_SENTINEL);
       created.setDate(transactionTime);

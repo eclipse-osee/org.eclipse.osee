@@ -48,7 +48,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link TxCallableFactory}
- * 
+ *
  * @author Megumi Telles
  */
 public class TxCallableFactoryTest {
@@ -59,19 +59,19 @@ public class TxCallableFactoryTest {
    // @formatter:off
    @Mock private OrcsSession session;
    @Mock private Log logger;
-   
+
    @Mock private ExternalArtifactManager proxyManager;
    @Mock private ArtifactFactory artifactFactory;
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
-   
+
    @Mock private IOseeBranch branch;
    @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
-   
+
    @Mock private ArtifactReadable userArtifact;
    @Mock private ArtifactReadable groupArtifact;
-   
+
    @Captor private ArgumentCaptor<TransactionData> txData;
 
    // @formatter:on
@@ -87,7 +87,6 @@ public class TxCallableFactoryTest {
       txFactory = new TxCallableFactory(logger, txDataStore, txManager);
       data = new TxData(session, graph);
 
-      when(graph.getBranch()).thenReturn(branch);
    }
 
    @SuppressWarnings({"unchecked", "rawtypes"})
@@ -129,7 +128,7 @@ public class TxCallableFactoryTest {
       assertFalse(data.isCommitInProgress());
 
       TransactionData data = txData.getValue();
-      assertEquals(branch, data.getBranch());
+      assertEquals(branch.getUuid(), data.getBranchId());
       assertEquals(userArtifact, data.getAuthor());
       assertEquals("My Comment", data.getComment());
    }

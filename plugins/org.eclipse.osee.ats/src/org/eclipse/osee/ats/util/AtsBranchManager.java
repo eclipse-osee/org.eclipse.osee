@@ -53,7 +53,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * BranchManager contains methods necessary for ATS objects to interact with creation, view and commit of branches.
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class AtsBranchManager {
@@ -121,7 +121,7 @@ public final class AtsBranchManager {
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, true);
          Collection<TransactionRecord> trs = Collections.castAll(transactions);
          for (TransactionRecord transactionId : trs) {
-            if (transactionId.getBranchId() == destinationBranch.getUuid()) {
+            if (transactionId.getBranchId().equals(destinationBranch.getUuid())) {
                MergeView.openView(transactionId);
             }
          }
@@ -292,7 +292,7 @@ public final class AtsBranchManager {
 
    /**
     * Return ChangeData represented by commit to commitConfigArt or earliest commit if commitConfigArt == null
-    * 
+    *
     * @param commitConfigArt that configures commit or null
     */
    public static ChangeData getChangeData(TeamWorkFlowArtifact teamArt, ICommitConfigItem commitConfigArt) throws OseeCoreException {

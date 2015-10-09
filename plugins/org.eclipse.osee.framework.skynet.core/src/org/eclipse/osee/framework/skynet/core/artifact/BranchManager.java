@@ -71,7 +71,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class BranchManager {
@@ -335,7 +335,7 @@ public class BranchManager {
 
    /**
     * Delete branches from the system. (sets branch state to deleted. operation is undo-able)
-    * 
+    *
     * @throws OseeCoreException
     */
    public static Job deleteBranch(final List<? extends IOseeBranch> branches) {
@@ -518,7 +518,7 @@ public class BranchManager {
 
    /**
     * Creates a new root branch, imports skynet types and initializes.
-    * 
+    *
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     */
    public static Branch createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
@@ -614,7 +614,7 @@ public class BranchManager {
       if (branch.getAssociatedArtifactId() == null || branch.getAssociatedArtifactId() == -1) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
-      return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
+      return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), CoreBranches.COMMON);
    }
 
    public static Artifact getAssociatedArtifact(TransactionDelta txDelta) throws OseeCoreException {
@@ -623,7 +623,7 @@ public class BranchManager {
          TransactionRecord txRecord = txDelta.getEndTx();
          int commitArtId = txRecord.getCommit();
          if (commitArtId != 0) {
-            associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, BranchManager.getCommonBranch());
+            associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, CoreBranches.COMMON);
          }
       } else {
          Branch sourceBranch = txDelta.getStartTx().getFullBranch();

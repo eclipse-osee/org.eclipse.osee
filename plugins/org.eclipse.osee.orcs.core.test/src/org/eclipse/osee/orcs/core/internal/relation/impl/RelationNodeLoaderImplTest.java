@@ -45,12 +45,12 @@ public class RelationNodeLoaderImplTest {
    // @formatter:off
    @Mock private DataLoaderFactory dataLoaderFactory;
    @Mock private GraphBuilderFactory graphBuilderFactory;
-   
+
    @Mock private OrcsSession session;
    @Mock private GraphData graph;
    @Mock private GraphBuilder builder;
    @Mock private DataLoader loader;
-   
+
    @Mock private Artifact artifact;
    // @formatter:on
 
@@ -66,7 +66,7 @@ public class RelationNodeLoaderImplTest {
 
       relationNode = new RelationNodeLoaderImpl(dataLoaderFactory, graphBuilderFactory);
 
-      when(graph.getBranch()).thenReturn(BRANCH);
+      when(graph.getBranchUuid()).thenReturn(BRANCH.getUuid());
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
    }
 
@@ -74,13 +74,13 @@ public class RelationNodeLoaderImplTest {
    public void testLoadNodes() throws OseeCoreException {
       Iterable<Artifact> artifacts = Arrays.asList(artifact);
 
-      when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH, ids)).thenReturn(loader);
+      when(dataLoaderFactory.newDataLoaderFromIds(session, BRANCH.getUuid(), ids)).thenReturn(loader);
       when(graphBuilderFactory.createBuilderForGraph(graph)).thenReturn(builder);
       when(builder.getArtifacts()).thenReturn(artifacts);
 
       Iterable<RelationNode> actual = relationNode.loadNodes(session, graph, ids, LoadLevel.ALL);
 
-      verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH, ids);
+      verify(dataLoaderFactory).newDataLoaderFromIds(session, BRANCH.getUuid(), ids);
       verify(graphBuilderFactory).createBuilderForGraph(graph);
 
       verify(loader).withLoadLevel(LoadLevel.ALL);

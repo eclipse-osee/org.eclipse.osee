@@ -91,7 +91,7 @@ public final class Address implements Comparable<Address> {
       this.purge = purge;
    }
 
-   public long getBranchId() {
+   public Long getBranchId() {
       return branchUuid;
    }
 
