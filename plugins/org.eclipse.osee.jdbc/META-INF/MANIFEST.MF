@@ -27,4 +27,5 @@ Export-Package: org.eclipse.osee.jdbc
 Service-Component: OSGI-INF/*.xml
 DynamicImport-Package: *
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.eclipse.equinox.registry
+Require-Bundle: org.eclipse.equinox.registry,
+ org.xerial.sqlite;resolution:=optional
