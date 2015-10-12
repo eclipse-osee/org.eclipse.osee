@@ -85,14 +85,13 @@ public class UpdateArtifactOperation extends AbstractOperation {
       for (Artifact artifact : artifacts) {
          WordArtifactChange artChange = change.getWordArtifactChange(artifact.getArtId());
          if (artChange != null) {
+            artifact.reloadAttributesAndRelations();
             Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
             if (!attrChanges.isEmpty()) {
                EventModifiedBasicGuidArtifact guidArt =
                   new EventModifiedBasicGuidArtifact(artifact.getBranch().getUuid(),
                      artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
                artifactEvent.getArtifacts().add(guidArt);
-
-               artifact.reloadAttributesAndRelations();
             }
          }
       }
