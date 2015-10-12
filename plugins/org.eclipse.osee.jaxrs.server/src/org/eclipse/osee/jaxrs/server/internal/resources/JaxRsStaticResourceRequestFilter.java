@@ -85,9 +85,6 @@ public class JaxRsStaticResourceRequestFilter implements ContainerRequestFilter 
       }
 
       ResponseBuilder builder = Response.ok();
-      if (contentLength != -1) {
-         builder.header(HttpHeaders.CONTENT_LENGTH, contentLength);
-      }
 
       String contentType = null;
       if (servletContext != null) {
