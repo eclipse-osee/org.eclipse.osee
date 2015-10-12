@@ -25,10 +25,6 @@ public class TaskEditorParameterSearchItemProvider extends TaskEditorProvider {
 
    private final TaskEditorParameterSearchItem taskParameterSearchItem;
 
-   public TaskEditorParameterSearchItemProvider(TaskEditorParameterSearchItem worldParameterSearchItem) {
-      this(worldParameterSearchItem, null, TableLoadOption.None);
-   }
-
    public TaskEditorParameterSearchItemProvider(TaskEditorParameterSearchItem taskParameterSearchItem, CustomizeData customizeData, TableLoadOption... tableLoadOptions) {
       super(customizeData, tableLoadOptions);
       this.taskParameterSearchItem = taskParameterSearchItem;
@@ -36,7 +32,8 @@ public class TaskEditorParameterSearchItemProvider extends TaskEditorProvider {
 
    @Override
    public String getTaskEditorLabel(SearchType searchType) throws OseeCoreException {
-      return Strings.truncate(taskParameterSearchItem.getTaskEditorLabel(searchType), TaskEditor.TITLE_MAX_LENGTH, true);
+      return Strings.truncate(taskParameterSearchItem.getTaskEditorLabel(searchType), TaskEditor.TITLE_MAX_LENGTH,
+         true);
    }
 
    @Override
@@ -53,9 +50,6 @@ public class TaskEditorParameterSearchItemProvider extends TaskEditorProvider {
       return taskParameterSearchItem.getName();
    }
 
-   /**
-    * @return the worldSearchItem
-    */
    public TaskEditorParameterSearchItem getWorldSearchItem() {
       return taskParameterSearchItem;
    }

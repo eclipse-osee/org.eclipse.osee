@@ -60,16 +60,8 @@ public abstract class WorldUISearchItem extends WorldSearchItem {
 
    public abstract Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException;
 
-   public Collection<Artifact> performReSearch() {
-      return EMPTY_SET;
-   }
-
    public Collection<Artifact> performSearchGetResults() throws OseeCoreException {
       return performSearchGetResults(false, SearchType.Search);
-   }
-
-   public Collection<Artifact> performSearchGetResults(SearchType searchType) throws OseeCoreException {
-      return performSearchGetResults(false, searchType);
    }
 
    public Collection<Artifact> performSearchGetResults(boolean performUi) throws OseeCoreException {

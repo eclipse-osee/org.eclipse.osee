@@ -140,8 +140,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOptions) throws OseeCoreException {
-      return andAttr(attributeType, Collections.singleton(value), queryOptions);
+   public IAtsQuery andAttr(IAttributeType attributeType, String value, QueryOption... queryOption) {
+      return andAttr(attributeType, Collections.singleton(value), queryOption);
    }
 
    @Override

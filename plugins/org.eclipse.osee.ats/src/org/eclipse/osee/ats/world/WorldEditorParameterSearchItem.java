@@ -61,18 +61,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       super(name, LoadView.WorldEditor, oseeImage);
    }
 
-   public WorldEditorParameterSearchItem(String name, LoadView loadView) {
-      this(name, loadView, null);
-   }
-
-   public WorldEditorParameterSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
-      super(name, loadView, oseeImage);
-   }
-
-   public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem) {
-      this(worldSearchItem, null);
-   }
-
    public WorldEditorParameterSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
       super(worldSearchItem, oseeImage);
    }

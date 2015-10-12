@@ -52,9 +52,6 @@ public abstract class TaskEditorParameterSearchItem extends WorldSearchItem impl
       return null;
    }
 
-   /**
-    * @return the firstTime
-    */
    public boolean isFirstTime() {
       if (firstTime) {
          firstTime = false;

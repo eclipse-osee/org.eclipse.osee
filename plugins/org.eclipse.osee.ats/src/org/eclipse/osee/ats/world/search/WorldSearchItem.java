@@ -42,10 +42,6 @@ public abstract class WorldSearchItem {
       ReSearch
    };
 
-   public WorldSearchItem(String name) {
-      this(name, LoadView.WorldEditor);
-   }
-
    public WorldSearchItem(String name, LoadView loadView) {
       this(name, loadView, null);
    }
@@ -60,10 +56,6 @@ public abstract class WorldSearchItem {
 
    public WorldSearchItem(String name, LoadView loadView, KeyedImage oseeImage) {
       this(name, loadView, false, oseeImage);
-   }
-
-   public WorldSearchItem(WorldSearchItem worldSearchItem) {
-      this(worldSearchItem, null);
    }
 
    public WorldSearchItem(WorldSearchItem worldSearchItem, KeyedImage oseeImage) {
