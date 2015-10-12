@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
  * that require extra skynet types to be added to common.
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class AddCommonBranch implements IDbInitializationTask {
@@ -73,9 +73,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
             TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Types to Common Branch");
 
          for (Entry<String, URL> entry : typeMap.entrySet()) {
-            Artifact artifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, BranchManager.getCommonBranch(),
-                  entry.getKey(), GUID.create());
+            Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition,
+               BranchManager.getCommonBranch(), entry.getKey(), GUID.create());
             artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
             InputStream inputStream = null;
             try {

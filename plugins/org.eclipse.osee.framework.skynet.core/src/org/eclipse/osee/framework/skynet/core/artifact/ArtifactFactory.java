@@ -22,8 +22,8 @@ import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
  * @author Ryan D. Brooks
@@ -78,7 +78,7 @@ public abstract class ArtifactFactory {
    }
 
    public static int getNextArtifactId(Long uuid) {
-      return uuid == null ? Lib.generateArtifactIdAsInt().intValue() : uuid.intValue();
+      return uuid == null ? (int) ConnectionHandler.getNextSequence(ART_ID_SEQ) : uuid.intValue();
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

@@ -18,7 +18,7 @@ import org.eclipse.osee.jdbc.JdbcTransaction;
 
 /**
  * This should be modified to use native database sequences
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class JdbcSequenceProvider {
@@ -38,8 +38,9 @@ public class JdbcSequenceProvider {
    private final class JdbcSequenceTx extends JdbcTransaction {
 
       private static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
+      private static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
       private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
-      private static final String INSERT_SEQUENCE =
+      public static final String INSERT_SEQUENCE =
          "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
       private static final String UPDATE_SEQUENCE =
          "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
@@ -85,9 +86,8 @@ public class JdbcSequenceProvider {
                } else {
                   lastValue = currentValue;
                }
-               gotSequence =
-                  client.runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize, sequenceName,
-                     lastValue) == 1;
+               gotSequence = client.runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
+                  sequenceName, lastValue) == 1;
             }
             range.updateRange(lastValue);
          }
@@ -101,7 +101,11 @@ public class JdbcSequenceProvider {
       private void internalInitializeSequence(JdbcConnection connection, String sequenceName) throws OseeCoreException {
          SequenceRange range = getRange(sequenceName);
          range.lastAvailable = 0;
-         client.runPreparedUpdate(connection, INSERT_SEQUENCE, 0, sequenceName);
+         int initalValue = 0;
+         if (sequenceName.equals(ART_ID_SEQ)) {
+            initalValue = 200000;
+         }
+         client.runPreparedUpdate(connection, INSERT_SEQUENCE, initalValue, sequenceName);
       }
    }
 
