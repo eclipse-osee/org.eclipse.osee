@@ -2,8 +2,8 @@
 <launchConfiguration type="org.eclipse.pde.ui.JunitLaunchConfig">
 <setAttribute key="additional_plugins">
 <setEntry value="com.google.guava:15.0.0.v201403281430:default:false"/>
-<setEntry value="org.eclipse.osee.client.integration.tests:0.23.0.qualifier:default:false"/>
-<setEntry value="org.eclipse.osee.client.test.framework:0.23.0.qualifier:default:false"/>
+<setEntry value="org.eclipse.osee.client.integration.tests:0.23.0.qualifier:default:true"/>
+<setEntry value="org.eclipse.osee.client.test.framework:0.23.0.qualifier:default:true"/>
 </setAttribute>
 <booleanAttribute key="append.args" value="true"/>
 <booleanAttribute key="askclear" value="false"/>
@@ -40,7 +40,17 @@
 <stringAttribute key="pde.version" value="3.3"/>
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="run_in_ui_thread" value="true"/>
-<setAttribute key="selected_features"/>
+<setAttribute key="selected_features">
+<setEntry value="org.eclipse.osee.client.demo.feature:default"/>
+<setEntry value="org.eclipse.osee.client.feature:default"/>
+<setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
+<setEntry value="org.eclipse.osee.core.ui.feature:default"/>
+<setEntry value="org.eclipse.osee.define.feature:default"/>
+<setEntry value="org.eclipse.osee.external.feature:default"/>
+<setEntry value="org.eclipse.osee.framework.feature:default"/>
+<setEntry value="org.eclipse.osee.framework.ui.feature:default"/>
+<setEntry value="org.eclipse.sdk:default"/>
+</setAttribute>
 <booleanAttribute key="show_selected_only" value="true"/>
 <stringAttribute key="timestamp" value="1354136077440"/>
 <booleanAttribute key="tracing" value="false"/>
