@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.review;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -55,6 +54,7 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    protected XMembersCombo assigneeCombo;
    protected XCheckBox includeCompletedCheckbox, includeCancelledCheckbox;
    private XReviewStateSearchCombo stateCombo = null;
+   private ReviewWorldSearchItem searchItem;
 
    public ReviewSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.REVIEW_SEARCH);
@@ -380,20 +380,15 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
    }
 
    @Override
-   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
-      ReviewSearchWorkflowSearchItem params = this;
-      final ReviewWorldSearchItem searchItem =
-         new ReviewWorldSearchItem("", params.getSelectedAIs(), params.isIncludeCompletedCheckbox(),
-            params.isIncludeCancelledCheckbox(), false, params.getSelectedVersionArtifact(), params.getSelectedUser(),
-            params.getSelectedReviewFormalType(), params.getSelectedReviewType(), params.getSelectedState());
+   public void setupSearch() {
+      searchItem = new ReviewWorldSearchItem("", getSelectedAIs(), isIncludeCompletedCheckbox(),
+         isIncludeCancelledCheckbox(), false, getSelectedVersionArtifact(), getSelectedUser(),
+         getSelectedReviewFormalType(), getSelectedReviewType(), getSelectedState());
+   }
 
-      return new Callable<Collection<? extends Artifact>>() {
-
-         @Override
-         public Collection<? extends Artifact> call() throws Exception {
-            return searchItem.performSearchGetResults(false);
-         }
-      };
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return searchItem.performSearchGetResults(false);
    }
 
 }

@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 public class WorldEditorSimpleProvider extends WorldEditorProvider {
 
    private final String name;
-   private final Collection<? extends Artifact> artifacts;
+   private final Collection<Artifact> artifacts;
    private final Artifact expandToArtifact;
 
    public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts) {
@@ -39,28 +40,13 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
    public WorldEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, Artifact expandToArtifact, TableLoadOption... tableLoadOption) {
       super(customizeData, tableLoadOption);
       this.name = name;
-      this.artifacts = artifacts;
+      this.artifacts = Collections.castAll(artifacts);
       this.expandToArtifact = expandToArtifact;
    }
 
    @Override
    public IWorldEditorProvider copyProvider() {
       return new WorldEditorSimpleProvider(name, artifacts, customizeData, tableLoadOptions);
-   }
-
-   @Override
-   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
-      boolean useForePend = forcePend;
-      if (!useForePend) {
-         for (TableLoadOption option : getTableLoadOptions()) {
-            if (option == TableLoadOption.ForcePend) {
-               useForePend = true;
-               break;
-            }
-         }
-      }
-      worldEditor.getWorldComposite().getXViewer().setForcePend(useForePend);
-      worldEditor.getWorldComposite().load(name, artifacts, customizeData, expandToArtifact, getTableLoadOptions());
    }
 
    @Override
@@ -72,4 +58,8 @@ public class WorldEditorSimpleProvider extends WorldEditorProvider {
       return expandToArtifact;
    }
 
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return artifacts;
+   }
 }

@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -58,6 +57,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCheckBox includeCompletedCheckbox;
    protected XCheckBox includeCancelledCheckbox;
    private XStateSearchCombo stateCombo = null;
+   private TeamWorldSearchItem searchItem;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.TEAM_WORKFLOW);
@@ -233,7 +233,8 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
 
    public void setSelectedUser(IAtsUser user) throws OseeCoreException {
       if (assigneeCombo != null) {
-         assigneeCombo.set((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
+         assigneeCombo.set(
+            (User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
       }
    }
 
@@ -383,19 +384,15 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    }
 
    @Override
-   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
-      TeamWorkflowSearchWorkflowSearchItem params = this;
-      final TeamWorldSearchItem searchItem =
-         new TeamWorldSearchItem("", params.getSelectedTeamDefinitions(), params.isIncludeCompletedCheckbox(),
-            params.isIncludeCancelledCheckbox(), false, false, params.getSelectedVersionArtifact(),
-            params.getSelectedUser(), params.getSelectedReleased(), params.getSelectedState());
-      return new Callable<Collection<? extends Artifact>>() {
+   public void setupSearch() {
+      searchItem = new TeamWorldSearchItem("", getSelectedTeamDefinitions(),
+         isIncludeCompletedCheckbox(), isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(),
+         getSelectedUser(), getSelectedReleased(), getSelectedState());
+   }
 
-         @Override
-         public Collection<? extends Artifact> call() throws Exception {
-            return searchItem.performSearchGetResults(false);
-         }
-      };
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return searchItem.performSearchGetResults(false);
    }
 
 }

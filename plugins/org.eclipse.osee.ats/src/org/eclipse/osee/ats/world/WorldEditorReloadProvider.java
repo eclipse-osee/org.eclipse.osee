@@ -46,13 +46,11 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
 
    @Override
    public IWorldEditorProvider copyProvider() {
-      return new WorldEditorReloadProvider(name, branchUuid, artUuids, customizeData, tableLoadOptions);
-   }
-
-   @Override
-   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
-      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
-      worldEditor.getWorldComposite().load(name, artifacts, customizeData, getTableLoadOptions());
+      WorldEditorReloadProvider provider =
+         new WorldEditorReloadProvider(name, branchUuid, artUuids, customizeData, tableLoadOptions);
+      provider.setReload(reload);
+      provider.artifacts = artifacts;
+      return provider;
    }
 
    @Override
@@ -79,8 +77,8 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
       } else {
          artifacts = new ArrayList<>();
          if (branchUuid == AtsUtilCore.getAtsBranch().getUuid()) {
-            artifacts.addAll(ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids),
-               AtsUtilCore.getAtsBranch()));
+            artifacts.addAll(
+               ArtifactQuery.getArtifactListFromIds(new ArrayList<Integer>(validartUuids), AtsUtilCore.getAtsBranch()));
             AtsBulkLoad.bulkLoadArtifacts(artifacts);
          }
       }
@@ -96,5 +94,14 @@ public class WorldEditorReloadProvider extends WorldEditorProvider {
          }
       }
       return validartUuids;
+   }
+
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return artifacts;
+   }
+
+   public void setReload(boolean reload) {
+      this.reload = reload;
    }
 }

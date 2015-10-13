@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -67,6 +66,7 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    private XCheckBox teamWorkflowsCheckbox;
    private XCheckBox tasksCheckbox;
    private XStateSearchCombo stateCombo = null;
+   private UserWorldSearchItem searchItem;
 
    public UserSearchWorkflowSearchItem() {
       super("User Search", FrameworkImage.USER);
@@ -228,9 +228,8 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names =
-                        Versions.getNames(teamDefHoldingVersions.getVersions(VersionReleaseType.Both,
-                           VersionLockedType.Both));
+                     Collection<String> names = Versions.getNames(
+                        teamDefHoldingVersions.getVersions(VersionReleaseType.Both, VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
@@ -463,32 +462,26 @@ public class UserSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
+   public void setupSearch() {
       UserSearchWorkflowSearchItem params = this;
       IAtsVersion version = params.getSelectedVersionArtifact();
-      final UserWorldSearchItem searchItem =
-         new UserWorldSearchItem(
-            params.getSelectedUser(),
-            params.getSelectedTeamDefinitions(),
-            (version != null ? Collections.singleton(version) : null),
-            params.getSelectedState(),
-            //
-            (params.isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
-            (params.isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
-            (params.isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
-            (params.isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
-            (params.isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
-            (params.isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
-            (params.isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
-            (params.isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
-            (params.isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None));
-      return new Callable<Collection<? extends Artifact>>() {
+      searchItem = new UserWorldSearchItem(params.getSelectedUser(), params.getSelectedTeamDefinitions(),
+         (version != null ? Collections.singleton(version) : null), params.getSelectedState(),
+         //
+         (params.isAssigneeCheckbox() ? UserSearchOption.Assignee : UserSearchOption.None),
+         (params.isFavoritesCheckbox() ? UserSearchOption.Favorites : UserSearchOption.None),
+         (params.isOriginatedCheckbox() ? UserSearchOption.Originator : UserSearchOption.None),
+         (params.isSubscribedCheckbox() ? UserSearchOption.Subscribed : UserSearchOption.None),
+         (params.isReviewsCheckbox() ? UserSearchOption.IncludeReviews : UserSearchOption.None),
+         (params.isTeamWorkflowsCheckbox() ? UserSearchOption.IncludeTeamWorkflows : UserSearchOption.None),
+         (params.isTasksCheckbox() ? UserSearchOption.IncludeTasks : UserSearchOption.None),
+         (params.isIncludeCancelledCheckbox() ? UserSearchOption.IncludeCancelled : UserSearchOption.None),
+         (params.isIncludeCompletedCheckbox() ? UserSearchOption.IncludeCompleted : UserSearchOption.None));
+   }
 
-         @Override
-         public Collection<? extends Artifact> call() throws Exception {
-            return searchItem.performSearch();
-         }
-      };
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(searchItem.performSearch());
    }
 
 }

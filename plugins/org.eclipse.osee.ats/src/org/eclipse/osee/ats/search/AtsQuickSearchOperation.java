@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.search;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -20,6 +21,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.world.WorldEditorOperation;
 import org.eclipse.osee.ats.world.WorldEditorOperationProvider;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -33,7 +35,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 /**
  * @author Donald G. Dunne
  */
-class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorConsumer {
+class AtsQuickSearchOperation extends AbstractOperation implements WorldEditorOperation, IWorldEditorConsumer {
    Set<Artifact> allArtifacts = new HashSet<>();
    private final AtsQuickSearchData data;
    private WorldEditor worldEditor;
@@ -53,6 +55,17 @@ class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorC
          WorldEditor.open(new WorldEditorOperationProvider(new AtsQuickSearchOperation(data)));
          return;
       }
+      performSearch();
+      if (allArtifacts.isEmpty()) {
+         AWorkbench.popup(getName(), getName() + "\n\nNo Results Found");
+      } else if (worldEditor != null) {
+         worldEditor.getWorldComposite().load(getName(), allArtifacts, TableLoadOption.None);
+      }
+   }
+
+   @Override
+   public Collection<Artifact> performSearch() {
+      allArtifacts.clear();
       for (String str : data.getSearchStr().split(", ")) {
          try {
             Artifact art = AtsArtifactQuery.getArtifactFromId(str);
@@ -78,11 +91,7 @@ class AtsQuickSearchOperation extends AbstractOperation implements IWorldEditorC
             }
          }
       }
-      if (allArtifacts.isEmpty()) {
-         AWorkbench.popup(getName(), getName() + "\n\nNo Results Found");
-      } else if (worldEditor != null) {
-         worldEditor.getWorldComposite().load(getName(), allArtifacts, TableLoadOption.None);
-      }
+      return allArtifacts;
    }
 
    @Override

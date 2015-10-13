@@ -127,6 +127,7 @@ public class WorldReloadTab extends FormPage {
                @Override
                public void run() {
                   if (loadAndRefresh.isSuccess()) {
+                     provider.setReload(false);
                      editor.addPages();
                      editor.removePage(0);
                   }

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
@@ -20,9 +20,9 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
  */
 public class WorldEditorOperationProvider extends WorldEditorProvider implements IWorldEditorConsumer {
 
-   private final AbstractOperation operation;
+   private final WorldEditorOperation operation;
 
-   public WorldEditorOperationProvider(AbstractOperation operation) {
+   public WorldEditorOperationProvider(WorldEditorOperation operation) {
       super(null, new TableLoadOption[] {TableLoadOption.None});
       this.operation = operation;
    }
@@ -30,18 +30,6 @@ public class WorldEditorOperationProvider extends WorldEditorProvider implements
    @Override
    public IWorldEditorProvider copyProvider() {
       return new WorldEditorOperationProvider(operation);
-   }
-
-   @Override
-   public void run(WorldEditor worldEditor, SearchType searchtype, boolean forcePend) {
-      // WorldEditor is provided to the operation independently
-      // Don't need search type cause operation should already handle if it wants to search or re-search
-      if (forcePend) {
-         getWorldEditor().getWorldComposite().getXViewer().setForcePend(true);
-         Operations.executeWork(operation);
-      } else {
-         Operations.executeAsJob(operation, true);
-      }
    }
 
    @Override
@@ -62,6 +50,11 @@ public class WorldEditorOperationProvider extends WorldEditorProvider implements
       if (operation instanceof IWorldEditorConsumer) {
          ((IWorldEditorConsumer) operation).setWorldEditor(worldEditor);
       }
+   }
+
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return operation.performSearch();
    }
 
 }

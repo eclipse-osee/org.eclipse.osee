@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.goal;
 
 import java.util.Collection;
-import java.util.concurrent.Callable;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -19,7 +18,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -78,20 +76,14 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
    }
 
    @Override
-   public Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException {
-      return new Callable<Collection<? extends Artifact>>() {
-
-         @Override
-         public Collection<? extends Artifact> call() throws Exception {
-            return searchItem.performSearchGetResults(false);
-         }
-      };
+   public void setupSearch() {
+      searchItem =
+         new GoalSearchItem("", this.getTitle(), this.isIncludeCompletedCancelled(), this.getUser("Assignee"));
    }
 
    @Override
-   public void createSearchItem() {
-      searchItem =
-         new GoalSearchItem("", this.getTitle(), this.isIncludeCompletedCancelled(), this.getUser("Assignee"));
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return searchItem.performSearchGetResults(false);
    }
 
 }

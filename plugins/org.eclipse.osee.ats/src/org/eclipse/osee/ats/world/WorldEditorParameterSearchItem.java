@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Callable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
@@ -26,6 +24,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -75,7 +74,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
-      worldEditor.getWorldComposite().getXViewer().setForcePend(forcePend);
+      boolean pend = Collections.getAggregate(tableLoadOptions).contains(TableLoadOption.ForcePend) || forcePend;
+      worldEditor.getWorldComposite().getXViewer().setForcePend(pend);
    }
 
    @Override
@@ -110,8 +110,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public boolean isSaveButtonAvailable() {
       return false;
    }
-
-   public abstract Callable<Collection<? extends Artifact>> createSearch() throws OseeCoreException;
 
    public void checkOrStartXmlSb() {
       if (xmlSb == null) {
@@ -276,9 +274,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    /**
-    * Called in the display thread to allow parameters to be retrieved prior to searching in background thread.
+    * Called in the display thread to allow parameters to be retrieved or other setup prior to searching in background
+    * thread.
     */
-   public void createSearchItem() {
+   public void setupSearch() {
       // do nothing
    }
 
