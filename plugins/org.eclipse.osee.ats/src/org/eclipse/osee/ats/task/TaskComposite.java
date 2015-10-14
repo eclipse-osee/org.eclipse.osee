@@ -141,7 +141,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
             @Override
             public void run() {
-               taskXViewer.refresh();
+               taskXViewer.refresh(taskXViewer.getInput());
             }
          });
       }
@@ -161,16 +161,15 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
    public TaskArtifact handleNewTask() {
       TaskArtifact taskArt = null;
       try {
-         EntryComboDialog ed =
-            new EntryComboDialog("Create New Task", "Enter Task Title", RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+         EntryComboDialog ed = new EntryComboDialog("Create New Task", "Enter Task Title",
+            RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
          List<String> validStates =
             RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
          ed.setOptions(validStates);
          if (ed.open() == 0) {
             AtsChangeSet changes = new AtsChangeSet("Create New Task");
-            taskArt =
-               ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
-                  AtsClientService.get().getUserService().getCurrentUser(), ed.getSelection(), changes);
+            taskArt = ((AbstractTaskableArtifact) iXTaskViewer.getAwa()).createNewTask(ed.getEntry(), new Date(),
+               AtsClientService.get().getUserService().getCurrentUser(), ed.getSelection(), changes);
             changes.execute();
             AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
          }
@@ -226,10 +225,8 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
       });
 
       DropTarget target = new DropTarget(taskXViewer.getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {
-         FileTransfer.getInstance(),
-         TextTransfer.getInstance(),
-         ArtifactTransfer.getInstance()});
+      target.setTransfer(
+         new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(), ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
          @Override
