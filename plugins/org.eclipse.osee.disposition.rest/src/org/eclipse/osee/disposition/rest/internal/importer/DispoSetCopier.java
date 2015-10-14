@@ -49,7 +49,6 @@ public class DispoSetCopier {
       // Iterate through every source item since we want to try to find a match for every item in the source
       for (DispoItem sourceItem : sourceItems) {
          DispoItemData destItem = nameToDestItems.get(sourceItem.getName());
-
          if (destItem != null) {
             // Only try to copy over annotations if matching dest item is NOT PASS
             if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
@@ -84,8 +83,8 @@ public class DispoSetCopier {
 
       try {
          boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
-         if (isSameDiscrepancies) {
-            toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report);
+         if (isSameDiscrepancies || isCoverageCopy) {
+            toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
          } else {
             report.addMessageForItem(destItem.getName(),
                "Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid());
@@ -97,7 +96,7 @@ public class DispoSetCopier {
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report) throws JSONException {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report, boolean isSameDiscrepancies) throws JSONException {
       boolean isChangesMade = false;
       DispoItemData newItem = initNewItem(destItem, sourceItem);
       JSONArray newAnnotations = newItem.getAnnotationsList();
@@ -137,29 +136,32 @@ public class DispoSetCopier {
                "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
                sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid());
          } else {
-            DispoAnnotationData newAnnotation = sourceAnnotation;
-
-            if (destDefaultAnntationLocations.contains(sourceLocation)) {
-               /**
-                * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
-                * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting the
-                * annotation
-                */
-               // Make location ref negative to indicate this
-               String locationRefs = sourceAnnotation.getLocationRefs();
-               Integer locationRefAsInt = Integer.valueOf(locationRefs);
-               if (locationRefAsInt > 0) {
-                  newAnnotation.setLocationRefs(String.valueOf(locationRefAsInt * -1));
+            // Try to copy but check if Discrepancy is the same
+            if (isSameDiscrepancies || (isCoverageCopy && isCoveredDiscrepanciesExistInDest(destItem, sourceItem,
+               sourceAnnotation, report))) {
+               DispoAnnotationData newAnnotation = sourceAnnotation;
+               if (destDefaultAnntationLocations.contains(sourceLocation)) {
+                  /**
+                   * The discrepancy of this manual disposition is now covered by a Default Annotation so this Manual
+                   * Annotation is invalid, mark as such by making the location Ref negative, don't bother connecting
+                   * the annotation
+                   */
+                  // Make location ref negative to indicate this
+                  String locationRefs = sourceAnnotation.getLocationRefs();
+                  Integer locationRefAsInt = Integer.valueOf(locationRefs);
+                  if (locationRefAsInt > 0) {
+                     newAnnotation.setLocationRefs(String.valueOf(locationRefAsInt * -1));
+                  }
+                  report.addMessageForItem(destItem.getName(),
+                     "The annotation was copied over but is no longer needed: [%s]", locationRefs);
                }
-               report.addMessageForItem(destItem.getName(),
-                  "The annotation was copied over but is no longer needed: [%s]", locationRefs);
+               connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
+               isChangesMade = true;
+               // Both the source and destination are dispositionable so copy the annotation
+               int nextIndex = newAnnotations.length();
+               newAnnotation.setIndex(nextIndex);
+               newAnnotations.put(nextIndex, DispoUtil.annotationToJsonObj(newAnnotation));
             }
-            connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
-            isChangesMade = true;
-            // Both the source and destination are dispositionable so copy the annotation
-            int nextIndex = newAnnotations.length();
-            newAnnotation.setIndex(nextIndex);
-            newAnnotations.put(nextIndex, DispoUtil.annotationToJsonObj(newAnnotation));
          }
       }
 
@@ -167,11 +169,55 @@ public class DispoSetCopier {
          newItem.setAnnotationsList(newAnnotations);
          String newStatus = connector.getItemStatus(newItem);
          newItem.setStatus(newStatus);
+      } else if (isCoverageCopy) {
+         // We want to take the new import version of this item even though no changes were made, this will only occur if
+         // 1. All the Annotations from the source Item were default, in which case we can ignore those and take the ones from the new import
+         // 2. None of the non-default Annotations cover a Discrepancy in the new import, in which case don't copy them over: MIGHT CHANGE THIS
+         newItem = destItem;
+         newItem.setGuid(sourceItem.getGuid());
       } else {
          report.addMessageForItem(destItem.getName(), "Nothing to copy");
          newItem = null;
       }
       return newItem;
+   }
+
+   private boolean isCoveredDiscrepanciesExistInDest(DispoItem destItem, DispoItem sourceItem, DispoAnnotationData annotation, OperationReport report) {
+      JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+      List<String> destDescrepanciesTextOnly =
+         discrepanciesTextOnly(destItem.getDiscrepanciesList(), report, destItem.getName());
+      JSONObject sourceDiscrepancies = sourceItem.getDiscrepanciesList();
+      try {
+         for (int i = 0; i < idsOfCoveredDiscrepancies.length(); i++) {
+            String key = idsOfCoveredDiscrepancies.getString(i);
+            Discrepancy coveredDiscrepancy = DispoUtil.jsonObjToDiscrepancy(sourceDiscrepancies.getJSONObject(key));
+            if (!destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
+               return false;
+            }
+         }
+      } catch (JSONException ex) {
+         report.addMessageForItem(sourceItem.getName(), "Bad JSON!");
+         return false;
+      }
+
+      return true;
+   }
+
+   private List<String> discrepanciesTextOnly(JSONObject discrepancies, OperationReport report, String itemName) {
+      List<String> toReturn = new ArrayList<>();
+      @SuppressWarnings("rawtypes")
+      Iterator keys = discrepancies.keys();
+      while (keys.hasNext()) {
+         String key = (String) keys.next();
+         try {
+            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancies.getJSONObject(key));
+            toReturn.add(discrepancy.getText());
+         } catch (JSONException ex) {
+            report.addMessageForItem(itemName, "Bad JSON!");
+         }
+      }
+
+      return toReturn;
    }
 
    private DispoItemData initNewItem(DispoItemData destItem, DispoItem sourceItem) throws JSONException {
