@@ -67,7 +67,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
          // do nothing
       }
       if (user != null) {
-         atsUser = getUserById(user.getUserId());
+         atsUser = new AtsUser(user);
       }
       return atsUser;
    }
