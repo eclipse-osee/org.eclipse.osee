@@ -435,7 +435,15 @@ app.controller('userController', [
                 });
                 
 	             if($rootScope.type == 'codeCoverage') {
-	               	$scope.annotations.sort(function(a, b){return a.locationRefs-b.locationRefs});
+	               	$scope.annotations.sort(function(a, b){
+	               			if(a.locationRefs == undefined) {
+	               				return 1;
+	               			}
+	               			if(b.locationRefs == undefined) {
+	               				return -1;
+	               			}
+	               			return a.locationRefs-b.locationRefs
+	               		});
 	             }
 
             }
