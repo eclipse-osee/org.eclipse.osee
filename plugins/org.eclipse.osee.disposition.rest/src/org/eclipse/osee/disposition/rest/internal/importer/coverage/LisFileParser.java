@@ -133,26 +133,32 @@ public class LisFileParser implements DispoImporterApi {
 
       for (DispoItem item : toReturn) {
          if (item.getStatus().equalsIgnoreCase("incomplete")) {
-            createPlaceHolderAnnotations((DispoItemData) item);
+            createPlaceHolderAnnotations((DispoItemData) item, report);
          }
       }
       return toReturn;
    }
 
-   private void createPlaceHolderAnnotations(DispoItemData item) {
-      JSONObject discrepanciesList = item.getDiscrepanciesList();
-      @SuppressWarnings("rawtypes")
-      Iterator keys = discrepanciesList.keys();
-      while (keys.hasNext()) {
-         String key = (String) keys.next();
-         try {
-            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
-            addBlankAnnotationForForUncoveredLine(item, Integer.toString(discrepancy.getLocation()),
-               discrepancy.getText());
+   private void createPlaceHolderAnnotations(DispoItemData item, OperationReport report) {
+      DispoConnector connetor = new DispoConnector();
+      try {
+         List<Integer> uncovered = connetor.getAllUncoveredDiscprepancies(item);
+         if (!uncovered.isEmpty()) {
+            JSONObject discrepanciesList = item.getDiscrepanciesList();
+            @SuppressWarnings("rawtypes")
+            Iterator keys = discrepanciesList.keys();
+            while (keys.hasNext()) {
+               String key = (String) keys.next();
+               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
+               if (uncovered.contains(discrepancy.getLocation())) {
+                  addBlankAnnotationForForUncoveredLine(item, Integer.toString(discrepancy.getLocation()),
+                     discrepancy.getText());
+               }
 
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
+            }
          }
+      } catch (JSONException ex) {
+         report.addMessageForItem(item.getName(), "Could not add Place Holder Annotations: %s", ex.getCause());
       }
    }
 
@@ -205,7 +211,8 @@ public class LisFileParser implements DispoImporterApi {
 
          String lisFileNameFullPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileNameFullPath)) {
-            report.addOtherMessage("Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
+            report.addOtherMessage(
+               "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
          }
          String normalizedPath = lisFileNameFullPath.replaceAll("\\\\", "/");
          File lisFile = new File(normalizedPath);
