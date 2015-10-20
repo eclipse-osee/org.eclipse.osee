@@ -27,7 +27,6 @@ import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.IS_PAREN
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyListOf;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
@@ -46,7 +45,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -136,8 +134,6 @@ public class RelationManagerImplTest {
    // @formatter:on
 
    private RelationManager manager;
-   private static final Identifiable<String> id = new DefaultBasicArtifact(0, "", "");
-   private static final Class<Identifiable<String>> identifiableClass = (Class<Identifiable<String>>) id.getClass();
 
    @Before
    public void setUp() {
@@ -536,7 +532,7 @@ public class RelationManagerImplTest {
       verify(container1).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(relationFactory).createRelation(node1, TYPE_1, node2);
-      verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), anyListOf(identifiableClass));
+      verify(orderManager1).setOrder(eq(typeSide), eq(LEXICOGRAPHICAL_ASC), sortedListCaptor.capture());
       verify(container1).add(TYPE_1.getGuid(), relation1);
       verify(container2).add(TYPE_1.getGuid(), relation1);
    }
@@ -564,7 +560,7 @@ public class RelationManagerImplTest {
       verify(container2).getRelation(node1, TYPE_1, node2, INCLUDE_DELETED);
       verify(relationFactory).createRelation(node1, TYPE_1, node2);
       verify(orderManager1).getSorterId(typeSide);
-      verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), anyListOf(identifiableClass));
+      verify(orderManager1).setOrder(eq(typeSide), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1).add(TYPE_1.getGuid(), relation1);
       verify(container2).add(TYPE_1.getGuid(), relation1);
    }
@@ -630,7 +626,7 @@ public class RelationManagerImplTest {
       verify(container1).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2).add(DEFAULT_HIERARCHY.getGuid(), relation1);
    }
@@ -656,7 +652,7 @@ public class RelationManagerImplTest {
       verify(container2).getRelation(node1, DEFAULT_HIERARCHY, node2, INCLUDE_DELETED);
 
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2).add(DEFAULT_HIERARCHY.getGuid(), relation1);
    }
@@ -679,7 +675,7 @@ public class RelationManagerImplTest {
       manager.addChild(session, node1, node2);
 
       verify(orderManager1).getSorterId(Default_Hierarchical__Child);
-      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), anyListOf(identifiableClass));
+      verify(orderManager1).setOrder(eq(Default_Hierarchical__Child), eq(UNORDERED), sortedListCaptor.capture());
       verify(container1, times(1)).add(DEFAULT_HIERARCHY.getGuid(), relation1);
       verify(container2, times(0)).add(DEFAULT_HIERARCHY.getGuid(), relation1);
 
