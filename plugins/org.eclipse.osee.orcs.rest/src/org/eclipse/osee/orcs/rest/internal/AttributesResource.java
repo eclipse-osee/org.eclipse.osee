@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 @Path("attribute")
 public class AttributesResource {
 
-   // Allows to insert contextual objects into the class, 
+   // Allows insertion of contextual objects into the class,
    // e.g. ServletContext, Request, Response, UriInfo
    @Context
    private final UriInfo uriInfo;
@@ -38,9 +38,9 @@ public class AttributesResource {
    private final Request request;
 
    private final Long branchUuid;
-   private final String artifactUuid;
+   private final Long artifactUuid;
 
-   public AttributesResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid) {
+   public AttributesResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -62,7 +62,7 @@ public class AttributesResource {
    public String getAllAttributes() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      ArtifactReadable artifact = factory.fromBranch(branch).andGuid(artifactUuid).getResults().getExactlyOne();
+      ArtifactReadable artifact = factory.fromBranch(branch).andUuid(artifactUuid).getResults().getExactlyOne();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(artifact.getAttributes());

@@ -38,15 +38,15 @@ public class AttributeResource {
    private final Request request;
 
    private final Long branchUuid;
-   private final String artifactUuid;
+   private final Long artifactUuid;
    private final int attrId;
    private final int transactionId;
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attributeId) {
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId) {
       this(uriInfo, request, branchUuid, artifactUuid, attributeId, -1);
    }
 
-   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid, int attributeId, int transactionId) {
+   public AttributeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, int attributeId, int transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -60,7 +60,7 @@ public class AttributeResource {
    public String getAsText() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      QueryBuilder queryBuilder = factory.fromBranch(branch).andGuid(artifactUuid);
+      QueryBuilder queryBuilder = factory.fromBranch(branch).andUuid(artifactUuid);
       if (transactionId > 0) {
          queryBuilder.fromTransaction(transactionId);
       }

@@ -55,7 +55,7 @@ public class ArtifactsResource {
    }
 
    @Path("{uuid}")
-   public ArtifactResource getArtifact(@PathParam("uuid") String artifactUuid) {
+   public ArtifactResource getArtifact(@PathParam("uuid") Long artifactUuid) {
       return new ArtifactResource(uriInfo, request, branchUuid, artifactUuid);
    }
 

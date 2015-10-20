@@ -69,14 +69,14 @@ public class HtmlWriter {
 
       int attrId = attribute.getLocalId();
       URI uri = uriInfo.getAbsolutePathBuilder().path("{attributeId}").build(attrId);
-      data.put("AttributeId", asLink(uri.toASCIIString(), String.valueOf(attrId)));
+      data.put("AttributeId", asLink(uri.getPath(), String.valueOf(attrId)));
       return data;
    }
 
    private Map<String, Object> toData(ArtifactReadable artifact) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", artifact.getName());
-      data.put("Uuid", artifact.getGuid());
+      data.put("Artifact Id", artifact.getUuid());
       data.put("Tx Id", artifact.getTransaction());
       IOseeBranch branch = artifact.getBranch();
 
@@ -86,13 +86,13 @@ public class HtmlWriter {
       } else {
          uri = uriInfo.getAbsolutePathBuilder().path("../../../{uuid}").build(branch.getUuid());
       }
-      data.put("Branch", asLink(uri.toASCIIString(), branch.getName()));
+      data.put("Branch", asLink(uri.getPath(), branch.getName()));
 
       Collection<? extends IAttributeType> types = artifact.getExistingAttributeTypes();
       for (IAttributeType type : types) {
          for (AttributeReadable<?> attr : artifact.getAttributes(type)) {
             URI attrUri = uriInfo.getAbsolutePathBuilder().path("/attribute/{attributeId}").build(attr.getLocalId());
-            String label = asLink(attrUri.toASCIIString(), type.getName());
+            String label = asLink(attrUri.getPath(), type.getName());
             String value = attr.getDisplayableString();
             data.put(label, value == null ? "<NULL>" : value);
          }
@@ -102,12 +102,12 @@ public class HtmlWriter {
       for (ArtifactReadable art : artifact.getChildren()) {
          URI uri1;
          if (isAtEndOfPath(uriInfo.getPath(), "artifact")) {
-            uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getGuid());
+            uri1 = uriInfo.getAbsolutePathBuilder().path("{uuid}").build(art.getUuid());
          } else {
-            uri1 = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(art.getGuid());
+            uri1 = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(art.getUuid());
          }
          String value = art.getName();
-         data.put("Child " + ++count, asLink(uri1.toASCIIString(), value == null ? "<NULL>" : value));
+         data.put("Child " + ++count, asLink(uri1.getPath(), value == null ? "<NULL>" : value));
       }
       return data;
    }
@@ -130,7 +130,7 @@ public class HtmlWriter {
             } else {
                uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(parent.getGuid());
             }
-            data.put("Parent", asLink(uri.toASCIIString(), parent.getName()));
+            data.put("Parent", asLink(uri.getPath(), parent.getName()));
          } catch (OseeCoreException ex) {
             data.put("Parent", "Root");
          }
@@ -141,7 +141,7 @@ public class HtmlWriter {
          } else {
             uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}/artifact").build(branch.getUuid());
          }
-         data.put("Artifacts", asLink(uri.toASCIIString(), "Hierarchy"));
+         data.put("Artifacts", asLink(uri.getPath(), "Hierarchy"));
       }
       return data;
    }
@@ -165,7 +165,7 @@ public class HtmlWriter {
       } else {
          uri = uriInfo.getAbsolutePathBuilder().path("../{uuid}").build(branch.getUuid());
       }
-      data.put("Branch", asLink(uri.toASCIIString(), branch.getName()));
+      data.put("Branch", asLink(uri.getPath(), branch.getName()));
       return data;
    }
 

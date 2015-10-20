@@ -35,9 +35,9 @@ public class ArtifactResource {
    Request request;
 
    Long branchUuid;
-   String artifactUuid;
+   Long artifactUuid;
 
-   public ArtifactResource(UriInfo uriInfo, Request request, Long branchUuid, String artifactUuid) {
+   public ArtifactResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -54,7 +54,7 @@ public class ArtifactResource {
    public String getAsHtml() throws OseeCoreException {
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      ResultSet<ArtifactReadable> arts = factory.fromBranch(branch).andGuid(artifactUuid).getResults();
+      ResultSet<ArtifactReadable> arts = factory.fromBranch(branch).andUuid(artifactUuid).getResults();
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(arts);
    }
