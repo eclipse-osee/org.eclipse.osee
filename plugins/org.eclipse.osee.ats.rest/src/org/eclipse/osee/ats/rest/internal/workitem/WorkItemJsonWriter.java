@@ -104,6 +104,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       writer.writeStringField("Name", config.getName());
       String atsId = action.getSoleAttributeValue(AtsAttributeTypes.AtsId, "");
       writer.writeStringField("AtsId", atsId);
+      writer.writeStringField("ArtifactType", action.getArtifactType().getName());
       String actionUrl = RestUtil.getActionUrl(atsId, ATS_UI_ACTION_PREFIX, atsServer);
       writer.writeStringField("actionLocation", actionUrl);
       if (!identityView) {

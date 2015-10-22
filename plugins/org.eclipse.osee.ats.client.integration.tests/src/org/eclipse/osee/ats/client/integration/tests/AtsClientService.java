@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
+import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionActivityEndpointApi;
 import org.eclipse.osee.ats.api.insertion.InsertionEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
@@ -20,6 +21,8 @@ import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.client.workflow.WorkItemJsonReader;
+import org.eclipse.osee.ats.core.client.workflow.WorkItemsJsonReader;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -42,6 +45,7 @@ public class AtsClientService {
    private static AtsRuleEndpointApi ruleEp;
    private static AtsNotifyEndpointApi notifyEp;
    private static AtsConfigEndpointApi configEp;
+   private static AtsWorkPackageEndpointApi workPackageEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -51,19 +55,20 @@ public class AtsClientService {
       return atsClient;
    }
 
-   private static JaxRsWebTarget getTarget() {
+   private static JaxRsWebTarget getAtsTarget() {
       if (target == null) {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
          JaxRsClient jaxRsClient = JaxRsClient.newBuilder().createThreadSafeProxyClients(true).build();
-         target = jaxRsClient.target(atsUri);
+         target = jaxRsClient.target(atsUri).register(WorkItemJsonReader.class);
+         target = target.register(WorkItemsJsonReader.class);
       }
       return target;
    }
 
    public static AgileEndpointApi getAgile() {
       if (agile == null) {
-         agile = getTarget().newProxy(AgileEndpointApi.class);
+         agile = getAtsTarget().newProxy(AgileEndpointApi.class);
       }
       return agile;
    }
@@ -80,58 +85,65 @@ public class AtsClientService {
 
    public static CountryEndpointApi getCountryEp() {
       if (countryEp == null) {
-         countryEp = getTarget().newProxy(CountryEndpointApi.class);
+         countryEp = getAtsTarget().newProxy(CountryEndpointApi.class);
       }
       return countryEp;
    }
 
    public static ProgramEndpointApi getProgramEp() {
       if (programEp == null) {
-         programEp = getTarget().newProxy(ProgramEndpointApi.class);
+         programEp = getAtsTarget().newProxy(ProgramEndpointApi.class);
       }
       return programEp;
    }
 
    public static InsertionEndpointApi getInsertionEp() {
       if (insertionEp == null) {
-         insertionEp = getTarget().newProxy(InsertionEndpointApi.class);
+         insertionEp = getAtsTarget().newProxy(InsertionEndpointApi.class);
       }
       return insertionEp;
    }
 
    public static InsertionActivityEndpointApi getInsertionActivityEp() {
       if (insertionActivityEp == null) {
-         insertionActivityEp = getTarget().newProxy(InsertionActivityEndpointApi.class);
+         insertionActivityEp = getAtsTarget().newProxy(InsertionActivityEndpointApi.class);
       }
       return insertionActivityEp;
    }
 
    public static AtsTaskEndpointApi getTaskEp() {
       if (taskEp == null) {
-         taskEp = getTarget().newProxy(AtsTaskEndpointApi.class);
+         taskEp = getAtsTarget().newProxy(AtsTaskEndpointApi.class);
       }
       return taskEp;
    }
 
    public static AtsRuleEndpointApi getRuleEp() {
       if (ruleEp == null) {
-         ruleEp = getTarget().newProxy(AtsRuleEndpointApi.class);
+         ruleEp = getAtsTarget().newProxy(AtsRuleEndpointApi.class);
       }
       return ruleEp;
    }
 
    public static AtsNotifyEndpointApi getNotifyEndpoint() {
       if (notifyEp == null) {
-         notifyEp = getTarget().newProxy(AtsNotifyEndpointApi.class);
+         notifyEp = getAtsTarget().newProxy(AtsNotifyEndpointApi.class);
       }
       return notifyEp;
    }
 
    public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
-         configEp = getTarget().newProxy(AtsConfigEndpointApi.class);
+         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
       }
       return configEp;
+   }
+
+   public static AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
+      if (workPackageEp == null) {
+         workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
+      }
+      return workPackageEp;
    }
 
 }

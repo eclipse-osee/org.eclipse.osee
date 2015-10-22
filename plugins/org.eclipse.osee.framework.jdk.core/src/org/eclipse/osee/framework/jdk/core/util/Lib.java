@@ -35,6 +35,8 @@ import java.io.UnsupportedEncodingException;
 import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryUsage;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -1743,6 +1745,22 @@ public final class Lib {
          result = result + word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase() + " ";
       }
       return result;
+   }
+
+   public static boolean isCollectionOfType(Class<?> type, Type genericType, Class<?> ofType) {
+      boolean isWriteable = false;
+      if (Collection.class.isAssignableFrom(type) && genericType instanceof ParameterizedType) {
+         ParameterizedType parameterizedType = (ParameterizedType) genericType;
+         Type[] actualTypeArgs = parameterizedType.getActualTypeArguments();
+         if (actualTypeArgs.length == 1) {
+            Type t = actualTypeArgs[0];
+            if (t instanceof Class) {
+               Class<?> clazz = (Class<?>) t;
+               isWriteable = ofType.isAssignableFrom(clazz);
+            }
+         }
+      }
+      return isWriteable;
    }
 
 }

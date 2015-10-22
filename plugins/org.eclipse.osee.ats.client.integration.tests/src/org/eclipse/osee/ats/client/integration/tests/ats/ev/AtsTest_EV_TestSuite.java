@@ -14,9 +14,12 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SearchWorkPackageOperationTest.class, EarnedValueReportOperationTest.class})
+@Suite.SuiteClasses({
+   EarnedValueReportOperationTest.class,
+   AtsWorkPackageEndpointImplTest.class,
+   SearchWorkPackageOperationTest.class})
+
 /**
- *
  * @author Donald G. Dunne
  */
 public class AtsTest_EV_TestSuite {

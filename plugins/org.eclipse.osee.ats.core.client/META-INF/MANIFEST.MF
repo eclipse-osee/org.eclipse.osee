@@ -9,8 +9,11 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: com.google.common.cache,
  com.google.inject,
- javax.ws.rs.client;version="2.0.0",
- javax.ws.rs.core;version="2.0.0",
+ javax.ws.rs,
+ javax.ws.rs.client,
+ javax.ws.rs.core,
+ javax.ws.rs.ext,
+ org.codehaus.jackson,
  org.eclipse.core.runtime,
  org.eclipse.core.runtime.jobs,
  org.eclipse.osee.ats.core.ai,

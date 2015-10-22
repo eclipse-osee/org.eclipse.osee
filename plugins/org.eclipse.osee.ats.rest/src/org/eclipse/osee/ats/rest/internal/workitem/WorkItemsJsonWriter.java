@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import javax.ws.rs.WebApplicationException;
@@ -25,6 +24,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
@@ -57,19 +57,7 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
 
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-      boolean isWriteable = false;
-      if (Collection.class.isAssignableFrom(type) && genericType instanceof ParameterizedType) {
-         ParameterizedType parameterizedType = (ParameterizedType) genericType;
-         Type[] actualTypeArgs = parameterizedType.getActualTypeArguments();
-         if (actualTypeArgs.length == 1) {
-            Type t = actualTypeArgs[0];
-            if (t instanceof Class) {
-               Class<?> clazz = (Class<?>) t;
-               isWriteable = IAtsWorkItem.class.isAssignableFrom(clazz);
-            }
-         }
-      }
-      return isWriteable;
+      return Lib.isCollectionOfType(type, genericType, IAtsWorkItem.class);
    }
 
    private boolean matches(Class<? extends Annotation> toMatch, Annotation[] annotations) {
