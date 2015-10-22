@@ -202,6 +202,7 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       if (!attributeValues.isEmpty()) {
          workFlowDefId = (String) attributeValues.iterator().next();
       }
+
       if (Strings.isValid(workFlowDefId)) {
          IWorkDefinitionMatch match = getWorkDefinition(workFlowDefId);
          if (match.isMatched()) {
@@ -264,19 +265,20 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
     * @param task - if null, returned WorkDefinition will be proposed; else returned will be actual
     */
    private IWorkDefinitionMatch getWorkDefinitionForTask(IAtsTeamWorkflow teamWf, IAtsTask task) throws OseeCoreException {
-      IWorkDefinitionMatch match = new WorkDefinitionMatch();
-      for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-         String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
-         if (Strings.isValid(workFlowDefId)) {
-            match = getWorkDefinition(workFlowDefId);
-            match.addTrace(
-               (String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId)));
-            break;
-         }
-      }
+      // If task specifies it's own workflow id, use it
+      IWorkDefinitionMatch match =
+         task == null ? new WorkDefinitionMatch() : getWorkDefinitionFromArtifactsAttributeValue(task);
       if (!match.isMatched() && task != null) {
-         // If task specifies it's own workflow id, use it
-         match = getWorkDefinitionFromArtifactsAttributeValue(task);
+         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+            String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
+            attributeResolver.getSoleAttributeValue(task.getStoreObject(), AtsAttributeTypes.WorkflowDefinition, null);
+            if (Strings.isValid(workFlowDefId)) {
+               match = getWorkDefinition(workFlowDefId);
+               match.addTrace((String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(),
+                  workFlowDefId)));
+               break;
+            }
+         }
       }
       if (!match.isMatched()) {
          // Else If parent SMA has a related task definition workflow id specified, use it

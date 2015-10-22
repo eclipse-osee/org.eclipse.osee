@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionStore;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.util.CacheProvider;
@@ -49,6 +50,7 @@ import org.mockito.MockitoAnnotations;
 public class AtsWorkDefinitionAdminImplTest {
 
    private static final String MyPeerToPeerWorkDefId = "myPeerToPeerWorkDef";
+   private static final String MyTaskWorkDefId = "WorkDef_Task_Test_Review";
 
    // @formatter:off
    @Mock IAtsTeamDefinition topTeamDef;
@@ -63,9 +65,11 @@ public class AtsWorkDefinitionAdminImplTest {
    @Mock IAtsTeamWorkflow teamWf;
    @Mock IAtsWorkDefinition defaultPeerToPeerWorkDef;
    @Mock IAtsWorkDefinition myPeerToPeerWorkDef;
+   @Mock IAtsWorkDefinition myTaskWorkDef;
    @Mock ITeamWorkflowProvidersLazy teamWorkflowProviders;
    @Mock CacheProvider<AtsWorkDefinitionCache> cacheProvider;
    @Mock IAttributeResolver attributeResolver;
+   @Mock IAtsTask task;
 
    private AtsWorkDefinitionAdminImpl workDefAmin;
 
@@ -87,8 +91,8 @@ public class AtsWorkDefinitionAdminImplTest {
       AtsWorkDefinitionCache cache = new AtsWorkDefinitionCache();
       when(cacheProvider.get()).thenReturn(cache);
 
-      workDefAmin = new AtsWorkDefinitionAdminImpl(cacheProvider, workDefinitionService, attributeResolver,
-         teamWorkflowProviders);
+      workDefAmin =
+         new AtsWorkDefinitionAdminImpl(cacheProvider, workDefinitionService, attributeResolver, teamWorkflowProviders);
    }
 
    @Test
@@ -219,6 +223,18 @@ public class AtsWorkDefinitionAdminImplTest {
 
       IWorkDefinitionMatch match = workDefAmin.getWorkDefinition(peerReview);
       assertEquals(defaultPeerToPeerWorkDef, match.getWorkDefinition());
+   }
+
+   @Test
+   public void testGetWorkDefinitionForTaskWithSpecifiedId() throws Exception {
+      List<Object> attrValues = new ArrayList<>();
+      attrValues.add(MyTaskWorkDefId);
+
+      when(attributeResolver.getAttributeValues(task, AtsAttributeTypes.WorkflowDefinition)).thenReturn(attrValues);
+      when(workDefinitionService.getWorkDef(eq(MyTaskWorkDefId), any(XResultData.class))).thenReturn(myTaskWorkDef);
+
+      IWorkDefinitionMatch match = workDefAmin.getWorkDefinitionForTask(task);
+      assertEquals(match.getWorkDefinition(), myTaskWorkDef);
    }
 
 }
