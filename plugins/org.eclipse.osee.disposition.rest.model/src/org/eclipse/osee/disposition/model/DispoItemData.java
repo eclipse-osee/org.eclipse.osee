@@ -208,13 +208,4 @@ public class DispoItemData implements DispoItem {
       this.methodNumber = methodNumber;
    }
 
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
-}

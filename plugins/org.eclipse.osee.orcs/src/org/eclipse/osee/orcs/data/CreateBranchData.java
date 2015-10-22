@@ -157,16 +157,6 @@ public class CreateBranchData implements Identifiable<Long> {
       return false;
    }
 
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    public boolean isTxCopyBranchType() {
       return txCopyBranchType;
    }

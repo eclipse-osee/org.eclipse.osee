@@ -149,16 +149,6 @@ public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, 
    }
 
    @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public Long getUuid() {
       return uuid;
    }

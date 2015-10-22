@@ -75,13 +75,4 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.importState = importState;
    }
 
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
-}

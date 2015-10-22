@@ -115,16 +115,6 @@ public class MockWorkDefinition implements IAtsWorkDefinition {
    }
 
    @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public String getName() {
       return name;
    }

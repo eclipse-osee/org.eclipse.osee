@@ -300,10 +300,7 @@ public class ArtifactMatchInterpreterTest {
             return null;
          }
 
-         @Override
-         public boolean matches(Identity<?>... identities) {
-            return false;
-         }
+         
 
          @Override
          public long getUuid() {

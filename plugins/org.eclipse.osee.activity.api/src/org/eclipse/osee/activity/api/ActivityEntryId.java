@@ -51,16 +51,6 @@ public class ActivityEntryId implements Identity<Long> {
    }
 
    @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   @Override
    public String toString() {
       return "ActivityEntryId [id=" + id + "]";
    }

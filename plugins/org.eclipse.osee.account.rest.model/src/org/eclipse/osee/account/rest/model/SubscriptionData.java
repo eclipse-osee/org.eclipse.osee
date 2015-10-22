@@ -84,14 +84,4 @@ public class SubscriptionData implements Identifiable<String> {
       return String.valueOf(getGuid());
    }
 
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
-
-}

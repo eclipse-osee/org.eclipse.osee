@@ -71,10 +71,7 @@ public class AtsLogWorkPage extends StateXWidgetPage {
          return null;
       }
 
-      @Override
-      public boolean matches(Identity<?>... identities) {
-         return false;
-      }
+      
 
    }
 

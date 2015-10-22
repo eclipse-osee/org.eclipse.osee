@@ -102,14 +102,4 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
       return super.getLocalId();
    }
 
-   @Override
-   public boolean matches(Identity<?>... identities) {
-      for (Identity<?> identity : identities) {
-         if (identity.getGuid().equals(this.getGuid())) {
-            return true;
-         }
-      }
-      return false;
    }
-
-}

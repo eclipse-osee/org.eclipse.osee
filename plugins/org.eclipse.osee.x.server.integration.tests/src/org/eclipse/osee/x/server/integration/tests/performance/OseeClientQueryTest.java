@@ -55,10 +55,7 @@ public class OseeClientQueryTest {
          return 3L;
       }
 
-      @Override
-      public boolean matches(Identity<?>... identities) {
-         return false;
-      }
+      
 
       @Override
       public String getName() {
