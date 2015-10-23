@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
+import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 
 /**
@@ -84,7 +86,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
-   public void execute() throws OseeCoreException {
+   public ITransaction execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
       if (objects.isEmpty() && deleteObjects.isEmpty()) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
@@ -109,7 +111,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             throw new OseeArgumentException("AtsChangeSet: Unhandled deleteObject type: " + obj);
          }
       }
-      getTransaction().commit();
+      TransactionReadable transactionReadable = getTransaction().commit();
       for (IExecuteListener listener : listeners) {
          listener.changesStored(this);
       }
@@ -119,6 +121,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          WorkflowRuleRunner runner = new WorkflowRuleRunner(RuleEventType.CreateWorkflow, workItemsCreated, atsServer);
          runner.run();
       }
+      return transactionReadable;
    }
 
    @Override

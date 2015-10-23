@@ -25,6 +25,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -79,6 +80,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
 
    private AccessPolicy access;
    private int transactionId = -1;
+   private TransactionRecord transaction;
 
    protected SkynetTransaction(TxMonitor<Branch> txMonitor, Branch branch, String uuid, String comment) {
       super(txMonitor, branch, uuid, comment);
@@ -383,8 +385,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private IOperation createStorageOp() throws OseeCoreException {
-      TransactionRecord transaction =
-         TransactionManager.internalCreateTransactionRecord(getBranch(), getAuthor(), comment);
+      transaction = TransactionManager.internalCreateTransactionRecord(getBranch(), getAuthor(), comment);
       transactionId = transaction.getId();
       return new StoreSkynetTransactionOperation(getName(), getBranch(), transaction, getTransactionData(),
          getArtifactReferences());
@@ -413,8 +414,9 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    //TODO this method needs to be removed
-   public void execute() throws OseeCoreException {
+   public ITransaction execute() throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(this);
+      return transaction;
    }
 
 }

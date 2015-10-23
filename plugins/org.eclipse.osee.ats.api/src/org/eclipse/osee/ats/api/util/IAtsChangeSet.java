@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -33,7 +34,7 @@ public interface IAtsChangeSet {
 
    Collection<Object> getObjects();
 
-   void execute() throws OseeCoreException;
+   ITransaction execute() throws OseeCoreException;
 
    void clear();
 
