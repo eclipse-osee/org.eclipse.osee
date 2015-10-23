@@ -9,7 +9,7 @@
 	<feature url="features/org.eclipse.osee.client.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.client.feature.source" version="0.23.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
-	<feature url="features/org.eclipse.osee.client.ote.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.client.ote.feature.source" version="0.23.0.qualifier">
+	<feature url="features/org.eclipse.osee.client.ote.rdt.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.client.ote.rdt.feature.source" version="0.23.0.qualifier">
       <category name="org.eclipse.osee.client.all"/>
    </feature>
 	<feature url="features/org.eclipse.osee.core.runtime.feature.source_0.23.0.qualifier.jar" id="org.eclipse.osee.core.runtime.feature.source" version="0.23.0.qualifier">

@@ -54,7 +54,7 @@
 			</case>
 			<case value="ote">
 				<property name="osee-build-stage" value="osee-ote-client" />
-				<property name="osee-build-directory" value="org.eclipse.osee.ote.parent" />
+				<property name="osee-build-directory" value="org.eclipse.osee.ote.rdt.parent" />
 			</case>
 			<case value="osee-client">
 				<property name="osee-build-stage" value="osee-client" />

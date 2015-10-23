@@ -16,33 +16,76 @@
 	<name>OSEE X Server - Parent (Incubation)</name>
 	<version>0.23.0-SNAPSHOT</version>
 
-	<modules>
-		<module>../../plugins/org.eclipse.osee.define.report.api</module>
-		<module>../../plugins/org.eclipse.osee.define.report</module>
-		<module>../../plugins/org.eclipse.osee.define.report.test</module>
-
-		<module>../../plugins/org.eclipse.osee.app</module>
-		<module>../../plugins/org.eclipse.osee.app.test</module>
-
-		<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.server</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
-
-		<module>../../plugins/org.eclipse.osee.web.ui</module>
-		<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
-		
-		<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
-
-		<module>../../features/org.eclipse.osee.x.server.feature</module>
-		<module>../../features/org.eclipse.osee.x.server.external.feature</module>
-
-		<module>../../plugins/org.eclipse.osee.x.server.p2</module>
-
-		<module>../../plugins/org.eclipse.osee.x.server.integration.tests</module>
-	</modules>
-
 	<profiles>
+
+	<profile>
+		<id>coverage-minimal</id>
+		<activation>
+			<property>
+				<name>no-int-tests</name>
+			</property>
+		</activation>
+		<modules>
+			<module>../../plugins/org.eclipse.osee.define.report.api</module>
+			<module>../../plugins/org.eclipse.osee.define.report</module>
+			<module>../../plugins/org.eclipse.osee.define.report.test</module>
+
+			<module>../../plugins/org.eclipse.osee.app</module>
+			<module>../../plugins/org.eclipse.osee.app.test</module>
+
+			<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
+			<module>../../plugins/org.eclipse.osee.framework.core.server</module>
+			<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
+			<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
+
+			<module>../../plugins/org.eclipse.osee.web.ui</module>
+			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
+
+			<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
+
+			<module>../../features/org.eclipse.osee.x.server.feature</module>
+			<module>../../features/org.eclipse.osee.x.server.external.feature</module>
+
+			<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+			<!-- <module>../../plugins/org.eclipse.osee.x.server.integration.tests</module> -->
+		</modules>
+	</profile>
+
+	<profile>
+		<id>coverage-release</id>
+		<activation>
+			<property>
+				<name>!no-int-tests</name>
+			</property>
+		</activation>
+		<modules>
+			<module>../../plugins/org.eclipse.osee.define.report.api</module>
+			<module>../../plugins/org.eclipse.osee.define.report</module>
+			<module>../../plugins/org.eclipse.osee.define.report.test</module>
+
+			<module>../../plugins/org.eclipse.osee.app</module>
+			<module>../../plugins/org.eclipse.osee.app.test</module>
+
+			<module>../../plugins/org.eclipse.osee.framework.authentication.ldap.core</module>
+			<module>../../plugins/org.eclipse.osee.framework.core.server</module>
+			<module>../../plugins/org.eclipse.osee.framework.core.server.test</module>
+			<module>../../plugins/org.eclipse.osee.framework.manager.servlet</module>
+
+			<module>../../plugins/org.eclipse.osee.web.ui</module>
+			<!-- <module>../../plugins/org.eclipse.osee.web.ui.test</module> -->
+
+			<module>../../features/org.eclipse.osee.x.server.legacy.feature</module>
+
+			<module>../../features/org.eclipse.osee.x.server.feature</module>
+			<module>../../features/org.eclipse.osee.x.server.external.feature</module>
+
+			<module>../../plugins/org.eclipse.osee.x.server.p2</module>
+			<module>../../plugins/org.eclipse.osee.x.server.integration.tests</module>
+
+		</modules>
+	</profile>
+	
+	
 		<profile>
 			<id>osee-x-server-stage</id>
 			<activation>

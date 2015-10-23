@@ -1057,7 +1057,7 @@
 				<osee-xserver-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.server.p2/target/repository</osee-xserver-site>
 				<osee-runtime-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.runtime.p2/target/repository</osee-runtime-site>
 
-				<osee-ote-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ote.p2/target/repository</osee-ote-site>
+				<osee-ote-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ote.rdt.p2/target/repository</osee-ote-site>
 				<osee-client-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.client.p2/target/repository</osee-client-site>
 				<osee-ats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ats.p2/target/repository</osee-ats-site>
 			</properties>

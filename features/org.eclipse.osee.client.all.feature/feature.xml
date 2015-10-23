@@ -22,7 +22,7 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.client.ote.feature"
+         id="org.eclipse.osee.client.ote.rdt.feature"
          version="0.0.0"/>
 
    <includes

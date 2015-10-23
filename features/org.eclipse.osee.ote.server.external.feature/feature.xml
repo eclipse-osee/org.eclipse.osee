@@ -17,10 +17,6 @@
       [Enter License Description here.]
    </license>
 
-   <requires>
-      <import plugin="com.google.guava" version="11.0.0" match="greaterOrEqual"/>
-   </requires>
-
    <plugin
          id="org.eclipse.core.runtime"
          download-size="0"

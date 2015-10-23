@@ -16,45 +16,100 @@
 	<name>OSEE ORCS - Parent (Incubation)</name>
 	<version>0.23.0-SNAPSHOT</version>
 
-	<modules>
-		<module>../../plugins/org.eclipse.osee.framework.core</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.model</module>
-		<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
-		<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
-		<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
-
-		<module>../../plugins/org.eclipse.osee.activity</module>
-
-		<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
-		<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>
-
-		<module>../../plugins/org.eclipse.osee.orcs</module>
-		<module>../../plugins/org.eclipse.osee.orcs.core</module>
-		<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
-		<module>../../plugins/org.eclipse.osee.orcs.db</module>
-		<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
-		<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
-		<module>../../plugins/org.eclipse.osee.orcs.rest.client</module>
-		<module>../../plugins/org.eclipse.osee.orcs.rest</module>
-		<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
-		<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
-		<module>../../plugins/org.eclipse.osee.orcs.test</module>
-		
-		<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
-		
-		<module>../../plugins/org.eclipse.osee.orcs.account.admin</module>
-		<module>../../plugins/org.eclipse.osee.orcs.account.admin.test</module>
-
-		<module>../../features/org.eclipse.osee.orcs.feature</module>
-
-		<module>../../plugins/org.eclipse.osee.orcs.p2</module>
-	</modules>
-
 	<profiles>
+
+		<profile>
+			<id>coverage-minimal</id>
+			<activation>
+				<property>
+					<name>no-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.framework.core</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
+				<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
+
+				<module>../../plugins/org.eclipse.osee.activity</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
+				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs</module>
+				<module>../../plugins/org.eclipse.osee.orcs.core</module>
+				<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+				<module>../../plugins/org.eclipse.osee.orcs.db</module>
+				<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.client</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
+				<!--  <module>../../plugins/org.eclipse.osee.orcs.db.test</module>
+				-->
+				
+				<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
+				
+				<module>../../plugins/org.eclipse.osee.orcs.account.admin</module>
+				
+				<module>../../features/org.eclipse.osee.orcs.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs.p2</module>
+			</modules>
+		</profile>
+
+		<profile>
+			<id>coverage-release</id>
+			<activation>
+				<property>
+					<name>!no-int-tests</name>
+				</property>
+			</activation>
+			<modules>
+				<module>../../plugins/org.eclipse.osee.framework.core</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.dsl.integration.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.model</module>
+				<module>../../plugins/org.eclipse.osee.framework.core.model.test</module>
+				<module>../../plugins/org.eclipse.osee.framework.resource.management</module>
+				<module>../../plugins/org.eclipse.osee.framework.resource.management.test</module>
+
+				<module>../../plugins/org.eclipse.osee.activity</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs.script.dsl</module>
+				<module>../../plugins/org.eclipse.osee.orcs.script.dsl.tests</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs</module>
+				<module>../../plugins/org.eclipse.osee.orcs.core</module>
+				<module>../../plugins/org.eclipse.osee.orcs.core.test</module>
+				<module>../../plugins/org.eclipse.osee.orcs.db</module>
+				<module>../../plugins/org.eclipse.osee.orcs.db.mock</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.model</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.client</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest</module>
+				<module>../../plugins/org.eclipse.osee.orcs.rest.test</module>
+				<module>../../plugins/org.eclipse.osee.orcs.db.test</module>
+				<module>../../plugins/org.eclipse.osee.orcs.test</module>
+				
+				<module>../../plugins/org.eclipse.osee.orcs.authorization</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs.account.admin</module>
+				<module>../../plugins/org.eclipse.osee.orcs.account.admin.test</module>
+
+				<module>../../features/org.eclipse.osee.orcs.feature</module>
+
+				<module>../../plugins/org.eclipse.osee.orcs.p2</module>
+			</modules>
+		</profile>
+
+
 		<profile>
 			<id>osee-staged</id>
 			<activation>
