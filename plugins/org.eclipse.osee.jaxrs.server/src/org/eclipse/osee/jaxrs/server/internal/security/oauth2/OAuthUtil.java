@@ -20,6 +20,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeMap;
 import java.util.concurrent.TimeUnit;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.core.HttpHeaders;
@@ -32,6 +33,7 @@ import org.apache.cxf.jaxrs.ext.MessageContext;
 import org.apache.cxf.jaxrs.impl.HttpHeadersImpl;
 import org.apache.cxf.jaxrs.utils.HttpUtils;
 import org.apache.cxf.message.Message;
+import org.apache.cxf.phase.PhaseInterceptorChain;
 import org.apache.cxf.rs.security.oauth2.common.AccessTokenValidation;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.provider.OAuthServiceException;
@@ -89,6 +91,7 @@ public final class OAuthUtil {
       if (redirectURI != null) {
          if (!redirectURI.isAbsolute()) {
             String endpointAddress = HttpUtils.getEndpointAddress(m);
+
             Object basePathProperty = m.get(Message.BASE_PATH);
             if (ignoreBasePath && basePathProperty != null && !"/".equals(basePathProperty)) {
                int index = endpointAddress.lastIndexOf(basePathProperty.toString());
@@ -96,13 +99,30 @@ public final class OAuthUtil {
                   endpointAddress = endpointAddress.substring(0, index);
                }
             }
-
             UriInfo uriInfo = context.getUriInfo();
             URI requestUrl = uriInfo.getRequestUri();
-            String continueURL = requestUrl.toASCIIString();
+            String scheme = requestUrl.getScheme();
 
-            finalRedirectURI =
-               UriBuilder.fromUri(endpointAddress).path(redirectURI.toString()).queryParam("continueTo", continueURL).build();
+            String forwardedServer = getForwarderServer();
+            String server;
+            if (Strings.isValid(forwardedServer)) {
+               server = forwardedServer;
+            } else {
+               int port = requestUrl.getPort();
+               server = String.format("%s:%s", requestUrl.getHost(), port);
+            }
+
+            URI requestUrlWithServer = UriBuilder.fromPath(server)//
+            .path(requestUrl.getPath())//
+            .replaceQuery(requestUrl.getRawQuery())//
+            .scheme(scheme)//
+            .build();
+            String continueURL = requestUrlWithServer.toASCIIString();
+
+            finalRedirectURI = UriBuilder.fromPath(server)//
+            .scheme(scheme)//
+            .path(redirectURI.toString())//
+            .queryParam("continueTo", continueURL).build();
          } else {
             finalRedirectURI = redirectURI;
          }
@@ -133,6 +153,20 @@ public final class OAuthUtil {
          }
          builder.header(HttpHeaders.WWW_AUTHENTICATE, sb.toString());
          return builder.build();
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   public static String getForwarderServer() {
+      Message currentMessage = PhaseInterceptorChain.getCurrentMessage();
+      TreeMap<Object, Object> headers =
+         (TreeMap<Object, Object>) currentMessage.get("org.apache.cxf.message.Message.PROTOCOL_HEADERS");
+      List<String> forwarderServers = (List<String>) headers.get("X-Forwarded-Server");
+
+      if (forwarderServers != null) {
+         return forwarderServers.get(0);
+      } else {
+         return "";
       }
    }
 
@@ -246,7 +280,7 @@ public final class OAuthUtil {
       }
    }
 
-   private static final class UserSubjectWrapper extends BaseIdentity<Long> implements OseePrincipal {
+   private static final class UserSubjectWrapper extends BaseIdentity<Long>implements OseePrincipal {
 
       private final UserSubject subject;
       private final Set<String> roles;

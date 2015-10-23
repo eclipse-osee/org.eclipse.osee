@@ -13,12 +13,17 @@ package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoint
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MultivaluedMap;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.apache.cxf.rs.security.oauth2.common.Client;
 import org.apache.cxf.rs.security.oauth2.common.OAuthAuthorizationData;
 import org.apache.cxf.rs.security.oauth2.common.OAuthPermission;
+import org.apache.cxf.rs.security.oauth2.common.ServerAccessToken;
 import org.apache.cxf.rs.security.oauth2.common.UserSubject;
 import org.apache.cxf.rs.security.oauth2.services.ImplicitGrantService;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.ClientLogoUriResolver;
 
 /**
@@ -34,10 +39,35 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
       this.clientLogoUriResolver = clientLogoUriResolver;
    }
 
+   @Override
+   protected Response createGrant(MultivaluedMap<String, String> params, Client client, String redirectUri, List<String> requestedScope, List<String> approvedScope, UserSubject userSubject, ServerAccessToken preAuthorizedToken) {
+      Response response =
+         super.createGrant(params, client, redirectUri, requestedScope, approvedScope, userSubject, preAuthorizedToken);
+
+      String forwardedServer = OAuthUtil.getForwarderServer();
+
+      if (Strings.isValid(forwardedServer)) {
+         URI location = response.getLocation();
+         String scheme = location.getScheme();
+
+         URI finalUri = UriBuilder//
+            .fromPath(forwardedServer)//
+            .scheme(scheme)//
+            .path(location.getRawPath())//
+            .replaceQuery(location.getRawQuery())//
+            .fragment(location.getRawFragment())//
+            .buildFromEncoded();
+
+         response = Response.seeOther(finalUri).build();
+      }
+
+      return response;
+   }
+
    /**
     * If a client does not include a redirect_uri parameter but has an exactly one pre-registered redirect_uri then use
     * that redirect_uri
-    * 
+    *
     * @param value allows to use a single registered redirect_uri if set to true (default)
     */
    @Override
