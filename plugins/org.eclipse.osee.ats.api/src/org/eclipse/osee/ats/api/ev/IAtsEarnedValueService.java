@@ -26,4 +26,8 @@ public interface IAtsEarnedValueService {
 
    public String getWorkPackageId(IAtsWorkItem atsObject);
 
+   public void setWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
+
+   public void removeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
+
 }

@@ -19,8 +19,10 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.ev.WorkPackageArtifact;
@@ -107,6 +109,32 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          }
       }
       return workPackageOptions;
+   }
+
+   @Override
+   public void setWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems) {
+      changeWorkPackage(workPackage, workItems, false);
+   }
+
+   @Override
+   public void removeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems) {
+      changeWorkPackage(workPackage, workItems, true);
+   }
+
+   private void changeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems, boolean remove) {
+      JaxWorkPackageData data = new JaxWorkPackageData();
+      for (IAtsWorkItem workItem : workItems) {
+         data.getWorkItemUuids().add(workItem.getUuid());
+      }
+
+      AtsWorkPackageEndpointApi workPackageEp = AtsClientService.getWorkPackageEndpoint();
+      if (remove) {
+         workPackageEp.deleteWorkPackageItems(workPackage.getUuid(), data);
+      } else {
+         workPackageEp.setWorkPackage(workPackage.getUuid(), data);
+      }
+
+      // TBD OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
    }
 
 }

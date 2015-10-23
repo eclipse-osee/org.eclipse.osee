@@ -25,7 +25,6 @@ import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
@@ -46,7 +45,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -127,9 +125,6 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
             }
             if (useAwa != null) {
                modified = promptChangeActivityId(useAwa, false);
-               if (modified && isPersistViewer()) {
-                  useAwa.persist("persist attribute via alt-left-click");
-               }
                if (modified) {
                   ((XViewerColumn) treeColumn.getData()).getTreeViewer().update(useAwa, null);
                }
@@ -141,11 +136,11 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
       return modified;
    }
 
-   public static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) throws OseeCoreException {
-      return promptChangeActivityIds(Arrays.asList(teamWf), persist);
+   private static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) throws OseeCoreException {
+      return promptChangeActivityIds(Arrays.asList(teamWf));
    }
 
-   public static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
+   private static boolean promptChangeActivityIds(final Collection<? extends AbstractWorkflowArtifact> awas) throws OseeCoreException {
       boolean modified = false;
       Set<IAtsWorkPackage> commonWorkPackageOptions = new HashSet<>();
       Set<IAtsWorkPackage> uniqueWorkPackageOptions = new HashSet<>();
@@ -157,19 +152,14 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
             getMessage(awas, commonWorkPackageOptions, uniqueWorkPackageOptions), commonWorkPackageOptions);
          dialog.setInput();
          if (dialog.open() == Window.OK) {
-            IAtsWorkPackage workPackage = dialog.getSelection();
             boolean removeFromWorkPackage = dialog.isRemoveFromWorkPackage();
-            for (AbstractWorkflowArtifact awa : awas) {
-               if (removeFromWorkPackage) {
-                  awa.deleteAttributes(AtsAttributeTypes.WorkPackageGuid);
-               } else {
-                  awa.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
-               }
-               modified = true;
+            IAtsWorkPackage workPackage = dialog.getSelection();
+            if (removeFromWorkPackage) {
+               AtsClientService.get().getEarnedValueService().removeWorkPackage(workPackage, Collections.castAll(awas));
+            } else {
+               AtsClientService.get().getEarnedValueService().setWorkPackage(workPackage, Collections.castAll(awas));
             }
-            if (persist) {
-               Artifacts.persistInTransaction("Assignee - Prompt Change Activity Id", awas);
-            }
+            modified = true;
          }
       }
       return modified;
@@ -226,7 +216,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
          if (awas.isEmpty()) {
             AWorkbench.popup("No Work Items Selected");
          } else {
-            promptChangeActivityIds(awas, true);
+            promptChangeActivityIds(awas);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

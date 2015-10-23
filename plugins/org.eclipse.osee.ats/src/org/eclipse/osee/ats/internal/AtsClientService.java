@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.internal;
 
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
+import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
@@ -28,6 +29,7 @@ public class AtsClientService {
    private static AtsTaskEndpointApi taskEp;
    private static AtsConfigEndpointApi configEp;
    private static AgileEndpointApi agileEp;
+   private static AtsWorkPackageEndpointApi workPackageEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -37,7 +39,7 @@ public class AtsClientService {
       return atsClient;
    }
 
-   private static JaxRsWebTarget getTarget() {
+   private static JaxRsWebTarget getAtsTarget() {
       if (target == null) {
          String appServer = OseeClientProperties.getOseeApplicationServer();
          String atsUri = String.format("%s/ats", appServer);
@@ -49,23 +51,30 @@ public class AtsClientService {
 
    public static AtsTaskEndpointApi getTaskEp() {
       if (taskEp == null) {
-         taskEp = getTarget().newProxy(AtsTaskEndpointApi.class);
+         taskEp = getAtsTarget().newProxy(AtsTaskEndpointApi.class);
       }
       return taskEp;
    }
 
    public static AtsConfigEndpointApi getConfigEndpoint() {
       if (configEp == null) {
-         configEp = getTarget().newProxy(AtsConfigEndpointApi.class);
+         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
       }
       return configEp;
    }
 
    public static AgileEndpointApi getAgileEndpoint() {
       if (agileEp == null) {
-         agileEp = getTarget().newProxy(AgileEndpointApi.class);
+         agileEp = getAtsTarget().newProxy(AgileEndpointApi.class);
       }
       return agileEp;
+   }
+
+   public static AtsWorkPackageEndpointApi getWorkPackageEndpoint() {
+      if (workPackageEp == null) {
+         workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
+      }
+      return workPackageEp;
    }
 
 }

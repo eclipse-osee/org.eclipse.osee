@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Wrapper class for the Work Package storage artifact
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorkPackageArtifact implements IAtsWorkPackage {
@@ -147,6 +147,11 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
          return false;
       }
       return true;
+   }
+
+   @Override
+   public long getUuid() {
+      return artifact.getUuid();
    }
 
 }
