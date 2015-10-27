@@ -11,11 +11,11 @@
 package org.eclipse.osee.orcs.core.internal.graph;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -31,8 +31,6 @@ import org.mockito.Mock;
  * @author Megumi Telles
  */
 public class GraphUtilTest {
-
-   private static final Long BRANCH_ID = CoreBranches.COMMON.getUuid();
    private static final int TRANSACTION_ID = 231214214;
 
    @Rule
@@ -50,7 +48,7 @@ public class GraphUtilTest {
       initMocks(this);
       provider = GraphUtil.asProvider(graph);
 
-      when(graph.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(graph.getBranchUuid()).thenReturn(COMMON_ID);
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
    }
 
@@ -60,7 +58,7 @@ public class GraphUtilTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Invalid branch - Graph's branch[%s] does not equals requested branch[%s]",
-         BRANCH_ID, SYSTEM_ROOT_ID));
+         COMMON_ID, SYSTEM_ROOT_ID));
       provider.getGraph(session, SYSTEM_ROOT_ID, TRANSACTION_ID);
    }
 
@@ -73,12 +71,12 @@ public class GraphUtilTest {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(
          "Invalid transactionId - Graph's transactionId[231214214] does not equals requested transactionId[123456789]");
-      provider.getGraph(session, BRANCH_ID, txId);
+      provider.getGraph(session, COMMON_ID, txId);
    }
 
    @Test
    public void testAsProviderGetName() throws OseeCoreException {
       assertNotNull(provider);
-      assertEquals(graph, provider.getGraph(session, BRANCH_ID, TRANSACTION_ID));
+      assertEquals(graph, provider.getGraph(session, COMMON_ID, TRANSACTION_ID));
    }
 }

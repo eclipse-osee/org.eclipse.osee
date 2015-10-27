@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.impl;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
@@ -416,7 +416,7 @@ public class RelationManagerImplTest {
    @Test
    public void testRelateErrorOnDifferentBranches() throws OseeCoreException {
       when(node1.getBranchUuid()).thenReturn(SYSTEM_ROOT_ID);
-      when(node2.getBranchUuid()).thenReturn(COMMON.getUuid());
+      when(node2.getBranchUuid()).thenReturn(COMMON_ID);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cross branch linking is not yet supported.");

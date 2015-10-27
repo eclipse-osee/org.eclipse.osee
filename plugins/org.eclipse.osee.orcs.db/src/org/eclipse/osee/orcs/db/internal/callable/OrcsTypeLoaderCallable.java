@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,7 +19,6 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -69,7 +69,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
       try {
          chStmt = getJdbcClient().getStatement();
 
-         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreBranches.COMMON.getUuid(), TxChange.CURRENT.getValue(),
+         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, COMMON_ID, TxChange.CURRENT.getValue(),
             TxChange.CURRENT.getValue(), artifactTypeId, attributeTypeId);
          while (chStmt.next()) {
             String uri = chStmt.getString("uri");

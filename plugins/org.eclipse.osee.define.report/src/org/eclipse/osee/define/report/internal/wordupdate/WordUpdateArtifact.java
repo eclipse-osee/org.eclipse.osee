@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,6 @@ import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -120,7 +120,7 @@ public class WordUpdateArtifact {
          boolean singleArtifact = extractorDatas.size() == 1;
          boolean containsOleData = false;
          boolean containsWordData = false;
-         ArtifactReadable userArtifact = getArtifact(CoreBranches.COMMON.getUuid(), data.getUserArtId());
+         ArtifactReadable userArtifact = getArtifact(COMMON_ID, data.getUserArtId());
          TransactionBuilder txBuilder = txFactory.createTransaction(data.getBranch(), userArtifact, data.getComment());
          for (WordExtractorData extractorData : extractorDatas) {
             ArtifactReadable artifact = getArtifact(data.getBranch(), extractorData.getGuid());
@@ -262,13 +262,13 @@ public class WordUpdateArtifact {
          teamWorkflow = atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
             java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
 
-               @Override
-               public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
-                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
-                     "Review System Safety Changes for the associated RPCR to Complete the Workflow");
-               }
+            @Override
+            public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
+               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
+                  "Review System Safety Changes for the associated RPCR to Complete the Workflow");
+            }
 
-            });
+         });
          changes.setSoleAttributeValue(teamWorkflow, CoreAttributeTypes.Name,
             "Safety Workflow for " + teamWf.getAtsId());
          changes.execute();

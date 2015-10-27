@@ -17,6 +17,7 @@ import static org.eclipse.osee.framework.core.enums.BranchState.CREATION_IN_PROG
 import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
@@ -349,7 +350,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(COMMON.getGuid(), iterator.next());
+      assertEquals(COMMON_ID, iterator.next());
    }
 
    @Test
@@ -380,7 +381,7 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(0, joins.size());
 
       Iterator<Object> iterator = parameters.iterator();
-      assertEquals(COMMON.getGuid(), iterator.next());
+      assertEquals(COMMON_ID, iterator.next());
    }
 
    @Test
@@ -423,7 +424,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
       Iterator<Object> iterator = parameters.iterator();
 
-      assertEquals(COMMON.getGuid(), iterator.next());
+      assertEquals(COMMON_ID, iterator.next());
       assertEquals(WORKING.getValue(), iterator.next());
       assertEquals(joins.get(0).getQueryId(), iterator.next());
       assertEquals(ARCHIVED.getValue(), iterator.next());

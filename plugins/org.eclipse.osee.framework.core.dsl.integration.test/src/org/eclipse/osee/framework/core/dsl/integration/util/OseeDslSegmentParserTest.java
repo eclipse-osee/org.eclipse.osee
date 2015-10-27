@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.integration.util;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,7 +32,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link OseeDslSegmentParser}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OseeDslSegmentParserTest {
@@ -96,16 +97,15 @@ public class OseeDslSegmentParserTest {
    @Test
    public void testGetLocations() throws OseeCoreException {
       final String artifactGuid = GUID.create();
-      final Long branchUuid = CoreBranches.COMMON.getUuid();
       String data = null;
 
-      data = String.format("//@start_artifact branch/%d/artifact/%s/ ()", branchUuid, artifactGuid);
-      checkGetTagLocations(data, new TagLocation(true, branchUuid, artifactGuid, 0, data.length()));
+      data = String.format("//@start_artifact branch/%d/artifact/%s/ ()", COMMON_ID, artifactGuid);
+      checkGetTagLocations(data, new TagLocation(true, COMMON_ID, artifactGuid, 0, data.length()));
 
-      data = String.format("//@end_artifact branch/%d/artifact/%s/ ()", branchUuid, artifactGuid);
-      checkGetTagLocations(data, new TagLocation(false, branchUuid, artifactGuid, 0, data.length()));
+      data = String.format("//@end_artifact branch/%d/artifact/%s/ ()", COMMON_ID, artifactGuid);
+      checkGetTagLocations(data, new TagLocation(false, COMMON_ID, artifactGuid, 0, data.length()));
 
-      data = String.format("//@end_artifact branch/%d/artifact/%s/", branchUuid, artifactGuid);
+      data = String.format("//@end_artifact branch/%d/artifact/%s/", COMMON_ID, artifactGuid);
       checkGetTagLocations(data);
 
       data = "//@end_artifact branch//artifact/";

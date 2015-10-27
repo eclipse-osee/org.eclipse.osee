@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -28,21 +29,21 @@ import org.junit.Test;
 
 /**
  * Test case for {@link BranchUuidEventFilter}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class BranchUuidEventFilterTest {
 
    @Test
    public void testIsMatch() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
-      Assert.assertTrue(branchFilter.isMatch(CoreBranches.COMMON.getUuid()));
+      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
+      Assert.assertTrue(branchFilter.isMatch(COMMON_ID));
       Assert.assertFalse(branchFilter.isMatch(23444235235324L));
    }
 
    @Test
    public void testIsMatchArtifacts() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
+      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
       EventBasicGuidArtifact guidArtA =
          new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), CoreArtifactTypes.Requirement.getGuid(),
@@ -57,7 +58,7 @@ public class BranchUuidEventFilterTest {
       Assert.assertFalse(branchFilter.isMatchArtifacts(arts));
 
       guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, CoreBranches.COMMON.getUuid(),
+         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
             CoreArtifactTypes.Requirement.getGuid(), GUID.create());
       arts.clear();
       arts.add(guidArtB);
@@ -68,7 +69,7 @@ public class BranchUuidEventFilterTest {
 
    @Test
    public void testIsMatchRelationArtifacts() {
-      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
+      BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
       EventBasicGuidArtifact guidArtA =
          new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), CoreArtifactTypes.Requirement.getGuid(),
@@ -87,15 +88,15 @@ public class BranchUuidEventFilterTest {
       Assert.assertFalse(branchFilter.isMatchRelationArtifacts(relations));
 
       guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, CoreBranches.COMMON.getUuid(),
+         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
             CoreArtifactTypes.Requirement.getGuid(), GUID.create());
       guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, CoreBranches.COMMON.getUuid(),
+         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
             CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       relations.clear();
       relation =
-         new EventBasicGuidRelation(RelationEventType.Added, CoreBranches.COMMON.getUuid(),
+         new EventBasicGuidRelation(RelationEventType.Added, COMMON_ID,
             CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 

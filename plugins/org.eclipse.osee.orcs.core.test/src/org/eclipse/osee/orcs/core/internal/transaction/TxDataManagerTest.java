@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.DirectSoftwareRequirement;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Category;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.orcs.core.internal.relation.RelationUtil.DEFAULT_HIERARCHY;
@@ -480,7 +480,7 @@ public class TxDataManagerTest {
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
-      when(loader.loadArtifacts(eq(session), eq(COMMON.getUuid()), anyCollectionOf(ArtifactId.class))).thenReturn(
+      when(loader.loadArtifacts(eq(session), eq(COMMON_ID), anyCollectionOf(ArtifactId.class))).thenReturn(
          loaded);
       when(artifactFactory.introduceArtifact(session, artifact1, artifact1, BRANCH_ID)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
@@ -492,7 +492,7 @@ public class TxDataManagerTest {
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
 
-      ArtifactReadable actual = txDataManager.introduceArtifact(txDataReal, COMMON.getUuid(), readable1, readable2);
+      ArtifactReadable actual = txDataManager.introduceArtifact(txDataReal, COMMON_ID, readable1, readable2);
 
       verify(artifactFactory).introduceArtifact(session, artifact1, artifact1, BRANCH_ID);
       verify(proxyManager).asExternalArtifact(session, artifact1);

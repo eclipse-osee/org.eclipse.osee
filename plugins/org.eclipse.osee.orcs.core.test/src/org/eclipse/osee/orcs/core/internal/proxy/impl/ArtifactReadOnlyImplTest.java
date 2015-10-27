@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.proxy.impl;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Annotation;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Name;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Requirement;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Child;
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Default_Hierarchical__Parent;
@@ -104,11 +104,11 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetBranchUuid() {
-      when(proxiedObject.getBranchUuid()).thenReturn(COMMON.getUuid());
+      when(proxiedObject.getBranchUuid()).thenReturn(COMMON_ID);
 
       Long actual = readOnly.getBranchUuid();
 
-      assertEquals(COMMON.getUuid(), actual);
+      assertEquals(COMMON_ID, actual);
       verify(proxiedObject).getBranchUuid();
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static java.util.Arrays.asList;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerFactoryUtil.createArtifactSqlHandlerFactory;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -140,7 +141,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
-      criteriaSet.add(new CriteriaBranch(CoreBranches.COMMON.getUuid()));
+      criteriaSet.add(new CriteriaBranch(COMMON_ID));
       queryData = new QueryData(criteriaSet, options);
 
       when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -17,7 +18,6 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -49,7 +49,6 @@ import org.mockito.Mock;
 public class GraphBuilderImplTest {
 
    private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
-   private static final Long BRANCH_ID = CoreBranches.COMMON.getUuid();
    private static final int TRANSACTION_ID = 231214214;
 
    @Rule
@@ -88,9 +87,9 @@ public class GraphBuilderImplTest {
       builder = new GraphBuilderImpl(logger, artifactFactory, attributeFactory, relationFactory, graphProvider);
 
       when(description.getSession()).thenReturn(session);
-      when(description.getBranchId()).thenReturn(BRANCH_ID);
+      when(description.getBranchId()).thenReturn(COMMON_ID);
       when(description.getTransaction()).thenReturn(TRANSACTION_ID);
-      when(graphProvider.getGraph(session, BRANCH_ID, TRANSACTION_ID)).thenReturn(graphData);
+      when(graphProvider.getGraph(session, COMMON_ID, TRANSACTION_ID)).thenReturn(graphData);
 
       when(relationFactory.createRelationContainer()).thenReturn(adjacencies);
       when(relationFactory.createRelation(relationData)).thenReturn(relation);
