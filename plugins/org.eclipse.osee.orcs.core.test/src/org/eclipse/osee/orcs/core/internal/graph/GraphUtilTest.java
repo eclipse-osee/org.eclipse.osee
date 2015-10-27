@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
@@ -60,8 +60,8 @@ public class GraphUtilTest {
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(String.format("Invalid branch - Graph's branch[%s] does not equals requested branch[%s]",
-         BRANCH_ID, SYSTEM_ROOT.getUuid()));
-      provider.getGraph(session, SYSTEM_ROOT.getUuid(), TRANSACTION_ID);
+         BRANCH_ID, SYSTEM_ROOT_ID));
+      provider.getGraph(session, SYSTEM_ROOT_ID, TRANSACTION_ID);
    }
 
    @Test

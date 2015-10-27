@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -124,7 +125,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       int index = 0;
       for (BranchData branchData : branchesToStore) {
          if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) //
-            && CoreBranches.SYSTEM_ROOT.getUuid().equals(branchData.getId())) {
+            && SYSTEM_ROOT_ID.equals(branchData.getId())) {
             continue;
          }
 
