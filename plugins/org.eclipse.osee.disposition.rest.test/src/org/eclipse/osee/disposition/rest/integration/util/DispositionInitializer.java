@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.integration.util;
 
-import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1_FOR_DISPO;
+import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;

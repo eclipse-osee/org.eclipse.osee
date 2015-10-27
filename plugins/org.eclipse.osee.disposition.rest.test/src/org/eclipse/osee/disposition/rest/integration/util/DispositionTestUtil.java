@@ -27,7 +27,6 @@ public class DispositionTestUtil {
    
    public static final IOseeBranch SAW_Bld_1_FOR_DISPO =
       TokenFactory.createBranch(2323, "SAW_Bld_1 - FOR_DISPOSITION");
-   public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch(3, "SAW_Bld_1");
    // @formatter:on
 
 }

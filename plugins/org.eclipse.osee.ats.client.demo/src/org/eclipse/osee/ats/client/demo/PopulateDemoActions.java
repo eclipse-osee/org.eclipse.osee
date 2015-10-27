@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_3;
 import java.io.File;
 import java.util.Collection;
 import java.util.Date;
@@ -162,8 +165,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Create traceability between System, Subsystem and Software requirements
          SkynetTransaction demoDbTraceability =
-            TransactionManager.createTransaction(DemoSawBuilds.SAW_Bld_1, "Populate Demo DB - Create Traceability");
-         demoDbTraceabilityTx(demoDbTraceability, DemoSawBuilds.SAW_Bld_1);
+            TransactionManager.createTransaction(SAW_Bld_1, "Populate Demo DB - Create Traceability");
+         demoDbTraceabilityTx(demoDbTraceability, SAW_Bld_1);
          demoDbTraceability.execute();
 
          //DemoDbUtil.sleep(5000);
@@ -217,7 +220,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch childBranch = BranchManager.createBaselineBranch(DemoSawBuilds.SAW_Bld_1, DemoSawBuilds.SAW_Bld_2);
+         Branch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
@@ -237,13 +240,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
       Set<ActionArtifact> actions =
          createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_3, null, changes);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_3.getName(), changes);
+      appendBuildNameToTitles(actions, SAW_Bld_3.getName(), changes);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");
       }
       actions = createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_2, null, changes);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_2.getName(), changes);
+      appendBuildNameToTitles(actions, SAW_Bld_2.getName(), changes);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
@@ -252,7 +255,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       actions =
          createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_1, TeamState.Completed,
             changes);
-      appendBuildNameToTitles(actions, DemoSawBuilds.SAW_Bld_1.toString(), changes);
+      appendBuildNameToTitles(actions, SAW_Bld_1.toString(), changes);
 
       changes.execute();
    }
@@ -340,9 +343,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
    private void demoDbImportReqsTx() {
       try {
          //@formatter:off
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
-         importRequirements(DemoSawBuilds.SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SystemRequirementMSWord, "System Requirements", "support/SAW-SystemRequirements.xml");
+         importRequirements(SAW_Bld_1, CoreArtifactTypes.SubsystemRequirementMSWord, "Subsystem Requirements", "support/SAW-SubsystemRequirements.xml");
          //@formatter:on
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

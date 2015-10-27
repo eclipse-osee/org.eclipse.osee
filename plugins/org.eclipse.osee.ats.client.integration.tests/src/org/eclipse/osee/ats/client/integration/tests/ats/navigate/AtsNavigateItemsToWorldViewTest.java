@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.navigate;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +34,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsBranchConfigurationTest;
@@ -438,8 +439,8 @@ public class AtsNavigateItemsToWorldViewTest {
       teamDefs.add("SAW Design");
       Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 3);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, SAW_Bld_1.getName(), 0);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, SAW_Bld_2.getName(), 3);
       selectedTeamDefs.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 10);
       TestUtil.severeLoggingEnd(monitor);

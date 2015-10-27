@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.client.demo.DemoWorkType;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
@@ -32,16 +32,16 @@ public class TargetedVersionColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
+      Assert.assertEquals(SAW_Bld_2.getName(),
          TargetedVersionColumn.getInstance().getColumnText(reqArt, TargetedVersionColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
+      Assert.assertEquals(SAW_Bld_2.getName(),
          TargetedVersionColumn.getInstance().getColumnText(codeArt, TargetedVersionColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals(DemoSawBuilds.SAW_Bld_2.getName(),
+      Assert.assertEquals(SAW_Bld_2.getName(),
          TargetedVersionColumn.getInstance().getColumnText(actionArt, TargetedVersionColumn.getInstance(), 0));
 
       TeamWorkFlowArtifact toolsArt = DemoTestUtil.getToolsTeamWorkflow();

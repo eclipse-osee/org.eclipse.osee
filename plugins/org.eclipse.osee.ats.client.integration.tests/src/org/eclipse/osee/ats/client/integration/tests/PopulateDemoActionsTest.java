@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_3;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -18,7 +21,6 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoTeam;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
@@ -79,17 +81,17 @@ public class PopulateDemoActionsTest {
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
             codeTeamArt = teamArt;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
-            testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          }
@@ -144,26 +146,26 @@ public class PopulateDemoActionsTest {
             numTested++;
 
             codeTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
          }
@@ -210,26 +212,26 @@ public class PopulateDemoActionsTest {
          if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Code")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Code", "Joe Smith", DemoArtifactTypes.DemoCodeTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Code));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Test")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Test", "Kay Jones", DemoArtifactTypes.DemoTestTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Test));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Req")) {
             numTested++;
 
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
          } else if (teamArt.getActionableItemsDam().getActionableItemsStr().contains("Design")) {
             numTested++;
 
             designTeam = teamArt;
-            testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+            testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
                "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow,
                DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
          }
@@ -251,7 +253,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+      testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Implement.getName(),
          "SAW Requirements", "Joe Smith", DemoArtifactTypes.DemoReqTeamWorkflow,
          DemoTestUtil.getTeamDef(DemoTeam.SAW_Requirements));
    }
@@ -266,7 +268,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getName(),
+      testTeamContents(teamArt, title, "1", SAW_Bld_1.getName(), TeamState.Completed.getName(),
          "Adapter", "", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -280,7 +282,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Implement.getName(),
+      testTeamContents(teamArt, title, "1", SAW_Bld_2.getName(), TeamState.Implement.getName(),
          "Adapter", "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -294,7 +296,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "1", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Implement.getName(),
+      testTeamContents(teamArt, title, "1", SAW_Bld_3.getName(), TeamState.Implement.getName(),
          "Adapter", "Jason Michael", DemoArtifactTypes.DemoReqTeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_HW));
    }
 
@@ -308,7 +310,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_1.getName(), TeamState.Completed.getName(),
+      testTeamContents(teamArt, title, "3", SAW_Bld_1.getName(), TeamState.Completed.getName(),
          "SAW SW Design", "", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 
@@ -322,7 +324,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_2.getName(), TeamState.Endorse.getName(),
+      testTeamContents(teamArt, title, "3", SAW_Bld_2.getName(), TeamState.Endorse.getName(),
          "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 
@@ -336,7 +338,7 @@ public class PopulateDemoActionsTest {
       Assert.assertEquals(1, action.getTeams().size());
       TeamWorkFlowArtifact teamArt = action.getTeams().iterator().next();
 
-      testTeamContents(teamArt, title, "3", DemoSawBuilds.SAW_Bld_3.getName(), TeamState.Endorse.getName(),
+      testTeamContents(teamArt, title, "3", SAW_Bld_3.getName(), TeamState.Endorse.getName(),
          "SAW SW Design", "Kay Jones", AtsArtifactTypes.TeamWorkflow, DemoTestUtil.getTeamDef(DemoTeam.SAW_SW_Design));
    }
 

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.navigate;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,7 +19,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
@@ -75,8 +76,8 @@ public class AtsNavigateItemsToTaskEditorTest {
       Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
-      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.getName(), 0);
-      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.getName(), 14);
+      runGeneralTaskSearchOnVersionTest(item, SAW_Bld_1.getName(), 0);
+      runGeneralTaskSearchOnVersionTest(item, SAW_Bld_2.getName(), 14);
       selectedUsers.clear();
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);

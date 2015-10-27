@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import static org.eclipse.osee.client.demo.DemoBranches.CIS_Bld_1;
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -22,8 +24,6 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
 import org.eclipse.osee.ats.api.program.JaxProgram;
 import org.eclipse.osee.ats.api.program.ProgramEndpointApi;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
-import org.eclipse.osee.ats.client.demo.DemoCISBuilds;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.demo.DemoSubsystems;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.internal.AtsClientService;
@@ -60,12 +60,12 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       TestUtil.setDemoDb(true);
 
       // Create SAW_Bld_1 branch
-      BranchManager.createTopLevelBranch(DemoSawBuilds.SAW_Bld_1);
-      populateProgramBranch(DemoSawBuilds.SAW_Bld_1);
+      BranchManager.createTopLevelBranch(SAW_Bld_1);
+      populateProgramBranch(SAW_Bld_1);
 
       // Create build one branch for CIS
-      BranchManager.createTopLevelBranch(DemoCISBuilds.CIS_Bld_1);
-      populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
+      BranchManager.createTopLevelBranch(CIS_Bld_1);
+      populateProgramBranch(CIS_Bld_1);
 
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
       AtsGroup.AtsTempAdmin.getArtifact().persist("Set Joe as Temp Admin");

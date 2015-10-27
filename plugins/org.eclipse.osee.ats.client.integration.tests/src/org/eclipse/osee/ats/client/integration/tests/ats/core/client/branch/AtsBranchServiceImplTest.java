@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.branch;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,6 @@ import java.util.HashSet;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -67,7 +67,7 @@ public class AtsBranchServiceImplTest {
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
-      teamDef.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
+      teamDef.setBaselineBranchUuid(SAW_Bld_1.getUuid());
       Collection<Object> commitObjs =
          AtsClientService.get().getBranchService().getCommitTransactionsAndConfigItemsForTeamWf(teamArt);
       assertTrue("commitObjs has wrong size", commitObjs.size() == 1);
@@ -95,11 +95,11 @@ public class AtsBranchServiceImplTest {
       AtsTestUtil.cleanupAndReset(AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
-      teamDef.setBaselineBranchUuid(DemoSawBuilds.SAW_Bld_1.getUuid());
+      teamDef.setBaselineBranchUuid(SAW_Bld_1.getUuid());
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
       //Test TxRecords
-      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1);
+      Branch branch = BranchManager.getBranch(SAW_Bld_1);
       BranchCache branchCache = Mockito.mock(BranchCache.class);
       Mockito.when(branchCache.getByUuid(Matchers.anyLong())).thenReturn(branch);
       TransactionRecord txRecord =

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
+import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,7 +41,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.client.demo.DemoSawBuilds;
 import org.eclipse.osee.ats.client.integration.AtsClientIntegrationTestSuite;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -793,7 +793,7 @@ public class AtsTestUtil {
       IAtsVersion version = getVerArt1();
       version.setAllowCreateBranch(true);
       version.setAllowCommitBranch(true);
-      version.setBaselineBranchUuid(BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1).getUuid());
+      version.setBaselineBranchUuid(SAW_Bld_1.getUuid());
       ((Artifact) version.getStoreObject()).persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
       AtsClientService.get().getConfig().invalidate(version);
       if (!AtsClientService.get().getVersionService().hasTargetedVersion(getTeamWf())) {
