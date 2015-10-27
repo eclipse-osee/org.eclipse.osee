@@ -101,8 +101,7 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
             handleBranchSelectEnabled(branchSelectEnabled.getSelection());
          }
       });
-      this.branchSelectComposite =
-         BranchSelectSimpleComposite.createWorkingBranchSelectComposite(selectableComposite, SWT.NONE);
+      this.branchSelectComposite = new BranchSelectSimpleComposite(selectableComposite, SWT.NONE);
    }
 
    private void createStatusBar(Composite parent) {

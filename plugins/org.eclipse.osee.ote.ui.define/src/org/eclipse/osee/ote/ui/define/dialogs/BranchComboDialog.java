@@ -58,7 +58,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
    protected Control createDialogArea(Composite parent) {
       Composite content = (Composite) super.createDialogArea(parent);
 
-      branchSelectComposite = BranchSelectSimpleComposite.createWorkingBranchSelectComposite(content, SWT.NONE);
+      branchSelectComposite = new BranchSelectSimpleComposite(content, SWT.NONE);
       restoreWidgetValues();
       branchSelectComposite.addListener(this);
       setTitle(MESSAGE_TITLE);

@@ -49,23 +49,13 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    private boolean entryChanged;
    private Branch currentBranch;
    private final Set<Listener> listeners;
-   private final boolean allowOnlyWorkingBranches;
 
-   private BranchSelectSimpleComposite(Composite parent, int style, boolean allowOnlyWorkingBranches) {
+   public BranchSelectSimpleComposite(Composite parent, int style) {
       super(parent, style);
-      this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
       this.entryChanged = false;
       this.listeners = Collections.synchronizedSet(new HashSet<Listener>());
       this.currentBranch = null;
       createControl(this);
-   }
-
-   public static BranchSelectSimpleComposite createWorkingBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectSimpleComposite(parent, style, true);
-   }
-
-   public static BranchSelectSimpleComposite createBranchSelectComposite(Composite parent, int style) {
-      return new BranchSelectSimpleComposite(parent, style, false);
    }
 
    private void createControl(Composite parent) {
@@ -127,10 +117,6 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
          currentBranch = toReturn;
       }
       return currentBranch;
-   }
-
-   private boolean areOnlyWorkingBranchesAllowed() {
-      return allowOnlyWorkingBranches;
    }
 
    private void updateFromSourceField() {
@@ -205,15 +191,13 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             try {
                Branch branch = BranchManager.getBranch(Long.parseLong(toStore));
 
-               if (isBranchAllowed(branch) != false) {
-                  String branchName = branch.getName();
-                  branchSelectCombo.add(branchName);
-                  branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
-                  branchSelectCombo.setData(branchName, branch);
-                  if (toStore.equals(lastSelected)) {
-                     toSelect = i;
-                     branchSelectCombo.select(toSelect);
-                  }
+               String branchName = branch.getName();
+               branchSelectCombo.add(branchName);
+               branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
+               branchSelectCombo.setData(branchName, branch);
+               if (toStore.equals(lastSelected)) {
+                  toSelect = i;
+                  branchSelectCombo.select(toSelect);
                }
             } catch (Exception ex) {
                OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch uuid [%s] to selection list.",
@@ -221,13 +205,6 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             }
          }
       }
-   }
-
-   private boolean isBranchAllowed(Branch branch) throws Exception {
-      if (areOnlyWorkingBranchesAllowed() && !branch.hasParentBranch()) {
-         return false;
-      }
-      return true;
    }
 
    public String[] getBranchIds() {
@@ -245,11 +222,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    @Override
    public void handleEvent(Event event) {
       if (event.widget == branchSelectButton) {
-         if (areOnlyWorkingBranchesAllowed() != false) {
-            setBranchName(BranchSelectionDialog.getWorkingBranchFromUser());
-         } else {
-            setBranchName(BranchSelectionDialog.getBranchFromUser());
-         }
+         setBranchName(BranchSelectionDialog.getWorkingBranchFromUser());
       }
       notifyListener(event);
    }
