@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubscriptionGroup;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -21,14 +23,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
@@ -138,8 +138,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          groupsList = (XArtifactList) xWidget;
          XArtifactList listViewer = (XArtifactList) xWidget;
 
-         List<Artifact> groups =
-            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubscriptionGroup, BranchManager.getCommonBranch());
+         List<Artifact> groups = ArtifactQuery.getArtifactListFromType(SubscriptionGroup, COMMON);
          Collections.sort(groups);
          listViewer.setInputArtifacts(groups);
          listViewer.addXModifiedListener(listener);
@@ -206,14 +205,14 @@ public class EmailGroupsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       // @formatter:off
       return "<xWidgets>" +
-      		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" />" +
-      		"<XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" />" +
-            "<XWidget xwidgetType=\"XText\" displayName=\"Reply-To Address\" />" +
-            "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
-      		"<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
-      		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
-            "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Preview Message\" />" +
-      		"</xWidgets>";
+      "<XWidget xwidgetType=\"XArtifactList\" displayName=\"Groups\" multiSelect=\"true\" />" +
+      "<XWidget xwidgetType=\"XArtifactList\" displayName=\"Template\" />" +
+      "<XWidget xwidgetType=\"XText\" displayName=\"Reply-To Address\" />" +
+      "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
+      "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Body is html\" defaultValue=\"true\" />" +
+      "<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
+      "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Preview Message\" />" +
+      "</xWidgets>";
       // @formatter:on
    }
 

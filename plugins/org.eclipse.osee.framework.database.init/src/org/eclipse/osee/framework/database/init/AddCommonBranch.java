@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.database.init;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
  * that require extra skynet types to be added to common.
@@ -70,11 +70,11 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          Map<String, URL> typeMap = types.getOseeTypeExtensions();
 
          SkynetTransaction transaction1 =
-            TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Types to Common Branch");
+            TransactionManager.createTransaction(COMMON, "Add Types to Common Branch");
 
          for (Entry<String, URL> entry : typeMap.entrySet()) {
             Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition,
-               BranchManager.getCommonBranch(), entry.getKey(), GUID.create());
+               COMMON, entry.getKey(), GUID.create());
             artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
             InputStream inputStream = null;
             try {
@@ -91,7 +91,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          transaction1.execute();
 
          SkynetTransaction transaction =
-            TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
+            TransactionManager.createTransaction(COMMON, "Add Common Branch");
 
          //create everyone group
          Artifact everyonGroup = SystemGroup.Everyone.getArtifact();

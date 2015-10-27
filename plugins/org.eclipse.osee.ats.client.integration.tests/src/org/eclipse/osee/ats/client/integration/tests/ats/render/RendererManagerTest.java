@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.editor.renderer.AtsWERenderer;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -81,7 +82,7 @@ public class RendererManagerTest {
 
    @Test
    public void testGetBestRenderer() throws OseeCoreException {
-      Artifact artifact = new Artifact(GUID.create(), BranchManager.getCommonBranch(), artifactType);
+      Artifact artifact = new Artifact(GUID.create(), CoreBranches.COMMON, artifactType);
 
       if (defaultOption == Both) {
          testGetBestRendererWithOption(artifact, On);

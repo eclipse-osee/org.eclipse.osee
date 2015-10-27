@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.results;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultBrowserHyperCmd;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
@@ -140,7 +140,7 @@ public class XResultDataUI {
             UserManager.getUser()));
 
          rd.log("Example of hyperlinked guid on another branch: " + getHyperlink(UserManager.getUser().getGuid(),
-            UserManager.getUser().getGuid(), BranchManager.getCommonBranch().getUuid()));
+            UserManager.getUser().getGuid(), COMMON_ID));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
             "http://www.google.com") + AHTML.newline());
@@ -156,7 +156,7 @@ public class XResultDataUI {
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
             "Error / Warning in table ",
             "Error: this is error",
-            "Warning: this is warning"}));
+         "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          report(rd, "This is my report title");
       } catch (OseeCoreException ex) {

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.templates;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 /**
  * This provider gets all of its templates from the common branch based on a name created from concatenating the
  * getTemplate parameters together in the various possible combinations
- * 
+ *
  * @author Ryan D. Brooks
  */
 public class ArtifactTemplateProvider implements ITemplateProvider {
@@ -44,8 +44,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    private synchronized void ensureTemplateCachePopulated() throws OseeCoreException {
       if (templateMap == null) {
          templateMap = new HashMap<>();
-         templates =
-            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
+         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
          for (Artifact art : templates) {
             Collection<Attribute<String>> attrs = art.getAttributes(CoreAttributeTypes.TemplateMatchCriteria);
             for (Attribute<String> attr : attrs) {
@@ -61,9 +60,9 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                   OseeLog.logf(
                      Activator.class,
                      Level.SEVERE,
-                     
-                        "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
-                        matchCriteria, templateMap.get(matchCriteria).getName());
+
+                     "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
+                     matchCriteria, templateMap.get(matchCriteria).getName());
 
                }
             }
@@ -100,8 +99,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
       if (name == null) {
          return toReturn;
       }
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName(name, BranchManager.getCommonBranch(), EXCLUDE_DELETED);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName(name, COMMON, EXCLUDE_DELETED);
 
       if (!artifacts.isEmpty()) {
          toReturn = artifacts.iterator().next();
@@ -139,8 +137,7 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
    @Override
    public List<Artifact> getAllTemplates() throws OseeCoreException {
       if (templates == null) {
-         templates =
-            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
+         templates = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.RendererTemplate, COMMON);
       }
       return templates;
    }

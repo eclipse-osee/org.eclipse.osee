@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -82,7 +83,7 @@ public class BranchManager {
    private static final BranchFactory branchFactory = new BranchFactory();
    private static final String SELECT_BRANCH = "select * from osee_branch where branch_id = ?";
 
-   private Branch lastBranch;
+   private IOseeBranch lastBranch;
 
    private BranchManager() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
@@ -98,21 +99,6 @@ public class BranchManager {
 
    private static BranchCache getCache() throws OseeCoreException {
       return ServiceUtil.getOseeCacheService().getBranchCache();
-   }
-
-   private static Branch commonBranch = null;
-
-   /**
-    * Since BranchManager is static and not a service yet, cache common branch cause it currently takes too long to get
-    * service every single time this method is called.
-    */
-   public synchronized static Branch getCommonBranch() throws OseeCoreException {
-      if (commonBranch == null) {
-         Branch branch = getCache().getCommonBranch();
-         Conditions.checkNotNull(branch, "Common Branch");
-         commonBranch = branch;
-      }
-      return commonBranch;
    }
 
    public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) throws OseeCoreException {
@@ -548,7 +534,7 @@ public class BranchManager {
       }
    }
 
-   private Branch getDefaultInitialBranch() throws OseeCoreException {
+   private IOseeBranch getDefaultInitialBranch() throws OseeCoreException {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
          new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
             "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
@@ -566,7 +552,7 @@ public class BranchManager {
                "Exception occurred while trying to determine initial default branch", ex);
          }
       }
-      return getCommonBranch();
+      return COMMON;
    }
 
    public static IOseeBranch getLastBranch() {
@@ -576,7 +562,7 @@ public class BranchManager {
       return instance.lastBranch;
    }
 
-   public static void setLastBranch(Branch branch) {
+   public static void setLastBranch(IOseeBranch branch) {
       if (branch != null) {
          instance.lastBranch = branch;
       }
@@ -614,7 +600,7 @@ public class BranchManager {
       if (branch.getAssociatedArtifactId() == null || branch.getAssociatedArtifactId() == -1) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
-      return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), CoreBranches.COMMON);
+      return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), COMMON);
    }
 
    public static Artifact getAssociatedArtifact(TransactionDelta txDelta) throws OseeCoreException {
@@ -623,7 +609,7 @@ public class BranchManager {
          TransactionRecord txRecord = txDelta.getEndTx();
          int commitArtId = txRecord.getCommit();
          if (commitArtId != 0) {
-            associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, CoreBranches.COMMON);
+            associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
          }
       } else {
          Branch sourceBranch = txDelta.getStartTx().getFullBranch();

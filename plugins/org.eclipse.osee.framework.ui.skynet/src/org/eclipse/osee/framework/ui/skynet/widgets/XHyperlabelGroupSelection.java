@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -81,7 +81,7 @@ public class XHyperlabelGroupSelection extends XHyperlinkLabelCmdValueSelection 
 
    private Collection<Artifact> getGroups() {
       List<Artifact> groups = new ArrayList<>();
-      for (Artifact art : UniversalGroup.getGroups(BranchManager.getCommonBranch())) {
+      for (Artifact art : UniversalGroup.getGroups(COMMON)) {
          if (!art.isOfType(CoreArtifactTypes.RootArtifact)) {
             groups.add(art);
          }

@@ -11,26 +11,25 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-
 /**
  * This singleton artifact stores the default customizations for XViewers
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class GlobalXViewerSettings {
 
    public static Artifact getCustomArtifact() throws OseeCoreException {
       return OseeSystemArtifacts.getCachedArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
-         CoreArtifactTypes.XViewerGlobalCustomization.getName(), BranchManager.getCommonBranch());
+         CoreArtifactTypes.XViewerGlobalCustomization.getName(), COMMON);
    }
 
    public static Artifact createCustomArtifact() throws OseeCoreException {
       return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
-         BranchManager.getCommonBranch(), CoreArtifactTypes.XViewerGlobalCustomization.getName());
+         COMMON, CoreArtifactTypes.XViewerGlobalCustomization.getName());
    }
 }

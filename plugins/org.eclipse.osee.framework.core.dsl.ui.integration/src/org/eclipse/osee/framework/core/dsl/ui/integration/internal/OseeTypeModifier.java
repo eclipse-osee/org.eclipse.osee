@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui.integration.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDefinition;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +22,6 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.render.AttributeModifier;
 
@@ -43,8 +43,7 @@ public class OseeTypeModifier implements AttributeModifier {
          OseeExceptions.wrapAndThrow(ex);
       }
 
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.OseeTypeDefinition, BranchManager.getCommonBranch());
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(OseeTypeDefinition, COMMON);
       StringBuilder combinedSheets = new StringBuilder();
       for (Artifact art : artifacts) {
          String sheetData;

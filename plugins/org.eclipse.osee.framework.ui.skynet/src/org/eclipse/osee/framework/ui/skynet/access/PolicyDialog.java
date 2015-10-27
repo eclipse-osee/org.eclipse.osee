@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UserGroup;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,8 +92,7 @@ public class PolicyDialog extends Dialog {
 
       ArrayList<Artifact> subjectList = new ArrayList<>();
       subjectList.addAll(UserManager.getUsersSortedByName());
-      subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup,
-         BranchManager.getCommonBranch()));
+      subjectList.addAll(ArtifactQuery.getArtifactListFromType(UserGroup, COMMON));
       Collections.sort(subjectList, new UserComparator<Artifact>());
       for (Artifact subject : subjectList) {
          String name = subject.getName();

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -22,19 +23,17 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-
 /**
  * Simple creation and access point for artifact instances required by the framework
- * 
+ *
  * @author Ryan D. Brooks
  */
 public final class OseeSystemArtifacts {
 
    public static Artifact getGlobalPreferenceArtifact() throws OseeCoreException {
       return getCachedArtifact(CoreArtifactTypes.GlobalPreferences, CoreArtifactTypes.GlobalPreferences.getName(),
-         BranchManager.getCommonBranch());
+         COMMON);
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(IOseeBranch branch) throws OseeCoreException {
@@ -42,7 +41,7 @@ public final class OseeSystemArtifacts {
    }
 
    public static Artifact createGlobalPreferenceArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.GlobalPreferences, BranchManager.getCommonBranch(),
+      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.GlobalPreferences, COMMON,
          CoreArtifactTypes.GlobalPreferences.getName());
    }
 

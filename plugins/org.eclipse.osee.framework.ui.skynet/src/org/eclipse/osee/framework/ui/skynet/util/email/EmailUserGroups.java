@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.util.email;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.EmailUtil;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -53,7 +53,7 @@ public class EmailUserGroups extends XNavigateItemAction {
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
-         BranchManager.getCommonBranch(), DeletionFlag.EXCLUDE_DELETED)) {
+         COMMON, DeletionFlag.EXCLUDE_DELETED)) {
          // Only add group if have read permissions
          if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
             artifacts.add(art);

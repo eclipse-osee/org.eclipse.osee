@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.navigate;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -162,8 +164,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   // System.out.println(transStr);
                   monitor.subTask(transStr);
                   if (transactionId.getCommit() > 0) {
-                     Artifact assocArt =
-                        ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
+                     Artifact assocArt = ArtifactQuery.getArtifactFromId(transactionId.getCommit(), COMMON);
                      if (assocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                         TeamWorkFlowArtifact twf = (TeamWorkFlowArtifact) assocArt;
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
@@ -53,8 +54,7 @@ public class AtsBranchManagerUpdateListener implements IBranchEventListener {
             return;
          }
          if (branch != null) {
-            Artifact assocArtInCache =
-               ArtifactCache.getActive(branch.getAssociatedArtifactId(), BranchManager.getCommonBranch());
+            Artifact assocArtInCache = ArtifactCache.getActive(branch.getAssociatedArtifactId(), COMMON);
             if (assocArtInCache != null && assocArtInCache instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) assocArtInCache;
                if (branchEvent.getEventType() == BranchEventType.Added) {

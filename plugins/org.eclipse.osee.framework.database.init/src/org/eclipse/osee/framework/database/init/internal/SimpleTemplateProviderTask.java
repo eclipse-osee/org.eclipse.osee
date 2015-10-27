@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.database.init.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.IOException;
 import java.net.URL;
 import java.util.logging.Level;
@@ -27,9 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
    @Override
@@ -50,7 +49,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
       for (IExtension extension : ep.getExtensions()) {
          for (IConfigurationElement el : extension.getConfigurationElements()) {
             Artifact templateArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, BranchManager.getCommonBranch());
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, COMMON);
             String filePath = el.getAttribute("File");
             String name = filePath.substring(filePath.lastIndexOf('/') + 1);
             name = name.substring(0, name.lastIndexOf('.'));
@@ -77,12 +76,12 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
    private Artifact getTemplateFolder() throws OseeCoreException {
       Artifact templateFolder =
          ArtifactQuery.checkArtifactFromTypeAndName(CoreArtifactTypes.HeadingMSWord, "Document Templates",
-            BranchManager.getCommonBranch());
+            COMMON);
       if (templateFolder == null) {
-         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+         Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(COMMON);
 
          templateFolder =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch(),
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON,
                "Document Templates");
          rootArt.addChild(templateFolder);
          templateFolder.persist(getClass().getSimpleName());

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.client.demo.DemoUsers;
@@ -20,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -33,8 +33,7 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       List<User> admins = new ArrayList<>();
 
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Add Dev Users");
+      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "Add Dev Users");
       for (IUserToken userEnum : DemoUsers.values()) {
          User user = UserManager.createUser(userEnum, transaction);
          if (userEnum.isAdmin()) {
@@ -44,8 +43,7 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
       transaction.execute();
 
-      SkynetTransaction transaction1 =
-         TransactionManager.createTransaction(BranchManager.getCommonBranch(), "Configure OSEEAdmin");
+      SkynetTransaction transaction1 = TransactionManager.createTransaction(COMMON, "Configure OSEEAdmin");
       SystemGroup.OseeAdmin.getArtifact().persist(transaction1);
       AtsGroup.AtsAdmin.getArtifact().persist(transaction1);
       AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -21,7 +22,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
 /**
@@ -38,7 +38,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
       boolean isUserAuthenticationAllowed = false;
       try {
          // Check that this is a normal initialization
-         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BranchManager.getCommonBranch());
+         Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(COMMON);
          if (root != null) {
             isUserAuthenticationAllowed = true;
          }

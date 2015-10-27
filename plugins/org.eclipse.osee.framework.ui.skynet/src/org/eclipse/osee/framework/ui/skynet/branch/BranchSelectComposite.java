@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.branch;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -19,7 +20,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -98,7 +98,7 @@ public class BranchSelectComposite extends Composite {
          public void handleEvent(Event event) {
             if (event.button == 3) {
                try {
-                  setSelected(BranchManager.getCommonBranch());
+                  setSelected(COMMON);
                   notifyListener(event);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

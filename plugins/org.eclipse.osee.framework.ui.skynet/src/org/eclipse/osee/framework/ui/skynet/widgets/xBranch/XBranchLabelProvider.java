@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -174,7 +175,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             if (transaction.getCommit() == 0) {
                return "";
             }
-            Artifact art = ArtifactQuery.getArtifactFromId(transaction.getCommit(), BranchManager.getCommonBranch());
+            Artifact art = ArtifactQuery.getArtifactFromId(transaction.getCommit(), COMMON);
             if (art != null) {
                columnText = art.getName();
             }
@@ -220,9 +221,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
                if (((TransactionRecord) element).getCommit() == 0) {
                   return null;
                }
-               Artifact artifact =
-                  ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(),
-                     BranchManager.getCommonBranch());
+               Artifact artifact = ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(), COMMON);
                if (artifact != null) {
                   return ArtifactImageManager.getImage(artifact);
                }

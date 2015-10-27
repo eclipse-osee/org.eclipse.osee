@@ -41,10 +41,6 @@ public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
       return get(CoreBranches.SYSTEM_ROOT);
    }
 
-   public Branch getCommonBranch() throws OseeCoreException {
-      return get(CoreBranches.COMMON);
-   }
-
    public MergeBranch findMergeBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
       Conditions.checkNotNull(destinationBranch, "destination branch");

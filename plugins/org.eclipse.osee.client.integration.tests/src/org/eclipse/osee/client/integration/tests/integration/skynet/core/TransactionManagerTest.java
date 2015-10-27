@@ -11,10 +11,12 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -40,7 +42,7 @@ public class TransactionManagerTest {
    public void testGetSetTransactionComment() throws Exception {
       String guid = GUID.create();
       String comment = "TransactionManagerTest-" + guid;
-      Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BranchManager.getCommonBranch());
+      Artifact art = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON);
       art.persist(comment);
 
       // Find transaction

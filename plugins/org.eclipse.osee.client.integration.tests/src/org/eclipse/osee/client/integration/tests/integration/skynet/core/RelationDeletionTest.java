@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
@@ -19,14 +20,13 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeArtifacts;
 import org.junit.After;
 import org.junit.Before;
@@ -62,11 +62,10 @@ public class RelationDeletionTest {
 
    @Test
    public void testDeleteRelationPersistsBothSides() throws Exception {
-      Branch branch = BranchManager.getCommonBranch();
-      Artifact parent = createArtifact(CoreArtifactTypes.Folder, branch);
-      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, branch);
-      Artifact child2 = createArtifact(CoreArtifactTypes.Folder, branch);
-      Artifact child3 = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact parent = createArtifact(CoreArtifactTypes.Folder, COMMON);
+      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, COMMON);
+      Artifact child2 = createArtifact(CoreArtifactTypes.Folder, COMMON);
+      Artifact child3 = createArtifact(CoreArtifactTypes.Folder, COMMON);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
@@ -94,9 +93,8 @@ public class RelationDeletionTest {
 
    @Test
    public void testDeleteThenUnDeleteRelation() throws OseeCoreException {
-      Branch branch = BranchManager.getCommonBranch();
-      Artifact parent = createArtifact(CoreArtifactTypes.Folder, branch);
-      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, branch);
+      Artifact parent = createArtifact(CoreArtifactTypes.Folder, COMMON);
+      Artifact child1 = createArtifact(CoreArtifactTypes.Folder, COMMON);
 
       parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
       parent.persist(getClass().getSimpleName());
@@ -125,7 +123,7 @@ public class RelationDeletionTest {
 
    }
 
-   private Artifact createArtifact(IArtifactType artifactType, Branch branch) throws OseeCoreException {
+   private Artifact createArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(artifactType, branch);
       artifacts.add(newArtifact);
       return newArtifact;

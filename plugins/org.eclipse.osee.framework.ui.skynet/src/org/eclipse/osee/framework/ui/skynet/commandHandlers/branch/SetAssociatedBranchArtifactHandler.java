@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -42,8 +43,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
       ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
       if (ed.open() == 0) {
          String artId = ed.getEntry();
-         Artifact associatedArtifact =
-            ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), BranchManager.getCommonBranch());
+         Artifact associatedArtifact = ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), COMMON);
          if (MessageDialog.openConfirm(
             Displays.getActiveShell(),
             "Set Associated Artifact",

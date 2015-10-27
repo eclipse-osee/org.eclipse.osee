@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -18,7 +19,6 @@ import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
@@ -76,7 +76,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
                continue;
             }
             try {
-               Artifact artifact = ArtifactQuery.getArtifactFromId(author, BranchManager.getCommonBranch());
+               Artifact artifact = ArtifactQuery.getArtifactFromId(author, COMMON);
                if (artifact == null) {
                   rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
                      "Error: Artifact Not Found"));

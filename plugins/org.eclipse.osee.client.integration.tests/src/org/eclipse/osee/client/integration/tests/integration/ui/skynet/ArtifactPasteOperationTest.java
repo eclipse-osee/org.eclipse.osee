@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -22,14 +23,12 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -68,21 +67,20 @@ public class ArtifactPasteOperationTest {
       List<Artifact> emptyList = Collections.emptyList();
       relationOrderFactory = new RelationOrderFactory();
 
-      Branch branch = BranchManager.getCommonBranch();
-      parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Parent");
+      parent1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "Parent");
 
-      child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_a");
+      child1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_a");
       child1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
 
-      child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_b");
-      child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "child_c");
+      child2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_b");
+      child3 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "child_c");
 
       parent1.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
       parent1.addChild(child1);
       parent1.addChild(child3);
       parent1.addChild(child2);
 
-      destination = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch, "Destination");
+      destination = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, COMMON, "Destination");
       destination.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, emptyList);
       destination.addChild(parent1);
    }

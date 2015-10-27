@@ -58,7 +58,7 @@ public class ArtifactCacheQuery {
    /**
     * Get artifact, query if not already found and cacheByText.
     */
-   public static Artifact getSingletonArtifactByTextOrException(IArtifactType artifactType, IAttributeType attributeType, String text, Branch branch) throws OseeCoreException {
+   public static Artifact getSingletonArtifactByTextOrException(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactByText(artifactType, attributeType, text, branch, true);
       // Exception on problems
       if (artifacts.isEmpty()) {

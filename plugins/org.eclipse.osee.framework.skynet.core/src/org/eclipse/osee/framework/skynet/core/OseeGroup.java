@@ -10,19 +10,19 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -98,20 +98,19 @@ public class OseeGroup {
    }
 
    private Artifact getOrCreateGroupArtifact(IArtifactToken token) throws OseeCoreException {
-      Branch branch = BranchManager.getCommonBranch();
       String cacheKey = CoreArtifactTypes.UserGroup + "." + token;
-      Artifact groupArtifact = ArtifactCache.getByTextId(cacheKey, branch);
+      Artifact groupArtifact = ArtifactCache.getByTextId(cacheKey, COMMON);
 
       if (groupArtifact == null) {
          try {
-            groupArtifact = ArtifactQuery.getArtifactFromToken(token, branch);
+            groupArtifact = ArtifactQuery.getArtifactFromToken(token, COMMON);
          } catch (ArtifactDoesNotExist ex) {
             // do nothing
          }
          if (groupArtifact == null) {
-            Artifact userGroupsFolder = getOrCreateUserGroupsFolder(branch);
+            Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);
             groupArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, token.getName(), token.getGuid());
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, COMMON, token.getName(), token.getGuid());
             userGroupsFolder.addChild(groupArtifact);
          }
          ArtifactCache.cacheByTextId(cacheKey, groupArtifact);
@@ -120,7 +119,7 @@ public class OseeGroup {
       return groupArtifact;
    }
 
-   private Artifact getOrCreateUserGroupsFolder(Branch branch) throws OseeCoreException {
+   private Artifact getOrCreateUserGroupsFolder(IOseeBranch branch) throws OseeCoreException {
       String cacheKey = CoreArtifactTypes.Folder.getName() + "." + CoreArtifactTokens.UserGroups.getName();
       Artifact usersGroupFolder = ArtifactCache.getByTextId(cacheKey, branch);
       if (usersGroupFolder == null) {

@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.access.provider.internal;
 
+import static org.eclipse.osee.framework.access.provider.internal.DefaultFrameworkAccessConstants.STORAGE_ARTIFACT_NAME;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.AccessControlModel;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.dsl.ui.integration.operations.AbstractOseeDslProvider;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -30,8 +31,7 @@ public class FrameworkDslProvider extends AbstractOseeDslProvider {
 
    protected Artifact getStorageArtifact() {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.AccessControlModel,
-            DefaultFrameworkAccessConstants.STORAGE_ARTIFACT_NAME, BranchManager.getCommonBranch());
+         return ArtifactQuery.getArtifactFromTypeAndName(AccessControlModel, STORAGE_ARTIFACT_NAME, COMMON);
       } catch (OseeCoreException ex) {
          return null;
       }

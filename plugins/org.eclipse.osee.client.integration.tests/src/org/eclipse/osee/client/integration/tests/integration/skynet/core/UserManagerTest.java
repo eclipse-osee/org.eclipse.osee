@@ -69,7 +69,7 @@ public final class UserManagerTest {
    public void testCreateUser() throws Exception {
 
       SkynetTransaction transaction =
-         TransactionManager.createTransaction(BranchManager.getCommonBranch(), getClass().getSimpleName());
+         TransactionManager.createTransaction(CoreBranches.COMMON, getClass().getSimpleName());
 
       User lithium = createUser(transaction, 0);
       User sodium = createUser(transaction, 1);

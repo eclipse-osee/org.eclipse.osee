@@ -11,10 +11,13 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SubscriptionGroup;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,9 +54,7 @@ public class EmailGroupsBlamTest {
 
    @Before
    public void setUp() throws Exception {
-      newGroup =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubscriptionGroup, BranchManager.getCommonBranch(),
-            method.getQualifiedTestName());
+      newGroup = ArtifactTypeManager.addArtifact(SubscriptionGroup, COMMON, method.getQualifiedTestName());
       newGroup.addRelation(CoreRelationTypes.Users_User, UserManager.getUser());
       newGroup.persist(method.getQualifiedTestName());
    }

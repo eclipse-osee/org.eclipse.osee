@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -179,10 +180,9 @@ public class ArtifactCacheQueryTest {
     */
    @org.junit.Test
    public void testGetSingletonArtifactOrException() throws OseeCoreException {
-      Branch commonBranch = BranchManager.getCommonBranch();
       try {
          ArtifactCacheQuery.getSingletonArtifactByTextOrException(CoreArtifactTypes.GeneralData,
-            CoreAttributeTypes.StaticId, STATIC_ID_DDD, commonBranch);
+            CoreAttributeTypes.StaticId, STATIC_ID_DDD, COMMON);
          fail("ArtifactDoesNotExist should have been thrown.");
       } catch (Exception ex) {
          assertTrue("Was not ArtifactDoesNotExist was: " + ex.getClass().getSimpleName(),
@@ -204,7 +204,7 @@ public class ArtifactCacheQueryTest {
 
       try {
          ArtifactCacheQuery.getSingletonArtifactByTextOrException(CoreArtifactTypes.GeneralData,
-            CoreAttributeTypes.StaticId, STATIC_ID_DDD, commonBranch);
+            CoreAttributeTypes.StaticId, STATIC_ID_DDD, COMMON);
          fail("MultipleArtifactsExist should have been thrown");
       } catch (Exception ex) {
          assertTrue("Was not MultipleArtifactsExist was: " + ex.getClass().getSimpleName(),

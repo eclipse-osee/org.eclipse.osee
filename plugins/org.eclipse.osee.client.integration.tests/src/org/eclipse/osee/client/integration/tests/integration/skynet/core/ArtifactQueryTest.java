@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -72,24 +73,24 @@ public class ArtifactQueryTest {
    @Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
       Artifact newArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, BranchManager.getCommonBranch());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
       newArtifact.persist(getClass().getSimpleName());
 
       // Should exist
       Artifact searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), COMMON);
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
       searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(),
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON,
             DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist();
 
       try {
-         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getUuid(), BranchManager.getCommonBranch());
+         Artifact ret = ArtifactQuery.checkArtifactFromId(newArtifact.getUuid(), COMMON);
          Assert.assertNull(ret);
       } catch (ArtifactDoesNotExist ex) {
          Assert.fail("ArtifactQuery should never throw ArtifactDoesNotExist with QueryType.CHECK");
@@ -97,7 +98,7 @@ public class ArtifactQueryTest {
 
       // Should NOT exist, cause deleted
       try {
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch());
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON);
          Assert.fail("artifact query should have thrown does not exist exception");
       } catch (ArtifactDoesNotExist ex) {
          // do nothing, this is the expected case
@@ -105,7 +106,7 @@ public class ArtifactQueryTest {
 
       // Should still exist with allowDeleted
       searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), BranchManager.getCommonBranch(),
+         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON,
             DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
@@ -148,7 +149,7 @@ public class ArtifactQueryTest {
       criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common", QueryOption.TOKEN_DELIMITER__ANY));
       // test against a couple of attributes types that are not taggable; expect exception
       try {
-         ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(COMMON, 1000, criteria);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
@@ -156,7 +157,7 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Active, "true",
-            BranchManager.getCommonBranch(), QueryOption.TOKEN_DELIMITER__ANY);
+            COMMON, QueryOption.TOKEN_DELIMITER__ANY);
          Assert.fail("Should have thrown an exception as the attribute type are not taggable");
       } catch (OseeCoreException e) {
          Assert.assertTrue(e.getMessage(), Boolean.TRUE);
@@ -166,7 +167,7 @@ public class ArtifactQueryTest {
       criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com",
          QueryOption.TOKEN_DELIMITER__ANY));
       try {
-         ArtifactQuery.getArtifactListFromCriteria(BranchManager.getCommonBranch(), 1000, criteria);
+         ArtifactQuery.getArtifactListFromCriteria(COMMON, 1000, criteria);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());
@@ -174,7 +175,7 @@ public class ArtifactQueryTest {
 
       try {
          ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
-            "My Notes", BranchManager.getCommonBranch(), QueryOption.TOKEN_DELIMITER__ANY);
+            "My Notes", COMMON, QueryOption.TOKEN_DELIMITER__ANY);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());

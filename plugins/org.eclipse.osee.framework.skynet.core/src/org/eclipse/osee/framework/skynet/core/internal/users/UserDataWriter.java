@@ -64,7 +64,7 @@ public class UserDataWriter {
       } else {
          String guid = GUID.isValid(userToken.getGuid()) ? userToken.getGuid() : GUID.create();
          long uuid = userToken.getUuid() > 0L ? userToken.getUuid() : Lib.generateArtifactIdAsInt();
-         user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, BranchManager.getCommonBranch(),
+         user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, CoreBranches.COMMON,
             userToken.getName(), guid, uuid);
          user.setActive(userToken.isActive());
          user.setUserID(userToken.getUserId());

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.ui.forms.widgets.FormToolkit;
-
 /**
  * @author Ryan D. Brooks
  */
@@ -70,7 +69,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       }
       logf("addresses: " + count);
 
-      SkynetTransaction transaction = TransactionManager.createTransaction(BranchManager.getCommonBranch(), getName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, getName());
       for (Artifact group : groups) {
          for (User user : users) {
             group.addRelation(CoreRelationTypes.Users_User, user);
@@ -86,7 +85,7 @@ public class PopulateUserGroupBlam extends AbstractBlam {
       if (xWidget.getLabel().equals("User Groups")) {
          XArtifactList listViewer = (XArtifactList) xWidget;
          listViewer.setInputArtifacts(ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
-            BranchManager.getCommonBranch(), DeletionFlag.EXCLUDE_DELETED));
+            COMMON, DeletionFlag.EXCLUDE_DELETED));
       }
    }
 

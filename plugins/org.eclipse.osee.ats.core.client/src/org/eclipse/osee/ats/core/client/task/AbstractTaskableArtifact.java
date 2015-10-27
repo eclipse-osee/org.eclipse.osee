@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public abstract class AbstractTaskableArtifact extends AbstractWorkflowArtifact {
 
-   public AbstractTaskableArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public AbstractTaskableArtifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
    }
 

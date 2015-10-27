@@ -595,7 +595,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       for (int subjectId : subjects) {
-         Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, BranchManager.getCommonBranch());
+         Artifact subject = ArtifactQuery.getArtifactFromId(subjectId, CoreBranches.COMMON);
          PermissionEnum permissionEnum = accessControlListCache.get(subjectId, accessObject);
          AccessControlData accessControlData =
             new AccessControlData(subject, accessObject, permissionEnum, false, false);

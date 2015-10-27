@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -165,7 +166,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
       try {
          if (branch == null) {
-            branch = BranchManager.getCommonBranch();
+            branch = COMMON;
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

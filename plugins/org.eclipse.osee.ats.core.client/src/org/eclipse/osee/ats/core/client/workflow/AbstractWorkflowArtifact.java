@@ -55,11 +55,10 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.core.services.HasCmAccessControl;
 import org.eclipse.osee.framework.core.util.IGroupExplorerProvider;
@@ -95,7 +94,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    private AtsNote atsNote;
    private IAtsStateManager stateMgr;
 
-   public AbstractWorkflowArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public AbstractWorkflowArtifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
    }
 

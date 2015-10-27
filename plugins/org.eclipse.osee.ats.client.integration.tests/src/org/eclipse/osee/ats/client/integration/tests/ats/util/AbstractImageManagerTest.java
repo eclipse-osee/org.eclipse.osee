@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -108,7 +109,7 @@ public abstract class AbstractImageManagerTest {
    public void testGetImageByArtifact() throws Exception {
       Artifact folder =
          ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder, CoreAttributeTypes.StaticId,
-            "user.groups", BranchManager.getCommonBranch());
+            "user.groups", CoreBranches.COMMON);
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
       ArtifactCache.deCache(folder);
