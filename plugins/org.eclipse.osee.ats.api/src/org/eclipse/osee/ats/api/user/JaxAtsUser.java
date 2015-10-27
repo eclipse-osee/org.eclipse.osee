@@ -57,10 +57,4 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
    public void setStoreObject(ArtifactId artifact) {
       // do nothing
    }
-
-   @Override
-   public int compareTo(Object o) {
-      return 0;
-   }
-
 }

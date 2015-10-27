@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.messaging;
 
-import org.eclipse.osee.framework.jdk.core.type.Named;
-
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface MessageID extends Named {
+public interface MessageID {
    Class<?> getSerializationClass();
 
    boolean isReplyRequired();
@@ -23,4 +21,6 @@ public interface MessageID extends Named {
    boolean isTopic();
 
    String getId();
+   
+   String getName();
 }

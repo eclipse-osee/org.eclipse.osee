@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Donald G. Dunne
  */
-public class UuidNamedIdentity extends UuidBaseIdentity implements UuidIdentifiable, Comparable<Named> {
+public class UuidNamedIdentity extends UuidBaseIdentity implements UuidIdentifiable {
    private String name;
 
    public UuidNamedIdentity(Long uid, String name) {
@@ -28,14 +28,6 @@ public class UuidNamedIdentity extends UuidBaseIdentity implements UuidIdentifia
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
    }
 
    @Override

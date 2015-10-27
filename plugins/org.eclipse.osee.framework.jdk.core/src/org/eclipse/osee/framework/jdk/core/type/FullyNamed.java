@@ -13,6 +13,6 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Ryan D. Brooks
  */
-public interface FullyNamed extends Named, Comparable<Named> {
+public interface FullyNamed extends Named {
    public abstract String getUnqualifiedName();
 }

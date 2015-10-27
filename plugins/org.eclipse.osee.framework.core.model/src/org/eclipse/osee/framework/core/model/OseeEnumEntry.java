@@ -91,14 +91,6 @@ public class OseeEnumEntry implements FullyNamed, HasDescription {
    }
 
    @Override
-   public int compareTo(Named o) {
-      if (o != null && o.getName() != null && getName() != null) {
-         return getName().compareTo(o.getName());
-      }
-      return -1;
-   }
-
-   @Override
    public String getUnqualifiedName() {
       String name = getName();
       if (Strings.isValid(name)) {

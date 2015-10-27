@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Ryan D. Brooks
  */
-public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T>, Comparable<Named> {
+public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T> {
    private String name;
 
    public NamedIdentity(T uid, String name) {
@@ -29,14 +29,6 @@ public class NamedIdentity<T> extends BaseIdentity<T> implements Identifiable<T>
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
    }
 
    @Override

@@ -14,6 +14,14 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Andrew M. Finkbeiner
  */
-public interface Named {
+public interface Named extends Comparable<Named> {
    String getName();
+   
+   @Override
+   default int compareTo(Named other) {
+      if (other != null && other.getName() != null && getName() != null) {
+         return getName().compareTo(other.getName());
+      }
+      return -1;
+   }
 }

@@ -16,10 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsUser extends IAtsObject, Comparable<Object> {
-
-   @Override
-   public String getName();
+public interface IAtsUser extends IAtsObject {
 
    public String getUserId() throws OseeCoreException;
 

@@ -23,7 +23,7 @@ import org.json.JSONObject;
 /**
  * @author Angel Avila
  */
-public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem, Comparable<Named> {
+public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem {
 
    private final ArtifactReadable artifact;
 
@@ -88,14 +88,6 @@ public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem
    @Override
    public String getTotalPoints() {
       return artifact.getSoleAttributeAsString(DispoConstants.DispoItemTotalPoints, "0");
-   }
-
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
    }
 
    @Override

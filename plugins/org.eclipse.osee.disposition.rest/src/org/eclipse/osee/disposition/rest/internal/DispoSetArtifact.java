@@ -22,7 +22,7 @@ import org.json.JSONException;
 /**
  * @author Angel Avila
  */
-public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet, Comparable<Named> {
+public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    private final ArtifactReadable artifact;
 
@@ -49,14 +49,6 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet, 
       } catch (JSONException ex) {
          throw new OseeCoreException("Could not parse Notes Json", ex);
       }
-   }
-
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
    }
 
    @Override

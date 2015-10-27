@@ -150,27 +150,10 @@ public class CoreAtsUsersTest {
       Assert.assertFalse(user2.equals(exceptionUser));
    }
 
-   @Test
-   public void testCompareTo() {
-      Assert.assertEquals(-8, AtsCoreUsers.GUEST_USER.compareTo(AtsCoreUsers.SYSTEM_USER));
-      Assert.assertEquals(1, AtsCoreUsers.GUEST_USER.compareTo(null));
-      Assert.assertEquals(-1, AtsCoreUsers.GUEST_USER.compareTo("asdf"));
-
-      TestUser user = new TestUser();
-      user.setName(null);
-      Assert.assertEquals(1, AtsCoreUsers.GUEST_USER.compareTo(user));
-      Assert.assertEquals(-1, user.compareTo(AtsCoreUsers.GUEST_USER));
-      Assert.assertEquals(0, user.compareTo(user));
-   }
-
    private class TestUser extends AbstractAtsUser {
 
       private String name = "Test User";
-
-      public void setName(String name) {
-         this.name = name;
-      }
-
+      
       public TestUser() {
          super("999994");
       }
@@ -206,11 +189,6 @@ public class CoreAtsUsersTest {
       @Override
       public String getDescription() {
          return getName();
-      }
-
-      @Override
-      public int compareTo(Object o) {
-         return 0;
       }
 
       @Override

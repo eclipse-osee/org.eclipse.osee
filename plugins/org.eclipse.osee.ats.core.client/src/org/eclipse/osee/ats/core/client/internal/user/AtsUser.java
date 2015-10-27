@@ -38,25 +38,6 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public int compareTo(Object other) {
-      int result = other != null ? -1 : 1;
-      if (other instanceof IAtsUser) {
-         String otherName = ((IAtsUser) other).getName();
-         String thisName = user != null ? getName() : null;
-         if (thisName == null && otherName == null) {
-            result = 0;
-         } else if (thisName != null && otherName == null) {
-            result = 1;
-         } else if (thisName != null && otherName != null) {
-            result = thisName.compareTo(otherName);
-         }
-      } else if (other instanceof User) {
-         result = user != null ? user.compareTo((User) other) : -1;
-      }
-      return result;
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 0;

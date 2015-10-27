@@ -15,7 +15,7 @@ package org.eclipse.osee.framework.jdk.core.type;
  * 
  * @author Donald G. Dunne
  */
-public class UuidNamedIdentityJaxRs extends UuidBaseIdentityJaxRs implements UuidIdentifiable, Comparable<Named> {
+public class UuidNamedIdentityJaxRs extends UuidBaseIdentityJaxRs implements UuidIdentifiable {
    private String name;
 
    public UuidNamedIdentityJaxRs() {
@@ -34,14 +34,6 @@ public class UuidNamedIdentityJaxRs extends UuidBaseIdentityJaxRs implements Uui
 
    public void setName(String name) {
       this.name = name;
-   }
-
-   @Override
-   public int compareTo(Named other) {
-      if (other != null && other.getName() != null && getName() != null) {
-         return getName().compareTo(other.getName());
-      }
-      return -1;
    }
 
    @Override
