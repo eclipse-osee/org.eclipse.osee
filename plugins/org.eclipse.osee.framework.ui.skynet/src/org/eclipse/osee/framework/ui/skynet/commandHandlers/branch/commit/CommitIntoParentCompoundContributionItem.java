@@ -46,7 +46,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    private ICommandService commandService;
 
    public CommitIntoParentCompoundContributionItem() {
-      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    public CommitIntoParentCompoundContributionItem(String id) {
@@ -70,12 +70,10 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
                   Command command = configCommandParameter(commandId);
                   CommandContributionItem contributionItem = null;
 
-                  if (selectedBranch.hasParentBranch()) {
-                     contributionItem = createCommand(selectedBranch, commandId);
+                  contributionItem = createCommand(selectedBranch, commandId);
 
-                     if (command != null && command.isEnabled()) {
-                        contributionItems.add(contributionItem);
-                     }
+                  if (command != null && command.isEnabled()) {
+                     contributionItems.add(contributionItem);
                   }
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

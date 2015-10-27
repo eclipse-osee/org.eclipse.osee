@@ -125,7 +125,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
 
          try {
             Branch branch = getSelection();
-            if (branch != null && branch.hasParentBranch()) {
+            if (branch != null) {
                String lastBranchSelected = Long.toString(branch.getUuid());
 
                List<String> history = new ArrayList<>(Arrays.asList(branchUuids));
@@ -157,9 +157,6 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       int result = branchSelection.open();
       if (result == Window.OK) {
          toReturn = branchSelection.getSelection();
-         if (toReturn != null && toReturn.hasParentBranch() == false) {
-            toReturn = null;
-         }
       }
       return toReturn;
    }

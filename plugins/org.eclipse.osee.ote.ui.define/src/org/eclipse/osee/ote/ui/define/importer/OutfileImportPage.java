@@ -271,7 +271,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
          toReturn &= false;
       } else {
          try {
-            if (!BranchManager.getBranch(branch).hasParentBranch()) {
+            if (BranchManager.isParentSystemRoot(branch)) {
                setMessage(null);
                setErrorMessage("Please select a working branch. Cannot import into a top-level branch.");
                toReturn &= false;
@@ -305,7 +305,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
 
          IOseeBranch branch = branchSelect.getData();
          try {
-            if (branch != null && BranchManager.getBranch(branch).hasParentBranch()) {
+            if (branch != null) {
                String lastBranchSelected = Long.toString(branch.getUuid());
                branchUuids = addToHistory(branchUuids, lastBranchSelected);
 

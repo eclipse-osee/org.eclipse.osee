@@ -39,8 +39,6 @@ public interface BranchReadable extends IOseeBranch {
 
    BranchReadable getParentBranch() throws OseeCoreException;
 
-   boolean hasParentBranch() throws OseeCoreException;
-
    Collection<? extends BranchReadable> getChildBranches() throws OseeCoreException;
 
    Collection<? extends BranchReadable> getChildBranches(boolean recurse) throws OseeCoreException;

@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -110,7 +111,7 @@ public final class ChangeManager {
          joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
 
          // for each combination of artifact and its branch hierarchy
-         while (branch.hasParentBranch()) {
+         while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
             transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
             joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);

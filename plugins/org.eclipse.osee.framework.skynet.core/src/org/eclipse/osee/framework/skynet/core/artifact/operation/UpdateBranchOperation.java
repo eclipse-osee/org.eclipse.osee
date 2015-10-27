@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -45,14 +46,12 @@ public class UpdateBranchOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       // Only update if there are no other Merge Branches and we haven't committed this branch already
       if (originalBranch != null && !BranchManager.hasMergeBranches(originalBranch) && !originalBranch.getBranchState().isCommitted()) {
-         if (originalBranch.hasParentBranch()) {
-            performUpdate(monitor, originalBranch);
-         }
+         performUpdate(monitor, originalBranch);
       }
    }
 
-   private Branch createTempBranch(Branch originalBranch) throws OseeCoreException {
-      Branch parentBranch = originalBranch.getParentBranch();
+   private Branch createTempBranch(IOseeBranch originalBranch) throws OseeCoreException {
+      Branch parentBranch = BranchManager.getParentBranch(originalBranch);
       String branchUpdateName = getUpdatedName(originalBranch.getName());
       Branch newWorkingBranch = BranchManager.createWorkingBranch(parentBranch, branchUpdateName);
       return newWorkingBranch;

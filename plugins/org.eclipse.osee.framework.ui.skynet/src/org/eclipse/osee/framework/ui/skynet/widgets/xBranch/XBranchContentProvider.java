@@ -82,10 +82,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
             Collection<Branch> childBrances =
                showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
 
-            items.addAll(childBrances);
-            items.addAll(getTransactions(branch));
+               items.addAll(childBrances);
+               items.addAll(getTransactions(branch));
 
-            return items.toArray();
+               return items.toArray();
          } else {
             return getTransactions(branch).toArray();
          }
@@ -127,7 +127,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
                branchTypes.add(BranchType.BASELINE);
                for (Branch branch : BranchManager.getBranches(branchState,
                   branchTypes.toArray(new BranchType[branchTypes.size()]))) {
-                  if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+                  if (BranchManager.isParentSystemRoot(branch)) {
                      branchesToReturn.add(branch);
                   }
                }

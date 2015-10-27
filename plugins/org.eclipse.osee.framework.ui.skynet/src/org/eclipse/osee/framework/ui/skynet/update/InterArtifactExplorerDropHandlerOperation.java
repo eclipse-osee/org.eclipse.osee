@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IntroduceArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -118,11 +119,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      boolean result = false;
-      if (destinationBranch.hasParentBranch()) {
-         result = destinationBranch.getParentBranch().equals(sourceBranch);
-      }
-      return result;
+      return sourceBranch.equals(BranchManager.getParentBranch(destinationBranch));
    }
 
    private Collection<Artifact> getRecurseChildren() throws OseeCoreException {

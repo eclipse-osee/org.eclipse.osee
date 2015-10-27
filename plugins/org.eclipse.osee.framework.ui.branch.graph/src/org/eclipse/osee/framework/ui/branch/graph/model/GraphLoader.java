@@ -123,7 +123,7 @@ public class GraphLoader {
          for (BranchModel branchModel : models) {
             try {
                Branch branch = branchModel.getBranch();
-               if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+               if (BranchManager.isParentSystemRoot(branch)) {
                   TxModel txModel = branchModel.getFirstTx();
                   if (txModel != null) {
                      connect(systemRootTx, txModel);

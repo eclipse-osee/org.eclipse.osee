@@ -71,8 +71,8 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
    }
 
    public void internalRemovePurgedBranchFromParent() throws OseeCoreException {
-      if (hasParentBranch()) {
-         Branch parentBranch = getParentBranch();
+      Branch parentBranch = getParentBranch();
+      if (parentBranch != null) {
          Iterator<Branch> siblings = parentBranch.childBranches.iterator();
 
          while (siblings.hasNext()) {
@@ -83,11 +83,6 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
             }
          }
       }
-   }
-
-   @Override
-   public boolean hasParentBranch() throws OseeCoreException {
-      return getParentBranch() != null;
    }
 
    @Override
@@ -274,8 +269,8 @@ public class Branch extends AbstractOseeType<Long> implements WriteableBranch, I
       List<Branch> ancestors = new ArrayList<>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
-      while (branchCursor.hasParentBranch()) {
-         branchCursor = branchCursor.getParentBranch();
+
+      while ((branchCursor = branchCursor.getParentBranch()) != null) {
          ancestors.add(branchCursor);
       }
       return ancestors;

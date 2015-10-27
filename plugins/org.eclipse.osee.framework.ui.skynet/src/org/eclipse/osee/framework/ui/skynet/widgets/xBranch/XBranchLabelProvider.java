@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -142,7 +143,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return String.valueOf(branch.getUuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
          try {
-            return branch.hasParentBranch() ? branch.getParentBranch().getName() : "none";
+            return branch.equals(CoreBranches.SYSTEM_ROOT) ? "none" : branch.getParentBranch().getName();
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }

@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -44,12 +43,9 @@ import org.eclipse.ui.progress.UIJob;
 public class UpdateBranchHandler extends CommandHandler {
 
    protected boolean isValid(Branch branch) throws OseeCoreException {
-      boolean result = false;
-      if (branch.hasParentBranch()) {
-         result = !branch.getParentBranch().equals(CoreBranches.SYSTEM_ROOT);
-         result &= branch.isEditable() && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
-         result &= branch.getChildBranches().isEmpty();
-      }
+      boolean result = !BranchManager.isParentSystemRoot(branch);
+      result &= branch.isEditable() && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
+      result &= branch.getChildBranches().isEmpty();
       return result;
    }
 
