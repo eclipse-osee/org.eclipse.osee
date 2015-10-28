@@ -119,8 +119,9 @@ public class TransactionBuilderImplTest {
       guid = GUID.create();
       factory = new TransactionBuilderImpl(txCallableFactory, txDataManager, txData, query);
 
+      when(attrId.getLocalId()).thenReturn(12345);
       when(txDataManager.getForWrite(txData, expectedAuthor)).thenReturn(artifact);
-      when(artifact.getAttributeById(attrId)).thenReturn(attribute);
+      when(artifact.getAttributeById(attrId.getLocalId())).thenReturn(attribute);
       when(query.createQueryFactory(session)).thenReturn(queryFactory);
    }
 

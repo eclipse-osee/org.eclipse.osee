@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -173,7 +172,7 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    }
 
    @Override
-   public AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+   public AttributeReadable<Object> getAttributeById(Integer attributeId) throws OseeCoreException {
       Attribute<Object> attribute = getProxiedObject().getAttributeById(attributeId);
       return getProxyManager().asExternalAttribute(getSession(), attribute);
    }

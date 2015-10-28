@@ -216,25 +216,25 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    @Override
    public <T> void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, T value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId).setValue(value);
+      asArtifact.getAttributeById(attrId.getLocalId()).setValue(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, String value) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId).setFromString(value);
+      asArtifact.getAttributeById(attrId.getLocalId()).setFromString(value);
    }
 
    @Override
    public void setAttributeById(ArtifactId sourceArtifact, AttributeId attrId, InputStream stream) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId).setValueFromInputStream(stream);
+      asArtifact.getAttributeById(attrId.getLocalId()).setValueFromInputStream(stream);
    }
 
    @Override
    public void deleteByAttributeId(ArtifactId sourceArtifact, AttributeId attrId) throws OseeCoreException {
       Artifact asArtifact = getForWrite(sourceArtifact);
-      asArtifact.getAttributeById(attrId).delete();
+      asArtifact.getAttributeById(attrId.getLocalId()).delete();
    }
 
    @Override

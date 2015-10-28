@@ -176,12 +176,14 @@ public class AttributeFactoryTest {
 
       when(attributeData.getVersion()).thenReturn(attrVersionData);
       when(attrVersionData.isInStorage()).thenReturn(true);
+      when(attributeData.getLocalId()).thenReturn(12345);
 
       when(dataFactory.introduce(branchId, attributeData)).thenReturn(introducedAttributeData);
       when(introducedAttributeData.getTypeUuid()).thenReturn(expectedGuid);
       when(introducedAttributeData.getDataProxy()).thenReturn(proxy);
 
-      when(container.getAttributeById(attributeData, DeletionFlag.INCLUDE_DELETED)).thenReturn(destinationAttribute);
+      when(container.getAttributeById(attributeData.getLocalId(), DeletionFlag.INCLUDE_DELETED)).thenReturn(
+         destinationAttribute);
 
       Attribute<Object> actual = factory.introduceAttribute(attributeData, branchId, container);
       assertNotNull(actual);

@@ -119,12 +119,12 @@ public final class OrcsPredicates {
       });
    }
 
-   public static Predicate<Attribute<?>> attributeId(final HasLocalId<Integer> attributeId) {
+   public static Predicate<Attribute<?>> attributeId(final Integer attributeId) {
       return new Predicate<Attribute<?>>() {
 
          @Override
          public boolean apply(Attribute<?> input) {
-            return attributeId.getLocalId().equals(input.getLocalId());
+            return attributeId.equals(input.getLocalId());
          }
       };
    }

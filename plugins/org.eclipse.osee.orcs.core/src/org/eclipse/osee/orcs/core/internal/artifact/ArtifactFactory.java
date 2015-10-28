@@ -102,7 +102,7 @@ public class ArtifactFactory {
    private void removeAttributes(Artifact introduce, Artifact destination) {
       for (Attribute<Object> destAttribute : destination.getAttributes(DeletionFlag.INCLUDE_DELETED)) {
          try {
-            introduce.getAttributeById(destAttribute);
+            introduce.getAttributeById(destAttribute.getLocalId());
          } catch (AttributeDoesNotExist ex) {
             // remove new attributes
             destAttribute.delete();

@@ -19,7 +19,6 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -139,12 +138,12 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(Integer attributeId) throws OseeCoreException {
       return getAttributeById(attributeId, DeletionFlag.EXCLUDE_DELETED);
    }
 
    @Override
-   public Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
+   public Attribute<Object> getAttributeById(Integer attributeId, DeletionFlag includeDeleted) throws OseeCoreException {
       Attribute<Object> attribute = null;
       Optional<Attribute<Object>> tryFind =
          Iterables.tryFind(getAttributes(includeDeleted), OrcsPredicates.attributeId(attributeId));

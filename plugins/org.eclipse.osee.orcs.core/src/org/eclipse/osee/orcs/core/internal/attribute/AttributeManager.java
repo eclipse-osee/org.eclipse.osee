@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.attribute;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -73,7 +72,7 @@ public interface AttributeManager extends AttributeContainer {
 
    <T> List<Attribute<T>> getAttributes(IAttributeType attributeType, DeletionFlag deletionFlag) throws OseeCoreException;
 
-   Attribute<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException;
+   Attribute<Object> getAttributeById(Integer attributeId) throws OseeCoreException;
 
-   Attribute<Object> getAttributeById(AttributeId attributeId, DeletionFlag includeDeleted) throws OseeCoreException;
+   Attribute<Object> getAttributeById(Integer attributeId, DeletionFlag includeDeleted) throws OseeCoreException;
 }

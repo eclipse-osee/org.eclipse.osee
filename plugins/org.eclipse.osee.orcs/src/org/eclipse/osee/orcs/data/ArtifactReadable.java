@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.data;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -60,7 +59,7 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasBr
 
    ////////////////////
 
-   AttributeReadable<Object> getAttributeById(AttributeId attributeId) throws OseeCoreException;
+   AttributeReadable<Object> getAttributeById(Integer attributeId) throws OseeCoreException;
 
    ResultSet<? extends AttributeReadable<Object>> getAttributes() throws OseeCoreException;
 

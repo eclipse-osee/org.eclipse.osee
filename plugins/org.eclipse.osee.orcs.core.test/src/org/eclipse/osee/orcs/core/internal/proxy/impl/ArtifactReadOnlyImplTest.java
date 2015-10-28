@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -76,7 +75,7 @@ public class ArtifactReadOnlyImplTest {
    @Mock private ArtifactReadable readable1;
    @Mock private Artifact artifact1;
 
-   @Mock private AttributeId attributeId;
+   private final Integer attributeId = 12345;
 
    @Mock private Attribute<Object> attribute1;
    @Mock private AttributeReadable<Object> attributeReadable1;
