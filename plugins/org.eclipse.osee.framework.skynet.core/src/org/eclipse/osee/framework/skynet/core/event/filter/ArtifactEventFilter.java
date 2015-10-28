@@ -37,7 +37,7 @@ public class ArtifactEventFilter implements IEventFilter {
    @Override
    public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       for (IBasicGuidArtifact art : guidArts) {
-         if (art.getGuid().equals(filterArtifactGuid) && art.getBranchId().equals(filterBranchUuid)) {
+         if (art.getGuid().equals(filterArtifactGuid) && art.isOnBranch(filterBranchUuid)) {
             return true;
          }
       }

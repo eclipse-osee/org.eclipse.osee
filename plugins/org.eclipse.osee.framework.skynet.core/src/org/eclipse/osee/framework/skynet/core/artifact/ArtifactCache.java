@@ -62,7 +62,7 @@ public final class ArtifactCache {
     */
    public static void deCache(IOseeBranch branch) {
       for (Artifact artifact : ACTIVE_CACHE.getAll()) {
-         if (artifact.getBranch().equals(branch)) {
+         if (artifact.isOnBranch(branch)) {
             ACTIVE_CACHE.deCache(artifact);
          }
       }

@@ -123,7 +123,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
                IOseeBranch destinationBranch = dropTarget.getBranch();
                for (Artifact art : artifactsBeingDropped) {
-                  if (art.getBranch().equals(destinationBranch)) {
+                  if (art.isOnBranch(destinationBranch)) {
                      artsOnSameBranchAsDestination.add(art);
                   }
                }
@@ -175,8 +175,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
             ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].getBranch().equals(
-               parentArtifact.getBranch())) {
+            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].isOnSameBranch(parentArtifact)) {
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
                Operations.executeAsJob(interDropHandler, true);

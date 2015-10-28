@@ -188,6 +188,7 @@ public class TransactionBuilderImplTest {
    public void testIntroduceArtifactBranchException() throws OseeCoreException {
       when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
       when(txData.getBranchId()).thenReturn(BRANCH_ID);
+      when(txData.isOnBranch(BRANCH_ID)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Source branch is same branch as transaction branch[" + BRANCH_ID + "]");

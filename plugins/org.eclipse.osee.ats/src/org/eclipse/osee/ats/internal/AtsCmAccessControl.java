@@ -38,7 +38,7 @@ public class AtsCmAccessControl implements CmAccessControl {
    public boolean isApplicable(IBasicArtifact<?> user, Object object) {
       boolean result = false;
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtilCore.getAtsBranch())) {
+         if (object instanceof Artifact && !((Artifact) object).isOnBranch(AtsUtilCore.getAtsBranch())) {
             result = atsBranchAccessManager.isApplicable(((Artifact) object).getBranch());
          }
          if (object instanceof IOseeBranch) {
@@ -51,7 +51,7 @@ public class AtsCmAccessControl implements CmAccessControl {
    @Override
    public Collection<? extends IAccessContextId> getContextId(IBasicArtifact<?> user, Object object) {
       if (object != null) {
-         if (object instanceof Artifact && !((Artifact) object).getBranch().equals(AtsUtilCore.getAtsBranch())) {
+         if (object instanceof Artifact && !((Artifact) object).isOnBranch(AtsUtilCore.getAtsBranch())) {
             return atsBranchAccessManager.getContextId(((Artifact) object).getBranch());
          }
          if (object instanceof IOseeBranch) {

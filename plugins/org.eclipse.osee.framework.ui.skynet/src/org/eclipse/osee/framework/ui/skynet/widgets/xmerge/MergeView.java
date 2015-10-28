@@ -407,16 +407,17 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             }
             if (!deletedPurgedArts.isEmpty()) {
                try {
-                  Branch branch = BranchManager.getBranch(deletedPurgedArts.iterator().next());
+                  EventBasicGuidArtifact artifact = deletedPurgedArts.iterator().next();
                   Conflict[] conflicts = getConflicts();
-                  if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
+                  boolean isOnSource = artifact.isOnBranch(conflicts[0].getSourceBranch());
+                  if (conflicts.length > 0 && (isOnSource || artifact.isOnBranch(conflicts[0].getDestBranch()))) {
                      mergeXWidget.setInputData(
                         sourceBranch,
                         destBranch,
                         transactionId,
                         mergeView,
                         commitTrans,
-                        branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                        isOnSource ? "Source Branch Changed" : "Destination Branch Changed",
                         showConflicts);
                   }
                } catch (Exception ex) {

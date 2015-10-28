@@ -112,8 +112,6 @@ public interface IAtsBranchService {
 
    BranchArchivedState getArchiveState(IOseeBranch branch);
 
-   IOseeBranch getBranch(ITransaction transactionId);
-
    ITransaction getCommitTransactionRecord(IAtsTeamWorkflow teamWf, IOseeBranch branch);
 
    Date getTimeStamp(ITransaction committedToParentTransRecord);

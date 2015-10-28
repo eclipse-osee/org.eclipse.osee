@@ -126,11 +126,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getBranch(ITransaction transaction) {
-      return getBranchByUuid(((TransactionRecord) transaction).getBranchId());
-   }
-
-   @Override
    public Date getTimeStamp(ITransaction transaction) {
       return ((TransactionRecord) transaction).getTimeStamp();
    }

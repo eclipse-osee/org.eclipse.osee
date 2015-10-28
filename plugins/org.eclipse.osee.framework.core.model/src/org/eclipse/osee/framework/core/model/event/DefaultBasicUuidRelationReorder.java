@@ -89,7 +89,7 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
          if (other.getBranchId() != null) {
             return false;
          }
-      } else if (!branchId.equals(other.getBranchId())) {
+      } else if (!isOnSameBranch(other)) {
          return false;
       }
       if (relTypeUuid == null) {

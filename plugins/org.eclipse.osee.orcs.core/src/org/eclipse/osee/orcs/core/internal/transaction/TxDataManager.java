@@ -157,7 +157,7 @@ public class TxDataManager {
 
    private boolean isFromSameStripe(TxData txData, Artifact artifact) {
       boolean result = false;
-      if (artifact != null && txData.getBranchId().equals(artifact.getBranchId())) {
+      if (txData.isOnSameBranch(artifact)) {
          int txId = txData.getGraph().getTransaction();
          if (txId == artifact.getTransaction()) {
             result = true;
@@ -184,7 +184,7 @@ public class TxDataManager {
 
    private Artifact getSourceArtifact(TxData txData, Long fromBranchId, ArtifactId artifactId) throws OseeCoreException {
       Artifact source = null;
-      if (txData.getBranchId().equals(fromBranchId)) {
+      if (txData.isOnBranch(fromBranchId)) {
          source = txData.getWriteable(artifactId);
       }
 

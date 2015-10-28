@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -122,10 +121,6 @@ public class BranchManager {
       if (reload) {
          getCache().reloadCache();
       }
-   }
-
-   public static Branch getBranch(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return BranchManager.getBranchByUuid(guidArt.getBranchId());
    }
 
    public static Branch getBranch(String branchName) throws OseeCoreException {

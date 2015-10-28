@@ -1574,7 +1574,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
             if (getBranchId() != null && other.getBranchId() != null) {
-               result = getBranchId().equals(other.getBranchId());
+               result = isOnSameBranch(other);
             }
          }
          return result;
@@ -1584,7 +1584,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
             if (getBranch() != null && other.getBranch() != null) {
-               result = getBranch().equals(other.getBranch());
+               result = isOnSameBranch(other);
             } else {
                result = getBranch() == null && other.getBranch() == null;
             }

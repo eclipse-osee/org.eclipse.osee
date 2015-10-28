@@ -111,7 +111,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
          return;
       }
       Branch txBranch = getBranch();
-      if (!artifact.getBranch().equals(txBranch)) {
+      if (!artifact.isOnBranch(txBranch)) {
          String msg = String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
             artifact.getGuid(), artifact.getBranch(), txBranch);
          throw new OseeStateException(msg);

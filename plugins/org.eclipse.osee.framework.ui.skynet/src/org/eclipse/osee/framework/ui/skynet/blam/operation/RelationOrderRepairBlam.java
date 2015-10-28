@@ -74,14 +74,14 @@ public class RelationOrderRepairBlam extends AbstractBlam {
    }
 
    private IOseeBranch getBranch(List<Artifact> arts) throws OseeArgumentException {
-      IOseeBranch branch = arts.get(0).getBranch();
+      Artifact firstArt = arts.get(0);
       for (Artifact art : arts) {
-         if (!art.getBranch().equals(branch)) {
+         if (!firstArt.isOnSameBranch(art)) {
             throw new OseeArgumentException("Input artifacts must be on same branch");
          }
       }
 
-      return branch;
+      return firstArt.getBranch();
    }
 
    private void resetRelationOrder(Artifact art) throws OseeCoreException, IOException {

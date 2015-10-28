@@ -155,7 +155,7 @@ public final class ChangeManager {
          // for each combination of artifact and all working branches in its
          // hierarchy
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
-            if (artifact.getBranch().equals(workingBranch.getParentBranch())) {
+            if (artifact.isOnBranch(workingBranch.getParentBranch())) {
                joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
             }
          }

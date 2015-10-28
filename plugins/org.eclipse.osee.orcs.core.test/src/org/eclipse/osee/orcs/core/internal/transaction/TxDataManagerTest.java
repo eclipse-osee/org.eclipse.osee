@@ -232,6 +232,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
+      when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
@@ -252,12 +253,13 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
+      when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, readable1);
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(artifact1).getBranchId();
+      verify(txData).isOnSameBranch(artifact1);
 
       assertEquals(artifact2, actual);
    }
@@ -271,6 +273,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
+      when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       Artifact actual = txDataManager.getForWrite(txData, artifact1);
 
@@ -336,6 +339,7 @@ public class TxDataManagerTest {
       ArtifactData data = Mockito.mock(ArtifactData.class);
       when(artifact1.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
+      when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Another instance of writeable detected - writeable tracking would be inconsistent");
@@ -507,6 +511,7 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isUseBackingData()).thenReturn(false);
+      when(txData.isOnSameBranch(artifact1)).thenReturn(true);
 
       txDataManager.deleteArtifact(txData, artifact1);
 

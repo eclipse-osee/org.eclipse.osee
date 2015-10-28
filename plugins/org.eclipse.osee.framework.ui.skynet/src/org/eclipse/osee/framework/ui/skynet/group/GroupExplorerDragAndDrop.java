@@ -278,7 +278,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       // Items dropped on Group; simply add items to group
       final Artifact[] artsToRelate = ((ArtifactData) event.data).getArtifacts();
       for (Artifact artifact : artsToRelate) {
-         if (!artifact.getBranch().equals(branch)) {
+         if (!artifact.isOnBranch(branch)) {
             AWorkbench.popup("ERROR",
                "Cross-branch grouping not supported.\n\nGroup and Artifacts must belong to same branch.");
             return;

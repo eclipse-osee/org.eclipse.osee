@@ -220,7 +220,7 @@ public class RelationManager {
          }
 
          if (relatedArtIds.size() > 0) {
-            IOseeBranch branch = artifacts.toArray(new Artifact[0])[0].getBranch();
+            IOseeBranch branch = artifacts.iterator().next().getBranch();
             newArtifacts = ArtifactQuery.getArtifactListFromIds(relatedArtIds, branch, allowDeleted);
          }
          newArtifactsToSearch.clear();
@@ -248,8 +248,7 @@ public class RelationManager {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-            chStmt.runPreparedQuery(sql, artifact.getFullBranch().getUuid(), relationType.getGuid(),
-               artifact.getArtId());
+            chStmt.runPreparedQuery(sql, artifact.getBranchId(), relationType.getGuid(), artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);
@@ -406,7 +405,7 @@ public class RelationManager {
    }
 
    private static void ensureSameBranch(Artifact a, Artifact b) throws OseeArgumentException {
-      if (!a.getBranch().equals(b.getBranch())) {
+      if (!a.isOnSameBranch(b)) {
          throw new OseeArgumentException("Cross branch linking is not yet supported.");
       }
    }

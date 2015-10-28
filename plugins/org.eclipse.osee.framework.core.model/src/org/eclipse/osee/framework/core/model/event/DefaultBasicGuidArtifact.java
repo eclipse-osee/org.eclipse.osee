@@ -66,7 +66,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
          if (equals && branchUuid == null || other.getBranchId() == null) {
             equals = false;
          } else if (equals) {
-            equals = branchUuid.equals(other.getBranchId());
+            equals = isOnSameBranch(other);
          }
 
          if (equals && getGuid() == null || other.getGuid() == null) {

@@ -91,7 +91,7 @@ public class RelationCacheTest {
       TestUtil.setEveryOtherToDeleted(sourceLinksRelType2);
 
       Assert.assertTrue(!artfact1.equals(artfact2));
-      Assert.assertTrue(!artfact1.getBranch().equals(artfact2.getBranch()));
+      Assert.assertTrue(!artfact1.isOnBranch(artfact2.getBranch()));
    }
 
    @After

@@ -22,4 +22,16 @@ public interface HasBranch {
    default Long getBranchId() {
       return getBranch().getUuid();
    }
+   
+   default boolean isOnBranch(Long branchId) {
+      return getBranchId().equals(branchId);
+   }
+
+   default boolean isOnSameBranch(HasBranch other) {
+      return other == null ? false : getBranchId().equals(other.getBranchId());
+   }
+
+   default boolean isOnBranch(IOseeBranch branch) {
+      return getBranchId().equals(branch.getUuid());
+   }
 }

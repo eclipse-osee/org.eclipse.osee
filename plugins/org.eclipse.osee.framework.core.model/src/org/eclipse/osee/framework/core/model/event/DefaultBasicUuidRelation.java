@@ -119,7 +119,7 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
          if (other.getBranchId() != null) {
             return false;
          }
-      } else if (!branchUuid.equals(other.getBranchId())) {
+      } else if (!isOnSameBranch(other)) {
          return false;
       }
       if (gammaId != other.getGammaId()) {

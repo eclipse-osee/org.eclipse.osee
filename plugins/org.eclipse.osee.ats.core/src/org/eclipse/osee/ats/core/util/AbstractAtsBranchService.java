@@ -147,7 +147,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
       Collection<ITransaction> transactions = getCommittedArtifactTransactionIds(teamWf);
       for (ITransaction transId : transactions) {
-         if (getBranch(transId).getUuid() == branch.getUuid()) {
+         if (transId.isOnBranch(branch)) {
             return transId;
          }
       }
@@ -201,7 +201,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public Collection<IOseeBranch> getBranchesCommittedTo(IAtsTeamWorkflow teamWf) {
       Set<IOseeBranch> branches = new HashSet<>();
       for (ITransaction transId : getTransactionIds(teamWf, false)) {
-         branches.add(getBranch(transId));
+         branches.add(transId.getBranch());
       }
       return branches;
    }
@@ -253,7 +253,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       Collection<ITransaction> transactionIds = new ArrayList<>();
       for (ITransaction transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
-         IOseeBranch branch = getBranch(transactionId);
+         IOseeBranch branch = transactionId.getBranch();
          if (getBranchType(branch).isBaselineBranch() && getArchiveState(branch).isUnArchived()) {
             transactionIds.add(transactionId);
          }
@@ -395,13 +395,12 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       commitMgrInputObjs.addAll(configArtSet);
       //for each tx commit...
       for (ITransaction txRecord : commitTxs) {
-         IOseeBranch txBranch = getBranch(txRecord);
          boolean isCommitAlreadyPresent = false;
          // ... compare the branch of the tx commit to all the parent branches in configArtSet and do NOT add the tx
          // commit if it is already represented.
          for (ICommitConfigItem configArt : configArtSet) {
             IOseeBranch configArtBranch = getBranch(configArt);
-            if (txBranch == configArtBranch) {
+            if (txRecord.isOnBranch(configArtBranch)) {
                isCommitAlreadyPresent = true;
                break;
             }
@@ -524,7 +523,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       boolean mergeBranchExists = isMergeBranchExists(teamWf, destinationBranch);
 
       for (ITransaction transId : transactions) {
-         if (destinationBranch.equals(getBranch(transId))) {
+         if (transId.isOnBranch(destinationBranch)) {
             if (mergeBranchExists) {
                return CommitStatus.Committed_With_Merge;
             } else {
@@ -567,7 +566,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
          // grab only the transaction that had merge conflicts
          Collection<ITransaction> transactionIds = new ArrayList<>();
          for (ITransaction transactionId : getCommitTransactionsToUnarchivedBaselineBranchs(teamWf)) {
-            if (isMergeBranchExists(teamWf, workingBranch, getBranch(transactionId))) {
+            if (isMergeBranchExists(teamWf, workingBranch, transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
          }
@@ -599,7 +598,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
 
       ITransaction committedToParentTransRecord = null;
       for (ITransaction transId : commitTransactionIds) {
-         if (getBranch(transId).equals(destinationBranchParent)) {
+         if (transId.isOnBranch(destinationBranchParent)) {
             committedToParentTransRecord = transId;
             break;
          }

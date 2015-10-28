@@ -121,7 +121,7 @@ public final class AtsBranchManager {
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, true);
          Collection<TransactionRecord> trs = Collections.castAll(transactions);
          for (TransactionRecord transactionId : trs) {
-            if (transactionId.getBranchId().equals(destinationBranch.getUuid())) {
+            if (transactionId.isOnBranch(destinationBranch)) {
                MergeView.openView(transactionId);
             }
          }
@@ -323,7 +323,7 @@ public final class AtsBranchManager {
                    * id's branch.
                    */
                   for (TransactionRecord transId : transIds) {
-                     if (transId.getBranch().getUuid() == commitConfigArt.getBaselineBranchUuid()) {
+                     if (transId.isOnBranch(commitConfigArt.getBaselineBranchUuid())) {
                         transactionId = transId;
                      }
                   }

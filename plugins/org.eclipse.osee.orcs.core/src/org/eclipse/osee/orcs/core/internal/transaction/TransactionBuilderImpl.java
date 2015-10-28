@@ -334,7 +334,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    private void checkAreOnDifferentBranches(TxData txData, Long sourceBranch) throws OseeCoreException {
-      boolean isOnSameBranch = txData.getBranchId().equals(sourceBranch);
+      boolean isOnSameBranch = txData.isOnBranch(sourceBranch);
       Conditions.checkExpressionFailOnTrue(isOnSameBranch, "Source branch is same branch as transaction branch[%s]",
          txData.getBranchId());
    }

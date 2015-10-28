@@ -101,7 +101,7 @@ public class GraphDataImplTest {
 
    @Test
    public void testGetBranchUuid() {
-      assertEquals(branch.getUuid(), graph.getBranchId());
+      assertTrue(graph.isOnBranch(branch));
    }
 
    @Test

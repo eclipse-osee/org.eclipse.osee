@@ -22,7 +22,7 @@ public final class TransactionReadableDelta {
    }
 
    public boolean areOnTheSameBranch() {
-      return startTx.getBranchId().equals(endTx.getBranchId());
+      return startTx.isOnSameBranch(endTx);
    }
 
    @Override
