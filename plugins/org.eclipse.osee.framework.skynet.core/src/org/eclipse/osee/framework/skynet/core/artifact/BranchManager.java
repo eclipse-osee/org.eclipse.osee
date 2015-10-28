@@ -568,10 +568,6 @@ public class BranchManager {
       }
    }
 
-   public static Branch getSystemRootBranch() throws OseeCoreException {
-      return getCache().getSystemRootBranch();
-   }
-
    public static void persist(Branch... branches) throws OseeCoreException {
       getCache().storeItems(Arrays.asList(branches));
    }

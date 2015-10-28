@@ -11,12 +11,14 @@
 
 package org.eclipse.osee.framework.database.init.internal;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCredential;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -64,8 +66,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
       jdbcClient.invalidateSequences();
 
-      Branch systemRoot = BranchManager.getSystemRootBranch();
-      Conditions.checkNotNull(systemRoot, "System root was not created - ");
+      Conditions.checkNotNull(BranchManager.getBranch(SYSTEM_ROOT), "System root was not created - ");
 
       ClientSessionManager.releaseSession();
       ClientSessionManager.authenticate(new BaseCredentialProvider() {

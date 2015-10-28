@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -24,6 +25,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -122,7 +124,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          }
          if (!showChildBranchesAtMainLevel) {
             if (AccessControlManager.isOseeAdmin()) {
-               branchesToReturn.add(BranchManager.getSystemRootBranch());
+               branchesToReturn.add(BranchManager.getBranch(SYSTEM_ROOT));
             } else {
                branchTypes.add(BranchType.BASELINE);
                for (Branch branch : BranchManager.getBranches(branchState,

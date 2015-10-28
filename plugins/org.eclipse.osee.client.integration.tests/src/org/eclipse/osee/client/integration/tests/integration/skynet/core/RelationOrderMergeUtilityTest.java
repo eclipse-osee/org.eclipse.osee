@@ -20,6 +20,7 @@ import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -66,9 +67,8 @@ public class RelationOrderMergeUtilityTest {
 
    @Before
    public void createBranch() throws OseeCoreException {
-      destBranch =
-         BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(),
-            "RelationOrderMergeUtilityTest.createBranch");
+      destBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT,
+         "RelationOrderMergeUtilityTest.createBranch");
       hierType = RelationTypeManager.getType(defaultHierarchy);
       hierSide = defaultHierarchy.getSide();
    }
