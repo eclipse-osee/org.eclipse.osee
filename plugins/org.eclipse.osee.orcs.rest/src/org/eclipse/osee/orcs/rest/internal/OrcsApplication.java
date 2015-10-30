@@ -18,6 +18,7 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.eclipse.osee.orcs.rest.admin.LinkUpdateResource;
 import org.eclipse.osee.orcs.rest.internal.writer.OrcsWriterEndpointImpl;
 
 /**
@@ -60,12 +61,14 @@ public class OrcsApplication extends Application {
 
       resources.add(new BranchEndpointImpl(orcsApi, resourceManager));
       resources.add(new OrcsWriterEndpointImpl(orcsApi));
-            resources.add(new TransactionEndpointImpl(orcsApi));
+      resources.add(new TransactionEndpointImpl(orcsApi));
       resources.add(new TypesEndpointImpl(orcsApi));
 
       resources.add(new IndexerEndpointImpl(orcsApi));
       resources.add(new ResourcesEndpointImpl(resourceManager));
       resources.add(new DatastoreEndpointImpl(orcsApi, activityLog));
+
+      resources.add(new LinkUpdateResource(orcsApi));
    }
 
    public void stop() {
