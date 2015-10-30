@@ -17,10 +17,12 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CCombo;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -30,7 +32,7 @@ import org.eclipse.swt.widgets.Label;
  */
 public class XCombo extends XButtonCommon {
 
-   private Combo dataCombo;
+   private CCombo dataCombo;
    private Composite parent;
    protected String data = "";
    protected String[] inDataStrings; // Strings sent in for display
@@ -102,9 +104,37 @@ public class XCombo extends XButtonCommon {
          }
       }
 
-      dataCombo = new Combo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL);
+      dataCombo = new CCombo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL | SWT.FLAT | SWT.BORDER);
       dataCombo.setItems(displayArray);
       dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));
+      dataCombo.addKeyListener(new KeyAdapter() {
+         private String keySequence;
+         private long timeout = 0;
+
+         @Override
+         public void keyPressed(KeyEvent keyEvent) {
+            if (!Character.isLetterOrDigit(keyEvent.character)) {
+               return;
+            }
+            long time = System.currentTimeMillis();
+            if (time > timeout) {
+               keySequence = "";
+            }
+            keySequence += Character.toLowerCase(keyEvent.character);
+            timeout = time + 1000;
+            int index = 0;
+            for (String item : displayArray) {
+               if (item.toLowerCase().startsWith(keySequence)) {
+                  // Prevent the ordinary search
+                  keyEvent.doit = false;
+                  dataCombo.select(index);
+                  return;
+               }
+               index++;
+            }
+            keySequence = "";
+         }
+      });
       gd = new GridData();
       if (fillHorizontally) {
          gd.grabExcessHorizontalSpace = true;
@@ -197,7 +227,7 @@ public class XCombo extends XButtonCommon {
       }
    }
 
-   public Combo getComboBox() {
+   public CCombo getComboBox() {
       return dataCombo;
    }
 
