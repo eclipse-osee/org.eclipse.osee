@@ -373,7 +373,8 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
       return attribute;
    }
 
-   private <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
+   @Override
+   public <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {
       ensureAttributesLoaded();
       ResultSet<Attribute<T>> result = attributes.getResultSet(attributeType, DeletionFlag.EXCLUDE_DELETED);
       return result.getExactlyOne();

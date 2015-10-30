@@ -143,6 +143,11 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    }
 
    @Override
+   public Long getSoleAttributeId(IAttributeType attributeType) {
+      return (long) getProxiedObject().getSoleAttribute(attributeType).getLocalId();
+   }
+
+   @Override
    public <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException {
       return getProxiedObject().getAttributeValues(attributeType);
    }

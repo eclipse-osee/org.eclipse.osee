@@ -55,6 +55,8 @@ public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasBr
 
    String getSoleAttributeAsString(IAttributeType attributeType, String defaultValue) throws OseeCoreException;
 
+   Long getSoleAttributeId(IAttributeType attributeType);
+
    <T> List<T> getAttributeValues(IAttributeType attributeType) throws OseeCoreException;
 
    ////////////////////
