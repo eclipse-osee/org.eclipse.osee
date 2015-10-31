@@ -76,7 +76,7 @@ public class OrcsPortingTest {
       setupAssociatedArtifact(assocArtifactGuid);
 
       TransactionReadable mainBranchTx = createBaselineBranchAndArtifacts(artifactGuid);
-      IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId(), "MainFromBranch");
+      IOseeBranch branch = TokenFactory.createBranch(mainBranchTx.getBranchId());
       TransactionReadable transactionToCopy = createWorkingBranchChanges(branch, artifactGuid);
 
       IOseeBranch copyTxBranch = createCopyFromTransactionBranch(transactionToCopy, assocArtifactGuid);

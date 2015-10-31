@@ -12,8 +12,6 @@ package org.eclipse.osee.orcs.rest.internal.search.artifact.dsl;
 
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -39,8 +37,7 @@ public class SearchQueryBuilder {
    public QueryBuilder build(QueryFactory queryFactory, SearchRequest params) throws OseeCoreException {
       Conditions.checkNotNull(queryFactory, "queryFactory");
       Conditions.checkNotNull(params, "params");
-      IOseeBranch searchBranch = TokenFactory.createBranch(params.getBranchUuid(), "searchBranch");
-      QueryBuilder builder = queryFactory.fromBranch(searchBranch);
+      QueryBuilder builder = queryFactory.fromBranch(params.getBranchUuid());
       List<Predicate> predicates = params.getPredicates();
       if (predicates != null) {
          for (Predicate predicate : predicates) {

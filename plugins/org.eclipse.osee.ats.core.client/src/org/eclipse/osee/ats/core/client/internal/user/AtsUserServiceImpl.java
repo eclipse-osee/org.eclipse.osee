@@ -111,7 +111,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
    @Override
    public boolean currentUserHasAccessToAtsBranch(Long branchUuid) {
       boolean hasPermission = false;
-      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
+      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid);
       if (BranchManager.getBranch(configAtsBranch) != null) {
          String userId = getCurrentUserId();
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {

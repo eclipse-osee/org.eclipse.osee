@@ -674,7 +674,7 @@ public class ArtifactQuery {
          SearchResult result = proxied.getSearchResult(RequestType.IDS);
          SearchParameters searchParameters = result.getSearchParameters();
 
-         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid(), "N/A");
+         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid());
 
          TransactionRecord tx = null;
          if (searchParameters.getFromTx() > 0) {
@@ -701,7 +701,7 @@ public class ArtifactQuery {
          SearchResult result = proxied.getSearchResult(RequestType.MATCHES);
          SearchParameters searchParameters = result.getSearchParameters();
 
-         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid(), "N/A");
+         IOseeBranch branch = TokenFactory.createBranch(searchParameters.getBranchUuid());
 
          TransactionRecord tx = null;
          if (searchParameters.getFromTx() > 0) {

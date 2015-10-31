@@ -234,9 +234,9 @@ public class OrcsTypesIndexer {
    private IOseeBranch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) {
       IOseeBranch branchToken = CoreBranches.SYSTEM_ROOT;
       if (Strings.isValid(xAttributeTypeRef.getBranchUuid())) {
-         long branchUuid = Long.valueOf(xAttributeTypeRef.getBranchUuid());
-         if (branchUuid > 0) {
-            branchToken = TokenFactory.createBranch(branchUuid, String.valueOf(branchUuid));
+         Long branchId = Long.valueOf(xAttributeTypeRef.getBranchUuid());
+         if (branchId > 0) {
+            branchToken = TokenFactory.createBranch(branchId);
          }
       }
       return branchToken;

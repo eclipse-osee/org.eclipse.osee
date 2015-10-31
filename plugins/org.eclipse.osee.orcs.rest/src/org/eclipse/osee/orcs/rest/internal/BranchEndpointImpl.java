@@ -692,13 +692,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       Long ancestorOf = options.getIsAncestorOf();
       if (ancestorOf > 0) {
-         IOseeBranch ancestorOfToken = TokenFactory.createBranch(ancestorOf, "queryAncestorOf");
+         IOseeBranch ancestorOfToken = TokenFactory.createBranch(ancestorOf);
          query.andIsAncestorOf(ancestorOfToken);
       }
 
       Long childOf = options.getIsChildOf();
       if (childOf > 0) {
-         IOseeBranch childOfToken = TokenFactory.createBranch(ancestorOf, "queryChildOf");
+         IOseeBranch childOfToken = TokenFactory.createBranch(ancestorOf);
          query.andIsAncestorOf(childOfToken);
       }
       return query.getResults();

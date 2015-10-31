@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Collection;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.ArtifactSearch_V1;
@@ -32,8 +31,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -49,29 +46,27 @@ public class ArtifactSearch_V1Test {
    @Mock private QueryBuilder builder;
    @Mock private UriInfo uriInfo;
    @Mock private Request request;
-   @Captor private ArgumentCaptor<IOseeBranch> fromBranch;
    // @formatter:on
 
-   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
    private final java.util.List<String> types = Arrays.asList("1000000000000070");
    private ArtifactSearch_V1 search;
 
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
-      search = new ArtifactSearch_V1(uriInfo, request, BRANCH.getUuid(), orcsApi);
+      search = new ArtifactSearch_V1(uriInfo, request, COMMON_ID, orcsApi);
    }
 
    @Test
    public void testSearchRequestNull() throws OseeCoreException {
       when(orcsApi.getQueryFactory()).thenReturn(queryFactory);
-      when(queryFactory.fromBranch(BRANCH)).thenReturn(builder);
+      when(queryFactory.fromBranch(COMMON_ID)).thenReturn(builder);
 
       Collection<IAttributeType> attrTypes = PredicateHandlerUtil.getIAttributeTypes(types);
       Predicate predicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, types, Arrays.asList("AtsAdmin"));
       when(builder.and(attrTypes, predicate.getValues().iterator().next(), predicate.getOptions())).thenReturn(builder);
 
-      SearchRequest params = new SearchRequest(BRANCH.getUuid(), Arrays.asList(predicate), null, 0, false);
+      SearchRequest params = new SearchRequest(COMMON_ID, Arrays.asList(predicate), null, 0, false);
       SearchResponse response = search.getSearchWithMatrixParams(params);
 
       Assert.assertEquals(response.getSearchRequest(), params);

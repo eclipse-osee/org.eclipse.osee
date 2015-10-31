@@ -77,14 +77,12 @@ public class QueryFactoryImpl implements QueryFactory {
    @Override
    public QueryBuilder fromBranch(IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
-      return createBuilder(branch.getUuid());
+      return fromBranch(branch.getUuid());
    }
 
    @Override
    public QueryBuilder fromBranch(Long branchId) throws OseeCoreException {
-      String name = String.format("uuid:[%s] name:[N/A] - %s.fromBranch(long)", branchId, getClass().getSimpleName());
-      IOseeBranch branch = TokenFactory.createBranch(branchId, name);
-      return fromBranch(branch);
+      return createBuilder(branchId);
    }
 
    @Override

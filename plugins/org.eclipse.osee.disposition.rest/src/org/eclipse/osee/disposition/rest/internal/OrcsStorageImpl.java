@@ -404,7 +404,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      IOseeBranch branch = TokenFactory.createBranch(program.getUuid(), "");
+      IOseeBranch branch = TokenFactory.createBranch(program.getUuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Edit Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
       updateSingleItem(author, program, dispoItemArt, data, tx, false);

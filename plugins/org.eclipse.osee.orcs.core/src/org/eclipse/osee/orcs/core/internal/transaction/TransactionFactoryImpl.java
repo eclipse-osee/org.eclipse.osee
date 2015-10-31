@@ -67,7 +67,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
 
    @Override
    public TransactionBuilder createTransaction(Long branchId, ArtifactReadable userArtifact, String comment) throws OseeCoreException {
-      IOseeBranch branch = TokenFactory.createBranch(branchId, "");
+      IOseeBranch branch = TokenFactory.createBranch(branchId);
       return createTransaction(branch, userArtifact, comment);
    }
 

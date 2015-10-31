@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal.search.dsl;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -17,7 +18,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.dsl.SearchQueryBuilder;
@@ -44,10 +44,9 @@ public class SearchDslTest {
    @Mock private PredicateHandler handler;
    @Mock private QueryFactory queryFactory;
    @Mock private QueryBuilder builder;
-   @Captor private ArgumentCaptor<IOseeBranch> fromBranch;
+   @Captor private ArgumentCaptor<Long> fromBranch;
    // @formatter:on
 
-   private static final IOseeBranch BRANCH = CoreBranches.COMMON;
    private SearchQueryBuilder dsl;
 
    @Before
@@ -62,16 +61,16 @@ public class SearchDslTest {
 
    @Test
    public void testBuildValidSearchType() throws OseeCoreException {
-      when(queryFactory.fromBranch(any(IOseeBranch.class))).thenReturn(builder);
+      when(queryFactory.fromBranch(any(Long.class))).thenReturn(builder);
 
       Predicate predicate =
          new Predicate(SearchMethod.ATTRIBUTE_TYPE, Arrays.asList("1000000000000070"), Arrays.asList("AtsAdmin"));
-      SearchRequest params = new SearchRequest(BRANCH.getUuid(), Arrays.asList(predicate), RequestType.IDS, 0, false);
+      SearchRequest params = new SearchRequest(COMMON_ID, Arrays.asList(predicate), RequestType.IDS, 0, false);
 
       dsl.build(queryFactory, params);
 
       verify(queryFactory).fromBranch(fromBranch.capture());
-      Assert.assertEquals(BRANCH.getUuid(), fromBranch.getValue().getUuid());
+      Assert.assertEquals(COMMON_ID, fromBranch.getValue());
       verify(handler).handle(builder, predicate);
    }
 }

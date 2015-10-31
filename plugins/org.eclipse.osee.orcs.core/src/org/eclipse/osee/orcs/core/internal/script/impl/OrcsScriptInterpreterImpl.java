@@ -700,8 +700,8 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       ////////////////////////////// Functions;
-      private IOseeBranch asBranch(long typeId) {
-         return TokenFactory.createBranch(typeId, "N/A");
+      private IOseeBranch asBranch(Long typeId) {
+         return TokenFactory.createBranch(typeId);
       }
 
       private Timestamp asTimestamp(Date date) {

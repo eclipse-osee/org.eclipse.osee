@@ -18,8 +18,6 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Request;
 import javax.ws.rs.core.UriInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -60,9 +58,8 @@ public class AttributesResource {
    @GET
    @Produces(MediaType.TEXT_HTML)
    public String getAllAttributes() throws OseeCoreException {
-      IOseeBranch branch = TokenFactory.createBranch(branchUuid, "");
       QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
-      ArtifactReadable artifact = factory.fromBranch(branch).andUuid(artifactUuid).getResults().getExactlyOne();
+      ArtifactReadable artifact = factory.fromBranch(branchUuid).andUuid(artifactUuid).getResults().getExactlyOne();
 
       HtmlWriter writer = new HtmlWriter(uriInfo);
       return writer.toHtml(artifact.getAttributes());

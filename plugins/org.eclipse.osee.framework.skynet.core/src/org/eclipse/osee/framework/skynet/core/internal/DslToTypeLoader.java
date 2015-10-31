@@ -192,16 +192,11 @@ public class DslToTypeLoader implements TypesLoader {
    }
 
    private IOseeBranch getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
-      String branchGuid = xAttributeTypeRef.getBranchUuid();
-      if (branchGuid == null) {
+      String branchIdStr = xAttributeTypeRef.getBranchUuid();
+      if (branchIdStr == null) {
          return CoreBranches.SYSTEM_ROOT;
       } else {
-         long branchUuid = Long.parseLong(branchGuid);
-         IOseeBranch branch = branchCache.getByUuid(branchUuid);
-         if (branch == null) {
-            branch = TokenFactory.createBranch(branchUuid, branchGuid);
-         }
-         return branch;
+         return TokenFactory.createBranch(Long.valueOf(branchIdStr));
       }
    }
 
@@ -353,7 +348,7 @@ public class DslToTypeLoader implements TypesLoader {
          min, //
          max, //
          xAttributeType.getDescription(), //
-         xAttributeType.getTaggerId(),//
+         xAttributeType.getTaggerId(), //
          xAttributeType.getMediaType());
    }
 

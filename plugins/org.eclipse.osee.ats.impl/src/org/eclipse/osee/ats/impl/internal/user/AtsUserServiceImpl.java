@@ -154,7 +154,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
    @Override
    public boolean currentUserHasAccessToAtsBranch(Long branchUuid) {
       boolean hasPermission = false;
-      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid, "ATS Branch");
+      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid);
       if (!orcsApi.getQueryFactory().branchQuery().andIds(configAtsBranch).getResults().isEmpty()) {
          String userId = getCurrentUserId();
          if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {

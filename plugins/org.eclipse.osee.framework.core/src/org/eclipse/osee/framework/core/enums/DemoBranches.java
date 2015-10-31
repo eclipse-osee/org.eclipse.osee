@@ -20,11 +20,11 @@ public final class DemoBranches {
 
    public static final IOseeBranch SAW_Bld_1 = TokenFactory.createBranch(3, "SAW_Bld_1");
    public static final IOseeBranch SAW_Bld_2 = TokenFactory.createBranch(5, "SAW_Bld_2");
-   public static final IOseeBranch SAW_Bld_3 = TokenFactory.createBranch(2002, "SAW_Bld_3");
+   public static final IOseeBranch SAW_Bld_3 = TokenFactory.createBranch("SAW_Bld_3");
 
    public static final IOseeBranch CIS_Bld_1 = TokenFactory.createBranch(4, "CIS_Bld_1");
-   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch(1001, "CIS_Bld_2");
-   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch(1002, "CIS_Bld_3");
+   public static final IOseeBranch CIS_Bld_2 = TokenFactory.createBranch("CIS_Bld_2");
+   public static final IOseeBranch CIS_Bld_3 = TokenFactory.createBranch("CIS_Bld_3");
 
    private DemoBranches() {
       // Constants

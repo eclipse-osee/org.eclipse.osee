@@ -63,12 +63,16 @@ public final class TokenFactory {
       return createBranch(Lib.generateUuid(), name);
    }
 
-   public static IOseeBranch createBranch(Long uuid, String name) {
-      return new BranchToken(uuid, name);
+   public static IOseeBranch createBranch(Long branchId, String name) {
+      return new BranchToken(branchId, name);
    }
 
-   public static IOseeBranch createBranch(long uuid, String name) {
-      return new BranchToken(uuid, name);
+   public static IOseeBranch createBranch(long branchId, String name) {
+      return new BranchToken(branchId, name);
+   }
+   
+   public static IOseeBranch createBranch(Long branchId) {
+      return new BranchToken(branchId, null);
    }
 
    public static IRelationSorterId createSorterId(String guid, String name) {
@@ -105,8 +109,8 @@ public final class TokenFactory {
 
    private static final class BranchToken extends NamedIdentity<Long> implements IOseeBranch {
 
-      public BranchToken(Long uuid, String name) {
-         super(uuid, name);
+      public BranchToken(Long branchId, String name) {
+         super(branchId, name);
       }
 
       @Override

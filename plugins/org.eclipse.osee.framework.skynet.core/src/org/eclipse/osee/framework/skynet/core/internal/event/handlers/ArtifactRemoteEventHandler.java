@@ -183,8 +183,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
             boolean bArtifactLoaded = bArtifact != null;
 
             if (aArtifactLoaded || bArtifactLoaded) {
-               IOseeBranch branch =
-                  TokenFactory.createBranch(guidArt.getArtA().getBranchUuid(), "ArtifactRemoteEventHandler - Branch");
+               IOseeBranch branch = TokenFactory.createBranch(guidArt.getArtA().getBranchUuid());
                RelationLink relation =
                   RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
                      guidArt.getArtBId(), branch);
