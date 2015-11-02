@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: OSEE Account Admin Test (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.account.admin.test
 Bundle-Version: 0.24.0.qualifier
-Fragment-Host: org.eclipse.osee.account.admin;bundle-version="0.17.0"
+Fragment-Host: org.eclipse.osee.account.admin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.hamcrest.core,

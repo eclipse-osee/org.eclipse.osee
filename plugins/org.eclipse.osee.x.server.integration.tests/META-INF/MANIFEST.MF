@@ -26,4 +26,4 @@ Import-Package: javax.ws.rs.core;version="2.0.0",
  org.junit.rules,
  org.junit.runner,
  org.junit.runners
-Require-Bundle: org.eclipse.osee.ats.api;bundle-version="0.20.0"
+Require-Bundle: org.eclipse.osee.ats.api
