@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -94,17 +92,6 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       eventService.removeListener(EventQosType.NORMAL, this);
    }
 
-   private Artifact getAssociatedArtifact(IOseeBranch branch) throws OseeCoreException {
-      Artifact toReturn = null;
-      int artId = BranchManager.getBranch(branch).getAssociatedArtifactId();
-      if (artId > 0) {
-         toReturn = ArtifactQuery.getArtifactFromId(artId, AtsUtilCore.getAtsBranch());
-      } else {
-         toReturn = UserManager.getUser(SystemUser.OseeSystem);
-      }
-      return toReturn;
-   }
-
    /**
     * True if not common branch and branch's associated artifact is a Team Workflow artifact
     */
@@ -112,7 +99,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
       boolean result = false;
       try {
          if (!AtsUtilCore.getAtsBranch().equals(objectBranch)) {
-            ArtifactType assocArtType = getAssociatedArtifact(objectBranch).getArtifactType();
+            ArtifactType assocArtType = BranchManager.getAssociatedArtifact(objectBranch).getArtifactType();
             if (assocArtType != null) {
                result = assocArtType.inheritsFrom(AtsArtifactTypes.AtsArtifact);
             }
@@ -140,7 +127,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
 
             if (contextIds.isEmpty()) {
                // Else, get from associated artifact
-               Artifact assocArtifact = getAssociatedArtifact(branch);
+               Artifact assocArtifact = BranchManager.getAssociatedArtifact(branch);
                ArtifactType assocArtType = assocArtifact.getArtifactType();
                if (assocArtType.inheritsFrom(AtsArtifactTypes.TeamWorkflow)) {
                   contextIds.addAll(internalGetFromWorkflow((TeamWorkFlowArtifact) assocArtifact));

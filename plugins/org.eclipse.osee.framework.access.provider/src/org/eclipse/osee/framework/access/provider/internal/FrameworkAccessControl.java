@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -53,11 +54,11 @@ public class FrameworkAccessControl implements CmAccessControl {
    }
 
    private boolean isAssocitedArtifactValid(Object object) throws OseeCoreException {
-      Branch branch = null;
+      IOseeBranch branch = null;
       if (object instanceof Artifact) {
-         branch = ((Artifact) object).getFullBranch();
-      } else if (object instanceof Branch) {
-         branch = (Branch) object;
+         branch = ((Artifact) object).getBranch();
+      } else if (object instanceof IOseeBranch) {
+         branch = (IOseeBranch) object;
       }
       if (branch != null) {
          return BranchManager.getAssociatedArtifact(branch) != null;

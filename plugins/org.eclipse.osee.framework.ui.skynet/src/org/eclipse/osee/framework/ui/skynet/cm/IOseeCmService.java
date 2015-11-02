@@ -62,7 +62,7 @@ public interface IOseeCmService {
 
    IArtifactType getPcrTaskArtifactType();
 
-   boolean isWorkFlowBranch(Branch branch);
+   boolean isWorkFlowBranch(IOseeBranch branch);
 
    void commitBranch(Artifact art, Branch branch, boolean isArchiveSource);
 }

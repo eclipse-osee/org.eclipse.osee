@@ -206,7 +206,7 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public boolean isWorkFlowBranch(Branch branch) {
+   public boolean isWorkFlowBranch(IOseeBranch branch) {
       boolean toReturn = false;
       Artifact art;
       try {

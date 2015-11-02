@@ -21,7 +21,9 @@ import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
@@ -130,15 +132,15 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       return toReturn;
    }
 
-   private void handleResponse(Integer newTxId, IProgressMonitor monitor, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   private void handleResponse(Integer newTxId, IProgressMonitor monitor, IOseeBranch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
 
       // Update commit artifact cache with new information
-      if (sourceBranch.getAssociatedArtifactId() > 0) {
-         TransactionManager.cacheCommittedArtifactTransaction(BranchManager.getAssociatedArtifact(sourceBranch),
-            newTransaction);
+      Artifact associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+      if (!associatedArtifact.equals(SystemUser.OseeSystem)) {
+         TransactionManager.cacheCommittedArtifactTransaction(associatedArtifact, newTransaction);
       }
 
       BranchManager.reloadBranch(sourceBranch.getUuid());

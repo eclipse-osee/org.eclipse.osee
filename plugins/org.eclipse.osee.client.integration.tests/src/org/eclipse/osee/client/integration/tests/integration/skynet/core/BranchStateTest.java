@@ -258,8 +258,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals(workingBranch.getAssociatedArtifactId().intValue(),
-            UserManager.getUser(SystemUser.OseeSystem).getArtId());
+         assertEquals((long)BranchManager.getAssociatedArtifactId(workingBranch), SystemUser.OseeSystem.getUuid());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());

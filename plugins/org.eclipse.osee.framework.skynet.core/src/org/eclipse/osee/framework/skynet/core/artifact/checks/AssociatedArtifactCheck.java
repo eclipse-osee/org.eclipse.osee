@@ -40,10 +40,11 @@ public class AssociatedArtifactCheck extends ArtifactCheck {
 
       if (!artIdsToCheck.isEmpty()) {
          for (Branch branch : BranchManager.getAll()) {
-            if (branch.getBranchState() != BranchState.DELETED && artIdsToCheck.contains(branch.getAssociatedArtifactId())) {
-               return new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format(
-                  "Cannot delete artId [%d] because it is the associated artifact of branch [%s]",
-                  branch.getAssociatedArtifactId(), branch.getName()));
+            Integer associatedArtifactId = BranchManager.getAssociatedArtifactId(branch);
+            if (branch.getBranchState() != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  String.format("Cannot delete artId [%d] because it is the associated artifact of branch [%s]",
+                     associatedArtifactId, branch.getName()));
             }
          }
       }

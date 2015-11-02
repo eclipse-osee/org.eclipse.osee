@@ -26,6 +26,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -413,7 +414,7 @@ public class MergeXWidget extends GenericXWidget {
       }
    }
 
-   private void refreshAssociatedArtifactItem(Branch sourceBranch) {
+   private void refreshAssociatedArtifactItem(IOseeBranch sourceBranch) {
       try {
          IArtifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          if (branchAssociatedArtifact != null) {
@@ -595,13 +596,12 @@ public class MergeXWidget extends GenericXWidget {
       public void run() {
          Conflict[] storedConflicts = getConflicts();
          try {
-            Branch sourceBranch = storedConflicts[0].getSourceBranch();
-            Artifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
+            Artifact associatedArtifact = BranchManager.getAssociatedArtifact(storedConflicts[0].getSourceBranch());
             IOseeCmService cmService = ServiceUtil.getOseeCmService();
-            if (cmService.isPcrArtifact(branchAssociatedArtifact)) {
-               cmService.openArtifact(branchAssociatedArtifact, OseeCmEditor.CmPcrEditor);
-            } else if (!branchAssociatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
-               RendererManager.open(branchAssociatedArtifact, PresentationType.SPECIALIZED_EDIT);
+            if (cmService.isPcrArtifact(associatedArtifact)) {
+               cmService.openArtifact(associatedArtifact, OseeCmEditor.CmPcrEditor);
+            } else if (!associatedArtifact.equals(UserManager.getUser(SystemUser.OseeSystem))) {
+               RendererManager.open(associatedArtifact, PresentationType.SPECIALIZED_EDIT);
             } else {
                AWorkbench.popup("ERROR", "Unknown branch association");
             }

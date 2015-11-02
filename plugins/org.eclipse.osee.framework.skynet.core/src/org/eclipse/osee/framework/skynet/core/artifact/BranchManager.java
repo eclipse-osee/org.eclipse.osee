@@ -579,19 +579,21 @@ public class BranchManager {
       return branch.getBaseTransaction() != TransactionManager.getHeadTransaction(branch);
    }
 
-   public static boolean isChangeManaged(Branch branch) throws OseeCoreException {
-      // TODO use Associated Artifacts
-      int systemUserArtId = UserManager.getUser(SystemUser.OseeSystem).getArtId();
-
-      int assocArtId = branch.getAssociatedArtifactId();
-      return assocArtId > 0 && assocArtId != systemUserArtId;
+   public static boolean isChangeManaged(IOseeBranch branch) throws OseeCoreException {
+      Integer associatedArtifactId = getAssociatedArtifactId(branch);
+      return associatedArtifactId > 0 && !associatedArtifactId.equals(SystemUser.OseeSystem);
    }
 
-   public static Artifact getAssociatedArtifact(Branch branch) throws OseeCoreException {
-      if (branch.getAssociatedArtifactId() == null || branch.getAssociatedArtifactId() == -1) {
+   public static Integer getAssociatedArtifactId(IOseeBranch branch) {
+      return getBranch(branch).getAssociatedArtifactId();
+   }
+
+   public static Artifact getAssociatedArtifact(IOseeBranch branch) throws OseeCoreException {
+      Integer associatedArtifactId = getAssociatedArtifactId(branch);
+      if (associatedArtifactId == null || associatedArtifactId == -1) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
-      return ArtifactQuery.getArtifactFromId(branch.getAssociatedArtifactId(), COMMON);
+      return ArtifactQuery.getArtifactFromId(associatedArtifactId, COMMON);
    }
 
    public static Artifact getAssociatedArtifact(TransactionDelta txDelta) throws OseeCoreException {
@@ -603,7 +605,7 @@ public class BranchManager {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
          }
       } else {
-         Branch sourceBranch = txDelta.getStartTx().getFullBranch();
+         IOseeBranch sourceBranch = txDelta.getStartTx().getBranch();
          associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
       }
       return associatedArtifact;

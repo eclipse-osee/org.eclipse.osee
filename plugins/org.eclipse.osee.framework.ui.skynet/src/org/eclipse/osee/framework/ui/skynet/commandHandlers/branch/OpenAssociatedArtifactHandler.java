@@ -58,7 +58,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
          OseeLog.log(
             Activator.class,
             OseeLevel.SEVERE_POPUP,
-            "The user " + UserManager.getUser() + " does not have read access to " + selectedBranch.getAssociatedArtifactId());
+            "The user " + UserManager.getUser() + " does not have read access to " + associatedArtifact.getArtId());
       }
 
       return null;

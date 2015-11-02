@@ -20,11 +20,14 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -128,9 +131,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            if (branch.getAssociatedArtifactId() != null && BranchManager.getAssociatedArtifact(branch) != null) {
-               return BranchManager.getAssociatedArtifact(branch).getName();
-            }
+            return BranchManager.getAssociatedArtifact(branch).getName();
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
@@ -208,10 +209,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(BranchXViewerFactory.associatedArtifact)) {
-         if (element instanceof Branch) {
+         if (element instanceof IOseeBranch) {
             try {
-               if (((Branch) element).getAssociatedArtifactId() != null) {
-                  return ArtifactImageManager.getImage(BranchManager.getAssociatedArtifact((Branch) element));
+               Artifact associatedArtifact = BranchManager.getAssociatedArtifact((IOseeBranch) element);
+               if (!associatedArtifact.equals(SystemUser.OseeSystem)) {
+                  return ArtifactImageManager.getImage(associatedArtifact);
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
