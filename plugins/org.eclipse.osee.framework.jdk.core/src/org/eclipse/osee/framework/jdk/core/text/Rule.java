@@ -34,7 +34,7 @@ public abstract class Rule {
    private Pattern fileNamePattern;
    protected boolean ruleWasApplicable;
    protected Logger logger;
-
+   private int modCount;
    private String charsetString = "UTF8";
 
    public Rule() {
@@ -51,13 +51,13 @@ public abstract class Rule {
 
    /**
     * Implement this to receive the content of the entire file in {@code seq}
-    * 
+    *
     * @param seq
     * @return
     */
    public abstract ChangeSet computeChanges(CharSequence seq);
 
-   public final void process(Collection<File> list) {
+   public final int process(Collection<File> list) {
       for (File file : list) {
          try {
             process(file);
@@ -65,9 +65,11 @@ public abstract class Rule {
             System.out.println(currentOutfileName + ": " + ex.getMessage());
          }
       }
+
+      return modCount;
    }
 
-   public final void process(File file) throws IOException {
+   public final int process(File file) throws IOException {
       if (file.isDirectory()) {
          List<File> files = Lib.recursivelyListFiles(file, fileNamePattern);
          for (File aFile : files) {
@@ -81,6 +83,8 @@ public abstract class Rule {
          inputFile = file;
          process(file, getResultFile(file));
       }
+
+      return modCount;
    }
 
    public final void process(File inFile, File outFile) throws IOException {
@@ -114,7 +118,7 @@ public abstract class Rule {
          if (ruleWasApplicable) {
             String path = subdirectoryName == null ? "" : subdirectoryName;
             System.out.println("Rule was applied to " + path + currentOutfileName);
-
+            modCount++;
             if (changeSet != null) {
                changeSet.applyChanges(outFile);
             }
