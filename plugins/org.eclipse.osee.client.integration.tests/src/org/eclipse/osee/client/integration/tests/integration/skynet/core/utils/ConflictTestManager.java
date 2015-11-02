@@ -158,7 +158,6 @@ public class ConflictTestManager {
    }
 
    public static void initializeConflictTest() throws Exception {
-      cleanUpConflictTest();
       createConflictDefinitions();
       destBranch = BranchManager.createWorkingBranch(SAW_Bld_1, DEST_BRANCH);
 
@@ -323,37 +322,6 @@ public class ConflictTestManager {
       artifact.addRelation(CoreRelationTypes.Dependency__Dependency, artifactB);
       artifact.persist(ConflictTestManager.class.getSimpleName());
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
-   }
-
-   public static void cleanUpConflictTest() throws OseeCoreException, InterruptedException {
-      BranchManager.refreshBranches();
-      Branch sBranch = getArchivedBranch(SOURCE_BRANCH);
-      Branch dBranch = getArchivedBranch(DEST_BRANCH);
-      Branch mBranch = null;
-      if (sBranch != null && dBranch != null) {
-         mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
-      }
-      purgeBranch(mBranch);
-      Thread.sleep(10000);
-      purgeBranch(sBranch);
-      Thread.sleep(10000);
-      purgeBranch(dBranch);
-      Thread.sleep(10000);
-   }
-
-   private static Branch getArchivedBranch(String branchName) throws OseeCoreException {
-      try {
-         return BranchManager.getBranch(branchName);
-      } catch (BranchDoesNotExist e) {
-         Collection<Branch> archivedBranches =
-            BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchType.WORKING, BranchType.BASELINE);
-         for (Branch archivedBranch : archivedBranches) {
-            if (archivedBranch.getName().equals(branchName)) {
-               return archivedBranch;
-            }
-         }
-         return null;
-      }
    }
 
    private static void purgeBranch(Branch branch) throws OseeCoreException {

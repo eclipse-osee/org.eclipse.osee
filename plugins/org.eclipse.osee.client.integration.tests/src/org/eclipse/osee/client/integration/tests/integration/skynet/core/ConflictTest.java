@@ -76,11 +76,6 @@ public class ConflictTest {
       ConflictTestManager.initializeConflictTest();
    }
 
-   @AfterClass
-   public static void tearDown() throws Exception {
-      ConflictTestManager.cleanUpConflictTest();
-   }
-
    /**
     * Test method for
     * {@link org.eclipse.osee.framework.skynet.core.artifact.BranchManager#getMergeBranch(Branch, Branch)} .

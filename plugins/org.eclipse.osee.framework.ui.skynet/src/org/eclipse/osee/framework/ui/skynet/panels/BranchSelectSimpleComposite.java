@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,7 +48,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    private Button branchSelectButton;
    private Combo branchSelectCombo;
    private boolean entryChanged;
-   private Branch currentBranch;
+   private IOseeBranch currentBranch;
    private final Set<Listener> listeners;
 
    public BranchSelectSimpleComposite(Composite parent, int style) {
@@ -100,8 +101,8 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       branchSelectButton.setFont(parent.getFont());
    }
 
-   public Branch getSelectedBranch() {
-      Branch toReturn = null;
+   public IOseeBranch getSelectedBranch() {
+      IOseeBranch toReturn = null;
       if (branchSelectCombo != null && branchSelectCombo.isDisposed() != true) {
          String branchName = branchSelectCombo.getText();
          if (Strings.isValid(branchName)) {
@@ -124,11 +125,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       notifyListener(new Event());
    }
 
-   private Branch getCurrentBranch() {
-      return currentBranch;
-   }
-
-   private void setBranchName(Branch branch) {
+   private void setBranchName(IOseeBranch branch) {
       if (branch != null) {
          String branchName = branch.getName();
          String[] currentItems = this.branchSelectCombo.getItems();
@@ -153,8 +150,6 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
    }
 
    public void restoreWidgetValues(String[] branchUuids, String lastSelected) {
-      Branch currentBranch = getCurrentBranch();
-
       // Add stored directories into selector
       if (Strings.isValid(lastSelected) == false && currentBranch != null) {
          lastSelected = Long.toString(currentBranch.getUuid());

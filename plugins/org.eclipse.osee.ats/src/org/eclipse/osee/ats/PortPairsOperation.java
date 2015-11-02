@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -120,14 +121,14 @@ public final class PortPairsOperation extends AbstractOperation {
       }
 
       Branch destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
-      Branch portBranch = getPortBranchFromWorkflow(sourceWorkflow, destinationWorkflow);
+      IOseeBranch portBranch = getPortBranchFromWorkflow(sourceWorkflow, destinationWorkflow);
       if (portBranch == null) {
          logf("Source workflow [%s] not ready for port to Workflow [%s].", sourceWorkflow, destinationWorkflow);
          return;
       }
 
       try {
-         if (portBranch.getBranchState().isCommitted()) {
+         if (BranchManager.getState(portBranch).isCommitted()) {
             logf("Skipping completed workflow [%s].", destinationWorkflow);
          } else {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch, portBranch);
@@ -139,13 +140,13 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   private Branch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
+   private IOseeBranch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
       if (!sourceWorkflow.isRelated(AtsRelationTypes.Port_To, destinationWorkflow)) {
          sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
          sourceWorkflow.persist("create port relation");
       }
 
-      Collection<Branch> branches =
+      Collection<IOseeBranch> branches =
          BranchManager.getBranchesByName(String.format("Porting [%s] branch", sourceWorkflow.getAtsId()));
 
       if (branches.isEmpty()) {

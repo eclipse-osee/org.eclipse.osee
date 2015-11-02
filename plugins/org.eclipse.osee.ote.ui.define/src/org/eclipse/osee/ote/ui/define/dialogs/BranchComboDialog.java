@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -77,7 +78,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       return toReturn;
    }
 
-   public Branch getSelection() {
+   public IOseeBranch getSelection() {
       return branchSelectComposite.getSelectedBranch();
    }
 
@@ -124,7 +125,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          }
 
          try {
-            Branch branch = getSelection();
+            IOseeBranch branch = getSelection();
             if (branch != null) {
                String lastBranchSelected = Long.toString(branch.getUuid());
 
@@ -151,8 +152,8 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       }
    }
 
-   public static Branch getBranchFromUser() throws OseeCoreException {
-      Branch toReturn = null;
+   public static IOseeBranch getBranchFromUser() throws OseeCoreException {
+      IOseeBranch toReturn = null;
       BranchComboDialog branchSelection = new BranchComboDialog(AWorkbench.getActiveShell());
       int result = branchSelection.open();
       if (result == Window.OK) {

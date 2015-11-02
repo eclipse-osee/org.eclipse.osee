@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,8 +124,8 @@ public class BranchManager {
       }
    }
 
-   public static Branch getBranch(String branchName) throws OseeCoreException {
-      Collection<Branch> branches = getBranchesByName(branchName);
+   public static IOseeBranch getBranch(String branchName) throws OseeCoreException {
+      Collection<IOseeBranch> branches = getBranchesByName(branchName);
       if (branches.isEmpty()) {
          throw new BranchDoesNotExist("No branch exists with the name: [%s]", branchName);
       }
@@ -134,8 +135,8 @@ public class BranchManager {
       return branches.iterator().next();
    }
 
-   public static Collection<Branch> getBranchesByName(String branchName) throws OseeCoreException {
-      return getCache().getByName(branchName);
+   public static Collection<IOseeBranch> getBranchesByName(String branchName) throws OseeCoreException {
+      return Collections.castAll(getCache().getByName(branchName));
    }
 
    public static Branch getBranch(IOseeBranch branch) throws OseeCoreException {

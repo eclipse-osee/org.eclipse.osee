@@ -68,7 +68,7 @@ public class BranchManagerTest {
       testBranch.setName(branchReNamed);
       BranchManager.persist(testBranch);
 
-      testBranch = BranchManager.getBranch(branchReNamed);
+      testBranch = BranchManager.getBranch(BranchManager.getBranch(branchReNamed));
       Assert.assertEquals(branchReNamed, testBranch.getName());
 
       thrown.expect(BranchDoesNotExist.class);

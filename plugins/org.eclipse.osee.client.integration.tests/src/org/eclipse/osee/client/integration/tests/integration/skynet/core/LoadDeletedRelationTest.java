@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import java.util.List;
@@ -21,10 +22,8 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.junit.After;
@@ -45,15 +44,13 @@ public class LoadDeletedRelationTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private Branch branch;
    private Artifact left, right;
    private IRelationType type;
 
    @Before
    public void setUp() throws OseeCoreException {
-      branch = BranchManager.getBranch("SAW_Bld_2");
-      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", branch);
-      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", branch);
+      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", SAW_Bld_2);
+      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", SAW_Bld_2);
       left.persist(getClass().getSimpleName());
       right.persist(getClass().getSimpleName());
       type = CoreRelationTypes.Requirement_Trace__Higher_Level;
@@ -65,7 +62,7 @@ public class LoadDeletedRelationTest {
    public void loadDeletedRelationTest() throws OseeCoreException {
       RelationManager.addRelation(type, left, right, "");
       left.persist(getClass().getSimpleName());
-      RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), branch);
+      RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), SAW_Bld_2);
       int oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
       left.persist(getClass().getSimpleName());

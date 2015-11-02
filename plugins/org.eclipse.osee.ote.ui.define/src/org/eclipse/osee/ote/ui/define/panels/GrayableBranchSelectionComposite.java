@@ -11,6 +11,7 @@
 package org.eclipse.osee.ote.ui.define.panels;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
@@ -138,7 +139,7 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       }
    }
 
-   public Branch getSelectedBranch() {
+   public IOseeBranch getSelectedBranch() {
       return branchSelectComposite.getSelectedBranch();
    }
 

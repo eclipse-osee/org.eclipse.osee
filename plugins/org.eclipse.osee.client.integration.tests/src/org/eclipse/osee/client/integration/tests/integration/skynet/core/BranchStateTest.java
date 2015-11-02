@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -206,10 +207,7 @@ public class BranchStateTest {
          Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem).getArtId(),
             BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
-         Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
-         assertEquals("Check only 1 original branch", 1, branches.size());
-
-         Branch newWorkingBranch = branches.iterator().next();
+         IOseeBranch newWorkingBranch = BranchManager.getBranch(originalBranchName);
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
@@ -260,10 +258,10 @@ public class BranchStateTest {
          // Check that the associated artifact remained unchanged
          assertEquals((long)BranchManager.getAssociatedArtifactId(workingBranch), SystemUser.OseeSystem.getUuid());
 
-         Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
+         Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
-         Branch newWorkingBranch = branches.iterator().next();
+         IOseeBranch newWorkingBranch = branches.iterator().next();
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
@@ -337,10 +335,10 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
 
-         Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
+         Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
-         Branch newWorkingBranch = branches.iterator().next();
+         IOseeBranch newWorkingBranch = branches.iterator().next();
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
@@ -363,7 +361,7 @@ public class BranchStateTest {
          if (workingBranch != null) {
             purgeBranchAndChildren(workingBranch);
          }
-         for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
+         for (IOseeBranch branch : BranchManager.getBranchesByName(originalBranchName)) {
             purgeBranchAndChildren(branch);
          }
          if (toDelete != null && toDelete.length > 0) {
@@ -374,8 +372,8 @@ public class BranchStateTest {
       }
    }
 
-   private void purgeBranchAndChildren(Branch branch) throws OseeCoreException {
-      for (Branch child : branch.getChildBranches(true)) {
+   private void purgeBranchAndChildren(IOseeBranch branch) throws OseeCoreException {
+      for (Branch child : BranchManager.getBranch(branch).getChildBranches(true)) {
          BranchManager.purgeBranch(child);
       }
       BranchManager.purgeBranch(branch);
