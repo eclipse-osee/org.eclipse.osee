@@ -273,7 +273,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    }
 
    private void deleteConfigObject(long uuid, String comment, IArtifactType type) {
-      ArtifactReadable toDelete = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable toDelete = atsServer.getArtifact(uuid);
       if (toDelete == null) {
          throw new OseeCoreException("No object found for uuid %d", uuid);
       }
@@ -308,7 +308,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsCountry getCountry(long uuid) {
-      return getCountry(atsServer.getArtifactByUuid(uuid));
+      return getCountry(atsServer.getArtifact(uuid));
    }
 
 }

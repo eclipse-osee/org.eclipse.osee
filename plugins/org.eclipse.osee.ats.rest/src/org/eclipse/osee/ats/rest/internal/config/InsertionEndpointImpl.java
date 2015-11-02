@@ -51,7 +51,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
    @PUT
    @Override
    public Response update(JaxInsertion insertion) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifactByUuid(insertion.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(insertion.getUuid());
       if (artifact == null) {
          throw new OseeStateException("Artifact with uuid %d not found", insertion.getUuid());
       }
@@ -87,7 +87,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
             insertions.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable insertionArt : atsServer.getArtifactByUuid(programUuid).getRelated(
+         for (ArtifactReadable insertionArt : atsServer.getArtifact(programUuid).getRelated(
             AtsRelationTypes.ProgramToInsertion_Insertion)) {
             JaxInsertion insertion = getConfigObject(insertionArt);
             insertion.setProgramUuid(programUuid);
@@ -101,7 +101,7 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
    protected void create(JaxInsertion jaxInsertion, ArtifactId insertionArtId, IAtsChangeSet changes) {
       ArtifactReadable insertionArt = (ArtifactReadable) insertionArtId;
       if (insertionArt.getRelatedCount(AtsRelationTypes.ProgramToInsertion_Program) == 0) {
-         ArtifactReadable programArt = atsServer.getArtifactByUuid(jaxInsertion.getProgramUuid());
+         ArtifactReadable programArt = atsServer.getArtifact(jaxInsertion.getProgramUuid());
          changes.relate(programArt, AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
       }
    }

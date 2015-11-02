@@ -65,7 +65,7 @@ public class AgileItemWriter {
       }
 
       if (newItem.isSetSprint()) {
-         ArtifactReadable sprintArt = atsServer.getArtifactByUuid(newItem.getSprintUuid());
+         ArtifactReadable sprintArt = atsServer.getArtifact(newItem.getSprintUuid());
          IAgileSprint sprint = atsServer.getAgileService().getAgileSprint(sprintArt);
          for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
             if (sprint != null) {
@@ -78,7 +78,7 @@ public class AgileItemWriter {
       }
 
       if (newItem.isSetBacklog()) {
-         ArtifactReadable backlogArt = atsServer.getArtifactByUuid(newItem.getBacklogUuid());
+         ArtifactReadable backlogArt = atsServer.getArtifact(newItem.getBacklogUuid());
          IAgileSprint backlog = atsServer.getAgileService().getAgileSprint(backlogArt);
          for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
             if (backlog != null) {

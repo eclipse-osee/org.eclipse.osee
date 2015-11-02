@@ -152,7 +152,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
    @Override
    public List<JaxAgileFeatureGroup> getFeatureGroups(long teamUuid) {
       List<JaxAgileFeatureGroup> groups = new LinkedList<>();
-      ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(teamUuid);
+      ArtifactReadable agileTeamArt = atsServer.getArtifact(teamUuid);
       for (ArtifactReadable child : agileTeamArt.getChildren()) {
          if (child.getName().equals(AgileUtil.FEATURE_GROUP_FOLDER_NAME)) {
             for (ArtifactReadable subChild : child.getChildren()) {
@@ -327,7 +327,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
-      ArtifactReadable teamArt = atsServer.getArtifactByUuid(newBacklog.getTeamUuid());
+      ArtifactReadable teamArt = atsServer.getArtifact(newBacklog.getTeamUuid());
       if (!teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).isEmpty()) {
          new OseeWebApplicationException(Status.BAD_REQUEST, "Backlog already set for team %s",
             AtsUtilCore.toStringWithId(teamArt));

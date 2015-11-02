@@ -61,7 +61,7 @@ public class AgileBacklogWriter {
 
          // Else validate and relate new team 
          else {
-            ArtifactReadable updateBacklogArt = atsServer.getArtifactByUuid(updatedBacklog.getUuid());
+            ArtifactReadable updateBacklogArt = atsServer.getArtifact(updatedBacklog.getUuid());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamUuid());
             ArtifactReadable updatedTeamArt = (ArtifactReadable) updatedTeam.getStoreObject();
             if (!updateBacklogArt.isOfType(AtsArtifactTypes.Goal)) {

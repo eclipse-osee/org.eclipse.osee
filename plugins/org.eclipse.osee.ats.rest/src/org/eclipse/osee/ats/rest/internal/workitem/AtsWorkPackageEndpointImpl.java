@@ -47,7 +47,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Produces({MediaType.APPLICATION_JSON})
    @Override
    public Collection<IAtsWorkItem> getWorkItems(@PathParam("workPackageId") long workPackageId) {
-      ArtifactReadable workPackageArt = atsServer.getArtifactByUuid(workPackageId);
+      ArtifactReadable workPackageArt = atsServer.getArtifact(workPackageId);
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
@@ -60,7 +60,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Consumes({MediaType.APPLICATION_JSON})
    @Override
    public Response setWorkPackage(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
-      ArtifactReadable workPackageArt = atsServer.getArtifactByUuid(workPackageId);
+      ArtifactReadable workPackageArt = atsServer.getArtifact(workPackageId);
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }

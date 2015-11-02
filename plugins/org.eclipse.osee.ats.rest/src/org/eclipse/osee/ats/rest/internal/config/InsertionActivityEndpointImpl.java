@@ -50,7 +50,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    @PUT
    @Override
    public Response update(JaxInsertionActivity activity) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifactByUuid(activity.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(activity.getUuid());
       if (artifact == null) {
          throw new OseeStateException("Artifact with uuid %d not found", activity.getUuid());
       }
@@ -85,7 +85,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
             insertions.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable activityArt : atsServer.getArtifactByUuid(insertionUuid).getRelated(
+         for (ArtifactReadable activityArt : atsServer.getArtifact(insertionUuid).getRelated(
             AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
             JaxInsertionActivity activity = getConfigObject(activityArt);
             activity.setInsertionUuid(insertionUuid);
@@ -99,7 +99,7 @@ public class InsertionActivityEndpointImpl extends BaseConfigEndpointImpl<JaxIns
    protected void create(JaxInsertionActivity jaxInsertionActivity, ArtifactId insertionActivityArtId, IAtsChangeSet changes) {
       ArtifactReadable insertionActivityArt = (ArtifactReadable) insertionActivityArtId;
       if (insertionActivityArt.getRelatedCount(AtsRelationTypes.InsertionToInsertionActivity_Insertion) == 0) {
-         ArtifactReadable insertionArt = atsServer.getArtifactByUuid(jaxInsertionActivity.getInsertionUuid());
+         ArtifactReadable insertionArt = atsServer.getArtifact(jaxInsertionActivity.getInsertionUuid());
          changes.relate(insertionArt, AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity,
             insertionActivityArt);
       }

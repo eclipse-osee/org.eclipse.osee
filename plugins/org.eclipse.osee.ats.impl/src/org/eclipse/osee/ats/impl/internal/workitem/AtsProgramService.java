@@ -110,7 +110,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsProgram getProgram(Long programUuid) {
-      return atsServer.getConfigItemFactory().getProgram(atsServer.getArtifactByUuid(programUuid));
+      return atsServer.getConfigItemFactory().getProgram(atsServer.getArtifact(programUuid));
    }
 
    @Override
@@ -126,7 +126,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
       List<IAtsInsertion> insertions = new ArrayList<>();
-      for (ArtifactReadable artifact : atsServer.getArtifactByUuid(program.getUuid()).getRelated(
+      for (ArtifactReadable artifact : atsServer.getArtifact(program.getUuid()).getRelated(
          AtsRelationTypes.ProgramToInsertion_Insertion)) {
          insertions.add(atsServer.getConfigItemFactory().getInsertion(artifact));
       }
@@ -135,13 +135,13 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertion getInsertion(Long insertionUuid) {
-      return atsServer.getConfigItemFactory().getInsertion(atsServer.getArtifactByUuid(insertionUuid));
+      return atsServer.getConfigItemFactory().getInsertion(atsServer.getArtifact(insertionUuid));
    }
 
    @Override
    public Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion insertion) {
       List<IAtsInsertionActivity> insertionActivitys = new ArrayList<>();
-      for (ArtifactReadable artifact : atsServer.getArtifactByUuid(insertion.getUuid()).getRelated(
+      for (ArtifactReadable artifact : atsServer.getArtifact(insertion.getUuid()).getRelated(
          AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
          insertionActivitys.add(atsServer.getConfigItemFactory().getInsertionActivity(artifact));
       }
@@ -150,7 +150,7 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid) {
-      return atsServer.getConfigItemFactory().getInsertionActivity(atsServer.getArtifactByUuid(insertionActivityUuid));
+      return atsServer.getConfigItemFactory().getInsertionActivity(atsServer.getArtifact(insertionActivityUuid));
    }
 
    @Override

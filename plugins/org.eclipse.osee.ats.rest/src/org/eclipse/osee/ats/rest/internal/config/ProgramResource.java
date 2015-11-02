@@ -62,7 +62,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{uuid}/insertion")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getProgramInsertions(@PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable programArt = atsServer.getArtifact(uuid);
       if (programArt == null) {
          throw new OseeCoreException("Given uuid not found");
       }
@@ -86,7 +86,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createInsertion(@PathParam("programUuid") long programUuid, JaxInsertion newInsertion) throws Exception {
-      ArtifactReadable programArt = atsServer.getArtifactByUuid(programUuid);
+      ArtifactReadable programArt = atsServer.getArtifact(programUuid);
       if (programArt == null) {
          throw new OseeCoreException("Given uuid not found");
       }
@@ -106,7 +106,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateInsertion(@PathParam("programUuid") long programUuid, JaxInsertion insertion) {
-      ArtifactReadable insertionArt = atsServer.getArtifactByUuid(insertion.getUuid());
+      ArtifactReadable insertionArt = atsServer.getArtifact(insertion.getUuid());
       if (insertionArt == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
@@ -127,7 +127,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion/{uuid}")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getInsertionDetails(@PathParam("programUuid") long programUuid, @PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable configArt = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable configArt = atsServer.getArtifact(uuid);
       if (configArt == null) {
          throw new OseeCoreException("Given uuid not found");
       }
@@ -137,7 +137,7 @@ public class ProgramResource extends AbstractConfigResource {
    @DELETE
    @Path("{programUuid}/insertion/{insertionUuid}")
    public Response deleteInsertion(@PathParam("insertionUuid") long insertionUuid) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifactByUuid(insertionUuid);
+      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
@@ -149,7 +149,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Path("{programUuid}/insertion/{insertionUuid}/activity")
    @Produces(MediaType.APPLICATION_JSON)
    public Response getInsertionActivitys(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifactByUuid(insertionUuid);
+      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
@@ -174,7 +174,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response createInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertion = atsServer.getArtifactByUuid(insertionUuid);
+      ArtifactReadable insertion = atsServer.getArtifact(insertionUuid);
       if (insertion == null) {
          throw new OseeCoreException("Given insertion uuid not found");
       }
@@ -194,7 +194,7 @@ public class ProgramResource extends AbstractConfigResource {
    @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
    public Response updateInsertionActivity(@PathParam("programUuid") long programUuid, @PathParam("insertionUuid") long insertionUuid, JaxInsertionActivity newActivity) throws Exception {
-      ArtifactReadable insertionActivityArt = atsServer.getArtifactByUuid(newActivity.getUuid());
+      ArtifactReadable insertionActivityArt = atsServer.getArtifact(newActivity.getUuid());
       if (insertionActivityArt == null) {
          throw new OseeCoreException("Given insertion activity uuid not found");
       }

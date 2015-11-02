@@ -56,6 +56,8 @@ public interface IAtsServices {
 
    IAtsVersionService getVersionService();
 
+   ArtifactId getArtifact(Long uuid);
+
    ArtifactId getArtifact(ArtifactId artifact) throws OseeCoreException;
 
    ArtifactId getArtifact(IAtsObject atsObject) throws OseeCoreException;
@@ -94,6 +96,6 @@ public interface IAtsServices {
 
    ArtifactId getArtifactByName(IArtifactType artifactType, String name);
 
-   ArtifactId getArtifact(Long uuid);
+   ArtifactId getArtifactByGuid(String workPackageGuid);
 
 }

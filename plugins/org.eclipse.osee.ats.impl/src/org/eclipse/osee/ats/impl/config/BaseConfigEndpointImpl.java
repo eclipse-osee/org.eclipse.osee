@@ -71,7 +71,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
       } else if (!Strings.isValid(jaxAtsObject.getName())) {
          throw new OseeStateException("Invalid name [%d]");
       }
-      ArtifactReadable artifact = atsServer.getArtifactByUuid(jaxAtsObject.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(jaxAtsObject.getUuid());
       if (artifact != null) {
          throw new OseeStateException("Artifact with uuid %d already exists", jaxAtsObject.getUuid());
       }
@@ -112,7 +112,7 @@ public abstract class BaseConfigEndpointImpl<T extends JaxAtsObject> implements 
    @Override
    @DELETE
    public Response delete(@PathParam("uuid") long uuid) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable artifact = atsServer.getArtifact(uuid);
       if (artifact == null) {
          throw new OseeStateException("Artifact with uuid %d not found", uuid);
       }

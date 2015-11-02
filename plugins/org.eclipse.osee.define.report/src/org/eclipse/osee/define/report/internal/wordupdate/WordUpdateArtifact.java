@@ -230,7 +230,7 @@ public class WordUpdateArtifact {
       Conditions.checkNotNull(workflowArt, "work flow artifact");
       IAtsTeamWorkflow safetyWorkflow = null;
       ArtifactReadable safetyActionableItemArt =
-         atsServer.getArtifactByUuid(AtsArtifactToken.SafetyActionableItem.getUuid());
+         atsServer.getArtifact(AtsArtifactToken.SafetyActionableItem.getUuid());
       IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem = atsServer.getConfigItemFactory().getActionableItem(safetyActionableItemArt);
       for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {

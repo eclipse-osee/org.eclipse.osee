@@ -85,11 +85,11 @@ public class WorkPackageUtilityTest {
       assertResult(result, null, false);
 
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
-      when(services.getArtifactById("guid")).thenReturn(null);
+      when(services.getArtifactByGuid("guid")).thenReturn(null);
       result = util.getWorkPackageArtifact(services, teamWf);
       assertResult(result, null, false);
 
-      when(services.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       result = util.getWorkPackageArtifact(services, teamWf);
       assertResult(result, workPackageArt, false);
 
@@ -101,11 +101,11 @@ public class WorkPackageUtilityTest {
    @org.junit.Test
    public void testGetInsertionActivity() throws Exception {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
-      when(services.getArtifactById("guid")).thenReturn(null);
+      when(services.getArtifactByGuid("guid")).thenReturn(null);
       Pair<IAtsInsertionActivity, Boolean> result = util.getInsertionActivity(services, teamWf);
       assertResult(result, null, false);
 
-      when(services.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(null);
       result = util.getInsertionActivity(services, teamWf);
@@ -127,7 +127,7 @@ public class WorkPackageUtilityTest {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
 
       Pair<IAtsInsertion, Boolean> result = util.getInsertion(services, teamWf);
@@ -149,8 +149,7 @@ public class WorkPackageUtilityTest {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactById("guid")).thenReturn(workPackageArt);
-      when(factory.getInsertionActivity(activityArt)).thenReturn(null);
+      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,
          IAtsInsertion.class)).thenReturn(insertion);
@@ -173,7 +172,7 @@ public class WorkPackageUtilityTest {
       when(attributeResolver.getSoleAttributeValue(teamWf, AtsAttributeTypes.WorkPackageGuid, null)).thenReturn("guid");
       when(relationResolver.getRelatedOrNull(workPackageArt,
          AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity)).thenReturn(activityArt);
-      when(services.getArtifactById("guid")).thenReturn(workPackageArt);
+      when(services.getArtifactByGuid("guid")).thenReturn(workPackageArt);
       when(factory.getInsertionActivity(activityArt)).thenReturn(null);
       when(factory.getInsertionActivity(activityArt)).thenReturn(activity);
       when(relationResolver.getRelatedOrNull(activity, AtsRelationTypes.InsertionToInsertionActivity_Insertion,

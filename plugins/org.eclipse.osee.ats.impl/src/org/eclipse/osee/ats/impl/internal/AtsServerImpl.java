@@ -401,7 +401,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          // do nothing
       }
       if (uuid != null) {
-         action = getArtifactByUuid(uuid);
+         action = getArtifact(uuid);
       }
       if (action == null) {
          action = getArtifactByAtsId(id);
@@ -410,7 +410,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public ArtifactReadable getArtifactByUuid(long uuid) {
+   public ArtifactReadable getArtifact(Long uuid) {
       return orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
          new Long(uuid).intValue()).getResults().getOneOrNull();
    }
@@ -566,11 +566,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public ArtifactReadable getArtifact(IArtifactToken token) {
       return getArtifact(token.getUuid());
-   }
-
-   @Override
-   public ArtifactReadable getArtifact(Long uuid) {
-      return getArtifactByUuid(uuid);
    }
 
    @Override

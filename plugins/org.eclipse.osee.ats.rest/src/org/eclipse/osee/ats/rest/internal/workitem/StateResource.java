@@ -83,7 +83,12 @@ public final class StateResource {
       }
 
       if (operation.equals("transition")) {
-         ArtifactId action = atsServer.getArtifactById(id);
+         ArtifactId action = null;
+         try {
+            action = atsServer.getArtifactById(id);
+         } catch (Exception ex) {
+            // do nothing
+         }
          if (action == null) {
             return RestUtil.returnBadRequest(String.format("Action by id [%s] does not exist", id));
          }

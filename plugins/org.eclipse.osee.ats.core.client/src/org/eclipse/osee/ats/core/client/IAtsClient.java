@@ -144,9 +144,8 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsTeamDefinitionService getTeamDefinitionService();
 
-   Artifact getArtifact(long uuid) throws OseeCoreException;
-
-   Artifact getArtifact(String guid);
+   @Override
+   Artifact getArtifact(Long uuid) throws OseeCoreException;
 
    @Override
    IAtsClientVersionService getVersionService();
@@ -159,6 +158,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IVersionFactory getVersionFactory();
 
+   @Override
    Artifact getArtifactByGuid(String guid) throws OseeCoreException;
 
    Artifact getArtifactByAtsId(String id);

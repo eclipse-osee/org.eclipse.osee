@@ -498,11 +498,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
     * @return corresponding Artifact or null if not found
     */
    @Override
-   public Artifact getArtifact(long uuid) throws OseeCoreException {
+   public Artifact getArtifact(Long uuid) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Uuid must be > 0; is %d", uuid);
       Artifact result = null;
       try {
-         result = ArtifactQuery.getArtifactFromId((int) uuid, AtsUtilCore.getAtsBranch());
+         result = ArtifactQuery.getArtifactFromId(uuid.intValue(), AtsUtilCore.getAtsBranch());
       } catch (ArtifactDoesNotExist ex) {
          // do nothing
       }
@@ -695,17 +695,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public Artifact getArtifact(String guid) {
-      Artifact result = null;
-      try {
-         result = ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      }
-      return result;
-   }
-
-   @Override
    public IAtsQueryService getQueryService() {
       if (atsQueryService == null) {
          atsQueryService = new AtsQueryServiceIimpl(this);
@@ -725,7 +714,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          result = getArtifactByGuid(id);
       }
       if (result == null && Strings.isNumeric(id)) {
-         result = (Artifact) getArtifact(Long.valueOf(id));
+         result = getArtifact(Long.valueOf(id));
       }
       if (result == null) {
          result = getArtifactByAtsId(id);
@@ -746,7 +735,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public Artifact getArtifactByGuid(String guid) throws OseeCoreException {
-      return getArtifact(guid);
+      return ArtifactQuery.getArtifactFromId(guid, AtsUtilCore.getAtsBranch());
    }
 
    @Override
@@ -819,11 +808,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public ArtifactId getArtifactByName(IArtifactType artType, String name) {
       return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
-   }
-
-   @Override
-   public ArtifactId getArtifact(Long uuid) {
-      return ArtifactQuery.getArtifactFromId(uuid, AtsUtilCore.getAtsBranch());
    }
 
 }

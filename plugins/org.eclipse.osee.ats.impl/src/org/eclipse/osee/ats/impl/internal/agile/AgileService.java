@@ -67,7 +67,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileTeam getAgileTeam(long uuid) {
       IAgileTeam team = null;
-      ArtifactReadable teamArt = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable teamArt = atsServer.getArtifact(uuid);
       if (teamArt != null) {
          team = getAgileTeam(teamArt);
       }
@@ -96,7 +96,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteAgileTeam(long uuid) {
-      ArtifactReadable team = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable team = atsServer.getArtifact(uuid);
       if (!team.isOfType(AtsArtifactTypes.AgileTeam)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Team", uuid);
       }
@@ -160,7 +160,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteAgileFeatureGroup(long uuid) {
-      ArtifactReadable featureGroup = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable featureGroup = atsServer.getArtifact(uuid);
       if (!featureGroup.isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          throw new OseeArgumentException("UUID %d is not a valid Agile Feature Group", uuid);
       }
@@ -265,7 +265,7 @@ public class AgileService implements IAgileService {
    @Override
    public IAgileBacklog getAgileBacklog(long uuid) {
       IAgileBacklog backlog = null;
-      ArtifactReadable teamArt = atsServer.getArtifactByUuid(uuid);
+      ArtifactReadable teamArt = atsServer.getArtifact(uuid);
       if (teamArt != null) {
          backlog = getAgileBacklog(teamArt);
       }
@@ -336,7 +336,7 @@ public class AgileService implements IAgileService {
 
    @Override
    public void deleteSprint(long sprintUuid) {
-      ArtifactReadable sprint = atsServer.getArtifactByUuid(sprintUuid);
+      ArtifactReadable sprint = atsServer.getArtifact(sprintUuid);
       if (sprint != null) {
          TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
             AtsUtilCore.getAtsBranch(), sprint, "Delete Agile Sprint");

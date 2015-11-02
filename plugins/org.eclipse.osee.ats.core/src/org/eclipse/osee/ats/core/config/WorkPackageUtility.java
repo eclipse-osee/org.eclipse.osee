@@ -99,7 +99,7 @@ public class WorkPackageUtility {
       String workPackageGuid =
          services.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, null);
       if (Strings.isValid(workPackageGuid)) {
-         ArtifactId workPackageArt = services.getArtifactById(workPackageGuid);
+         ArtifactId workPackageArt = services.getArtifactByGuid(workPackageGuid);
          if (workPackageArt != null) {
             result.setFirst(workPackageArt);
          }

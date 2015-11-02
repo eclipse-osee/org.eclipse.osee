@@ -51,7 +51,7 @@ public class AgileFactory {
    public static IAgileTeam createAgileTeam(Log logger, IAtsServer atsServer, JaxNewAgileTeam newTeam) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
-      ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(newTeam.getUuid());
+      ArtifactReadable agileTeamArt = atsServer.getArtifact(newTeam.getUuid());
       if (agileTeamArt == null) {
 
          TransactionBuilder transaction =
@@ -83,7 +83,7 @@ public class AgileFactory {
          atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
             "Update new Agile Team");
 
-      ArtifactReadable agileTeamArt = atsServer.getArtifactByUuid(team.getUuid());
+      ArtifactReadable agileTeamArt = atsServer.getArtifact(team.getUuid());
       if (agileTeamArt == null) {
          throw new OseeWebApplicationException(Status.NOT_FOUND, "Agile Team not found with Uuid [%d]", team.getUuid());
       }
@@ -103,7 +103,7 @@ public class AgileFactory {
 
       Set<ArtifactReadable> atsTeamArts = new HashSet<>();
       for (long atsTeamUuid : team.getAtsTeamUuids()) {
-         ArtifactReadable atsTeamArt = atsServer.getArtifactByUuid(atsTeamUuid);
+         ArtifactReadable atsTeamArt = atsServer.getArtifact(atsTeamUuid);
          if (atsTeamArt != null && atsTeamArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             atsTeamArts.add(atsTeamArt);
          } else {

@@ -51,7 +51,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    @PUT
    @Override
    public Response update(JaxProgram program) throws Exception {
-      ArtifactReadable artifact = atsServer.getArtifactByUuid(program.getUuid());
+      ArtifactReadable artifact = atsServer.getArtifact(program.getUuid());
       if (artifact == null) {
          throw new OseeStateException("Artifact with uuid %d not found", program.getUuid());
       }
@@ -86,7 +86,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
             configs.add(getConfigObject(art));
          }
       } else {
-         for (ArtifactReadable art : atsServer.getArtifactByUuid(countryUuid).getRelated(
+         for (ArtifactReadable art : atsServer.getArtifact(countryUuid).getRelated(
             AtsRelationTypes.CountryToProgram_Program)) {
             JaxProgram program = getConfigObject(art);
             program.setCountryUuid(countryUuid);
@@ -100,7 +100,7 @@ public class ProgramEndpointImpl extends BaseConfigEndpointImpl<JaxProgram> impl
    protected void create(JaxProgram jaxProgram, ArtifactId programArtId, IAtsChangeSet changes) {
       ArtifactReadable programArt = (ArtifactReadable) programArtId;
       if (programArt.getRelatedCount(AtsRelationTypes.CountryToProgram_Country) == 0) {
-         ArtifactReadable countryArt = atsServer.getArtifactByUuid(jaxProgram.getCountryUuid());
+         ArtifactReadable countryArt = atsServer.getArtifact(jaxProgram.getCountryUuid());
          changes.relate(countryArt, AtsRelationTypes.CountryToProgram_Program, programArt);
       }
    }
