@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -95,11 +94,9 @@ public class ConflictIntroduceTest {
 
       // check for conflicts....there should be no conflict in this case.
       Collection<Conflict> conflicts = null;
-      Branch sBranch = BranchManager.getBranch(sourceBranch);
-      Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
-            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
+            BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -122,11 +119,9 @@ public class ConflictIntroduceTest {
 
       // check for conflict....this should be a conflict
       Collection<Conflict> conflicts = null;
-      Branch sBranch = BranchManager.getBranch(sourceBranch);
-      Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
-            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
+            BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -148,11 +143,9 @@ public class ConflictIntroduceTest {
 
       // check for conflict....this should be a conflict
       Collection<Conflict> conflicts = null;
-      Branch sBranch = BranchManager.getBranch(sourceBranch);
-      Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
-            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
+            BranchManager.getBaseTransaction(sourceBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -162,7 +155,7 @@ public class ConflictIntroduceTest {
    @AfterClass
    public static void tearDown() throws Exception {
       BranchManager.refreshBranches();
-      Branch mBranch = null;
+      IOseeBranch mBranch = null;
       if (sourceBranch != null && destinationBranch != null) {
          mBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
       }

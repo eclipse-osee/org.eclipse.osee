@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.cm;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
@@ -58,11 +58,11 @@ public interface IOseeCmService {
 
    IArtifactType getPcrArtifactType();
 
-   boolean isBranchesAllCommittedExcept(Artifact art, Branch branch);
+   boolean isBranchesAllCommittedExcept(Artifact art, BranchId branch);
 
    IArtifactType getPcrTaskArtifactType();
 
    boolean isWorkFlowBranch(BranchId branch);
 
-   void commitBranch(Artifact art, Branch branch, boolean isArchiveSource);
+   void commitBranch(Artifact art, IOseeBranch branch, boolean isArchiveSource);
 }

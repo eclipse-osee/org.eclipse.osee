@@ -20,8 +20,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -69,14 +69,14 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.widgets.xmerge.MergeView";
 
    private MergeXWidget mergeXWidget;
-   private Branch sourceBranch;
-   private Branch destBranch;
+   private IOseeBranch sourceBranch;
+   private IOseeBranch destBranch;
    private TransactionRecord transactionId;
    private TransactionRecord commitTrans;
    private boolean showConflicts;
-   private MergeBranch mergeBranch;
+   private BranchId mergeBranch;
 
-   public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId) {
+   public static void openView(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord tranId) {
       if (Conditions.allNull(sourceBranch, destBranch, tranId)) {
          throw new IllegalArgumentException("Branch's and Transaction ID can't be null");
       }
@@ -88,7 +88,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       openViewUpon(null, null, null, commitTrans, true);
    }
 
-   private static void openViewUpon(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId, final TransactionRecord commitTrans, final boolean showConflicts) {
+   private static void openViewUpon(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord tranId, final TransactionRecord commitTrans, final boolean showConflicts) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -157,9 +157,9 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       setFocusWidget(mergeXWidget.getControl());
    }
 
-   public void explore(final Branch sourceBranch, final Branch destBranch, final TransactionRecord transactionId, final TransactionRecord commitTrans, boolean showConflicts) {
-      this.sourceBranch = sourceBranch;
-      this.destBranch = destBranch;
+   public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord transactionId, final TransactionRecord commitTrans, boolean showConflicts) {
+      this.sourceBranch = BranchManager.getBranch(sourceBranch);
+      this.destBranch = BranchManager.getBranch(destBranch);
       this.transactionId = transactionId;
       this.commitTrans = commitTrans;
       try {
@@ -167,9 +167,11 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          if (mergeBranch == null) {
             close();
          } else {
-            mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
+            mergeXWidget.setInputData(this.sourceBranch, this.destBranch, transactionId, this, commitTrans,
+               showConflicts);
             if (sourceBranch != null) {
-               setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
+               setPartName(
+                  "Merge Manager: " + this.sourceBranch.getShortName() + " <=> " + this.destBranch.getShortName());
             } else if (commitTrans != null) {
                setPartName("Merge Manager: " + commitTrans.getId());
             } else {
@@ -199,7 +201,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      return;
                   }
                   sourceBranchId = Long.parseLong(memento.getString(SOURCE_BRANCH_ID));
-                  final Branch sourceBranch = BranchManager.getBranch(sourceBranchId);
+                  final BranchId sourceBranch = TokenFactory.createBranch(sourceBranchId);
                   if (sourceBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid source branch uuid " + sourceBranchId);
@@ -207,7 +209,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      return;
                   }
                   destBranchId = Long.parseLong(memento.getString(DEST_BRANCH_ID));
-                  final Branch destBranch = BranchManager.getBranch(destBranchId);
+                  final BranchId destBranch = TokenFactory.createBranch(destBranchId);
                   if (destBranch == null) {
                      OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid destination branch uuid " + sourceBranchId);
@@ -278,7 +280,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       return branch.matches(sourceBranch, destBranch);
    }
 
-   protected MergeBranch getMergeBranchForView() {
+   protected BranchId getMergeBranchForView() {
       return mergeBranch;
    }
 
@@ -345,7 +347,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          OseeEventManager.removeListener(this);
          return;
       }
-      Branch mergeBranch = null;
+      BranchId mergeBranch = null;
       try {
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
          if (mergeBranch == null || !mergeBranch.equals(artifactEvent.getBranch())) {

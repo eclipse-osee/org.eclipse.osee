@@ -22,7 +22,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -89,7 +91,7 @@ public class MergeManagerTest {
    }
 
    @After
-   public void tearDown() throws OseeCoreException, InterruptedException {
+   public void tearDown() throws OseeCoreException {
       Artifact artOnWorking = ArtifactQuery.getArtifactFromToken(NewArtifactToken, workingBranch);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnWorking)));
 
@@ -154,7 +156,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update);
 
       List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
-      Branch branchForUpdate = mergeBranches.get(0).getDestinationBranch();
+      BranchId branchForUpdate = mergeBranches.get(0).getDestinationBranch();
       assertTrue("No Merge Branch was created", mergeBranches.size() == 1);
       assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
 
@@ -163,7 +165,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update2);
 
       List<MergeBranch> mergeBranchesSecondAttempt = BranchManager.getMergeBranches(workingBranch);
-      Branch branchForUpdateSecondAttempt = mergeBranchesSecondAttempt.get(0).getDestinationBranch();
+      BranchId branchForUpdateSecondAttempt = mergeBranchesSecondAttempt.get(0).getDestinationBranch();
       assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
       assertTrue("Addional Merge Branch was created during second rebaseline attempt", mergeBranches.size() == 1);
       assertTrue("Addional Branch for Update was created during second rebaseline attempt",
@@ -187,7 +189,7 @@ public class MergeManagerTest {
       UpdateBranchOperation update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
 
-      Branch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
+      IOseeBranch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch).getDestinationBranch(); // this will be future working branch
 
       // Shouldn't be allowed to commit working branch
       boolean committed =

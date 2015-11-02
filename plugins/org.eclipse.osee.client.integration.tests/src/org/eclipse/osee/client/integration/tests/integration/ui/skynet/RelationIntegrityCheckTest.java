@@ -45,7 +45,7 @@ import org.junit.Test;
  * exists and runs <code>applyFix()</code> to resolve the issue.
  * </p>
  * {@link RelationIntegrityCheck}
- * 
+ *
  * @author Karol M. Wilk
  */
 public class RelationIntegrityCheckTest {

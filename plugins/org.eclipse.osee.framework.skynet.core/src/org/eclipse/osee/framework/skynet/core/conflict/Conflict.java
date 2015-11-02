@@ -14,14 +14,16 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -40,14 +42,14 @@ public abstract class Conflict implements IAdaptable {
    private Artifact artifact;
    private Artifact sourceArtifact;
    private Artifact destArtifact;
-   protected Branch mergeBranch;
-   protected Branch sourceBranch;
-   protected Branch destBranch;
+   protected BranchId mergeBranch;
+   protected IOseeBranch sourceBranch;
+   protected IOseeBranch destBranch;
 
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
       this.artId = artId;
@@ -70,8 +72,8 @@ public abstract class Conflict implements IAdaptable {
          if (commitTransactionId == null) {
             sourceArtifact = ArtifactQuery.getArtifactFromId(artId, sourceBranch, INCLUDE_DELETED);
          } else {
-            sourceArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(artId, mergeBranch.getBaseTransaction(), INCLUDE_DELETED);
+            TransactionRecord baseTx = BranchManager.getBaseTransaction(mergeBranch);
+            sourceArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId, baseTx, INCLUDE_DELETED);
          }
       }
       return sourceArtifact;
@@ -90,15 +92,15 @@ public abstract class Conflict implements IAdaptable {
       return destArtifact;
    }
 
-   public Branch getMergeBranch() {
+   public BranchId getMergeBranch() {
       return mergeBranch;
    }
 
-   public Branch getSourceBranch() {
+   public IOseeBranch getSourceBranch() {
       return sourceBranch;
    }
 
-   public Branch getDestBranch() {
+   public IOseeBranch getDestBranch() {
       return destBranch;
    }
 
@@ -145,8 +147,9 @@ public abstract class Conflict implements IAdaptable {
       } catch (AttributeDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+      int baseTx = BranchManager.getBaseTransaction(mergeBranch).getId();
       status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getUuid(), objectID,
-         getConflictType().getValue(), passedStatus, mergeBranch.getBaseTransaction().getId());
+         getConflictType().getValue(), passedStatus, baseTx);
       return status;
    }
 

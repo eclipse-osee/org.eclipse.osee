@@ -67,10 +67,10 @@ public class BranchStateTest {
    @Test
    public void testCreateState() throws OseeCoreException {
       String originalBranchName = "Create State Branch";
-      Branch workingBranch = null;
+      BranchId workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
-         assertEquals(BranchState.CREATED, workingBranch.getBranchState());
+         assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
@@ -278,7 +278,7 @@ public class BranchStateTest {
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
-      Branch mergeBranch = null;
+      IOseeBranch mergeBranch = null;
       Artifact sameArtifact = null;
       try {
          baseArtifact =
@@ -323,7 +323,7 @@ public class BranchStateTest {
             workingBranch.getName());
 
          // Check that a new destination branch exists
-         Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
+         IOseeBranch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
          assertTrue("Branch name not set correctly",
             destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
          assertTrue("Branch was not editable", BranchManager.isEditable(destinationBranch));
@@ -331,7 +331,8 @@ public class BranchStateTest {
          // Check that we have a merge branch
          mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
          assertTrue("MergeBranch was not editable", BranchManager.isEditable(mergeBranch));
-         assertEquals("Merge Branch should be in Created State", BranchState.CREATED, mergeBranch.getBranchState());
+         assertEquals("Merge Branch should be in Created State", BranchState.CREATED,
+            BranchManager.getState(mergeBranch));
 
          // Run FinishBranchUpdate and check
          FinishUpdateBranchOperation finishUpdateOperation =
@@ -358,7 +359,7 @@ public class BranchStateTest {
       }
    }
 
-   private void cleanup(String originalBranchName, Branch workingBranch, Branch mergeBranch, Artifact... toDelete) {
+   private void cleanup(String originalBranchName, IOseeBranch workingBranch, IOseeBranch mergeBranch, Artifact... toDelete) {
       try {
          if (mergeBranch != null) {
             BranchManager.purgeBranch(mergeBranch);

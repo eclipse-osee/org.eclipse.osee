@@ -24,6 +24,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -84,7 +86,7 @@ public class ConflictTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         Branch mergeBranch =
+         IOseeBranch mergeBranch =
             BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
 
          assertTrue("The merge branch should be null as it hasn't been created yet", mergeBranch == null);
@@ -130,7 +132,7 @@ public class ConflictTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         Branch mergeBranch =
+         IOseeBranch mergeBranch =
             BranchManager.getMergeBranch(ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch());
          assertFalse(mergeBranch == null);
          Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(mergeBranch, INCLUDE_DELETED);
@@ -206,11 +208,11 @@ public class ConflictTest {
 
    @Test
    public void testMultiplicityCommit() {
-      Branch parent = BranchManager.getBranch(SAW_Bld_1);
+      BranchId parent = SAW_Bld_1;
       Artifact testArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parent, "Multiplicity Test");
       testArt.persist("Save testArt on parent");
-      Branch child1 = BranchManager.createWorkingBranch(parent, "Child1");
+      BranchId child1 = BranchManager.createWorkingBranch(parent, "Child1");
       Branch child2 = BranchManager.createWorkingBranch(parent, "Child2");
 
       Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child1);

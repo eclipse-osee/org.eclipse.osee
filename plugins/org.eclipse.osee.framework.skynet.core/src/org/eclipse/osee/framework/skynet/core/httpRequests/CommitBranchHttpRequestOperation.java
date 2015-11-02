@@ -68,14 +68,14 @@ import org.eclipse.osee.orcs.rest.model.Transaction;
 public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final User user;
    private final Branch sourceBranch;
-   private final Branch destinationBranch;
+   private final BranchId destinationBranch;
    private final boolean isArchiveAllowed;
    private final boolean skipChecksAndEvents;
 
-   public CommitBranchHttpRequestOperation(User user, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
+   public CommitBranchHttpRequestOperation(User user, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
       this.user = user;
-      this.sourceBranch = sourceBranch;
+      this.sourceBranch = BranchManager.getBranch(sourceBranch);
       this.destinationBranch = destinationBranch;
       this.isArchiveAllowed = isArchiveAllowed;
       this.skipChecksAndEvents = skipChecksAndEvents;
@@ -130,7 +130,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       return toReturn;
    }
 
-   private void handleResponse(Integer newTxId, IProgressMonitor monitor, BranchId sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   private void handleResponse(Integer newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);

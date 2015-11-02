@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -43,7 +42,7 @@ public class CommitIntoHandler extends CommitHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Branch sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+      BranchId sourceBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       BranchType[] allowedTypes;
       if (AccessControlManager.isOseeAdmin()) {

@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
@@ -149,7 +150,7 @@ public class MergeUtility {
       Artifact toReturn = null;
       try {
          if (Conditions.notNull(conflict.getSourceBranch())) {
-            TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
+            TransactionRecord baseTransaction = BranchManager.getBaseTransaction(conflict.getSourceBranch());
             toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
                INCLUDE_DELETED);
          }

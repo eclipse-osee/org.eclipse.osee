@@ -120,7 +120,7 @@ public final class PortPairsOperation extends AbstractOperation {
          AtsBranchUtil.createWorkingBranch_Create(destinationWorkflow, true);
       }
 
-      IOseeBranch destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
+      BranchId destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
       BranchId portBranch = getPortBranchFromWorkflow(sourceWorkflow, destinationWorkflow);
       if (portBranch == null) {
          logf("Source workflow [%s] not ready for port to Workflow [%s].", sourceWorkflow, destinationWorkflow);
@@ -140,7 +140,7 @@ public final class PortPairsOperation extends AbstractOperation {
       }
    }
 
-   private BranchId getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
+   private IOseeBranch getPortBranchFromWorkflow(TeamWorkFlowArtifact sourceWorkflow, TeamWorkFlowArtifact destinationWorkflow) throws OseeCoreException {
       if (!sourceWorkflow.isRelated(AtsRelationTypes.Port_To, destinationWorkflow)) {
          sourceWorkflow.addRelation(AtsRelationTypes.Port_To, destinationWorkflow);
          sourceWorkflow.persist("create port relation");

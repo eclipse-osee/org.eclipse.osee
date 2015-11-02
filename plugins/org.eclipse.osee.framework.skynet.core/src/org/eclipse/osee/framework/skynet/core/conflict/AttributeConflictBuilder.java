@@ -12,9 +12,10 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,7 +32,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    private final int attrId;
    private final long attrTypeId;
 
-   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch, String sourceValue, int attrId, long attrTypeId) {
+   public AttributeConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, IOseeBranch sourceBranch, IOseeBranch destBranch, String sourceValue, int attrId, long attrTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.sourceValue = sourceValue;
       this.attrId = attrId;
@@ -39,7 +40,7 @@ public class AttributeConflictBuilder extends ConflictBuilder {
    }
 
    @Override
-   public Conflict getConflict(Branch mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
+   public Conflict getConflict(BranchId mergeBranch, Set<Integer> artIdSet) throws OseeCoreException {
       for (Integer integer : artIdSet) {
          if (integer.intValue() == artId) {
             return null;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -26,7 +26,7 @@ public class ChangeUiData {
    private CompareType compareType;
 
    private TransactionDelta txDelta;
-   private Branch mergeBranch;
+   private IOseeBranch mergeBranch;
 
    public ChangeUiData(CompareType compareType, TransactionDelta txDelta) {
       this.compareType = compareType;
@@ -55,7 +55,7 @@ public class ChangeUiData {
       return mergeBranch != null;
    }
 
-   public void setMergeBranch(Branch mergeBranch) {
+   public void setMergeBranch(IOseeBranch mergeBranch) {
       this.mergeBranch = mergeBranch;
    }
 

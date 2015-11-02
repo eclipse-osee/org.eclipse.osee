@@ -16,7 +16,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -67,10 +67,10 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());
       Thread.sleep(2000);
-      Branch branch = BranchManager.getBranch(AtsTestUtil.getTeamWf().getWorkingBranch());
+      BranchId branch = AtsTestUtil.getTeamWf().getWorkingBranch();
       Assert.assertNotNull(branch);
       AtsTestUtil.cleanup();
-      Assert.assertTrue(branch.isDeleted());
+      Assert.assertTrue(BranchManager.getState(branch).isDeleted());
    }
 
    @org.junit.Test

@@ -95,7 +95,7 @@ public class CommitXManager extends XViewer {
             displayName = configArt.toString();
          } else if (firstSelectedArt instanceof TransactionRecord) {
             TransactionRecord txRecord = (TransactionRecord) firstSelectedArt;
-            branch = txRecord.getBranch();
+            branch = txRecord.getBranchToken();
             displayName = txRecord.toString();
          } else {
             throw new OseeArgumentException("Unhandled element type [%s]", firstSelectedArt.getClass().toString());

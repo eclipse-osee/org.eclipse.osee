@@ -26,6 +26,8 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation.Display;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -74,13 +76,13 @@ public class FixAttributeOperationTest {
    // @formatter:off
    @Mock private OperationLogger logger;
    @Mock private Display display;
- 
+
    @Captor private ArgumentCaptor<List<String[]>> captor;
    @Captor private ArgumentCaptor<List<String[]>> captor2;
-  
+
    // @formatter:on
 
-   private Branch branchWorking;
+   private IOseeBranch branchWorking;
    private String itemId;
 
    @Before
@@ -88,8 +90,8 @@ public class FixAttributeOperationTest {
       MockitoAnnotations.initMocks(this);
 
       branchWorking = BranchManager.createWorkingBranch(SAW_Bld_1, WORKING_BRANCH_NAME);
-      Branch branch1 = editBranch(branchWorking, "branch1");
-      Branch branch2 = editBranch(branchWorking, "branch2");
+      BranchId branch1 = editBranch(branchWorking, "branch1");
+      BranchId branch2 = editBranch(branchWorking, "branch2");
 
       commit(branch1, branchWorking);
       commit(branch2, branchWorking);
@@ -160,7 +162,7 @@ public class FixAttributeOperationTest {
       //@formatter:off
       assertRow(captor.getValue(), 0, branchWorking.getName(), itemId, "Robot API", CoreAttributeTypes.Partition.getName(), "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
       //@formatter: on
-      
+
       Artifact testRobotAPI =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branchWorking);
 
@@ -168,13 +170,13 @@ public class FixAttributeOperationTest {
       Collections.sort(values);
       assertEquals("Navigation", values.get(0));
       assertEquals("Unspecified", values.get(1));
-      
+
       // Run Again Empty Report should result
       reset(display);
       executeOp(branchWorking, true);
 
       verify(display).displayReport(eq("Fix Duplicate Report"), captor2.capture());
-      
+
       String expectedString = "-- no duplicates found --";
       assertRow(captor2.getValue(), 0, expectedString, expectedString, expectedString, expectedString, expectedString, expectedString);
    }
@@ -190,12 +192,12 @@ public class FixAttributeOperationTest {
       }
    }
 
-   private void executeOp(Branch branch, boolean commitChangesBool) throws OseeCoreException {
+   private void executeOp(IOseeBranch branch, boolean commitChangesBool) throws OseeCoreException {
       IOperation operation = new FixAttributeOperation(logger, display, branch, commitChangesBool);
       Operations.executeWorkAndCheckStatus(operation);
    }
-   
-   private Branch editBranch(Branch parentBranch, String workingBranchName) throws OseeCoreException {
+
+   private BranchId editBranch(BranchId parentBranch, String workingBranchName) throws OseeCoreException {
       String branchName = String.format("%s_%s", FixAttributeOperationTest.class.getSimpleName(), workingBranchName);
       Branch branch = BranchManager.createWorkingBranch(parentBranch, branchName);
 
@@ -211,7 +213,7 @@ public class FixAttributeOperationTest {
       return branch;
    }
 
-   private void commit(Branch source, Branch destination) throws OseeCoreException {
+   private void commit(BranchId source, BranchId destination) throws OseeCoreException {
       boolean archiveSourceBranch = false;
       boolean overwriteUnresolvedConflicts = true;
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destination, source);

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -31,10 +32,10 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
  * @author Roberto E. Escobar
  */
 public class UpdateBranchOperation extends AbstractOperation {
-   private final Branch originalBranch;
+   private final IOseeBranch originalBranch;
    private final ConflictResolverOperation resolver;
 
-   public UpdateBranchOperation(final Branch branch, final ConflictResolverOperation resolver) {
+   public UpdateBranchOperation(final IOseeBranch branch, final ConflictResolverOperation resolver) {
       super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
       this.resolver = resolver;
@@ -48,9 +49,9 @@ public class UpdateBranchOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       // Only update if there are no other Merge Branches and we haven't committed this branch already
-      if (originalBranch != null && !BranchManager.hasMergeBranches(
-         originalBranch) && !originalBranch.getBranchState().isCommitted()) {
-         performUpdate(monitor, originalBranch);
+      if (originalBranch != null && !BranchManager.hasMergeBranches(originalBranch) && !BranchManager.getState(
+         originalBranch).isCommitted()) {
+         performUpdate(monitor, BranchManager.getBranch(originalBranch));
 
          OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
@@ -92,7 +93,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   private void commitOldWorkingIntoNewWorkingBranch(IProgressMonitor monitor, Branch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
+   private void commitOldWorkingIntoNewWorkingBranch(IProgressMonitor monitor, BranchId originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
       monitor.setTaskName("Checking for Conflicts");
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);
       IOperation operation;

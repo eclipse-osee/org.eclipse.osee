@@ -19,9 +19,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -48,11 +49,11 @@ public class FixAttributeOperation extends AbstractOperation {
 
    }
 
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final boolean commitChangesBool;
    private final Display display;
 
-   public FixAttributeOperation(OperationLogger logger, Display display, Branch branch, boolean commitChangesBool) {
+   public FixAttributeOperation(OperationLogger logger, Display display, IOseeBranch branch, boolean commitChangesBool) {
       super("FixAttributes", Activator.PLUGIN_ID, logger);
       this.branch = branch;
       this.commitChangesBool = commitChangesBool;
@@ -62,7 +63,7 @@ public class FixAttributeOperation extends AbstractOperation {
    private void checkPreConditions() throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       // only allow working branches
-      Conditions.checkExpressionFailOnTrue(!branch.getBranchType().isWorkingBranch(),
+      Conditions.checkExpressionFailOnTrue(!BranchManager.getBranchType(branch).isWorkingBranch(),
          "Invalid branch selected [%s]. Only working branches are allowed.", branch);
    }
 

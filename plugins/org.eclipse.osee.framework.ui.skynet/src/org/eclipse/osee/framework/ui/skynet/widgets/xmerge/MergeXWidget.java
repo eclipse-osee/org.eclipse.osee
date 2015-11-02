@@ -27,10 +27,10 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -92,8 +92,8 @@ public class MergeXWidget extends GenericXWidget {
    private String displayLabelText;
    private Action openAssociatedArtifactAction;
    private Action completeCommitAction;
-   private Branch sourceBranch;
-   private Branch destBranch;
+   private IOseeBranch sourceBranch;
+   private IOseeBranch destBranch;
    private TransactionRecord commitTrans;
    private TransactionRecord tranId;
    private MergeView mergeView;
@@ -204,8 +204,8 @@ public class MergeXWidget extends GenericXWidget {
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  Branch destinationBranch = BranchManager.getBranch(destBranchId);
-                  Branch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
+                  IOseeBranch destinationBranch = BranchManager.getBranch(destBranchId);
+                  IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch.getUuid(), destBranchId);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -351,11 +351,11 @@ public class MergeXWidget extends GenericXWidget {
       this.editor = editor;
    }
 
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, boolean showConflicts) {
+   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, boolean showConflicts) {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, String loadingText, final boolean showConflicts) {
+   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
@@ -463,8 +463,8 @@ public class MergeXWidget extends GenericXWidget {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
             String message = String.format("%s\nConflicts : %s <=> Resolved : %s%s", displayLabelText,
-               storedConflicts.length - informational, resolved,
-               informational == 0 ? " " : "\nInformational Conflicts : " + informational);
+               (storedConflicts.length - informational), resolved,
+               (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
             extraInfoLabel.setText(message);
          }
       }
@@ -487,15 +487,15 @@ public class MergeXWidget extends GenericXWidget {
    }
 
    private void checkForCompleteCommit() {
-      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && getConflicts().length > 0;
+      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && (getConflicts().length > 0);
       if (null != sourceBranch) {
          try {
+            boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
             boolean isValidUpdate =
-               sourceBranch.getBranchState().isRebaselineInProgress() && BranchManager.isParent(sourceBranch, BranchManager.getParentBranchId(destBranch));
-            boolean isValidCommit =
-               BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress();
+               rebase && BranchManager.isParent(sourceBranch, BranchManager.getParentBranchId(destBranch));
+            boolean isValidCommit = BranchManager.hasMergeBranches(sourceBranch) && !rebase;
 
-            isVisible &= isValidUpdate || isValidCommit;
+            isVisible &= (isValidUpdate || isValidCommit);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             isVisible = false;
@@ -533,12 +533,12 @@ public class MergeXWidget extends GenericXWidget {
       public void run() {
          if (mergeView.getMergeBranchForView() != null) {
             try {
-               if (sourceBranch.getBranchState().isRebaselineInProgress()) {
+               boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
+               if (rebase) {
                   ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
                   IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
                   Operations.executeAsJob(operation, true);
-               } else if (BranchManager.hasMergeBranches(
-                  sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress()) {
+               } else if ((BranchManager.hasMergeBranches(sourceBranch) && !rebase)) {
                   Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   IOseeCmService cm = ServiceUtil.getOseeCmService();
 
@@ -556,7 +556,7 @@ public class MergeXWidget extends GenericXWidget {
 
       }
 
-      private void handleNonAtsCommit(final Branch sourceBranch, final Branch destBranch) throws OseeCoreException {
+      private void handleNonAtsCommit(final BranchId sourceBranch, final BranchId destBranch) throws OseeCoreException {
          final MutableBoolean archiveSourceBranch = new MutableBoolean();
 
          if (BranchManager.isParent(sourceBranch, destBranch)) {
@@ -623,7 +623,7 @@ public class MergeXWidget extends GenericXWidget {
          Conflict[] conflicts = getConflicts();
          if (conflicts.length > 0) {
             Conflict firstConflict = conflicts[0];
-            Branch sourceBranch = firstConflict.getSourceBranch();
+            BranchId sourceBranch = firstConflict.getSourceBranch();
             if (sourceBranch != null) {
                try {
                   ChangeUiUtil.open(sourceBranch);

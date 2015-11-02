@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -64,15 +65,15 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
-         Branch workingBranch = BranchManager.getBranch(teamArt.getWorkingBranch());
-         List<Branch> destinationBranches = new ArrayList<>();
+         BranchId workingBranch = teamArt.getWorkingBranch();
+         List<BranchId> destinationBranches = new ArrayList<>();
 
          if (workingBranch != null) {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
-            Branch selectedBranch = null;
+            BranchId selectedBranch = null;
 
             if (!mergeBranches.isEmpty()) {
-               if (!workingBranch.getBranchState().isRebaselineInProgress()) {
+               if (!BranchManager.getState(workingBranch).isRebaselineInProgress()) {
                   for (MergeBranch mergeBranch : mergeBranches) {
                      destinationBranches.add(mergeBranch.getDestinationBranch());
                   }
@@ -95,7 +96,7 @@ public final class AtsBranchManager {
                }
 
                if (selectedBranch != null) {
-                  MergeView.openView(workingBranch, selectedBranch, workingBranch.getBaseTransaction());
+                  MergeView.openView(workingBranch, selectedBranch, BranchManager.getBaseTransaction(workingBranch));
                }
             } else {
                MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Error",
@@ -112,9 +113,8 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) throws OseeCoreException {
       if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-         MergeView.openView((Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt),
-            (Branch) destinationBranch,
-            BranchManager.getBaseTransaction(AtsClientService.get().getBranchService().getWorkingBranch(teamArt)));
+         IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+         MergeView.openView(workingBranch, destinationBranch, BranchManager.getBaseTransaction(workingBranch));
       } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
          Collection<ITransaction> transactions =
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, true);

@@ -16,8 +16,6 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -30,7 +28,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -94,12 +91,6 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
          return false;
       }
       return BranchManager.doesMergeBranchExist(workingBranch, destinationBranch);
-   }
-
-   public boolean isMergeCompleted(TeamWorkFlowArtifact teamWf, BranchId destinationBranch) throws OseeCoreException {
-      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch,
-         AtsClientService.get().getBranchService().getWorkingBranch(teamWf));
-      return !conflictManager.remainingConflictsExist();
    }
 
    @Override

@@ -413,7 +413,7 @@ public class AtsBranchConfigurationTest {
 
    public static void commitBranch(TeamWorkFlowArtifact teamWf) throws Exception {
       IOperation op = AtsBranchManager.commitWorkingBranch(teamWf, false, true,
-         BranchManager.getParentBranchId(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
+         BranchManager.getParentBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamWf)), true);
       Operations.executeWorkAndCheckStatus(op);
    }
 

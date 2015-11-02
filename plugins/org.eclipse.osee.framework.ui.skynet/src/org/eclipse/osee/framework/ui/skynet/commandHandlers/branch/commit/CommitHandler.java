@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,8 +54,8 @@ public abstract class CommitHandler extends CommandHandler {
 
    public static boolean commitBranch(final ConflictManagerExternal conflictManager, final boolean archiveSourceBranch, boolean skipPrompts) throws OseeCoreException {
       boolean toReturn = false;
-      // Make sure branch being committed isn't rebasaline in progress or rebaselined
-      if (!conflictManager.getSourceBranch().getBranchState().isRebaselineInProgress() && !conflictManager.getSourceBranch().getBranchState().isRebaselined()) {
+      BranchState state = BranchManager.getState(conflictManager.getSourceBranch());
+      if (!state.isRebaselineInProgress() && !state.isRebaselined()) {
          if (conflictManager.getOriginalConflicts().size() > 0) {
             toReturn = MergeInProgressHandler.handleMergeInProgress(conflictManager, archiveSourceBranch, skipPrompts);
          } else {
@@ -89,11 +90,11 @@ public abstract class CommitHandler extends CommandHandler {
          List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
          Iterator<Branch> iterator = branches.iterator();
          if (iterator.hasNext()) {
-            Branch sourceBranch = iterator.next();
+            BranchId sourceBranch = iterator.next();
 
             BranchId destinationBranch = null;
             if (useParentBranch) {
-               destinationBranch = BranchManager.getParentBranchId(sourceBranch);
+               destinationBranch = BranchManager.getParentBranch(sourceBranch);
             } else {
                destinationBranch =
                   BranchManager.getBranch(Long.parseLong(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));

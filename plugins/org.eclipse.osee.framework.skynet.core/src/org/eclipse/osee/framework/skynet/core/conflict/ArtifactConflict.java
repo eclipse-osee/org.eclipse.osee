@@ -11,11 +11,12 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -29,7 +30,7 @@ public class ArtifactConflict extends Conflict {
    private final ModificationType sourceModType;
    private final ModificationType destModType;
 
-   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
+   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, BranchId mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch, ModificationType sourceModType, ModificationType destModType, long artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.sourceModType = sourceModType;
       this.destModType = destModType;

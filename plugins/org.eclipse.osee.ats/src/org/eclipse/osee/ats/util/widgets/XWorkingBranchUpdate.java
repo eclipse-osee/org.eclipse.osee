@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -101,7 +102,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
          Jobs.startJob(job);
       }
 
-      private Job createMergeViewJob(final Branch sourceBranch, final Branch destinationBranch) {
+      private Job createMergeViewJob(final BranchId sourceBranch, final BranchId destinationBranch) {
          Job job = new UIJob("Launch Merge Manager") {
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {

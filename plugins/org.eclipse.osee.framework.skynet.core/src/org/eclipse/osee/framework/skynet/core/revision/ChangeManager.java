@@ -14,10 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -79,9 +79,7 @@ public final class ChangeManager {
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
-   public static IOperation comparedToParent(BranchId sourceBranch, Collection<Change> changes) throws OseeCoreException {
-      Branch branch = BranchManager.getBranch(sourceBranch);
-
+   public static IOperation comparedToParent(BranchId branch, Collection<Change> changes) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranchId(branch));
 
@@ -112,7 +110,7 @@ public final class ChangeManager {
 
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
-            transactionNumber = BranchManager.getBranch(branch).getSourceTransaction().getId();
+            transactionNumber = BranchManager.getSourceTransaction(branch).getId();
             branch = BranchManager.getParentBranchId(branch);
             joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
          }
@@ -126,7 +124,7 @@ public final class ChangeManager {
             chStmt.runPreparedQuery(joinQuery.size() * 2, ServiceUtil.getSql(OseeSql.CHANGE_TX_MODIFYING),
                joinQuery.getQueryId());
             while (chStmt.next()) {
-               Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
+               IOseeBranch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
                transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
             }
@@ -145,7 +143,7 @@ public final class ChangeManager {
     *
     * @return a map of artifact to collection of branches which affected the given artifact
     */
-   public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Artifact, IOseeBranch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
 
       CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
@@ -160,7 +158,7 @@ public final class ChangeManager {
          }
       }
 
-      HashCollection<Artifact, Branch> branchMap = new HashCollection<>();
+      HashCollection<Artifact, IOseeBranch> branchMap = new HashCollection<>();
       try {
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -169,7 +167,7 @@ public final class ChangeManager {
                joinQuery.getQueryId());
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
-                  Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
+                  IOseeBranch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
                   Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranchId(branch));
                   branchMap.put(artifact, branch);
                }

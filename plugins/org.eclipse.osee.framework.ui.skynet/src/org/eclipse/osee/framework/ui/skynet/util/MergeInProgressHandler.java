@@ -20,8 +20,7 @@ import java.util.logging.Level;
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.MergeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,14 +56,14 @@ public class MergeInProgressHandler {
 
    public static boolean handleCommitInProgressPostPrompt(final ConflictManagerExternal conflictManager, int userOption, boolean skipPrompts) throws OseeCoreException {
       boolean toReturn = false;
-      Branch sourceBranch = conflictManager.getSourceBranch();
-      Branch destinationBranch = conflictManager.getDestinationBranch();
+      BranchId sourceBranch = conflictManager.getSourceBranch();
+      BranchId destinationBranch = conflictManager.getDestinationBranch();
 
       if (userOption == COMMIT) { // Commit
          BranchManager.commitBranch(null, conflictManager, archiveBranch, false);
          toReturn = true;
       } else if (userOption == LAUNCH_MERGE_VIEW) { // Launch Merge
-         MergeView.openView(sourceBranch, destinationBranch, sourceBranch.getBaseTransaction());
+         MergeView.openView(sourceBranch, destinationBranch, BranchManager.getBaseTransaction(sourceBranch));
       } else if (userOption == DELETE_MERGE) { // Delete Merge
          deleteSingleMergeBranches(sourceBranch, destinationBranch, skipPrompts);
       } else if (userOption == FORCE_COMMIT) { // Force Commit, admin only
@@ -76,28 +75,27 @@ public class MergeInProgressHandler {
       return toReturn;
    }
 
-   public static void deleteMultipleMergeBranches(Branch sourceBranch, List<Branch> destBranches, boolean skipPrompts) throws OseeCoreException {
+   public static void deleteMultipleMergeBranches(BranchId sourceBranch, List<BranchId> destBranches, boolean skipPrompts) throws OseeCoreException {
       if (skipPrompts || promptUser(sourceBranch, destBranches)) {
-         for (Branch branch : destBranches) {
+         for (BranchId branch : destBranches) {
             doDelete(sourceBranch, branch);
          }
       }
    }
 
-   public static void deleteSingleMergeBranches(Branch sourceBranch, Branch destBranch, boolean skipPrompts) throws OseeCoreException {
+   public static void deleteSingleMergeBranches(BranchId sourceBranch, BranchId destBranch, boolean skipPrompts) throws OseeCoreException {
       if (skipPrompts || promptUser(sourceBranch, Arrays.asList(destBranch))) {
          doDelete(sourceBranch, destBranch);
       }
    }
 
-   private static void doDelete(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   private static void doDelete(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
       if (BranchManager.hasMergeBranches(sourceBranch)) {
-         MergeBranch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-         BranchManager.purgeBranch(mergeBranch);
+         BranchManager.purgeBranch(BranchManager.getMergeBranch(sourceBranch, destBranch));
       }
    }
 
-   private static boolean promptUser(Branch sourceBranch, List<Branch> destinationBranches) throws OseeCoreException {
+   private static boolean promptUser(BranchId sourceBranch, List<BranchId> destinationBranches) throws OseeCoreException {
       final MutableBoolean isUserSure = new MutableBoolean(false);
       final String message = constructConfirmMessage(sourceBranch, destinationBranches);
 
@@ -136,8 +134,8 @@ public class MergeInProgressHandler {
 
    private static String constructMessage(final ConflictManagerExternal conflictManager, boolean allConflictsResolved) throws OseeCoreException {
       StringBuilder message = new StringBuilder();
-      Branch sourceBranch = conflictManager.getSourceBranch();
-      Branch destinationBranch = conflictManager.getDestinationBranch();
+      BranchId sourceBranch = conflictManager.getSourceBranch();
+      BranchId destinationBranch = conflictManager.getDestinationBranch();
 
       if (allConflictsResolved) {
          message.append("Ready to commit");
@@ -183,7 +181,7 @@ public class MergeInProgressHandler {
       return choices;
    }
 
-   private static String constructConfirmMessage(Branch sourceBranch, List<Branch> branches) throws OseeCoreException {
+   private static String constructConfirmMessage(BranchId sourceBranch, List<BranchId> branches) throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       String ending = "";
       String beginning = "";
@@ -197,9 +195,8 @@ public class MergeInProgressHandler {
          ending = "\n\nAll merged conflicts for this branch will be lost.";
       }
       sb.append(beginning);
-      for (Branch branch : branches) {
-         MergeBranch mergeBranch = BranchManager.getMergeBranch(sourceBranch, branch);
-         sb.append(mergeBranch);
+      for (BranchId branch : branches) {
+         sb.append(BranchManager.getMergeBranch(sourceBranch, branch));
          sb.append("\n");
       }
       sb.append(ending);

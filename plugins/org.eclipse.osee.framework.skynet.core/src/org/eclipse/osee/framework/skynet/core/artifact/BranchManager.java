@@ -198,9 +198,8 @@ public final class BranchManager {
    /**
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
-   public static MergeBranch getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
-      MergeBranch mergeBranch = getCache().findMergeBranch(sourceBranch, destinationBranch);
-      return mergeBranch;
+   public static IOseeBranch getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
+      return getCache().findMergeBranch(sourceBranch, destinationBranch);
    }
 
    /**
@@ -221,12 +220,8 @@ public final class BranchManager {
    /**
     * returns whether a source branch has existing merge branches
     */
-   public static boolean hasMergeBranches(Branch sourceBranch) throws OseeCoreException {
-      if (getMergeBranches(sourceBranch).isEmpty()) {
-         return false;
-      } else {
-         return true;
-      }
+   public static boolean hasMergeBranches(BranchId sourceBranch) throws OseeCoreException {
+      return !getMergeBranches(sourceBranch).isEmpty();
    }
 
    /**
@@ -259,8 +254,8 @@ public final class BranchManager {
    /**
     * returns a list tof all the merge branches for this source branch from the cache or null if not found
     */
-   public static boolean isUpdatable(Branch branchToUpdate) throws OseeCoreException {
-      if (!hasMergeBranches(branchToUpdate) || branchToUpdate.getBranchState().isRebaselineInProgress()) {
+   public static boolean isUpdatable(BranchId branchToUpdate) throws OseeCoreException {
+      if (!hasMergeBranches(branchToUpdate) || getState(branchToUpdate).isRebaselineInProgress()) {
          return true;
       }
       return false;
@@ -269,7 +264,7 @@ public final class BranchManager {
    /**
     * Update branch
     */
-   public static Job updateBranch(final Branch branch, final ConflictResolverOperation resolver) {
+   public static Job updateBranch(final IOseeBranch branch, final ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(branch, resolver);
       return Operations.executeAsJob(operation, true);
    }
@@ -367,8 +362,8 @@ public final class BranchManager {
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
-   public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      MergeBranch mergeBranch = getMergeBranch(sourceBranch, destBranch);
+   public static IOseeBranch getOrCreateMergeBranch(IOseeBranch sourceBranch, IOseeBranch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+      IOseeBranch mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
       } else {
@@ -379,7 +374,7 @@ public final class BranchManager {
       return mergeBranch;
    }
 
-   private static MergeBranch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+   private static MergeBranch createMergeBranch(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       for (int artId : expectedArtIds) {
          joinQuery.add(artId, sourceBranch.getUuid());
@@ -388,12 +383,12 @@ public final class BranchManager {
       try {
          joinQuery.store();
 
-         int parentTxId = sourceBranch.getBaseTransaction().getId();
+         TransactionRecord parentTx = getBaseTransaction(sourceBranch);
          String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
-            parentTxId, destBranch.getName());
+            parentTx.getId(), destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
-         mergeBranch = (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName,
-            Lib.generateUuid(), UserManager.getUser(), creationComment, joinQuery.getQueryId(), destBranch.getUuid());
+         mergeBranch = (MergeBranch) createBranch(BranchType.MERGE, parentTx, branchName, Lib.generateUuid(),
+            UserManager.getUser(), creationComment, joinQuery.getQueryId(), destBranch.getUuid());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
@@ -457,11 +452,11 @@ public final class BranchManager {
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
-   public static BranchId createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
       return createWorkingBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
    }
 
-   public static BranchId createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getUuid(), associatedArtifact);
    }

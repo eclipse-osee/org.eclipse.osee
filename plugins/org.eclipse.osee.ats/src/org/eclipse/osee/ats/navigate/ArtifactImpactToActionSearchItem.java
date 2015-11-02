@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -121,7 +121,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
          HashCollection<Artifact, TransactionRecord> transactionMap =
             ChangeManager.getModifingTransactions(processArts);
-         HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
+         HashCollection<Artifact, IOseeBranch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
             // System.out.println(str);
@@ -134,9 +134,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             // Check for changes on working branches
             boolean workingBranchesFound = false;
 
-            Collection<Branch> branches = branchMap.getValues(srchArt);
+            Collection<IOseeBranch> branches = branchMap.getValues(srchArt);
             if (branches != null) {
-               for (Branch branch : branches) {
+               for (IOseeBranch branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
                   if (assocArt != null && !assocArt.equals(AtsCoreUsers.SYSTEM_USER)) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {

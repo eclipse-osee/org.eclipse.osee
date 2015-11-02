@@ -47,8 +47,8 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       monitor.worked(calculateWork(0.60));
 
-      Branch sourceBranch = conflictManager.getSourceBranch();
-      Branch destinationBranch = conflictManager.getDestinationBranch();
+      Branch sourceBranch = BranchManager.getBranch(conflictManager.getSourceBranch());
+      Branch destinationBranch = BranchManager.getBranch(conflictManager.getDestinationBranch());
 
       String originalBranchName = sourceBranch.getName();
 

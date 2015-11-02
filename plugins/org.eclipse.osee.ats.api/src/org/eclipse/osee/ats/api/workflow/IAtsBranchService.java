@@ -38,7 +38,7 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   BranchId getBranch(IAtsConfigObject configObject);
+   IOseeBranch getBranch(IAtsConfigObject configObject);
 
    IOseeBranch getBranch(ICommitConfigItem configObject);
 

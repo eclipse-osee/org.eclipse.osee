@@ -19,7 +19,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -48,14 +47,14 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
          @Override
          public void handleEvent(Event e) {
             try {
-               Branch workingBranch = BranchManager.getBranch(getTeamArt().getWorkingBranch());
+               BranchId workingBranch = getTeamArt().getWorkingBranch();
                if (isWorkingBranchCommitWithMergeInProgress()) {
-                  List<Branch> selectedBranches = new ArrayList<>();
+                  List<BranchId> selectedBranches = new ArrayList<>();
                   Collection<BranchId> branchesAlreadyCommitted =
                      AtsClientService.get().getBranchService().getBranchesCommittedTo(getTeamArt());
                   List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
 
-                  Set<Branch> destinationMinusAlreadyCommitted = new HashSet<>();
+                  Set<BranchId> destinationMinusAlreadyCommitted = new HashSet<>();
                   // Remove all the Merge branches having to do with a Destination branch that's already been committed, can't delete these merge branches
                   for (MergeBranch branch : mergeBranches) {
                      if (!branchesAlreadyCommitted.contains(branch.getDestinationBranch())) {
@@ -70,7 +69,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
                            destinationMinusAlreadyCommitted);
                      if (dialog.open() == 0) {
                         for (BranchId branchToken : dialog.getChecked()) {
-                           selectedBranches.add(BranchManager.getBranch(branchToken));
+                           selectedBranches.add(branchToken);
                         }
                      }
                   } else if (destinationMinusAlreadyCommitted.size() == 1) {

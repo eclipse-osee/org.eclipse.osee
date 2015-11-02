@@ -17,7 +17,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -63,9 +62,9 @@ public class BranchXViewer extends XViewer {
                } else {
                   if (branch instanceof MergeBranch) {
                      MergeBranch mergeBranch = (MergeBranch) branch;
-                     Branch source = mergeBranch.getSourceBranch();
-                     Branch destination = mergeBranch.getDestinationBranch();
-                     MergeView.openView(source, destination, source.getBaseTransaction());
+                     IOseeBranch source = mergeBranch.getSourceBranch();
+                     IOseeBranch destination = mergeBranch.getDestinationBranch();
+                     MergeView.openView(source, destination, BranchManager.getBaseTransaction(source));
                   }
                }
             }

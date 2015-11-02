@@ -11,10 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.conflict;
 
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  */
 public class RelationConflict extends Conflict {
 
-   public RelationConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   public RelationConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, IOseeBranch mergeBranch, IOseeBranch sourceBranch, IOseeBranch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }
 
