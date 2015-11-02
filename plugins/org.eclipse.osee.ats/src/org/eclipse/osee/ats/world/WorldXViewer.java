@@ -30,6 +30,7 @@ import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.nebula.widgets.xviewer.action.ColumnMultiEditAction;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
@@ -60,6 +61,7 @@ import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.notify.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.widgets.XWorldTextFilter;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -693,6 +695,11 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
 
    public boolean isDisposed() {
       return getTree() == null || getTree().isDisposed();
+   }
+
+   @Override
+   public XViewerTextFilter getXViewerTextFilter() {
+      return new XWorldTextFilter(this);
    }
 
    @Override
