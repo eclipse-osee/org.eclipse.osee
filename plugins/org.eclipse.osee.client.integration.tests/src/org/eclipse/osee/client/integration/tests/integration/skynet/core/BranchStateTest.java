@@ -69,7 +69,7 @@ public class BranchStateTest {
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
             BranchManager.purgeBranch(workingBranch);
@@ -84,7 +84,7 @@ public class BranchStateTest {
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
 
          Artifact change =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
@@ -92,7 +92,7 @@ public class BranchStateTest {
          change.persist(getClass().getSimpleName());
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
             BranchManager.purgeBranch(workingBranch);
@@ -107,13 +107,13 @@ public class BranchStateTest {
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
 
          Job job = BranchManager.deleteBranch(workingBranch);
          job.join();
          assertEquals(BranchState.DELETED, workingBranch.getBranchState());
          assertTrue(workingBranch.getArchiveState().isArchived());
-         assertTrue(!workingBranch.isEditable());
+         assertTrue(!BranchManager.isEditable(workingBranch));
          assertTrue(workingBranch.getBranchState().isDeleted());
       } finally {
          if (workingBranch != null) {
@@ -132,14 +132,14 @@ public class BranchStateTest {
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
 
          BranchManager.purgeBranch(workingBranch);
          branchPurged = true;
 
          assertEquals(BranchState.PURGED, workingBranch.getBranchState());
          assertTrue(workingBranch.getArchiveState().isArchived());
-         assertTrue(!workingBranch.isEditable());
+         assertTrue(!BranchManager.isEditable(workingBranch));
          assertTrue(workingBranch.getBranchState().isPurged());
       } finally {
          if (workingBranch != null && !branchPurged) {
@@ -158,21 +158,21 @@ public class BranchStateTest {
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
 
          change =
             ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch, "A commit change");
          change.persist(getClass().getSimpleName());
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isEditable());
+         assertTrue(BranchManager.isEditable(workingBranch));
 
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(SAW_Bld_1, workingBranch);
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
          assertTrue(workingBranch.getArchiveState().isArchived());
-         assertTrue(!workingBranch.isEditable());
+         assertTrue(!BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
             // needed to allow for archiving to occur
@@ -212,8 +212,8 @@ public class BranchStateTest {
          Branch newWorkingBranch = branches.iterator().next();
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
-         assertTrue("New Working branch was not editable", newWorkingBranch.isEditable());
-         assertFalse("New Working branch was editable", workingBranch.isEditable());
+         assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
+         assertFalse("New Working branch was editable", BranchManager.isEditable(workingBranch));
       } finally {
          cleanup(originalBranchName, workingBranch, null);
       }
@@ -266,7 +266,7 @@ public class BranchStateTest {
          Branch newWorkingBranch = branches.iterator().next();
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
-         assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
+         assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
       } finally {
          cleanup(originalBranchName, workingBranch, null, change, baseArtifact);
       }
@@ -313,7 +313,7 @@ public class BranchStateTest {
          assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
          assertTrue("Branch was not marked as rebaseline in progress",
             workingBranch.getBranchState().isRebaselineInProgress());
-         assertTrue("Branch was not editable", workingBranch.isEditable());
+         assertTrue("Branch was not editable", BranchManager.isEditable(workingBranch));
          assertTrue("Branch state was set to rebaselined before complete",
             !workingBranch.getBranchState().isRebaselined());
 
@@ -323,11 +323,11 @@ public class BranchStateTest {
          Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();
          assertTrue("Branch name not set correctly",
             destinationBranch.getName().startsWith(String.format("%s - for update -", originalBranchName)));
-         assertTrue("Branch was not editable", destinationBranch.isEditable());
+         assertTrue("Branch was not editable", BranchManager.isEditable(destinationBranch));
 
          // Check that we have a merge branch
          mergeBranch = BranchManager.getMergeBranch(workingBranch, destinationBranch);
-         assertTrue("MergeBranch was not editable", mergeBranch.isEditable());
+         assertTrue("MergeBranch was not editable", BranchManager.isEditable(mergeBranch));
          assertEquals("Merge Branch should be in Created State", BranchState.CREATED, mergeBranch.getBranchState());
 
          // Run FinishBranchUpdate and check
@@ -343,7 +343,7 @@ public class BranchStateTest {
          Branch newWorkingBranch = branches.iterator().next();
          assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
          assertEquals(originalBranchName, newWorkingBranch.getName());
-         assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
+         assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
 
          // Swapped successfully
          assertEquals(destinationBranch.getUuid(), newWorkingBranch.getUuid());
@@ -383,7 +383,7 @@ public class BranchStateTest {
 
    private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {
       assertTrue("Branch was not archived", branchToCheck.getArchiveState().isArchived());
-      assertTrue("Branch was still editable", !branchToCheck.isEditable());
+      assertTrue("Branch was still editable", !BranchManager.isEditable(branchToCheck));
       assertTrue("Branch state was not set as rebaselined", branchToCheck.getBranchState().isRebaselined());
       assertTrue("Branch name not set correctly",
          branchToCheck.getName().startsWith(String.format("%s - moved by update on -", originalBranchName)));

@@ -478,14 +478,12 @@ public class MergeXWidget extends GenericXWidget {
       return completeCommitAction;
    }
 
-   private Branch getMergeBranch() {
-      Conflict[] conflicts = getConflicts();
-      return conflicts.length > 0 ? conflicts[0].getMergeBranch() : null;
-   }
-
    private boolean hasMergeBranchBeenCommitted() {
-      final Branch mergeBranch = getMergeBranch();
-      return mergeBranch != null && !mergeBranch.isEditable();
+      Conflict[] conflicts = getConflicts();
+      if (conflicts.length > 0) {
+         return !BranchManager.isEditable(conflicts[0].getMergeBranch());
+      }
+      return false;
    }
 
    private void checkForCompleteCommit() {

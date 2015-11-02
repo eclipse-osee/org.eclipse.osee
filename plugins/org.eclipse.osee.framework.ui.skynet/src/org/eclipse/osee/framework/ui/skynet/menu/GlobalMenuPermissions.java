@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
@@ -59,9 +60,8 @@ public class GlobalMenuPermissions {
       Artifact combinationSubject = null;
 
       for (Artifact objectArtifact : artifacts) {
-
-         writePermission &=
-            AccessControlManager.hasPermission(objectArtifact, PermissionEnum.WRITE) && objectArtifact.getFullBranch().isEditable();
+         writePermission &= AccessControlManager.hasPermission(objectArtifact,
+            PermissionEnum.WRITE) && BranchManager.isEditable(objectArtifact.getBranch());
          readPermission &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.READ);
          fullAccess &= AccessControlManager.hasPermission(objectArtifact, PermissionEnum.FULLACCESS);
          isLocked |= AccessControlManager.hasLock(objectArtifact);

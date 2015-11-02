@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Roberto E. Escobar
@@ -78,8 +79,8 @@ public class AccessPolicyImpl implements AccessPolicy {
    @Override
    public boolean isReadOnly(Artifact artifact) {
       try {
-         return artifact.isDeleted() || artifact.isHistorical() || !artifact.getFullBranch().isEditable() || !getAccessService().hasPermission(
-            artifact, PermissionEnum.WRITE);
+         return artifact.isDeleted() || artifact.isHistorical() || !BranchManager.isEditable(
+            artifact.getBranch()) || !getAccessService().hasPermission(artifact, PermissionEnum.WRITE);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return true;

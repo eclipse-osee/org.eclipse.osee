@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.services.IAccessControlService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -83,7 +84,7 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
       } else if (artifact.isHistorical()) {
          userPermission = PermissionEnum.READ;
          reason = "User Permission set to Read - artifact is historical  - artifact is read only";
-      } else if (!artifact.getFullBranch().isEditable()) {
+      } else if (!BranchManager.isEditable(artifact.getBranch())) {
          userPermission = PermissionEnum.READ;
          reason = "User Permission set to Read - artifact's branch is not editable - artifact is read only";
       }

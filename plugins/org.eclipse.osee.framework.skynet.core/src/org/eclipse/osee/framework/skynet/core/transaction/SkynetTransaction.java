@@ -146,9 +146,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    private boolean isBranchWritable(IOseeBranch branch) throws OseeCoreException {
       boolean toReturn = true;
       if (!UserManager.duringMainUserCreation()) {
-         Branch fullBranch = BranchManager.getBranch(branch);
          toReturn = getAccess().hasBranchPermission(branch, PermissionEnum.WRITE,
-            Level.FINE).matched() && fullBranch.isEditable();
+            Level.FINE).matched() && BranchManager.isEditable(branch);
       }
       return toReturn;
    }

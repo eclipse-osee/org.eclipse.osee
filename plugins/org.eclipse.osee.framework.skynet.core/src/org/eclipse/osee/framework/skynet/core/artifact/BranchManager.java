@@ -340,7 +340,7 @@ public class BranchManager {
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
-      if (!conflictManager.getDestinationBranch().isEditable()) {
+      if (!isEditable(conflictManager.getDestinationBranch())) {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
 
@@ -637,6 +637,10 @@ public class BranchManager {
 
    public static BranchType getBranchType(IOseeBranch branch) {
       return ((Branch) branch).getBranchType();
+   }
+   
+   public static boolean isEditable(IOseeBranch branch) {
+      return getBranch(branch).isEditable();
    }
 
    public static Branch getBranchByUuid(Long uuid) {

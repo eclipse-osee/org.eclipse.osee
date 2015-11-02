@@ -137,7 +137,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated, uuid);
 
       Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
-      Assert.assertFalse(committedBranch.isEditable());
+      Assert.assertFalse(BranchManager.isEditable(committedBranch));
       return committedBranch;
    }
 
@@ -159,7 +159,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Committed, uuid);
 
       Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
-      Assert.assertFalse(workingBranch.isEditable());
+      Assert.assertFalse(BranchManager.isEditable(workingBranch));
       return workingBranch;
    }
 
@@ -180,7 +180,7 @@ public class BranchEventTest {
 
       Assert.assertEquals(BranchState.PURGED, workingBranch.getBranchState());
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
-      Assert.assertFalse(workingBranch.isEditable());
+      Assert.assertFalse(BranchManager.isEditable(workingBranch));
       Assert.assertFalse("Branch should not exist", BranchManager.branchExists(uuid));
       return workingBranch;
    }

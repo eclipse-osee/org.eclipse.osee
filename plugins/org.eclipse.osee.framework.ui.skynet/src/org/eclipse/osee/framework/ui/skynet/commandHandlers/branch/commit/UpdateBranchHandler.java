@@ -44,7 +44,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
    protected boolean isValid(Branch branch) throws OseeCoreException {
       boolean result = !BranchManager.isParentSystemRoot(branch);
-      result &= branch.isEditable() && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
+      result &= BranchManager.isEditable(branch) && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
       result &= branch.getChildBranches().isEmpty();
       return result;
    }
