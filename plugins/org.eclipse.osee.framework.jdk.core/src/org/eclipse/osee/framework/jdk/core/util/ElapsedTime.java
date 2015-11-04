@@ -20,15 +20,23 @@ public class ElapsedTime {
    Date startDate;
    Date endDate;
    private String name;
+   private final boolean logStart;
 
    public ElapsedTime(String name) {
+      this(name, false);
+   }
+
+   public ElapsedTime(String name, boolean logStart) {
+      this.logStart = logStart;
       start(name);
    }
 
    public void start(String name) {
       this.name = name;
       startDate = new Date();
-      System.err.println("\n" + name + " - start " + DateUtil.getTimeStamp());
+      if (logStart) {
+         System.err.println("\n" + name + " - start " + DateUtil.getTimeStamp());
+      }
    }
 
    public void logPoint(String pointName) {
@@ -47,11 +55,10 @@ public class ElapsedTime {
    public String end(Units units) {
       endDate = new Date();
       long diff = endDate.getTime() - startDate.getTime();
-      String str =
-         String.format("%s - elapsed %d %s - start %s - end %s", name, (units == Units.SEC ? (diff / 1000) : diff),
-            units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
-            DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
-      System.err.println(str);
+      String str = String.format("%s - elapsed %d %s - start %s - end %s", name,
+         (units == Units.SEC ? (diff / 1000) : diff), units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
+         DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
+      System.err.println(str + (logStart ? "" : "\n"));
       return str;
    }
 }

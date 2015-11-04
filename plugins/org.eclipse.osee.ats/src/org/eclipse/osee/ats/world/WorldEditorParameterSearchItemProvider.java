@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -23,6 +24,8 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 
 /**
  * @author Donald G. Dunne
@@ -116,6 +119,22 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public boolean isSaveButtonAvailable() {
       return worldParameterSearchItem.isSaveButtonAvailable();
+   }
+
+   /**
+    * Available for actions needing to be done after controls are created
+    */
+   @Override
+   public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
+      worldParameterSearchItem.createParametersSectionCompleted(managedForm, mainComp);
+   }
+
+   /**
+    * Available for actions needing to be done after controls are created
+    */
+   @Override
+   public void createToolbar(IToolBarManager toolBarManager) {
+      worldParameterSearchItem.createToolbar(toolBarManager);
    }
 
    @Override

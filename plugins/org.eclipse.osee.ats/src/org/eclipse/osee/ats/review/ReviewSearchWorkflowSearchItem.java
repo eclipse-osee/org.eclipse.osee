@@ -381,9 +381,11 @@ public class ReviewSearchWorkflowSearchItem extends WorldEditorParameterSearchIt
 
    @Override
    public void setupSearch() {
-      searchItem = new ReviewWorldSearchItem("", getSelectedAIs(), isIncludeCompletedCheckbox(),
-         isIncludeCancelledCheckbox(), false, getSelectedVersionArtifact(), getSelectedUser(),
-         getSelectedReviewFormalType(), getSelectedReviewType(), getSelectedState());
+      ReviewSearchWorkflowSearchItem params = this;
+      searchItem = new ReviewWorldSearchItem("", params.getSelectedAIs(), params.isIncludeCompletedCheckbox(),
+         params.isIncludeCancelledCheckbox(), false, params.getSelectedVersionArtifact(), params.getSelectedUser(),
+         params.getSelectedReviewFormalType(), params.getSelectedReviewType(), params.getSelectedState());
+
    }
 
    @Override

@@ -14,33 +14,49 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.api.query.AtsSearchUserType;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.search.widget.ActionableItemSearchWidget;
+import org.eclipse.osee.ats.search.widget.ColorTeamSearchWidget;
+import org.eclipse.osee.ats.search.widget.InsertionActivitySearchWidget;
+import org.eclipse.osee.ats.search.widget.InsertionSearchWidget;
+import org.eclipse.osee.ats.search.widget.ProgramSearchWidget;
+import org.eclipse.osee.ats.search.widget.StateNameSearchWidget;
+import org.eclipse.osee.ats.search.widget.StateTypeSearchWidget;
+import org.eclipse.osee.ats.search.widget.TeamDefinitionSearchWidget;
+import org.eclipse.osee.ats.search.widget.TitleSearchWidget;
+import org.eclipse.osee.ats.search.widget.UserSearchWidget;
+import org.eclipse.osee.ats.search.widget.UserTypeSearchWidget;
+import org.eclipse.osee.ats.search.widget.VersionSearchWidget;
+import org.eclipse.osee.ats.search.widget.WorkItemTypeSearchWidget;
+import org.eclipse.osee.ats.search.widget.WorkPackageSearchWidget;
+import org.eclipse.osee.ats.util.widgets.dialog.VersionLabelProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
 /**
@@ -50,11 +66,25 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
 
    private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
-   private final Map<String, XWidget> xWidgets = new HashMap<String, XWidget>();
+   protected final Map<String, XWidget> xWidgets = new HashMap<String, XWidget>();
    private StringBuilder xmlSb;
    private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
    private String shortName = "";
    private final List<String> widgetOrder = new LinkedList<>();
+   private TitleSearchWidget title;
+   private StateTypeSearchWidget stateType;
+   private UserSearchWidget user;
+   private WorkItemTypeSearchWidget workItemType;
+   private TeamDefinitionSearchWidget teamDef;
+   private ActionableItemSearchWidget ai;
+   private VersionSearchWidget version;
+   private StateNameSearchWidget stateName;
+   private ProgramSearchWidget program;
+   private InsertionSearchWidget insertion;
+   private InsertionActivitySearchWidget insertionFeature;
+   private WorkPackageSearchWidget workPackage;
+   private ColorTeamSearchWidget colorTeam;
+   private UserTypeSearchWidget userType;
 
    public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -70,7 +100,28 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return xml;
    }
 
-   public abstract Result isParameterSelectionValid() throws OseeCoreException;
+   public Result isParameterSelectionValid() {
+      try {
+         if (getUserType() != null && getUserType().get() == AtsSearchUserType.Assignee) {
+            IAtsUser assignee = getUser().get();
+            if (assignee != null) {
+               if (getStateType().getTypes().contains(StateType.Completed)) {
+                  return new Result("Assignee and Completed are not compatible selections.");
+               }
+               if (getStateType().getTypes().contains(StateType.Completed)) {
+                  return new Result("Assignee and Cancelled are not compatible selections.");
+               }
+            }
+            if (getAi() != null && !getAi().get().isEmpty() && getTeamDef() != null && !getTeamDef().get().isEmpty()) {
+               return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
+            }
+         }
+         return Result.TrueResult;
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Result("Exception: " + ex.getLocalizedMessage());
+      }
+   }
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) {
@@ -111,6 +162,14 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return false;
    }
 
+   /**
+    * Called in the display thread to allow parameters to be retrieved or other setup prior to searching in background
+    * thread.
+    */
+   public void setupSearch() {
+      // do nothing
+   }
+
    public void checkOrStartXmlSb() {
       if (xmlSb == null) {
          xmlSb = new StringBuilder("<xWidgets>");
@@ -136,113 +195,39 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    @Override
    public void widgetCreated(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) {
       xWidgets.put(widget.getLabel(), widget);
-   }
-
-   public void addTitleWidget() {
-      addWidgetXml("<XWidget xwidgetType=\"XText\" displayName=\"Title\" horizontalLabel=\"true\"/>");
-   }
-
-   public String getTitle() {
-      XText text = getTitleWidget();
-      if (text != null) {
-         return text.get();
+      if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
+         getVersion().setup(widget);
+         getVersion().setupTeamDef(getTeamDef().getWidget());
+      } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {
+         getStateName().setup(widget);
+      } else if (widget.getLabel().equals(StateTypeSearchWidget.STATE_TYPE)) {
+         getStateType().setup(widget);
+         getStateType().set(StateType.Working);
+      } else if (widget.getLabel().equals(ProgramSearchWidget.PROGRAM)) {
+         getProgram().setup(widget);
+      } else if (widget.getLabel().equals(InsertionSearchWidget.INSERTION)) {
+         getInsertion().setup(widget);
+         getInsertion().setProgramWidget(getProgram());
+      } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
+         getInsertionActivity().setup(widget);
+         getInsertionActivity().setInsertionWidget(getInsertion());
+      } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
+         getWorkPackage().setup(widget);
+         getWorkPackage().setInsertionActivityWidget(getInsertionActivity());
+      } else if (widget.getLabel().equals(ColorTeamSearchWidget.COLOR_TEAM)) {
+         getColorTeam().setup(widget);
+      } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
+         getUser().setup(widget);
+      } else if (widget.getLabel().equals(UserTypeSearchWidget.USER_TYPE)) {
+         getUserType().setup(widget);
+      } else if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
+         getVersion().setup(widget);
       }
-      return null;
-   }
-
-   public XText getTitleWidget() {
-      return (XText) xWidgets.get("Title");
-   }
-
-   public void addIncludeCompletedCancelledWidget() {
-      addWidgetXml(
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-   }
-
-   public Boolean isIncludeCompletedCancelled() {
-      XCheckBox checkbox = getIncludeCompletedCanceledWidget();
-      if (checkbox != null) {
-         return checkbox.isChecked();
-      }
-      return null;
-   }
-
-   private XCheckBox getIncludeCompletedCanceledWidget() {
-      return (XCheckBox) xWidgets.get("Include Completed/Cancelled");
-   }
-
-   public void setIncludeCompletedCancelled(boolean selected) {
-      XCheckBox checkbox = getIncludeCompletedCanceledWidget();
-      if (checkbox != null) {
-         checkbox.set(selected);
-      }
-      throw new OseeArgumentException("Include Completed/Cancelled Checkbox could not be found");
-   }
-
-   public void addUserWidget(String labelName) {
-      addWidgetXml(
-         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"" + labelName + "\" horizontalLabel=\"true\"/>");
-   }
-
-   public IAtsUser getUser(String labelName) {
-      User assignee = getUserUser(labelName);
-      if (assignee != null) {
-         return AtsClientService.get().getUserService().getUserById(assignee.getUserId());
-      }
-      return null;
-   }
-
-   public User getUserUser(String labelName) {
-      XMembersCombo combo = getUserWidget(labelName);
-      if (combo != null) {
-         return combo.getUser();
-      }
-      return null;
-   }
-
-   /**
-    * @return XMembersCombo of lableName or null
-    */
-   private XMembersCombo getUserWidget(String labelName) {
-      XMembersCombo combo = null;
-      XWidget widget = xWidgets.get(labelName);
-      if (widget instanceof XMembersCombo) {
-         combo = (XMembersCombo) widget;
-      }
-      return combo;
-   }
-
-   public void setUser(String labelName, IAtsUser user) {
-      Conditions.checkNotNull(user, "User");
-      setUser(labelName, UserManager.getUserByUserId(user.getUserId()));
-   }
-
-   public void setUser(String labelName, User assignee) {
-      XMembersCombo combo = getUserWidget(labelName);
-      if (combo != null) {
-         combo.set(assignee);
-      }
-      throw new OseeArgumentException(labelName + " User Combo not be found");
    }
 
    @Override
    public String getSelectedName(SearchType searchType) {
-      StringBuffer sb = new StringBuffer();
-      getSelectedName(searchType, sb);
-      return Strings.truncate(getShortName() + sb.toString(), WorldEditor.TITLE_MAX_LENGTH, true);
-   }
-
-   private void getSelectedName(SearchType searchType, StringBuffer sb) {
-      for (String widgetName : widgetOrder) {
-         if (widgetName.equals("Include Completed/Cancelled")) {
-            sb.append(" - Include Completed/Cancelled");
-         } else if (getUserWidget(widgetName) != null) {
-            sb.append(" - ");
-            sb.append(widgetName);
-            sb.append(": ");
-            sb.append(getUserWidget(widgetName).get());
-         }
-      }
+      return Strings.truncate(getShortName(), WorldEditor.TITLE_MAX_LENGTH, true);
    }
 
    public String getShortName() {
@@ -254,8 +239,24 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    @Override
-   public void widgetCreating(XWidget xWidget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
-      // do nothing
+   public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
+      if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
+         widget.setLabelProvider(new VersionLabelProvider());
+      } else if (widget.getLabel().equals(StateNameSearchWidget.STATE_NAME)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(ProgramSearchWidget.PROGRAM)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(InsertionSearchWidget.INSERTION)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(InsertionActivitySearchWidget.INSERTION_ACTIVITY)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(WorkPackageSearchWidget.WORK_PACKAGE)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(ColorTeamSearchWidget.COLOR_TEAM)) {
+         widget.setUseToStringSorter(true);
+      } else if (widget.getLabel().equals(UserSearchWidget.USER)) {
+         widget.setUseToStringSorter(true);
+      }
    }
 
    @Override
@@ -274,10 +275,122 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    }
 
    /**
-    * Called in the display thread to allow parameters to be retrieved or other setup prior to searching in background
-    * thread.
+    * Available for actions needing to be done after controls are created
     */
-   public void setupSearch() {
+   @Override
+   public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
+      // do nothing
+   }
+
+   public String getBeginComposite(int beginComposite) {
+      return beginComposite > 0 ? String.format(" beginComposite=\"%d\" ", beginComposite) : "";
+   }
+
+   public Map<String, XWidget> getxWidgets() {
+      return xWidgets;
+   }
+
+   public TitleSearchWidget getTitle() {
+      if (title == null) {
+         title = new TitleSearchWidget(this);
+      }
+      return title;
+   }
+
+   public StateTypeSearchWidget getStateType() {
+      if (stateType == null) {
+         stateType = new StateTypeSearchWidget(this);
+      }
+      return stateType;
+   }
+
+   public UserSearchWidget getUser() {
+      if (user == null) {
+         user = new UserSearchWidget(this);
+      }
+      return user;
+   }
+
+   public WorkItemTypeSearchWidget getWorkItemType() {
+      if (workItemType == null) {
+         workItemType = new WorkItemTypeSearchWidget(this);
+      }
+      return workItemType;
+   }
+
+   public TeamDefinitionSearchWidget getTeamDef() {
+      if (teamDef == null) {
+         teamDef = new TeamDefinitionSearchWidget(this);
+      }
+      return teamDef;
+   }
+
+   public ActionableItemSearchWidget getAi() {
+      if (ai == null) {
+         ai = new ActionableItemSearchWidget(this);
+      }
+      return ai;
+   }
+
+   public VersionSearchWidget getVersion() {
+      if (version == null) {
+         version = new VersionSearchWidget(this);
+      }
+      return version;
+   }
+
+   public StateNameSearchWidget getStateName() {
+      if (stateName == null) {
+         stateName = new StateNameSearchWidget(this);
+
+      }
+      return stateName;
+   }
+
+   public ProgramSearchWidget getProgram() {
+      if (program == null) {
+         program = new ProgramSearchWidget(this);
+      }
+      return program;
+   }
+
+   public InsertionSearchWidget getInsertion() {
+      if (insertion == null) {
+         insertion = new InsertionSearchWidget(this);
+      }
+      return insertion;
+   }
+
+   public InsertionActivitySearchWidget getInsertionActivity() {
+      if (insertionFeature == null) {
+         insertionFeature = new InsertionActivitySearchWidget(this);
+      }
+      return insertionFeature;
+   }
+
+   public WorkPackageSearchWidget getWorkPackage() {
+      if (workPackage == null) {
+         workPackage = new WorkPackageSearchWidget(this);
+      }
+      return workPackage;
+   }
+
+   public ColorTeamSearchWidget getColorTeam() {
+      if (colorTeam == null) {
+         colorTeam = new ColorTeamSearchWidget(this);
+      }
+      return colorTeam;
+   }
+
+   public UserTypeSearchWidget getUserType() {
+      if (userType == null) {
+         userType = new UserTypeSearchWidget(this);
+      }
+      return userType;
+   }
+
+   @Override
+   public void createToolbar(IToolBarManager toolBarManager) {
       // do nothing
    }
 

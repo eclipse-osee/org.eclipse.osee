@@ -78,7 +78,7 @@ public final class AtsWorkDefinitionSheetProviders {
    /**
     * Returns all valid state names for all work definitions in the system
     */
-   public synchronized static Collection<? extends String> getAllValidStateNames() {
+   public synchronized static Collection<String> getAllValidStateNames() {
       if (allValidStateNames == null) {
          allValidStateNames = new ArrayList<>();
          try {

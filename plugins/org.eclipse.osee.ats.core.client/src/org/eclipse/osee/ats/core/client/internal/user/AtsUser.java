@@ -110,7 +110,7 @@ public class AtsUser implements IAtsUser {
    @Override
    public String toString() {
       try {
-         return String.format("%s (%s)", getName(), getUserId());
+         return getName();
       } catch (Exception ex) {
          return "Exception: " + ex.getLocalizedMessage();
       }

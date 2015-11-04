@@ -22,6 +22,7 @@ import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -53,7 +54,6 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
    protected final HashMap<IRelationTypeSide, List<IAtsObject>> andRels;
-   protected IAtsTeamDefinition teamDef;
    protected Collection<Long> teamDefUuids;
    protected Collection<StateType> stateTypes;
    protected Collection<WorkItemType> workItemTypes;
@@ -68,6 +68,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long insertionUuid;
    protected Long insertionActivityUuid;
    protected Long workPackageUuid;
+   protected List<Integer> onlyIds = null;
 
    public AbstractAtsQueryImpl(IAtsServices services) {
       this.services = services;
@@ -82,10 +83,18 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
+   public Collection<Integer> getItemIds() throws OseeCoreException {
+      onlyIds = new LinkedList<>();
+      getItems();
+      return onlyIds;
+   }
 
-      List<IArtifactType> teamWorkflowArtTypes = getTeamWorkflowArtTypes();
-      boolean teamsTypeDefOrAisOrVersionSearched = isTeamTypeDefAisOrVersionSearched();
+   @Override
+   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
+      Set<IArtifactType> allArtTypes = getAllArtTypes();
+
+      List<IArtifactType> teamWorkflowArtTypes = getTeamWorkflowArtTypes(allArtTypes);
+      boolean teamsTypeDefOrAisOrVersionSearched = isTeamTypeDefAisOrVersionSearched(allArtTypes);
 
       /**
        * First, search for Team Workflows
@@ -93,28 +102,30 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       Collection<T> teamWfs = Collections.emptyList();
       Set<T> allResults = new HashSet<>();
       if (!teamWorkflowArtTypes.isEmpty()) {
-         teamWfs = getTeamWorkflows(teamWorkflowArtTypes, allResults);
+         teamWfs = getTeamWorkflows(teamWorkflowArtTypes, allResults, allArtTypes);
       }
 
       /**
        * If team workflow's searched by Team Definition, Actionable Item or Version were searched, then the child tasks
        * and reviews are what to use to search against
        */
-      if (teamsTypeDefOrAisOrVersionSearched) {
-         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults);
+      if (!teamWorkflowArtTypes.isEmpty() && teamsTypeDefOrAisOrVersionSearched) {
+         getTasksAndReviewsFromResultingTeamWfs(teamWfs, allResults, allArtTypes);
       }
+
       /**
        * Else, perform task and review searches as normal
        */
       else {
-         getTasksFromSearchCriteria(allResults);
-         getReviewsFromSearchCriteria(allResults);
+         getTasksFromSearchCriteria(allResults, allArtTypes);
+         getReviewsFromSearchCriteria(allResults, allArtTypes);
       }
+
       /**
        * Search Goals, Sprints and Backlogs as normal
        */
-      getGoalsFromSearchCriteria(allResults);
-      getSprintsFromSearchCriteria(allResults);
+      getGoalsFromSearchCriteria(allResults, allArtTypes);
+      getSprintsFromSearchCriteria(allResults, allArtTypes);
 
       return allResults;
    }
@@ -122,18 +133,34 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public abstract Collection<ArtifactId> runQuery();
 
    @SuppressWarnings("unchecked")
-   private <T> Collection<T> collectResults(Set<T> allResults) {
+   private <T> Collection<T> collectResults(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       Set<T> workItems = new HashSet<>();
-      for (ArtifactId artifact : runQuery()) {
-         workItems.add((T) services.getWorkItemFactory().getWorkItem(artifact));
+      if (isOnlyIds()) {
+         onlyIds.addAll(queryGetIds());
+      } else {
+         Collection<ArtifactId> artifacts = runQuery();
+         for (ArtifactId artifact : artifacts) {
+            if (isArtifactTypeMatch(artifact, allArtTypes)) {
+               workItems.add((T) services.getWorkItemFactory().getWorkItem(artifact));
+            }
+         }
+         allResults.addAll(workItems);
       }
-      allResults.addAll(workItems);
       return workItems;
    }
 
-   private <T> void getTasksFromSearchCriteria(Set<T> allResults) {
+   private boolean isArtifactTypeMatch(ArtifactId artifact, Set<IArtifactType> allArtTypes) {
+      for (IArtifactType artType : allArtTypes) {
+         if (services.getArtifactResolver().isOfType(artifact, artType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   private <T> void getTasksFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
-      for (IArtifactType artType : getAllArtTypes()) {
+      for (IArtifactType artType : allArtTypes) {
          if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
@@ -141,53 +168,55 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
 
-         getBaseSearchCriteria(artTypes, true);
+         getBaseSearchCriteria(artTypes, true, allArtTypes);
+
          // teamDef, ai and version
-         if (isTeamTypeDefAisOrVersionSearched()) {
+         if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
             List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions();
             queryAndRelatedToLocalIds(AtsRelationTypes.TeamWfToTask_TeamWf, teamWfUuids);
          }
 
          addEvConfigCriteria();
 
-         collectResults(allResults);
+         collectResults(allResults, allArtTypes);
       }
 
    }
 
-   private <T> void getReviewsFromSearchCriteria(Set<T> allResults) {
-      List<IArtifactType> artTypes = getReviewArtifactTypes();
+   private <T> void getReviewsFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
+      List<IArtifactType> artTypes = getReviewArtifactTypes(allArtTypes);
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
 
-         getBaseSearchCriteria(artTypes, true);
+         getBaseSearchCriteria(artTypes, true, allArtTypes);
+
          // teamDef, ai and version
-         if (isTeamTypeDefAisOrVersionSearched()) {
+         if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
             List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions();
-            queryAndRelatedToLocalIds(AtsRelationTypes.TeamWorkflowToReview_Review, teamWfUuids);
+            queryAndRelatedToLocalIds(AtsRelationTypes.TeamWorkflowToReview_Team, teamWfUuids);
          }
 
-         collectResults(allResults);
+         collectResults(allResults, allArtTypes);
       }
    }
 
-   private <T> void getSprintsFromSearchCriteria(Set<T> allResults) {
+   private <T> void getSprintsFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
-      for (IArtifactType artType : getAllArtTypes()) {
+      for (IArtifactType artType : allArtTypes) {
          if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.AgileSprint)) {
             artTypes.add(artType);
          }
       }
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
-         getBaseSearchCriteria(artTypes, true);
-         collectResults(allResults);
+         getBaseSearchCriteria(artTypes, true, allArtTypes);
+         collectResults(allResults, allArtTypes);
       }
    }
 
-   private <T> void getGoalsFromSearchCriteria(Set<T> allResults) {
+   private <T> void getGoalsFromSearchCriteria(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
-      for (IArtifactType artType : getAllArtTypes()) {
+      for (IArtifactType artType : allArtTypes) {
          if (services.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.Goal) || workItemTypes.contains(WorkItemType.AgileBacklog)) {
             artTypes.add(artType);
@@ -195,7 +224,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
-         getBaseSearchCriteria(artTypes, true);
+         getBaseSearchCriteria(artTypes, true, allArtTypes);
 
          boolean isAgileSpecified = workItemTypes.contains(WorkItemType.AgileBacklog);
          boolean isGoalSpecified = workItemTypes.contains(WorkItemType.Goal);
@@ -205,7 +234,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
          } else if (isGoalSpecified && !isAgileSpecified) {
             queryAndNotExists(AtsRelationTypes.AgileTeamToBacklog_Backlog);
          }
-         collectResults(allResults);
+         collectResults(allResults, allArtTypes);
       }
    }
 
@@ -213,24 +242,26 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public abstract void queryAndExists(IRelationTypeSide relationTypeSide);
 
-   private boolean typeIsSpecified(IArtifactType parentArtType) {
-      for (IArtifactType artType2 : getAllArtTypes()) {
-         if (services.getArtifactResolver().inheritsFrom(artType2, parentArtType)) {
+   private boolean typeIsSpecified(IArtifactType parentArtType, Set<IArtifactType> allArtTypes) {
+      for (IArtifactType artifactType : allArtTypes) {
+         if (services.getArtifactResolver().inheritsFrom(artifactType, parentArtType)) {
             return true;
          }
       }
       return false;
    }
 
-   private List<IArtifactType> getReviewArtifactTypes() {
+   private List<IArtifactType> getReviewArtifactTypes(Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
       boolean isReviewSpecified =
-         workItemTypes.contains(WorkItemType.Review) || typeIsSpecified(AtsArtifactTypes.ReviewArtifact);
+         workItemTypes.contains(WorkItemType.Review) || typeIsSpecified(AtsArtifactTypes.ReviewArtifact, allArtTypes);
       boolean isPeerSpecified =
-         workItemTypes.contains(WorkItemType.PeerReview) || typeIsSpecified(AtsArtifactTypes.PeerToPeerReview);
+         workItemTypes.contains(WorkItemType.PeerReview) || typeIsSpecified(AtsArtifactTypes.PeerToPeerReview,
+            allArtTypes);
       boolean isDecisionSpecified =
-         workItemTypes.contains(WorkItemType.DecisionReview) || typeIsSpecified(AtsArtifactTypes.DecisionReview);
-      for (IArtifactType artType : getAllArtTypes()) {
+         workItemTypes.contains(WorkItemType.DecisionReview) || typeIsSpecified(AtsArtifactTypes.DecisionReview,
+            allArtTypes);
+      for (IArtifactType artType : allArtTypes) {
          if (isReviewSpecified && services.getArtifactResolver().inheritsFrom(artType,
             AtsArtifactTypes.ReviewArtifact)) {
             artTypes.add(artType);
@@ -246,14 +277,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return artTypes;
    }
 
-   private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults) {
+   private <T> void getTasksAndReviewsFromResultingTeamWfs(Collection<T> teamWfs, Set<T> allResults, Set<IArtifactType> allArtTypes) {
       List<IArtifactType> artTypes = new LinkedList<>();
-      for (IArtifactType artType : getAllArtTypes()) {
+      for (IArtifactType artType : allArtTypes) {
          if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.Task)) {
             artTypes.add(artType);
          }
       }
-      artTypes.addAll(getReviewArtifactTypes());
+      artTypes.addAll(getReviewArtifactTypes(allArtTypes));
 
       if (!artTypes.isEmpty()) {
          createQueryBuilder();
@@ -267,7 +298,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
                taskReviewUuids.add(review.getUuid());
             }
          }
-         getBaseSearchCriteria(artTypes, false);
+         getBaseSearchCriteria(artTypes, false, allArtTypes);
 
          // team def, ai, version are all covered by team search
 
@@ -276,13 +307,13 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          addEvConfigCriteria();
 
-         collectResults(allResults);
+         collectResults(allResults, allArtTypes);
       }
    }
 
-   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(List<IArtifactType> teamWorkflowArtTypes, Set<T> allResults) {
+   private <T extends IAtsWorkItem> Collection<T> getTeamWorkflows(List<IArtifactType> teamWorkflowArtTypes, Set<T> allResults, Set<IArtifactType> allArtTypes) {
       createQueryBuilder();
-      getBaseSearchCriteria(teamWorkflowArtTypes, true);
+      getBaseSearchCriteria(teamWorkflowArtTypes, true, allArtTypes);
 
       addTeamDefCriteria();
 
@@ -292,7 +323,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       addEvConfigCriteria();
 
-      return collectResults(allResults);
+      return collectResults(allResults, allArtTypes);
    }
 
    private void addEvConfigCriteria() {
@@ -331,6 +362,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    public abstract void queryAndIsOfType(IArtifactType teamworkflow);
 
+   public boolean isOnlyIds() {
+      return onlyIds != null;
+   }
+
    public abstract List<Integer> queryGetIds();
 
    /**
@@ -348,9 +383,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return allArtTypes;
    }
 
-   private List<IArtifactType> getTeamWorkflowArtTypes() {
+   private List<IArtifactType> getTeamWorkflowArtTypes(Set<IArtifactType> allArtTypes) {
       List<IArtifactType> teamWorkflowArtTypes = new LinkedList<>();
-      for (IArtifactType artType : getAllArtTypes()) {
+      for (IArtifactType artType : allArtTypes) {
          if (services.getArtifactResolver().inheritsFrom(artType, AtsArtifactTypes.TeamWorkflow)) {
             teamWorkflowArtTypes.add(artType);
          }
@@ -358,13 +393,23 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return teamWorkflowArtTypes;
    }
 
-   private boolean isTeamTypeDefAisOrVersionSearched() {
-      boolean teamDefsSearched = teamDef != null && !teamDefUuids.isEmpty();
-      boolean aisSearched = aiUuids != null && !aiUuids.isEmpty();
+   private boolean isTeamTypeDefAisOrVersionSearched(Set<IArtifactType> allArtTypes) {
+      boolean teamDefsSearched = isTeamDefSpecified();
+      boolean aisSearched = isActionableItemSpecified();
       boolean versionSearched = versionUuid != null && versionUuid > 0L;
-      boolean teamsTypeDefOrAisOrVersionSearched =
-         !getTeamWorkflowArtTypes().isEmpty() && (teamDefsSearched || aisSearched || versionSearched);
-      return teamsTypeDefOrAisOrVersionSearched;
+      return teamDefsSearched || aisSearched || versionSearched;
+   }
+
+   private boolean isActionableItemSpecified() {
+      return aiUuids != null && !aiUuids.isEmpty();
+   }
+
+   private boolean isTeamDefSpecified() {
+      return teamDefUuids != null && !teamDefUuids.isEmpty();
+   }
+
+   private boolean isArtifactTypesSpecified() {
+      return !getAllArtTypes().isEmpty();
    }
 
    @Override
@@ -405,8 +450,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public IAtsQuery fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
-      this.teamDef = teamDef;
+   public IAtsQuery andTeam(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      teamDefUuids.add(teamDef.getUuid());
       return this;
    }
 
@@ -524,6 +569,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
+   public IAtsQuery andActionableItem(IAtsActionableItem actionableItem) {
+      this.aiUuids.add(actionableItem.getUuid());
+      return this;
+   }
+
+   @Override
    public IAtsQuery andActionableItem(List<Long> aiUuids) {
       this.aiUuids = aiUuids;
       return this;
@@ -596,11 +647,15 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return guid;
    }
 
-   private void getBaseSearchCriteria(List<IArtifactType> artTypes, boolean withUuids) {
+   private void getBaseSearchCriteria(List<IArtifactType> artTypes, boolean withUuids, Set<IArtifactType> allArtTypes) {
       createQueryBuilder();
 
-      // Artifact Types and WorkItem type
-      if (artTypes != null && artTypes.size() > 0) {
+      /**
+       * Artifact Types and WorkItem type; Do not search by type if teamDef or AI is specified, query runs faster
+       * without. If return is only ids, we have to perform the artifact types search.
+       */
+      boolean teamDefAndAiNotSpecified = !isTeamDefSpecified() && !isActionableItemSpecified();
+      if (isArtifactTypesSpecified() && (isOnlyIds() || teamDefAndAiNotSpecified)) {
          queryAndIsOfType(artTypes);
       }
 
@@ -654,16 +709,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    public abstract void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId);
 
    private void addAiCriteria() {
-      if (aiUuids != null && !aiUuids.isEmpty()) {
+      if (isActionableItemSpecified()) {
          List<String> guids = getGuidsFromUuids(aiUuids);
          queryAnd(AtsAttributeTypes.ActionableItem, guids);
       }
    }
 
    private void addTeamDefCriteria() {
-      if (teamDef != null) {
-         queryAnd(AtsAttributeTypes.TeamDefinition, Collections.singleton(AtsUtilCore.getGuid(teamDef)));
-      } else if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
+      if (isTeamDefSpecified()) {
          List<String> guids = getGuidsFromUuids(teamDefUuids);
          queryAnd(AtsAttributeTypes.TeamDefinition, guids);
       }

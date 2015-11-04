@@ -70,6 +70,7 @@ public enum AtsImage implements KeyedImage {
    RIGHT_ARROW_SM("right_arrow_sm.gif"),
    ROLE("role.gif"),
    RULE_DEFINITION("workDef.gif"),
+   SEARCH("search.gif"),
    STATE("state.gif"),
    STATE_DEFINITION("stateDefinition.gif"),
    STATE_ITEM("stateItem.gif"),

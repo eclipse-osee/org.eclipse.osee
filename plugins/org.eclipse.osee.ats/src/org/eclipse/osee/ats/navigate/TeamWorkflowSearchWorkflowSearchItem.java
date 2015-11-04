@@ -385,9 +385,9 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
 
    @Override
    public void setupSearch() {
-      searchItem = new TeamWorldSearchItem("", getSelectedTeamDefinitions(),
-         isIncludeCompletedCheckbox(), isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(),
-         getSelectedUser(), getSelectedReleased(), getSelectedState());
+      searchItem = new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCheckbox(),
+         isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(), getSelectedUser(),
+         getSelectedReleased(), getSelectedState());
    }
 
    @Override

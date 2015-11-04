@@ -19,6 +19,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -49,6 +50,7 @@ public abstract class XWidget {
    private String toolTip = null;
    private boolean requiredEntry = false;
    private boolean editable = true;
+   private boolean useToStringSorter = false;
    private final MutableBoolean isNotificationAllowed = new MutableBoolean(true);
 
    protected boolean verticalLabel = false;
@@ -60,6 +62,7 @@ public abstract class XWidget {
    private MouseListener mouseLabelListener;
    protected FormToolkit toolkit;
    private Object object;
+   private ILabelProvider labelProvider;
 
    public XWidget(String label) {
       this.label = label;
@@ -198,7 +201,7 @@ public abstract class XWidget {
       try {
          if (toolTip != null && label != null) {
             MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     label + " Tool Tip", toolTip);
+               label + " Tool Tip", toolTip);
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -371,4 +374,19 @@ public abstract class XWidget {
       return object;
    }
 
+   public ILabelProvider getLabelProvider() {
+      return labelProvider;
+   }
+
+   public void setLabelProvider(ILabelProvider labelProvider) {
+      this.labelProvider = labelProvider;
+   }
+
+   public boolean isUseToStringSorter() {
+      return useToStringSorter;
+   }
+
+   public void setUseToStringSorter(boolean useToStringSorter) {
+      this.useToStringSorter = useToStringSorter;
+   }
 }

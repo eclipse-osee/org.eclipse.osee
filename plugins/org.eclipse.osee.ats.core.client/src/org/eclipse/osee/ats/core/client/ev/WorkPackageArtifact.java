@@ -150,7 +150,7 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return artifact.getUuid();
    }
 

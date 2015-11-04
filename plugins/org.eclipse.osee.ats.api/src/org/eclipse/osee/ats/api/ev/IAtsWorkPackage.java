@@ -40,6 +40,6 @@ public interface IAtsWorkPackage {
 
    public Date getEndDate() throws OseeCoreException;
 
-   public long getUuid();
+   public Long getUuid();
 
 }

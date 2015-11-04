@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -64,6 +66,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -73,6 +76,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    public static final String ID = "org.eclipse.osee.ats.actionPage";
+   public static final String MENU_GROUP_PRE = "world.menu.group.pre";
    private final WorldEditor worldEditor;
    private WorldComposite worldComposite;
    private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction, toAction, toGoal, toReview,
@@ -114,6 +118,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    @Override
    protected void createToolBar(IToolBarManager toolBarManager) {
 
+      toolBarManager.add(new GroupMarker(MENU_GROUP_PRE));
       toolBarManager.add(worldComposite.getXViewer().getCustomizeAction());
       toolBarManager.add(new Separator());
       toolBarManager.add(new OpenNewAtsWorldEditorAction(worldComposite));
@@ -128,6 +133,15 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       createDropDownMenuActions();
       toolBarManager.add(new DropDownAction());
+
+      try {
+         if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
+            ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).createToolbar(toolBarManager);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
    }
 
    @Override
@@ -321,10 +335,10 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedSMAArtifacts() != null && !worldComposite.getXViewer().getSelectedSMAArtifacts().isEmpty()) {
-            showReleaseMetricsLabel.setText(WorkflowMetrics.getEstRemainMetrics(
-               worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
-               worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
-               null));
+            showReleaseMetricsLabel.setText(
+               WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
+                  worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+                  null));
          } else {
             showReleaseMetricsLabel.setText("");
          }
@@ -564,7 +578,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    public void updateExtendedStatusString() {
       worldComposite.getXViewer().setExtendedStatusString(
-      //
+         //
          (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
          //
          (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
@@ -591,6 +605,23 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   @Override
+   public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
+      try {
+         if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
+            IWorldEditorParameterProvider provider =
+               (IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider();
+            provider.createParametersSectionCompleted(managedForm, mainComp);
+            String editorTitle = provider.getSelectedName(SearchType.Search);
+            if (Strings.isValid(editorTitle)) {
+               ((WorldEditor) getEditor()).setEditorTitle(editorTitle);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
 }

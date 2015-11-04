@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -61,7 +62,6 @@ public class XComboViewer extends GenericXWidget {
    };
    private Collection<Object> input;
    private IContentProvider contentProvider;
-   private ILabelProvider labelProvider;
    private ViewerSorter sorter;
    private int widthHint;
    private int heightHint;
@@ -69,7 +69,6 @@ public class XComboViewer extends GenericXWidget {
    public XComboViewer(String displayLabel, int comboWidgetSWTStyle) {
       super(displayLabel);
       contentProvider = new ArrayContentProvider();
-      labelProvider = new ArtifactLabelProvider();
       this.comboWidgetSWTStyle = comboWidgetSWTStyle;
    }
 
@@ -80,10 +79,6 @@ public class XComboViewer extends GenericXWidget {
 
    public void setContentProvider(IContentProvider contentProvider) {
       this.contentProvider = contentProvider;
-   }
-
-   public void setLabelProvider(ILabelProvider labelProvider) {
-      this.labelProvider = labelProvider;
    }
 
    public void setSorter(ViewerSorter sorter) {
@@ -109,8 +104,9 @@ public class XComboViewer extends GenericXWidget {
    /**
     * Create List Widgets. <br>
     * <br>
-    * Widgets Created: <li>List: horizonatalSpan takes up 2 columns; <br>
-    * 
+    * Widgets Created:
+    * <li>List: horizonatalSpan takes up 2 columns; <br>
+    *
     * @param horizontalSpan horizontalSpan must be >=2
     * @param comboWidgetSWTStyle style of the widget providing the combo, usually {@code SWT.READ_ONLY} or
     * {@code SWT.NONE}
@@ -149,9 +145,11 @@ public class XComboViewer extends GenericXWidget {
 
       comboViewer = new ComboViewer(composite, comboWidgetSWTStyle);
       comboViewer.setContentProvider(contentProvider);
-      comboViewer.setLabelProvider(labelProvider);
+      comboViewer.setLabelProvider(getLabelProvider());
       if (sorter != null) {
          comboViewer.setSorter(sorter);
+      } else if (isUseToStringSorter()) {
+         comboViewer.setSorter(new ToStringViewerSorter());
       }
       comboViewer.setInput(input);
       comboViewer.getCombo().addSelectionListener(new SelectionAdapter() {
@@ -283,6 +281,14 @@ public class XComboViewer extends GenericXWidget {
    @Override
    public Object getData() {
       return getSelected();
+   }
+
+   @Override
+   public ILabelProvider getLabelProvider() {
+      if (super.getLabelProvider() != null) {
+         return super.getLabelProvider();
+      }
+      return new ArtifactLabelProvider();
    }
 
 }

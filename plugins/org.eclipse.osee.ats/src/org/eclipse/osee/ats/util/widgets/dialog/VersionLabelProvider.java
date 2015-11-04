@@ -31,10 +31,14 @@ public class VersionLabelProvider extends LabelProvider {
    @Override
    public String getText(Object element) {
       if (element instanceof IAtsVersion) {
-         IAtsVersion verArt = (IAtsVersion) element;
-         String str = verArt.getName();
-         if (verArt.getEstimatedReleaseDate() != null) {
-            str += " - Estimated Release: " + DateUtil.getMMDDYY(verArt.getEstimatedReleaseDate());
+         IAtsVersion version = (IAtsVersion) element;
+         String str = version.getName();
+         if (version.getEstimatedReleaseDate() != null) {
+            str += "   (" + DateUtil.getMMDDYY(version.getEstimatedReleaseDate()) + ")";
+         } else if (version.isNextVersion()) {
+            str += "   (Next Release)";
+         } else if (version.isReleased()) {
+            str += "   (Released)";
          }
          return str;
       }
@@ -50,18 +54,16 @@ public class VersionLabelProvider extends LabelProvider {
          }
          if (version.isReleased()) {
             if (releasedVersion == null) {
-               OverlayImage overlay =
-                  new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
-                     ImageManager.getImageDescriptor(AtsImage.RELEASED), Location.BOT_RIGHT);
+               OverlayImage overlay = new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
+                  ImageManager.getImageDescriptor(AtsImage.RELEASED), Location.BOT_RIGHT);
                releasedVersion = overlay.createImage();
             }
             return releasedVersion;
          }
          if (version.isVersionLocked()) {
             if (lockedVersion == null) {
-               OverlayImage overlay =
-                  new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
-                     ImageManager.getImageDescriptor(AtsImage.VERSION_LOCKED), Location.BOT_RIGHT);
+               OverlayImage overlay = new OverlayImage(ImageManager.getImage(FrameworkImage.VERSION),
+                  ImageManager.getImageDescriptor(AtsImage.VERSION_LOCKED), Location.BOT_RIGHT);
                lockedVersion = overlay.createImage();
             }
             return lockedVersion;

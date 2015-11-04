@@ -15,6 +15,8 @@ import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -89,7 +91,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
    }
 
    @Override
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings({"rawtypes", "unchecked"})
    public Object getAdapter(Class adapter) {
       return null;
    }
@@ -141,5 +143,16 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
          }
       }
       return branchUuid;
+   }
+
+   public Long getAtsSearchUuid() {
+      if (iWorldEditorProvider instanceof WorldEditorParameterSearchItemProvider) {
+         WorldSearchItem worldSearchItem =
+            ((WorldEditorParameterSearchItemProvider) iWorldEditorProvider).getWorldSearchItem();
+         if (worldSearchItem instanceof AtsSearchWorkflowSearchItem) {
+            return ((AtsSearchWorkflowSearchItem) worldSearchItem).getSearchUuid();
+         }
+      }
+      return 0L;
    }
 }

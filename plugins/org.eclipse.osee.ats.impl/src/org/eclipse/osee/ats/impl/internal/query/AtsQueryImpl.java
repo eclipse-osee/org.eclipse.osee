@@ -150,7 +150,7 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       if (versionUuid != null && versionUuid > 0) {
          search.andVersion(versionUuid);
       }
-      return search.queryGetIds();
+      return new ArrayList<>(search.getItemIds());
    }
 
 }

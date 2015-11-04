@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.world;
 
 import java.util.List;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -132,6 +131,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       createButtonCompositeOnLeft(mainComp);
       createSearchParametersOnRight(managedForm, mainComp);
       createSaveButtonCompositeOnRight(mainComp);
+      createParametersSectionCompleted(managedForm, mainComp);
 
       return parameterSection;
    }
@@ -189,13 +189,11 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
          saveButton.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
-               if (MessageDialog.openConfirm(Displays.getActiveShell(), "Save Default Parameters",
-                  "Save current parameters as default?")) {
-                  handleSaveButtonPressed();
-               }
+               handleSaveButtonPressed();
             }
          });
       }
+
    }
 
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
@@ -211,6 +209,13 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public abstract boolean isSaveButtonAvailable();
 
    public abstract void handleSaveButtonPressed();
+
+   /**
+    * Create extra controls and return title if it changed
+    */
+   public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
+      // do nothing
+   }
 
    public void setTableTitle(final String title, final boolean warning) {
       this.title = Strings.truncate(title, WorldEditor.TITLE_MAX_LENGTH);
@@ -231,7 +236,7 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    public String getCurrentTitleLabel() {
-      String useTitle = WorldEditor.EDITOR_ID;
+      String useTitle = "World Editor";
       if (title != null) {
          useTitle = title;
       }

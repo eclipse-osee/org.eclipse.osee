@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
@@ -20,7 +21,7 @@ import org.eclipse.ui.IMemento;
 
 /**
  * The factory which is capable of recreating class file editor inputs stored in a memento.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorldEditorInputFactory implements IElementFactory {
@@ -29,6 +30,7 @@ public class WorldEditorInputFactory implements IElementFactory {
    public final static String ART_UUIDS = "org.eclipse.osee.ats.WorldEditorInputFactory.artUuids"; //$NON-NLS-1$
    public final static String BRANCH_KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.branchUuid"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WorldEditorInputFactory.title"; //$NON-NLS-1$
+   public final static String ATS_SEARCH_UUID = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchUuid"; //$NON-NLS-1$
 
    public WorldEditorInputFactory() {
    }
@@ -38,15 +40,28 @@ public class WorldEditorInputFactory implements IElementFactory {
     */
    @Override
    public IAdaptable createElement(IMemento memento) {
+      long atsSearchUuid = 0L;
       long branchUuid = 0;
-      List<Integer> artUuids = new ArrayList<>();
       String title = memento.getString(TITLE);
-      try {
-         if (Strings.isValid(memento.getString(BRANCH_KEY))) {
-            branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
-         }
-         for (String artUuid : memento.getString(ART_UUIDS).split(",")) {
+      if (Strings.isValid(memento.getString(BRANCH_KEY))) {
+         branchUuid = Long.valueOf(memento.getString(BRANCH_KEY));
+      }
+      List<Integer> artUuids = new ArrayList<>();
+      String artUuidsStr = memento.getString(ART_UUIDS);
+      if (Strings.isValid(artUuidsStr)) {
+         for (String artUuid : artUuidsStr.split(",")) {
             artUuids.add(Integer.valueOf(artUuid));
+         }
+      }
+      String atsSearchUuidStr = memento.getString(ATS_SEARCH_UUID);
+      if (Strings.isNumeric(atsSearchUuidStr)) {
+         atsSearchUuid = Long.valueOf(atsSearchUuidStr);
+      }
+      try {
+         if (atsSearchUuid > 0L) {
+            AtsSearchWorkflowSearchItem searchItem = new AtsSearchWorkflowSearchItem();
+            searchItem.setRestoreUuid(atsSearchUuid);
+            return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
          }
       } catch (Exception ex) {
          // do nothing
@@ -63,6 +78,9 @@ public class WorldEditorInputFactory implements IElementFactory {
          memento.putString(BRANCH_KEY, String.valueOf(branchUuid));
          memento.putString(ART_UUIDS, artUuids);
          memento.putString(TITLE, title);
+      }
+      if (input.getAtsSearchUuid() > 0L) {
+         memento.putString(ATS_SEARCH_UUID, String.valueOf(input.getAtsSearchUuid()));
       }
    }
 

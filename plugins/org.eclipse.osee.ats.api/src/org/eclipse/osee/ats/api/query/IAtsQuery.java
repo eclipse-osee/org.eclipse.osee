@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsQuery {
 
-   IAtsQuery fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
+   IAtsQuery andTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
 
    IAtsQuery andStateType(StateType... stateType) throws OseeCoreException;
 
@@ -86,5 +87,9 @@ public interface IAtsQuery {
    IAtsQuery andWorkPackage(Long workPackageUuid);
 
    IAtsQuery andColorTeam(String colorTeam);
+
+   IAtsQuery andActionableItem(IAtsActionableItem actionableItem);
+
+   Collection<Integer> getItemIds() throws OseeCoreException;
 
 }

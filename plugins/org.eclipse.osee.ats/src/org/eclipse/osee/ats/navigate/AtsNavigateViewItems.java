@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.notify.EmailActionsBlam;
 import org.eclipse.osee.ats.operation.ConvertWorkflowStatesBlam;
 import org.eclipse.osee.ats.operation.MoveTeamWorkflowsBlam;
 import org.eclipse.osee.ats.search.AtsQuickSearchOperationFactory;
+import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.ConvertAIsAndTeamDefinitions;
 import org.eclipse.osee.ats.util.CreateActionUsingAllActionableItems;
@@ -141,6 +142,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
          IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
+         items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(item, new MySubscribedSearchItem("My Subscribed", user)));

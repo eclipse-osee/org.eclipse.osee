@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -89,8 +90,8 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsProgram> getPrograms() {
       List<IAtsProgram> programs = new ArrayList<>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.Program,
-         AtsUtilCore.getAtsBranch())) {
+      for (Artifact artifact : ArtifactQuery.getArtifactListFromTypeWithInheritence(AtsArtifactTypes.Program,
+         AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          programs.add(AtsClientService.get().getConfigItemFactory().getProgram(artifact));
       }
       return programs;

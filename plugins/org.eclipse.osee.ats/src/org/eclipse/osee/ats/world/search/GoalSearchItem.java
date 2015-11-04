@@ -30,22 +30,29 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class GoalSearchItem extends WorldUISearchItem {
 
-   private final boolean showCompletedCancelled;
    private final IAtsUser user;
    private final String title;
+   private final boolean showCompleted;
+   private final boolean showCancelled;
 
    public GoalSearchItem(String displayName, String title, boolean showCompletedCancelled, IAtsUser user) {
+      this(displayName, title, true, true, user);
+   }
+
+   public GoalSearchItem(String displayName, String title, boolean showCompleted, boolean showCancelled, IAtsUser user) {
       super(displayName, AtsImage.GOAL);
       this.title = title;
+      this.showCompleted = showCompleted;
+      this.showCancelled = showCancelled;
       this.user = user;
-      this.showCompletedCancelled = showCompletedCancelled;
    }
 
    public GoalSearchItem(GoalSearchItem goalWorldUISearchItem) {
       super(goalWorldUISearchItem, AtsImage.GOAL);
       this.user = goalWorldUISearchItem.user;
       this.title = goalWorldUISearchItem.title;
-      this.showCompletedCancelled = goalWorldUISearchItem.showCompletedCancelled;
+      this.showCancelled = goalWorldUISearchItem.showCancelled;
+      this.showCompleted = goalWorldUISearchItem.showCompleted;
    }
 
    @Override
@@ -59,8 +66,12 @@ public class GoalSearchItem extends WorldUISearchItem {
       if (user != null) {
          query.andAssignee(user);
       }
-      if (!showCompletedCancelled) {
+      if (!showCancelled && !showCompleted) {
          query.andStateType(StateType.Working);
+      } else if (!showCancelled) {
+         query.andStateType(StateType.Working, StateType.Completed);
+      } else if (!showCompleted) {
+         query.andStateType(StateType.Working, StateType.Cancelled);
       }
       if (Strings.isValid(title)) {
          query.andAttr(AtsAttributeTypes.Title, title, QueryOption.CONTAINS_MATCH_OPTIONS);

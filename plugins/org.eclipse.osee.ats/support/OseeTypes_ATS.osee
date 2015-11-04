@@ -276,6 +276,7 @@ attributeType "ats.Color Team" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+	taggerId DefaultAttributeTaggerProvider
    enumType "enum.color.team"
    mediaType "text/plain"
    defaultValue "Unspecified"

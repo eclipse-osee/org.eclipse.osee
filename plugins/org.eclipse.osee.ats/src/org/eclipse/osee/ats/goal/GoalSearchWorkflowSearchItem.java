@@ -11,14 +11,11 @@
 package org.eclipse.osee.ats.goal;
 
 import java.util.Collection;
-import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
-import org.eclipse.osee.framework.core.util.Result;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -54,35 +51,22 @@ public class GoalSearchWorkflowSearchItem extends WorldEditorParameterSearchItem
 
    @Override
    public String getParameterXWidgetXml() {
-      addTitleWidget();
-      addUserWidget("Assignee");
-      addIncludeCompletedCancelledWidget();
+      getTitle().addWidget();
+      getUser().addWidget(4);
+      getUserType().addWidget();
+      getStateType().addWidget();
       return super.getParameterXWidgetXml();
    }
 
    @Override
-   public Result isParameterSelectionValid() {
-      try {
-         IAtsUser user = getUser("Assignee");
-         boolean includeCompleted = isIncludeCompletedCancelled();
-         if (user != null && includeCompleted) {
-            return new Result("Assignee and Include Completed are not compatible selections.");
-         }
-         return Result.TrueResult;
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return new Result("Exception: " + ex.getLocalizedMessage());
-      }
-   }
-
-   @Override
    public void setupSearch() {
-      searchItem =
-         new GoalSearchItem("", this.getTitle(), this.isIncludeCompletedCancelled(), this.getUser("Assignee"));
+      Collection<StateType> collection = getStateType().getTypes();
+      searchItem = new GoalSearchItem("", this.getTitle().get(), collection.contains(StateType.Completed),
+         collection.contains(StateType.Cancelled), this.getUser().get());
    }
 
    @Override
-   public Collection<Artifact> performSearch(SearchType searchType) {
+   public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
       return searchItem.performSearchGetResults(false);
    }
 

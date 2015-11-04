@@ -10,9 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world;
 
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.forms.IManagedForm;
 
 /**
  * @author Donald G. Dunne
@@ -28,5 +31,12 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
    public boolean isSaveButtonAvailable();
 
    public void handleSaveButtonPressed();
+
+   /**
+    * Create extra controls and return title if it changed
+    */
+   void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp);
+
+   public void createToolbar(IToolBarManager toolBarManager);
 
 }
