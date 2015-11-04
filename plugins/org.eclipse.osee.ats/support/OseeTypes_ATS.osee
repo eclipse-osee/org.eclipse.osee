@@ -243,6 +243,20 @@ artifactType "Work Package" extends "Artifact" {
    attribute "ats.Color Team"
 }
 
+overrides artifactType "User" {
+	inheritAll
+	add attribute "ATS Quick Search"
+}
+
+attributeType "ATS Quick Search" extends StringAttribute {
+	uuid 0x1000555145600FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
 artifactType "Task" extends "ats.State Machine" {
 	uuid 0x000000000000004A
 	attribute "ats.Related To State"

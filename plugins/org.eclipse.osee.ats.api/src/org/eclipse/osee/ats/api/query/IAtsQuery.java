@@ -11,11 +11,13 @@
 package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -29,11 +31,9 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface IAtsQuery {
 
-   IAtsQuery isOfType(Class<? extends IAtsWorkItem> clazz) throws OseeCoreException;
-
    IAtsQuery fromTeam(IAtsTeamDefinition teamDef) throws OseeCoreException;
 
-   IAtsQuery isStateType(StateType... stateType) throws OseeCoreException;
+   IAtsQuery andStateType(StateType... stateType) throws OseeCoreException;
 
    <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
@@ -55,10 +55,36 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> ResultSet<T> getResults();
 
-   IAtsQuery isGoal();
-
    IAtsQuery andAssignee(IAtsUser... assignees);
 
    <T extends ArtifactId> ResultSet<T> getResultArtifacts();
+
+   IAtsQuery isOfType(Collection<WorkItemType> workItemTypes);
+
+   IAtsQuery isOfType(WorkItemType... workItemType);
+
+   IAtsQuery andOriginator(IAtsUser atsUser);
+
+   IAtsQuery andSubscribed(IAtsUser atsUser);
+
+   IAtsQuery andFavorite(IAtsUser atsUser);
+
+   IAtsQuery andTeam(List<Long> teamDefUuids);
+
+   IAtsQuery andActionableItem(List<Long> aiUuids);
+
+   IAtsQuery andVersion(Long versionUuid);
+
+   IAtsQuery andState(String stateName);
+
+   IAtsQuery andProgram(Long programUuid);
+
+   IAtsQuery andInsertion(Long insertionUuid);
+
+   IAtsQuery andInsertionActivity(Long insertionActivityUuid);
+
+   IAtsQuery andWorkPackage(Long workPackageUuid);
+
+   IAtsQuery andColorTeam(String colorTeam);
 
 }

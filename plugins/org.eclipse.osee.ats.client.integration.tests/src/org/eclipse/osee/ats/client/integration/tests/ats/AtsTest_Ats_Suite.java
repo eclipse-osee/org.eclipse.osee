@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.resource.AtsTest_Resour
 import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsQueryImplTest;
 import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsTest_World_Search_Suite;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
@@ -40,6 +41,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsQueryImplTest.class,
    AtsTest_Access_Suite.class,
    AtsTest_Action_Suite.class,
    AtsTest_Agile_Suite.class,

@@ -699,7 +699,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
             "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s] on branch [%d]",
-            attributeType, soleAttributes.size(), getGuid(), getBranchUuid());
+            attributeType, soleAttributes.size(), getGuid(), getBranchId());
       } else {
          return defaultReturnValue;
       }

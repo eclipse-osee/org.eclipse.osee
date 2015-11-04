@@ -11,14 +11,29 @@
 package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsQueryService {
 
-   IAtsQuery createQuery();
+   IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes);
 
    IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems);
+
+   ArrayList<AtsSearchData> getSavedSearches(IAtsUser atsUser, String namespace);
+
+   void saveSearch(IAtsUser atsUser, AtsSearchData data);
+
+   void removeSearch(IAtsUser atsUser, AtsSearchData data);
+
+   AtsSearchData getSearch(IAtsUser atsUser, Long uuid);
+
+   AtsSearchData getSearch(String jsonStr);
+
 }

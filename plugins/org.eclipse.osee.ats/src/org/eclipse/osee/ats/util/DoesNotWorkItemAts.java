@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -44,7 +45,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       Artifact teamArt2 = queryBuilder.getResults().getOneOrNull();
 
       Collection<IAtsWorkItem> items =
-         AtsClientService.get().getQueryService().createQuery().andAttr(AtsAttributeTypes.AtsId,
+         AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.AtsId,
             Collections.singleton("ATS16")).getItems();
 
       System.out.println("team " + teamArt);

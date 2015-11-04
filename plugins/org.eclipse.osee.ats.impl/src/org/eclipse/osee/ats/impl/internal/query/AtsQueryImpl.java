@@ -12,24 +12,20 @@ package org.eclipse.osee.ats.impl.internal.query;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
-import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 
@@ -39,70 +35,122 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 public class AtsQueryImpl extends AbstractAtsQueryImpl {
 
    private final IAtsServer atsServer;
+   private QueryBuilder query;
 
    public AtsQueryImpl(IAtsServer atsServer) {
       super(atsServer.getServices());
       this.atsServer = atsServer;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
-   public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException {
-      QueryBuilder query = atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch());
-
-      // WorkItem type
-      if (clazz != null) {
-         List<IArtifactType> artifactTypes = getArtifactTypes();
-         query.andIsOfType(artifactTypes.toArray(new IArtifactType[artifactTypes.size()]));
-      }
-
-      // team
-      if (teamDef != null) {
-         query.and(AtsAttributeTypes.TeamDefinition, Collections.singleton(AtsUtilCore.getGuid(teamDef)));
-      }
-
-      // state
-      if (stateType != null) {
-         List<String> stateTypes = new ArrayList<>();
-         for (StateType type : stateType) {
-            stateTypes.add(type.name());
-         }
-         query.and(AtsAttributeTypes.CurrentStateType, stateTypes);
-      }
-
-      // Artifact Types
-      if (artifactTypes != null && artifactTypes.length > 0) {
-         query.andIsOfType(artifactTypes);
-      }
-
-      if (uuids != null && uuids.length > 0) {
-         List<Long> artIds = new LinkedList<>();
-         for (Long uuid : uuids) {
-            artIds.add(uuid);
-         }
-         query.andUuids(artIds);
-      }
-
-      // attributes
-      if (!andAttr.isEmpty()) {
-         for (AtsAttributeQuery attrQuery : andAttr) {
-            query.and(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
-         }
-      }
-
-      if (!andRels.isEmpty()) {
-         for (Entry<IRelationTypeSide, IAtsObject> entry : andRels.entrySet()) {
-            query.andRelatedTo(entry.getKey(), (ArtifactReadable) entry.getValue().getStoreObject());
-         }
-      }
-
-      Set<T> workItems = new HashSet<>();
+   public Collection<ArtifactId> runQuery() {
+      List<ArtifactId> results = new ArrayList<ArtifactId>();
       Iterator<ArtifactReadable> iterator = query.getResults().iterator();
       while (iterator.hasNext()) {
-         workItems.add((T) atsServer.getWorkItemFactory().getWorkItem(iterator.next()));
+         results.add(iterator.next());
       }
-      return workItems;
+      return results;
+   }
 
+   @Override
+   public void createQueryBuilder() {
+      query = atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch());
+   }
+
+   @Override
+   public void queryAnd(IAttributeType attrType, Collection<String> values) {
+      query.and(attrType, values);
+   }
+
+   @Override
+   public void queryAndIsOfType(IArtifactType artifactType) {
+      query.andIsOfType(artifactType);
+   }
+
+   @Override
+   public List<Integer> queryGetIds() {
+      List<Integer> results = new LinkedList<>();
+      Iterator<HasLocalId<Integer>> iterator = query.getResultsAsLocalIds().iterator();
+      while (iterator.hasNext()) {
+         results.add(iterator.next().getLocalId());
+      }
+      return results;
+   }
+
+   @Override
+   public void queryAndIsOfType(List<IArtifactType> artTypes) {
+      query.andIsOfType(artTypes);
+   }
+
+   @Override
+   public void queryAnd(IAttributeType attrType, String value) {
+      query.and(attrType, value);
+   }
+
+   @Override
+   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, int artId) {
+      query.andRelatedToLocalIds(relationTypeSide, artId);
+   }
+
+   @Override
+   public void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption) {
+      query.and(attrType, values, queryOption);
+   }
+
+   @Override
+   public void queryAndRelatedToLocalIds(IRelationTypeSide relationTypeSide, List<Integer> artIds) {
+      query.andRelatedToLocalIds(relationTypeSide, artIds);
+   }
+
+   @Override
+   public void queryAnd(IAttributeType attrType, String value, QueryOption[] queryOption) {
+      query.and(attrType, value, queryOption);
+   }
+
+   @Override
+   public void queryAndLocalIds(List<Integer> artIds) {
+      List<Long> results = new LinkedList<>();
+      for (Integer artId : artIds) {
+         results.add(new Long(artId));
+      }
+      query.andUuids(results);
+   }
+
+   @Override
+   public void queryAndNotExists(IRelationTypeSide relationTypeSide) {
+      query.andNotExists(relationTypeSide);
+   }
+
+   @Override
+   public void queryAndExists(IRelationTypeSide relationTypeSide) {
+      query.andExists(relationTypeSide);
+   }
+
+   @Override
+   public List<String> getWorkPackagesForColorTeam(String colorTeam) {
+      List<String> workPackageGuids = new LinkedList<>();
+      for (ArtifactReadable workPackageArt : atsServer.getOrcsApi().getQueryFactory().fromBranch(
+         AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.WorkPackage).and(AtsAttributeTypes.ColorTeam,
+            colorTeam).getResults()) {
+         workPackageGuids.add(workPackageArt.getGuid());
+      }
+      return workPackageGuids;
+   }
+
+   @Override
+   public List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions() {
+      AtsQueryImpl search = new AtsQueryImpl(atsServer);
+      search.isOfType(AtsArtifactTypes.TeamWorkflow);
+      if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
+         search.andTeam(new ArrayList<Long>(teamDefUuids));
+      }
+      if (aiUuids != null && !aiUuids.isEmpty()) {
+         search.andActionableItem(new ArrayList<Long>(aiUuids));
+      }
+      if (versionUuid != null && versionUuid > 0) {
+         search.andVersion(versionUuid);
+      }
+      return search.queryGetIds();
    }
 
 }

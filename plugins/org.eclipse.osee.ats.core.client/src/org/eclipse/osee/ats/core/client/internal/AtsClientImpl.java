@@ -725,7 +725,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
          result = getArtifactByGuid(id);
       }
       if (result == null && Strings.isNumeric(id)) {
-         result = getArtifact(Long.valueOf(id));
+         result = (Artifact) getArtifact(Long.valueOf(id));
       }
       if (result == null) {
          result = getArtifactByAtsId(id);
@@ -819,6 +819,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public ArtifactId getArtifactByName(IArtifactType artType, String name) {
       return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
+   }
+
+   @Override
+   public ArtifactId getArtifact(Long uuid) {
+      return ArtifactQuery.getArtifactFromId(uuid, AtsUtilCore.getAtsBranch());
    }
 
 }

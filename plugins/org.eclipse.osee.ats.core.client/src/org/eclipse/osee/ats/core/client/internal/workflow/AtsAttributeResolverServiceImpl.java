@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.internal.workflow;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
@@ -224,5 +225,17 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(attributeType, "Attribute Type can not be null");
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
+   }
+
+   @SuppressWarnings({"unchecked", "deprecation"})
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException {
+      Assert.isNotNull(artifact, "Artifact can not be null");
+      Assert.isNotNull(attributeType, "Attribute Type can not be null");
+      List<IAttribute<T>> attributes = new LinkedList<>();
+      for (Attribute<Object> attr : AtsClientService.get().getArtifact(artifact).getAttributes(attributeType)) {
+         attributes.add(new AttributeWrapper<T>((Attribute<T>) attr));
+      }
+      return attributes;
    }
 }

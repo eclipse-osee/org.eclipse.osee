@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAtsTasks;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.workitem.CreateTasksOperation;
@@ -60,7 +60,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @POST
    @Override
    public Response get(long taskUuid) {
-      IAtsWorkItem task = atsServer.getQueryService().createQuery().isOfType(IAtsTask.class).andUuids(
+      IAtsWorkItem task = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
          taskUuid).getResults().getOneOrNull();
       if (task == null) {
          throw new OseeArgumentException("No Task found with id %d", taskUuid);
@@ -72,7 +72,7 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @DELETE
    @Override
    public void delete(long taskUuid) {
-      IAtsWorkItem task = atsServer.getQueryService().createQuery().isOfType(IAtsTask.class).andUuids(
+      IAtsWorkItem task = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
          taskUuid).getResults().getOneOrNull();
       if (task != null) {
          IAtsChangeSet changes =

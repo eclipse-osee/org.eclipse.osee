@@ -99,4 +99,9 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       return isOfType(atsObject.getStoreObject(), artifactType);
    }
 
+   @Override
+   public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType) {
+      return orcsApi.getOrcsTypes().getArtifactTypes().inheritsFrom(artType, parentArtType);
+   }
+
 }

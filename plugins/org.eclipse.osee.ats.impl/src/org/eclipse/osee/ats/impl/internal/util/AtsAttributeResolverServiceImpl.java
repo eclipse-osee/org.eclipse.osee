@@ -219,4 +219,9 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       return getAttributeValues(atsObject.getStoreObject(), attributeType);
    }
 
+   @Override
+   public <T> Collection<IAttribute<T>> getAttributes(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException {
+      return getArtifact(artifact).getAttributeValues(attributeType);
+   }
+
 }

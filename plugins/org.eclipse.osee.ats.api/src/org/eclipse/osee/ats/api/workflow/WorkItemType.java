@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
  */
 public enum WorkItemType {
 
+   WorkItem("Work Item", AtsArtifactTypes.AbstractWorkflowArtifact),
    TeamWorkflow("Team Workflow", AtsArtifactTypes.TeamWorkflow),
    Task("Task", AtsArtifactTypes.Task),
    Review("Review", AtsArtifactTypes.ReviewArtifact),

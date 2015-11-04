@@ -141,7 +141,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
          IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
-
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(item, new MySubscribedSearchItem("My Subscribed", user)));

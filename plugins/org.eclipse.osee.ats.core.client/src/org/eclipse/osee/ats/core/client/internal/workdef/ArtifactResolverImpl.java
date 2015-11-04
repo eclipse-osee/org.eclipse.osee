@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * @author Donald G. Dunne
@@ -92,6 +93,11 @@ public class ArtifactResolverImpl implements IArtifactResolver {
       Assert.isNotNull(atsObject, "ATS Object can not be null");
       Assert.isNotNull(artifactType, "Artifact Type can not be null");
       return isOfType(atsObject.getStoreObject(), artifactType);
+   }
+
+   @Override
+   public boolean inheritsFrom(IArtifactType artType, IArtifactType parentArtType) {
+      return ArtifactTypeManager.inheritsFrom(artType, parentArtType);
    }
 
 }

@@ -26,6 +26,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -61,8 +62,9 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
                }
             }
          }
-         Collection<IAtsWorkItem> items = AtsClientService.get().getQueryService().createQuery().andUuids(
-            uuids.toArray(new Long[uuids.size()])).getItems();
+         Collection<IAtsWorkItem> items =
+            AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+               uuids.toArray(new Long[uuids.size()])).getItems();
          return items;
       } catch (Exception ex) {
          throw new IOException("Error deserializing a IAtsWorkItem.", ex);

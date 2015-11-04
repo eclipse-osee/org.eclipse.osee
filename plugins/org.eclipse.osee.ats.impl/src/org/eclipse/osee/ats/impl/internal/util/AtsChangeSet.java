@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.ats.impl.util.WorkflowRuleRunner;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -132,8 +133,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
-      getTransaction().setSoleAttributeValue(getArtifact(workItem), attributeType, value);
-      add(workItem);
+      ArtifactReadable artifact = getArtifact(workItem);
+      if (!artifact.getSoleAttributeValue(attributeType, "").equals(value)) {
+         getTransaction().setSoleAttributeValue(artifact, attributeType, value);
+         add(workItem);
+      }
    }
 
    @Override
@@ -302,4 +306,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(art);
    }
 
+   @Override
+   public void deleteAttribute(ArtifactId artifact, IAttribute<?> attr) {
+      AttributeId attribute = ((ArtifactReadable) artifact).getAttributeById(attr.getId());
+      getTransaction().deleteByAttributeId(artifact, attribute);
+      add(artifact);
+   }
 }

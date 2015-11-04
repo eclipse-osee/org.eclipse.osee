@@ -86,6 +86,8 @@ public interface IAtsChangeSet {
 
    void deleteArtifact(ArtifactId artifact);
 
+   void deleteAttribute(ArtifactId artifact, IAttribute<?> attr);
+
    void addWorkflowCreated(IAtsTeamWorkflow teamWf);
 
    void deleteArtifact(IAtsWorkItem workItem);
@@ -94,7 +96,7 @@ public interface IAtsChangeSet {
 
    String getComment();
 
-   <T> void setAttribute(ArtifactId object, int attrId, T value);
+   <T> void setAttribute(ArtifactId artifact, int attrId, T value);
 
    void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value);
 

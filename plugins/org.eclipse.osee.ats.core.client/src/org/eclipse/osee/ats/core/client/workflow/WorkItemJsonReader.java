@@ -23,6 +23,7 @@ import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonToken;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.VariantData;
 
@@ -53,7 +54,8 @@ public class WorkItemJsonReader implements MessageBodyReader<IAtsWorkItem> {
             }
          }
          long uuid = Long.valueOf(varData.get("uuid"));
-         return AtsClientService.get().getQueryService().createQuery().andUuids(uuid).getResults().getAtMostOneOrNull();
+         return AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+            uuid).getResults().getAtMostOneOrNull();
       } catch (Exception ex) {
          throw new IOException("Error deserializing a TraxRpcr Item.", ex);
       }

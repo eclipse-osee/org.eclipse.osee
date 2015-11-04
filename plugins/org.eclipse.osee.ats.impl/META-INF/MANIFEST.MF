@@ -38,6 +38,7 @@ Import-Package: com.google.common.cache;version="15.0.0",
  org.eclipse.osee.mail.api,
  org.eclipse.osee.orcs,
  org.eclipse.osee.orcs.data,
+ org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction
 Service-Component: OSGI-INF/*.xml

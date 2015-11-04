@@ -94,4 +94,6 @@ public interface IAtsServices {
 
    ArtifactId getArtifactByName(IArtifactType artifactType, String name);
 
+   ArtifactId getArtifact(Long uuid);
+
 }

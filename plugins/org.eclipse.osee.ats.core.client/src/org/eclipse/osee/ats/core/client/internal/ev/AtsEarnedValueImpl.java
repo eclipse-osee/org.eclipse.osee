@@ -126,6 +126,7 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
 
    private void changeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems, boolean remove) {
       JaxWorkPackageData data = new JaxWorkPackageData();
+      data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
       for (IAtsWorkItem workItem : workItems) {
          data.getWorkItemUuids().add(workItem.getUuid());
       }

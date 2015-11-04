@@ -359,6 +359,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    }
 
    @Override
+   public void deleteAttribute(ArtifactId userArt, IAttribute<?> attr) {
+      Artifact artifact = getArtifact(userArt);
+      artifact.deleteAttribute(attr.getId());
+      add(artifact);
+   }
+
+   @Override
    public void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value) {
       Artifact art = getArtifact(artifact);
       art.setSoleAttributeValue(attrType, value);

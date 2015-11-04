@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -50,7 +51,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       if (workPackageArt == null) {
          throw new OseeArgumentException("Work Package with id [%s] Not Found", workPackageId);
       }
-      return atsServer.getQueryService().createQuery().andAttr(AtsAttributeTypes.WorkPackageGuid,
+      return atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAttr(AtsAttributeTypes.WorkPackageGuid,
          workPackageArt.getGuid()).getResults().getList();
    }
 
@@ -69,8 +70,8 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Set Work Package", asUser);
       for (Long workItemUuid : workPackageData.getWorkItemUuids()) {
-         IAtsWorkItem workItem =
-            atsServer.getQueryService().createQuery().andUuids(workItemUuid).getResults().getAtMostOneOrNull();
+         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+            workItemUuid).getResults().getAtMostOneOrNull();
          if (workItem == null) {
             throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemUuid);
          }
@@ -80,7 +81,9 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
          }
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackageArt.getGuid());
       }
-      changes.execute();
+      if (!changes.isEmpty()) {
+         changes.execute();
+      }
       return Response.ok().build();
    }
 
@@ -95,12 +98,15 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Remove Work Package", asUser);
       for (Long workItemUuid : workPackageData.getWorkItemUuids()) {
-         IAtsWorkItem workItem =
-            atsServer.getQueryService().createQuery().andUuids(workItemUuid).getResults().getAtMostOneOrNull();
+         IAtsWorkItem workItem = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+            workItemUuid).getResults().getAtMostOneOrNull();
          if (workItem == null) {
             throw new OseeArgumentException("Work Item with id [%s] Not Found", workItemUuid);
          }
-         changes.deleteAttributes(workItem, AtsAttributeTypes.WorkPackageGuid);
+         if (atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid,
+            null) != null) {
+            changes.deleteAttributes(workItem, AtsAttributeTypes.WorkPackageGuid);
+         }
       }
       if (!changes.isEmpty()) {
          changes.execute();

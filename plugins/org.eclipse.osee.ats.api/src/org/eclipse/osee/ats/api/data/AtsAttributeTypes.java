@@ -101,6 +101,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType PriorityType = createType(0x10000000000000CBL, "Priority", "1 = High; 5 = Low");
    public static final IAttributeType Problem = createType(0x10000000000000D9L, "Problem", "Problem found during analysis.");
    public static final IAttributeType ProposedResolution = createType(0x10000000000000DAL, "Proposed Resolution", "Recommended resolution.");
+   public static final IAttributeType QuickSearch = createType(0x1000555145600FBL, "ATS Quick Search", "Saved ATS Quick Searches.");
    public static final IAttributeType RelatedToState = createType(0x10000000000000E4L, "Related To State", "State of parent workflow this object is related to.");
    public static final IAttributeType Released = createType(0x10000000000000B3L, "Released", "True if object is in a released state.");
    public static final IAttributeType ReleaseDate = createType(0x10000000000000C7L, "Release Date", "Date the changes were made available to the users.");

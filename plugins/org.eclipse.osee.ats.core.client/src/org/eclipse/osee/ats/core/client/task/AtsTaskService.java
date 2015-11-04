@@ -78,7 +78,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    private void processForEvents(NewTaskData newTaskData, Response response, List<IAtsTask> tasks, ArtifactEvent artifactEvent2) {
-      Artifact teamWf = atsClient.getArtifact(newTaskData.getTeamWfUuid());
+      Artifact teamWf = (Artifact) atsClient.getArtifact(newTaskData.getTeamWfUuid());
 
       JaxAtsTasks jaxTasks = response.readEntity(JaxAtsTasks.class);
       ArtifactEvent artifactEvent = new ArtifactEvent(AtsUtilCore.getAtsBranch());

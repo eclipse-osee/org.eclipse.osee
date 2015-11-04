@@ -137,6 +137,10 @@ public class AtsUtilCore {
       return guid;
    }
 
+   public static String getGuid(Long uuid) {
+      return uuidToGuidMap.get(uuid);
+   }
+
    public static void putUuidToGuid(String guid, IAtsObject atsObject) {
       uuidToGuidMap.put(atsObject.getUuid(), guid);
       guidToUuidMap.put(guid, atsObject.getUuid());

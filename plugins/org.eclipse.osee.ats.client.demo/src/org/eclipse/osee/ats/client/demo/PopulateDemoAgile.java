@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.agile.JaxNewAgileBacklog;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileSprint;
 import org.eclipse.osee.ats.api.agile.JaxNewAgileTeam;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
@@ -105,8 +106,9 @@ public class PopulateDemoAgile {
 
       // Add items to backlog
       Collection<IAtsWorkItem> items =
-         AtsClientService.get().getQueryService().createQuery().isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow,
-            DemoArtifactTypes.DemoReqTeamWorkflow, DemoArtifactTypes.DemoTestTeamWorkflow).getItems();
+         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).isOfType(
+            DemoArtifactTypes.DemoCodeTeamWorkflow, DemoArtifactTypes.DemoReqTeamWorkflow,
+            DemoArtifactTypes.DemoTestTeamWorkflow).getItems();
       Assert.isTrue(items.size() > 0);
 
       JaxAgileItem item = new JaxAgileItem();
@@ -154,8 +156,8 @@ public class PopulateDemoAgile {
       Assert.isTrue(Response.Status.CREATED.getStatusCode() == response.getStatus());
 
       // Transition First Sprint to completed
-      IAtsWorkItem sprint =
-         AtsClientService.get().getQueryService().createQuery().andUuids(firstSprintUuid).getItems().iterator().next();
+      IAtsWorkItem sprint = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+         firstSprintUuid).getItems().iterator().next();
       AtsChangeSet changes = new AtsChangeSet("Transition Agile Sprint");
       TransitionHelper helper =
          new TransitionHelper("Transition Agile Stprint", Arrays.asList(sprint), TeamState.Completed.getName(), null,

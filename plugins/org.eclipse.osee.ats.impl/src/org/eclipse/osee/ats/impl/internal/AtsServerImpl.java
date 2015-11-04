@@ -568,7 +568,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       return getArtifact(token.getUuid());
    }
 
-   private ArtifactReadable getArtifact(long uuid) {
+   @Override
+   public ArtifactReadable getArtifact(Long uuid) {
       return getArtifactByUuid(uuid);
    }
 

@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,12 +55,12 @@ public class GoalSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      IAtsQuery query = AtsClientService.get().getQueryService().createQuery().isGoal();
+      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Goal);
       if (user != null) {
          query.andAssignee(user);
       }
       if (!showCompletedCancelled) {
-         query.isStateType(StateType.Working);
+         query.andStateType(StateType.Working);
       }
       if (Strings.isValid(title)) {
          query.andAttr(AtsAttributeTypes.Title, title, QueryOption.CONTAINS_MATCH_OPTIONS);
