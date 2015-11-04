@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadContext;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -18,7 +19,7 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlContextImpl;
 /**
  * @author Roberto E. Escobar
  */
-public class LoadSqlContext extends SqlContextImpl implements LoadContext {
+public class LoadSqlContext extends SqlContextImpl implements LoadContext, HasBranch {
 
    private final Long branchId;
 
@@ -27,7 +28,8 @@ public class LoadSqlContext extends SqlContextImpl implements LoadContext {
       this.branchId = branchId;
    }
 
-   public long getBranchId() {
+   @Override
+   public Long getBranchId() {
       return branchId;
    }
 }

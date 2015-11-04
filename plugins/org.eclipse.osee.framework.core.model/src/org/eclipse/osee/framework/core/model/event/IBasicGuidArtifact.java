@@ -10,13 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.HasBranch;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IBasicGuidArtifact {
+public interface IBasicGuidArtifact extends HasBranch {
    public abstract String getGuid();
 
    public abstract Long getArtTypeGuid();
 
-   public abstract Long getBranchId();
 }

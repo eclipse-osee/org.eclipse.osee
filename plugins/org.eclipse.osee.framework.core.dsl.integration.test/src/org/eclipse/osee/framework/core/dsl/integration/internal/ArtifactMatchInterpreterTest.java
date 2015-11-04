@@ -217,21 +217,23 @@ public class ArtifactMatchInterpreterTest {
 
       Assert.assertEquals(2, compoundCondition.getConditions().size());
 
-      Iterator<SimpleCondition> iterator2 = compoundCondition.getConditions().iterator();
-      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_NAME, CompareOp.EQ, "myArtifact");
-      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ,
-         String.valueOf(3456789101112131415L));
-
-      Assert.assertEquals(1, compoundCondition.getOperators().size());
-      Assert.assertEquals(XLogicOperator.OR, compoundCondition.getOperators().iterator().next());
 
       String badArtGuid = "1BCDEFGHIJK123456789";
-      long badBranchGuid = 333333333123456789L;
+      Long badBranchGuid = 333333333123456789L;
       String badBranchName = "xArtifact";
 
       String goodArtGuid = "ABCDEFGHIJK123456789";
-      long goodBranchGuid = 3456789101112131415L;
+      Long goodBranchGuid = 3456789101112131415L;
       String goodBranchName = "myArtifact";
+
+      
+      Iterator<SimpleCondition> iterator2 = compoundCondition.getConditions().iterator();
+      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_NAME, CompareOp.EQ, "myArtifact");
+      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ,
+         String.valueOf(goodBranchGuid));
+
+      Assert.assertEquals(1, compoundCondition.getOperators().size());
+      Assert.assertEquals(XLogicOperator.OR, compoundCondition.getOperators().iterator().next());
 
       ArtifactProxy proxy1 = createProxy(badArtGuid, "", badBranchGuid, badBranchName);
       ArtifactProxy proxy2 = createProxy(badArtGuid, "", badBranchGuid, goodBranchName);
@@ -300,13 +302,10 @@ public class ArtifactMatchInterpreterTest {
             return null;
          }
 
-         
-
          @Override
          public long getUuid() {
             return 0;
          }
-
       };
    }
 }

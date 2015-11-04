@@ -10,17 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.orcs.data.HasSession;
 import org.eclipse.osee.orcs.data.HasTransaction;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface LoadDescription extends HasOptions, HasSession, HasTransaction {
+public interface LoadDescription extends HasOptions, HasSession, HasTransaction, HasBranch {
 
    boolean isMultiBranch();
-
-   Long getBranchId();
 
    ResultObjectDescription getObjectDescription();
 

@@ -15,5 +15,11 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface HasBranch {
 
-   IOseeBranch getBranch();
+   default IOseeBranch getBranch() {
+      return TokenFactory.createBranch(getBranchId(), null);
+   }
+
+   default Long getBranchId() {
+      return getBranch().getUuid();
+   }
 }

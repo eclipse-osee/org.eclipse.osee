@@ -13,6 +13,8 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.HasBranch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
@@ -23,7 +25,7 @@ import org.eclipse.osee.orcs.data.HasSession;
  * @author Roberto E. Escobar
  * @author Megumi Telles
  */
-public class TxData implements HasSession {
+public class TxData implements HasSession, HasBranch {
 
    public static enum TxState {
       NEW_TX,
@@ -60,6 +62,7 @@ public class TxData implements HasSession {
       return session;
    }
 
+   @Override
    public Long getBranchId() {
       return graph.getBranchId();
    }

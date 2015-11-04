@@ -28,8 +28,6 @@ public interface TransactionReadable extends HasLocalId<Integer>, ITransaction {
 
    int getAuthorId();
 
-   Long getBranchId();
-
    int getCommit();
 
 }

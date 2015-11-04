@@ -12,9 +12,7 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -56,16 +54,9 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
       return branchUuid != NON_EXISTING_BRANCH;
    }
 
+   @Override
    public Long getBranchId() {
       return branchUuid;
-   }
-
-   public IOseeBranch getBranch() {
-      if (branchCache != null) {
-         return getFullBranch();
-      } else {
-         return TokenFactory.createBranch(branchUuid, "TransactionRecord Branch Token");
-      }
    }
 
    public Branch getFullBranch() {

@@ -146,13 +146,12 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return artifactTypeCache.isValidAttributeType(getArtifactType(), TokenFactory.createBranch(getBranchId()),
-         attributeType);
+      return artifactTypeCache.isValidAttributeType(getArtifactType(), getBranch(), attributeType);
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return artifactTypeCache.getAttributeTypes(getArtifactType(), TokenFactory.createBranch(getBranchId()));
+      return artifactTypeCache.getAttributeTypes(getArtifactType(), getBranch());
    }
 
    @Override

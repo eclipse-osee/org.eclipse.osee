@@ -15,6 +15,6 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 /**
  * @author Ryan D. Brooks
  */
-public interface ITransaction extends Identity<Integer> {
+public interface ITransaction extends Identity<Integer>, HasBranch {
    // composition interface requires no additional methods,fields
 }

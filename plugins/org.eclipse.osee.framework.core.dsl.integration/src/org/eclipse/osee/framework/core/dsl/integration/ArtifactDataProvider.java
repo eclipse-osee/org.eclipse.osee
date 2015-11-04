@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.core.dsl.integration;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -25,10 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface ArtifactDataProvider {
 
-   public static interface ArtifactProxy extends IArtifactToken, HasBranch {
-
-      @Override
-      IOseeBranch getBranch();
+   public static interface ArtifactProxy extends IArtifactToken {
 
       @Override
       String getName();

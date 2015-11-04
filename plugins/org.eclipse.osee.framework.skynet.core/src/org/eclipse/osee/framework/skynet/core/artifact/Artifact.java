@@ -634,7 +634,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
                attributeType, getArtifactTypeName());
          }
          throw new AttributeDoesNotExist("Attribute of type [%s] could not be found on artifact [%s] on branch [%s]",
-            attributeType.getName(), getGuid(), getBranch().getGuid());
+            attributeType.getName(), getGuid(), getBranchId());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
             "Attribute [%s] must have exactly one instance.  It currently has %d for artifact [%s]", attributeType,
@@ -1709,17 +1709,12 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    public final DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranch().getUuid(), getArtifactType().getGuid(), getGuid());
+      return new DefaultBasicGuidArtifact(getBranchId(), getArtifactType().getGuid(), getGuid());
    }
 
    @Override
    public final Long getArtTypeGuid() {
       return getArtifactType().getGuid();
-   }
-
-   @Override
-   public final Long getBranchId() {
-      return getBranch().getUuid();
    }
 
    public final Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {

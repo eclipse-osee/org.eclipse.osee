@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -35,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public class RelationLink {
+public class RelationLink implements HasBranch {
 
    public static interface ArtifactLinker {
 
@@ -321,6 +322,7 @@ public class RelationLink {
       this.gammaId = gammaId;
    }
 
+   @Override
    public IOseeBranch getBranch() {
       return branch;
    }

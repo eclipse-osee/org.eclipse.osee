@@ -23,9 +23,6 @@ public interface TxOrcsData extends TransactionReadable {
    int getAuthorId();
 
    @Override
-   Long getBranchId();
-
-   @Override
    String getComment();
 
    @Override

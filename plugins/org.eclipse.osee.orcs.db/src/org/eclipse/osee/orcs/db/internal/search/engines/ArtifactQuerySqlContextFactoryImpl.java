@@ -11,13 +11,13 @@
 package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.data.HasBranch;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;

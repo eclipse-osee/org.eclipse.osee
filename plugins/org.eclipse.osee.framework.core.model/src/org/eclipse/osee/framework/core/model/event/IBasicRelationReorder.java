@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.HasBranch;
+
 /**
  * @author Donald G. Dunne
  */
-public interface IBasicRelationReorder {
+public interface IBasicRelationReorder extends HasBranch {
 
    DefaultBasicGuidArtifact getParentArt();
 
    Long getRelTypeGuid();
-
-   Long getBranchId();
 
    RelationOrderModType getModType();
 }
