@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -305,7 +304,7 @@ public final class ArtifactLoader {
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
-      Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
+      IOseeBranch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
       int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
@@ -333,7 +332,7 @@ public final class ArtifactLoader {
    static void loadArtifactData(Artifact artifact, LoadLevel loadLevel) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       try {
-         joinQuery.add(artifact.getArtId(), artifact.getFullBranch().getUuid());
+         joinQuery.add(artifact.getArtId(), artifact.getBranchId());
          joinQuery.store();
 
          List<Artifact> artifacts = new ArrayList<>(1);
@@ -358,7 +357,7 @@ public final class ArtifactLoader {
          new CompositeKeyHashMap<Integer, Long, Artifact>(artifacts.size(), true);
 
       for (Artifact artifact : artifacts) {
-         key2 = historical ? transactionId.getId() : artifact.getBranch().getUuid();
+         key2 = historical ? transactionId.getId() : artifact.getBranchId();
          tempCache.put(artifact.getArtId(), key2, artifact);
       }
 
@@ -367,7 +366,7 @@ public final class ArtifactLoader {
 
       if (!historical) {
          for (Artifact artifact : artifacts) {
-            key2 = artifact.getFullBranch().getUuid();
+            key2 = artifact.getBranchId();
             removeAndUnlock(artifact.getArtId(), key2);
          }
       }

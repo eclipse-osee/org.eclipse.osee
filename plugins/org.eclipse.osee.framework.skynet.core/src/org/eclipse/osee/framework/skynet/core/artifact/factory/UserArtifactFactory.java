@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,7 +28,7 @@ public class UserArtifactFactory extends ArtifactFactory {
    }
 
    @Override
-   public Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException {
+   public Artifact getArtifactInstance(String guid, IOseeBranch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException {
       return new User(guid, branch, artifactType);
    }
 

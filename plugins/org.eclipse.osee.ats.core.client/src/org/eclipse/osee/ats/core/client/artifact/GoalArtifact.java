@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class GoalArtifact extends CollectorArtifact implements IAtsGoal {
 
-   public GoalArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public GoalArtifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType, AtsRelationTypes.Goal_Member);
    }
 

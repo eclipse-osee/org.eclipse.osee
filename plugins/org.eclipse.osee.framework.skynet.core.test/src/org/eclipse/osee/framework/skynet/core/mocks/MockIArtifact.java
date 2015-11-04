@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.mocks;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
@@ -27,10 +27,10 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    private boolean wasGetFullArtifactCalled;
    private final int uniqueId;
    private final ArtifactType artifactType;
-   private final Branch branch;
+   private final IOseeBranch branch;
 
    // MockObject do not change to use tokens
-   public MockIArtifact(int uniqueId, String name, String guid, Branch branch, ArtifactType artifactType) {
+   public MockIArtifact(int uniqueId, String name, String guid, IOseeBranch branch, ArtifactType artifactType) {
       super(guid, name);
       this.uniqueId = uniqueId;
       this.branch = branch;
@@ -57,7 +57,7 @@ public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
    }
 
    @Override
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 

@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -294,7 +295,7 @@ public class RelationTypeSideSorterTest {
    private static final class MockArtifactWithRelations extends MockIArtifact {
       private final Map<IRelationType, List<? extends IArtifact>> relatedItemsMap;
 
-      public MockArtifactWithRelations(int uniqueId, String name, String guid, Branch branch, IArtifactType artifactType) {
+      public MockArtifactWithRelations(int uniqueId, String name, String guid, IOseeBranch branch, IArtifactType artifactType) {
          super(uniqueId, name, guid, branch, DataFactory.fromToken(artifactType));
          this.relatedItemsMap = new HashMap<>();
       }

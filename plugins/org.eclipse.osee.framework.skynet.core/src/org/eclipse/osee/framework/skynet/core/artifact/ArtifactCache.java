@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -167,11 +166,7 @@ public final class ArtifactCache {
       return arts;
    }
 
-   public static Artifact getActive(Integer artId, Branch branch) {
-      return getActive(artId, branch.getUuid());
-   }
-
-   public static Artifact getActive(Integer artId, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getActive(Integer artId, IOseeBranch branch) {
       return getActive(artId, branch.getUuid());
    }
 

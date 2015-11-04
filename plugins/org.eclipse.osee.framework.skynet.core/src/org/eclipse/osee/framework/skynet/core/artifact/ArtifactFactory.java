@@ -17,7 +17,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -63,7 +62,7 @@ public abstract class ArtifactFactory {
             "Invalid guid [%s] during artifact creation [name: %s]", guid, artifactName);
       }
 
-      Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, false);
+      Artifact artifact = getArtifactInstance(guid, branch, artifactType, false);
 
       artifact.setArtId(getNextArtifactId(uuid));
       artifact.meetMinimumAttributeCounts(true);
@@ -92,7 +91,7 @@ public abstract class ArtifactFactory {
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
    private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
-      Artifact artifact = getArtifactInstance(guid, BranchManager.getBranch(branch), artifactType, true);
+      Artifact artifact = getArtifactInstance(guid, branch, artifactType, true);
 
       artifact.setArtId(artId);
       artifact.internalSetPersistenceData(gammaId, transactionId, modType, historical, useBackingData);
@@ -103,7 +102,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, Branch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modType, historical, transactionId,
          false);
    }
@@ -117,7 +116,7 @@ public abstract class ArtifactFactory {
     * @param branch branch on which this instance of this artifact will be associated
     * @param hrid
     */
-   protected abstract Artifact getArtifactInstance(String guid, Branch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
+   protected abstract Artifact getArtifactInstance(String guid, IOseeBranch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
 
    @Override
    public String toString() {

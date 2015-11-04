@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,7 +46,7 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
 
-   public AbstractReviewArtifact(String guid, Branch branch, IArtifactType artifactType) throws OseeCoreException {
+   public AbstractReviewArtifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
       actionableItemsDam = new ActionableItemManager(this);
    }
