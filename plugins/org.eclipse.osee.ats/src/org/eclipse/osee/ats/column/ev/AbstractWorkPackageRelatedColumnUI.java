@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -41,7 +42,7 @@ import org.eclipse.swt.widgets.TreeItem;
 
 /**
  * Abstract class provided to get information from related Work Package
- * 
+ *
  * @author Donald G. Dunne
  */
 public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
@@ -95,7 +96,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
    private void openSelectedWorkPackages(Collection<AbstractWorkflowArtifact> awas) throws OseeCoreException {
       List<String> guids = new ArrayList<>();
       for (AbstractWorkflowArtifact awa : awas) {
-         IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage(awa);
+         IAtsWorkPackage workPkg = AtsClientService.get().getEarnedValueService().getWorkPackage((IAtsWorkItem) awa);
          if (workPkg != null) {
             if (!guids.contains(workPkg.getGuid())) {
                guids.add(workPkg.getGuid());

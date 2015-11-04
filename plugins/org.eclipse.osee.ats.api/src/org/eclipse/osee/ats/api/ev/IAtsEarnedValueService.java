@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.api.ev;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -29,5 +31,11 @@ public interface IAtsEarnedValueService {
    public void setWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
 
    public void removeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems);
+
+   public IAtsWorkPackage getWorkPackage(ArtifactId artifact);
+
+   public Collection<String> getColorTeams();
+
+   public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity);
 
 }

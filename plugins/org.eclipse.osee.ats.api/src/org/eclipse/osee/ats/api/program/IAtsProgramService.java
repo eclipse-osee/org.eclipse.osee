@@ -10,9 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.program;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
 /**
@@ -29,4 +33,19 @@ public interface IAtsProgramService {
    IAtsCountry getCountry(IAtsProgram atsProgram);
 
    List<IAtsProgram> getPrograms(IAtsCountry atsCountry);
+
+   IAtsProgram getProgram(Long programUuid);
+
+   Collection<IAtsProgram> getPrograms();
+
+   Collection<IAtsInsertion> getInsertions(IAtsProgram program);
+
+   IAtsInsertion getInsertion(Long insertionUuid);
+
+   Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion iAtsInsertion);
+
+   IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid);
+
+   IAtsWorkPackage getWorkPackage(Long workPackageUuid);
+
 }

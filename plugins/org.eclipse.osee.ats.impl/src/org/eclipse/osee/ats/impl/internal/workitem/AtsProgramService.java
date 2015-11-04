@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.workitem;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,6 +22,9 @@ import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -26,8 +33,6 @@ import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -101,6 +106,56 @@ public class AtsProgramService implements IAtsProgramService {
          }
       }
       return programs;
+   }
+
+   @Override
+   public IAtsProgram getProgram(Long programUuid) {
+      return atsServer.getConfigItemFactory().getProgram(atsServer.getArtifactByUuid(programUuid));
+   }
+
+   @Override
+   public Collection<IAtsProgram> getPrograms() {
+      List<IAtsProgram> programs = new ArrayList<>();
+      for (ArtifactReadable artifact : atsServer.getOrcsApi().getQueryFactory().fromBranch(
+         AtsUtilCore.getAtsBranch()).andIsOfType(AtsArtifactTypes.Program).getResults()) {
+         programs.add(atsServer.getConfigItemFactory().getProgram(artifact));
+      }
+      return programs;
+   }
+
+   @Override
+   public Collection<IAtsInsertion> getInsertions(IAtsProgram program) {
+      List<IAtsInsertion> insertions = new ArrayList<>();
+      for (ArtifactReadable artifact : atsServer.getArtifactByUuid(program.getUuid()).getRelated(
+         AtsRelationTypes.ProgramToInsertion_Insertion)) {
+         insertions.add(atsServer.getConfigItemFactory().getInsertion(artifact));
+      }
+      return insertions;
+   }
+
+   @Override
+   public IAtsInsertion getInsertion(Long insertionUuid) {
+      return atsServer.getConfigItemFactory().getInsertion(atsServer.getArtifactByUuid(insertionUuid));
+   }
+
+   @Override
+   public Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion insertion) {
+      List<IAtsInsertionActivity> insertionActivitys = new ArrayList<>();
+      for (ArtifactReadable artifact : atsServer.getArtifactByUuid(insertion.getUuid()).getRelated(
+         AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
+         insertionActivitys.add(atsServer.getConfigItemFactory().getInsertionActivity(artifact));
+      }
+      return insertionActivitys;
+   }
+
+   @Override
+   public IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid) {
+      return atsServer.getConfigItemFactory().getInsertionActivity(atsServer.getArtifactByUuid(insertionActivityUuid));
+   }
+
+   @Override
+   public IAtsWorkPackage getWorkPackage(Long workPackageUuid) {
+      throw new UnsupportedOperationException("getWorkPackage not supported on server");
    }
 
 }
