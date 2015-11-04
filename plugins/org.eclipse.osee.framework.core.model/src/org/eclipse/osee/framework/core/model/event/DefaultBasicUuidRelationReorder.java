@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.core.data.IRelationType;
 public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
 
    private DefaultBasicGuidArtifact parentArt;
-   private Long branchUuid;
+   private Long branchId;
    private Long relTypeUuid;
    private RelationOrderModType modType;
 
    public DefaultBasicUuidRelationReorder(RelationOrderModType modType, Long branchUuid, Long relTypeUuid, DefaultBasicGuidArtifact artA) {
       this.modType = modType;
-      this.branchUuid = branchUuid;
+      this.branchId = branchUuid;
       this.relTypeUuid = relTypeUuid;
       this.parentArt = artA;
    }
@@ -35,8 +35,8 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
    }
 
    @Override
-   public Long getBranchUuid() {
-      return branchUuid;
+   public Long getBranchId() {
+      return branchId;
    }
 
    @Override
@@ -48,8 +48,8 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
       this.parentArt = artA;
    }
 
-   public void setBranchUuid(Long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranchId(Long branchId) {
+      this.branchId = branchId;
    }
 
    public void setRelTypeGuid(Long relTypeGuid) {
@@ -61,7 +61,7 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
       final int prime = 31;
       int result = 1;
       result = prime * result + (parentArt == null ? 0 : parentArt.hashCode());
-      result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
+      result = prime * result + (branchId == null ? 0 : branchId.hashCode());
       result = prime * result + (relTypeUuid == null ? 0 : relTypeUuid.hashCode());
       return result;
    }
@@ -85,11 +85,11 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
       } else if (!parentArt.equals(other.getParentArt())) {
          return false;
       }
-      if (branchUuid == null) {
-         if (other.getBranchUuid() != null) {
+      if (branchId == null) {
+         if (other.getBranchId() != null) {
             return false;
          }
-      } else if (!branchUuid.equals(other.getBranchUuid())) {
+      } else if (!branchId.equals(other.getBranchId())) {
          return false;
       }
       if (relTypeUuid == null) {
@@ -119,5 +119,4 @@ public class DefaultBasicUuidRelationReorder implements IBasicRelationReorder {
    public void setModType(RelationOrderModType modType) {
       this.modType = modType;
    }
-
 }

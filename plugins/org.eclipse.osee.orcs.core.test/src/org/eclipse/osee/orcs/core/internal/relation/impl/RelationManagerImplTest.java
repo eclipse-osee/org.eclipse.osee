@@ -415,8 +415,8 @@ public class RelationManagerImplTest {
 
    @Test
    public void testRelateErrorOnDifferentBranches() throws OseeCoreException {
-      when(node1.getBranchUuid()).thenReturn(SYSTEM_ROOT_ID);
-      when(node2.getBranchUuid()).thenReturn(COMMON_ID);
+      when(node1.getBranchId()).thenReturn(SYSTEM_ROOT_ID);
+      when(node2.getBranchId()).thenReturn(COMMON_ID);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("Cross branch linking is not yet supported.");

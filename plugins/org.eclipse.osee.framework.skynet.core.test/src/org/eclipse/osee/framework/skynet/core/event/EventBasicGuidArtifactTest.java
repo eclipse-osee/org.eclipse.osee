@@ -31,14 +31,14 @@ public class EventBasicGuidArtifactTest {
       EventBasicGuidArtifact eventArt1 =
          new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), 0x01L, GUID.create());
       EventBasicGuidArtifact eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(),
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchId(), eventArt1.getArtTypeGuid(),
             eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
 
       eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(),
+         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchId(), eventArt1.getArtTypeGuid(),
             eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
@@ -49,12 +49,12 @@ public class EventBasicGuidArtifactTest {
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchUuid(), 0x02L, eventArt1.getGuid());
+      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchId(), 0x02L, eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(),
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchId(), eventArt1.getArtTypeGuid(),
             GUID.create());
 
       Assert.assertNotSame(eventArt1, eventArt2);
@@ -79,13 +79,13 @@ public class EventBasicGuidArtifactTest {
       EventBasicGuidArtifact eventArt1 =
          new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), 0x01L, GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
 
       eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(),
+         new EventBasicGuidArtifact(EventModType.Deleted, eventArt1.getBranchId(), eventArt1.getArtTypeGuid(),
             eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
@@ -96,12 +96,12 @@ public class EventBasicGuidArtifactTest {
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchUuid(), 0x02L, eventArt1.getGuid());
+      eventArt2 = new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchId(), 0x02L, eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
       eventArt2 =
-         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchUuid(), eventArt1.getArtTypeGuid(),
+         new EventBasicGuidArtifact(EventModType.Added, eventArt1.getBranchId(), eventArt1.getArtTypeGuid(),
             GUID.create());
 
       Assert.assertNotSame(eventArt1, eventArt2);

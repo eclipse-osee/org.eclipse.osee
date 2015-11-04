@@ -29,8 +29,8 @@ public final class GraphUtil {
 
          @Override
          public GraphData getGraph(OrcsSession session, Long branchId, int transactionId) throws OseeCoreException {
-            Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getBranchUuid(), branchId),
-               "Invalid branch - Graph's branch[%s] does not equals requested branch[%s]", graph.getBranchUuid(),
+            Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getBranchId(), branchId),
+               "Invalid branch - Graph's branch[%s] does not equals requested branch[%s]", graph.getBranchId(),
                branchId);
             Conditions.checkExpressionFailOnTrue(!Objects.equal(graph.getTransaction(), transactionId),
                "Invalid transactionId - Graph's transactionId[%s] does not equals requested transactionId[%s]",

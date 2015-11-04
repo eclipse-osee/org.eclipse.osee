@@ -61,7 +61,7 @@ public class TxData implements HasSession {
    }
 
    public Long getBranchId() {
-      return graph.getBranchUuid();
+      return graph.getBranchId();
    }
 
    public GraphData getGraph() {

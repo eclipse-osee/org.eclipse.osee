@@ -95,7 +95,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
       });
       if (item.isPresent()) {
          HasBranch criteria = (HasBranch) item.get();
-         branch = criteria.getBranchUuid();
+         branch = criteria.getBranchId();
       }
       return branch;
    }

@@ -107,7 +107,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranchUuid(), sourceArtifact);
+      return copyArtifact(sourceArtifact.getBranchId(), sourceArtifact);
    }
 
    @Override
@@ -121,7 +121,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
-      return copyArtifact(sourceArtifact.getBranchUuid(), sourceArtifact, attributesToDuplicate);
+      return copyArtifact(sourceArtifact.getBranchId(), sourceArtifact, attributesToDuplicate);
    }
 
    @Override
@@ -145,7 +145,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException {
-      return txManager.replaceWithVersion(txData, sourceArtifact.getBranchUuid(), sourceArtifact, destination);
+      return txManager.replaceWithVersion(txData, sourceArtifact.getBranchId(), sourceArtifact, destination);
    }
 
    @Override

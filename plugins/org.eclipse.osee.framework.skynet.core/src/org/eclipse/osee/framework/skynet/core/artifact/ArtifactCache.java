@@ -113,7 +113,7 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(IBasicGuidArtifact basicGuidArtifact) throws OseeCoreException {
-      return ACTIVE_CACHE.getByGuid(basicGuidArtifact.getGuid(), basicGuidArtifact.getBranchUuid());
+      return ACTIVE_CACHE.getByGuid(basicGuidArtifact.getGuid(), basicGuidArtifact.getBranchId());
    }
 
    public static Collection<Artifact> getActive(Collection<? extends IBasicGuidArtifact> basicGuidArtifacts) throws OseeCoreException {
@@ -128,15 +128,15 @@ public final class ArtifactCache {
    }
 
    public static Artifact getActive(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return getActive(guidArt.getGuid(), guidArt.getBranchUuid());
+      return getActive(guidArt.getGuid(), guidArt.getBranchId());
    }
 
    private static Artifact getActiveA(IBasicGuidRelation guidRel) throws OseeCoreException {
-      return getActive(guidRel.getArtA().getGuid(), guidRel.getArtA().getBranchUuid());
+      return getActive(guidRel.getArtA().getGuid(), guidRel.getArtA().getBranchId());
    }
 
    private static Artifact getActiveB(IBasicGuidRelation guidRel) throws OseeCoreException {
-      return getActive(guidRel.getArtB().getGuid(), guidRel.getArtB().getBranchUuid());
+      return getActive(guidRel.getArtB().getGuid(), guidRel.getArtB().getBranchId());
    }
 
    /**

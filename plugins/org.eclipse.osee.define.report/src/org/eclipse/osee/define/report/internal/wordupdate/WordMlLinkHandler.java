@@ -185,7 +185,7 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
-      Long branchId = source.getBranchUuid();
+      Long branchId = source.getBranchId();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());

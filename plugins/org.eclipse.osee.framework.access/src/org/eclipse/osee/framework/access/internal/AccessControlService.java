@@ -349,7 +349,7 @@ public class AccessControlService implements IAccessControlService {
          if (o instanceof Branch) {
             key.add(String.valueOf(((Branch) o).getGuid()));
          } else if (o instanceof Artifact) {
-            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchUuid());
+            key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchId());
          } else {
             key.add(GUID.create());
          }

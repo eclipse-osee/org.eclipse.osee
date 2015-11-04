@@ -27,7 +27,7 @@ public class LoadSqlContext extends SqlContextImpl implements LoadContext {
       this.branchId = branchId;
    }
 
-   public long getBranchUuid() {
+   public long getBranchId() {
       return branchId;
    }
 }

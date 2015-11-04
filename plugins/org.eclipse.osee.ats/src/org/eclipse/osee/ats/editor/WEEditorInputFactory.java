@@ -50,7 +50,7 @@ public class WEEditorInputFactory implements IElementFactory {
       String title = input.getTitle();
       if (input.getArtifact() != null && !input.getArtifact().isDeleted()) {
          artUuid = input.getArtifact().getArtId();
-         branchUuid = input.getArtifact().getBranchUuid();
+         branchUuid = input.getArtifact().getBranchId();
          title = input.getName();
       }
       if (artUuid > 0 && branchUuid > 0 && Strings.isValid(title)) {

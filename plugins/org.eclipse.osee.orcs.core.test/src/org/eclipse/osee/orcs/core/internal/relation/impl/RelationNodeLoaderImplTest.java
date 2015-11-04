@@ -66,7 +66,7 @@ public class RelationNodeLoaderImplTest {
 
       relationNode = new RelationNodeLoaderImpl(dataLoaderFactory, graphBuilderFactory);
 
-      when(graph.getBranchUuid()).thenReturn(BRANCH.getUuid());
+      when(graph.getBranchId()).thenReturn(BRANCH.getUuid());
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
    }
 

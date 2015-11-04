@@ -131,9 +131,9 @@ public class ArtifactQueryTest {
       Boolean pass = false;
       for (Artifact a : searchedArtifacts) {
          if (0L == firstGuid) {
-            firstGuid = a.getBranchUuid();
+            firstGuid = a.getBranchId();
          } else {
-            if (firstGuid != a.getBranchUuid()) {
+            if (firstGuid != a.getBranchId()) {
                pass = true;
                break;
             }

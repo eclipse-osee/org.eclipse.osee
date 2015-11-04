@@ -29,7 +29,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    private final EventModType eventModType;
 
    public EventBasicGuidArtifact(EventModType eventModType, DefaultBasicGuidArtifact guidArt) {
-      this(eventModType, guidArt.getBranchUuid(), guidArt.getArtTypeGuid(), guidArt.getGuid());
+      this(eventModType, guidArt.getBranchId(), guidArt.getArtTypeGuid(), guidArt.getGuid());
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
@@ -37,7 +37,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) {
-      this(eventModType, basicGuidArtifact.getBranchUuid(), basicGuidArtifact.getArtTypeGuid(),
+      this(eventModType, basicGuidArtifact.getBranchId(), basicGuidArtifact.getArtTypeGuid(),
          basicGuidArtifact.getGuid());
    }
 
@@ -75,7 +75,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranchUuid(), getArtTypeGuid(), getGuid());
+      return new DefaultBasicGuidArtifact(getBranchId(), getArtTypeGuid(), getGuid());
    }
 
    @Override
@@ -98,7 +98,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
 
    @Override
    public String toString() {
-      return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchUuid(), getArtTypeGuid());
+      return String.format("[%s - G:%s - B:%s - A:%s]", eventModType, getGuid(), getBranchId(), getArtTypeGuid());
    }
 
    public boolean is(EventModType... eventModTypes) {

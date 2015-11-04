@@ -18,5 +18,5 @@ public interface IBasicGuidArtifact {
 
    public abstract Long getArtTypeGuid();
 
-   public abstract Long getBranchUuid();
+   public abstract Long getBranchId();
 }

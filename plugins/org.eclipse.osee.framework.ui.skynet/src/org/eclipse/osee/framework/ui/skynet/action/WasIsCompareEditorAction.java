@@ -83,7 +83,7 @@ public class WasIsCompareEditorAction extends Action {
 
             String was = change.getWasValue();
             int attrId = ((AttributeChange) change).getAttrId();
-            Integer previousTransaction = getPreviousTransaction(artifact.getBranchUuid(), attrId, transactionId);
+            Integer previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
             if (!Strings.isValid(was) && (change instanceof AttributeChange)) {
                if (previousTransaction > 0) {
                   was = loadAttributeValue(attrId, previousTransaction, artifact);
@@ -129,7 +129,7 @@ public class WasIsCompareEditorAction extends Action {
    private String loadAttributeValue(int attrId, int transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri =
-         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchUuid())).path(
+         UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
             "artifact").path(artifact.getGuid()).path("attribute").path(String.valueOf(attrId)).path("version").path(
             String.valueOf(transactionId)).build();
       try {

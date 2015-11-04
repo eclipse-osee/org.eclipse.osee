@@ -137,7 +137,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
          branchUuid = provider.getBranchUuid();
       } else {
          if (!editor.getLoadedArtifacts().isEmpty()) {
-            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranchUuid();
+            branchUuid = editor.getLoadedArtifacts().iterator().next().getBranchId();
          }
       }
       return branchUuid;

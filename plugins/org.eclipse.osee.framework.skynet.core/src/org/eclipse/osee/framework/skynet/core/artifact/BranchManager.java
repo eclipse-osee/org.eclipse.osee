@@ -125,7 +125,7 @@ public class BranchManager {
    }
 
    public static Branch getBranch(DefaultBasicGuidArtifact guidArt) throws OseeCoreException {
-      return BranchManager.getBranchByUuid(guidArt.getBranchUuid());
+      return BranchManager.getBranchByUuid(guidArt.getBranchId());
    }
 
    public static Branch getBranch(String branchName) throws OseeCoreException {

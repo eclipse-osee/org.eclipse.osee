@@ -73,8 +73,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    }
 
    @Override
-   public Long getBranchUuid() {
-      return getProxiedObject().getBranchUuid();
+   public Long getBranchId() {
+      return getProxiedObject().getBranchId();
    }
 
    @Override

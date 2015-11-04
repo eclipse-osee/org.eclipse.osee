@@ -167,7 +167,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testCopyArtifact() throws OseeCoreException {
-      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
 
       factory.copyArtifact(expectedAuthor);
 
@@ -177,7 +177,7 @@ public class TransactionBuilderImplTest {
    @Test
    public void testCopyArtifactWithList() throws OseeCoreException {
       Collection<? extends IAttributeType> attributesToDuplicate = Arrays.asList(Name, Annotation);
-      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
 
       factory.copyArtifact(expectedAuthor, attributesToDuplicate);
 
@@ -186,7 +186,7 @@ public class TransactionBuilderImplTest {
 
    @Test
    public void testIntroduceArtifactBranchException() throws OseeCoreException {
-      when(expectedAuthor.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(expectedAuthor.getBranchId()).thenReturn(BRANCH_ID);
       when(txData.getBranchId()).thenReturn(BRANCH_ID);
 
       thrown.expect(OseeArgumentException.class);

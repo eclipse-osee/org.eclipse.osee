@@ -26,7 +26,7 @@ public class ArtifactQuerySqlContext extends QuerySqlContext {
       this.branchId = branchId;
    }
 
-   public long getBranchUuid() {
+   public long getBranchId() {
       return branchId;
    }
 

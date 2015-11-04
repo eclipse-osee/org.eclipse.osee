@@ -42,7 +42,7 @@ public class RelationFactory {
    public Relation createRelation(RelationNode aNode, IRelationType type, RelationNode bNode) throws OseeCoreException {
       OrcsConditions.checkBranch(aNode, bNode);
       OrcsConditions.checkRelateSelf(aNode, bNode);
-      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranchUuid(), aNode, bNode, "");
+      RelationData data = relationDataFactory.createRelationData(type, aNode.getBranchId(), aNode, bNode, "");
       return createRelation(data);
    }
 

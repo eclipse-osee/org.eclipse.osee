@@ -1573,8 +1573,8 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          IBasicGuidArtifact other = (IBasicGuidArtifact) obj;
          boolean result = getGuid().equals(other.getGuid());
          if (result) {
-            if (getBranchUuid() != null && other.getBranchUuid() != null) {
-               result = getBranchUuid().equals(other.getBranchUuid());
+            if (getBranchId() != null && other.getBranchId() != null) {
+               result = getBranchId().equals(other.getBranchId());
             }
          }
          return result;
@@ -1718,7 +1718,7 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    @Override
-   public final Long getBranchUuid() {
+   public final Long getBranchId() {
       return getBranch().getUuid();
    }
 

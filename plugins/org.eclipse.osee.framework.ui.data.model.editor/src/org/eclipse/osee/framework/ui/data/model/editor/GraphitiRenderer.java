@@ -77,7 +77,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
                   Integer attributeId = artifact.getAttributeIds(GraphitiDiagram).get(0);
 
                   URI diagramUri = URI.createURI(String.format("osee://branch/%d/artifact/%s/attribute/%d",
-                     artifact.getBranchUuid(), artifact.getUuid(), attributeId));
+                     artifact.getBranchId(), artifact.getUuid(), attributeId));
 
                   DiagramEditorInput editorInput = new DiagramEditorInput(diagramUri, null);
                   activePage.openEditor(editorInput, GraphitiDiagramArtifactEditor.EDITOR_ID, true);

@@ -26,7 +26,7 @@ public class ArtifactEventFilter implements IEventFilter {
 
    public ArtifactEventFilter(Artifact artifact) {
       filterArtifactGuid = artifact.getGuid();
-      filterBranchUuid = artifact.getBranchUuid();
+      filterBranchUuid = artifact.getBranchId();
    }
 
    @Override
@@ -37,7 +37,7 @@ public class ArtifactEventFilter implements IEventFilter {
    @Override
    public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       for (IBasicGuidArtifact art : guidArts) {
-         if (art.getGuid().equals(filterArtifactGuid) && art.getBranchUuid().equals(filterBranchUuid)) {
+         if (art.getGuid().equals(filterArtifactGuid) && art.getBranchId().equals(filterBranchUuid)) {
             return true;
          }
       }

@@ -157,7 +157,7 @@ public class TxDataManager {
 
    private boolean isFromSameStripe(TxData txData, Artifact artifact) {
       boolean result = false;
-      if (artifact != null && txData.getBranchId().equals(artifact.getBranchUuid())) {
+      if (artifact != null && txData.getBranchId().equals(artifact.getBranchId())) {
          int txId = txData.getGraph().getTransaction();
          if (txId == artifact.getTransaction()) {
             result = true;
@@ -192,12 +192,12 @@ public class TxDataManager {
          Artifact artifactSrc = null;
          if (artifactId instanceof Artifact) {
             Artifact external = (Artifact) artifactId;
-            if (fromBranchId.equals(external.getBranchUuid())) {
+            if (fromBranchId.equals(external.getBranchId())) {
                artifactSrc = external;
             }
          } else if (artifactId instanceof ArtifactReadable) {
             ArtifactReadable external = (ArtifactReadable) artifactId;
-            if (fromBranchId.equals(external.getBranchUuid())) {
+            if (fromBranchId.equals(external.getBranchId())) {
                artifactSrc = proxyManager.asInternalArtifact(external);
             }
          }

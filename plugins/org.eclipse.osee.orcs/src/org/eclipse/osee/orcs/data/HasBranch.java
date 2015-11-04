@@ -14,5 +14,5 @@ package org.eclipse.osee.orcs.data;
  * @author Roberto E. Escobar
  */
 public interface HasBranch {
-   Long getBranchUuid();
+   Long getBranchId();
 }

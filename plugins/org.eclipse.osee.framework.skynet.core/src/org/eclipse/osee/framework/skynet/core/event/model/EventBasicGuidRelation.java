@@ -25,7 +25,7 @@ public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
    private String rationale;
 
    public EventBasicGuidRelation(RelationEventType relationEventType, int artAId, int artBId, DefaultBasicUuidRelation guidRel) {
-      this(relationEventType, guidRel.getBranchUuid(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
+      this(relationEventType, guidRel.getBranchId(), guidRel.getRelTypeGuid(), guidRel.getRelationId(),
          guidRel.getGammaId(), artAId, guidRel.getArtA(), artBId, guidRel.getArtB());
    }
 
@@ -42,8 +42,8 @@ public class EventBasicGuidRelation extends DefaultBasicUuidRelation {
 
    @Override
    public String toString() {
-      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchUuid(),
-         getBranchUuid(), getGammaId(), getRelationId(), getArtA(), getArtB());
+      return String.format("[%s - B:%s - TG:%s - GI:%d - RI:%d - A:%s - B:%s]", relationEventType, getBranchId(),
+         getBranchId(), getGammaId(), getRelationId(), getArtA(), getArtB());
    }
 
    @Override

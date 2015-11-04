@@ -48,7 +48,7 @@ public class GraphUtilTest {
       initMocks(this);
       provider = GraphUtil.asProvider(graph);
 
-      when(graph.getBranchUuid()).thenReturn(COMMON_ID);
+      when(graph.getBranchId()).thenReturn(COMMON_ID);
       when(graph.getTransaction()).thenReturn(TRANSACTION_ID);
    }
 

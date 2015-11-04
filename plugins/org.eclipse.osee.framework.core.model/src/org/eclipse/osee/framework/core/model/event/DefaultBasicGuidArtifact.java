@@ -27,7 +27,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
    }
 
    @Override
-   public Long getBranchUuid() {
+   public Long getBranchId() {
       return branchUuid;
    }
 
@@ -63,10 +63,10 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IB
          }
          equals = artTypeGuid.equals(other.getArtTypeGuid());
 
-         if (equals && branchUuid == null || other.getBranchUuid() == null) {
+         if (equals && branchUuid == null || other.getBranchId() == null) {
             equals = false;
          } else if (equals) {
-            equals = branchUuid.equals(other.getBranchUuid());
+            equals = branchUuid.equals(other.getBranchId());
          }
 
          if (equals && getGuid() == null || other.getGuid() == null) {

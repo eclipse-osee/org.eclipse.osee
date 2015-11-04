@@ -43,7 +43,7 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
    }
 
    @Override
-   public Long getBranchUuid() {
+   public Long getBranchId() {
       return branchUuid;
    }
 
@@ -116,10 +116,10 @@ public class DefaultBasicUuidRelation implements IBasicGuidRelation {
          return false;
       }
       if (branchUuid == null) {
-         if (other.getBranchUuid() != null) {
+         if (other.getBranchId() != null) {
             return false;
          }
-      } else if (!branchUuid.equals(other.getBranchUuid())) {
+      } else if (!branchUuid.equals(other.getBranchId())) {
          return false;
       }
       if (gammaId != other.getGammaId()) {

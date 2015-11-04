@@ -19,7 +19,7 @@ public interface IBasicRelationReorder {
 
    Long getRelTypeGuid();
 
-   Long getBranchUuid();
+   Long getBranchId();
 
    RelationOrderModType getModType();
 }

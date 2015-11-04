@@ -191,7 +191,7 @@ public class SqlObjectLoader {
    protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) throws OseeCoreException {
       OrcsSession session = loadContext.getSession();
       Options options = loadContext.getOptions();
-      Long branchId = loadContext.getBranchUuid();
+      Long branchId = loadContext.getBranchId();
 
       int transactionLoaded;
       if (OptionsUtil.isHeadTransaction(options)) {

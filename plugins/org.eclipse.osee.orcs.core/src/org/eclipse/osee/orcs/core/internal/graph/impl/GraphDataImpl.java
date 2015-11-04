@@ -57,7 +57,7 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public void addNode(GraphNode node, boolean useBackingData) throws OseeCoreException {
-      boolean sameBranches = getBranchUuid().equals(node.getBranchUuid());
+      boolean sameBranches = getBranchId().equals(node.getBranchId());
       if (!sameBranches) {
          throw new OseeArgumentException("Invalid node added to graph. Graph[%s] Node[%s]", this,
             node.getExceptionString());
@@ -120,14 +120,14 @@ public class GraphDataImpl implements GraphData {
 
    @Override
    public String toString() {
-      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranchUuid(), getTransaction(),
+      return String.format("Graph - branch[%s] txId[%s] nodes[%s] adjacencies[%s]", getBranchId(), getTransaction(),
          nodesById.size(), adjacenciesById.size());
    }
 
    @Override
    public int hashCode() {
       final int prime = 31;
-      int result = getBranchUuid().hashCode();
+      int result = getBranchId().hashCode();
       result = prime * result + getTransaction();
       return result;
    }
@@ -141,7 +141,7 @@ public class GraphDataImpl implements GraphData {
          return false;
       }
       GraphData other = (GraphData) obj;
-      if (!getBranchUuid().equals(other.getBranchUuid())) {
+      if (!getBranchId().equals(other.getBranchId())) {
          return false;
       }
       if (getTransaction() != other.getTransaction()) {
@@ -156,7 +156,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public Long getBranchUuid() {
+   public Long getBranchId() {
       return branchId;
    }
 }

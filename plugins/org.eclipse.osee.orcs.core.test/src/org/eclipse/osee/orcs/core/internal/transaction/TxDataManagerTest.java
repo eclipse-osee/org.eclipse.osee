@@ -128,7 +128,7 @@ public class TxDataManagerTest {
       when(txData.getSession()).thenReturn(session);
       when(txData.getGraph()).thenReturn(graph);
 
-      when(graph.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(graph.getBranchId()).thenReturn(BRANCH_ID);
       txDataReal = new TxData(session, graph);
 
       r1Guid = GUID.create();
@@ -143,7 +143,7 @@ public class TxDataManagerTest {
       when(readable2.getGuid()).thenReturn(r2Guid);
       when(readable3.getGuid()).thenReturn(r3Guid);
 
-      when(readable1.getBranchUuid()).thenReturn(BRANCH_ID);
+      when(readable1.getBranchId()).thenReturn(BRANCH_ID);
 
       when(artifact1.getGuid()).thenReturn(r1Guid);
       when(artifact2.getGuid()).thenReturn(r2Guid);
@@ -257,7 +257,7 @@ public class TxDataManagerTest {
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(artifact1).getBranchUuid();
+      verify(artifact1).getBranchId();
 
       assertEquals(artifact2, actual);
    }
@@ -292,7 +292,7 @@ public class TxDataManagerTest {
 
       Artifact actual = txDataManager.getForWrite(txDataReal, artifact1);
 
-      verify(artifact1).getBranchUuid();
+      verify(artifact1).getBranchId();
       verify(loader).loadArtifacts(eq(session), eq(graph), idCaptor.capture());
 
       assertEquals(artifact1, idCaptor.getValue().iterator().next());

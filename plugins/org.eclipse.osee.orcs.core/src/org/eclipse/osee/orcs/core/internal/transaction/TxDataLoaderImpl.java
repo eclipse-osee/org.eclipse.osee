@@ -76,7 +76,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
 
    @Override
    public ResultSet<Artifact> loadArtifacts(OrcsSession session, GraphData graph, Collection<ArtifactId> artifactIds) throws OseeCoreException {
-      DataLoader loader = createLoader(session, graph.getBranchUuid(), artifactIds);
+      DataLoader loader = createLoader(session, graph.getBranchId(), artifactIds);
       loader.fromTransaction(graph.getTransaction());
       GraphBuilder handler = graphBuilderFactory.createBuilderForGraph(graph);
       loader.load(null, handler);

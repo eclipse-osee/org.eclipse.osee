@@ -104,12 +104,12 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetBranchUuid() {
-      when(proxiedObject.getBranchUuid()).thenReturn(COMMON_ID);
+      when(proxiedObject.getBranchId()).thenReturn(COMMON_ID);
 
-      Long actual = readOnly.getBranchUuid();
+      Long actual = readOnly.getBranchId();
 
       assertEquals(COMMON_ID, actual);
-      verify(proxiedObject).getBranchUuid();
+      verify(proxiedObject).getBranchId();
    }
 
    @Test

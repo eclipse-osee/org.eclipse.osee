@@ -74,7 +74,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
 
    public boolean isForBranch(IOseeBranch branch) {
       for (DefaultBasicGuidArtifact guidArt : getArtifacts()) {
-         if (branch.getUuid() == guidArt.getBranchUuid()) {
+         if (branch.getUuid() == guidArt.getBranchId()) {
             return true;
          }
       }

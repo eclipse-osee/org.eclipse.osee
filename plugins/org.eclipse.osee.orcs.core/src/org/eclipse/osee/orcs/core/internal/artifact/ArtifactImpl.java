@@ -89,7 +89,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public Long getBranchUuid() {
+   public Long getBranchId() {
       return artifactData.getVersion().getBranchId();
    }
 
@@ -146,20 +146,20 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
 
    @Override
    public boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return artifactTypeCache.isValidAttributeType(getArtifactType(), TokenFactory.createBranch(getBranchUuid()),
+      return artifactTypeCache.isValidAttributeType(getArtifactType(), TokenFactory.createBranch(getBranchId()),
          attributeType);
    }
 
    @Override
    public Collection<? extends IAttributeType> getValidAttributeTypes() throws OseeCoreException {
-      return artifactTypeCache.getAttributeTypes(getArtifactType(), TokenFactory.createBranch(getBranchUuid()));
+      return artifactTypeCache.getAttributeTypes(getArtifactType(), TokenFactory.createBranch(getBranchId()));
    }
 
    @Override
    public String getExceptionString() {
       try {
          return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(),
-            getBranchUuid());
+            getBranchId());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }
@@ -213,7 +213,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    public String toString() {
       try {
          return String.format("artifact [type=[%s] guid=[%s] branch=[%s]]", getArtifactType(), getGuid(),
-            getBranchUuid());
+            getBranchId());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }

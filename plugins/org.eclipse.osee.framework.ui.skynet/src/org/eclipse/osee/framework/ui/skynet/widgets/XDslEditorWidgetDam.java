@@ -99,7 +99,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
          OseeExceptions.wrapAndThrow(ex);
       }
       String uriString =
-         String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchUuid(), artifact.getGuid(), encodedName,
+         String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchId(), artifact.getGuid(), encodedName,
             extension);
       return URI.createURI(uriString);
    }

@@ -21,7 +21,7 @@ public interface IBasicGuidRelation {
 
    Long getRelTypeGuid();
 
-   Long getBranchUuid();
+   Long getBranchId();
 
    int getGammaId();
 

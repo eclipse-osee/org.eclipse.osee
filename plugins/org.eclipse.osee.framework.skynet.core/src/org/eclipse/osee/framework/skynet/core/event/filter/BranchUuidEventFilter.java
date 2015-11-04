@@ -45,7 +45,7 @@ public class BranchUuidEventFilter implements IEventFilter {
          return true;
       }
       for (IBasicGuidArtifact guidArt : guidArts) {
-         if (guidArt.getBranchUuid().equals(branchToken.getUuid())) {
+         if (guidArt.getBranchId().equals(branchToken.getUuid())) {
             return true;
          }
       }
@@ -58,9 +58,9 @@ public class BranchUuidEventFilter implements IEventFilter {
          return true;
       }
       for (IBasicGuidRelation rel : relations) {
-         if (rel.getArtA().getBranchUuid().equals(branchToken.getUuid()) ||
+         if (rel.getArtA().getBranchId().equals(branchToken.getUuid()) ||
          //
-         rel.getArtB().getBranchUuid().equals(branchToken.getUuid())) {
+         rel.getArtB().getBranchId().equals(branchToken.getUuid())) {
             return true;
          }
       }

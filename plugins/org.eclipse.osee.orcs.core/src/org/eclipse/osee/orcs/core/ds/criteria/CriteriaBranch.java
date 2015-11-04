@@ -33,7 +33,7 @@ public class CriteriaBranch extends Criteria implements HasBranch, BranchCriteri
    }
 
    @Override
-   public Long getBranchUuid() {
+   public Long getBranchId() {
       return branchId;
    }
 
