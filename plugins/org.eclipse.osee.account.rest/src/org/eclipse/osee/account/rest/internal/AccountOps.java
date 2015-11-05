@@ -12,7 +12,9 @@ package org.eclipse.osee.account.rest.internal;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
+
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
@@ -130,6 +132,7 @@ public class AccountOps {
    }
 
    public AccountDetailsData getAccountDetailsData(String accountId) {
+	  System.out.println("**********LOOKING FOR: " + accountId);
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
       Account account = result.getExactlyOne();
       return AccountDataUtil.asAccountDetailsData(account);
