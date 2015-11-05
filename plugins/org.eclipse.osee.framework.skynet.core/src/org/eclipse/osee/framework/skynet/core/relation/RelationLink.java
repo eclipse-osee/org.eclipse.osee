@@ -174,8 +174,13 @@ public class RelationLink {
       internalSetModType(ModificationType.UNDELETED, false, true);
    }
 
+   /**
+    * This is only for remote events because it does not </br>
+    * 1) reorder relations, cause the attribute change came over and was already applied</br>
+    * 2) set the relation dirty
+    */
    public void internalRemoteEventDelete() {
-      internalDelete(true, false);
+      internalDelete(false, false);
    }
 
    private void internalDelete(boolean reorderRelations, boolean setDirty) {
@@ -329,9 +334,9 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          //@formatter:off
-         boolean result = aArtifactId == other.aArtifactId && 
+         boolean result = aArtifactId == other.aArtifactId &&
          branch.equals(other.branch) &&
-         bArtifactId == other.bArtifactId && 
+         bArtifactId == other.bArtifactId &&
          other.modificationType == modificationType &&
          relationType.equals(other.relationType);
          //@formatter:on
@@ -350,10 +355,10 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          //@formatter:off
-         return aArtifactId == other.aArtifactId && 
-         branch.equals(other.branch) && 
-         bArtifactId == other.bArtifactId && 
-         other.modificationType == modificationType && 
+         return aArtifactId == other.aArtifactId &&
+         branch.equals(other.branch) &&
+         bArtifactId == other.bArtifactId &&
+         other.modificationType == modificationType &&
          relationType.equals(other.relationType);
          //@formatter:on
       }
