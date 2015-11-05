@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 
@@ -17,31 +19,43 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  * @author Robert A. Fisher
  */
 public class ArtifactTypeSearch implements ISearchPrimitive {
-   private final IArtifactType artifactType;
+   private final List<IArtifactType> artifactTypes;
 
-   public ArtifactTypeSearch(IArtifactType type) {
+   public ArtifactTypeSearch(List<IArtifactType> artifactTypes) {
       super();
-      this.artifactType = type;
+      this.artifactTypes = artifactTypes;
    }
 
    @Override
    public String toString() {
-      return "Artifact type: " + artifactType;
+      return "Artifact type: " + artifactTypes.toString();
    }
 
    @Override
    public String getStorageString() {
-      return artifactType.getGuid().toString();
+      StringBuilder storageString = new StringBuilder();
+
+      for (IArtifactType a : artifactTypes) {
+         storageString.append(a.getGuid().toString());
+         storageString.append(",");
+      }
+      storageString.deleteCharAt(storageString.length() - 1);
+      return storageString.toString();
    }
 
    public static ArtifactTypeSearch getPrimitive(String storageString) {
-      IArtifactType type = TokenFactory.createArtifactType(Long.parseLong(storageString), "SearchArtType");
-      return new ArtifactTypeSearch(type);
+      ArrayList<IArtifactType> artifactTypes = new ArrayList<>();
+
+      for (String artifactTypeId : storageString.split(",")) {
+         artifactTypes.add(TokenFactory.createArtifactType(Long.parseLong(artifactTypeId), "SearchArtType"));
+      }
+
+      return new ArtifactTypeSearch(artifactTypes);
    }
 
    @Override
    public void addToQuery(QueryBuilderArtifact builder) {
-      builder.andIsOfType(artifactType);
+      builder.andIsOfType(artifactTypes);
    }
 
 }
