@@ -11,13 +11,14 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -71,13 +72,13 @@ public class MergeManagerTest {
 
       if (newArt == null) {
          assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
-         newArt = ArtifactTypeManager.addArtifact(NewArtifactToken, DemoBranches.SAW_Bld_1);
+         newArt = ArtifactTypeManager.addArtifact(NewArtifactToken, SAW_Bld_1);
          newArt.addAttribute(CoreAttributeTypes.WordTemplateContent, "Base Edit");
          newArt.persist("Base Edit");
          //wait for creation of artifact and persist to go through
       }
 
-      workingBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, "Working Branch");
+      workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, "Working Branch");
       Artifact artOnWorking = ArtifactQuery.getArtifactFromToken(NewArtifactToken, workingBranch);
       artOnWorking.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "Working Edit");
       artOnWorking.persist("Working Edit");
@@ -114,7 +115,7 @@ public class MergeManagerTest {
 
       // Shouldn't be allowed to commit
       boolean committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch Committed while in Rebaseline In Progress", !committed);
       assertTrue("An additional Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
 
@@ -124,7 +125,7 @@ public class MergeManagerTest {
 
       // Now we can commit
       committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch should have been comitted", committed);
 
       // make sure we can't rebase now since we've done a commit
@@ -134,7 +135,7 @@ public class MergeManagerTest {
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Purge art from SAW 2 since we did a commit
-      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
+      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, SAW_Bld_2);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Collections.singleton(artOnSaw2)));
 
    }
@@ -191,7 +192,7 @@ public class MergeManagerTest {
 
       // Shouldn't be allowed to commit working branch
       boolean committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch Committed while in Rebaseline In Progress", !committed);
 
       // Finish Rebaseline
@@ -204,17 +205,17 @@ public class MergeManagerTest {
 
       // Shouldn't be allowed to commit original working branch
       committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch Committed after in Rebaseline was finished", !committed);
 
       // Should be allowed to commit to new working branch
       committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, branchForUpdate), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, branchForUpdate), false, true);
       assertTrue("Branch was not committed into new, rebaselined working branch", committed);
 
       // Clean up this test
       // Purge art from new Updated Branch
-      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
+      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, SAW_Bld_2);
       Artifact artOnUpdateBranch = ArtifactQuery.getArtifactFromToken(NewArtifactToken, branchForUpdate);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnSaw2, artOnUpdateBranch)));
       BranchManager.purgeBranch(branchForUpdate);
@@ -233,7 +234,7 @@ public class MergeManagerTest {
 
       // Can't commit since there are conflicts
       boolean committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, true);
       assertTrue("Branch Committed with unresolved conflicts", !committed);
 
       List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
@@ -245,7 +246,7 @@ public class MergeManagerTest {
 
       // Try Doing commit again, no new Merge Branches should be created
       boolean committed2 =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, true);
       assertTrue("Branch Committed with unresolved conflicts", !committed2);
 
       List<MergeBranch> mergeBranches2 = BranchManager.getMergeBranches(workingBranch);
@@ -263,7 +264,7 @@ public class MergeManagerTest {
 
       // Abandon
       MergeInProgressHandler.handleCommitInProgressPostPrompt(
-         new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), DELETE_MERGE, true);
+         new ConflictManagerExternal(SAW_Bld_1, workingBranch), DELETE_MERGE, true);
       assertTrue("Merge Branch still present", !BranchManager.hasMergeBranches(workingBranch));
 
       // Now we should be to do an update
@@ -301,7 +302,7 @@ public class MergeManagerTest {
 
       // Try committing into SAW BLD 1
       boolean committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_1, workingBranch), false, true);
       assertTrue("Branch Committed with unresolved conflicts", !committed);
 
       // Shouldn't be able to rebase
@@ -313,12 +314,12 @@ public class MergeManagerTest {
 
       // Commit into another branch other than SAW_BLD_1 so there are no conflicts
       committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(DemoBranches.SAW_Bld_2, workingBranch), false, true);
+         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch was not committed", committed);
 
       // Even if I abandon first Merge, still shouldn't be able to rebase since I already completed on Commit
       MergeInProgressHandler.handleCommitInProgressPostPrompt(
-         new ConflictManagerExternal(DemoBranches.SAW_Bld_1, workingBranch), DELETE_MERGE, true);
+         new ConflictManagerExternal(SAW_Bld_1, workingBranch), DELETE_MERGE, true);
 
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
@@ -327,7 +328,7 @@ public class MergeManagerTest {
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Clean up this test
-      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, DemoBranches.SAW_Bld_2);
+      Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, SAW_Bld_2);
       Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnSaw2)));
    }
 }

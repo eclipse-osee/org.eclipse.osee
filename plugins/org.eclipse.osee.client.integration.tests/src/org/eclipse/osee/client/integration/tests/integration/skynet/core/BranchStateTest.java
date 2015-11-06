@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -19,11 +20,9 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -58,8 +57,6 @@ public class BranchStateTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
-
    @Before
    public void setUp() throws Exception {
       BranchManager.refreshBranches();
@@ -70,7 +67,7 @@ public class BranchStateTest {
       String originalBranchName = "Create State Branch";
       Branch workingBranch = null;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
       } finally {
@@ -85,7 +82,7 @@ public class BranchStateTest {
       String originalBranchName = "Modified State Branch";
       Branch workingBranch = null;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -108,7 +105,7 @@ public class BranchStateTest {
       String originalBranchName = "Deleted State Branch";
       Branch workingBranch = null;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -133,7 +130,7 @@ public class BranchStateTest {
       Branch workingBranch = null;
       boolean branchPurged = false;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -159,7 +156,7 @@ public class BranchStateTest {
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
@@ -170,7 +167,7 @@ public class BranchStateTest {
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
-         ConflictManagerExternal conflictManager = new ConflictManagerExternal(BRANCH, workingBranch);
+         ConflictManagerExternal conflictManager = new ConflictManagerExternal(SAW_Bld_1, workingBranch);
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
@@ -190,7 +187,7 @@ public class BranchStateTest {
       String originalBranchName = "UpdateBranch No Changes Test";
       Branch workingBranch = null;
       try {
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
@@ -229,11 +226,11 @@ public class BranchStateTest {
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "Test Object");
+         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Add a new artifact on the working branch
          change =
@@ -284,11 +281,11 @@ public class BranchStateTest {
       Branch mergeBranch = null;
       Artifact sameArtifact = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "Test Object");
+         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
-         workingBranch = BranchManager.createWorkingBranch(BRANCH, originalBranchName);
+         workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Modify same artifact on working branch
          sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);

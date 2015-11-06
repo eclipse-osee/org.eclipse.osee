@@ -12,6 +12,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +21,6 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -107,7 +107,7 @@ public class NativeArtifactTest {
    }
 
    private CsvArtifact getCsvArtifact(boolean create) throws OseeCoreException {
-      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, DemoBranches.SAW_Bld_2, create);
+      CsvArtifact csvArtifact = CsvArtifact.getCsvArtifact(ARTIFACT_NAME, SAW_Bld_2, create);
       testArtifacts.add(csvArtifact.getArtifact());
       return csvArtifact;
    }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.access;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Arrays;
 import org.eclipse.osee.ats.access.AtsBranchAccessManager;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;

@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_3;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_3;
 import java.io.File;
 import java.util.Collection;
 import java.util.Date;

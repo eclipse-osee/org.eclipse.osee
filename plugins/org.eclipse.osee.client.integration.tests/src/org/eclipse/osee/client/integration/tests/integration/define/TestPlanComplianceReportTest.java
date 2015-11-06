@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.define;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;

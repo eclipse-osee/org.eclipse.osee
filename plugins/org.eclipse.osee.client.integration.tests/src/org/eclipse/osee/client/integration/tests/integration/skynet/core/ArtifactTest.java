@@ -12,10 +12,11 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import org.eclipse.osee.client.demo.DemoBranches;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -50,7 +51,7 @@ public final class ArtifactTest {
 
    @Before
    public void setUp() throws Exception {
-      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
+      artifactWithSpecialAttr = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, SAW_Bld_1);
    }
 
    @After
@@ -69,7 +70,7 @@ public final class ArtifactTest {
       artifactWithSpecialAttr.setSoleAttributeValue(CoreAttributeTypes.Partition, "Navigation");
       artifactWithSpecialAttr.setName("ArtifactTest-artifactWithSpecialAttr");
 
-      Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(DemoBranches.SAW_Bld_2);
+      Artifact copiedArtifact = artifactWithSpecialAttr.duplicate(SAW_Bld_2);
       try {
          Assert.assertFalse(copiedArtifact.getAttributeCount(CoreAttributeTypes.Partition) == 0);
       } finally {

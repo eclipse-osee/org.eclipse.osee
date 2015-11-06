@@ -11,9 +11,9 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -50,7 +50,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
+   private static final IOseeBranch BRANCH =SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
    private static final int newArtTx = 12345;

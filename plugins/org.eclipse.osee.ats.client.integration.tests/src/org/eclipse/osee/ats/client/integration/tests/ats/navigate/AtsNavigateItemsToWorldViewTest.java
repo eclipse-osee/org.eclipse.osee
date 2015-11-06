@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.navigate;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;

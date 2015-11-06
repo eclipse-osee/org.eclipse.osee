@@ -13,9 +13,9 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatEquals;
 import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatIncreased;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -86,7 +86,7 @@ public class BranchPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      Branch branch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
+      Branch branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts =
          TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, method.getQualifiedTestName(),
             branch);

@@ -12,11 +12,11 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts.assertThatEquals;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -50,7 +50,7 @@ public class PurgeTransactionTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_2;
+   private static final IOseeBranch BRANCH = SAW_Bld_2;
 
    private static final String[] TABLES = new String[] {
       "osee_attribute",

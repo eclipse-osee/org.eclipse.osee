@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -22,10 +23,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -66,8 +65,6 @@ public final class ArtifactImportWizardTest {
    @Rule
    public TemporaryFolder resource = new TemporaryFolder();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
-
    private Artifact myRootArtifact;
 
    /**
@@ -89,22 +86,22 @@ public final class ArtifactImportWizardTest {
    @Before
    public void setUp() throws Exception {
       myRootArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, BRANCH, "ArtifactImportWizardTest_Root",
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, "ArtifactImportWizardTest_Root",
             "ArtifatImpWizaTestGUID");
 
-      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(BRANCH).addChild(myRootArtifact);
+      OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1).addChild(myRootArtifact);
 
       Artifact artifactA =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "A", "AAAAAAAAAAAAAAAAAAAAAA");
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A", "AAAAAAAAAAAAAAAAAAAAAA");
       myRootArtifact.addChild(artifactA);
 
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "C",
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "C",
          "CCCCCCCCCCCCCCCCCCCCCC"));
 
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, BRANCH, "D",
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D",
          "DDDDDDDDDDDDDDDDDDDDDD"));
 
-      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, "B",
+      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "B",
          "BBBBBBBBBBBBBBBBBBBBBB"));
 
       myRootArtifact.persist("ArtifactImportWizardTest");

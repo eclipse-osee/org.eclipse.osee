@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -20,7 +21,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.ConflictTestManager;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
@@ -212,7 +212,7 @@ public class ConflictTest {
 
    @Test
    public void testMultiplicityCommit() {
-      Branch parent = BranchManager.getBranch(DemoBranches.SAW_Bld_1);
+      Branch parent = BranchManager.getBranch(SAW_Bld_1);
       Artifact testArt =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parent, "Multiplicity Test");
       testArt.persist("Save testArt on parent");

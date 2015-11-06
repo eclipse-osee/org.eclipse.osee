@@ -11,10 +11,10 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Collection;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -59,7 +59,7 @@ public class ChangeDataTest {
 
    @Before
    public void setUp() throws OseeCoreException {
-      workingBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, method.getQualifiedTestName());
+      workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName());
       ArrayList<Change> theChanges = new ArrayList<>();
 
       Artifact artifactStart = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);

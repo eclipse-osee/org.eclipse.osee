@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import org.eclipse.osee.client.demo.DemoBranches;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 
@@ -21,10 +20,9 @@ import org.eclipse.osee.framework.ui.skynet.render.PlainTextRenderer;
 public class PlainTextEditTest extends AbstractEditTest {
 
    private static final String TEST_PLAIN_TEXT_EDIT_FILE_NAME = "support/PlainTextEditTest.txt";
-   private static final IOseeBranch branch = DemoBranches.SAW_Bld_1;
 
    public PlainTextEditTest() {
-      super(branch, TEST_PLAIN_TEXT_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirementPlainText,
+      super(SAW_Bld_1, TEST_PLAIN_TEXT_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirementPlainText,
          new PlainTextRenderer());
    }
 

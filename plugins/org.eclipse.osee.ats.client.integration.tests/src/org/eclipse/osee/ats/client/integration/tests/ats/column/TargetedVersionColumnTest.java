@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_2;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.client.demo.DemoWorkType;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;

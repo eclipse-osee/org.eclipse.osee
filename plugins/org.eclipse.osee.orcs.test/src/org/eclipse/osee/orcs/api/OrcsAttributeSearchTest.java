@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -63,7 +64,7 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testWTCAttributeEqualSearch() throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent,
+      QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent,
          "commands", QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_COUNT__IGNORE);
 

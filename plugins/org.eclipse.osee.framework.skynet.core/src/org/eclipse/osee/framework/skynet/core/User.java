@@ -90,7 +90,7 @@ public class User extends Artifact {
       setSoleAttributeValue(CoreAttributeTypes.Active, active);
    }
 
-   public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
+   public void toggleFavoriteBranch(IOseeBranch favoriteBranch) throws OseeCoreException {
       Conditions.checkNotNull(favoriteBranch, "Branch");
       HashSet<Long> branchUuids = new HashSet<>();
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,

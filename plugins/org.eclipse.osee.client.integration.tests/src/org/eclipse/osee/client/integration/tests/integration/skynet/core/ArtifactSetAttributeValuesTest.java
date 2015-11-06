@@ -13,9 +13,9 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static java.util.Arrays.asList;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -54,8 +54,7 @@ public class ArtifactSetAttributeValuesTest {
    @Before
    public void setup() throws Exception {
       artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, DemoBranches.SAW_Bld_1,
-            method.getQualifiedTestName());
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, SAW_Bld_1, method.getQualifiedTestName());
       artifact.setAttributeValues(CoreAttributeTypes.StaticId, START_VALUE);
    }
 

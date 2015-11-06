@@ -13,6 +13,7 @@ package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 import static java.lang.Thread.sleep;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFolder;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -65,7 +65,7 @@ public final class ViewWordChangeAndDiffTest {
    @Before
    public void setUp() throws Exception {
       renderFolder = RenderingUtil.ensureRenderFolderExists(PresentationType.DIFF);
-      branch = DemoBranches.SAW_Bld_2;
+      branch = SAW_Bld_2;
    }
 
    @Test

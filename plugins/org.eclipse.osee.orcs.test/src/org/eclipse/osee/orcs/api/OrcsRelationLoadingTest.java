@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -88,8 +89,7 @@ public class OrcsRelationLoadingTest {
    }
 
    private void checkRelationsForSawBranch(OrcsApi oseeApi, QueryFactory queryFactory) throws OseeCoreException {
-      QueryBuilder builder =
-         queryFactory.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, "Design Constraints");
+      QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Design Constraints");
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 
       assertEquals(1, resultSet.size());

@@ -11,7 +11,8 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
-import org.eclipse.osee.client.demo.DemoBranches;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
@@ -40,8 +41,8 @@ public class CrossBranchRelationLinkTest {
 
    @Before
    public void setUp() throws OseeCoreException {
-      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", DemoBranches.SAW_Bld_1);
-      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", DemoBranches.SAW_Bld_2);
+      left = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Left", SAW_Bld_1);
+      right = TestUtil.createSimpleArtifact(CoreArtifactTypes.Requirement, "Right", SAW_Bld_2);
       left.persist(getClass().getSimpleName());
       right.persist(getClass().getSimpleName());
    }

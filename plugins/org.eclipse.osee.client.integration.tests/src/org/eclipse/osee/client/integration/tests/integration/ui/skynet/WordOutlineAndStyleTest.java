@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
@@ -19,7 +20,6 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -120,9 +120,9 @@ public final class WordOutlineAndStyleTest {
 
    @Before
    public void setUp() throws Exception {
-      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(DemoBranches.SAW_Bld_1);
+      Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1);
       String name = WordOutlineAndStyleTest.class.getSimpleName() + "_Folder";
-      folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoBranches.SAW_Bld_1, name, GUID.create());
+      folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, name, GUID.create());
       root.addChild(folder);
       root.persist(name);
    }

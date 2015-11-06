@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +21,6 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -120,7 +120,7 @@ public class WordMlLinkHandlerTest {
    public void testDetectMissingGuids() throws IOException {
       IOseeBranch workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
       try {
-         BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
+         BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
          Artifact addArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch);
          InputStream inputStream = getClass().getResourceAsStream("testMissingArtifact.xml");
          String wordData = Lib.inputStreamToString(inputStream);

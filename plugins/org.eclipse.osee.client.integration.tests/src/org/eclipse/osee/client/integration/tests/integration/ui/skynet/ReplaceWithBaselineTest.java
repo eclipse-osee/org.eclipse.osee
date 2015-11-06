@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -19,7 +20,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -218,7 +218,7 @@ public final class ReplaceWithBaselineTest {
    }
 
    private void setupBackgroundForScenario() throws Exception {
-      baselineBranch = BranchManager.getBranch(DemoBranches.SAW_Bld_1);
+      baselineBranch = BranchManager.getBranch(SAW_Bld_1);
 
       //Setup data before the working branch has been created
       for (TestData testData : this.testDatas) {

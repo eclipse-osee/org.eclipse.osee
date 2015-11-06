@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.demo.internal;
 
-import org.eclipse.osee.client.demo.DemoBranches;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
 
 /**
  * @author Roberto E. Escobar

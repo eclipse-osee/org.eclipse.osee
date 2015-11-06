@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.util;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

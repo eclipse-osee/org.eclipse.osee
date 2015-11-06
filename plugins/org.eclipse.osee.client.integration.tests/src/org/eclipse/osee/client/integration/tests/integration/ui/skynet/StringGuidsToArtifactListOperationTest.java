@@ -11,12 +11,11 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
-import org.junit.Assert;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpReques
 import org.eclipse.osee.framework.ui.skynet.blam.operation.StringGuidsToArtifactListOperation;
 import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -60,9 +60,8 @@ public class StringGuidsToArtifactListOperationTest {
 
    @Before
    public void setUpOnce() throws OseeCoreException {
-      testBranch =
-         BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1,
-            StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
+      testBranch = BranchManager.createWorkingBranch(SAW_Bld_1,
+         StringGuidsToArtifactListOperationTest.class.getSimpleName() + " Branch");
 
       for (int i = 0; i < capacity; ++i) {
          Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, testBranch, "Test" + i);

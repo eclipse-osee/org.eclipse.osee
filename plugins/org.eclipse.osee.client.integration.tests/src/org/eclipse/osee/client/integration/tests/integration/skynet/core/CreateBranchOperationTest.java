@@ -11,12 +11,12 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -48,14 +48,12 @@ public class CreateBranchOperationTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
-
    @Test
    public void test_checkPreconditions_AllowWorkingBranchCreationIfDeleted() throws OseeCoreException {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
+      Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       workingBranch.setBranchState(BranchState.DELETED);
       BranchManager.persist(workingBranch);
 
@@ -72,7 +70,7 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
+      Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       workingBranch.setBranchState(BranchState.REBASELINED);
       BranchManager.persist(workingBranch);
 
@@ -99,7 +97,7 @@ public class CreateBranchOperationTest {
          Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
          folder.persist("");
 
-         Branch workingBranch = BranchManager.createWorkingBranch(BRANCH, method.getQualifiedTestName(), folder);
+         Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
          workingBranch.setBranchState(state);
          BranchManager.persist(workingBranch);
 

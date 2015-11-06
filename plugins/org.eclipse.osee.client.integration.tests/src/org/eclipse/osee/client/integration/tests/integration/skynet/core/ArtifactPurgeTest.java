@@ -11,9 +11,9 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.util.Collection;
 import java.util.Map;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
@@ -67,7 +67,7 @@ public class ArtifactPurgeTest {
    @Before
    public void setup() throws OseeCoreException {
       workingBranch = TokenFactory.createBranch(method.getQualifiedTestName());
-      BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_2, workingBranch);
+      BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
    }
 
    @After

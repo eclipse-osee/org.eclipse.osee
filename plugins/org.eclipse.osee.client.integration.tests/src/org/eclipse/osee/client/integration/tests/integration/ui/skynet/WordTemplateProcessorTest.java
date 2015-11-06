@@ -11,8 +11,8 @@
 
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR;
 import java.io.File;
 import java.io.IOException;

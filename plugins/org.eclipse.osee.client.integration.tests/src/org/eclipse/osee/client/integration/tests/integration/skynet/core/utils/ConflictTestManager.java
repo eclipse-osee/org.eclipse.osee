@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core.utils;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -160,7 +160,7 @@ public class ConflictTestManager {
    public static void initializeConflictTest() throws Exception {
       cleanUpConflictTest();
       createConflictDefinitions();
-      destBranch = BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, DEST_BRANCH);
+      destBranch = BranchManager.createWorkingBranch(SAW_Bld_1, DEST_BRANCH);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.Name, FOLDER, destBranch);
 

@@ -11,10 +11,10 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -46,8 +46,6 @@ public class PreviewAndMultiPreviewTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = DemoBranches.SAW_Bld_1;
-
    private final List<Artifact> testArtifacts = new ArrayList<>();
 
    @After
@@ -63,9 +61,9 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testPreview() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1a"));
+      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1a"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -77,9 +75,9 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testPreviewUsingRendererManager() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, BRANCH, addPrefix("1b"));
+      Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, SAW_Bld_1, addPrefix("1b"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -93,9 +91,9 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testPreviewWithChildren() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1c"));
+      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1c"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -106,9 +104,9 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testPreviewWithChildrenUsingRendererManager() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1d"));
+      Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1d"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -122,9 +120,9 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testPreviewWithChildrenUsingRendererManagerFault() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, BRANCH, addPrefix("1f"));
+      Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, SAW_Bld_1, addPrefix("1f"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -137,11 +135,11 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testMultiPreview() throws Exception {
-      Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("3z"));
+      Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("3z"));
       multiArt1.persist(getClass().getSimpleName());
-      Artifact multiArt2 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("2y"));
+      Artifact multiArt2 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("2y"));
       multiArt2.persist(getClass().getSimpleName());
-      Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1x"));
+      Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1x"));
       multiArt3.persist(getClass().getSimpleName());
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
@@ -152,15 +150,15 @@ public class PreviewAndMultiPreviewTest {
    @Test
    public void testMultiPreviewUsingRendererManager() throws Exception {
       Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, PreviewAndMultiPreviewTest.class.getSimpleName());
+         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
 
-      Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("3o"));
+      Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("3o"));
       parentArtifact.addChild(multiArt1);
 
-      Artifact multiArt2 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("2n"));
+      Artifact multiArt2 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("2n"));
       parentArtifact.addChild(multiArt2);
 
-      Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, BRANCH, addPrefix("1m"));
+      Artifact multiArt3 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1m"));
       parentArtifact.addChild(multiArt3);
 
       parentArtifact.persist(getClass().getSimpleName());
@@ -173,18 +171,18 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testWholeWordPreview() throws Exception {
-      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4g"));
+      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4g"));
       art.persist(String.format("%s, persist on %s, uuid: %d", PreviewAndMultiPreviewTest.class.getSimpleName(),
-         BRANCH.getName(), BRANCH.getUuid()));
+         SAW_Bld_1.getName(), SAW_Bld_1.getUuid()));
       WholeWordRenderer renderer = new WholeWordRenderer();
       renderer.open(Arrays.asList(art), PresentationType.PREVIEW);
    }
 
    @Test
    public void testWholeWordPreviewUsingRendererManager() throws Exception {
-      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, BRANCH, addPrefix("4h"));
+      Artifact art = createArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1, addPrefix("4h"));
       art.persist(String.format("%s, persist on %s, uuid: %d", PreviewAndMultiPreviewTest.class.getSimpleName(),
-         BRANCH.getName(), BRANCH.getUuid()));
+         SAW_Bld_1.getName(), SAW_Bld_1.getUuid()));
       RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
    }
 

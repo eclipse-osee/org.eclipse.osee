@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -73,7 +74,7 @@ public class OrcsAttributeLoadingTest {
    @Test
    public void testLoadWordTemplateContentAttributes() throws OseeCoreException {
       QueryBuilder builder =
-         query.fromBranch(TestBranches.SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
+         query.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

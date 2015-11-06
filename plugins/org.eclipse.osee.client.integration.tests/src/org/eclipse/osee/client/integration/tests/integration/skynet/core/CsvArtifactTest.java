@@ -12,8 +12,8 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertEquals;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -46,7 +46,7 @@ public class CsvArtifactTest {
 
    @Before
    public void setup() throws Exception {
-      csv = CsvArtifact.getCsvArtifact(id, DemoBranches.SAW_Bld_2, true);
+      csv = CsvArtifact.getCsvArtifact(id, SAW_Bld_2, true);
    }
 
    @After

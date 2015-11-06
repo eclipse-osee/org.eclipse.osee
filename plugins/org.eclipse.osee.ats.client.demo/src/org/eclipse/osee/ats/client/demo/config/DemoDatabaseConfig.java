@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.demo.config;
 
-import static org.eclipse.osee.client.demo.DemoBranches.CIS_Bld_1;
-import static org.eclipse.osee.client.demo.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;

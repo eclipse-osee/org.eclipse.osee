@@ -11,8 +11,7 @@
 
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
-import org.eclipse.osee.client.demo.DemoBranches;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 
@@ -23,10 +22,9 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 public class WordEditTest extends AbstractEditTest {
 
    private static final String TEST_WORD_EDIT_FILE_NAME = "support/WordEditTest.xml";
-   private static final IOseeBranch branch = DemoBranches.SAW_Bld_1;
 
    public WordEditTest() {
-      super(branch, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirement, new WordTemplateRenderer());
+      super(SAW_Bld_1, TEST_WORD_EDIT_FILE_NAME, CoreArtifactTypes.SoftwareRequirement, new WordTemplateRenderer());
    }
 
    @Override

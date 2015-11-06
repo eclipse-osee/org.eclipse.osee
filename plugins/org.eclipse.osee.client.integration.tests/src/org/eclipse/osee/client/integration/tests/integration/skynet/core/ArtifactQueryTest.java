@@ -12,6 +12,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,7 +22,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
@@ -251,7 +251,7 @@ public class ArtifactQueryTest {
       SearchOptions options = new SearchOptions();
       options.setIsSearchAll(true);
       options.setCaseSensive(false);
-      SearchRequest request = new SearchRequest(DemoBranches.SAW_Bld_1, "robot", options);
+      SearchRequest request = new SearchRequest(SAW_Bld_1, "robot", options);
       Iterable<ArtifactMatch> matches = ArtifactQuery.getArtifactMatchesFromAttributeKeywords(request);
       boolean found = false;
       for (ArtifactMatch match : matches) {

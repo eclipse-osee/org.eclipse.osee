@@ -11,6 +11,8 @@
 package org.eclipse.osee.client.demo.internal;
 
 import static java.lang.Thread.sleep;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import java.io.File;
 import java.net.URL;
 import java.util.Collection;
@@ -18,12 +20,12 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -62,7 +64,7 @@ public class AddRequirementData implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       try {
          // Import all requirements on SAW_Bld_1 Branch
-         IOseeBranch branch = DemoBranches.SAW_Bld_1;
+         IOseeBranch branch = SAW_Bld_1;
 
          //@formatter:off
          importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
@@ -80,7 +82,7 @@ public class AddRequirementData implements IDbInitializationTask {
             OseeLog.log(AddRequirementData.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch childBranch = BranchManager.createBaselineBranch(DemoBranches.SAW_Bld_1, DemoBranches.SAW_Bld_2);
+         Branch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          sleep(5000);
          // need to update the branch type;

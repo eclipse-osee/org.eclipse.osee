@@ -11,12 +11,12 @@
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -66,10 +66,9 @@ public class ConflictIntroduceTest {
       updateBranch = createBranchToken("Update");
 
       // set up destination branch
-      BranchManager.createWorkingBranch(DemoBranches.SAW_Bld_1, destinationBranch);
+      BranchManager.createWorkingBranch(SAW_Bld_1, destinationBranch);
       artifactToDelete =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Read-only Robots",
-            DemoBranches.SAW_Bld_1);
+         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Read-only Robots", SAW_Bld_1);
 
       // Delete artifact and commit to destination branch
       BranchManager.createWorkingBranch(destinationBranch, updateBranch);

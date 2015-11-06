@@ -11,9 +11,9 @@
 package org.eclipse.osee.client.integration.tests.integration.ui.skynet;
 
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -59,7 +59,7 @@ public class WordTrackedChangesTest {
       Artifact newArt = null;
       try {
          newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, DemoBranches.SAW_Bld_1,
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedureWML, SAW_Bld_1,
                getClass().getSimpleName());
          newArt.persist(getClass().getSimpleName());
          String unlinkedContent = WordMlLinkHandler.unlink(linkType, newArt, content);

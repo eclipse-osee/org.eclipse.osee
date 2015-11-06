@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import java.io.BufferedInputStream;
@@ -28,7 +29,6 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.client.demo.DemoBranches;
 import org.eclipse.osee.client.demo.DemoTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
@@ -123,7 +123,7 @@ public class DoorsArtifactExtractorTest {
    public void setUp() throws UnsupportedEncodingException {
       extractor = new DoorsArtifactExtractor();
       collector = new RoughArtifactCollector(null);
-      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, DemoBranches.SAW_Bld_1);
+      theArtifact = ArtifactTypeManager.addArtifact(DemoTypes.DemoTestRequirement, SAW_Bld_1);
       String image = new String("String to represent binary image data");
       imageList.add(Lib.stringToInputStream(image));
       theArtifact.setAttributeFromValues(CoreAttributeTypes.ImageContent, imageList);
