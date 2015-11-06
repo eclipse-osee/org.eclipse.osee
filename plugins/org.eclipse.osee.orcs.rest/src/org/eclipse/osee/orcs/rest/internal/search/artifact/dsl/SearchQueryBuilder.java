@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.rest.internal.search.artifact.PredicateHandler;
@@ -47,6 +48,8 @@ public class SearchQueryBuilder {
             PredicateHandler handler = handlers.get(method);
             if (handler != null) {
                builder = handler.handle(builder, predicate);
+            } else {
+               throw new OseeArgumentException("Unable to find PredicateHandler for %s", method.name());
             }
          }
       }
