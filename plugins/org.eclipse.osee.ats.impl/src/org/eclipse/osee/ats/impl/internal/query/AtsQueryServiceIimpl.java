@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.impl.internal.query;
 
-import java.util.List;
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -35,7 +35,7 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
    }
 
    @Override
-   public IAtsWorkItemFilter createFilter(List<IAtsWorkItem> workItems) {
+   public IAtsWorkItemFilter createFilter(Collection<? extends IAtsWorkItem> workItems) {
       return new AtsWorkItemFilter(workItems, atsServer.getServices());
    }
 
