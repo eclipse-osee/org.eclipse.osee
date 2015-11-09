@@ -193,7 +193,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromStateTasks(IAtsObject atsObject, IStateToken relatedToState, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsTask taskArt : services.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject, relatedToState)) {
+         for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) atsObject, relatedToState)) {
             hours += HoursSpentUtil.getHoursSpentTotal(taskArt, services);
          }
       }
@@ -208,7 +208,7 @@ public class HoursSpentUtil {
    public static double getHoursSpentFromTasks(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       double hours = 0.0;
       if (atsObject instanceof IAtsTeamWorkflow) {
-         for (IAtsTask taskArt : services.getWorkItemService().getTasks((IAtsTeamWorkflow) atsObject)) {
+         for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) atsObject)) {
             hours += HoursSpentUtil.getHoursSpentTotal(taskArt, services);
          }
       }

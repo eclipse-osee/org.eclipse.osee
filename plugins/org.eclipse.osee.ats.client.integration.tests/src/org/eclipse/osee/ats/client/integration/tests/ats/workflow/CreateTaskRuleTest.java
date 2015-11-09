@@ -122,7 +122,7 @@ public class CreateTaskRuleTest {
       changes.execute();
 
       // verify that tasks have been created
-      Collection<IAtsTask> tasks = atsClient.getWorkItemService().getTasks(pair.getSecond().iterator().next());
+      Collection<IAtsTask> tasks = atsClient.getTaskService().getTasks(pair.getSecond().iterator().next());
       Assert.assertEquals("There can be only one", 1, tasks.size());
       IAtsTask next = tasks.iterator().next();
       Assert.assertEquals("Name should be *Create a Task from Rule*", "Create a Task from Rule", next.getName());

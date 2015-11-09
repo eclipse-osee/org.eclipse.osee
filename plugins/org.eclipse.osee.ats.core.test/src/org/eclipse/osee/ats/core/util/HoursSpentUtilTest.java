@@ -16,6 +16,7 @@ import java.util.Arrays;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
@@ -49,6 +50,7 @@ public class HoursSpentUtilTest {
    @Mock IAtsStateManager taskStateMgr;
    @Mock IAtsStateManager prStateMgr;
    @Mock IAtsWorkItemService workItemService;
+   @Mock IAtsTaskService taskService;
    @Mock IAtsUserService userService;
    @Mock IAtsWorkDefinitionService workDefService;
    @Mock IAtsWorkItemServiceProvider workItemServiceProvider;
@@ -78,6 +80,7 @@ public class HoursSpentUtilTest {
 
       when(services.getAttributeResolver()).thenReturn(attrResolver);
       when(services.getUserService()).thenReturn(userService);
+      when(services.getTaskService()).thenReturn(taskService);
       when(services.getWorkItemService()).thenReturn(workItemService);
 
    }
@@ -91,7 +94,7 @@ public class HoursSpentUtilTest {
 
    @Test
    public void testGetHoursSpentTotal() {
-      when(workItemService.getTasks(teamWf)).thenReturn(Arrays.asList(task1));
+      when(taskService.getTasks(teamWf)).thenReturn(Arrays.asList(task1));
       when(workItemService.getReviews(teamWf)).thenReturn(Arrays.asList(pr1));
 
       when(workItemService.getCurrentState(task1)).thenReturn(new SimpleTeamState("In-Work", StateType.Working));
@@ -110,7 +113,7 @@ public class HoursSpentUtilTest {
 
    @Test
    public void testGetHoursSpentFromTasks() {
-      when(workItemService.getTasks(teamWf)).thenReturn(Arrays.asList(task1));
+      when(taskService.getTasks(teamWf)).thenReturn(Arrays.asList(task1));
       when(workItemService.getCurrentState(task1)).thenReturn(new SimpleTeamState("In-Work", StateType.Working));
 
       when(taskStateMgr.getVisitedStateNames()).thenReturn(Arrays.asList("In-Work", "Complete"));
@@ -133,17 +136,17 @@ public class HoursSpentUtilTest {
       when(taskStateMgr.getVisitedStateNames()).thenReturn(Arrays.asList("In-Work", "Complete"));
 
       SimpleTeamState relatedToState = new SimpleTeamState("In-Work", StateType.Working);
-      when(workItemService.getTasks(teamWf, relatedToState)).thenReturn(Arrays.asList(task2));
+      when(taskService.getTasks(teamWf, relatedToState)).thenReturn(Arrays.asList(task2));
       double hours = HoursSpentUtil.getHoursSpentFromStateTasks(teamWf, relatedToState, services);
       Assert.assertEquals(6.0, hours, 0);
 
       relatedToState = new SimpleTeamState("Complete", StateType.Working);
-      when(workItemService.getTasks(teamWf, relatedToState)).thenReturn(Arrays.asList(task2, task3));
+      when(taskService.getTasks(teamWf, relatedToState)).thenReturn(Arrays.asList(task2, task3));
       hours = HoursSpentUtil.getHoursSpentFromStateTasks(teamWf, relatedToState, services);
       Assert.assertEquals(12.0, hours, 0);
 
       relatedToState = new SimpleTeamState("Implement", StateType.Working);
-      when(workItemService.getTasks(teamWf, relatedToState)).thenReturn(new ArrayList<IAtsTask>());
+      when(taskService.getTasks(teamWf, relatedToState)).thenReturn(new ArrayList<IAtsTask>());
       hours = HoursSpentUtil.getHoursSpentFromStateTasks(teamWf, relatedToState, services);
       Assert.assertEquals(0.0, hours, 0);
    }

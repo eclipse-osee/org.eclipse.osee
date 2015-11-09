@@ -7,19 +7,30 @@ package org.eclipse.osee.ats.api.task;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 public abstract class AbstractAtsTaskService implements IAtsTaskService {
 
    private static final String UNASSIGNED_USERID = "99999997";
+   private final IAtsServices services;
 
-   public AbstractAtsTaskService() {
+   public AbstractAtsTaskService(IAtsServices services) {
+      this.services = services;
    }
 
    @Override
@@ -74,6 +85,46 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
          newTaskData.setCommitComment(commitComment);
       }
       return newTaskData;
+   }
+
+   @Override
+   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException {
+      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
+      List<IAtsTask> tasks = new LinkedList<>();
+      for (IAtsTask task : services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task,
+         IAtsTask.class)) {
+         if (services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
+            relatedToState.getName())) {
+            tasks.add(task);
+         }
+      }
+      return tasks;
+   }
+
+   @Override
+   public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
+      ArtifactId artifact = services.getArtifactResolver().get(workItem);
+      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
+      if (workItem instanceof IAtsTeamWorkflow) {
+         return getTasks((IAtsTeamWorkflow) workItem, state);
+      }
+      return java.util.Collections.emptyList();
+   }
+
+   @Override
+   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException {
+      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
+      Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
+      return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task, IAtsTask.class);
+   }
+
+   @Override
+   public Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException {
+      if (workItem.isTeamWorkflow()) {
+         return getTasks((IAtsTeamWorkflow) workItem);
+      }
+      return java.util.Collections.emptyList();
    }
 
 }

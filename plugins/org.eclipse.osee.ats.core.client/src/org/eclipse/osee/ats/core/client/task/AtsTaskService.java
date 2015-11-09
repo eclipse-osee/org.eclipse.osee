@@ -54,6 +54,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    private final IAtsClient atsClient;
 
    public AtsTaskService(IAtsClient atsClient) {
+      super(atsClient.getServices());
       this.atsClient = atsClient;
    }
 

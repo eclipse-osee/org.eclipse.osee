@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
@@ -62,36 +61,11 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    }
 
    @Override
-   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
-      Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      List<IAtsTask> tasks = new LinkedList<>();
-      for (IAtsTask task : services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task,
-         IAtsTask.class)) {
-         if (services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
-            relatedToState.getName())) {
-            tasks.add(task);
-         }
-      }
-      return tasks;
-   }
-
-   @Override
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       ArtifactId artifact = services.getArtifactResolver().get(teamWf);
       Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
       return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWorkflowToReview_Review,
          IAtsAbstractReview.class);
-   }
-
-   @Override
-   public Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state) {
-      ArtifactId artifact = services.getArtifactResolver().get(workItem);
-      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
-      if (workItem instanceof IAtsTeamWorkflow) {
-         return getTasks((IAtsTeamWorkflow) workItem, state);
-      }
-      return java.util.Collections.emptyList();
    }
 
    @Override
@@ -107,13 +81,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
          }
       }
       return reviews;
-   }
-
-   @Override
-   public Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      ArtifactId artifact = services.getArtifactResolver().get(teamWf);
-      Conditions.checkNotNull(artifact, "teamWf", "Can't Find Artifact matching [%s]", teamWf.toString());
-      return services.getRelationResolver().getRelated(teamWf, AtsRelationTypes.TeamWfToTask_Task, IAtsTask.class);
    }
 
    @Override
@@ -133,14 +100,6 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
    @Override
    public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException {
       return services.validateWidgetTransition(workItem, toStateDef);
-   }
-
-   @Override
-   public Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException {
-      if (workItem.isTeamWorkflow()) {
-         return getTasks((IAtsTeamWorkflow) workItem);
-      }
-      return java.util.Collections.emptyList();
    }
 
    @Override

@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -79,6 +80,7 @@ public class TransitionManagerTest {
    @Mock private IAtsTask task;
    @Mock private IAtsStateDefinition toStateDef;
    @Mock private IAtsWorkItemService workItemService;
+   @Mock private IAtsTaskService taskService;
    @Mock private IAtsStateManager teamWfStateMgr, taskStateMgr;
    // @formatter:on
 
@@ -346,31 +348,31 @@ public class TransitionManagerTest {
       when(teamWf.getStateDefinition()).thenReturn(toStateDef);
       when(toStateDef.getStateType()).thenReturn(StateType.Working);
       when(toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name())).thenReturn(true);
-      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
 
       // test only check if Team Workflow
       when(toStateDef.hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name())).thenReturn(false);
-      TransitionManager.validateTaskCompletion(results, task, toStateDef, workItemService);
+      TransitionManager.validateTaskCompletion(results, task, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
 
       // test not check if working state
       when(teamWf.getStateMgr()).thenReturn(teamWfStateMgr);
       when(teamWfStateMgr.getStateType()).thenReturn(StateType.Working);
-      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
 
       // test transition to completed; all tasks are completed
       when(toStateDef.getStateType()).thenReturn(StateType.Completed);
-      when(workItemService.getTaskArtifacts(teamWf)).thenReturn(Collections.singleton(task));
+      when(taskService.getTaskArtifacts(teamWf)).thenReturn(Collections.singleton(task));
       when(task.getStateMgr()).thenReturn(taskStateMgr);
       when(taskStateMgr.getStateType()).thenReturn(StateType.Completed);
-      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.isEmpty());
 
       // test transtion to completed; task is not completed
       when(taskStateMgr.getStateType()).thenReturn(StateType.Working);
-      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, workItemService);
+      TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);
       Assert.assertTrue(results.contains(TransitionResult.TASKS_NOT_COMPLETED.getDetails()));
 
    }

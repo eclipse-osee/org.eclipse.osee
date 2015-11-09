@@ -29,13 +29,9 @@ public interface IAtsWorkItemService {
 
    IStateToken getCurrentState(IAtsWorkItem workItem) throws OseeCoreException;
 
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException;
-
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf, IStateToken state) throws OseeCoreException;
-
-   Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
    IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException;
 
@@ -43,13 +39,9 @@ public interface IAtsWorkItemService {
 
    Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException;
 
-   Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException;
-
    Collection<ITransitionListener> getTransitionListeners();
 
    String getTargetedVersionStr(IAtsTeamWorkflow teamWf) throws OseeCoreException;
-
-   Collection<? extends IAtsTask> getTasks(IAtsWorkItem workItem, IStateToken state);
 
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 

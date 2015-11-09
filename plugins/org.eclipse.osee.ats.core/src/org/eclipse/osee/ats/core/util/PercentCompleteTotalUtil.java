@@ -103,7 +103,7 @@ public class PercentCompleteTotalUtil {
             }
          }
          if (workItem instanceof IAtsTeamWorkflow) {
-            for (IAtsTask taskArt : services.getWorkItemService().getTasks(((IAtsTeamWorkflow) workItem))) {
+            for (IAtsTask taskArt : services.getTaskService().getTasks(((IAtsTeamWorkflow) workItem))) {
                percent += getPercentCompleteTotal(taskArt, services);
                numObjects++;
             }
@@ -138,7 +138,7 @@ public class PercentCompleteTotalUtil {
 
       // Add percent for each task and bump objects for each task
       if (workItem instanceof IAtsTeamWorkflow) {
-         Collection<IAtsTask> tasks = services.getWorkItemService().getTasks((IAtsTeamWorkflow) workItem, teamState);
+         Collection<IAtsTask> tasks = services.getTaskService().getTasks((IAtsTeamWorkflow) workItem, teamState);
          for (IAtsTask taskArt : tasks) {
             percent += getPercentCompleteTotal(taskArt, services);
          }

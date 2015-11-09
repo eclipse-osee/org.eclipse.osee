@@ -58,7 +58,7 @@ public class CreateTaskRuleDefinition extends RuleDefinition implements IAtsCrea
    public void execute(IAtsWorkItem workItem, IAtsServices atsServices, IAtsChangeSet changes, RunRuleResults ruleResults) {
       if (workItem.isTeamWorkflow()) {
          boolean createTask = true;
-         for (IAtsTask task : atsServices.getWorkItemService().getTasks((IAtsTeamWorkflow) workItem)) {
+         for (IAtsTask task : atsServices.getTaskService().getTasks((IAtsTeamWorkflow) workItem)) {
             if (task.getName().equals(this.name)) {
                createTask = false;
                break;

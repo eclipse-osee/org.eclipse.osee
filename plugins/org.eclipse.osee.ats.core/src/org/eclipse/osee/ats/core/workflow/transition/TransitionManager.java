@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
+import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -62,6 +63,7 @@ public class TransitionManager implements IAtsTransitionManager {
    private final IAtsUserService userService;
    private final IAtsReviewService reviewService;
    private final IAtsWorkItemService workItemService;
+   private final IAtsTaskService taskService;
    private final IAtsWorkDefinitionService workDefService;
    private final IAttributeResolver attrResolver;
 
@@ -72,6 +74,7 @@ public class TransitionManager implements IAtsTransitionManager {
       this.workItemService = helper.getServices().getWorkItemService();
       this.workDefService = helper.getServices().getWorkDefService();
       this.attrResolver = helper.getServices().getAttributeResolver();
+      this.taskService = helper.getServices().getTaskService();
    }
 
    @Override
@@ -355,7 +358,7 @@ public class TransitionManager implements IAtsTransitionManager {
          helper.isOverrideTransitionValidityCheck() || workItem.getStateDefinition().getOverrideAttributeValidationStates().contains(
             toStateDef);
       if (toStateDef.getStateType().isCancelledState()) {
-         validateTaskCompletion(results, workItem, toStateDef, workItemService);
+         validateTaskCompletion(results, workItem, toStateDef, taskService);
          validateReviewsCancelled(results, workItem, toStateDef);
       } else if (!toStateDef.getStateType().isCancelledState() && !isOverrideAttributeValidationState) {
 
@@ -367,7 +370,7 @@ public class TransitionManager implements IAtsTransitionManager {
             }
          }
 
-         validateTaskCompletion(results, workItem, toStateDef, workItemService);
+         validateTaskCompletion(results, workItem, toStateDef, taskService);
 
          // Don't transition without targeted version if so configured
          boolean teamDefRequiresTargetedVersion =
@@ -407,7 +410,7 @@ public class TransitionManager implements IAtsTransitionManager {
       }
    }
 
-   public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef, IAtsWorkItemService workItemService) throws OseeCoreException {
+   public static void validateTaskCompletion(TransitionResults results, IAtsWorkItem workItem, IAtsStateDefinition toStateDef, IAtsTaskService taskService) throws OseeCoreException {
       if (!workItem.isTeamWorkflow()) {
          return;
       }
@@ -422,11 +425,11 @@ public class TransitionManager implements IAtsTransitionManager {
          Set<IAtsTask> tasksToCheck = new HashSet<>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
-            tasksToCheck.addAll(workItemService.getTaskArtifacts(workItem));
+            tasksToCheck.addAll(taskService.getTaskArtifacts(workItem));
          }
          // Else, just check current state tasks
          else {
-            tasksToCheck.addAll(workItemService.getTasks(workItem, workItem.getStateDefinition()));
+            tasksToCheck.addAll(taskService.getTasks(workItem, workItem.getStateDefinition()));
          }
          for (IAtsTask task : tasksToCheck) {
             if (task.getStateMgr().getStateType().isInWork()) {
