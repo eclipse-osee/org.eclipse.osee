@@ -491,8 +491,7 @@ public class MergeXWidget extends GenericXWidget {
       if (null != sourceBranch) {
          try {
             boolean isValidUpdate =
-               sourceBranch.getBranchState().isRebaselineInProgress() && sourceBranch.getParentBranch().equals(
-                  destBranch.getParentBranch());
+               sourceBranch.getBranchState().isRebaselineInProgress() && BranchManager.isParent(sourceBranch, BranchManager.getParentBranchId(destBranch));
             boolean isValidCommit =
                BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress();
 
@@ -559,7 +558,8 @@ public class MergeXWidget extends GenericXWidget {
 
       private void handleNonAtsCommit(final Branch sourceBranch, final Branch destBranch) throws OseeCoreException {
          final MutableBoolean archiveSourceBranch = new MutableBoolean();
-         if (sourceBranch.getParentBranch().equals(destBranch)) {
+
+         if (BranchManager.isParent(sourceBranch, destBranch)) {
             archiveSourceBranch.setValue(true);
          } else {
             Displays.pendInDisplayThread(new Runnable() {

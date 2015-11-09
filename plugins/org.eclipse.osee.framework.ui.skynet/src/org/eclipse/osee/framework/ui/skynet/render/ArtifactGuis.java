@@ -74,8 +74,8 @@ public final class ArtifactGuis {
 
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
-            Branch branch = artifact.getFullBranch().getParentBranch();
-            chStmt.runPreparedQuery(ART_DELETED_ON_PARENT, artifact.getArtId(), branch.getUuid());
+            Long parentBranchId = BranchManager.getParentBranchId(artifact.getBranch()).getId();
+            chStmt.runPreparedQuery(ART_DELETED_ON_PARENT, artifact.getArtId(), parentBranchId);
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");
@@ -140,7 +140,7 @@ public final class ArtifactGuis {
          try {
             Branch branch = artifact.getFullBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),
-               branch.getParentBranch().getUuid(), BranchType.WORKING.getValue());
+               BranchManager.getParentBranchId(branch).getId(), BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");

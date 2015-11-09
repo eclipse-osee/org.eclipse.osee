@@ -11,11 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.change;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionDelta;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 
 public final class ParentBranchProvider implements IBranchProvider {
@@ -26,12 +24,8 @@ public final class ParentBranchProvider implements IBranchProvider {
    }
 
    @Override
-   public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
-      Branch selectedBranch = null;
-      TransactionDelta txDelta = uiData.getTxDelta();
-      Branch childBranch = txDelta.getStartTx().getFullBranch();
-      selectedBranch = childBranch.getParentBranch();
-      Conditions.checkNotNull(selectedBranch, "parent branch");
-      return selectedBranch;
+   public BranchId getBranch(IProgressMonitor monitor) throws OseeCoreException {
+      BranchId childBranch = uiData.getTxDelta().getStartTx().getBranch();
+      return BranchManager.getParentBranchId(childBranch);
    }
 }

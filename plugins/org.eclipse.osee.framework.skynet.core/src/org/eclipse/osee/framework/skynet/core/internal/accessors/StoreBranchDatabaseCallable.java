@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 
@@ -79,7 +81,7 @@ public class StoreBranchDatabaseCallable {
    }
 
    private Object[] toInsertValues(Branch branch) throws OseeCoreException {
-      Branch parentBranch = branch.getParentBranch();
+      BranchId parentBranch = BranchManager.getParentBranchId(branch);
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       long parentBranchId = parentBranch != null ? parentBranch.getUuid() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;
@@ -99,7 +101,7 @@ public class StoreBranchDatabaseCallable {
    }
 
    private Object[] toUpdateValues(Branch branch) throws OseeCoreException {
-      Branch parentBranch = branch.getParentBranch();
+      BranchId parentBranch = BranchManager.getParentBranchId(branch);
       TransactionRecord baseTxRecord = branch.getBaseTransaction();
       long parentBranchId = parentBranch != null ? parentBranch.getUuid() : NULL_PARENT_BRANCH_ID;
       int baselineTransaction = baseTxRecord != null ? baseTxRecord.getId() : NULL_PARENT_BRANCH_ID;

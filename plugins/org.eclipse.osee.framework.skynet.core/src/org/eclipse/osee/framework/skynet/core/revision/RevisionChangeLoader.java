@@ -20,7 +20,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -85,19 +84,20 @@ public final class RevisionChangeLoader {
       return changes;
    }
 
-   private void loadBranchTransactions(Branch branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionRecord transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionRecord transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
       loadTransactions(branch, artifact, transactionId, transactionIds);
 
       if (recurseThroughBranchHierarchy) {
-         Branch parentBranch = BranchManager.getParentBranch(branch);
-         if (parentBranch != null && !parentBranch.equals(CoreBranches.SYSTEM_ROOT)) {
-            loadBranchTransactions(parentBranch, artifact, transactionIds, branch.getBaseTransaction(),
-               recurseThroughBranchHierarchy);
+         BranchId parentBranch = BranchManager.getParentBranchId(branch);
+         TransactionRecord baseTx = BranchManager.getBaseTransaction(branch);
+
+         if (!BranchManager.isParentSystemRoot(branch)) {
+            loadBranchTransactions(parentBranch, artifact, transactionIds, baseTx, recurseThroughBranchHierarchy);
          }
       }
    }
 
-   private void loadTransactions(Branch branch, Artifact artifact, TransactionRecord transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
+   private void loadTransactions(BranchId branch, Artifact artifact, TransactionRecord transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),

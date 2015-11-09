@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -55,7 +56,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * <pre>
  *    OSEE_LINK([artifact_guid])
  * </pre>
- * 
+ *
  * <li><b>Legacy style links:</b>
  *
  * <pre>
@@ -207,7 +208,7 @@ public class WordMlLinkHandler {
       artifactsFromSearch =
          findArtifacts(source.getTransactionRecord(), source.getBranch(), source.isHistorical(), guidsFromLinks);
       if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.getBranchType().isMergeBranch()) {
-         Branch sourceBranch = branch.getParentBranch();
+         BranchId sourceBranch = BranchManager.getParentBranchId(branch);
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<Artifact> union = new ArrayList<>();
@@ -271,7 +272,7 @@ public class WordMlLinkHandler {
       public int end() {
          return end;
       }
-      
+
       @Override
       public String toString() {
          return "{" + start + ", " + end + "}";

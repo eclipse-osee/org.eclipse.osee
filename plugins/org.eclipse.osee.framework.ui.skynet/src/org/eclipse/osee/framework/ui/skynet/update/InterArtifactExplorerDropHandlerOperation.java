@@ -117,7 +117,7 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return sourceBranch.equals(BranchManager.getParentBranch(destinationBranch));
+      return sourceBranch.equals(BranchManager.getParentBranchId(destinationBranch));
    }
 
    private Collection<Artifact> getRecurseChildren() throws OseeCoreException {

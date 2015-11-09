@@ -55,18 +55,16 @@ public class UpdateBranchOperation extends AbstractOperation {
          OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
 
+         IOseeBranch parentBranch = BranchManager.getParentBranch(originalBranch);
          proxy.logBranchActivity(String.format(
             "Branch Operation Update Branch {branchUUID: %s, branchName: %s parentBranchUUID: %s parentBranchName: %s ",
-            originalBranch.getUuid(), originalBranch.getName(), BranchManager.getParentBranch(originalBranch).getUuid(),
-            BranchManager.getParentBranch(originalBranch).getName()));
+            originalBranch.getUuid(), originalBranch.getName(), parentBranch.getId(), parentBranch.getName()));
       }
    }
 
    private Branch createTempBranch(IOseeBranch originalBranch) throws OseeCoreException {
-      Branch parentBranch = BranchManager.getParentBranch(originalBranch);
-      String branchUpdateName = getUpdatedName(originalBranch.getName());
-      Branch newWorkingBranch = BranchManager.createWorkingBranch(parentBranch, branchUpdateName);
-      return newWorkingBranch;
+      IOseeBranch parentBranch = BranchManager.getParentBranch(originalBranch);
+      return BranchManager.createWorkingBranch(parentBranch, getUpdatedName(originalBranch.getName()));
    }
 
    private void performUpdate(IProgressMonitor monitor, Branch originalBranch) throws Exception {

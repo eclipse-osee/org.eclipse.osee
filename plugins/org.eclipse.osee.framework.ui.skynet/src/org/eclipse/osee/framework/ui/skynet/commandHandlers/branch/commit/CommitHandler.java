@@ -91,9 +91,9 @@ public abstract class CommitHandler extends CommandHandler {
          if (iterator.hasNext()) {
             Branch sourceBranch = iterator.next();
 
-            Branch destinationBranch = null;
+            BranchId destinationBranch = null;
             if (useParentBranch) {
-               destinationBranch = sourceBranch.getParentBranch();
+               destinationBranch = BranchManager.getParentBranchId(sourceBranch);
             } else {
                destinationBranch =
                   BranchManager.getBranch(Long.parseLong(event.getParameter(BranchOptionsEnum.BRANCH_ID.origKeyName)));

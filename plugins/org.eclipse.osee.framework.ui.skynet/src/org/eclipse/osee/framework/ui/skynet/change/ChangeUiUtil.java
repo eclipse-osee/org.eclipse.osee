@@ -75,7 +75,7 @@ public final class ChangeUiUtil {
    }
 
    public static ChangeReportEditorInput createInput(Branch branch, boolean loadOnOpen) throws OseeCoreException {
-      Branch parentBranch = branch.getParentBranch();
+      BranchId parentBranch = BranchManager.getParentBranchId(branch);
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(parentBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);

@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
@@ -65,21 +64,6 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
    @Override
    public Branch getParentBranch() throws OseeCoreException {
       return getFieldValue(BranchField.PARENT_BRANCH);
-   }
-
-   public void internalRemovePurgedBranchFromParent() throws OseeCoreException {
-      Branch parentBranch = getParentBranch();
-      if (parentBranch != null) {
-         Iterator<Branch> siblings = parentBranch.childBranches.iterator();
-
-         while (siblings.hasNext()) {
-            Branch sibling = siblings.next();
-            if (sibling.isPurged() && sibling.equals(this)) {
-               siblings.remove();
-               break;
-            }
-         }
-      }
    }
 
    @Override

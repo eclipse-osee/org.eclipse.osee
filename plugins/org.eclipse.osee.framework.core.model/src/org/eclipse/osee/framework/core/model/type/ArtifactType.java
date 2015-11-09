@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
@@ -128,14 +128,12 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
    private static void getAttributeTypes(Set<IAttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
-      Branch branchCursor = branch;
-      do {
-         Collection<AttributeType> items = validityMap.get(branchCursor);
+      for (BranchId ancestor : branch.getAncestors()) {
+         Collection<AttributeType> items = validityMap.get(ancestor);
          if (items != null) {
             attributeTypes.addAll(items);
          }
-         branchCursor = branchCursor.getParentBranch();
-      } while (branchCursor != null);
+      }
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
          getAttributeTypes(attributeTypes, superType, branch);

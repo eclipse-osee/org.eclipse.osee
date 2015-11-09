@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Theron Virgin
  */
 public interface IBranchProvider {
 
-   public IOseeBranch getBranch(IProgressMonitor monitor);
+   public BranchId getBranch(IProgressMonitor monitor);
 }

@@ -51,7 +51,7 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
       Branch mergeBranch = BranchManager.getMergeBranch(startBranch, otherBranch);
       uiData.setMergeBranch(mergeBranch);
 
-      if (otherBranch.equals(startBranch.getParentBranch())) {
+      if (BranchManager.isParent(startBranch, otherBranch)) {
          uiData.setCompareType(CompareType.COMPARE_CURRENTS_AGAINST_PARENT);
       } else {
          uiData.setCompareType(CompareType.COMPARE_CURRENTS_AGAINST_OTHER_BRANCH);

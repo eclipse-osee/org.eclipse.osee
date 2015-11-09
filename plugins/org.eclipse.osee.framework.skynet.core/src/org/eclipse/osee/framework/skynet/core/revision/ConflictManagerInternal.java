@@ -344,9 +344,9 @@ public class ConflictManagerInternal {
       // We just need the largest value at first so the complete source branch
       // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
-
+ 
       for (Branch branch : sourceBranch.getAncestors()) {
-         if (!branch.getBranchType().isSystemRootBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
+         if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
 
             if (branch.getSourceTransaction() != null) {
@@ -453,14 +453,14 @@ public class ConflictManagerInternal {
          destTransaction = TransactionManager.getHeadTransaction(commonBranch);
       } else {
          for (Branch branch : destBranches) {
-            if (branch.getParentBranch().equals(commonBranch)) {
+            if (BranchManager.isParent(branch, commonBranch)) {
                destTransaction = branch.getBaseTransaction();
                break;
             }
          }
       }
       for (Branch branch : sourceBranches) {
-         if (commonBranch.equals(branch.getParentBranch())) {
+         if (BranchManager.isParent(branch, commonBranch)) {
             sourceTransaction = branch.getBaseTransaction();
             break;
          }

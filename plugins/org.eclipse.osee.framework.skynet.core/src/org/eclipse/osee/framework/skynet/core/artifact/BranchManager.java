@@ -608,12 +608,20 @@ public final class BranchManager {
       getCache().invalidate();
    }
 
-   public static Branch getParentBranch(BranchId branch) {
+   public static IOseeBranch getParentBranch(BranchId branch) {
+      return getBranch(branch).getParentBranch();
+   }
+
+   public static BranchId getParentBranchId(BranchId branch) {
       return getBranch(branch).getParentBranch();
    }
 
    public static boolean isParentSystemRoot(BranchId branch) {
-      return CoreBranches.SYSTEM_ROOT.equals(getParentBranch(branch));
+      return isParent(branch, CoreBranches.SYSTEM_ROOT);
+   }
+
+   public static boolean isParent(BranchId branch, BranchId parentBranch) {
+      return parentBranch.equals(getParentBranchId(branch));
    }
 
    public static TransactionRecord getBaseTransaction(BranchId branch) {

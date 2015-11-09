@@ -83,7 +83,7 @@ public final class ChangeManager {
       Branch branch = BranchManager.getBranch(sourceBranch);
 
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(branch.getParentBranch());
+      TransactionRecord endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranchId(branch));
 
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return new ChangeDataLoader(changes, txDelta);
@@ -103,17 +103,17 @@ public final class ChangeManager {
     */
    public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
-      CompositeKeyHashMap<Integer, Branch, Artifact> artifactMap = new CompositeKeyHashMap<>();
+      CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
       for (Artifact artifact : artifacts) {
-         Branch branch = artifact.getFullBranch();
+         BranchId branch = artifact.getFullBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
          joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
 
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
-            transactionNumber = branch.getSourceTransaction().getId();
-            branch = branch.getParentBranch();
+            transactionNumber = BranchManager.getBranch(branch).getSourceTransaction().getId();
+            branch = BranchManager.getParentBranchId(branch);
             joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
          }
       }
@@ -153,9 +153,8 @@ public final class ChangeManager {
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
-         for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
-            BranchType.WORKING)) {
-            if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
+         for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
+            if (artifact.isOnBranch(BranchManager.getParentBranchId(workingBranch))) {
                joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
             }
          }
@@ -171,7 +170,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
-                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch.getParentBranch());
+                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranchId(branch));
                   branchMap.put(artifact, branch);
                }
             }

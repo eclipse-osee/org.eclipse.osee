@@ -125,8 +125,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchId getParentBranch(BranchId destinationBranch) {
-      return BranchManager.getBranch(destinationBranch).getParentBranch();
+   public BranchId getParentBranch(BranchId branch) {
+      return BranchManager.getParentBranchId(branch);
    }
 
    @Override

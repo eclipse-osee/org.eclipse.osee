@@ -24,6 +24,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.merge.BranchIdParameter;
@@ -89,7 +90,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getUuid()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
       CommandContributionItem contributionItem;
-      String label = "Commit into Parent Branch: " + branch.getParentBranch().getName();
+      String label = "Commit into Parent Branch: " + BranchManager.getParentBranch(branch).getName();
 
       contributionItem = new CommandContributionItem(
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
