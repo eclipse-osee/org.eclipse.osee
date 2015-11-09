@@ -98,9 +98,8 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
 
-         worldXViewer =
-            new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-               xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
+         worldXViewer = new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
          worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
          worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
@@ -205,14 +204,21 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
                   RendererManager.openInJob(otherArts, PresentationType.GENERALIZED_EDIT);
                }
                worldXViewer.getTree().setFocus();
-               if (expandToArtifact != null) {
-                  StructuredSelection newSelection = new StructuredSelection(Arrays.asList(expandToArtifact));
-                  worldXViewer.expandToLevel(expandToArtifact, 1);
-                  worldXViewer.setSelection(newSelection);
-               }
             }
          }
       });
+
+      if (expandToArtifact != null) {
+         Displays.pendInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               StructuredSelection newSelection = new StructuredSelection(Arrays.asList(expandToArtifact));
+               worldXViewer.expandToLevel(expandToArtifact, 1);
+               worldXViewer.setSelection(newSelection);
+            }
+         });
+      }
+
       // Need to reflow the managed page based on the results.  Don't put this in the above thread.
       iWorldEditor.reflow();
    }
