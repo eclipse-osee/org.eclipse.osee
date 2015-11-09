@@ -39,6 +39,7 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
@@ -50,7 +51,7 @@ import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
  */
 public class AccountClientImpl implements AccountClient {
 
-   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
+   private static final String OSEE_APPLICATION_SERVER = OseeClient.OSEE_APPLICATION_SERVER;
 
    private volatile JaxRsClient client;
    private volatile URI baseUri;
@@ -162,8 +163,8 @@ public class AccountClientImpl implements AccountClient {
 
    @Override
    public AccountPreferencesData getAccountPreferencesByUniqueField(String accountId) {
-      URI uri =
-         UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(accountId);
+      URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(
+         accountId);
       try {
          return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountPreferencesData.class);
       } catch (Exception ex) {
@@ -218,8 +219,8 @@ public class AccountClientImpl implements AccountClient {
 
    @Override
    public boolean setAccountPreferences(String accountId, Map<String, String> preferences) {
-      URI uri =
-         UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(accountId);
+      URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(
+         accountId);
 
       AccountPreferencesInput input = new AccountPreferencesInput();
       input.setMap(preferences);

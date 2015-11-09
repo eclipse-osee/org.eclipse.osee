@@ -16,6 +16,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.cache.admin.Cache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
@@ -23,12 +24,15 @@ import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
 /**
  * @author Roberto E. Escobar
@@ -99,6 +103,23 @@ public class CurrentUserProvider extends LazyObject<User> {
                   OseeLog.log(Activator.class, Level.INFO,
                      "You are logged into OSEE as \"Guest\".  If this is unexpected notify your OSEE admin");
                }
+            }
+            OseeClientSession session = ClientSessionManager.getSession();
+            try {
+               String userId = session.getUserId();
+               if (Strings.isValid(userId) && !"bootstrap".equals(userId)) {
+                  User user = UserManager.getUserByUserId(userId);
+                  if (user != null) {
+                     JaxRsClient.setAccountId(user.getUuid());
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.WARNING, "Error setting jax-rs accountId credentials.", ex);
+            }
+            try {
+               JaxRsClient.setClientId(Long.valueOf(session.getId().hashCode()));
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, Level.WARNING, "Error setting jax-rs clientId credentials.", ex);
             }
          }
          if (ClientSessionManager.isSessionValid()) {

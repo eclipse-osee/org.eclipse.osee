@@ -43,6 +43,7 @@ import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
 import org.eclipse.osee.jaxrs.client.JaxRsConfirmAccessHandler;
 import org.eclipse.osee.jaxrs.client.JaxRsTokenStore;
+import org.eclipse.osee.jaxrs.client.internal.OseeAccountClientRequestFilter;
 import org.eclipse.osee.jaxrs.client.internal.ext.CxfJaxRsClientConfigurator.OAuthFactory;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 import org.junit.Before;
@@ -57,7 +58,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link CxfJaxRsClientConfigurator}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class CxfJaxRsClientConfiguratorTest {
@@ -111,15 +112,15 @@ public class CxfJaxRsClientConfiguratorTest {
    @Mock private HTTPConduit conduit;
    @Mock private ClientBuilder builder;
    @Mock private JAXRSClientFactoryBean bean;
-   
+
    @Mock private HTTPClientPolicy policy1;
-   @Mock private AuthorizationPolicy policy2; 
-   @Mock private ProxyAuthorizationPolicy policy3; 
+   @Mock private AuthorizationPolicy policy2;
+   @Mock private ProxyAuthorizationPolicy policy3;
    @Mock private OAuthFactory oauthFactory;
    @Mock private OAuth2ClientRequestFilter filter;
    @Mock private JaxRsConfirmAccessHandler handler;
    @Mock private JaxRsTokenStore store;
-   
+
    @Captor private ArgumentCaptor<Object> captor;
    @Captor private ArgumentCaptor<HTTPClientPolicy> captor1;
    @Captor private ArgumentCaptor<AuthorizationPolicy> captor2;
@@ -223,10 +224,10 @@ public class CxfJaxRsClientConfiguratorTest {
       configurator.configureDefaults(props);
       configurator.configureClientBuilder(config, builder);
 
-      verify(builder, times(8)).register(captor.capture());
+      verify(builder, times(10)).register(captor.capture());
 
       List<Object> actual = captor.getAllValues();
-      assertEquals(8, actual.size());
+      assertEquals(10, actual.size());
 
       Iterator<Object> iterator = actual.iterator();
       assertEquals(GenericResponseExceptionMapper.class, iterator.next().getClass());
@@ -236,6 +237,7 @@ public class CxfJaxRsClientConfiguratorTest {
       assertEquals(OAuthJSONProvider.class, iterator.next().getClass());
       assertEquals(OAuthContextProvider.class, iterator.next().getClass());
 
+      assertEquals(OseeAccountClientRequestFilter.class, iterator.next().getClass());
       assertEquals(LoggingFeature.class, iterator.next().getClass());
       assertEquals(GZIPFeature.class, iterator.next().getClass());
 
@@ -465,9 +467,8 @@ public class CxfJaxRsClientConfiguratorTest {
       when(config.getServerPassword()).thenReturn(SERVER_PASSWORD);
       when(config.getServerAuthorizationType()).thenReturn(SERVER_AUTHORIZATION_TYPE);
 
-      when(
-         oauthFactory.newOAuthClientFilter(SERVER_USERNAME, SERVER_PASSWORD, CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URI,
-            TOKEN_URI, VALIDATION_URI)).thenReturn(filter);
+      when(oauthFactory.newOAuthClientFilter(SERVER_USERNAME, SERVER_PASSWORD, CLIENT_ID, CLIENT_SECRET, AUTHORIZE_URI,
+         TOKEN_URI, VALIDATION_URI)).thenReturn(filter);
 
       List<Object> actual = configurator.getOAuthProviders(config);
       assertEquals(1, actual.size());

@@ -13,6 +13,7 @@ Import-Package: com.google.inject,
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core;version="2.0.0",
  org.eclipse.osee.account.rest.model,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.client

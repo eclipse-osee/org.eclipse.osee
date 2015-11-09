@@ -55,6 +55,7 @@ public final class JaxRsClient {
 
    private final JaxRsClientConfig config;
    private final JaxRsClientFactory factory;
+   private static Long accountId, clientId, serverId;
 
    protected JaxRsClient(JaxRsClientFactory factory, JaxRsClientConfig config) {
       super();
@@ -64,7 +65,7 @@ public final class JaxRsClient {
 
    /**
     * Creates a JAX-RS WebTarget
-    * 
+    *
     * @return target
     */
    public JaxRsWebTarget target() {
@@ -73,7 +74,7 @@ public final class JaxRsClient {
 
    /**
     * Creates a JAX-RS WebTarget
-    * 
+    *
     * @param baseAddress
     * @return target
     */
@@ -83,7 +84,7 @@ public final class JaxRsClient {
 
    /**
     * Creates a JAX-RS WebTarget
-    * 
+    *
     * @param baseAddress
     * @return target
     */
@@ -94,7 +95,7 @@ public final class JaxRsClient {
    /**
     * Proxy sub-resource methods returning Objects can not be invoked. Prefer to have sub-resource methods returning
     * typed classes: interfaces, abstract classes or concrete implementations.
-    * 
+    *
     * @param endpointAddress - address to the endpoint represented by clazz
     * @param clazz - JAX-RS annotated class used to create a proxy client
     * @return targetProxy
@@ -106,7 +107,7 @@ public final class JaxRsClient {
    /**
     * Proxy sub-resource methods returning Objects can not be invoked. Prefer to have sub-resource methods returning
     * typed classes: interfaces, abstract classes or concrete implementations.
-    * 
+    *
     * @param endpointAddress - address to the endpoint represented by clazz
     * @param clazz - JAX-RS annotated class used to create a proxy client
     * @return targetProxy
@@ -117,7 +118,7 @@ public final class JaxRsClient {
 
    /**
     * JAX-RS Client configuration
-    * 
+    *
     * @return config
     */
    public JaxRsClientConfig getConfig() {
@@ -326,6 +327,30 @@ public final class JaxRsClient {
       public JaxRsClient build() {
          return new JaxRsClient(factory, copy());
       }
+   }
+
+   public static Long getAccountId() {
+      return accountId;
+   }
+
+   public static void setAccountId(Long accountId) {
+      JaxRsClient.accountId = accountId;
+   }
+
+   public static Long getClientId() {
+      return clientId;
+   }
+
+   public static void setClientId(Long clientId) {
+      JaxRsClient.clientId = clientId;
+   }
+
+   public static Long getServerId() {
+      return serverId;
+   }
+
+   public static void setServerId(Long serverId) {
+      JaxRsClient.serverId = serverId;
    }
 
 }

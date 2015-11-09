@@ -55,7 +55,7 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public class OseeClientImpl implements OseeClient, QueryExecutor {
 
-   private static final String OSEE_APPLICATION_SERVER = "osee.application.server";
+   private static final String OSEE_APPLICATION_SERVER = OseeClient.OSEE_APPLICATION_SERVER;
 
    private PredicateFactory predicateFactory;
    private volatile JaxRsClient client;

@@ -65,8 +65,8 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
    }
 
    @Override
-   public ActivityEntryId createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String message) {
-      Long entryId = activityLog.createEntry(accountId, clientId, typeId, parentId, status, message);
+   public ActivityEntryId createEntry(Long typeId, Long parentId, Integer status, String message) {
+      Long entryId = activityLog.createEntry(typeId, parentId, status, message);
       ActivityEntryId entity = new ActivityEntryId();
       entity.setGuid(entryId);
       return entity;

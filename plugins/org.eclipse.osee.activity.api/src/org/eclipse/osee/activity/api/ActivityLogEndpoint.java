@@ -61,19 +61,17 @@ public interface ActivityLogEndpoint {
 
    /**
     * Create a new activity entry
-    *
-    * @param accountId account id
-    * @param clientId client id
     * @param typeId activity type id
     * @param parentId of the parent activity
     * @param status of the activity
     * @param message to log for the activity
+    *
     * @return entryId
     */
    @POST
    @Path("/entry")
    @Produces({MediaType.APPLICATION_JSON})
-   ActivityEntryId createEntry(@QueryParam("accountId") Long accountId, @QueryParam("clientId") Long clientId, @QueryParam("typeId") Long typeId, @QueryParam("parentId") Long parentId, @QueryParam("status") Integer status, @QueryParam("message") String message);
+   ActivityEntryId createEntry(@QueryParam("typeId") Long typeId, @QueryParam("parentId") Long parentId, @QueryParam("status") Integer status, @QueryParam("message") String message);
 
    /**
     * Create a new activity type

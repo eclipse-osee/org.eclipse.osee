@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.ActivityLogUtil;
 import org.eclipse.osee.framework.ui.plugin.internal.UiPluginConstants;
 import org.eclipse.osee.framework.ui.plugin.util.ActivityLogJaxRsService;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -142,11 +141,9 @@ public class XNavigateComposite extends Composite {
       } else {
          try {
             long uuid = Lib.generateUuid();
-            ActivityLogJaxRsService.create(ActivityLogUtil.getAccountId(), ActivityLogUtil.getClientId(),
-               Activity.XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
+            ActivityLogJaxRsService.create(Activity.XNAVIGATEITEM, uuid, ActivityLog.INITIAL_STATUS, item.getName());
             item.run(tableLoadOptions);
-            ActivityLogJaxRsService.create(ActivityLogUtil.getAccountId(), ActivityLogUtil.getClientId(),
-               Activity.XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
+            ActivityLogJaxRsService.create(Activity.XNAVIGATEITEM, uuid, ActivityLog.COMPLETE_STATUS, item.getName());
          } catch (Exception ex) {
             OseeLog.log(UiPluginConstants.class, OseeLevel.SEVERE_POPUP, ex);
          }

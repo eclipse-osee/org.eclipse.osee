@@ -35,6 +35,7 @@ import org.eclipse.osee.jaxrs.client.JaxRsClientConfig;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ConnectionType;
 import org.eclipse.osee.jaxrs.client.JaxRsClientConstants.ProxyType;
 import org.eclipse.osee.jaxrs.client.internal.JaxRsClientConfigurator;
+import org.eclipse.osee.jaxrs.client.internal.OseeAccountClientRequestFilter;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2ClientRequestFilter.ClientAccessTokenCache;
 
 /**
@@ -93,6 +94,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       providers.add(new GenericResponseExceptionMapper());
       providers.addAll(JacksonFeature.getProviders());
       providers.addAll(OAuth2Util.getOAuthProviders());
+      providers.add(new OseeAccountClientRequestFilter());
       this.providers = providers;
 
       List<Feature> features = new ArrayList<>(2);
@@ -113,6 +115,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       bean.setFeatures(getFeatures());
       bean.setProperties(getProperties());
       bean.setProviders(getOAuthProviders(config));
+      bean.setProvider(new OseeAccountClientRequestFilter());
 
       /**
        * If threadSafe is true then multiple threads can invoke on the same proxy or WebClient instance.
@@ -136,6 +139,7 @@ public final class CxfJaxRsClientConfigurator implements JaxRsClientConfigurator
       register(builder, getFeatures());
       register(builder, getProperties());
       register(builder, getOAuthProviders(config));
+      builder.register(new OseeAccountClientRequestFilter());
    }
 
    @Override
