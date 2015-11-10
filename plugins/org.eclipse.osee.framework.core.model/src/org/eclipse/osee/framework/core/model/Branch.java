@@ -264,7 +264,4 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
       return String.format("[%s][%s]", getGuid(), getName());
    }
 
-   public String toStringWithDetails() {
-      return "Branch [name=" + getShortName() + ", type=" + getBranchType() + ", state=" + getBranchState() + ", archived=" + getArchiveState() + ", assocArtId=" + getAssociatedArtifactId() + ", uuid=" + getUuid() + "]";
-   }
 }

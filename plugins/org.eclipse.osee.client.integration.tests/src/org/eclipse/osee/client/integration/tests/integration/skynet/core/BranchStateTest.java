@@ -113,7 +113,7 @@ public class BranchStateTest {
          Job job = BranchManager.deleteBranch(workingBranch);
          job.join();
          assertEquals(BranchState.DELETED, workingBranch.getBranchState());
-         assertTrue(workingBranch.getArchiveState().isArchived());
+         assertTrue(BranchManager.isArchived(workingBranch));
          assertTrue(!BranchManager.isEditable(workingBranch));
          assertTrue(workingBranch.getBranchState().isDeleted());
       } finally {
@@ -139,7 +139,7 @@ public class BranchStateTest {
          branchPurged = true;
 
          assertEquals(BranchState.PURGED, workingBranch.getBranchState());
-         assertTrue(workingBranch.getArchiveState().isArchived());
+         assertTrue(BranchManager.isArchived(workingBranch));
          assertTrue(!BranchManager.isEditable(workingBranch));
          assertTrue(workingBranch.getBranchState().isPurged());
       } finally {
@@ -172,7 +172,7 @@ public class BranchStateTest {
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
-         assertTrue(workingBranch.getArchiveState().isArchived());
+         assertTrue(BranchManager.isArchived(workingBranch));
          assertTrue(!BranchManager.isEditable(workingBranch));
       } finally {
          if (workingBranch != null) {
@@ -312,7 +312,7 @@ public class BranchStateTest {
 
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
-         assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
+         assertTrue("Branch was archived", !BranchManager.isArchived(workingBranch));
          assertTrue("Branch was not marked as rebaseline in progress",
             workingBranch.getBranchState().isRebaselineInProgress());
          assertTrue("Branch was not editable", BranchManager.isEditable(workingBranch));
@@ -385,7 +385,7 @@ public class BranchStateTest {
    }
 
    private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {
-      assertTrue("Branch was not archived", branchToCheck.getArchiveState().isArchived());
+      assertTrue("Branch was not archived", BranchManager.isArchived(branchToCheck));
       assertTrue("Branch was still editable", !BranchManager.isEditable(branchToCheck));
       assertTrue("Branch state was not set as rebaselined", branchToCheck.getBranchState().isRebaselined());
       assertTrue("Branch name not set correctly",

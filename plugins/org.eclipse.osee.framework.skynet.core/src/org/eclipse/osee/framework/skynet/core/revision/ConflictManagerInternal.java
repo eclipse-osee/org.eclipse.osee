@@ -101,7 +101,7 @@ public class ConflictManagerInternal {
             commitTransaction.getId());
          while (chStmt.next()) {
             Branch sourceBranch = BranchManager.getBranch(chStmt.getLong("source_branch_id"));
-            if (sourceBranch.getArchiveState().isArchived()) {
+            if (BranchManager.isArchived(sourceBranch)) {
                sourceBranch = null;
             }
             AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),

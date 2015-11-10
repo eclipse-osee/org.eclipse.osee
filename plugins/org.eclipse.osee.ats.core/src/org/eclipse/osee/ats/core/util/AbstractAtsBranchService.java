@@ -255,7 +255,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
       for (ITransaction transactionId : committedTransactions) {
          // exclude working branches including branch states that are re-baselined
          BranchId branch = transactionId.getBranch();
-         if (getBranchType(branch).isBaselineBranch() && getArchiveState(branch).isUnArchived()) {
+         if (getBranchType(branch).isBaselineBranch() && !isArchived(branch)) {
             transactionIds.add(transactionId);
          }
       }

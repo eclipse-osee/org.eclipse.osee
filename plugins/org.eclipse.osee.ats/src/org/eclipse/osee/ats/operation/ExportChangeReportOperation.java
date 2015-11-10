@@ -167,7 +167,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
    private TransactionRecord pickTransaction(IArtifact workflow) throws OseeCoreException {
       int minTransactionId = -1;
       for (TransactionRecord transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
-         if (minTransactionId < transaction.getId() && transaction.getFullBranch().getArchiveState().isUnArchived()) {
+         if (minTransactionId < transaction.getId() && !BranchManager.isArchived(transaction.getBranch())) {
             minTransactionId = transaction.getId();
          }
       }

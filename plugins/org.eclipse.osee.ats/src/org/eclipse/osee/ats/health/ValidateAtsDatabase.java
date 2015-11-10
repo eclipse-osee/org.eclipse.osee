@@ -89,9 +89,9 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
    private static String SELECT_COMMON_ART_IDS = "SELECT /*+ ordered */ art1.art_id, txs1.branch_id " + //
-   "FROM osee_artifact art1, osee_txs txs1 " + //
-   "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
-   "ORDER BY art1.art_id, txs1.branch_id ";
+      "FROM osee_artifact art1, osee_txs txs1 " + //
+      "WHERE art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ? " + //
+      "ORDER BY art1.art_id, txs1.branch_id ";
    private boolean fixAttributeValues = false;
    private final Set<String> atsIds = new HashSet<>();
    private final Map<String, String> legacyPcrIdToParentId = new HashMap<>(50000);
@@ -745,12 +745,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (!workingBranch.getBranchState().isCommitted()) {
                      Collection<BranchId> branchesCommittedTo =
                         AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);
-                     if (branchesCommittedTo.size() > 0) {
+                     if (!branchesCommittedTo.isEmpty()) {
                         results.log(artifact, "testAtsBranchManagerA",
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
                               teamArt) + " has committed branches but working branch [" + workingBranch.getUuid() + "] != COMMITTED");
                      }
-                  } else if (!workingBranch.getArchiveState().isArchived()) {
+                  } else if (!BranchManager.isArchived(workingBranch)) {
                      Collection<BranchId> branchesLeftToCommit =
                         AtsClientService.get().getBranchService().getBranchesLeftToCommit(teamArt);
                      if (branchesLeftToCommit.isEmpty()) {
@@ -773,7 +773,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       Date date = new Date();
       try {
          Branch branch = BranchManager.getBranch(parentBranchUuid);
-         if (branch.getArchiveState().isArchived()) {
+         if (BranchManager.isArchived(branch)) {
             results.log("validateBranchUuid",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",

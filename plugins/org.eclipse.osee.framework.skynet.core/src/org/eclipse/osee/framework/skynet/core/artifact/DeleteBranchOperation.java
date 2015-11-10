@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -41,7 +40,7 @@ public class DeleteBranchOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Branch branch = BranchManager.getBranch(this.branch);
       BranchState originalState = branch.getBranchState();
-      BranchArchivedState originalArchivedState = branch.getArchiveState();
+      boolean originalArchivedState = BranchManager.isArchived(branch);
 
       ArtifactCache.deCache(this.branch);
       OseeClient client = ServiceUtil.getOseeClient();
@@ -62,7 +61,7 @@ public class DeleteBranchOperation extends AbstractOperation {
       } catch (Exception ex) {
          try {
             branch.setBranchState(originalState);
-            branch.setArchived(originalArchivedState.isArchived());
+            branch.setArchived(originalArchivedState);
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.StateUpdated, branch));
             BranchManager.persist(branch);
          } catch (Exception ex2) {

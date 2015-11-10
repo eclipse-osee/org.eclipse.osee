@@ -131,13 +131,13 @@ public class BranchEventTest {
       branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
-      Assert.assertEquals(BranchArchivedState.ARCHIVED, committedBranch.getArchiveState());
-      BranchManager.updateBranchArchivedState(null, committedBranch.getUuid(), BranchArchivedState.UNARCHIVED);
+      Assert.assertTrue(BranchManager.isArchived(committedBranch));
+      BranchManager.setArchiveState(committedBranch, BranchArchivedState.UNARCHIVED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.ArchiveStateUpdated,
          committedBranch);
 
-      Assert.assertEquals(BranchArchivedState.UNARCHIVED, committedBranch.getArchiveState());
+      Assert.assertFalse(BranchManager.isArchived(committedBranch));
       Assert.assertFalse(BranchManager.isEditable(committedBranch));
       return committedBranch;
    }

@@ -62,7 +62,7 @@ public class StoreBranchDatabaseCallable {
             }
             if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
                MoveBranchDatabaseCallable task =
-                  new MoveBranchDatabaseCallable(jdbcClient, branch.getArchiveState().isArchived(), branch);
+                  new MoveBranchDatabaseCallable(jdbcClient, BranchManager.isArchived(branch), branch);
                try {
                   task.handleTxWork();
                } catch (Exception ex) {

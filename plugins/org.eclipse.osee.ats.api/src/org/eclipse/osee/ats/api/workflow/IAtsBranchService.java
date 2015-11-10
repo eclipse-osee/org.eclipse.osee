@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -111,7 +110,7 @@ public interface IAtsBranchService {
 
    boolean branchExists(long branchUuid);
 
-   BranchArchivedState getArchiveState(BranchId branch);
+   boolean isArchived(BranchId branch);
 
    ITransaction getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
@@ -128,5 +127,4 @@ public interface IAtsBranchService {
    ITransaction getBaseTransaction(BranchId branch);
 
    String getBranchName(IAtsTeamWorkflow teamWf);
-
 }

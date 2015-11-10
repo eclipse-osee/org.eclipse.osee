@@ -174,8 +174,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
       if (lastSelectedBranch != null) {
          try {
-            Branch fullBranch = BranchManager.getBranch(lastSelectedBranch);
-            if (fullBranch != null && fullBranch.getArchiveState().isUnArchived()) {
+            if (!BranchManager.isArchived(lastSelectedBranch)) {
                branchSelection.setDefaultSelection(lastSelectedBranch);
             }
          } catch (OseeCoreException ex) {

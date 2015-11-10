@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -30,12 +30,12 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
  * @author Ryan D. Brooks
  */
 public final class UpdateBranchArchivedStateHttpRequestOperation extends AbstractOperation {
-   private final long branchUuid;
+   private final BranchId branch;
    private final boolean archive;
 
-   public UpdateBranchArchivedStateHttpRequestOperation(long branchUuid, boolean archive) {
-      super("Update branch archived state " + branchUuid, Activator.PLUGIN_ID);
-      this.branchUuid = branchUuid;
+   public UpdateBranchArchivedStateHttpRequestOperation(BranchId branch, boolean archive) {
+      super("Update branch archived state " + branch, Activator.PLUGIN_ID);
+      this.branch = branch;
       this.archive = archive;
    }
 
@@ -44,18 +44,17 @@ public final class UpdateBranchArchivedStateHttpRequestOperation extends Abstrac
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
 
+      Long branchId = branch.getUuid();
       if (archive) {
-         Response response = proxy.archiveBranch(branchUuid);
+         Response response = proxy.archiveBranch(branchId);
          if (Status.OK.getStatusCode() == response.getStatus()) {
-            Branch branch = BranchManager.getBranch(branchUuid);
-            branch.setArchived(true);
+            BranchManager.getBranch(branch).setArchived(true);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
          }
       } else {
-         Response response = proxy.unarchiveBranch(branchUuid);
+         Response response = proxy.unarchiveBranch(branchId);
          if (Status.OK.getStatusCode() == response.getStatus()) {
-            Branch branch = BranchManager.getBranch(branchUuid);
-            branch.setArchived(false);
+            BranchManager.getBranch(branch).setArchived(false);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
          }
       }

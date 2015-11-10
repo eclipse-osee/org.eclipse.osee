@@ -18,7 +18,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -40,20 +39,13 @@ public class ArchiveBranchHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Collection<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+      Collection<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      for (Branch branch : branches) {
-         BranchArchivedState state = branch.getArchiveState();
-         if (state.equals(BranchArchivedState.ARCHIVED)) {
-            branch.setArchived(false);
-            BranchManager.updateBranchArchivedState(null, branch.getUuid(), BranchArchivedState.UNARCHIVED);
-         } else {
-            branch.setArchived(true);
-            BranchManager.updateBranchArchivedState(null, branch.getUuid(), BranchArchivedState.ARCHIVED);
-         }
+      for (BranchId branch : branches) {
+         BranchArchivedState state = BranchArchivedState.fromBoolean(!BranchManager.isArchived(branch));
+         BranchManager.setArchiveState(branch, state);
          OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
       }
-
       return null;
    }
 }

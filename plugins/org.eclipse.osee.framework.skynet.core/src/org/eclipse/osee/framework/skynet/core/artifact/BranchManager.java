@@ -292,9 +292,9 @@ public final class BranchManager {
       }
    }
 
-   public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchUuid, final BranchArchivedState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchUuid, state.isArchived());
-      Operations.executeWorkAndCheckStatus(operation, monitor);
+   public static void setArchiveState(BranchId branch, BranchArchivedState state) throws OseeCoreException {
+      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branch, state.isArchived());
+      Operations.executeWorkAndCheckStatus(operation, null);
    }
 
    public static void updateBranchName(final Long branchUuid, String newBranchName) {
@@ -652,6 +652,14 @@ public final class BranchManager {
 
    public static boolean hasAncestor(BranchId branch, BranchId ancestor) {
       return getBranch(branch).hasAncestor(ancestor);
+   }
+
+   public static boolean isArchived(BranchId branch) {
+      return getBranch(branch).getArchiveState().isArchived();
+   }
+
+   public static String getArchivedStr(BranchId branch) {
+      return getBranch(branch).getArchiveState().name();
    }
 
    public static void resetWasLoaded() {

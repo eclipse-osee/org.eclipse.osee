@@ -18,8 +18,8 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -59,9 +59,9 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
                String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch";
                Command command = commandService.getCommand(commandId);
                CommandContributionItem contributionItem = null;
-               BranchArchivedState archivedState = selectedBranch.getArchiveState();
-               String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
-               ImageDescriptor descriptor = archivedState.isArchived() ? ImageManager.getImageDescriptor(
+               boolean archivedState = BranchManager.isArchived(selectedBranch);
+               String label = (archivedState ? "Unarchive" : "Archive") + " Branch(s)";
+               ImageDescriptor descriptor = archivedState ? ImageManager.getImageDescriptor(
                   FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
                contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
 

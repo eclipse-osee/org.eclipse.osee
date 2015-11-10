@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -76,8 +75,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchType getBranchType(BranchId branch) {
-      BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
-      return fullBranch.getBranchType();
+      return getBranch(branch).getBranchType();
    }
 
    @Override
@@ -114,6 +112,10 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       return orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
    }
 
+   private BranchReadable getBranch(BranchId branch) {
+      return orcsApi.getQueryFactory().branchQuery().andIds(branch).getResults().getExactlyOne();
+   }
+
    @Override
    public boolean branchExists(long branchUuid) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
@@ -121,9 +123,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchArchivedState getArchiveState(BranchId branch) {
-      BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
-      return fullBranch.getArchiveState();
+   public boolean isArchived(BranchId branch) {
+      return getBranch(branch).getArchiveState().isArchived();
    }
 
    @Override

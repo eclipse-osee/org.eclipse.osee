@@ -97,7 +97,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (cCol.equals(BranchXViewerFactory.branchName)) {
          return branch.getName();
       } else if (cCol.equals(BranchXViewerFactory.archivedState)) {
-         return branch.getArchiveState().toString();
+         return BranchManager.getArchivedStr(branch);
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          try {
             String date = "";
