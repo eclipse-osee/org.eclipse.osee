@@ -46,7 +46,7 @@ public interface BranchReadable extends IOseeBranch {
 
    void getChildBranches(Collection<? extends BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException;
 
-   Collection<? extends BranchReadable> getAncestors() throws OseeCoreException;
+   Collection<? extends BranchId> getAncestors() throws OseeCoreException;
 
    boolean isAncestorOf(BranchId branch) throws OseeCoreException;
 }

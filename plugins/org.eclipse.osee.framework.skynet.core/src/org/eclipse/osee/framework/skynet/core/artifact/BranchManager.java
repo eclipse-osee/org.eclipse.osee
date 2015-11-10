@@ -646,6 +646,14 @@ public final class BranchManager {
       return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && fullBranch.getArchiveState().isUnArchived();
    }
 
+   public static Collection<BranchId> getAncestors(BranchId branch) {
+      return getBranch(branch).getAncestors();
+   }
+
+   public static boolean hasAncestor(BranchId branch, BranchId ancestor) {
+      return getBranch(branch).hasAncestor(ancestor);
+   }
+
    public static void resetWasLoaded() {
       getCache().invalidate();
    }

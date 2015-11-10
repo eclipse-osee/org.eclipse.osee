@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -344,9 +345,10 @@ public class ConflictManagerInternal {
       // We just need the largest value at first so the complete source branch
       // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
- 
-      for (Branch branch : sourceBranch.getAncestors()) {
-         if (!BranchManager.isParentSystemRoot(branch)) {
+
+      for (BranchId tempBranch : BranchManager.getAncestors(sourceBranch)) {
+         Branch branch = BranchManager.getBranch(tempBranch);
+         if (!BranchManager.isParentSystemRoot(tempBranch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
 
             if (branch.getSourceTransaction() != null) {
@@ -434,10 +436,10 @@ public class ConflictManagerInternal {
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
    public static TransactionRecord findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      Collection<Branch> sourceBranches = sourceBranch.getAncestors();
-      Collection<Branch> destBranches = destBranch.getAncestors();
-      Branch commonBranch = null;
-      for (Branch branch : sourceBranches) {
+      Collection<BranchId> sourceBranches = BranchManager.getAncestors(sourceBranch);
+      Collection<BranchId> destBranches = BranchManager.getAncestors(destBranch);
+      BranchId commonBranch = null;
+      for (BranchId branch : sourceBranches) {
          if (destBranches.contains(branch)) {
             commonBranch = branch;
             break;
@@ -452,16 +454,16 @@ public class ConflictManagerInternal {
       if (commonBranch.equals(destBranch)) {
          destTransaction = TransactionManager.getHeadTransaction(commonBranch);
       } else {
-         for (Branch branch : destBranches) {
+         for (BranchId branch : destBranches) {
             if (BranchManager.isParent(branch, commonBranch)) {
-               destTransaction = branch.getBaseTransaction();
+               destTransaction = BranchManager.getBaseTransaction(branch);
                break;
             }
          }
       }
-      for (Branch branch : sourceBranches) {
+      for (BranchId branch : sourceBranches) {
          if (BranchManager.isParent(branch, commonBranch)) {
-            sourceTransaction = branch.getBaseTransaction();
+            sourceTransaction = BranchManager.getBaseTransaction(branch);
             break;
          }
       }

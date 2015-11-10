@@ -218,8 +218,8 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
    }
 
    @Override
-   public Collection<Branch> getAncestors() throws OseeCoreException {
-      List<Branch> ancestors = new ArrayList<>();
+   public Collection<BranchId> getAncestors() throws OseeCoreException {
+      List<BranchId> ancestors = new ArrayList<>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
 
@@ -244,7 +244,17 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
 
    @Override
    public boolean isAncestorOf(BranchId branch) throws OseeCoreException {
-      return getChildBranches(true).contains(branch);
+      return getAllChildBranches(true).contains(branch);
+   }
+
+   public boolean hasAncestor(BranchId ancestor) {
+      Branch branchCursor = this;
+      while ((branchCursor = branchCursor.getParentBranch()) != null) {
+         if (branchCursor.equals(ancestor)) {
+            return true;
+         }
+      }
+      return false;
    }
 
    /*
