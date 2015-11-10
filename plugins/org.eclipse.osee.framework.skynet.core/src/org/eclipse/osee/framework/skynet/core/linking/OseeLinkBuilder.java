@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -81,7 +81,7 @@ public class OseeLinkBuilder {
       "5r02CRpYI5HheF3UM0UhBZCR907SRkdOCR7muHF0sPClCVJ+87X1/uQe3q5J+a6bFRbvqSUUUV55" +
       "YUUUUAFZV54Y8P6jdPdX2h6Zc3MmN809pG7tgYGSRk8AD8KKKuFScHeDt6Ba5owQRW0EcEESRQxK" +
       "EjjjUKqKBgAAcAAdqkooqG76sAooooAKKKKAP//Z";
-   
+
    private static final String PIC_TAG_DATA =
       "<w:r><w:pict>" +
       "<v:shapetype id=\"_x0000_t75\" coordsize=\"21600,21600\" o:spt=\"75\" o:preferrelative=\"t\""+
@@ -110,13 +110,13 @@ public class OseeLinkBuilder {
       return String.format(linkFormat, linkId, linkText);
    }
 
-   public String getUnknownArtifactLink(String guid, Branch branch) {
+   public String getUnknownArtifactLink(String guid, BranchId branch) {
       String processType = "unknown";
       return getArtifactLinkWithMessage(processType, guid, branch, String.format(
          "Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch.getUuid()));
    }
 
-   private String getArtifactLinkWithMessage(String processType, String guid, Branch branch, String message) {
+   private String getArtifactLinkWithMessage(String processType, String guid, BranchId branch, String message) {
       String internalLink =
          String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
       return String.format(WORDML_LINK_FORMAT, internalLink, message);

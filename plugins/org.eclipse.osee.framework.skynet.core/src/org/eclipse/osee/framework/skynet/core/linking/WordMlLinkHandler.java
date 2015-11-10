@@ -19,7 +19,6 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -200,19 +199,20 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(LinkType destLinkType, Artifact source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking, Set<String> unknown) throws OseeCoreException {
-      Branch branch = source.getFullBranch();
+      BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<Artifact> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
       artifactsFromSearch =
          findArtifacts(source.getTransactionRecord(), source.getBranch(), source.isHistorical(), guidsFromLinks);
-      if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.getBranchType().isMergeBranch()) {
+      if (guidsFromLinks.size() != artifactsFromSearch.size() && BranchManager.getBranchType(branch).isMergeBranch()) {
          BranchId sourceBranch = BranchManager.getParentBranchId(branch);
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<Artifact> union = new ArrayList<>();
-         union.addAll(findArtifacts(branch.getSourceTransaction(), sourceBranch, source.isHistorical(), unknownGuids));
+         union.addAll(findArtifacts(BranchManager.getSourceTransaction(branch), sourceBranch, source.isHistorical(),
+            unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;
       }

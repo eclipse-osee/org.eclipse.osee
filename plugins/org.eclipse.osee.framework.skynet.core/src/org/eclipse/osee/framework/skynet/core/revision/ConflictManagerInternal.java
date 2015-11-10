@@ -346,13 +346,12 @@ public class ConflictManagerInternal {
       // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
 
-      for (BranchId tempBranch : BranchManager.getAncestors(sourceBranch)) {
-         Branch branch = BranchManager.getBranch(tempBranch);
-         if (!BranchManager.isParentSystemRoot(tempBranch)) {
+      for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
+         if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-
-            if (branch.getSourceTransaction() != null) {
-               parentTransactionNumber = branch.getSourceTransaction().getId();
+            TransactionRecord sourceTx = BranchManager.getSourceTransaction(branch);
+            if (sourceTx != null) {
+               parentTransactionNumber = sourceTx.getId();
             }
          }
 
@@ -366,10 +365,10 @@ public class ConflictManagerInternal {
    /**
     * @return Returns True if the destination gamma does not exist on a branch else false if it does.
     */
-   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeCoreException {
+   private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, int endTransactionNumber) throws OseeCoreException {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
-      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getUuid(),
+      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getId(),
          endTransactionNumber) == 0;
    }
 

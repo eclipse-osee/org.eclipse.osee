@@ -628,6 +628,10 @@ public final class BranchManager {
       return getBranch(branch).getBaseTransaction();
    }
 
+   public static TransactionRecord getSourceTransaction(BranchId branch) {
+      return getBranch(branch).getSourceTransaction();
+   }
+
    public static BranchState getState(BranchId branch) {
       return getBranch(branch).getBranchState();
    }

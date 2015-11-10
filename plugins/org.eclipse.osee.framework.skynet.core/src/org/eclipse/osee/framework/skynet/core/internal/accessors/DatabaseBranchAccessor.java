@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -129,7 +130,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
       for (Entry<Branch, Integer> entry : branchToSourceTx.entrySet()) {
          Branch branch = entry.getKey();
-         if (branch.getSourceTransaction() == null) {
+         if (BranchManager.getSourceTransaction(branch) == null) {
             TransactionRecord srcTx = txCache.getById(entry.getValue());
             branch.setSourceTransaction(srcTx);
          }

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.branch.graph.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,10 +62,10 @@ public class GraphLoader {
    private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
-         List<Branch> branches = new ArrayList<>(current.getBranch().getChildBranches(recurse));
+         List<BranchId> branches = new ArrayList<>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
-         for (Branch branch : branches) {
-            joinQuery.add(branch.getSourceTransaction().getId());
+         for (BranchId branch : branches) {
+            joinQuery.add(BranchManager.getSourceTransaction(branch).getId());
          }
          joinQuery.store();
 
@@ -95,7 +96,7 @@ public class GraphLoader {
          } else {
             long parentTxId = 0;
             try {
-               parentTxId = branchModel.getBranch().getSourceTransaction().getId();
+               parentTxId = BranchManager.getSourceTransaction(branchModel.getBranch()).getId();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
