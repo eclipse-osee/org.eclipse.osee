@@ -693,12 +693,12 @@ oseeEnumType "enum.data.rights.classification" {
 	uuid 0x3000000000000205
 	entry "Restricted Rights"
 	entryGuid "ABcLZ6zfUUzjdDa8p7wA"
-	entry "Restricted Rights Mixed"
-	entryGuid "ABeBnUCzzG2WDzJfSRgA"
-	entry "Other"
+	entry "Government Purpose Rights"
 	entryGuid "ABeCYxypz1fic5Sg52QA"
 	entry "Unspecified"
 	entryGuid "ABeDQMSA8Hs_1dxoYIgA"
+	entry "Proprietary"
+	entryGuid "AOigVM2W3WUomEpjlrgA"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
