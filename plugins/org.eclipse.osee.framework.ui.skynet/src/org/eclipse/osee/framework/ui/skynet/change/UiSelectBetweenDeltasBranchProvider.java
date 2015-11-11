@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -36,7 +37,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
    }
 
    @Override
-   public Branch getBranch(IProgressMonitor monitor) throws OseeCoreException {
+   public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
       final Branch[] selectedBranch = new Branch[1];
 
       TransactionDelta txDelta = uiData.getTxDelta();

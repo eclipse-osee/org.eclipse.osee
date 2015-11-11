@@ -451,7 +451,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    @Override
-   public Branch getBranch(IProgressMonitor monitor) {
+   public IOseeBranch getBranch(IProgressMonitor monitor) {
       return branch;
    }
 
