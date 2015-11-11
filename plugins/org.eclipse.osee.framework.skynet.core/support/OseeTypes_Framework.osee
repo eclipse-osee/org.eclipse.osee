@@ -1179,6 +1179,8 @@ oseeEnumType "enum.req.development.assurance.level" {
 	entryGuid "CArJmQlRRwo1OPaSGhwA"
 	entry "E"
 	entryGuid "CArJmQm9Lx76RVS3lIwA"
+	entry "Unspecified"
+   entryGuid "ABbb5PXLXUOTQZMjxngA"	
 }
 
 attributeType "Development Assurance Level" extends EnumeratedAttribute {
@@ -1188,7 +1190,7 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
 	max 1
 	enumType "enum.req.development.assurance.level"
 	description "Development Assurance Level"
-	defaultValue "E"
+	defaultValue "Unspecified"
 	mediaType "text/plain"
 }
 
