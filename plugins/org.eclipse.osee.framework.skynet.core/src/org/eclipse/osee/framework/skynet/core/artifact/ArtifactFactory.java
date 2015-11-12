@@ -78,7 +78,7 @@ public abstract class ArtifactFactory {
    }
 
    public static int getNextArtifactId(Long uuid) {
-      return uuid == null ? (int) ConnectionHandler.getNextSequence(ART_ID_SEQ) : uuid.intValue();
+      return uuid == null ? (int) ConnectionHandler.getNextSequence(ART_ID_SEQ, true) : uuid.intValue();
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

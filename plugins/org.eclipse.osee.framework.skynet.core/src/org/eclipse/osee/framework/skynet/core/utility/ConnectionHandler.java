@@ -27,7 +27,7 @@ import com.google.common.collect.Iterables;
 
 /**
  * Handles connection recovery in the event of database connection being lost
- * 
+ *
  * @author Jeff C. Phillips
  */
 public final class ConnectionHandler {
@@ -72,7 +72,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when not contained in a DB transaction
-    * 
+    *
     * @return number of records updated
     */
    public static int runPreparedUpdate(String query, Object... data) throws OseeCoreException {
@@ -81,7 +81,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when not contained in a DB transaction
-    * 
+    *
     * @return number of records updated
     */
    public static int runBatchUpdate(String query, List<Object[]> dataList) throws OseeCoreException {
@@ -90,7 +90,7 @@ public final class ConnectionHandler {
 
    /**
     * This method should only be used when contained in a DB transaction
-    * 
+    *
     * @return number of records updated
     */
    public static int runPreparedUpdate(JdbcConnection connection, String query, Object... data) throws OseeCoreException {
@@ -105,8 +105,8 @@ public final class ConnectionHandler {
       return getJdbcClient().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
-   public static long getNextSequence(String sequenceName) {
-      return getJdbcClient().getNextSequence(sequenceName);
+   public static long getNextSequence(String sequenceName, boolean aggressiveFetch) {
+      return getJdbcClient().getNextSequence(sequenceName, aggressiveFetch);
    }
 
 }

@@ -222,7 +222,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
 
          @Override
          public long getNext(String sequenceName) {
-            return jdbcClient.getNextSequence(sequenceName);
+            // Sequence is set to sequential
+            return jdbcClient.getNextSequence(sequenceName, false);
          }
 
       };

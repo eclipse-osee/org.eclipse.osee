@@ -249,7 +249,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
          @Override
          public long getNext(String sequenceName) {
-            return jdbcService.getClient().getNextSequence(sequenceName);
+            // Sequence is set to sequential
+            return jdbcService.getClient().getNextSequence(sequenceName, false);
          }
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);

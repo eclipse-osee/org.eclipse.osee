@@ -101,7 +101,7 @@ public class IdTranslator {
       } else {
          newVersion = this.originalToMapped.get(original);
          if (newVersion == null) {
-            newVersion = jdbcClient.getNextSequence(getSequenceName());
+            newVersion = jdbcClient.getNextSequence(getSequenceName(), true);
             addToCache(original, newVersion);
          }
       }

@@ -31,27 +31,28 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public int getNextTransactionId() {
-      return (int) client.getNextSequence(TRANSACTION_ID_SEQ);
+      //keep transaction id's sequential in the face of concurrent transaction by multiple users
+      return (int) client.getNextSequence(TRANSACTION_ID_SEQ, false);
    }
 
    @Override
    public int getNextArtifactId() {
-      return (int) client.getNextSequence(ART_ID_SEQ);
+      return (int) client.getNextSequence(ART_ID_SEQ, true);
    }
 
    @Override
    public int getNextAttributeId() {
-      return (int) client.getNextSequence(ATTR_ID_SEQ);
+      return (int) client.getNextSequence(ATTR_ID_SEQ, true);
    }
 
    @Override
    public int getNextRelationId() {
-      return (int) client.getNextSequence(REL_LINK_ID_SEQ);
+      return (int) client.getNextSequence(REL_LINK_ID_SEQ, true);
    }
 
    @Override
    public long getNextGammaId() {
-      return (int) client.getNextSequence(GAMMA_ID_SEQ);
+      return (int) client.getNextSequence(GAMMA_ID_SEQ, true);
    }
 
    @Override

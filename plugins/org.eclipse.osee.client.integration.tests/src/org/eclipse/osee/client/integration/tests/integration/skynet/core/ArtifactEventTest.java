@@ -877,7 +877,7 @@ public class ArtifactEventTest {
     * @throws OseeDataStoreException
     */
    private int getIncrementingRelationId() throws OseeCoreException {
-      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ);
+         return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true);
    }
 
    private static final class ArtifactEventListener implements IArtifactEventListener {

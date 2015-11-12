@@ -68,7 +68,7 @@ public class TranslationManager {
       List<Object[]> data = new ArrayList<>();
       for (IdTranslator translatedIdMap : translators) {
          if (translatedIdMap.hasItemsToStore()) {
-            int importSeqId = (int) jdbcClient.getNextSequence(IMPORT_MAPPED_INDEX_SEQ);
+            int importSeqId = (int) jdbcClient.getNextSequence(IMPORT_MAPPED_INDEX_SEQ, true);
             data.add(new Object[] {importIdIndex, importSeqId, translatedIdMap.getSequenceName()});
             translatedIdMap.store(connection, importSeqId);
          }

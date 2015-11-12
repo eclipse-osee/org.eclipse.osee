@@ -90,11 +90,11 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeCoreException {
-      return (int) ConnectionHandler.getNextSequence(ATTR_ID_SEQ);
+      return (int) ConnectionHandler.getNextSequence(ATTR_ID_SEQ, true);
    }
 
    private int getNewRelationId() throws OseeCoreException {
-      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ);
+      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true);
    }
 
    private User getAuthor() throws OseeCoreException {

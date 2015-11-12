@@ -41,14 +41,14 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
  * @author Donald G. Dunne
  */
 public class AtsUtilClient {
-   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task, AtsArtifactTypes.Goal,
-      AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
-      AtsArtifactTypes.Version);
-   private static ArtifactTypeEventFilter reviewArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
-   private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter = new ArtifactTypeEventFilter(
-      AtsArtifactTypes.TeamWorkflow);
+   private static ArtifactTypeEventFilter atsObjectArtifactTypesFilter =
+      new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Action, AtsArtifactTypes.Task,
+         AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint, AtsArtifactTypes.PeerToPeerReview,
+         AtsArtifactTypes.DecisionReview, AtsArtifactTypes.Version);
+   private static ArtifactTypeEventFilter reviewArtifactTypesFilter =
+      new ArtifactTypeEventFilter(AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview);
+   private static ArtifactTypeEventFilter teamWorkflowArtifactTypesFilter =
+      new ArtifactTypeEventFilter(AtsArtifactTypes.TeamWorkflow);
    private static List<IEventFilter> atsObjectEventFilter = new ArrayList<>(2);
    private static boolean emailEnabled = true;
    private static BranchUuidEventFilter commonBranchGuidEventFilter;
@@ -60,11 +60,11 @@ public class AtsUtilClient {
    /**
     * This is necessary for ATS Config object's uuid so they can be persisted. Can be removed once artifact ids go to
     * random longs
-    * 
+    *
     * @return uuid for ATS Config Object creation
     */
    public static long createConfigObjectUuid() {
-      return ConnectionHandler.getNextSequence(ArtifactFactory.ART_ID_SEQ);
+      return ConnectionHandler.getNextSequence(ArtifactFactory.ART_ID_SEQ, true);
    }
 
    public static void setEmailEnabled(boolean enabled) {
@@ -83,7 +83,7 @@ public class AtsUtilClient {
 
    /**
     * TODO Remove duplicate Active flags, need to convert all ats.Active to Active in DB
-    * 
+    *
     * @param artifacts to iterate through
     * @param active state to validate against; Both will return all artifacts matching type
     * @param clazz type of artifacts to consider; null for all

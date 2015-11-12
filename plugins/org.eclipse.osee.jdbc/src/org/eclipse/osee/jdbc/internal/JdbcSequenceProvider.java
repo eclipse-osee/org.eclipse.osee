@@ -29,15 +29,14 @@ public class JdbcSequenceProvider {
       sequences.clear();
    }
 
-   public synchronized long getNextSequence(JdbcClient client, String sequenceName) throws OseeCoreException {
-      JdbcSequenceTx sequenceTx = new JdbcSequenceTx(client, sequenceName);
+   public synchronized long getNextSequence(JdbcClient client, String sequenceName, boolean aggressiveFetch) throws OseeCoreException {
+      JdbcSequenceTx sequenceTx = new JdbcSequenceTx(client, sequenceName, aggressiveFetch);
       client.runTransaction(sequenceTx);
       return sequenceTx.getNextSequence();
    }
 
    private final class JdbcSequenceTx extends JdbcTransaction {
 
-      private static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
       private static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
       private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
       public static final String INSERT_SEQUENCE =
@@ -48,24 +47,27 @@ public class JdbcSequenceProvider {
       private final JdbcClient client;
       private final String sequenceName;
       private long nextSequence;
+      private final boolean aggressiveFetch;
 
-      public JdbcSequenceTx(JdbcClient client, String sequenceName) {
+      public JdbcSequenceTx(JdbcClient client, String sequenceName, boolean aggressiveFetch) {
          super();
          this.client = client;
          this.sequenceName = sequenceName;
+         this.aggressiveFetch = aggressiveFetch;
       }
 
       public long getNextSequence() {
          return nextSequence;
       }
 
+      public boolean isAggressiveFetch() {
+         return aggressiveFetch;
+      }
+
       private SequenceRange getRange(String sequenceName) {
          SequenceRange range = sequences.get(sequenceName);
          if (range == null) {
-            // do this to keep transaction id's sequential in the face of concurrent transaction by multiple users
-            boolean aggressiveFetch = !sequenceName.equals(TRANSACTION_ID_SEQ);
-
-            range = new SequenceRange(aggressiveFetch);
+            range = new SequenceRange(isAggressiveFetch());
             sequences.put(sequenceName, range);
          }
          return range;

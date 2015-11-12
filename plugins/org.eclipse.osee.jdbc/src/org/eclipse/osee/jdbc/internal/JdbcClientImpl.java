@@ -454,8 +454,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public long getNextSequence(String sequenceName) {
-      return sequenceProvider.getNextSequence(this, sequenceName);
+   public long getNextSequence(String sequenceName, boolean aggressiveFetch) {
+      return sequenceProvider.getNextSequence(this, sequenceName, aggressiveFetch);
    }
 
    @Override

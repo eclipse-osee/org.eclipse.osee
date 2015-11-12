@@ -109,9 +109,8 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          URI modelUri = exportDataProvider.getFile(manifestHandler.getTypeModel()).toURI();
          loadTypeModel(modelUri);
 
-         ImportBranchesTx importBranchesTx =
-            new ImportBranchesTx(getLogger(), getSession(), getJdbcClient(), savePointManager,
-               manifestHandler.getBranchFile());
+         ImportBranchesTx importBranchesTx = new ImportBranchesTx(getLogger(), getSession(), getJdbcClient(),
+            savePointManager, manifestHandler.getBranchFile());
          callAndCheckForCancel(importBranchesTx);
 
          savePointManager.setCurrentSetPointId("init_relational_objects");
@@ -195,9 +194,8 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    }
 
    private void processImportFiles(long[] branchesToImport, Collection<IExportItem> importItems) throws Exception {
-      final DbTableSaxHandler handler =
-         DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(), resourceManager, identityService,
-            exportDataProvider, 50000);
+      final DbTableSaxHandler handler = DbTableSaxHandler.createWithLimitedCache(getLogger(), getJdbcClient(),
+         resourceManager, identityService, exportDataProvider, 50000);
       handler.setSelectedBranchIds(branchesToImport);
 
       for (final IExportItem item : importItems) {
@@ -250,7 +248,8 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
          CommitImportSavePointsTx callable = new CommitImportSavePointsTx(getLogger(), getSession(), getJdbcClient());
          callAndCheckForCancel(callable);
       } catch (Exception ex) {
-         getLogger().warn(ex, "Error during save point save - you will not be able to reimport from last source again.");
+         getLogger().warn(ex,
+            "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
          exchangeDataProcessor.cleanUp();
@@ -315,7 +314,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       @Override
       protected Boolean handleTxWork(JdbcConnection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {
-            int importIdIndex = (int) getJdbcClient().getNextSequence(IMPORT_ID_SEQ);
+            int importIdIndex = (int) getJdbcClient().getNextSequence(IMPORT_ID_SEQ, true);
             String sourceDatabaseId = manifestHandler.getSourceDatabaseId();
             Timestamp importDate = new Timestamp(new Date().getTime());
             Timestamp exportDate = new Timestamp(manifestHandler.getSourceExportDate().getTime());

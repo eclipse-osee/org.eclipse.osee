@@ -135,6 +135,6 @@ public abstract class BaseTransactionData {
    protected abstract void internalAddToEvents(ArtifactEvent artifactEvent) throws OseeCoreException;
 
    protected int getNextGammaIdFromSequence() {
-      return (int) ConnectionHandler.getNextSequence(GAMMA_ID_SEQ);
+      return (int) ConnectionHandler.getNextSequence(GAMMA_ID_SEQ, true);
    }
 }

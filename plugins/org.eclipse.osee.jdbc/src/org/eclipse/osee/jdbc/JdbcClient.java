@@ -44,7 +44,7 @@ public interface JdbcClient {
 
    /**
     * <pre>
-    * Invoke an SQL stored function which returns a value. 
+    * Invoke an SQL stored function which returns a value.
     * Function uses the format function_name (?,?,?) if the function has parameters
     * or function_name if no parameters. Default value cannot be null and must match
     * the desired return type.
@@ -79,7 +79,7 @@ public interface JdbcClient {
 
    void migrate(JdbcMigrationOptions options, Iterable<JdbcMigrationResource> schemaResources);
 
-   long getNextSequence(String sequenceName);
+   long getNextSequence(String sequenceName, boolean aggressiveFetch);
 
    void invalidateSequences();
 

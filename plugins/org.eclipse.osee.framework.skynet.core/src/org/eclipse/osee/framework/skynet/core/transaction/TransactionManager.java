@@ -187,7 +187,8 @@ public final class TransactionManager {
    }
 
    private static int getNextTransactionId() {
-      return (int) ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ);
+      //keep transaction id's sequential in the face of concurrent transaction by multiple users
+      return (int) ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ, false);
    }
 
    public static synchronized TransactionRecord internalCreateTransactionRecord(IOseeBranch branch, User userToBlame, String comment) throws OseeCoreException {
