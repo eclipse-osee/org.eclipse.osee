@@ -16,8 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStatusHandler;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -45,8 +44,9 @@ public class WordAttribute extends StringAttribute {
       String returnValue = value;
 
       Artifact art = getArtifact();
-      Branch fullBranch = BranchManager.getBranch(art.getBranch());
-      if (WordUtil.containsWordAnnotations(value) && fullBranch.getBranchType() != BranchType.MERGE) {
+      BranchId branch = art.getBranch();
+
+      if (WordUtil.containsWordAnnotations(value) && !BranchManager.getType(branch).isMergeBranch()) {
          try {
             String message =
                "This document contains track changes and cannot be saved with them. Do you want OSEE to remove them?" + "\n\nNote:You will need to reopen this artifact in OSEE to see the final result.";
@@ -59,9 +59,9 @@ public class WordAttribute extends StringAttribute {
             if (isOkToRemove) {
                returnValue = WordUtil.removeAnnotations(value);
             } else {
-               throw new OseeCoreException(String.format(
-                  "Artifact %s (%s), Branch %s (%s) contains track changes. Please remove them and save again.",
-                  art.getName(), art.getArtId(), fullBranch.getName(), fullBranch.getUuid()));
+               throw new OseeCoreException(
+                  "Artifact %s [%s], Branch[%s] contains track changes. Please remove them and save again.",
+                  art.getName(), art.getArtId(), branch.getId());
             }
          } catch (CoreException ex) {
             OseeCoreException.wrapAndThrow(ex);

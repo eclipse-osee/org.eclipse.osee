@@ -16,8 +16,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -38,16 +36,15 @@ public final class ChangeUiUtil {
    }
 
    public static void open(BranchId branch, boolean showTransactionTab) throws OseeCoreException {
-      Branch heavyBranch = BranchManager.getBranch(branch);
       Conditions.checkNotNull(branch, "Branch");
-      if (heavyBranch.getBranchType() == BranchType.BASELINE) {
+      if (BranchManager.getType(branch).isBaselineBranch()) {
          if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a " + (showTransactionTab ? "transaction report" : "change report") + " for a BASLINE branch.\n\n" + //
             "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;
          }
       }
-      ChangeReportEditorInput editorInput = createInput(heavyBranch, true);
+      ChangeReportEditorInput editorInput = createInput(branch, true);
       editorInput.setTransactionTabActive(showTransactionTab);
       open(editorInput);
    }
@@ -74,7 +71,7 @@ public final class ChangeUiUtil {
       return createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, loadOnOpen);
    }
 
-   public static ChangeReportEditorInput createInput(Branch branch, boolean loadOnOpen) throws OseeCoreException {
+   public static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
       BranchId parentBranch = BranchManager.getParentBranchId(branch);
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(parentBranch);

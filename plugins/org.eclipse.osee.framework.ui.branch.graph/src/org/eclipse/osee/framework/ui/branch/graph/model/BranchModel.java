@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Roberto E. Escobar
@@ -176,7 +177,7 @@ public class BranchModel extends Node implements Serializable {
    @Override
    public String toString() {
       return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getName(),
-         branch.getBranchType().name(), children.size(), txs.size());
+         BranchManager.getType(branch).name(), children.size(), txs.size());
    }
 
    public boolean areTxsVisible() {

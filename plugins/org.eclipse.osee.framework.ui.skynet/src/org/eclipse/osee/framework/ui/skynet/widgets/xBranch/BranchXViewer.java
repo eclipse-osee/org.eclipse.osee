@@ -16,7 +16,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -54,9 +54,8 @@ public class BranchXViewer extends XViewer {
       ArrayList<IOseeBranch> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
          for (IOseeBranch branch : branches) {
-            BranchType type = BranchManager.getBranchType(branch);
-            if (!type.isSystemRootBranch()) {
-               if (!type.isMergeBranch()) {
+            if (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
+               if (!BranchManager.getType(branch).isMergeBranch()) {
                   ArtifactExplorer.exploreBranch(branch);
                   BranchManager.setLastBranch(branch);
                } else {

@@ -52,7 +52,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -741,7 +740,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
             try {
                Branch workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-               if (workingBranch != null && workingBranch.getBranchType() != BranchType.BASELINE) {
+               if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
                   if (!workingBranch.getBranchState().isCommitted()) {
                      Collection<BranchId> branchesCommittedTo =
                         AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);
@@ -772,17 +771,16 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
       Date date = new Date();
       try {
-         Branch branch = BranchManager.getBranch(parentBranchUuid);
+         BranchId branch = BranchManager.getBranch(parentBranchUuid);
          if (BranchManager.isArchived(branch)) {
             results.log("validateBranchUuid",
                String.format(
                   "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",
                   name.getName(), name.getUuid(), name, parentBranchUuid, branch));
-         } else if (!branch.getBranchType().isBaselineBranch()) {
-            results.log("validateBranchUuid",
-               String.format(
-                  "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
-                  name.getName(), name.getUuid(), name, branch.getBranchType().name(), parentBranchUuid, branch));
+         } else if (!BranchManager.getType(branch).isBaselineBranch()) {
+            results.log("validateBranchUuid", String.format(
+               "Error: [%s][%d][%s] has Parent Branch Uuid attribute [%s][%s] that is a [%s] branch; should be a BASELINE branch",
+               name.getName(), name.getUuid(), name, BranchManager.getType(branch).name(), parentBranchUuid, branch));
          }
       } catch (BranchDoesNotExist ex) {
          results.log("validateBranchUuid",

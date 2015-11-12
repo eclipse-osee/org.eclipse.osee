@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.swt.graphics.Color;
 
@@ -37,7 +38,7 @@ public class GraphColorConstants {
       if (branchModel.isDefaultBranch()) {
          toReturn = GraphColorConstants.CURRENT_BRANCH;
       } else {
-         switch (branchModel.getBranch().getBranchType()) {
+         switch (BranchManager.getType(branchModel.getBranch())) {
             case BASELINE:
                toReturn = GraphColorConstants.BASELINE_BRANCH;
                break;

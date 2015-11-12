@@ -635,8 +635,12 @@ public final class BranchManager {
       return hasChanges(getBranch(branch));
    }
 
-   public static BranchType getBranchType(BranchId branch) {
+   public static BranchType getType(BranchId branch) {
       return getBranch(branch).getBranchType();
+   }
+
+   public static BranchType getType(TransactionRecord tx) {
+      return getBranch(tx.getBranch()).getBranchType();
    }
 
    public static boolean isEditable(BranchId branch) {

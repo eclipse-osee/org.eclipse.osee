@@ -200,7 +200,7 @@ public class BranchVisualizationView extends ViewPart {
       // Create connections
       if (recurse) {
          for (Branch childBranch : branch.getChildren()) {
-            if (childBranch.getBranchType() == BranchType.BASELINE) {
+            if (BranchManager.getType(childBranch).isBaselineBranch()) {
                createEvents(gantEvent, childBranch, recurse);
                System.err.println("parent" + branch.getName() + " - child " + childBranch.getName());
             } else {

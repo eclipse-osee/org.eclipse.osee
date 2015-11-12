@@ -15,8 +15,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
 
@@ -34,7 +34,7 @@ public class OpenArtifactExplorerHandler extends CommandHandler {
       List<Branch> selectedBranches = getSelectedBranches(structuredSelection);
       boolean isEnabled = !selectedBranches.isEmpty();
       for (Branch branch : selectedBranches) {
-         if (branch.getBranchType() == BranchType.MERGE || !branch.getBranchState().matches(BranchState.CREATED,
+         if (BranchManager.getType(branch).isMergeBranch() || !branch.getBranchState().matches(BranchState.CREATED,
             BranchState.MODIFIED)) {
             isEnabled = false;
             break;

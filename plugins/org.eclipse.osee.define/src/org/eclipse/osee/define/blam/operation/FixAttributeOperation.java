@@ -63,7 +63,7 @@ public class FixAttributeOperation extends AbstractOperation {
    private void checkPreConditions() throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       // only allow working branches
-      Conditions.checkExpressionFailOnTrue(!BranchManager.getBranchType(branch).isWorkingBranch(),
+      Conditions.checkExpressionFailOnTrue(!BranchManager.getType(branch).isWorkingBranch(),
          "Invalid branch selected [%s]. Only working branches are allowed.", branch);
    }
 

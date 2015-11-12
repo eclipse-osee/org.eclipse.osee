@@ -116,8 +116,7 @@ public class TraceUnitFromResourceOperation {
       if (importToBranch == null) {
          throw new OseeArgumentException("Branch to import into was null");
       }
-      BranchType branchType = BranchManager.getBranch(importToBranch).getBranchType();
-      if (!branchType.isOfType(BranchType.WORKING)) {
+      if (!BranchManager.getType(importToBranch).isWorkingBranch()) {
          throw new OseeArgumentException("Branch to import into was not a working branch: [%s]", importToBranch);
       }
    }

@@ -15,25 +15,19 @@ import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation;
-import org.eclipse.osee.define.blam.operation.FixAttributeOperation.Display;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.OperationLogger;
+import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,16 +44,10 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Angel Avila
  */
-
 public class FixAttributeOperationTest {
 
    @Rule
@@ -68,27 +56,16 @@ public class FixAttributeOperationTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final String WORKING_BRANCH_NAME = "BranchWorking";
-
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
-   // @formatter:off
-   @Mock private OperationLogger logger;
-   @Mock private Display display;
-
-   @Captor private ArgumentCaptor<List<String[]>> captor;
-   @Captor private ArgumentCaptor<List<String[]>> captor2;
-
-   // @formatter:on
-
+   private static final String WORKING_BRANCH_NAME = "BranchWorking";
    private IOseeBranch branchWorking;
    private String itemId;
+   private List<String[]> data;
 
    @Before
    public void setUp() throws OseeCoreException {
-      MockitoAnnotations.initMocks(this);
-
       branchWorking = BranchManager.createWorkingBranch(SAW_Bld_1, WORKING_BRANCH_NAME);
       BranchId branch1 = editBranch(branchWorking, "branch1");
       BranchId branch2 = editBranch(branchWorking, "branch2");
@@ -109,7 +86,7 @@ public class FixAttributeOperationTest {
    }
 
    @Test
-   public void testNullBranchCheck() throws OseeCoreException {
+   public void testNullBranchCheck() throws Exception {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("branch cannot be null");
 
@@ -117,28 +94,19 @@ public class FixAttributeOperationTest {
    }
 
    @Test
-   public void testNonWorkingBranchCheck() throws OseeCoreException {
-      Branch mockBranch = Mockito.mock(Branch.class);
-      when(mockBranch.toString()).thenReturn("mock branch");
-      when(mockBranch.getBranchType()).thenReturn(BranchType.BASELINE);
-
+   public void testNonWorkingBranchCheck() throws Exception {
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Invalid branch selected [mock branch]. Only working branches are allowed.");
+      thrown.expectMessage("Invalid branch selected [Common]. Only working branches are allowed.");
 
-      executeOp(mockBranch, false);
+      executeOp(CoreBranches.COMMON, false);
    }
 
    @Test
    public void testDetectDuplicatesButDontFix() throws OseeCoreException {
       // test multiple runs without committing fixes
       for (int i = 0; i < 2; i++) {
-         reset(display);
-
          executeOp(branchWorking, false);
 
-         verify(display).displayReport(eq("Fix Duplicate Report"), captor.capture());
-
-         List<String[]> data = captor.getValue();
          assertRow(data, 0, branchWorking.getName(), itemId, "Robot API", CoreAttributeTypes.Partition.getName(),
             "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
 
@@ -156,12 +124,8 @@ public class FixAttributeOperationTest {
    @Test
    public void testTestFix() throws OseeCoreException {
       executeOp(branchWorking, true);
-
-      verify(display).displayReport(eq("Fix Duplicate Report"), captor.capture());
-
-      //@formatter:off
-      assertRow(captor.getValue(), 0, branchWorking.getName(), itemId, "Robot API", CoreAttributeTypes.Partition.getName(), "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
-      //@formatter: on
+      assertRow(data, 0, branchWorking.getName(), itemId, "Robot API", CoreAttributeTypes.Partition.getName(),
+         "Unspecified, Navigation, Navigation", "Unspecified, Navigation");
 
       Artifact testRobotAPI =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branchWorking);
@@ -172,13 +136,11 @@ public class FixAttributeOperationTest {
       assertEquals("Unspecified", values.get(1));
 
       // Run Again Empty Report should result
-      reset(display);
       executeOp(branchWorking, true);
 
-      verify(display).displayReport(eq("Fix Duplicate Report"), captor2.capture());
-
       String expectedString = "-- no duplicates found --";
-      assertRow(captor2.getValue(), 0, expectedString, expectedString, expectedString, expectedString, expectedString, expectedString);
+      assertRow(data, 0, expectedString, expectedString, expectedString, expectedString, expectedString,
+         expectedString);
    }
 
    private static void assertRow(List<String[]> data, int index, String... expecteds) {
@@ -193,13 +155,14 @@ public class FixAttributeOperationTest {
    }
 
    private void executeOp(IOseeBranch branch, boolean commitChangesBool) throws OseeCoreException {
-      IOperation operation = new FixAttributeOperation(logger, display, branch, commitChangesBool);
+      IOperation operation = new FixAttributeOperation(NullOperationLogger.getSingleton(),
+         (String reportName, List<String[]> values) -> data = values, branch, commitChangesBool);
       Operations.executeWorkAndCheckStatus(operation);
    }
 
    private BranchId editBranch(BranchId parentBranch, String workingBranchName) throws OseeCoreException {
       String branchName = String.format("%s_%s", FixAttributeOperationTest.class.getSimpleName(), workingBranchName);
-      Branch branch = BranchManager.createWorkingBranch(parentBranch, branchName);
+      BranchId branch = BranchManager.createWorkingBranch(parentBranch, branchName);
 
       Artifact robotAPI =
          ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API", branch);

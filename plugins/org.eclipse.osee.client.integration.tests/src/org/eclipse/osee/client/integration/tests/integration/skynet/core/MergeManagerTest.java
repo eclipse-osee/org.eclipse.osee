@@ -48,7 +48,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author Angel Avila
@@ -70,8 +69,6 @@ public class MergeManagerTest {
 
    @Before
    public void setUp() throws Exception {
-      MockitoAnnotations.initMocks(this);
-
       if (newArt == null) {
          assertFalse("This test can not be run on Production", ClientSessionManager.isProductionDataStore());
          newArt = ArtifactTypeManager.addArtifact(NewArtifactToken, SAW_Bld_1);

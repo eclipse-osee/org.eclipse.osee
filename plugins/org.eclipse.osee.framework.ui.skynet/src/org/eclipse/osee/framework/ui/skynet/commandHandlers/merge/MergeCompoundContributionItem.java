@@ -66,14 +66,14 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
          List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            Branch selectedBranch = branches.iterator().next();
+            BranchId selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                try {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getUuid());
                   BranchId parentBranch = BranchManager.getParentBranchId(selectedBranch);
-                  if (parentBranch != null && !selectedBranch.getBranchType().isMergeBranch() && !destBranches.contains(
-                     parentBranch.getUuid())) {
+                  if (parentBranch != null && !BranchManager.getType(
+                     selectedBranch).isMergeBranch() && !destBranches.contains(parentBranch.getUuid())) {
                      destBranches.add(parentBranch.getUuid());
                   }
 

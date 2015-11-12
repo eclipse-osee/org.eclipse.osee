@@ -194,11 +194,12 @@ public final class AtsBranchManager {
 
       for (TransactionRecord id : trs) {
          // ignore working branches that have been committed
-         if (id.getFullBranch().getBranchType().isWorkingBranch() && id.getFullBranch().getBranchState().isCommitted()) {
+         boolean workingBranch = BranchManager.getType(id).isWorkingBranch();
+         if (workingBranch && id.getFullBranch().getBranchState().isCommitted()) {
             continue;
          }
          // ignore working branches that have been re-baselined (e.g. update form parent branch)
-         else if (id.getFullBranch().getBranchType().isWorkingBranch() && id.getFullBranch().getBranchState().isRebaselined()) {
+         else if (workingBranch && id.getFullBranch().getBranchState().isRebaselined()) {
             continue;
          } else {
             transactionIds.add(id);

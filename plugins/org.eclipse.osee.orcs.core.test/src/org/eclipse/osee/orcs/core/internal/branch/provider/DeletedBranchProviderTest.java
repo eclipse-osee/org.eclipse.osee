@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.core.internal.branch.provider;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -30,7 +29,7 @@ public final class DeletedBranchProviderTest {
    private int expectedResult(Collection<Branch> branches) {
       int result = 0;
       for (Branch branch : branches) {
-         if (branch.getBranchState() == BranchState.DELETED && branch.getArchiveState() == BranchArchivedState.ARCHIVED && !(branch.getBranchType() == BranchType.BASELINE)) {
+         if (branch.getBranchState() == BranchState.DELETED && branch.getArchiveState() == BranchArchivedState.ARCHIVED && !(branch.getBranchType().isBaselineBranch())) {
             result++;
          }
       }

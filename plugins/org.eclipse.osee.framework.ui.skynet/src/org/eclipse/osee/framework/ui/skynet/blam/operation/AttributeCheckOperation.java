@@ -102,7 +102,7 @@ public class AttributeCheckOperation extends AbstractOperation {
          BranchId tempBranch = allDescendants.get(0).getBranch();
          Branch branch = BranchManager.getBranch(tempBranch);
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Attribute Check Blam");
-         if (!branch.getBranchType().isWorkingBranch()) {
+         if (!BranchManager.getType(branch).isWorkingBranch()) {
             changeValues = false;
             logf("\n\nCANNOT MAKE ANY CHANGES BECAUSE ARTIFACTS ARE NOT ON A WORKING BRANCH");
          }

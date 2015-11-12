@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -126,7 +125,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       return branch;
    }
 
-   public void setBranch(Branch branch) {
+   public void setBranch(BranchId branch) {
       this.branch = branch;
    }
 

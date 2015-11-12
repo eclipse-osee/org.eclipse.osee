@@ -142,7 +142,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
          operation = ChangeManager.comparedToPreviousTx(pickTransaction(workflow), changes);
       } else {
          BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-         if (workingBranch != null && !BranchManager.getBranchType(workingBranch).isBaselineBranch()) {
+         if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
             operation = ChangeManager.comparedToParent(workingBranch, changes);
          }
       }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +41,7 @@ public class WorkingBranchTypeColumn extends AbstractBranchColumn {
 
    @Override
    String getColumnText(Branch branch) {
-      return branch.getBranchType().name();
+      return BranchManager.getType(branch).name();
    }
 
 }

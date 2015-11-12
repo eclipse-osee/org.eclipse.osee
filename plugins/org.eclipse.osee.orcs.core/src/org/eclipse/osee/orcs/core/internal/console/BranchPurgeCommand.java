@@ -137,7 +137,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       }
 
       private boolean filterBranch(BranchReadable branch) {
-         if (!includeBaseline && branch.getBranchType() == BranchType.BASELINE) {
+         if (!includeBaseline && branch.getBranchType().isBaselineBranch()) {
             console.writeln(ERROR_STRING, branch, branch.getUuid(), branch.getBranchType());
             return true;
          } else if (!includeUnarchived && branch.getArchiveState() == BranchArchivedState.UNARCHIVED) {

@@ -113,7 +113,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       return canBeDeleted;
    }
 
-   private boolean isEnableAllowed(Branch branch) {
-      return !BranchManager.isChangeManaged(branch) && branch.getBranchType().isWorkingBranch();
+   private boolean isEnableAllowed(BranchId branch) {
+      return !BranchManager.isChangeManaged(branch) && BranchManager.getType(branch).isWorkingBranch();
    }
 }

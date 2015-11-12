@@ -215,13 +215,13 @@ public class BranchEventTest {
    private Branch testEvents__typeChange(Branch workingBranch) throws Exception {
       branchEventListener.reset();
       Assert.assertNotNull(workingBranch);
-      Assert.assertEquals(BranchType.WORKING, workingBranch.getBranchType());
+      Assert.assertTrue(BranchManager.getType(workingBranch).isWorkingBranch());
       BranchManager.updateBranchType(null, workingBranch.getUuid(), BranchType.BASELINE);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.TypeUpdated,
          workingBranch);
 
-      Assert.assertEquals(BranchType.BASELINE, workingBranch.getBranchType());
+      Assert.assertTrue(BranchManager.getType(workingBranch).isBaselineBranch());
       return workingBranch;
    }
 

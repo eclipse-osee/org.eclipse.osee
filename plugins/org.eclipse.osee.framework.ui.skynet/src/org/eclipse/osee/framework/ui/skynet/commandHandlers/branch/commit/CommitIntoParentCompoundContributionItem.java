@@ -64,7 +64,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();
-            if (selectedBranch != null && !selectedBranch.getBranchType().isSystemRootBranch()) {
+            if (selectedBranch != null && !BranchManager.getType(selectedBranch).isSystemRootBranch()) {
                try {
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent";
                   Command command = configCommandParameter(commandId);
