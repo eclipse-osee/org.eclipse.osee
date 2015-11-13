@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -156,7 +157,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
    private void checkPurgeValid(JdbcConnection connection) {
       ArtifactJoinQuery artJoin = JoinUtility.createArtifactJoinQuery(getJdbcClient());
       for (Artifact art : artifactsToPurge) {
-         for (Branch branch : art.getFullBranch().getChildBranches(true)) {
+         for (IOseeBranch branch : BranchManager.getChildBranches(art.getBranch(), true)) {
             artJoin.add(art.getArtId(), branch.getUuid());
          }
       }

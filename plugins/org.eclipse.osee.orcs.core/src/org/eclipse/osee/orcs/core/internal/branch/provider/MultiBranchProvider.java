@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -24,17 +25,17 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class MultiBranchProvider implements BranchProvider {
 
    private final boolean recursive;
-   private final Set<Branch> branches;
+   private final Set<BranchReadable> branches;
    private final BranchFilter filter;
 
-   public MultiBranchProvider(boolean recursive, Set<Branch> branches, BranchFilter filter) {
+   public MultiBranchProvider(boolean recursive, Set<BranchReadable> branches, BranchFilter filter) {
       this.recursive = recursive;
       this.branches = branches;
       this.filter = filter;
    }
 
-   private Collection<Branch> getChildBranches(Branch branch) throws OseeCoreException {
-      Set<Branch> children = new HashSet<>();
+   private Collection<BranchReadable> getChildBranches(BranchReadable branch) throws OseeCoreException {
+      Set<BranchReadable> children = new HashSet<>();
 
       branch.getChildBranches(children, true, filter);
       if (filter.matches(branch)) {
@@ -44,12 +45,12 @@ public class MultiBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches() throws OseeCoreException {
+   public Collection<BranchReadable> getBranches() throws OseeCoreException {
       Conditions.checkNotNull(branches, "seeds");
-      Set<Branch> result = branches;
+      Set<BranchReadable> result = branches;
       if (recursive) {
          result = new HashSet<>(branches);
-         for (Branch b : branches) {
+         for (BranchReadable b : branches) {
             result.addAll(getChildBranches(b));
          }
       }

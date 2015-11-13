@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -48,7 +49,7 @@ public class GraphLoader {
    }
 
    protected static void loadBranches(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
-      for (Branch child : current.getBranch().getChildBranches()) {
+      for (BranchReadable child : BranchManager.getChildBranches(current.getBranch(), false)) {
          BranchModel childModel = graphCache.getOrCreateBranchModel(child);
          childModel.setDepth(current.getDepth() + 1);
          if (recurse) {
@@ -62,7 +63,7 @@ public class GraphLoader {
    private static void addParentTxData(GraphCache graphCache, BranchModel current, boolean recurse, IProgressListener listener) throws OseeCoreException {
       IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
       try {
-         List<BranchId> branches = new ArrayList<>(current.getBranch().getChildBranches(recurse));
+         List<BranchId> branches = new ArrayList<>(BranchManager.getChildBranches(current.getBranch(), recurse));
          branches.add(current.getBranch());
          for (BranchId branch : branches) {
             joinQuery.add(BranchManager.getSourceTransaction(branch).getId());
@@ -123,7 +124,7 @@ public class GraphLoader {
       if (systemRootTx != null) {
          for (BranchModel branchModel : models) {
             try {
-               Branch branch = branchModel.getBranch();
+               BranchId branch = branchModel.getBranch();
                if (BranchManager.isParentSystemRoot(branch)) {
                   TxModel txModel = branchModel.getFirstTx();
                   if (txModel != null) {

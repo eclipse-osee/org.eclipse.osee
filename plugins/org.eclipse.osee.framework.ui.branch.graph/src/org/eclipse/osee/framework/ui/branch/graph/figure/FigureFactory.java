@@ -20,6 +20,7 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxData;
@@ -61,7 +62,7 @@ public class FigureFactory {
       Color bgcolor = GraphColorConstants.getBranchColor(branchModel);
       Color fgcolor = GraphColorConstants.FONT_COLOR;
 
-      Branch branch = branchModel.getBranch();
+      IOseeBranch branch = branchModel.getBranch();
       String branchName = branch.getName();
       Image image = GraphImageConstants.getImage(branch);
 
@@ -82,7 +83,7 @@ public class FigureFactory {
    }
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
-      Branch branch = branchModel.getBranch();
+      IOseeBranch branch = branchModel.getBranch();
       String title = String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
       TxData txData = branchModel.getFirstTx().getTxData();
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());

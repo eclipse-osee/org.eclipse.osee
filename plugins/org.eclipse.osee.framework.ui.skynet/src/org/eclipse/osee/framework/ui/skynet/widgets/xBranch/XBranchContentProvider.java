@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -82,9 +83,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
       try {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<>();
-            Collection<Branch> childBrances =
-               showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
-
+            Collection<? extends BranchReadable> childBrances =
+               BranchManager.getChildBranches(branch, showArchivedBranches);
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
 
@@ -182,8 +182,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          try {
             if (!showTransactions) {
                if (!showChildBranchesAtMainLevel) {
-                  hasChildren = showArchivedBranches ? !((Branch) element).getChildBranches(
-                     true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                  hasChildren = BranchManager.hasChildren((BranchId) element);
                } else {
                   hasChildren = false;
                }

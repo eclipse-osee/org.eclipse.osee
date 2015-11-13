@@ -14,7 +14,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
@@ -27,12 +27,12 @@ public class BranchModel extends Node implements Serializable {
    private final LinkedList<TxModel> txs;
    private final List<BranchModel> children;
 
-   private transient Branch branch;
+   private transient IOseeBranch branch;
    private transient boolean isLoaded;
    private transient int depth;
    private transient boolean txsVisible;
 
-   public BranchModel(Branch branch) {
+   public BranchModel(IOseeBranch branch) {
       super();
       this.branch = branch;
       this.children = new ArrayList<>();
@@ -60,7 +60,7 @@ public class BranchModel extends Node implements Serializable {
       this.isLoaded = loaded;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 
@@ -176,7 +176,7 @@ public class BranchModel extends Node implements Serializable {
 
    @Override
    public String toString() {
-      return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getName(),
+      return String.format("Branch:[%s] Type:[%s] Children:[%s] TxNodes:[%s]", branch.getId(),
          BranchManager.getType(branch).name(), children.size(), txs.size());
    }
 

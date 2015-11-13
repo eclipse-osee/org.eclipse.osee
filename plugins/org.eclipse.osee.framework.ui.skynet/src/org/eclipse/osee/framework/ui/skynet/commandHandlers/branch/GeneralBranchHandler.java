@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -60,8 +59,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       List<Branch> hasChildren = new LinkedList<>();
       while (iterator.hasNext()) {
          Branch branch = iterator.next();
-         Collection<Branch> childBranches = branch.getChildBranches();
-         if (!childBranches.isEmpty()) {
+         if (BranchManager.hasChildren(branch)) {
             iterator.remove();
             hasChildren.add(branch);
          }
@@ -71,7 +69,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
          StringBuilder children = new StringBuilder();
          children.append(String.format("The following branches have children and cannot be %sd:\n", type.dialogType));
          for (Branch b : hasChildren) {
-            List<Branch> branches = new LinkedList<>(b.getChildBranches(true));
+            List<BranchId> branches = new LinkedList<>(BranchManager.getChildBranches(b, true));
             children.append(
                String.format("Branch %s has children: %s\n", b.getName(), Strings.buildStatment(branches)));
          }

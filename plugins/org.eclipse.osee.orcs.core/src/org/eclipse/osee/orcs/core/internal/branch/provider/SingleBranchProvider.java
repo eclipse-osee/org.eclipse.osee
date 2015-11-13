@@ -13,19 +13,20 @@ package org.eclipse.osee.orcs.core.internal.branch.provider;
 import java.util.Collection;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 
 /**
  * @author Ryan D. Brooks
  */
 public class SingleBranchProvider implements BranchProvider {
-   private final Branch branch;
+   private final BranchReadable branch;
 
    public SingleBranchProvider(Branch branch) {
       this.branch = branch;
    }
 
    @Override
-   public Collection<Branch> getBranches() {
+   public Collection<BranchReadable> getBranches() {
       return Collections.singleton(branch);
    }
 }

@@ -21,8 +21,9 @@ import org.eclipse.nebula.widgets.ganttchart.GanttComposite;
 import org.eclipse.nebula.widgets.ganttchart.GanttEvent;
 import org.eclipse.osee.branch.gantt.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -51,7 +52,7 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * Use GANTT chart to show time-sequenced visual of baseline branches
- * 
+ *
  * @author Donald G. Dunne
  */
 public class BranchVisualizationView extends ViewPart {
@@ -194,12 +195,12 @@ public class BranchVisualizationView extends ViewPart {
       parent.layout();
    }
 
-   public GanttEvent createEvents(GanttEvent parentEvent, Branch branch, boolean recurse) throws OseeCoreException {
+   public GanttEvent createEvents(GanttEvent parentEvent, IOseeBranch branch, boolean recurse) throws OseeCoreException {
       GanttEvent gantEvent = createGantEvent(parentEvent, branch);
 
       // Create connections
       if (recurse) {
-         for (Branch childBranch : branch.getChildren()) {
+         for (BranchReadable childBranch : BranchManager.getChildBranches(branch, false)) {
             if (BranchManager.getType(childBranch).isBaselineBranch()) {
                createEvents(gantEvent, childBranch, recurse);
                System.err.println("parent" + branch.getName() + " - child " + childBranch.getName());
@@ -211,9 +212,9 @@ public class BranchVisualizationView extends ViewPart {
       return gantEvent;
    }
 
-   private GanttEvent createGantEvent(GanttEvent parentEvent, Branch branch) throws OseeCoreException {
+   private GanttEvent createGantEvent(GanttEvent parentEvent, IOseeBranch branch) throws OseeCoreException {
       Calendar creationDateCal = Calendar.getInstance();
-      Date createDate = branch.getBaseTransaction().getTimeStamp();
+      Date createDate = BranchManager.getBaseTransaction(branch).getTimeStamp();
       creationDateCal.setTime(createDate);
 
       Calendar endDate = Calendar.getInstance();

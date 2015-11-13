@@ -37,10 +37,10 @@ public final class PurgeBranchHandler extends GeneralBranchHandler {
       List<Branch> hasChildren = new LinkedList<>();
       for (Branch branch : branches) {
          try {
-            if (branch.getAllChildBranches(false).isEmpty()) {
-               BranchManager.purgeBranch(branch);
-            } else {
+            if (BranchManager.hasChildren(branch)) {
                hasChildren.add(branch);
+            } else {
+               BranchManager.purgeBranch(branch);
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -54,7 +54,7 @@ public final class PurgeBranchHandler extends GeneralBranchHandler {
             message.append(branch.getName());
             message.append(" has child branches: ");
             try {
-               message.append(Collections.toString(", ", branch.getChildBranches(true)));
+               message.append(Collections.toString(", ", BranchManager.getChildBranches(branch, true)));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

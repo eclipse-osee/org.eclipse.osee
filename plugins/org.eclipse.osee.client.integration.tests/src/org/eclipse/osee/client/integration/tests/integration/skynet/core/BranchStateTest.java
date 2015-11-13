@@ -379,7 +379,7 @@ public class BranchStateTest {
    }
 
    private void purgeBranchAndChildren(BranchId branch) throws OseeCoreException {
-      for (Branch child : BranchManager.getBranch(branch).getChildBranches(true)) {
+      for (IOseeBranch child : BranchManager.getChildBranches(branch, true)) {
          BranchManager.purgeBranch(child);
       }
       BranchManager.purgeBranch(branch);

@@ -44,11 +44,9 @@ import org.eclipse.ui.progress.UIJob;
 public class UpdateBranchHandler extends CommandHandler {
 
    protected boolean isValid(Branch branch) throws OseeCoreException {
-      boolean result = !BranchManager.isParentSystemRoot(branch);
-      result &= BranchManager.isEditable(branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
-         BranchType.BASELINE);
-      result &= branch.getChildBranches().isEmpty();
-      return result;
+      return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
+         branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
+            BranchType.BASELINE) && BranchManager.hasChildren(branch);
    }
 
    private Branch getSelectedBranch(IStructuredSelection selection) {

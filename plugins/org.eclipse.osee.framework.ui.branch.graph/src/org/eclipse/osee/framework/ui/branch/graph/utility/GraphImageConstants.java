@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.branch.graph.utility;
 
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -24,7 +24,7 @@ public class GraphImageConstants {
    private GraphImageConstants() {
    }
 
-   public static Image getImage(Branch branch) {
+   public static Image getImage(BranchId branch) {
       Image image = null;
       switch (BranchManager.getType(branch)) {
          case SYSTEM_ROOT:

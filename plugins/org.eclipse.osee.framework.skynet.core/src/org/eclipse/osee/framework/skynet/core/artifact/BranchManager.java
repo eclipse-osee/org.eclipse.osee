@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -663,6 +664,19 @@ public final class BranchManager {
 
    public static String getArchivedStr(BranchId branch) {
       return getBranch(branch).getArchiveState().name();
+   }
+
+   public static boolean hasChildren(BranchId branch) {
+      return !getBranch(branch).getChildBranches(false).isEmpty();
+   }
+
+   /**
+    * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
+    * @return all unarchived child branches that are not of type merge
+    * @throws OseeCoreException
+    */
+   public static Collection<BranchReadable> getChildBranches(BranchId branch, boolean recurse) throws OseeCoreException {
+      return getBranch(branch).getChildBranches(recurse);
    }
 
    public static void resetWasLoaded() {

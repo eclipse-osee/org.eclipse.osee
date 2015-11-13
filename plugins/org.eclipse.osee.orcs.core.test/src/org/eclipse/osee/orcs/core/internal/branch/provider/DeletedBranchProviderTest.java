@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.mocks.MockOseeDataAccessor;
@@ -26,9 +27,9 @@ import org.junit.Test;
  */
 public final class DeletedBranchProviderTest {
 
-   private int expectedResult(Collection<Branch> branches) {
+   private int expectedResult(Collection<BranchReadable> branches) {
       int result = 0;
-      for (Branch branch : branches) {
+      for (BranchReadable branch : branches) {
          if (branch.getBranchState() == BranchState.DELETED && branch.getArchiveState() == BranchArchivedState.ARCHIVED && !(branch.getBranchType().isBaselineBranch())) {
             result++;
          }
@@ -40,7 +41,7 @@ public final class DeletedBranchProviderTest {
    public void testGetBranches() throws OseeCoreException {
       BranchCache mockCache = new BranchCache(new MockOseeDataAccessor<Branch>(), new TransactionCache());
 
-      Collection<Branch> branches = MockBranchProvider.createTestBranches();
+      Collection<BranchReadable> branches = MockBranchProvider.createTestBranches();
       mockCache.cache(branches.toArray(new Branch[branches.size()]));
 
       DeletedBranchProvider provider = new DeletedBranchProvider(mockCache);

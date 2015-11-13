@@ -15,9 +15,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -26,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 public class GraphCache {
 
    private final BranchModel rootModel;
-   private final Map<Branch, BranchModel> branchToBranchModelMap;
+   private final Map<BranchId, BranchModel> branchToBranchModelMap;
    private final Map<Long, TxModel> txNumberToTxModelMap;
 
    public GraphCache(Branch rootBranch) throws OseeCoreException {
@@ -63,7 +66,7 @@ public class GraphCache {
       txNumberToTxModelMap.put(model.getRevision(), model);
    }
 
-   protected void removeBranchModel(Branch branch) {
+   protected void removeBranchModel(BranchId branch) {
       branchToBranchModelMap.remove(branch);
    }
 
@@ -71,7 +74,7 @@ public class GraphCache {
       txNumberToTxModelMap.remove(txId);
    }
 
-   public BranchModel getBranchModel(Branch branch) {
+   public BranchModel getBranchModel(BranchId branch) {
       return branchToBranchModelMap.get(branch);
    }
 
@@ -96,7 +99,7 @@ public class GraphCache {
       return toReturn;
    }
 
-   protected BranchModel getOrCreateBranchModel(Branch branch) throws OseeCoreException {
+   protected BranchModel getOrCreateBranchModel(IOseeBranch branch) throws OseeCoreException {
       BranchModel toReturn = null;
       if (branch.equals(StubBranchModel.STUB_BRANCH)) {
          toReturn = getStubBranchModel();
@@ -107,8 +110,9 @@ public class GraphCache {
          toReturn = new BranchModel(branch);
 
          TransactionRecord headTransaction = TransactionManager.getHeadTransaction(branch);
-         addTxsToBranchModel(toReturn, branch.getBaseTransaction());
-         if (branch.getBaseTransaction().equals(headTransaction)) {
+         TransactionRecord baseTransaction = BranchManager.getBaseTransaction(branch);
+         addTxsToBranchModel(toReturn, baseTransaction);
+         if (baseTransaction.equals(headTransaction)) {
             addTxsToBranchModel(toReturn, headTransaction);
          }
          addBranchModel(toReturn);

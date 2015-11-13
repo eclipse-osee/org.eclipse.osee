@@ -139,12 +139,12 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
       setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, toInherit);
    }
 
-   public Collection<Branch> getChildren() throws OseeCoreException {
+   public Collection<BranchReadable> getChildren() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_CHILDREN);
    }
 
    @Override
-   public Collection<Branch> getChildBranches() throws OseeCoreException {
+   public Collection<BranchReadable> getChildBranches() throws OseeCoreException {
       return getChildBranches(false);
    }
 
@@ -154,8 +154,8 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
     * @throws OseeCoreException
     */
    @Override
-   public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
-      Set<Branch> children = new HashSet<>();
+   public Collection<BranchReadable> getChildBranches(boolean recurse) throws OseeCoreException {
+      Set<BranchReadable> children = new HashSet<>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       filter.setNegatedBranchTypes(BranchType.MERGE);
 
@@ -169,20 +169,15 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
     * @throws OseeCoreException
     */
    @Override
-   public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
-      Set<Branch> children = new HashSet<>();
+   public Collection<BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException {
+      Set<BranchReadable> children = new HashSet<>();
       getChildBranches(children, recurse, new BranchFilter());
       return children;
    }
 
    @Override
-   public void getChildBranches(Collection<? extends BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
-      uncheckedGetChildBranches(children, recurse, filter);
-   }
-
-   @SuppressWarnings({"unchecked", "rawtypes"})
-   private void uncheckedGetChildBranches(Collection children, boolean recurse, BranchFilter filter) throws OseeCoreException {
-      for (Branch branch : getChildren()) {
+   public void getChildBranches(Collection<BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
+      for (BranchReadable branch : getChildren()) {
          if (filter.matches(branch)) {
             children.add(branch);
             if (recurse) {
@@ -195,7 +190,7 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
    @Override
    public Collection<BranchId> getAncestors() throws OseeCoreException {
       List<BranchId> ancestors = new ArrayList<>();
-      Branch branchCursor = this;
+      BranchReadable branchCursor = this;
       ancestors.add(branchCursor);
 
       while ((branchCursor = branchCursor.getParentBranch()) != null) {

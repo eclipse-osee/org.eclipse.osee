@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -102,10 +103,10 @@ public class ModelAsserts {
    public static void checkHierarchy(BranchCache cache, Long parentUuid, Long... expected) throws OseeCoreException {
       Branch parentBranch = cache.getByGuid(parentUuid);
       Assert.assertNotNull(parentBranch);
-      Collection<Branch> children = parentBranch.getChildren();
+      Collection<BranchReadable> children = parentBranch.getChildren();
       Assert.assertEquals(expected.length, children.size());
       int index = 0;
-      for (Branch child : children) {
+      for (BranchReadable child : children) {
          Branch expectedBranch = cache.getByGuid(expected[index]);
          Assert.assertNotNull(expectedBranch);
          Assert.assertEquals(expectedBranch, child);

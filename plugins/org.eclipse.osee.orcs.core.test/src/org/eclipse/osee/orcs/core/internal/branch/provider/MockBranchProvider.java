@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -25,8 +26,8 @@ public final class MockBranchProvider implements BranchProvider {
 
    private final static String ROOT_BRANCH_NAME = "ROOT";
 
-   public static Collection<Branch> createTestBranches() throws OseeCoreException {
-      Collection<Branch> branches = new ArrayList<>();
+   public static Collection<BranchReadable> createTestBranches() throws OseeCoreException {
+      Collection<BranchReadable> branches = new ArrayList<>();
       //create a root branch
       Branch root =
          new Branch(Lib.generateUuid(), ROOT_BRANCH_NAME, BranchType.SYSTEM_ROOT, BranchState.COMMITTED, false, false);
@@ -80,8 +81,8 @@ public final class MockBranchProvider implements BranchProvider {
       return branches;
    }
 
-   public static Branch getRootBranch(Collection<Branch> branches) {
-      for (Branch branch : branches) {
+   public static BranchReadable getRootBranch(Collection<BranchReadable> branches) {
+      for (BranchReadable branch : branches) {
          if (ROOT_BRANCH_NAME.equals(branch.getName())) {
             return branch;
          }
@@ -90,7 +91,7 @@ public final class MockBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<Branch> getBranches() throws OseeCoreException {
+   public Collection<BranchReadable> getBranches() throws OseeCoreException {
       return MockBranchProvider.createTestBranches();
    }
 }

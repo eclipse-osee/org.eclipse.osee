@@ -42,7 +42,8 @@ import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.branch.graph.Activator;
@@ -61,7 +62,7 @@ import org.eclipse.swt.graphics.Color;
 public class GraphEditPart extends AbstractGraphicalEditPart {
 
    private final GraphicalViewer viewer;
-   private final Map<Branch, BranchFigure> branchFigureMap;
+   private final Map<IOseeBranch, BranchFigure> branchFigureMap;
    private final Map<Long, TxModel> txNumberToTxModelMap;
    private final Map<Long, TxFigure> txNumberToTxFigureMap;
    private final HashCollection<ConnectionType, Connection> connectionMap;
@@ -214,7 +215,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
       return max;
    }
 
-   public BranchFigure getFigure(Branch branch) {
+   public BranchFigure getFigure(BranchId branch) {
       return branchFigureMap.get(branch);
    }
 
