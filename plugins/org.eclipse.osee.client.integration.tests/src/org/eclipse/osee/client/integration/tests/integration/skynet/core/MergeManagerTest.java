@@ -110,7 +110,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update);
 
       assertTrue("No Merge Branch was created", BranchManager.getMergeBranches(workingBranch).size() == 1);
-      assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
+      assertTrue("Branch is not in Rebaseline In Progress", BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Shouldn't be allowed to commit
       boolean committed =
@@ -130,7 +130,7 @@ public class MergeManagerTest {
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);
       assertTrue("Branch should not be updating",
-         !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
+         !BranchManager.getState(workingBranch).isRebaselineInProgress() && !BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Purge art from SAW 2 since we did a commit
       Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, SAW_Bld_2);
@@ -155,7 +155,7 @@ public class MergeManagerTest {
       List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
       BranchId branchForUpdate = mergeBranches.get(0).getDestinationBranch();
       assertTrue("No Merge Branch was created", mergeBranches.size() == 1);
-      assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
+      assertTrue("Branch is not in Rebaseline In Progress", BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Try doing another Rebaseline, no addtional branches should be created
       UpdateBranchOperation update2 = new UpdateBranchOperation(workingBranch, resolverOperation);
@@ -163,7 +163,7 @@ public class MergeManagerTest {
 
       List<MergeBranch> mergeBranchesSecondAttempt = BranchManager.getMergeBranches(workingBranch);
       BranchId branchForUpdateSecondAttempt = mergeBranchesSecondAttempt.get(0).getDestinationBranch();
-      assertTrue("Branch is not in Rebaseline In Progress", workingBranch.getBranchState().isRebaselineInProgress());
+      assertTrue("Branch is not in Rebaseline In Progress", BranchManager.getState(workingBranch).isRebaselineInProgress());
       assertTrue("Addional Merge Branch was created during second rebaseline attempt", mergeBranches.size() == 1);
       assertTrue("Addional Branch for Update was created during second rebaseline attempt",
          branchForUpdate.equals(branchForUpdateSecondAttempt));
@@ -199,7 +199,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(finishUpdateOperation);
 
       // Make sure the state is now Rebaselined
-      assertTrue("Branch is not in Rebaselined", workingBranch.getBranchState().isRebaselined());
+      assertTrue("Branch is not in Rebaselined", BranchManager.getState(workingBranch).isRebaselined());
 
       // Shouldn't be allowed to commit original working branch
       committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
@@ -256,7 +256,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update);
 
       assertTrue("Branch should not be updating",
-         !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
+         !BranchManager.getState(workingBranch).isRebaselineInProgress() && !BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Abandon
       MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(SAW_Bld_1, workingBranch),
@@ -267,7 +267,7 @@ public class MergeManagerTest {
       UpdateBranchOperation update2 = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update2);
 
-      assertTrue("Branch is not updating", workingBranch.getBranchState().isRebaselineInProgress());
+      assertTrue("Branch is not updating", BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       Branch branchForUpdate = BranchManager.getFirstMergeBranch(workingBranch);
 
@@ -276,7 +276,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(finishUpdateOperation);
 
       // Make sure the state is now Rebaselined
-      assertTrue("Branch is not in Rebaselined", workingBranch.getBranchState().isRebaselined());
+      assertTrue("Branch is not in Rebaselined", BranchManager.getState(workingBranch).isRebaselined());
 
       // Clean up this test
       // Purge art from new Updated Branch
@@ -306,7 +306,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update);
 
       assertTrue("Branch should not be updating",
-         !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
+         !BranchManager.getState(workingBranch).isRebaselineInProgress() && !BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Commit into another branch other than SAW_BLD_1 so there are no conflicts
       committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
@@ -320,7 +320,7 @@ public class MergeManagerTest {
       Operations.executeWorkAndCheckStatus(update);
 
       assertTrue("Branch should not be updating",
-         !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
+         !BranchManager.getState(workingBranch).isRebaselineInProgress() && !BranchManager.getState(workingBranch).isRebaselineInProgress());
 
       // Clean up this test
       Artifact artOnSaw2 = ArtifactQuery.getArtifactFromToken(NewArtifactToken, SAW_Bld_2);

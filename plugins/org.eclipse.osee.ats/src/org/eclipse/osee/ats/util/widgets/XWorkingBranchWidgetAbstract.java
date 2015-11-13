@@ -134,16 +134,17 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
 
    private void updateBranchState() throws OseeCoreException {
       workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
-      workingBranchCreationInProgress =
-         teamArt.isWorkingBranchCreationInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS;
-      workingBranchCommitInProgress =
-         teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
+      workingBranchCreationInProgress = teamArt.isWorkingBranchCreationInProgress();
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
+
       if (workingBranch == null) {
          workingBranchCommitInProgress = false;
       } else {
+         BranchState state = BranchManager.getState(workingBranch);
+         workingBranchCreationInProgress |= state.isCreationInProgress();
+         workingBranchCommitInProgress = teamArt.isWorkingBranchCommitInProgress() || state.isCommitInProgress();
          workingBranchCommitWithMergeInProgress =
-            BranchManager.hasMergeBranches(workingBranch) && !workingBranch.getBranchState().isRebaselineInProgress();
+            BranchManager.hasMergeBranches(workingBranch) && !state.isRebaselineInProgress();
       }
       committedBranchExists = AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt);
       disableAll = workingBranchCommitInProgress;

@@ -49,7 +49,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
       long branchUuid = branch.getUuid();
-      BranchState currentState = branch.getBranchState();
+      BranchState currentState = BranchManager.getState(branch);
       BranchArchivedState archivedState = branch.getArchiveState();
 
       ArtifactCache.deCache(branch);

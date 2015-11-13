@@ -168,7 +168,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
    }
 
    private Collection<BranchData> getAllBranchData() throws OseeCoreException {
-      Map<Long, BranchData> data = new HashMap<>();
+      Map<Long, BranchData> data = new HashMap<Long, BranchData>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_branch");

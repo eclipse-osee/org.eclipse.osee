@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactField;
 import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
@@ -138,30 +137,6 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
 
    public void setInheritAccessControl(boolean toInherit) {
       setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, toInherit);
-   }
-
-   public boolean isCreated() {
-      return getStorageState() == StorageState.CREATED;
-   }
-
-   public boolean isModified() {
-      return getStorageState() == StorageState.MODIFIED;
-   }
-
-   public boolean isPurged() {
-      return getStorageState() == StorageState.PURGED;
-   }
-
-   public boolean isDeleted() {
-      return getBranchState() == BranchState.DELETED;
-   }
-
-   public boolean isDeleteInProgress() {
-      return getBranchState() == BranchState.DELETE_IN_PROGRESS;
-   }
-
-   public boolean isPurgeInProgress() {
-      return getBranchState() == BranchState.PURGE_IN_PROGRESS;
    }
 
    public Collection<Branch> getChildren() throws OseeCoreException {

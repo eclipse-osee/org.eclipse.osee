@@ -472,7 +472,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
                if (branchUuid != null) {
                   try {
                      branch = BranchManager.getBranch(branchUuid);
-                     if (branch.getBranchState().isDeleted() || BranchManager.isArchived(branch)) {
+                     if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
                         branch = null;
                      }
                   } catch (BranchDoesNotExist ex) {

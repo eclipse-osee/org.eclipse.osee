@@ -58,7 +58,7 @@ public class XWorkingBranchUpdate extends XWorkingBranchButtonAbstract {
                Branch branchToUpdate = getWorkingBranch();
                if (branchToUpdate != null) {
                   if (BranchManager.isUpdatable(branchToUpdate)) {
-                     if (branchToUpdate.getBranchState().isRebaselineInProgress()) {
+                     if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
                         RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
                      } else {
                         boolean isUserSure = MessageDialog.openQuestion(

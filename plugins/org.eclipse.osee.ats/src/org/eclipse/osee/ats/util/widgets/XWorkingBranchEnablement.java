@@ -16,13 +16,13 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G. Dunne
@@ -187,11 +187,13 @@ public class XWorkingBranchEnablement {
       }
 
       public boolean isWorkingBranchCreationInProgress() {
-         return teamArt.isWorkingBranchCreationInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS;
+         return teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && BranchManager.getState(
+            workingBranch).isCreationInProgress());
       }
 
       public boolean isWorkingBranchCommitInProgress() {
-         return teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
+         return teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && BranchManager.getState(
+            workingBranch).isCommitInProgress();
       }
 
       public boolean isWorkingBranchInWork() {

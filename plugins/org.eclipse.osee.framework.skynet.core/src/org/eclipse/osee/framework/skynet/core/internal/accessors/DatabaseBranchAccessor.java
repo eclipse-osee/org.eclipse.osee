@@ -187,7 +187,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
    private void sendChangeEvents(Collection<Branch> branches) {
       for (Branch branch : branches) {
-         if (branch.getBranchState().isDeleted()) {
+         if (BranchManager.getState(branch).isDeleted()) {
             try {
                OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch));
             } catch (Exception ex) {

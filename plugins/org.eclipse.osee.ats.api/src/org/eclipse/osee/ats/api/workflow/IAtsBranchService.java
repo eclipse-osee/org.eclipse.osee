@@ -84,6 +84,9 @@ public interface IAtsBranchService {
 
    IOseeBranch getConfiguredBranchForWorkflow(IAtsTeamWorkflow teamWf);
 
+   /**
+    * @return working branch or null if does not exist
+    */
    IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force);
 
    boolean isWorkingBranchEverCommitted(IAtsTeamWorkflow teamWf);

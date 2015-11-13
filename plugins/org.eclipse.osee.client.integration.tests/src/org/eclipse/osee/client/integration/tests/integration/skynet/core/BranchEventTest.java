@@ -158,7 +158,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Committing, workingBranch);
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Committed, workingBranch);
 
-      Assert.assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.COMMITTED, BranchManager.getState(workingBranch));
       Assert.assertFalse(BranchManager.isEditable(workingBranch));
       return workingBranch;
    }
@@ -177,7 +177,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, workingBranch);
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, workingBranch);
 
-      Assert.assertEquals(BranchState.PURGED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.PURGED, BranchManager.getState(workingBranch));
       Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
       Assert.assertFalse(BranchManager.isEditable(workingBranch));
       Assert.assertFalse("Branch should not exist", BranchManager.branchExists(workingBranch));
@@ -186,7 +186,7 @@ public class BranchEventTest {
 
    private Branch testEvents__deleted(Branch workingBranch) throws Exception {
       Assert.assertNotNull(workingBranch);
-      Assert.assertNotSame(BranchState.DELETED, workingBranch.getBranchState());
+      Assert.assertNotSame(BranchState.DELETED, BranchManager.getState(workingBranch));
 
       branchEventListener.reset();
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
@@ -194,7 +194,7 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Deleting, workingBranch);
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Deleted, workingBranch);
 
-      Assert.assertEquals(BranchState.DELETED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
       return workingBranch;
    }
 
@@ -202,13 +202,13 @@ public class BranchEventTest {
       branchEventListener.reset();
 
       Assert.assertNotNull(workingBranch);
-      Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
       BranchManager.setState(workingBranch, BranchState.MODIFIED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated,
          workingBranch);
 
-      Assert.assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
+      Assert.assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
       return workingBranch;
    }
 

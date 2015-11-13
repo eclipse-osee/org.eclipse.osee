@@ -741,7 +741,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                Branch workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                if (workingBranch != null && !BranchManager.getType(workingBranch).isBaselineBranch()) {
-                  if (!workingBranch.getBranchState().isCommitted()) {
+                  if (!BranchManager.getState(workingBranch).isCommitted()) {
                      Collection<BranchId> branchesCommittedTo =
                         AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);
                      if (!branchesCommittedTo.isEmpty()) {

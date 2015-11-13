@@ -57,6 +57,6 @@ public class UpdateChangeUiData extends AbstractOperation {
    }
 
    private boolean hasBeenRebaselined(TransactionRecord tx) throws OseeCoreException {
-      return tx.getFullBranch().getBranchState().equals(BranchState.REBASELINED);
+      return BranchManager.getState(tx.getBranch()).isRebaselined();
    }
 }

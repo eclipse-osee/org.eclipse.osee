@@ -34,7 +34,7 @@ public class OpenArtifactExplorerHandler extends CommandHandler {
       List<Branch> selectedBranches = getSelectedBranches(structuredSelection);
       boolean isEnabled = !selectedBranches.isEmpty();
       for (Branch branch : selectedBranches) {
-         if (BranchManager.getType(branch).isMergeBranch() || !branch.getBranchState().matches(BranchState.CREATED,
+         if (BranchManager.getType(branch).isMergeBranch() || !BranchManager.getState(branch).matches(BranchState.CREATED,
             BranchState.MODIFIED)) {
             isEnabled = false;
             break;

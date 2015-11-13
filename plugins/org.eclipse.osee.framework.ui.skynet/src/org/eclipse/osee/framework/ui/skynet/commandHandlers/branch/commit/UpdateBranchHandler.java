@@ -77,7 +77,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
       if (branchToUpdate != null) {
          if (BranchManager.isUpdatable(branchToUpdate)) {
-            if (branchToUpdate.getBranchState().isRebaselineInProgress()) {
+            if (BranchManager.getState(branchToUpdate).isRebaselineInProgress()) {
                RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
             } else {
                boolean isUserSure = MessageDialog.openQuestion(

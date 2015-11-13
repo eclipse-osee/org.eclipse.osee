@@ -95,7 +95,7 @@ public class StoreBranchDatabaseCallable {
          branch.getArchiveState().getValue(),
          branch.getAssociatedArtifactId(),
          branch.getBranchType().getValue(),
-         branch.getBranchState().getValue(),
+         BranchManager.getState(branch).getValue(),
          baselineTransaction,
          inheritAccessControl};
    }
@@ -114,7 +114,7 @@ public class StoreBranchDatabaseCallable {
          branch.getArchiveState().getValue(),
          branch.getAssociatedArtifactId(),
          branch.getBranchType().getValue(),
-         branch.getBranchState().getValue(),
+         BranchManager.getState(branch).getValue(),
          baselineTransaction,
          inheritAccessControl,
          branch.getUuid()};

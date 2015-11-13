@@ -13,7 +13,6 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -26,7 +25,6 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -195,8 +193,8 @@ public class ConflictTest {
          BranchManager.commitBranch(null, conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
 
-         assertEquals("Source Branch state incorrect", BranchState.COMMITTED,
-            ConflictTestManager.getSourceBranch().getBranchState());
+         assertTrue("Source Branch state incorrect",
+            BranchManager.getState(ConflictTestManager.getSourceBranch()).isCommitted());
 
       } catch (Exception ex) {
          fail("No Exceptions should have been thrown. Not even the " + ex.getLocalizedMessage() + "Exception");

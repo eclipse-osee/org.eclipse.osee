@@ -83,7 +83,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      BranchState currentState = sourceBranch.getBranchState();
+      BranchState currentState = BranchManager.getState(sourceBranch);
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
       BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);

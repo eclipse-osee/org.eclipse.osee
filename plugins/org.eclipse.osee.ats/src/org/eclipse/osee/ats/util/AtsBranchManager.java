@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -193,15 +194,10 @@ public final class AtsBranchManager {
       Collection<TransactionRecord> trs = Collections.castAll(transactions);
 
       for (TransactionRecord id : trs) {
-         // ignore working branches that have been committed
+         // ignore working branches that have been committed or re-baselined (e.g. update form parent branch)
          boolean workingBranch = BranchManager.getType(id).isWorkingBranch();
-         if (workingBranch && id.getFullBranch().getBranchState().isCommitted()) {
-            continue;
-         }
-         // ignore working branches that have been re-baselined (e.g. update form parent branch)
-         else if (workingBranch && id.getFullBranch().getBranchState().isRebaselined()) {
-            continue;
-         } else {
+         BranchState state = BranchManager.getState(id.getBranch());
+         if (!workingBranch || !(state.isRebaselined() && state.isCommitted())) {
             transactionIds.add(id);
          }
       }

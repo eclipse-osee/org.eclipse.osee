@@ -39,7 +39,7 @@ public class DeleteBranchOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Branch branch = BranchManager.getBranch(this.branch);
-      BranchState originalState = branch.getBranchState();
+      BranchState originalState = BranchManager.getState(branch);
       boolean originalArchivedState = BranchManager.isArchived(branch);
 
       ArtifactCache.deCache(this.branch);

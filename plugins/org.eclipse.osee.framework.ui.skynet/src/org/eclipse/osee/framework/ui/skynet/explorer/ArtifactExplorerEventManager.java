@@ -16,11 +16,12 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -73,12 +74,14 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
     * @return true if branch is not null, matches the branch for the event and is not deleted or purged
     */
    private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, BranchId brancFromEvent) {
-      boolean toReturn = false;
       if (artifactExplorer != null) {
-         Branch branch = artifactExplorer.getBranch();
-         toReturn = branch != null && brancFromEvent.equals(branch) && !branch.isDeleted() && !branch.isPurged();
+         BranchId branch = artifactExplorer.getBranch();
+         if (branch != null) {
+            BranchState state = BranchManager.getState(branch);
+            return brancFromEvent.equals(branch) && !state.isDeleted() && !state.isPurged();
+         }
       }
-      return toReturn;
+      return false;
    }
 
    @Override

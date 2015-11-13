@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenuPermissions;
@@ -87,7 +88,7 @@ public class ArtifactExplorerUtil {
                   if (!new GlobalMenuPermissions(globalMenuHelper).isBranchReadable(branch)) {
                      warningStr = "Branch Read Access Denied.\nContact your administrator.";
                   } else {
-                     switch (branch.getBranchState()) {
+                     switch (BranchManager.getState(branch)) {
                         case CREATION_IN_PROGRESS:
                            warningStr = "Branch Creation in Progress, Please Wait.";
                            break;

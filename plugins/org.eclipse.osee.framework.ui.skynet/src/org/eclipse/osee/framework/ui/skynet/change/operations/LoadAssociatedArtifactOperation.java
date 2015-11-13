@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -41,8 +41,8 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitId, COMMON);
          }
       } else {
-         Branch sourceBranch = txDelta.getStartTx().getFullBranch();
-         if (!sourceBranch.isDeleted()) {
+         BranchId sourceBranch = txDelta.getStartTx().getBranch();
+         if (!BranchManager.getState(sourceBranch).isDeleted()) {
             associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          }
       }
