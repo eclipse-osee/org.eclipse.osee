@@ -121,6 +121,11 @@ public interface ArtifactQueryBuilder<T> {
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
+   T andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
+   
+   /**
+    * Search criteria that checks for the non-existence of an attribute type(s).
+    */
    T andNotExists(IAttributeType attributeType) throws OseeCoreException;
 
    /**

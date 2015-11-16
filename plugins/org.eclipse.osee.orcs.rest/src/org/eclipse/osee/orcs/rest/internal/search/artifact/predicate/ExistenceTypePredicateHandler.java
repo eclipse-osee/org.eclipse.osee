@@ -51,9 +51,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
                if (checkExists(predicate.getType())) {
                   builder.andExists(attributeTypes);
                } else {
-                  for (IAttributeType type : attributeTypes) {
-                     builder.andNotExists(type);
-                  }
+                     builder.andNotExists(attributeTypes);
                }
             }
          } else if ("relType".equals(existsType)) {

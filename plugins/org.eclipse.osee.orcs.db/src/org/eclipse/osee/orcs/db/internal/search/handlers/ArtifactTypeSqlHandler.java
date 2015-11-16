@@ -37,6 +37,9 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
    private List<String> artAliases;
    private List<String> txsAliases;
+   
+   private boolean artAliasCreated;
+   private boolean txsAliasCreated;
 
    @Override
    public void setData(CriteriaArtifactType criteria) {
@@ -55,9 +58,11 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
       if (artAliases.isEmpty()) {
          artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
+         artAliasCreated = true;
       }
       if (txsAliases.isEmpty()) {
          txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+         txsAliasCreated = true;
       }
       artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
       txsAliases = writer.getAliases(TableEnum.TXS_TABLE);
@@ -74,10 +79,8 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      boolean modified = false;
 
       if (typeIds.size() > 1) {
-         modified = true;
          joinQuery = writer.writeIdJoin(typeIds);
          writer.write(jIdAlias);
          writer.write(".query_id = ?");
@@ -98,7 +101,6 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
             }
          }
       } else {
-         modified = true;
          long localId = typeIds.iterator().next();
 
          int aSize = artAliases.size();
@@ -113,16 +115,15 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
          }
       }
 
-      if (artAlias != null && txsAlias != null) {
+      if (artAliasCreated && txsAliasCreated) {
          writer.write(" AND ");
          writer.write(artAlias);
          writer.write(".gamma_id = ");
          writer.write(txsAlias);
          writer.write(".gamma_id AND ");
          writer.write(writer.getTxBranchFilter(txsAlias));
-         modified = true;
       }
-      return modified;
+      return true;
    }
 
    @Override

@@ -168,6 +168,12 @@ public class QueryBuilderImpl implements QueryBuilder {
    }
 
    @Override
+   public QueryBuilder andNotExists(Collection<? extends IAttributeType> attributeTypes) {
+      predicates.add(predicateFactory.createAttributeNotExistsSearch(attributeTypes));
+      return this;
+   }
+
+   @Override
    public QueryBuilder andExists(IRelationType relationType) {
       predicates.add(predicateFactory.createRelationExistsSearch(Collections.singleton(relationType)));
       return this;

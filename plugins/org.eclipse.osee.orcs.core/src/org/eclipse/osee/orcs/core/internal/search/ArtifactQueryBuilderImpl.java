@@ -223,6 +223,12 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
    }
 
    @Override
+   public T andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      Criteria criteria = criteriaFactory.createNotExistsCriteria(attributeTypes);
+      return addAndCheck(getQueryData(), criteria);
+   }
+
+   @Override
    public T andExists(IRelationType relationType) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createExistsCriteria(relationType);
       return addAndCheck(getQueryData(), criteria);

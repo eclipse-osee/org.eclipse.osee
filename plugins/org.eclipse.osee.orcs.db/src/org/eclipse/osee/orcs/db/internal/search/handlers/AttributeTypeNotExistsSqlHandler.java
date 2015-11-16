@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.handlers;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaAttributeTypeNotExists;
@@ -18,6 +20,7 @@ import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
+import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 
 /**
  * @author John Misinco
@@ -26,8 +29,10 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    private CriteriaAttributeTypeNotExists criteria;
 
+   private String jIdAlias;
    private String artAlias;
    private String txsAlias;
+   private AbstractJoinQuery joinQuery;
 
    @Override
    public void setData(CriteriaAttributeTypeNotExists criteria) {
@@ -36,28 +41,46 @@ public class AttributeTypeNotExistsSqlHandler extends SqlHandler<CriteriaAttribu
 
    @Override
    public void addTables(AbstractSqlWriter writer) {
-      List<String> artAliases = writer.getAliases(TableEnum.ARTIFACT_TABLE);
-      if (artAliases.isEmpty()) {
-         artAlias = writer.addTable(TableEnum.ARTIFACT_TABLE);
+      if (criteria.getTypes().size() > 1) {
+         jIdAlias = writer.addTable(TableEnum.ID_JOIN_TABLE);
       }
-      txsAlias = writer.addTable(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
+      artAlias = writer.getOrCreateTableAlias(TableEnum.ARTIFACT_TABLE);
+      txsAlias = writer.getOrCreateTableAlias(TableEnum.TXS_TABLE, ObjectType.ARTIFACT);
    }
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      IAttributeType type = criteria.getType();
+      Collection<? extends IAttributeType> types = criteria.getTypes();
 
       writer.writeEquals(artAlias, txsAlias, "gamma_id");
       writer.writeAndLn();
       writer.write(writer.getTxBranchFilter(txsAlias));
       writer.writeAndLn();
-
       writer.write("NOT EXISTS (SELECT 1 FROM ");
       writer.write(TableEnum.ATTRIBUTE_TABLE.getName());
       writer.write(" attr, ");
       writer.write(TableEnum.TXS_TABLE.getName());
-      writer.write(" txs WHERE attr.attr_type_id = ? ");
-      writer.addParameter(type.getGuid());
+      writer.write(" txs WHERE ");
+
+      if (types.size() > 1) {
+         Set<Long> typeIds = new HashSet<>();
+         for (IAttributeType type : types) {
+            typeIds.add(type.getGuid());
+         }
+         joinQuery = writer.writeIdJoin(typeIds);
+
+         writer.write("attr.attr_type_id = ");
+         writer.write(jIdAlias);
+         writer.write(".id AND ");
+         writer.write(jIdAlias);
+         writer.write(".query_id = ?");
+         writer.addParameter(joinQuery.getQueryId());
+      } else {
+         IAttributeType type = types.iterator().next();
+         writer.write("attr.attr_type_id = ?");
+         writer.addParameter(type.getGuid());
+      }
+
       writer.writeAndLn();
 
       writer.writeEquals("attr", "txs", "gamma_id");

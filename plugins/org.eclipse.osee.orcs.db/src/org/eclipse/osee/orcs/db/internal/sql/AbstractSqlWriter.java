@@ -285,6 +285,22 @@ public abstract class AbstractSqlWriter implements HasOptions {
       tableEntries.add(table);
    }
 
+   public String getOrCreateTableAlias(TableEnum table) {
+      String alias = getFirstAlias(table);
+      if (alias == null) {
+         alias = addTable(table);
+      }
+      return alias;
+   }
+
+   public String getOrCreateTableAlias(TableEnum table, ObjectType objectType) {
+      String alias = getFirstAlias(table);
+      if (alias == null) {
+         alias = addTable(table, objectType);
+      }
+      return alias;
+   }
+
    public String addTable(AliasEntry table) {
       String alias = getNextAlias(table);
       tableEntries.add(String.format("%s %s", table.getName(), alias));

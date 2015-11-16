@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -67,7 +68,12 @@ public class CriteriaFactory {
    }
 
    public Criteria createNotExistsCriteria(IAttributeType attributeType) throws OseeCoreException {
-      return new CriteriaAttributeTypeNotExists(attributeType);
+      List<IAttributeType> list = java.util.Arrays.asList(attributeType);
+      return new CriteriaAttributeTypeNotExists(list);
+   }
+
+   public Criteria createNotExistsCriteria(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException {
+      return new CriteriaAttributeTypeNotExists(attributeTypes);
    }
 
    public Criteria createExistsCriteria(IRelationType relationType) throws OseeCoreException {
