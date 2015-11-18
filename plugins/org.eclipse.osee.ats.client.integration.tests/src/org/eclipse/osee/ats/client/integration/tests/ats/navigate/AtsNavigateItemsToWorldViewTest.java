@@ -38,10 +38,7 @@ import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
@@ -50,7 +47,6 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
-import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -65,7 +61,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.util.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -105,201 +100,6 @@ public class AtsNavigateItemsToWorldViewTest {
       TestUtil.severeLoggingEnd(monitor);
    }
 
-   private XNavigateItem openUserSearchEditor() throws Exception {
-      WorldEditor.closeAll();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Search");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchWorkflowSearchItem);
-      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      return item;
-   }
-
-   @org.junit.Test
-   public void testSearchMyFavorites() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      UserSearchWorkflowSearchItem dwl =
-         (UserSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      dwl.setSelectedUser(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      dwl.setSelected(UserSearchOption.Favorites, true);
-      runGeneralUserSearchTest(item, 3);
-      runGeneralXColTest(20, false);
-      // test the task tab - this is being done via open ats task editor
-      runGeneralXColTest(20, true);
-      // Open all three favorites
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      for (Artifact artifact : arts) {
-         SMAEditor.editArtifact(artifact);
-      }
-      // Test that recently visited returns all three
-      Collection<Artifact> artsLoaded = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, AtsArtifactTypes.TeamWorkflow, 3);
-      runGeneralXColTest(20, false);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchMySubscribed() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), 1, arts.size());
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchState() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Assignee, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedState(TeamState.Implement.getName());
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.AbstractWorkflowArtifact, 7);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchMyReviews() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
-      runGeneralXColTest(4, false);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchMyReviewsAll() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCancelled, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 3);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
-      runGeneralXColTest(6, false);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchMyOriginator() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.Task,
-         DemoTestUtil.getNumTasks());
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 22);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
-      // Only 2 decision reviews should have been created by Joe, rest are Rule reviews created by OseeSystem user
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 2);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchMyOriginatorAll() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.Task,
-         DemoTestUtil.getNumTasks());
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 25);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
-      runGeneralXColTest(70, false);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   private void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      // validate
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
-   }
-
-   @org.junit.Test
-   public void testSearchMyCompleted() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      UserSearchWorkflowSearchItem dwl =
-         (UserSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      dwl.setSelectedUser(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      dwl.setSelected(UserSearchOption.IncludeCompleted, true);
-      dwl.setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.TeamWorkflow, 7);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 3);
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.DecisionReview, 3);
-      runGeneralXColTest(30, false);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testMyRecentlyVisited() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      // Load Recently Visited
-      runGeneralLoadingTest("My Recently Visited", AtsArtifactTypes.TeamWorkflow, 3, null);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
    @org.junit.Test
    public void testOtherUsersWorld() throws Exception {
       SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
@@ -309,77 +109,6 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 12,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchOtherUserReviews() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchOtherUserAllReviews() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, false);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, AtsArtifactTypes.PeerToPeerReview, 1);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchOtherUserFavorites() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testSearchOtherUserSubscribed() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = openUserSearchEditor();
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
       TestUtil.severeLoggingEnd(monitor);
    }
 

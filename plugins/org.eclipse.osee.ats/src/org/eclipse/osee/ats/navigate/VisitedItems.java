@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.core.util.VisitedItemCache;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,35 +31,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
  */
 public class VisitedItems extends XNavigateItemAction {
 
-   public static List<String> visitedGuids = new ArrayList<>();
-
-   public static List<Artifact> getReverseVisited() throws OseeCoreException {
-      // Search artifacts and hold on to references so don't get garbage collected
-      Map<String, Artifact> artifacts = new HashMap<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtilCore.getAtsBranch())) {
-         artifacts.put(art.getGuid(), art);
-      }
-      List<Artifact> revArts = new ArrayList<>();
-      for (int x = visitedGuids.size(); x <= 0; x--) {
-         Artifact art = artifacts.get(visitedGuids.get(x));
-         if (art != null) {
-            revArts.add(art);
-         }
-      }
-      return revArts;
-   }
-
-   public static void addVisited(Artifact art) {
-      if (!visitedGuids.contains(art.getGuid())) {
-         visitedGuids.add(art.getGuid());
-      }
-   }
-
-   public static void clearVisited() {
-      if (visitedGuids != null) {
-         visitedGuids.clear();
-      }
-   }
+   private static VisitedItemCache visitedItems;
 
    public VisitedItems(XNavigateItem parent) {
       super(parent, "My Recently Visited", AtsImage.GLOBE);
@@ -67,7 +39,26 @@ public class VisitedItems extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(visitedGuids, AtsUtilCore.getAtsBranch());
+      List<Integer> artIds = new ArrayList<>();
+      for (IAtsWorkItem workItem : getCache().getReverseVisited()) {
+         artIds.add(new Long(workItem.getUuid()).intValue());
+      }
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIds, AtsUtilCore.getAtsBranch());
       WorldEditor.open(new WorldEditorSimpleProvider(getName(), artifacts, null, tableLoadOptions));
+   }
+
+   public static void clearVisited() {
+      getCache().clearVisited();
+   }
+
+   public static void addVisited(IAtsWorkItem workItem) {
+      getCache().addVisited(workItem);
+   }
+
+   public static VisitedItemCache getCache() {
+      if (visitedItems == null) {
+         visitedItems = new VisitedItemCache();
+      }
+      return visitedItems;
    }
 }
