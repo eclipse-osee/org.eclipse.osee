@@ -10,32 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import org.eclipse.jface.viewers.ComboViewer;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeExistsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author John Misinco
  */
 public class AttributeExistsFilter extends SearchFilter {
-   private final ComboViewer attributeTypeList;
+   private final FilteredCheckboxTree attributeTypeList;
 
-   public AttributeExistsFilter(Control optionsControl, ComboViewer attributeTypeList) {
+   public AttributeExistsFilter(Control optionsControl, FilteredCheckboxTree attributeTypeList) {
       super("Attribute Exists", optionsControl);
       this.attributeTypeList = attributeTypeList;
    }
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      String typeName = attributeTypeList.getCombo().getText();
+      Collection<IAttributeType> attrTypes = attributeTypeList.getChecked();
+      List<IAttributeType> attributeTypes = Collections.castAll(attrTypes);
 
-      IAttributeType attributeType = (IAttributeType) attributeTypeList.getData(typeName);
-      ISearchPrimitive primitive = new AttributeExistsSearch(attributeType);
-      filterViewer.addItem(primitive, getFilterName(), typeName, Strings.EMPTY_STRING);
+      ISearchPrimitive primitive = new AttributeExistsSearch(attributeTypes);
+      filterViewer.addItem(primitive, getFilterName(), attributeTypes.toString(), "");
    }
 
    @Override
@@ -49,4 +51,12 @@ public class AttributeExistsFilter extends SearchFilter {
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 
+   @Override
+   public String getSearchDescription() {
+      return "Using multiple attribute types in the same filter will return artifacts where at least one does exist."
+         + "\nUsing separate attribute type filters will only return artifacts where all the attribute types do exist.";
+   }
+
 }
+
+   

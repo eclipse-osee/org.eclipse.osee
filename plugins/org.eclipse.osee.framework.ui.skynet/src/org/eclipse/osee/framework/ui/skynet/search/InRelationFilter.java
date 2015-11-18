@@ -58,4 +58,9 @@ public class InRelationFilter extends SearchFilter {
       ISearchPrimitive primitive = InRelationSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
+
+   @Override
+   public String getSearchDescription() {
+      return "This search will return all artifacts in the selected relation";
+   }
 }

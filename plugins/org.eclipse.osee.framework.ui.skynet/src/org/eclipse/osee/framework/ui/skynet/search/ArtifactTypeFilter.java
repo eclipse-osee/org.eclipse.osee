@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import org.eclipse.jface.viewers.ListViewer;
-import java.util.List;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -19,23 +17,24 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactTypeSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author Ryan D. Brooks
  */
 public class ArtifactTypeFilter extends SearchFilter {
-   private final ListViewer searchTypeList;
+   private final FilteredCheckboxTree checkBoxList;
 
-   public ArtifactTypeFilter(Control optionsControl, ListViewer searchTypeList) {
+   public ArtifactTypeFilter(Control optionsControl, FilteredCheckboxTree checkBoxList) {
       super("Artifact Type", optionsControl);
-      this.searchTypeList = searchTypeList;
+      this.checkBoxList = checkBoxList;
    }
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      List<?> artifactTypesObj = searchTypeList.getStructuredSelection().toList();
-      List<IArtifactType> artifactTypes = Collections.castAll(artifactTypesObj);
+      Collection<IArtifactType> artTypes = checkBoxList.getChecked();
+      List<IArtifactType> artifactTypes = Collections.castAll(artTypes);
 
       ISearchPrimitive primitive = new ArtifactTypeSearch(artifactTypes);
       filterViewer.addItem(primitive, getFilterName(), artifactTypes.toString(), "");
@@ -50,5 +49,10 @@ public class ArtifactTypeFilter extends SearchFilter {
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = ArtifactTypeSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
+
+   @Override
+   public String getSearchDescription() {
+      return "Using multiple artifact types in the same filter will return artifacts matching any of the types." + "\nUsing separate artifact type filters will only return artifacts matching all of the types.";
    }
 }

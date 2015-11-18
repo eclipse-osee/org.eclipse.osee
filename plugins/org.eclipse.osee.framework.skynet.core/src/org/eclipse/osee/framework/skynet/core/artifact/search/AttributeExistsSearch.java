@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -18,31 +20,45 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author John Misinco
  */
 public class AttributeExistsSearch implements ISearchPrimitive {
-   private final IAttributeType attributeType;
+   private final List<IAttributeType> attributeTypes;
 
-   public AttributeExistsSearch(IAttributeType attributeType) {
-      Conditions.checkNotNull(attributeType, "attributeType");
-      this.attributeType = attributeType;
+   public AttributeExistsSearch(List<IAttributeType> attributeTypes) {
+      Conditions.checkNotNull(attributeTypes, "attributeTypes");
+      this.attributeTypes = attributeTypes;
    }
 
    @Override
    public String toString() {
-      return "Attribute type: \"" + attributeType + "\"";
+      return "Attribute type: \"" + attributeTypes + "\"";
    }
 
    @Override
    public String getStorageString() {
-      return attributeType.getGuid().toString();
+      StringBuilder storageString = new StringBuilder();
+
+      for (IAttributeType attrType : attributeTypes) {
+         storageString.append(attrType.getGuid().toString());
+         storageString.append(",");
+      }
+      storageString.deleteCharAt(storageString.length() - 1);
+      return storageString.toString();
+
    }
 
    public static AttributeExistsSearch getPrimitive(String storageString) {
-      IAttributeType type = TokenFactory.createAttributeType(Long.valueOf(storageString), "SearchAttrType");
-      return new AttributeExistsSearch(type);
+      ArrayList<IAttributeType> attributeTypes = new ArrayList<>();
+
+      for (String attributeTypeId : storageString.split(",")) {
+         attributeTypes.add(TokenFactory.createAttributeType(Long.valueOf(attributeTypeId), "SearchAttrType"));
+      }
+
+      return new AttributeExistsSearch(attributeTypes);
+
    }
 
    @Override
    public void addToQuery(QueryBuilderArtifact builder) {
-      builder.andExists(attributeType);
+      builder.andExists(attributeTypes);
    }
 
 }

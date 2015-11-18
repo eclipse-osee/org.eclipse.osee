@@ -34,6 +34,8 @@ public abstract class SearchFilter {
    protected String getFilterName() {
       return filterName;
    }
+   
+   public abstract String getSearchDescription();
 
    public abstract void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled);
 

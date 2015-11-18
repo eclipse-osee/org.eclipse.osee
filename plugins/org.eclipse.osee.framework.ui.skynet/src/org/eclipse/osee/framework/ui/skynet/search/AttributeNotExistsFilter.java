@@ -10,32 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import org.eclipse.jface.viewers.ComboViewer;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeNotExistsSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
 import org.eclipse.swt.widgets.Control;
 
 /**
  * @author John Misinco
  */
 public class AttributeNotExistsFilter extends SearchFilter {
-   private final ComboViewer attributeTypeList;
+   private final FilteredCheckboxTree attributeTypeList;
 
-   public AttributeNotExistsFilter(Control optionsControl, ComboViewer attributeTypeList) {
+   public AttributeNotExistsFilter(Control optionsControl, FilteredCheckboxTree attributeTypeList) {
       super("Attribute Not Exists", optionsControl);
       this.attributeTypeList = attributeTypeList;
    }
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      String typeName = attributeTypeList.getCombo().getText();
+      Collection<IAttributeType> attrTypes = attributeTypeList.getChecked();
+      List<IAttributeType> attributeTypes = Collections.castAll(attrTypes);
 
-      IAttributeType attributeType = (IAttributeType) attributeTypeList.getData(typeName);
-      ISearchPrimitive primitive = new AttributeNotExistsSearch(attributeType);
-      filterViewer.addItem(primitive, getFilterName(), typeName, Strings.EMPTY_STRING);
+      ISearchPrimitive primitive = new AttributeNotExistsSearch(attributeTypes);
+      filterViewer.addItem(primitive, getFilterName(), attributeTypes.toString(), "");
    }
 
    @Override
@@ -47,6 +49,12 @@ public class AttributeNotExistsFilter extends SearchFilter {
    public void loadFromStorageString(FilterTableViewer filterViewer, String type, String value, String storageString, boolean isNotEnabled) {
       ISearchPrimitive primitive = AttributeNotExistsSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
+   }
+
+   @Override
+   public String getSearchDescription() {
+      return "Using multiple attribute types in the same filter will return artifacts where at least one does not exist."
+         + "\nUsing separate attribute type filters will only return artifacts where all the attribute types do not exist.";
    }
 
 }

@@ -52,4 +52,9 @@ public class AttributeValueFilter extends SearchFilter {
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
 
+   @Override
+   public String getSearchDescription() {
+      return "Using the attribute type and entering a value will return all artifacts that contain the attribute with the specified value.";
+   }
+
 }

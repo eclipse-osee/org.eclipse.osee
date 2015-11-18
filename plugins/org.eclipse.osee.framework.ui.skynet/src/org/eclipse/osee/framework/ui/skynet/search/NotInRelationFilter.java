@@ -58,4 +58,9 @@ public class NotInRelationFilter extends SearchFilter {
       ISearchPrimitive primitive = NotInRelationSearch.getPrimitive(storageString);
       filterViewer.addItem(primitive, getFilterName(), type, value);
    }
+
+   @Override
+   public String getSearchDescription() {
+      return "This search will return all artifacts not in the selected relation";
+   }
 }
