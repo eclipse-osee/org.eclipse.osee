@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
+import org.eclipse.osee.ats.world.search.AbstractWorkItemSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.ui.IElementFactory;
@@ -31,6 +33,7 @@ public class WorldEditorInputFactory implements IElementFactory {
    public final static String BRANCH_KEY = "org.eclipse.osee.ats.WorldEditorInputFactory.branchUuid"; //$NON-NLS-1$
    public final static String TITLE = "org.eclipse.osee.ats.WorldEditorInputFactory.title"; //$NON-NLS-1$
    public final static String ATS_SEARCH_UUID = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchUuid"; //$NON-NLS-1$
+   private static final String ATS_SEARCH_NAMESPACE = "org.eclipse.osee.ats.WorldEditorInputFactory.atsSearchNamespace"; //$NON-NLS-1$;
 
    public WorldEditorInputFactory() {
    }
@@ -59,6 +62,14 @@ public class WorldEditorInputFactory implements IElementFactory {
       }
       try {
          if (atsSearchUuid > 0L) {
+            String namespace = memento.getString(ATS_SEARCH_NAMESPACE);
+            if (Strings.isValid(namespace)) {
+               if (AtsSearchTeamWorkflowSearchItem.NAMESPACE.equals(namespace)) {
+                  AbstractWorkItemSearchItem searchItem = new AtsSearchTeamWorkflowSearchItem();
+                  searchItem.setRestoreUuid(atsSearchUuid);
+                  return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
+               }
+            }
             AtsSearchWorkflowSearchItem searchItem = new AtsSearchWorkflowSearchItem();
             searchItem.setRestoreUuid(atsSearchUuid);
             return new WorldEditorInput(new WorldEditorParameterSearchItemProvider(searchItem, null));
@@ -81,6 +92,7 @@ public class WorldEditorInputFactory implements IElementFactory {
       }
       if (input.getAtsSearchUuid() > 0L) {
          memento.putString(ATS_SEARCH_UUID, String.valueOf(input.getAtsSearchUuid()));
+         memento.putString(ATS_SEARCH_NAMESPACE, String.valueOf(input.getAtsSearchNamespace()));
       }
    }
 

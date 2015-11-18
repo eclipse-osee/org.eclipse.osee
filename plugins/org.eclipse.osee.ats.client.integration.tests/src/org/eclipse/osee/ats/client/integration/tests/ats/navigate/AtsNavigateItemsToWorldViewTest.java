@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.navigate;
 
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,7 +17,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.StyledString;
@@ -29,7 +26,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
@@ -46,7 +42,6 @@ import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.navigate.TeamWorkflowSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.UserSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -56,13 +51,11 @@ import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.UserWorldSearchItem.UserSearchOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -412,84 +405,6 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, AtsArtifactTypes.Task,
          DemoTestUtil.getNumTasks());
       TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testTeamWorkflowSearch() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      List<IAtsTeamDefinition> selectedTeamDefs =
-         TeamDefinitions.getTeamTopLevelDefinitions(Active.Active, AtsClientService.get().getConfig());
-      WorldEditor.closeAll();
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Team Workflow Search");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof TeamWorkflowSearchWorkflowSearchItem);
-      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 1);
-      runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, true, 2);
-      runGeneralTeamWorkflowSearchOnCompletedCancelledTest(item, false, 1);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Joe Smith", 0);
-      selectedTeamDefs.clear();
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 7);
-      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.UnReleased, 7);
-      runGeneralTeamWorkflowSearchOnAssigneeTest(item, "Kay Jones", 10);
-      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Released, 0);
-      runGeneralTeamWorkflowSearchOnReleasedTest(item, ReleasedOption.Both, 10);
-      List<String> teamDefs = new ArrayList<>();
-      teamDefs.add("SAW Test");
-      teamDefs.add("SAW Design");
-      Set<IAtsTeamDefinition> tda = TeamDefinitions.getTeamDefinitions(teamDefs, AtsClientService.get().getConfig());
-      runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, SAW_Bld_1.getName(), 0);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, SAW_Bld_2.getName(), 3);
-      selectedTeamDefs.clear();
-      runGeneralTeamWorkflowSearchOnTeamTest(item, selectedTeamDefs, 10);
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   private void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      editor.getWorldXWidgetActionPage().reSearch(true);
-      Collection<Artifact> arts = editor.getLoadedArtifacts();
-      // validate
-      NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
-   }
-
-   private void runGeneralTeamWorkflowSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(
-         AtsClientService.get().getUserService().getUserByName(assignee));
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
-   }
-
-   private void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<IAtsTeamDefinition> selectedTeamDefs, int expectedNum) throws Exception {
-      // need to set team selected users
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
-      ((TeamWorkflowSearchWorkflowSearchItem) dwl).setSelectedTeamDefinitions(selectedTeamDefs);
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
-   }
-
-   private void runGeneralTeamWorkflowSearchOnReleasedTest(XNavigateItem item, ReleasedOption released, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setSelectedReleased(
-         released);
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
-   }
-
-   private void runGeneralTeamWorkflowSearchOnVersionTest(XNavigateItem item, String versionString, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setVersion(
-         versionString);
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
-   }
-
-   private void runGeneralTeamWorkflowSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
-      WorldEditor editor = WorldEditorUtil.getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(
-         selected);
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setIncludeCancelledCheckbox(
-         selected);
-      runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    @org.junit.Test

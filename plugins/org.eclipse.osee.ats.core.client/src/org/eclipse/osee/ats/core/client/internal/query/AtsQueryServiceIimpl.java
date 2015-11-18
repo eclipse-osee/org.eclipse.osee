@@ -65,9 +65,11 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
          AtsAttributeTypes.QuickSearch)) {
          String jsonValue = ((String) attr.getValue());
-         AtsSearchData data = fromJson(jsonValue);
-         if (data != null) {
-            searches.add(data);
+         if (jsonValue.contains("\"namespace\":\"" + namespace + "\"")) {
+            AtsSearchData data = fromJson(jsonValue);
+            if (data != null) {
+               searches.add(data);
+            }
          }
       }
       return searches;

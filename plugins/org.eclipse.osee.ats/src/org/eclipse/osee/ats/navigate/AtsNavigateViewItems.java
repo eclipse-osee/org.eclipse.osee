@@ -61,6 +61,7 @@ import org.eclipse.osee.ats.workdef.config.ValidateWorkspaceToDatabaseWorkDefini
 import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
@@ -156,7 +157,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new UserSearchWorkflowSearchItem()));
          items.add(new SearchNavigateItem(item, new TaskSearchWorldSearchItem()));
          items.add(new SearchNavigateItem(item, new GroupWorldSearchItem((Branch) null)));
-         items.add(new SearchNavigateItem(item, new TeamWorkflowSearchWorkflowSearchItem()));
+         items.add(new SearchNavigateItem(item, new AtsSearchTeamWorkflowSearchItem()));
+
          items.add(new SearchNavigateItem(item,
             new ActionableItemWorldSearchItem("Actionable Item Search", null, false, false, false)));
 

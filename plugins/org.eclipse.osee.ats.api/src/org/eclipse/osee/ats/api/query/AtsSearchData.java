@@ -40,6 +40,7 @@ public class AtsSearchData {
    private Long insertionActivityUuid = 0L;
    private Long workPackageUuid = 0L;
    private String colorTeam = "";
+   private String namespace = "";
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -207,6 +208,14 @@ public class AtsSearchData {
 
    public void setColorTeam(String colorTeam) {
       this.colorTeam = colorTeam;
+   }
+
+   public String getNamespace() {
+      return namespace;
+   }
+
+   public void setNamespace(String namespace) {
+      this.namespace = namespace;
    }
 
 }

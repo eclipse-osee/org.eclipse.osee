@@ -155,4 +155,16 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
       }
       return 0L;
    }
+
+   public String getAtsSearchNamespace() {
+      if (iWorldEditorProvider instanceof WorldEditorParameterSearchItemProvider) {
+         WorldSearchItem worldSearchItem =
+            ((WorldEditorParameterSearchItemProvider) iWorldEditorProvider).getWorldSearchItem();
+         if (worldSearchItem instanceof AtsSearchWorkflowSearchItem) {
+            return ((AtsSearchWorkflowSearchItem) worldSearchItem).getNamespace();
+         }
+      }
+
+      return null;
+   }
 }

@@ -67,7 +67,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private CustomizeData customizeData;
    private TableLoadOption[] tableLoadOptions;
    protected final Map<String, XWidget> xWidgets = new HashMap<String, XWidget>();
-   private StringBuilder xmlSb;
+   protected StringBuilder xmlSb;
    private final Pattern displayName = Pattern.compile("displayName=\"(.*?)\"");
    private String shortName = "";
    private final List<String> widgetOrder = new LinkedList<>();

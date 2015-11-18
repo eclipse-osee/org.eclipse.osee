@@ -36,24 +36,40 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
+   private static final String TITLE = "ATS Search";
    private WorldSearchItem searchItem;
    private long searchUuid = Lib.generateUuid();
    private String searchName = "";
-   private String namespace = "ats.search";
+   private final String namespace = "ats.search";
 
    public AtsSearchWorkflowSearchItem() {
-      super("ATS Search", AtsImage.SEARCH);
-      setShortName("ATS Search");
+      super(TITLE, AtsImage.SEARCH);
+      setShortName(TITLE);
+   }
+
+   public AtsSearchWorkflowSearchItem(String name, AtsImage image) {
+      super(name, image);
+      setShortName(name);
    }
 
    public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem) {
-      super(searchItem, AtsImage.SEARCH);
-      setShortName("ATS Search");
+      this(searchItem, TITLE, AtsImage.SEARCH);
+   }
+
+   public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, AtsImage image) {
+      super(searchItem, image);
+      setShortName(name);
+   }
+
+   protected boolean showWorkItemWidgets() {
+      return true;
    }
 
    @Override
    public String getParameterXWidgetXml() {
-      getWorkItemType().addWidget(14);
+      if (showWorkItemWidgets()) {
+         getWorkItemType().addWidget(14);
+      }
       getTitle().addWidget();
       getAi().addWidget(3);
       getTeamDef().addWidget(2);
@@ -127,6 +143,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
             data.getWorkItemTypes().add(type);
          }
       }
+      data.setNamespace(getNamespace());
       return data;
    }
 
@@ -191,7 +208,11 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (Strings.isValid(searchName)) {
          return searchName;
       }
-      return super.getShortName();
+      return getShortNamePrefix() + ": " + super.getShortName();
+   }
+
+   protected String getShortNamePrefix() {
+      return "AS";
    }
 
    @Override
@@ -227,14 +248,6 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       }
    }
 
-   public WorldSearchItem getSearchItem() {
-      return searchItem;
-   }
-
-   public void setSearchItem(WorldSearchItem searchItem) {
-      this.searchItem = searchItem;
-   }
-
    public String getSearchName() {
       return searchName;
    }
@@ -250,9 +263,5 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    public String getNamespace() {
       return namespace;
    }
-
-   public void setNamespace(String namespace) {
-      this.namespace = namespace;
-   };
 
 }
