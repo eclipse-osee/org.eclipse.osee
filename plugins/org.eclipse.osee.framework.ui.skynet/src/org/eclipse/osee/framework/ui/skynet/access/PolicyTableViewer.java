@@ -61,12 +61,10 @@ public class PolicyTableViewer {
    public void addOrModifyItem(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
       AccessObject accessObject = AccessControlManager.getAccessObject(object);
       AccessControlData data = accessControlList.get(subject.getGuid());
-      if (data == null && maxModificationLevel.matches(PermissionEnum.FULLACCESS)) {
+      if (data == null) { 
          data = new AccessControlData(subject, accessObject, permission, true);
-      } else if (data != null) {
-         modifyPermissionLevel(data, permission);
       } else {
-         return;
+         modifyPermissionLevel(data, permission);
       }
       accessControlList.put(data.getSubject().getGuid(), data);
       tableXViewer.refresh();
