@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.client.integration.tests.ats.config.AtsBranchConfigu
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.NavigateTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.WorldEditorUtil;
-import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
@@ -48,7 +47,6 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
-import org.eclipse.osee.ats.world.search.ActionableItemWorldSearchItem;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
@@ -404,19 +402,6 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, AtsArtifactTypes.TeamWorkflow, 7);
       NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, AtsArtifactTypes.Task,
          DemoTestUtil.getNumTasks());
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testActionableItemSearch() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(
-         ActionableItems.getActionableItems(Arrays.asList("SAW Code"), AtsClientService.get().getConfig()));
-      // normal searches copy search item which would clear out the set value above; for this test, don't copy item
-      runGeneralLoadingTest(item, AtsArtifactTypes.TeamWorkflow, 3, null, TableLoadOption.DontCopySearchItem);
       TestUtil.severeLoggingEnd(monitor);
    }
 
