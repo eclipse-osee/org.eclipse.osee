@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -54,10 +55,11 @@ public class PolicyDialog extends Dialog {
    private Combo cmbPermissionLevel;
    private final Object accessControlledObject;
    private Label accessLabel;
-
+   private Shell parentShell;
+   
    public PolicyDialog(Shell parentShell, Object accessControlledObject) {
       super(parentShell);
-
+      this.parentShell = parentShell;
       this.accessControlledObject = accessControlledObject;
       setShellStyle(SWT.DIALOG_TRIM | SWT.APPLICATION_MODAL | getDefaultOrientation() | SWT.RESIZE);
    }
@@ -128,7 +130,8 @@ public class PolicyDialog extends Dialog {
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
-            }
+            } else { 
+               MessageDialog.openError(parentShell, "Add Error", "Please select a Person and Permission Level to add to the Access Control List");         }
          }
       });
    }
