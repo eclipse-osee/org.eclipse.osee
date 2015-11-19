@@ -33,16 +33,20 @@ public class AtsSearchTeamWorkflowSearchItem extends AbstractWorkItemSearchItem 
 
    @Override
    public AbstractWorkItemSearchItem copy() {
-      return new AtsSearchTeamWorkflowSearchItem(this);
+      AtsSearchTeamWorkflowSearchItem item = new AtsSearchTeamWorkflowSearchItem(this);
+      item.setSavedData(savedData);
+      return item;
    }
 
    @Override
    public AbstractWorkItemSearchItem copyProvider() {
-      return new AtsSearchTeamWorkflowSearchItem(this);
+      AtsSearchTeamWorkflowSearchItem item = new AtsSearchTeamWorkflowSearchItem(this);
+      item.setSavedData(savedData);
+      return item;
    }
 
    @Override
-   protected String getShortNamePrefix() {
+   public String getShortNamePrefix() {
       return "TWS";
    }
 

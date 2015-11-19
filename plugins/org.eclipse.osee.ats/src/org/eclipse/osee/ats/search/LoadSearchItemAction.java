@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.search;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
 /**
@@ -41,7 +42,11 @@ public final class LoadSearchItemAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.LOAD);
+      AtsImage image = AtsImage.SEARCH;
+      if (data.getNamespace().equals(AtsSearchTeamWorkflowSearchItem.NAMESPACE)) {
+         image = AtsImage.TEAM_WORKFLOW;
+      }
+      return ImageManager.getImageDescriptor(image);
    }
 
 };

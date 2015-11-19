@@ -17,6 +17,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.navigate.AtsNavigateViewItems;
+import org.eclipse.osee.ats.navigate.NavigateView;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -83,6 +85,10 @@ public final class SaveSearchAction extends Action {
          AtsClientService.get().getQueryService().saveSearch(AtsClientService.get().getUserService().getCurrentUser(),
             data);
          ((Artifact) AtsClientService.get().getUserService().getCurrentUser().getStoreObject()).reloadAttributesAndRelations();
+         if (NavigateView.getNavigateView() != null) {
+            AtsNavigateViewItems.getInstance().clearCaches();
+            NavigateView.getNavigateView().refreshData();
+         }
          AWorkbench.popup("Search Saved");
       }
    }

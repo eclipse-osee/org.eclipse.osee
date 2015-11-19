@@ -40,7 +40,8 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    private WorldSearchItem searchItem;
    private long searchUuid = Lib.generateUuid();
    private String searchName = "";
-   private final String namespace = "ats.search";
+   public static final String NAMESPACE = "ats.search";
+   protected AtsSearchData savedData;
 
    public AtsSearchWorkflowSearchItem() {
       super(TITLE, AtsImage.SEARCH);
@@ -86,7 +87,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return super.getParameterXWidgetXml();
    }
 
-   protected AtsSearchData loadSearchData(AtsSearchData data) {
+   public AtsSearchData loadSearchData(AtsSearchData data) {
       if (searchUuid > 0) {
          data.setUuid(searchUuid);
       }
@@ -147,7 +148,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return data;
    }
 
-   protected void loadWidgets(AtsSearchData data) {
+   public void loadWidgets(AtsSearchData data) {
       try {
          searchUuid = data.getUuid();
          searchName = data.getSearchName();
@@ -206,23 +207,28 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    @Override
    public String getShortName() {
       if (Strings.isValid(searchName)) {
-         return searchName;
+         return getShortNamePrefix() + ": " + searchName;
       }
-      return getShortNamePrefix() + ": " + super.getShortName();
+      return super.getShortName();
    }
 
-   protected String getShortNamePrefix() {
+   @Override
+   public String getShortNamePrefix() {
       return "AS";
    }
 
    @Override
    public AtsSearchWorkflowSearchItem copy() {
-      return new AtsSearchWorkflowSearchItem(this);
+      AtsSearchWorkflowSearchItem item = new AtsSearchWorkflowSearchItem(this);
+      item.setSavedData(savedData);
+      return item;
    }
 
    @Override
    public AtsSearchWorkflowSearchItem copyProvider() {
-      return new AtsSearchWorkflowSearchItem(this);
+      AtsSearchWorkflowSearchItem item = new AtsSearchWorkflowSearchItem(this);
+      item.setSavedData(savedData);
+      return item;
    }
 
    @Override
@@ -261,7 +267,15 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    public String getNamespace() {
-      return namespace;
+      return NAMESPACE;
+   }
+
+   public AtsSearchData getSavedData() {
+      return savedData;
+   }
+
+   public void setSavedData(AtsSearchData savedData) {
+      this.savedData = savedData;
    }
 
 }

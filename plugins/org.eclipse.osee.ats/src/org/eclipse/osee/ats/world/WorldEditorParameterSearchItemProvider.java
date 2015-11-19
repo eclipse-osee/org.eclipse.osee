@@ -13,6 +13,8 @@ package org.eclipse.osee.ats.world;
 import java.util.Collection;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -63,6 +65,15 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
 
    @Override
    public void run(WorldEditor worldEditor, SearchType searchType, boolean forcePend) throws OseeCoreException {
+      WorldSearchItem searchItem = getWorldSearchItem();
+      if (searchItem instanceof AtsSearchWorkflowSearchItem) {
+         AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
+         AtsSearchData savedData = workflowSearchItem.getSavedData();
+         if (savedData != null) {
+            worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
+            firstTime = false;
+         }
+      }
       if (firstTime) {
          firstTime = false;
          worldEditor.setTableTitle(ENTER_OPTIONS_AND_SELECT_SEARCH, false);
@@ -127,6 +138,15 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
    @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       worldParameterSearchItem.createParametersSectionCompleted(managedForm, mainComp);
+      WorldSearchItem searchItem = getWorldSearchItem();
+      if (searchItem instanceof AtsSearchWorkflowSearchItem) {
+         AtsSearchWorkflowSearchItem workflowSearchItem = (AtsSearchWorkflowSearchItem) searchItem;
+         AtsSearchData savedData = workflowSearchItem.getSavedData();
+         if (savedData != null) {
+            workflowSearchItem.loadWidgets(savedData);
+         }
+      }
+
    }
 
    /**

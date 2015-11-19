@@ -238,6 +238,10 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       this.shortName = shortName;
    }
 
+   public String getShortNamePrefix() {
+      return "";
+   }
+
    @Override
    public void widgetCreating(XWidget widget, FormToolkit toolkit, Artifact art, SwtXWidgetRenderer dynamicXWidgetLayout, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {
       if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {

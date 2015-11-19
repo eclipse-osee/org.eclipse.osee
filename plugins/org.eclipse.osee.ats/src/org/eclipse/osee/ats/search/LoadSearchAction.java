@@ -59,7 +59,6 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
       if (dialog.open() == 0) {
          AtsSearchData selected = (AtsSearchData) dialog.getSelectedFirst();
          searchItem.loadWidgets(selected);
-         // TBD?    handleSearch
       }
    }
 
@@ -83,6 +82,9 @@ public final class LoadSearchAction extends Action implements IMenuCreator {
 
          for (AtsSearchData data : searchDatas) {
             addActionToMenu(fMenu, new LoadSearchItemAction(data, searchItem));
+         }
+         if (searchDatas.isEmpty()) {
+            setToolTipText("No Searches Saved");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Unable to load saved search data", ex);

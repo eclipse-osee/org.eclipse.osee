@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
  */
 public abstract class AbstractWorkItemSearchItem extends AtsSearchWorkflowSearchItem {
 
-   private String namespace;
+   private final String namespace;
 
    public AbstractWorkItemSearchItem(String title, String namespace, AtsImage image) {
       super(title, image);
@@ -30,6 +30,7 @@ public abstract class AbstractWorkItemSearchItem extends AtsSearchWorkflowSearch
 
    public AbstractWorkItemSearchItem(AbstractWorkItemSearchItem searchItem, String title, String namespace, AtsImage image) {
       super(searchItem, title, image);
+      this.namespace = namespace;
    }
 
    @Override
@@ -38,7 +39,7 @@ public abstract class AbstractWorkItemSearchItem extends AtsSearchWorkflowSearch
    }
 
    @Override
-   protected AtsSearchData loadSearchData(AtsSearchData data) {
+   public AtsSearchData loadSearchData(AtsSearchData data) {
       super.loadSearchData(data);
       data.getWorkItemTypes().clear();
       data.getWorkItemTypes().addAll(getWorkItemTypes());

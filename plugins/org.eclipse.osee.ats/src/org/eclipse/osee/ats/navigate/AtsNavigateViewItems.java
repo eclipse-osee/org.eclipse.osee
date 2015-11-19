@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.config.AtsConfig2ExampleNavigateItem;
@@ -143,6 +144,9 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       try {
          IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
          items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
+
+         createMySearchesSection(item, items);
+
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(item, new MySubscribedSearchItem("My Subscribed", user)));
@@ -318,6 +322,25 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(agileItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Agile section");
+      }
+   }
+
+   private void createMySearchesSection(XNavigateItem parent, List<XNavigateItem> items) {
+      try {
+         XNavigateItem searches = new XNavigateItem(parent, "Saved Searches", AtsImage.SEARCH);
+         for (AtsSearchWorkflowSearchItem item : Arrays.asList(new AtsSearchWorkflowSearchItem(),
+            new AtsSearchTeamWorkflowSearchItem())) {
+            for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
+               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
+               AtsSearchWorkflowSearchItem searchItem = item.copy();
+               searchItem.setSavedData(data);
+               SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
+               navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+            }
+         }
+         items.add(searches);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }
    }
 
