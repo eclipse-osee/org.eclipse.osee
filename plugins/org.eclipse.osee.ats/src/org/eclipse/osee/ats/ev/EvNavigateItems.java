@@ -16,7 +16,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 
 /**
  * @author Donald G. Dunne
@@ -26,8 +25,6 @@ public class EvNavigateItems {
    public static void createSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem evItems = new XNavigateItem(parent, "Earned Value", AtsImage.E_BOXED);
-         new XNavigateItemBlam(evItems, new SearchWorkPackageBlam());
-         new XNavigateItemBlam(evItems, new EarnedValueWorkPacakgeReportBlam());
          new WorkPackageConfigReport(evItems);
          new WorkItemAndPackageReport(evItems);
          items.add(evItems);
