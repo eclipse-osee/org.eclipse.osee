@@ -98,4 +98,6 @@ public interface IAtsQuery {
 
    IAtsWorkItemFilter createFilter();
 
+   IAtsQuery andReleased(ReleasedOption releaseOption);
+
 }

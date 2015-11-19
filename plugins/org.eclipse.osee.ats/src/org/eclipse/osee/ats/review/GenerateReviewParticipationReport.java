@@ -99,7 +99,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       }
 
    }
-   private static class ParticipationReportJob extends Job {
+   private class ParticipationReportJob extends Job {
 
       private final IAtsUser user;
       private final boolean forcePend;
@@ -113,14 +113,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
-            Set<Artifact> reviews = new HashSet<>();
-            IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
-            query.andAssigneeWas(user);
-            reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
-
-            query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
-            query.andAssignee(user);
-            reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+            Set<Artifact> reviews = getResults();
 
             final MassArtifactEditorInput input = new MassArtifactEditorInput(
                getName() + " as of " + DateUtil.getDateNow(), reviews, new ReviewParticipationXViewerFactory(user));
@@ -139,9 +132,22 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          monitor.done();
          return Status.OK_STATUS;
       }
+
    }
 
-   public static class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
+   public Set<Artifact> getResults() {
+      Set<Artifact> reviews = new HashSet<>();
+      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+      query.andAssigneeWas(selectedUser);
+      reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+
+      query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+      query.andAssignee(selectedUser);
+      reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+      return reviews;
+   }
+
+   public class ReviewParticipationXViewerFactory extends SkynetXViewerFactory {
 
       public ReviewParticipationXViewerFactory(IAtsUser user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);

@@ -19,13 +19,15 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.query.ReleasedOption;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -156,9 +158,14 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          //         ElapsedTime time = new ElapsedTime("Task Search - Load Team Workflows by Team Defs");
-         TeamWorldSearchItem teamWorldSearchItem = new TeamWorldSearchItem("", teamDefs, includeCompleted,
-            includeCancelled, false, false, null, null, ReleasedOption.Both, null);
-         workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
+         IAtsQuery query =
+            AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(teamDefs);
+         if (includeCancelled && !includeCompleted) {
+            query.andStateType(StateType.Working, StateType.Cancelled);
+         } else if (!includeCancelled && includeCompleted) {
+            query.andStateType(StateType.Working, StateType.Completed);
+         }
+         workflows.addAll(Collections.castAll(query.getResultArtifacts().getList()));
          //         time.end();
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<>();

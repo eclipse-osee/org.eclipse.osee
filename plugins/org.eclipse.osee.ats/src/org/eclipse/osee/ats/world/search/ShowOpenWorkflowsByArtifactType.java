@@ -10,17 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactSearchCriteria;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
@@ -48,20 +46,15 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-
-      List<Artifact> artifacts = null;
+      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem);
+      query.isOfType(artifactType);
       if (!showFinished) {
-         List<ArtifactSearchCriteria> criteria = new ArrayList<>();
-         TeamWorldSearchItem.addIncludeCompletedCancelledCriteria(criteria, showFinished, showFinished);
-         artifacts = ArtifactQuery.getArtifactListFromTypeAnd(artifactType, AtsUtilCore.getAtsBranch(), 500, criteria);
-      } else {
-         artifacts = ArtifactQuery.getArtifactListFromType(artifactType, AtsUtilCore.getAtsBranch());
+         query.andStateType(StateType.Working);
       }
-
       if (showWorkflow) {
-         return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelationTypes.TeamWorkflowToReview_Team);
+         return Collections.castAll(query.createFilter().getTeamWorkflows());
       } else {
-         return artifacts;
+         return Collections.castAll(query.getResultArtifacts().getList());
       }
    }
 

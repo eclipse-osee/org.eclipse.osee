@@ -115,6 +115,8 @@ public class AtsApplication extends Application {
       // UIs
       singletons.add(new ActionUiResource(atsServer, logger));
       singletons.add(new ReportResource(orcsApi, atsServer));
+
+      logger.warn("ATS Application Started - %s", System.getProperty("OseeApplicationServer"));
    }
 
    public void stop() {

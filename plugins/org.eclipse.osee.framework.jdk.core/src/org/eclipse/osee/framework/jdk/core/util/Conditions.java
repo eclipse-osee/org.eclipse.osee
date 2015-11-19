@@ -167,4 +167,12 @@ public final class Conditions {
          checkNotNull(object, objectName);
       }
    }
+
+   public static void assertEquals(int value1, int value2, String message, Object... data) {
+      checkExpressionFailOnTrue(value1 != value2, message, data);
+   }
+
+   public static void assertEquals(int value1, int value2) {
+      assertEquals(value1, value2, "Expected %d; Actual %d", value1, value2);
+   }
 }

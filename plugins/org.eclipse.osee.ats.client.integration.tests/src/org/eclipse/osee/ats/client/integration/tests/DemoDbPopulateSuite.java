@@ -25,7 +25,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
    PopulateDemoDatabaseTest.class,
-   DemoDbGroupsTest.class,
    DemoCountryConfigTest.class,
    PopulateDemoActionsTest.class,
    DemoDbPopulateValidateAtsDatabaseTest.class //

@@ -48,4 +48,12 @@ public interface IAtsProgramService {
 
    IAtsWorkPackage getWorkPackage(Long workPackageUuid);
 
+   IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage);
+
+   IAtsInsertion getInsertion(IAtsInsertionActivity activity);
+
+   IAtsProgram getProgram(IAtsInsertion insertion);
+
+   void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems);
+
 }

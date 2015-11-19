@@ -133,4 +133,28 @@ public class AtsProgramService implements IAtsProgramService {
       return AtsClientService.get().getEarnedValueService().getWorkPackage(atsClient.getArtifact(workPackageUuid));
    }
 
+   @Override
+   public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
+      Artifact wpArt = atsClient.getArtifact(workPackage.getUuid());
+      return atsClient.getConfigItemFactory().getInsertionActivity(
+         wpArt.getRelatedArtifact(AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity));
+   }
+
+   @Override
+   public IAtsInsertion getInsertion(IAtsInsertionActivity activity) {
+      return atsClient.getConfigItemFactory().getInsertion(((Artifact) activity.getStoreObject()).getRelatedArtifact(
+         AtsRelationTypes.InsertionToInsertionActivity_Insertion));
+   }
+
+   @Override
+   public IAtsProgram getProgram(IAtsInsertion insertion) {
+      return atsClient.getConfigItemFactory().getProgram(
+         ((Artifact) insertion.getStoreObject()).getRelatedArtifact(AtsRelationTypes.ProgramToInsertion_Program));
+   }
+
+   @Override
+   public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems) {
+      AtsClientService.get().getEarnedValueService().setWorkPackage(workPackage, workItems);
+   }
+
 }

@@ -20,7 +20,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({LegacyPcrIdQuickSearchTest.class, TeamDefinitionQuickSearchTest.class})
+@Suite.SuiteClasses({
+   ShowOpenWorkflowsByArtifactTypeTest.class,
+   LegacyPcrIdQuickSearchTest.class,
+   TeamDefinitionQuickSearchTest.class})
 /**
  * @author Donald G. Dunne
  */

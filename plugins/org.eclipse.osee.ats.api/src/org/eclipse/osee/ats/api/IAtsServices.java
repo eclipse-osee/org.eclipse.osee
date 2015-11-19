@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.program.IAtsProgramService;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -97,5 +99,9 @@ public interface IAtsServices {
    ArtifactId getArtifactByName(IArtifactType artifactType, String name);
 
    ArtifactId getArtifactByGuid(String workPackageGuid);
+
+   IAtsProgramService getProgramService();
+
+   IAtsQueryService getQueryService();
 
 }

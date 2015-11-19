@@ -43,6 +43,7 @@ public class AtsSearchData {
    private String colorTeam = "";
    private String namespace = "";
    private ReviewFormalType reviewType;
+   private ReleasedOption releasedOption;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -227,6 +228,14 @@ public class AtsSearchData {
 
    public void setReviewType(ReviewFormalType reviewType) {
       this.reviewType = reviewType;
+   }
+
+   public ReleasedOption getReleasedOption() {
+      return releasedOption;
+   }
+
+   public void setReleasedOption(ReleasedOption releasedOption) {
+      this.releasedOption = releasedOption;
    }
 
 }

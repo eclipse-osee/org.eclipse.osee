@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -141,6 +142,15 @@ public class AtsWorkItemFilter implements IAtsWorkItemFilter {
          actions.add(workItem.getParentAction());
       }
       return actions;
+   }
+
+   @Override
+   public Collection<IAtsTeamWorkflow> getTeamWorkflows() {
+      Set<IAtsTeamWorkflow> teamWfs = new HashSet<>();
+      for (IAtsWorkItem workItem : getItems()) {
+         teamWfs.add(workItem.getParentTeamWorkflow());
+      }
+      return teamWfs;
    }
 
 }

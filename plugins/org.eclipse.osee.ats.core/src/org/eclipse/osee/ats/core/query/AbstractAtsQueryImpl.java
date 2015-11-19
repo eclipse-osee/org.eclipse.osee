@@ -28,9 +28,11 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
+import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -70,6 +72,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long insertionActivityUuid;
    protected Long workPackageUuid;
    protected List<Integer> onlyIds = null;
+   private ReleasedOption releasedOption;
 
    public AbstractAtsQueryImpl(IAtsServices services) {
       this.services = services;
@@ -137,21 +140,50 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    private <T> Collection<T> collectResults(Set<T> allResults, Set<IArtifactType> allArtTypes) {
       Set<T> workItems = new HashSet<>();
       if (isOnlyIds()) {
-         onlyIds.addAll(queryGetIds());
-      } else {
+         onlyIds.addAll(handleReleaseOption(queryGetIds()));
+      }
+      // filter on original artifact types
+      else {
          Collection<ArtifactId> artifacts = runQuery();
          for (ArtifactId artifact : artifacts) {
-            if (isArtifactTypeMatch(artifact, allArtTypes)) {
+            if (artifactTypes.isEmpty() || isArtifactTypeMatch(artifact, artifactTypes)) {
                workItems.add((T) services.getWorkItemFactory().getWorkItem(artifact));
             }
          }
-         allResults.addAll(workItems);
+         allResults.addAll(handleReleasedOption(workItems));
       }
       return workItems;
    }
 
-   private boolean isArtifactTypeMatch(ArtifactId artifact, Set<IArtifactType> allArtTypes) {
-      for (IArtifactType artType : allArtTypes) {
+   private Collection<? extends Integer> handleReleaseOption(List<Integer> queryGetIds) {
+      throw new UnsupportedOperationException("This option not supported");
+   }
+
+   private <T> Collection<? extends T> handleReleasedOption(Set<T> workItems) {
+      if (releasedOption == null) {
+         return workItems;
+      }
+      Set<T> results = new HashSet<>();
+      if (isVersionSpecified()) {
+         for (T workItem : workItems) {
+            IAtsVersion version = services.getVersionService().getTargetedVersion((IAtsWorkItem) workItem);
+            if (version != null) {
+               if (releasedOption == ReleasedOption.Released && version.isReleased()) {
+                  results.add(workItem);
+               } else if (releasedOption == ReleasedOption.UnReleased && !version.isReleased()) {
+                  results.add(workItem);
+               }
+            }
+         }
+      }
+      return results;
+   }
+
+   private boolean isArtifactTypeMatch(ArtifactId artifact, Collection<IArtifactType> artTypes) {
+      if (artTypes.isEmpty()) {
+         return true;
+      }
+      for (IArtifactType artType : artTypes) {
          if (services.getArtifactResolver().isOfType(artifact, artType)) {
             return true;
          }
@@ -351,6 +383,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return Strings.isValid(colorTeam);
    }
 
+   protected boolean isVersionSpecified() {
+      return versionUuid != null && versionUuid > 0;
+   }
+
    protected boolean isInsertionActivitySpecified() {
       return insertionActivityUuid != null && insertionActivityUuid > 0;
    }
@@ -421,28 +457,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    @Override
    public IAtsQuery isOfType(Collection<WorkItemType> workItemTypes) {
-      List<IArtifactType> artTypes = new LinkedList<>();
       for (WorkItemType type : workItemTypes) {
          this.workItemTypes.add(type);
-         if (type == WorkItemType.TeamWorkflow) {
-            artTypes.add(AtsArtifactTypes.TeamWorkflow);
-         } else if (type == WorkItemType.Task) {
-            artTypes.add(AtsArtifactTypes.Task);
-         } else if (type == WorkItemType.Review) {
-            artTypes.add(AtsArtifactTypes.ReviewArtifact);
-         } else if (type == WorkItemType.PeerReview) {
-            artTypes.add(AtsArtifactTypes.PeerToPeerReview);
-         } else if (type == WorkItemType.DecisionReview) {
-            artTypes.add(AtsArtifactTypes.DecisionReview);
-         } else if (type == WorkItemType.AgileSprint) {
-            artTypes.add(AtsArtifactTypes.AgileSprint);
-         } else if (type == WorkItemType.AgileBacklog) {
-            artTypes.add(AtsArtifactTypes.Goal);
-         } else if (type == WorkItemType.Goal) {
-            artTypes.add(AtsArtifactTypes.Goal);
-         }
       }
-      return isOfType(artTypes.toArray(new IArtifactType[artTypes.size()]));
+      return this;
    }
 
    @Override
@@ -559,7 +577,32 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
             items.add((T) workItem.getStoreObject());
          }
       }
-      return ResultSets.newResultSet(items);
+      // filter on original artifact types
+      List<T> artifacts = new LinkedList<>();
+      for (ArtifactId artifact : items) {
+         boolean artifactTypeMatch = isArtifactTypeMatch(artifact, artifactTypes);
+         boolean releaseOptionMatch = isReleaseOptionMatch(artifact);
+         if (artifactTypeMatch && releaseOptionMatch) {
+            artifacts.add((T) artifact);
+         }
+      }
+      return ResultSets.newResultSet(artifacts);
+   }
+
+   private boolean isReleaseOptionMatch(ArtifactId artifact) {
+      if (releasedOption == null || releasedOption == ReleasedOption.Both) {
+         return true;
+      }
+      boolean match = false;
+      IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(artifact);
+      IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
+      if (teamWf != null) {
+         boolean released = services.getVersionService().isReleased(teamWf);
+         if ((releasedOption == ReleasedOption.Released && released) || (releasedOption == ReleasedOption.UnReleased && !released)) {
+            match = true;
+         }
+      }
+      return match;
    }
 
    @Override
@@ -880,6 +923,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsWorkItemFilter createFilter() {
       return new AtsWorkItemFilter(getItems(), services);
+   }
+
+   @Override
+   public IAtsQuery andReleased(ReleasedOption releasedOption) {
+      this.releasedOption = releasedOption;
+      return this;
    }
 
 }

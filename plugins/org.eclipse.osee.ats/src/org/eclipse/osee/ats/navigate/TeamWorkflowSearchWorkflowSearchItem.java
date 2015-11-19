@@ -17,17 +17,19 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -57,7 +59,7 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    protected XCheckBox includeCompletedCheckbox;
    protected XCheckBox includeCancelledCheckbox;
    private XStateSearchCombo stateCombo = null;
-   private TeamWorldSearchItem searchItem;
+   private IAtsQuery query;
 
    public TeamWorkflowSearchWorkflowSearchItem(String name) {
       super(name, AtsImage.TEAM_WORKFLOW);
@@ -385,14 +387,28 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
 
    @Override
    public void setupSearch() {
-      searchItem = new TeamWorldSearchItem("", getSelectedTeamDefinitions(), isIncludeCompletedCheckbox(),
-         isIncludeCancelledCheckbox(), false, false, getSelectedVersionArtifact(), getSelectedUser(),
-         getSelectedReleased(), getSelectedState());
+      query = AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow);
+      query.andTeam(getSelectedTeamDefinitions());
+      if (!isIncludeCancelledCheckbox()) {
+         query.andStateType(StateType.Working);
+      }
+      if (getSelectedVersionArtifact() != null) {
+         query.andVersion(getSelectedVersionArtifact().getUuid());
+      }
+      if (getSelectedUser() != null) {
+         query.andAssignee(getSelectedUser());
+      }
+      if (getSelectedReleased() != null) {
+         query.andReleased(getSelectedReleased());
+      }
+      if (Strings.isValid(getSelectedState())) {
+         query.andState(getSelectedState());
+      }
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) {
-      return searchItem.performSearchGetResults(false);
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(query.getResultArtifacts().getList());
    }
 
 }

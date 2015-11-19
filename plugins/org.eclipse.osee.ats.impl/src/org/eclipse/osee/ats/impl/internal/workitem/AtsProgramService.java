@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
@@ -156,6 +157,42 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsWorkPackage getWorkPackage(Long workPackageUuid) {
       throw new UnsupportedOperationException("getWorkPackage not supported on server");
+   }
+
+   @Override
+   public IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage) {
+      ArtifactReadable wpArt = atsServer.getArtifact(workPackage.getUuid());
+      ResultSet<ArtifactReadable> related =
+         wpArt.getRelated(AtsRelationTypes.InsertionActivityToWorkPackage_InsertionActivity);
+      if (related.size() > 0) {
+         return atsServer.getConfigItemFactory().getInsertionActivity(related.iterator().next());
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsInsertion getInsertion(IAtsInsertionActivity activity) {
+      ResultSet<ArtifactReadable> related = ((ArtifactReadable) activity.getStoreObject()).getRelated(
+         AtsRelationTypes.InsertionToInsertionActivity_Insertion);
+      if (related.size() > 0) {
+         return atsServer.getConfigItemFactory().getInsertion(related.iterator().next());
+      }
+      return null;
+   }
+
+   @Override
+   public IAtsProgram getProgram(IAtsInsertion insertion) {
+      ResultSet<ArtifactReadable> related =
+         ((ArtifactReadable) insertion.getStoreObject()).getRelated(AtsRelationTypes.ProgramToInsertion_Program);
+      if (related.size() > 0) {
+         return atsServer.getConfigItemFactory().getProgram(related.iterator().next());
+      }
+      return null;
+   }
+
+   @Override
+   public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems) {
+      throw new UnsupportedOperationException("setWorkPackage not supported on server");
    }
 
 }
