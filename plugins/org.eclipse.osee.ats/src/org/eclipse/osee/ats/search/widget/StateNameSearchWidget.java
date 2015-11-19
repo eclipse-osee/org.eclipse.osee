@@ -30,10 +30,12 @@ public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      String stateName = data.getState();
-      if (Strings.isValid(stateName)) {
-         getWidget().setInput(Arrays.asList(stateName));
+      if (getWidget() != null) {
+         setup(getWidget());
+         String stateName = data.getState();
+         if (Strings.isValid(stateName)) {
+            getWidget().setInput(Arrays.asList(stateName));
+         }
       }
    }
 

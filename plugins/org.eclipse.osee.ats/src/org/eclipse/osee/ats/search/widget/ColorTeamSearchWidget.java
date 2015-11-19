@@ -32,11 +32,13 @@ public class ColorTeamSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      String colorTeam = data.getColorTeam();
-      XComboViewer combo = getWidget();
-      if (Strings.isValid(colorTeam)) {
-         combo.setSelected(Arrays.asList(colorTeam));
+      if (getWidget() != null) {
+         setup(getWidget());
+         String colorTeam = data.getColorTeam();
+         XComboViewer combo = getWidget();
+         if (Strings.isValid(colorTeam)) {
+            combo.setSelected(Arrays.asList(colorTeam));
+         }
       }
    }
 

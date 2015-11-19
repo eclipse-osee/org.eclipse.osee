@@ -32,12 +32,14 @@ public class ProgramSearchWidget extends AbstractXComboViewerSearchWidget<IAtsPr
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      Long programUuid = data.getProgramUuid();
-      XComboViewer combo = getWidget();
-      if (programUuid != null && programUuid > 0) {
-         IAtsProgram program = AtsClientService.get().getProgramService().getProgram(programUuid);
-         combo.setSelected(Arrays.asList(program));
+      if (getWidget() != null) {
+         setup(getWidget());
+         Long programUuid = data.getProgramUuid();
+         XComboViewer combo = getWidget();
+         if (programUuid != null && programUuid > 0) {
+            IAtsProgram program = AtsClientService.get().getProgramService().getProgram(programUuid);
+            combo.setSelected(Arrays.asList(program));
+         }
       }
    }
 

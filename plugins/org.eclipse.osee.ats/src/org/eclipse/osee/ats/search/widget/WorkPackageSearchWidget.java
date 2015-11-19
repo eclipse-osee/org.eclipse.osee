@@ -35,12 +35,14 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      Long workPackageUuid = data.getWorkPackageUuid();
-      if (workPackageUuid != null && workPackageUuid > 0) {
-         IAtsWorkPackage workPackage = AtsClientService.get().getProgramService().getWorkPackage(workPackageUuid);
-         XComboViewer combo = getWidget();
-         combo.setSelected(Arrays.asList(workPackage));
+      if (getWidget() != null) {
+         setup(getWidget());
+         Long workPackageUuid = data.getWorkPackageUuid();
+         if (workPackageUuid != null && workPackageUuid > 0) {
+            IAtsWorkPackage workPackage = AtsClientService.get().getProgramService().getWorkPackage(workPackageUuid);
+            XComboViewer combo = getWidget();
+            combo.setSelected(Arrays.asList(workPackage));
+         }
       }
    }
 

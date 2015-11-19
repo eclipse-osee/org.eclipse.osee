@@ -112,7 +112,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
                   return new Result("Assignee and Cancelled are not compatible selections.");
                }
             }
-            if (getAi() != null && !getAi().get().isEmpty() && getTeamDef() != null && !getTeamDef().get().isEmpty()) {
+            if (getAi() != null && getAi().get() != null && !getAi().get().isEmpty() && getTeamDef() != null && getTeamDef().get() != null && !getTeamDef().get().isEmpty()) {
                return new Result("Actionable Item(s) and Team Definition(s) are not compatible selections.");
             }
          }

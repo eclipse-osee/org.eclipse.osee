@@ -43,8 +43,10 @@ public class TeamDefinitionSearchWidget {
 
    public Collection<Long> getUuids() {
       List<Long> uuids = new LinkedList<>();
-      for (IAtsTeamDefinition teamDef : get()) {
-         uuids.add(teamDef.getUuid());
+      if (get() != null) {
+         for (IAtsTeamDefinition teamDef : get()) {
+            uuids.add(teamDef.getUuid());
+         }
       }
       return uuids;
    }
@@ -66,15 +68,18 @@ public class TeamDefinitionSearchWidget {
    }
 
    public void set(AtsSearchData data) {
-      getWidget().handleClear();
-      List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
-      for (Long uuid : data.getTeamDefUuids()) {
-         IAtsTeamDefinition teamDef = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
-         if (teamDef != null) {
-            teamDefs.add(teamDef);
+      if (getWidget() != null) {
+         getWidget().handleClear();
+         List<IAtsTeamDefinition> teamDefs = new LinkedList<>();
+         for (Long uuid : data.getTeamDefUuids()) {
+            IAtsTeamDefinition teamDef =
+               AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
+            if (teamDef != null) {
+               teamDefs.add(teamDef);
+            }
          }
+         set(teamDefs);
       }
-      set(teamDefs);
    }
 
 }

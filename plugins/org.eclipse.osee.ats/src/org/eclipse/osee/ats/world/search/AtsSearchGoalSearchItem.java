@@ -24,7 +24,7 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    private static final String TITLE = "Goal Search";
 
    public AtsSearchGoalSearchItem() {
-      super(TITLE, NAMESPACE, AtsImage.TEAM_WORKFLOW);
+      super(TITLE, NAMESPACE, AtsImage.GOAL);
    }
 
    public AtsSearchGoalSearchItem(AbstractWorkItemSearchItem searchItem) {
@@ -58,6 +58,19 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    @Override
    protected boolean showWorkItemWidgets() {
       return false;
+   }
+
+   @Override
+   public String getParameterXWidgetXml() {
+      if (showWorkItemWidgets()) {
+         getWorkItemType().addWidget(14);
+      }
+      getTitle().addWidget();
+      getStateType().addWidget(6);
+      getUser().addWidget();
+      getUserType().addWidget();
+      String xml = xmlSb.toString() + "</xWidgets>";
+      return xml;
    }
 
 }

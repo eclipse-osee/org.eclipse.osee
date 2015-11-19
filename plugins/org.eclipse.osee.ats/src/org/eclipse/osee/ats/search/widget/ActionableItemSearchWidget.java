@@ -42,8 +42,10 @@ public class ActionableItemSearchWidget {
 
    public Collection<Long> getUuids() {
       List<Long> uuids = new LinkedList<>();
-      for (IAtsActionableItem ai : get()) {
-         uuids.add(ai.getUuid());
+      if (get() != null) {
+         for (IAtsActionableItem ai : get()) {
+            uuids.add(ai.getUuid());
+         }
       }
       return uuids;
    }
@@ -61,7 +63,9 @@ public class ActionableItemSearchWidget {
    }
 
    public void set(Collection<IAtsActionableItem> ais) {
-      getWidget().setSelectedAIs(ais);
+      if (getWidget() != null) {
+         getWidget().setSelectedAIs(ais);
+      }
    }
 
    public void set(AtsSearchData data) {

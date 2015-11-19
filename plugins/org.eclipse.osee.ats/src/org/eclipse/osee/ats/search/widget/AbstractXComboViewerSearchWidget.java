@@ -49,23 +49,25 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    boolean listenerAdded = false;
 
    public void setup(XWidget widget) {
-      XComboViewer combo = (XComboViewer) widget;
-      combo.setInput(Collections.castAll(getInput()));
-      combo.getCombo().setText(getInitialText());
-      if (!listenerAdded) {
-         listenerAdded = true;
-         combo.getLabelWidget().addMouseListener(new MouseAdapter() {
+      if (widget != null) {
+         XComboViewer combo = (XComboViewer) widget;
+         combo.setInput(Collections.castAll(getInput()));
+         combo.getCombo().setText(getInitialText());
+         if (!listenerAdded) {
+            listenerAdded = true;
+            combo.getLabelWidget().addMouseListener(new MouseAdapter() {
 
-            @Override
-            public void mouseDown(MouseEvent e) {
-               super.mouseDown(e);
-               if (e.button == 3) {
-                  handleRightClickLabel();
+               @Override
+               public void mouseDown(MouseEvent e) {
+                  super.mouseDown(e);
+                  if (e.button == 3) {
+                     handleRightClickLabel();
+                  }
                }
-            }
 
-         });
-         combo.getLabelWidget().setToolTipText("Right-click to clear");
+            });
+            combo.getLabelWidget().setToolTipText("Right-click to clear");
+         }
       }
    }
 

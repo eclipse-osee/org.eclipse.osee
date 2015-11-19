@@ -65,8 +65,6 @@ import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
-import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
-import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem.GoalSearchState;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
@@ -146,7 +144,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(item, new MySubscribedSearchItem("My Subscribed", user)));
-         items.add(new SearchNavigateItem(item, new MyGoalWorkflowItem("My Goals", user, GoalSearchState.InWork)));
          items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(item));
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));

@@ -35,13 +35,15 @@ public class InsertionActivitySearchWidget extends AbstractXComboViewerSearchWid
 
    @Override
    public void set(AtsSearchData data) {
-      setup(getWidget());
-      Long insertionActivityUuid = data.getInsertionActivityUuid();
-      XComboViewer combo = getWidget();
-      if (insertionActivityUuid != null && insertionActivityUuid > 0) {
-         IAtsInsertionActivity insertionActivity =
-            AtsClientService.get().getProgramService().getInsertionActivity(insertionActivityUuid);
-         combo.setSelected(Arrays.asList(insertionActivity));
+      if (getWidget() != null) {
+         setup(getWidget());
+         Long insertionActivityUuid = data.getInsertionActivityUuid();
+         XComboViewer combo = getWidget();
+         if (insertionActivityUuid != null && insertionActivityUuid > 0) {
+            IAtsInsertionActivity insertionActivity =
+               AtsClientService.get().getProgramService().getInsertionActivity(insertionActivityUuid);
+            combo.setSelected(Arrays.asList(insertionActivity));
+         }
       }
    }
 
