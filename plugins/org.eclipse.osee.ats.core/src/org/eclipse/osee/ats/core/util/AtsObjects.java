@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
  * @author Donald G. Dunne
@@ -70,6 +72,14 @@ public class AtsObjects {
          names.add(namedAtsObject.getName());
       }
       return names;
+   }
+
+   public static String toAtsIdsFromActions(Collection<IAtsAction> actions) {
+      List<String> guids = new ArrayList<>(actions.size());
+      for (IAtsAction action : actions) {
+         guids.add(action.getAtsId());
+      }
+      return Collections.toString(", ", guids);
    }
 
 }

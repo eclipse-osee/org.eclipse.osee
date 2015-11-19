@@ -94,4 +94,8 @@ public interface IAtsQuery {
 
    IAtsQuery andAssigneeWas(IAtsUser... assignees);
 
+   IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs);
+
+   IAtsWorkItemFilter createFilter();
+
 }

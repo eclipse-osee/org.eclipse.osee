@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,5 +35,7 @@ public interface IAtsWorkItemFilter {
    public <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
    public abstract IAtsWorkItemFilter withOrValue(IAttributeType attributeType, Collection<? extends Object> values) throws OseeCoreException;
+
+   public abstract Collection<IAtsAction> getActions();
 
 }

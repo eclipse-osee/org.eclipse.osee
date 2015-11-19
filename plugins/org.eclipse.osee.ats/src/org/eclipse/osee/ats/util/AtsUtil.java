@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.artifact.TeamWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -294,8 +295,8 @@ public final class AtsUtil {
       Set<Artifact> otherArts = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
-            WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
-               TableLoadOption.None));
+            WorldEditor.open(
+               new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null, TableLoadOption.None));
          } else {
             otherArts.add(art);
          }
@@ -351,7 +352,7 @@ public final class AtsUtil {
 
    /**
     * return currently assigned state machine artifacts that match clazz
-    * 
+    *
     * @param clazz to match or all if null
     */
    public static Set<Artifact> getAssigned(IAtsUser user, Class<?> clazz) throws OseeCoreException {
@@ -360,7 +361,7 @@ public final class AtsUtil {
 
    /**
     * return currently assigned state machine artifacts that match clazz
-    * 
+    *
     * @param clazz to match or all if null
     */
    public static Set<Artifact> getAssigned(String userId, Class<?> clazz) throws OseeCoreException {
@@ -391,6 +392,10 @@ public final class AtsUtil {
          users.add((User) AtsClientService.get().getUserService().getUserById(user.getUserId()).getStoreObject());
       }
       return FrameworkArtifactImageProvider.getUserImage(users);
+   }
+
+   public static void openAction(IAtsAction action, AtsOpenOption atsOpenOption) {
+      openATSAction((Artifact) action.getStoreObject(), atsOpenOption);
    }
 
 }

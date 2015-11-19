@@ -21,7 +21,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
@@ -32,7 +33,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.LegacyPCRActions;
 import org.eclipse.osee.ats.util.widgets.dialog.AtsObjectNameSorter;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
@@ -206,8 +206,12 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
    }
 
    private void searchAndSplitResults() throws OseeCoreException {
-      resultAtsArts.addAll(
-         LegacyPCRActions.getTeamsTeamWorkflowArtifacts(data.getIds(), (Collection<IAtsTeamDefinition>) null));
+
+      Collection<TeamWorkFlowArtifact> teamArts =
+         AtsClientService.get().getQueryService().createQuery(WorkItemType.TeamWorkflow).andAttr(
+            AtsAttributeTypes.LegacyPcrId, data.getIds()).getItems();
+
+      resultAtsArts.addAll(teamArts);
 
       // This does artId search
       if (data.isIncludeArtIds() && data.getBranchForIncludeArtIds() != null) {

@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -462,6 +463,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
+   public IAtsQuery andTeam(Collection<IAtsTeamDefinition> teamDefs) {
+      return andTeam(AtsObjects.toUuids(teamDefs));
+   }
+
+   @Override
    public IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException {
       andAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
@@ -869,6 +875,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
       // relations
       addRelationCriteria();
+   }
+
+   @Override
+   public IAtsWorkItemFilter createFilter() {
+      return new AtsWorkItemFilter(getItems(), services);
    }
 
 }
