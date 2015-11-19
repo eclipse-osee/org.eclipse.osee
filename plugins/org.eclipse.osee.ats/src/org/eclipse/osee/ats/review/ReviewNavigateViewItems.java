@@ -17,12 +17,10 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.OpenWorkflowByIdAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.SearchNavigateItem;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
+import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
+import org.eclipse.osee.ats.world.search.MyReviewSearchItem;
 import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,27 +69,23 @@ public class ReviewNavigateViewItems implements XNavigateViewItems, IXNavigateCo
    }
 
    public void addOseePeerSectionChildren(XNavigateItem item) throws OseeCoreException {
-      try {
-         IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
-         items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
-         items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("User's Reviews", null, ReviewState.InWork)));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      items.add(new SearchNavigateItem(item, new ReviewSearchWorkflowSearchItem()));
+      items.add(new SearchNavigateItem(item, new MyReviewSearchItem()));
+      items.add(new SearchNavigateItem(item, new AtsSearchReviewSearchItem()));
       items.add(new XNavigateItemAction(item, new OpenWorkflowByIdAction("Open Review by ID"), AtsImage.REVIEW));
-      items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
-         "Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview, false, false,
-         AtsImage.DECISION_REVIEW)));
-      items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
-         "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview,
-         false, true, AtsImage.DECISION_REVIEW)));
-      items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
-         "Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s", AtsArtifactTypes.PeerToPeerReview, false,
-         false, AtsImage.PEER_REVIEW)));
-      items.add(new SearchNavigateItem(item, new ShowOpenWorkflowsByArtifactType(
-         "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
-         AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.PEER_REVIEW)));
+      items.add(new SearchNavigateItem(item,
+         new ShowOpenWorkflowsByArtifactType("Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s",
+            AtsArtifactTypes.DecisionReview, false, false, AtsImage.DECISION_REVIEW)));
+      items.add(new SearchNavigateItem(item,
+         new ShowOpenWorkflowsByArtifactType(
+            "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s",
+            AtsArtifactTypes.DecisionReview, false, true, AtsImage.DECISION_REVIEW)));
+      items.add(new SearchNavigateItem(item,
+         new ShowOpenWorkflowsByArtifactType("Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
+            AtsArtifactTypes.PeerToPeerReview, false, false, AtsImage.PEER_REVIEW)));
+      items.add(new SearchNavigateItem(item,
+         new ShowOpenWorkflowsByArtifactType(
+            "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
+            AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.PEER_REVIEW)));
       items.add(new NewPeerToPeerReviewItem(item));
       items.add(new GenerateReviewParticipationReport(item));
 

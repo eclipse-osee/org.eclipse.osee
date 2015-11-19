@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.search.widget.ColorTeamSearchWidget;
 import org.eclipse.osee.ats.search.widget.InsertionActivitySearchWidget;
 import org.eclipse.osee.ats.search.widget.InsertionSearchWidget;
 import org.eclipse.osee.ats.search.widget.ProgramSearchWidget;
+import org.eclipse.osee.ats.search.widget.ReviewTypeSearchWidget;
 import org.eclipse.osee.ats.search.widget.StateNameSearchWidget;
 import org.eclipse.osee.ats.search.widget.StateTypeSearchWidget;
 import org.eclipse.osee.ats.search.widget.TeamDefinitionSearchWidget;
@@ -85,6 +86,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    private WorkPackageSearchWidget workPackage;
    private ColorTeamSearchWidget colorTeam;
    private UserTypeSearchWidget userType;
+   private ReviewTypeSearchWidget reviewType;
 
    public WorldEditorParameterSearchItem(String name, KeyedImage oseeImage) {
       super(name, LoadView.WorldEditor, oseeImage);
@@ -222,6 +224,8 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          getUserType().setup(widget);
       } else if (widget.getLabel().equals(VersionSearchWidget.VERSION)) {
          getVersion().setup(widget);
+      } else if (widget.getLabel().equals(ReviewTypeSearchWidget.REVIEW_TYPE)) {
+         getReviewType().setup(widget);
       }
    }
 
@@ -391,6 +395,13 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
          userType = new UserTypeSearchWidget(this);
       }
       return userType;
+   }
+
+   public ReviewTypeSearchWidget getReviewType() {
+      if (reviewType == null) {
+         reviewType = new ReviewTypeSearchWidget(this);
+      }
+      return reviewType;
    }
 
    @Override

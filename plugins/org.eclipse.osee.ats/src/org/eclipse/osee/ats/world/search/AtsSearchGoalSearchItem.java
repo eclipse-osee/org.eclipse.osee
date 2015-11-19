@@ -61,7 +61,7 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
    }
 
    @Override
-   public String getParameterXWidgetXml() {
+   protected void addWidgets() {
       if (showWorkItemWidgets()) {
          getWorkItemType().addWidget(14);
       }
@@ -69,8 +69,6 @@ public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
       getStateType().addWidget(6);
       getUser().addWidget();
       getUserType().addWidget();
-      String xml = xmlSb.toString() + "</xWidgets>";
-      return xml;
    }
 
 }

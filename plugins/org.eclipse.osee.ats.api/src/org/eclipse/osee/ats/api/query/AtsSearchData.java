@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.query;
 import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -41,6 +42,7 @@ public class AtsSearchData {
    private Long workPackageUuid = 0L;
    private String colorTeam = "";
    private String namespace = "";
+   private ReviewFormalType reviewType;
 
    public AtsSearchData() {
       // for jackson deserialization
@@ -73,6 +75,7 @@ public class AtsSearchData {
       item.setInsertionActivityUuid(getInsertionActivityUuid());
       item.setWorkPackageUuid(getWorkPackageUuid());
       item.setColorTeam(getColorTeam());
+      item.setReviewType(getReviewType());
       return item;
    }
 
@@ -216,6 +219,14 @@ public class AtsSearchData {
 
    public void setNamespace(String namespace) {
       this.namespace = namespace;
+   }
+
+   public ReviewFormalType getReviewType() {
+      return reviewType;
+   }
+
+   public void setReviewType(ReviewFormalType reviewType) {
+      this.reviewType = reviewType;
    }
 
 }

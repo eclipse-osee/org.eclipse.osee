@@ -61,12 +61,11 @@ import org.eclipse.osee.ats.workdef.config.ValidateWorkspaceToDatabaseWorkDefini
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.ats.world.search.MySubscribedSearchItem;
 import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
@@ -144,7 +143,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("My World", user)));
          items.add(new SearchNavigateItem(item, new MyFavoritesSearchItem("My Favorites", user)));
          items.add(new SearchNavigateItem(item, new MySubscribedSearchItem("My Subscribed", user)));
-         items.add(new SearchNavigateItem(item, new MyReviewWorkflowItem("My Reviews", user, ReviewState.InWork)));
          items.add(new VisitedItems(item));
          items.add(new XNavigateItemAction(item, new NewAction(), AtsImage.NEW_ACTION));
          items.add(new XNavigateItemAction(item, new NewGoal(), AtsImage.GOAL));
@@ -321,7 +319,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       try {
          XNavigateItem searches = new XNavigateItem(parent, "Saved Searches", AtsImage.SEARCH);
          for (AtsSearchWorkflowSearchItem item : Arrays.asList(new AtsSearchWorkflowSearchItem(),
-            new AtsSearchTeamWorkflowSearchItem(), new AtsSearchGoalSearchItem())) {
+            new AtsSearchTeamWorkflowSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem())) {
             for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
                AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
                AtsSearchWorkflowSearchItem searchItem = item.copy();

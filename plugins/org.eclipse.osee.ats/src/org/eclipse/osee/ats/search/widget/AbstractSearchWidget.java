@@ -38,6 +38,12 @@ public class AbstractSearchWidget<WidgetType extends XWidget, ObjectType extends
             name, searchItem.getBeginComposite(beginComposite)));
    }
 
+   public void addWidgetEndComposite() {
+      searchItem.addWidgetXml(String.format(
+         "<XWidget xwidgetType=\"%s()\" displayName=\"%s\" horizontalLabel=\"true\" endComposite=\"true\" />",
+         widgetName, name));
+   }
+
    @SuppressWarnings("unchecked")
    public WidgetType getWidget() {
       return (WidgetType) searchItem.getxWidgets().get(name);

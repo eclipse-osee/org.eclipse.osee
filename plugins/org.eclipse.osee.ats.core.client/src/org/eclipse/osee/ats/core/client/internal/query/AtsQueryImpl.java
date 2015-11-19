@@ -140,4 +140,5 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
       }
       return new ArrayList<>(search.getItemIds());
    }
+
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.review.ReviewFormalType;
+import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;

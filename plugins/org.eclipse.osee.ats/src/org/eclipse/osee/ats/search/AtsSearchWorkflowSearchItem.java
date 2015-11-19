@@ -72,8 +72,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       return true;
    }
 
-   @Override
-   public String getParameterXWidgetXml() {
+   protected void addWidgets() {
       if (showWorkItemWidgets()) {
          getWorkItemType().addWidget(14);
       }
@@ -90,6 +89,11 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       getInsertion().addWidget();
       getInsertionActivity().addWidget();
       getWorkPackage().addWidget();
+   }
+
+   @Override
+   public String getParameterXWidgetXml() {
+      addWidgets();
       return super.getParameterXWidgetXml();
    }
 
@@ -151,6 +155,9 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          }
       }
       data.setNamespace(getNamespace());
+      if (getReviewType() != null) {
+         data.setReviewType(getReviewType().getType());
+      }
       return data;
    }
 
@@ -173,6 +180,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
          getInsertionActivity().set(data);
          getColorTeam().set(data);
          getWorkPackage().set(data);
+         getReviewType().set(data);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

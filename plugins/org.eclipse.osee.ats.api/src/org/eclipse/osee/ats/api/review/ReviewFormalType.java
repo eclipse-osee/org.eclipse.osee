@@ -8,8 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review;
+package org.eclipse.osee.ats.api.review;
 
+/**
+ * @author Donald G. Dunne
+ */
 public enum ReviewFormalType {
    InFormal,
    Formal

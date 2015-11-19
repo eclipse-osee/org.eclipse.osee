@@ -10,14 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.review;
 
-import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.column.AtsIdColumn;
 import org.eclipse.osee.ats.column.LegacyPcrIdColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
@@ -27,8 +30,6 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerReviewRoleColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerSmaCompletedDateColumn;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem;
-import org.eclipse.osee.ats.world.search.MyReviewWorkflowItem.ReviewState;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -68,9 +69,8 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
          useUser = selectedUser;
       } else {
          IAtsUserServiceClient userServiceClient = AtsClientService.get().getUserServiceClient();
-         UserListDialog dialog =
-            new UserListDialog(Displays.getActiveShell(), "Select User",
-               userServiceClient.getOseeUsersSorted(Active.Active));
+         UserListDialog dialog = new UserListDialog(Displays.getActiveShell(), "Select User",
+            userServiceClient.getOseeUsersSorted(Active.Active));
          dialog.setMultiSelect(false);
          int result = dialog.open();
          if (result == 0) {
@@ -113,11 +113,17 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       @Override
       public IStatus run(IProgressMonitor monitor) {
          try {
-            MyReviewWorkflowItem srch = new MyReviewWorkflowItem("", user, ReviewState.All);
-            Collection<Artifact> reviewArts = srch.performSearchGetResults();
-            final MassArtifactEditorInput input =
-               new MassArtifactEditorInput(getName() + " as of " + DateUtil.getDateNow(), reviewArts,
-                  new ReviewParticipationXViewerFactory(user));
+            Set<Artifact> reviews = new HashSet<>();
+            IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+            query.andAssigneeWas(user);
+            reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+
+            query = AtsClientService.get().getQueryService().createQuery(WorkItemType.Review);
+            query.andAssignee(user);
+            reviews.addAll(Collections.castAll(query.getResultArtifacts().getList()));
+
+            final MassArtifactEditorInput input = new MassArtifactEditorInput(
+               getName() + " as of " + DateUtil.getDateNow(), reviews, new ReviewParticipationXViewerFactory(user));
             Displays.ensureInDisplayThread(new Runnable() {
 
                @Override

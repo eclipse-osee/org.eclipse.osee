@@ -92,4 +92,6 @@ public interface IAtsQuery {
 
    Collection<Integer> getItemIds() throws OseeCoreException;
 
+   IAtsQuery andAssigneeWas(IAtsUser... assignees);
+
 }

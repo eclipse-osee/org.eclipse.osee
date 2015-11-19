@@ -17,10 +17,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ReviewWorldSearchItemDemoTest.class, ReviewNavigateItemsToWorldViewTest.class})
+@Suite.SuiteClasses({ReviewNavigateItemsToWorldViewTest.class})
 /**
  * This test suite contains tests that must be run against demo database
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTest_Review_Suite {

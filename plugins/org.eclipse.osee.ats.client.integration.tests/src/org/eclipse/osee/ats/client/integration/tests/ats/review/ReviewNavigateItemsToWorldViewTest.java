@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEdit
 
 /**
  * Test case for @link {@link ReviewNavigateViewItems}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ReviewNavigateItemsToWorldViewTest {
@@ -43,30 +43,6 @@ public class ReviewNavigateItemsToWorldViewTest {
       VisitedItems.clearVisited();
       DemoTestUtil.setUpTest();
       assertTrue(DemoTestUtil.getDemoUser(DemoUsers.Kay_Jones) != null);
-   }
-
-   @org.junit.Test
-   public void testMyReviews() throws Exception {
-      // two exist cause ATS has one in it's list
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("My Reviews").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2, null);
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2, null);
-   }
-
-   @org.junit.Test
-   public void testOtherUsersWorld_KayJones() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 1,
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-   }
-
-   @org.junit.Test
-   public void testOtherUsersWorld_JoeSmith() throws Exception {
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's Reviews").iterator().next();
-      runGeneralLoadingTest(item, AtsArtifactTypes.DecisionReview, 2,
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      runGeneralLoadingTest(item, AtsArtifactTypes.PeerToPeerReview, 2,
-         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
    }
 
    @org.junit.Test
@@ -94,8 +70,8 @@ public class ReviewNavigateItemsToWorldViewTest {
       MassArtifactEditor.closeAll();
       XNavigateItem item =
          NavigateTestUtil.getAtsNavigateItems("Generate Review Participation Report").iterator().next();
-      ((GenerateReviewParticipationReport) item).setSelectedUser(AtsClientService.get().getUserServiceClient().getUserFromToken(
-         DemoUsers.Joe_Smith));
+      ((GenerateReviewParticipationReport) item).setSelectedUser(
+         AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
 
       item.run(TableLoadOption.ForcePend);
 

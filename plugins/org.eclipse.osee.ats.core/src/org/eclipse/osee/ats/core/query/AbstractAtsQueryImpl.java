@@ -533,6 +533,15 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return andAttr(AtsAttributeTypes.CurrentState, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
    }
 
+   @Override
+   public IAtsQuery andAssigneeWas(IAtsUser... assignees) {
+      List<String> userIds = new ArrayList<>();
+      for (IAtsUser user : assignees) {
+         userIds.add("<" + user.getUserId() + ">");
+      }
+      return andAttr(AtsAttributeTypes.State, userIds, QueryOption.CONTAINS_MATCH_OPTIONS);
+   }
+
    @SuppressWarnings("unchecked")
    @Override
    public <T extends ArtifactId> ResultSet<T> getResultArtifacts() {

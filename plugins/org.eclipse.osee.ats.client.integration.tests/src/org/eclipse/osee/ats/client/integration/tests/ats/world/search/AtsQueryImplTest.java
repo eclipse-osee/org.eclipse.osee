@@ -139,9 +139,6 @@ public class AtsQueryImplTest {
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       ArtifactId version = AtsClientService.get().getArtifactByName(AtsArtifactTypes.Version, "SAW_Bld_2");
       query.andVersion(version.getUuid());
-      for (IAtsWorkItem item : query.getResults()) {
-         System.out.print(item.getUuid() + ",");
-      }
       assertEquals(14, query.getResults().size());
 
       // by assignee
