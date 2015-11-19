@@ -15,10 +15,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.config.GoalSorter;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.ats.world.search.GoalSearchItem;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -44,7 +46,9 @@ public class XGoalCombo extends XComboViewer {
       super.createControls(parent, horizontalSpan);
 
       try {
-         Collection<Artifact> goalArtifacts = new GoalSearchItem("", null, false, null).performSearchGetResults();
+         Collection<Artifact> goalArtifacts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+            AtsClientService.get().getQueryService().createQuery(WorkItemType.Goal).andStateType(
+               StateType.Working).getResultArtifacts().getList());
          List<IAtsGoal> sortedGoals = new ArrayList<>();
          for (Artifact goalArt : goalArtifacts) {
             sortedGoals.add((IAtsGoal) goalArt);

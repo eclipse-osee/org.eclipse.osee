@@ -44,19 +44,16 @@ import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.task.TaskEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldXViewer;
-import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.UserSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -109,28 +106,6 @@ public class AtsNavigateItemsToWorldViewTest {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItems("User's World").iterator().next();
       runGeneralLoadingTest(item, AtsArtifactTypes.AbstractWorkflowArtifact, 12,
          AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Kay_Jones));
-      TestUtil.severeLoggingEnd(monitor);
-   }
-
-   @org.junit.Test
-   public void testGroupsSearch() throws Exception {
-      SevereLoggingMonitor monitor = TestUtil.severeLoggingStart();
-
-      WorldEditor.closeAll();
-      Artifact groupArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
-         AtsUtilCore.getAtsBranch());
-      assertTrue(groupArt != null);
-      XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
-      assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
-      ((GroupWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedGroup(groupArt);
-      item.run(TableLoadOption.ForcePend, TableLoadOption.NoUI);
-      WorldEditor worldEditor = WorldEditorUtil.getSingleEditorOrFail();
-      Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
-
-      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Actions", arts, AtsArtifactTypes.Action, 2);
-      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Teams", arts, AtsArtifactTypes.TeamWorkflow, 7);
-      NavigateTestUtil.testExpectedVersusActual(item.getName() + " Tasks", arts, AtsArtifactTypes.Task,
-         DemoTestUtil.getNumTasks());
       TestUtil.severeLoggingEnd(monitor);
    }
 

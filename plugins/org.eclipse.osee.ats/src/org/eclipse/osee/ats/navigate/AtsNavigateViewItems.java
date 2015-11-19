@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.config.editor.AtsConfigResultsEditorNavigateItem;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.ev.EvNavigateItems;
 import org.eclipse.osee.ats.export.AtsExportAction;
-import org.eclipse.osee.ats.goal.GoalSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.ats.internal.ATSPerspective;
 import org.eclipse.osee.ats.internal.Activator;
@@ -61,12 +60,10 @@ import org.eclipse.osee.ats.workdef.config.ImportWorkDefinitionsItem;
 import org.eclipse.osee.ats.workdef.config.ValidateWorkspaceToDatabaseWorkDefinitions;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
-import org.eclipse.osee.ats.world.search.GoalSearchItem;
-import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
-import org.eclipse.osee.ats.world.search.MyFavoritesGoalsSearchItem;
 import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem;
 import org.eclipse.osee.ats.world.search.MyGoalWorkflowItem.GoalSearchState;
@@ -78,7 +75,6 @@ import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TaskSearchWorldSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -158,10 +154,9 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("User's World")));
 
          items.add(new SearchNavigateItem(item, new TaskSearchWorldSearchItem()));
-         items.add(new SearchNavigateItem(item, new GroupWorldSearchItem((Branch) null)));
+         items.add(new SearchNavigateItem(item, new AtsSearchGoalSearchItem()));
          items.add(new SearchNavigateItem(item, new AtsSearchTeamWorkflowSearchItem()));
 
-         createGoalsSection(item, items);
          createVersionsSection(item, items);
          createAgileSection(item, items);
          EvNavigateItems.createSection(item, items);
@@ -329,7 +324,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       try {
          XNavigateItem searches = new XNavigateItem(parent, "Saved Searches", AtsImage.SEARCH);
          for (AtsSearchWorkflowSearchItem item : Arrays.asList(new AtsSearchWorkflowSearchItem(),
-            new AtsSearchTeamWorkflowSearchItem())) {
+            new AtsSearchTeamWorkflowSearchItem(), new AtsSearchGoalSearchItem())) {
             for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
                AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
                AtsSearchWorkflowSearchItem searchItem = item.copy();
@@ -339,19 +334,6 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
             }
          }
          items.add(searches);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
-      }
-   }
-
-   private void createGoalsSection(XNavigateItem parent, List<XNavigateItem> items) {
-      try {
-         XNavigateItem goalItem = new XNavigateItem(parent, "Goals", AtsImage.GOAL);
-         new SearchNavigateItem(goalItem, new GoalSearchItem("InWork Goals", null, false, null));
-         new SearchNavigateItem(goalItem, new GoalSearchWorkflowSearchItem());
-         new SearchNavigateItem(goalItem,
-            new MyFavoritesGoalsSearchItem("Favorites", AtsClientService.get().getUserService().getCurrentUser()));
-         items.add(goalItem);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
       }

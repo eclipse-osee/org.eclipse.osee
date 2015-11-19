@@ -21,14 +21,17 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.goal.GoalCheckTreeDialog;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.ats.world.search.GoalSearchItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -106,7 +109,9 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
       for (Artifact awa : awas) {
          selected.addAll(awa.getRelatedArtifacts(AtsRelationTypes.Goal_Goal));
       }
-      Collection<Artifact> allGoals = new GoalSearchItem("", null, false, null).performSearchGetResults();
+      Collection<Artifact> allGoals =
+         Collections.castAll(AtsClientService.get().getQueryService().createQuery(WorkItemType.Goal).andStateType(
+            StateType.Working).getResultArtifacts().getList());
       GoalCheckTreeDialog dialog = new GoalCheckTreeDialog(allGoals);
       dialog.setInitialSelections(selected);
       if (dialog.open() == 0) {

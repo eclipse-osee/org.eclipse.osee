@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -60,6 +62,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, AtsImage image) {
       super(searchItem, image);
       setShortName(name);
+   }
+
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(getOseeImage());
    }
 
    protected boolean showWorkItemWidgets() {
