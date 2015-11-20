@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -49,11 +50,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class TeamWorldSearchItem extends WorldUISearchItem {
 
-   public static enum ReleasedOption {
-      Released,
-      UnReleased,
-      Both
-   };
    private final Collection<IAtsTeamDefinition> teamDefs;
    private final boolean recurseChildren;
    private boolean includeCompleted;
@@ -153,8 +149,8 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
             // don't include if version specified and workflow's not targeted for version
             if (versionArt != null) {
                TeamWorkFlowArtifact team = awa.getParentTeamWorkflow();
-               if (team != null && (!AtsClientService.get().getVersionService().hasTargetedVersion(team) || !AtsClientService.get().getVersionService().getTargetedVersion(
-                  team).equals(versionArt))) {
+               if (team != null && (!AtsClientService.get().getVersionService().hasTargetedVersion(
+                  team) || !AtsClientService.get().getVersionService().getTargetedVersion(team).equals(versionArt))) {
                   continue;
                }
             }

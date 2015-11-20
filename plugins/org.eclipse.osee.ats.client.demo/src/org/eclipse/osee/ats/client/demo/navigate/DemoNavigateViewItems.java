@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.demo.DemoTeam;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -46,7 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 
 /**
  * Provides the ATS Navigator items for the sample XYZ company's teams
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DemoNavigateViewItems implements IAtsNavigateItem {
@@ -60,9 +60,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results =
-               AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
-                  IAtsTeamDefinition.class);
+            results = AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
+               IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -114,8 +113,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
                }
 
                new SearchNavigateItem(teamItems, new NextVersionSearchItem(teamDef, LoadView.WorldEditor));
-               new SearchNavigateItem(teamItems, new VersionTargetedForTeamSearchItem(teamDef, null, false,
-                  LoadView.WorldEditor));
+               new SearchNavigateItem(teamItems,
+                  new VersionTargetedForTeamSearchItem(teamDef, null, false, LoadView.WorldEditor));
                new SearchNavigateItem(teamItems, new TeamWorldSearchItem("Show Un-Released Team Workflows",
                   Arrays.asList(teamDef), true, true, false, true, null, null, ReleasedOption.UnReleased, null));
                new ReleaseVersionItem(teamItems, teamDef);
@@ -129,12 +128,12 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem adminItems = new XNavigateItem(jhuItem, "JHU Admin", FrameworkImage.LASER);
 
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Actions", AtsArtifactTypes.Action));
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Decision Review",
-         AtsArtifactTypes.DecisionReview));
-      new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all PeerToPeer Review",
-         AtsArtifactTypes.PeerToPeerReview));
-      new SearchNavigateItem(adminItems, new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows",
-         AtsArtifactTypes.TeamWorkflow));
+      new SearchNavigateItem(adminItems,
+         new ArtifactTypeSearchItem("Show all Decision Review", AtsArtifactTypes.DecisionReview));
+      new SearchNavigateItem(adminItems,
+         new ArtifactTypeSearchItem("Show all PeerToPeer Review", AtsArtifactTypes.PeerToPeerReview));
+      new SearchNavigateItem(adminItems,
+         new ArtifactTypeWithInheritenceSearchItem("Show all Team Workflows", AtsArtifactTypes.TeamWorkflow));
       new SearchNavigateItem(adminItems, new ArtifactTypeSearchItem("Show all Tasks", AtsArtifactTypes.Task));
 
       XNavigateItem healthItems = new XNavigateItem(adminItems, "Health", FrameworkImage.LASER);

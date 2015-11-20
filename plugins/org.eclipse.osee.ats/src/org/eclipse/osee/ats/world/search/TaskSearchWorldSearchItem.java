@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -38,7 +39,6 @@ import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.util.widgets.XStateSearchCombo;
-import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.util.Result;
@@ -127,8 +127,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          }
          Set<TaskArtifact> removeTaskArts = new HashSet<>();
          for (TaskArtifact taskArt : userTaskArts) {
-            if (verArt != null && !verArt.equals(AtsClientService.get().getVersionService().getTargetedVersion(
-               taskArt.getParentTeamWorkflow()))) {
+            if (verArt != null && !verArt.equals(
+               AtsClientService.get().getVersionService().getTargetedVersion(taskArt.getParentTeamWorkflow()))) {
                removeTaskArts.add(taskArt);
             }
             if (!teamDefs.isEmpty() && !teamDefs.contains(taskArt.getParentTeamWorkflow().getTeamDefinition())) {
@@ -156,9 +156,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Else, get workflows from teamdefs
       else if (teamDefs.size() > 0) {
          //         ElapsedTime time = new ElapsedTime("Task Search - Load Team Workflows by Team Defs");
-         TeamWorldSearchItem teamWorldSearchItem =
-            new TeamWorldSearchItem("", teamDefs, includeCompleted, includeCancelled, false, false, null, null,
-               ReleasedOption.Both, null);
+         TeamWorldSearchItem teamWorldSearchItem = new TeamWorldSearchItem("", teamDefs, includeCompleted,
+            includeCancelled, false, false, null, null, ReleasedOption.Both, null);
          workflows.addAll(teamWorldSearchItem.performSearchGetResults(false, SearchType.Search));
          //         time.end();
       } else if (groups.size() > 0) {
@@ -179,7 +178,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       // Bulk load tasks related to workflows
       Collection<Artifact> artifacts =
          RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.TeamWfToTask_Task);
-      //      time.end();
+         //      time.end();
 
       // Apply the remaining criteria
       //      time = new ElapsedTime("Task Search - Filter by remaining criteria");
@@ -344,9 +343,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
                         versionCombo.setDataStrings(new String[] {});
                         return;
                      }
-                     Collection<String> names =
-                        Versions.getNames(teamDefHoldingVersions.getVersions(VersionReleaseType.Both,
-                           VersionLockedType.Both));
+                     Collection<String> names = Versions.getNames(
+                        teamDefHoldingVersions.getVersions(VersionReleaseType.Both, VersionLockedType.Both));
                      if (names.isEmpty()) {
                         versionCombo.setDataStrings(new String[] {});
                         return;
