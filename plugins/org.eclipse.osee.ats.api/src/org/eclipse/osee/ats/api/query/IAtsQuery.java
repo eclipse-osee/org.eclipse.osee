@@ -100,4 +100,6 @@ public interface IAtsQuery {
 
    IAtsQuery andReleased(ReleasedOption releaseOption);
 
+   IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions);
+
 }

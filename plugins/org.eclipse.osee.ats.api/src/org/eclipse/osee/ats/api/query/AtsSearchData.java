@@ -61,6 +61,10 @@ public class AtsSearchData {
 
    public AtsSearchData copy() {
       AtsSearchData item = new AtsSearchData(searchName);
+      return copy(item);
+   }
+
+   protected AtsSearchData copy(AtsSearchData item) {
       item.uuid = uuid;
       item.setTitle(getTitle());
       item.getStateTypes().addAll(getStateTypes());

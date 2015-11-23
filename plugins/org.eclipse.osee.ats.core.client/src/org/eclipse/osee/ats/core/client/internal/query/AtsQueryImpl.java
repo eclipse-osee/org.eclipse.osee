@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.query.AbstractAtsQueryImpl;
+import org.eclipse.osee.ats.core.query.AtsAttributeQuery;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -126,11 +127,16 @@ public class AtsQueryImpl extends AbstractAtsQueryImpl {
    }
 
    @Override
-   public List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions() {
+   public List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr) {
       AtsQueryImpl search = new AtsQueryImpl(services);
       search.isOfType(AtsArtifactTypes.TeamWorkflow);
       if (teamDefUuids != null && !teamDefUuids.isEmpty()) {
          search.andTeam(new ArrayList<Long>(teamDefUuids));
+      }
+      if (teamWorkflowAttr != null && !teamWorkflowAttr.isEmpty()) {
+         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
+            search.andAttr.add(attrQuery);
+         }
       }
       if (aiUuids != null && !aiUuids.isEmpty()) {
          search.andActionableItem(new ArrayList<Long>(aiUuids));

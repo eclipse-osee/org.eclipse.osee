@@ -56,6 +56,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    protected final List<AtsAttributeQuery> andAttr;
+   protected final List<AtsAttributeQuery> teamWorkflowAttr;
    protected final HashMap<IRelationTypeSide, List<IAtsObject>> andRels;
    protected Collection<Long> teamDefUuids;
    protected Collection<StateType> stateTypes;
@@ -84,6 +85,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       teamDefUuids = new ArrayList<>();
       aiUuids = new ArrayList<>();
       uuids = new ArrayList<>();
+      teamWorkflowAttr = new ArrayList<>();
    }
 
    @Override
@@ -156,7 +158,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    private Collection<? extends Integer> handleReleaseOption(List<Integer> queryGetIds) {
-      throw new UnsupportedOperationException("This option not supported");
+      if (releasedOption != null && releasedOption != ReleasedOption.Both) {
+         throw new UnsupportedOperationException("This option not supported");
+      }
+      return queryGetIds;
    }
 
    private <T> Collection<? extends T> handleReleasedOption(Set<T> workItems) {
@@ -205,7 +210,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
-            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions();
+            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
             queryAndRelatedToLocalIds(AtsRelationTypes.TeamWfToTask_TeamWf, teamWfUuids);
          }
 
@@ -225,7 +230,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
          // teamDef, ai and version
          if (isTeamTypeDefAisOrVersionSearched(allArtTypes)) {
-            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions();
+            List<Integer> teamWfUuids = getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(teamWorkflowAttr);
             queryAndRelatedToLocalIds(AtsRelationTypes.TeamWorkflowToReview_Team, teamWfUuids);
          }
 
@@ -348,6 +353,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       createQueryBuilder();
       getBaseSearchCriteria(teamWorkflowArtTypes, true, allArtTypes);
 
+      addTeamWorkflowAttributeCriteria();
+
       addTeamDefCriteria();
 
       addAiCriteria();
@@ -407,8 +414,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    /**
     * Return team workflow ids based on teamdef, ai and version criteria to use in relatedTo criteria.
+    *
+    * @param teamWorkflowAttr TODO
     */
-   public abstract List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions();
+   public abstract List<Integer> getRelatedTeamWorkflowUuidsBasedOnTeamDefsAisAndVersions(List<AtsAttributeQuery> teamWorkflowAttr);
 
    private Set<IArtifactType> getAllArtTypes() {
       Set<IArtifactType> allArtTypes = getArtifactTypesFromWorkItemTypes();
@@ -434,7 +443,8 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       boolean teamDefsSearched = isTeamDefSpecified();
       boolean aisSearched = isActionableItemSpecified();
       boolean versionSearched = versionUuid != null && versionUuid > 0L;
-      return teamDefsSearched || aisSearched || versionSearched;
+      boolean teamWfAttrSpecified = isTeamWfAttrSpecified();
+      return teamDefsSearched || teamWfAttrSpecified || aisSearched || versionSearched;
    }
 
    private boolean isActionableItemSpecified() {
@@ -443,6 +453,10 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
 
    private boolean isTeamDefSpecified() {
       return teamDefUuids != null && !teamDefUuids.isEmpty();
+   }
+
+   private boolean isTeamWfAttrSpecified() {
+      return teamWorkflowAttr != null && !teamWorkflowAttr.isEmpty();
    }
 
    private boolean isArtifactTypesSpecified() {
@@ -788,6 +802,14 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       }
    }
 
+   private void addTeamWorkflowAttributeCriteria() {
+      if (!teamWorkflowAttr.isEmpty()) {
+         for (AtsAttributeQuery attrQuery : teamWorkflowAttr) {
+            queryAnd(attrQuery.getAttrType(), attrQuery.getValues(), attrQuery.getQueryOption());
+         }
+      }
+   }
+
    public abstract void queryAnd(IAttributeType attrType, Collection<String> values, QueryOption[] queryOption);
 
    private void addRelationCriteria() {
@@ -928,6 +950,16 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsQuery andReleased(ReleasedOption releasedOption) {
       this.releasedOption = releasedOption;
+      return this;
+   }
+
+   public List<AtsAttributeQuery> getTeamWorkflowAttr() {
+      return teamWorkflowAttr;
+   }
+
+   @Override
+   public IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions) {
+      teamWorkflowAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
       return this;
    }
 

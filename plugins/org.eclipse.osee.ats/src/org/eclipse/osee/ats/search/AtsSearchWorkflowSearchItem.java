@@ -39,7 +39,7 @@ import org.eclipse.ui.forms.IManagedForm;
 public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
    private static final String TITLE = "ATS Search";
-   private WorldSearchItem searchItem;
+   protected WorldSearchItem searchItem;
    private long searchUuid = Lib.generateUuid();
    private String searchName = "";
    public static final String NAMESPACE = "ats.search";

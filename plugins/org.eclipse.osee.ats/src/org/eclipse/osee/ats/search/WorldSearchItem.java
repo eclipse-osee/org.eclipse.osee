@@ -103,7 +103,15 @@ public class WorldSearchItem extends WorldUISearchItem {
       if (Strings.isValid(data.getColorTeam())) {
          query.andColorTeam(data.getColorTeam());
       }
+      performSearch(query);
       return Collections.castAll(query.getResultArtifacts().getList());
+   }
+
+   /**
+    * Implement to populate query with extended options
+    */
+   protected void performSearch(IAtsQuery query) {
+      // do nothing
    }
 
    @Override
