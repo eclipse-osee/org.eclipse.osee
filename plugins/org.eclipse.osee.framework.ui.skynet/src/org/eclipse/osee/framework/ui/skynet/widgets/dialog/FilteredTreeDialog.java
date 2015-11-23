@@ -27,6 +27,7 @@ import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -35,7 +36,6 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
-
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.dialogs.PatternFilter;
 
@@ -58,13 +58,12 @@ public class FilteredTreeDialog extends MessageDialog {
    }
 
    public FilteredTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-         "OK",
-         "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerSorter = viewerSorter;
-      this.patternFilter = new PatternFilter();
+      this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -78,7 +77,7 @@ public class FilteredTreeDialog extends MessageDialog {
 
    /**
     * Sets the input. Convenience method.
-    * 
+    *
     * @param object the input.
     */
    public final void setInput(Object input) {
@@ -90,7 +89,7 @@ public class FilteredTreeDialog extends MessageDialog {
 
    /**
     * Sets the initial selection. Convenience method.
-    * 
+    *
     * @param object the initial selection.
     */
    public void setInitialSelections(Collection<? extends Object> initialSelections) {
@@ -125,10 +124,9 @@ public class FilteredTreeDialog extends MessageDialog {
       comp.setLayout(ALayout.getZeroMarginLayout());
       comp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      treeViewer =
-         new FilteredTree(comp,
-            (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
-            patternFilter, true);
+      treeViewer = new FilteredTree(comp,
+         (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter,
+         true);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       treeViewer.getViewer().getTree().setLayoutData(gd);
