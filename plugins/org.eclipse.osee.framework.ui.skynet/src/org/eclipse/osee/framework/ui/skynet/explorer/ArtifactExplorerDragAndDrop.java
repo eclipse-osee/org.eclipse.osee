@@ -127,17 +127,15 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                      artsOnSameBranchAsDestination.add(art);
                   }
                }
-               valid =
-                  policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
-                     CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
+               valid = policy.canRelationBeModified(dropTarget, artsOnSameBranchAsDestination,
+                  CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
 
                // if we are deparenting ourself, make sure our parent's child side can be modified
                if (valid) {
                   for (Artifact art : artsOnSameBranchAsDestination) {
                      if (art.hasParent()) {
-                        valid =
-                           policy.canRelationBeModified(art.getParent(), null,
-                              CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
+                        valid = policy.canRelationBeModified(art.getParent(), null,
+                           CoreRelationTypes.Default_Hierarchical__Child, Level.FINE).matched();
                      }
                      if (!valid) {
                         break;
@@ -182,8 +180,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
                Operations.executeAsJob(interDropHandler, true);
-            } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(
-               viewPart.getViewSite().getShell(),
+            } else if (isValidForArtifactDrop(event) && MessageDialog.openQuestion(viewPart.getViewSite().getShell(),
                "Confirm Move",
                "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {
@@ -218,10 +215,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
 
                String fileName = importFile.getName();
                if (isSameName(parentArtifact, fileName)) {
-                  String promptMsg =
-                     String.format(
-                        "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
-                        parentArtifact.getName(), FilenameUtils.getName(fileName));
+                  String promptMsg = String.format(
+                     "Artifact [%s] has same base file name as [%s]. \n\nDo you want to update the exisiting file? \nIf 'NO' selected, you'll be taken to the Artifact Import Wizard",
+                     parentArtifact.getName(), FilenameUtils.getName(fileName));
 
                   if (MessageDialog.openQuestion(viewPart.getViewSite().getShell(), "Confirm Import", promptMsg)) {
 
