@@ -31,6 +31,10 @@ public class AtsSearchTeamWorkflowSearchItem extends AbstractWorkItemSearchItem 
       super(searchItem, TITLE, NAMESPACE, AtsImage.TEAM_WORKFLOW);
    }
 
+   public AtsSearchTeamWorkflowSearchItem(String title, String namespace, AtsImage image) {
+      super(title, namespace, image);
+   }
+
    @Override
    public AbstractWorkItemSearchItem copy() {
       AtsSearchTeamWorkflowSearchItem item = new AtsSearchTeamWorkflowSearchItem(this);
