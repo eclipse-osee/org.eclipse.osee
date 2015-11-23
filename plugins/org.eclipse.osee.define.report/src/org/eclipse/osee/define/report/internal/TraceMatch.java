@@ -88,6 +88,8 @@ public class TraceMatch {
 
    @Override
    public String toString() {
-      return String.format("primary=[%s]  secondary=[%s]", primaryMatcher.pattern(), secondaryMatcher.pattern());
+      String primary = primaryMatcher.pattern().toString();
+      String secondary = secondaryMatcher == null ? "" : secondaryMatcher.pattern().toString();
+      return String.format("primary=[%s]  secondary=[%s]", primary, secondary);
    }
 }
