@@ -111,7 +111,7 @@ public class EnumeratedHandlePromptChange implements IHandlePromptChange {
       for (Object obj : dialog.getResult()) {
          selected.add((String) obj);
       }
-      if (selected.isEmpty()) {
+      if (!selected.isEmpty()) {
          if (artifacts.size() > 0) {
             SkynetTransaction transaction =
                !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
