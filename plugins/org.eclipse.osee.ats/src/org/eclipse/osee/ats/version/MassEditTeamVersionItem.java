@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.version;
 
+import java.util.List;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.internal.Activator;
@@ -20,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -76,12 +78,15 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
             AWorkbench.popup("ERROR", "Team is not configured to use versions.");
             return;
          }
-         MassArtifactEditor.editArtifacts(getName(),
-            AtsClientService.get().getConfigArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions()));
+         MassArtifactEditor.editArtifacts(getName(), getResults());
          selectedTeamDef = null;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+   }
+
+   public List<Artifact> getResults() {
+      return AtsClientService.get().getConfigArtifacts(teamDef.getTeamDefinitionHoldingVersions().getVersions());
    }
 
    /**

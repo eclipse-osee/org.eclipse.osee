@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.client.integration.tests.ats.render.AtsTest_Renderer
 import org.eclipse.osee.ats.client.integration.tests.ats.resource.AtsTest_Resource_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.review.AtsTest_Review_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.util.AtsTest_Util_Suite;
+import org.eclipse.osee.ats.client.integration.tests.ats.version.AtsTest_Version_Search_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.workflow.AtsTest_Workflow_Suite;
 import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsQueryImplTest;
 import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsTest_World_Search_Suite;
@@ -59,7 +60,8 @@ import org.junit.runners.Suite;
    AtsTest_Review_Suite.class,
    AtsTest_Util_Suite.class,
    AtsTest_Workflow_Suite.class,
-   AtsTest_World_Search_Suite.class //
+   AtsTest_World_Search_Suite.class,
+   AtsTest_Version_Search_Suite.class //
 })
 public class AtsTest_Ats_Suite {
    @BeforeClass
