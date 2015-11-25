@@ -21,6 +21,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   MyFavoritesSearchItemTest.class,
+   MyWorldSearchItemTest.class,
+   MySubscribedSearchItemTest.class,
+   NextVersionSearchItemTest.class,
+   VersionTargetedForTeamSearchItemTest.class,
    ShowOpenWorkflowsByArtifactTypeTest.class,
    LegacyPcrIdQuickSearchTest.class,
    TeamDefinitionQuickSearchTest.class})

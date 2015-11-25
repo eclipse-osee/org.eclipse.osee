@@ -24,8 +24,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses({
    SubscribeUtilityTest.class,
    AtsNavigateItemsToMassEditorTest.class,
-   AtsNavigateItemsToTaskEditorTest.class,
-   AtsNavigateItemsToWorldViewTest.class})
+   AtsNavigateItemsToTaskEditorTest.class})
 public class AtsTest_Navigate_Suite {
 
    @BeforeClass

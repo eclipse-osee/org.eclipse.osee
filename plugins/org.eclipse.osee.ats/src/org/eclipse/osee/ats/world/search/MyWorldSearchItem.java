@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -48,17 +47,17 @@ public class MyWorldSearchItem extends UserSearchItem {
    public Collection<Artifact> searchIt(IAtsUser user) throws OseeCoreException {
       Set<Artifact> assigned = AtsUtil.getAssigned(user);
 
-      List<Artifact> artifactsToReturn = new ArrayList<>(assigned.size());
+      Set<Artifact> results = new HashSet<>(assigned.size());
       for (Artifact artifact : assigned) {
          if (artifact instanceof AbstractWorkflowArtifact) {
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
-               artifactsToReturn.add(((TaskArtifact) artifact).getParentTeamWorkflow());
+               results.add(((TaskArtifact) artifact).getParentTeamWorkflow());
             } else {
-               artifactsToReturn.add(artifact);
+               results.add(artifact);
             }
          }
       }
-      return artifactsToReturn;
+      return results;
    }
 
    @Override

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.util;
 
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -239,6 +240,27 @@ public class DemoTestUtil {
          }
       }
       return results;
+   }
+
+   public static void assertTypes(Collection<? extends Object> objects, int count, Class<?> clazz) {
+      assertTypes(objects, count, clazz, "Expected %d; Found %d", count, numOfType(objects, clazz));
+   }
+
+   public static void assertTypes(Collection<? extends Object> objects, int count, Class<?> clazz, String message, Object... data) {
+      int found = numOfType(objects, clazz);
+      if (count != found) {
+         throw new OseeStateException(message, data);
+      }
+   }
+
+   public static int numOfType(Collection<? extends Object> objects, Class clazz) {
+      int num = 0;
+      for (Object obj : objects) {
+         if (clazz.isInstance(obj)) {
+            num++;
+         }
+      }
+      return num;
    }
 
 }
