@@ -68,7 +68,7 @@ public class RelationManager {
 
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
-    * 
+    *
     * @throws OseeCoreException
     */
    public static void manageRelation(RelationLink newRelation, RelationSide relationSide) throws OseeCoreException {
@@ -134,10 +134,8 @@ public class RelationManager {
       } else {
          relatedArtifacts = new ArrayList<>(selectedRelations.size());
 
-         Collection<Artifact> bulkLoadedArtifacts =
-            ArtifactQuery.getArtifactListFromIds(
-               getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED),
-               artifact.getBranch());
+         Collection<Artifact> bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(
+            getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
 
          for (RelationLink relation : selectedRelations) {
             if (!relation.isDeleted()) {
@@ -250,7 +248,8 @@ public class RelationManager {
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
-            chStmt.runPreparedQuery(sql, artifact.getFullBranch().getUuid(), relationType.getGuid(), artifact.getArtId());
+            chStmt.runPreparedQuery(sql, artifact.getFullBranch().getUuid(), relationType.getGuid(),
+               artifact.getArtId());
             while (chStmt.next()) {
                int artId = chStmt.getInt(formatArgs[0] + "_art_id");
                artIds.add(artId);
@@ -284,14 +283,14 @@ public class RelationManager {
       List<Artifact> artifacts = getRelatedArtifactsUnSorted(artifact, relationType, relationSide);
 
       if (artifacts.isEmpty()) {
-         throw new ArtifactDoesNotExist("There is no artifact related to [%s] by a relation of type [%s]", artifact,
-            relationType);
+         throw new ArtifactDoesNotExist("There is no artifact related to [%s] by a relation of type [%s]",
+            artifact.toStringWithId(), relationType);
       }
 
       if (artifacts.size() > 1) {
          throw new MultipleArtifactsExist(
             "There are %s artifacts related to \"%s\" by a relation of type \"%s\" on side %s instead of the expected 1.",
-            artifacts.size(), artifact, relationType, relationSide);
+            artifacts.size(), artifact.toStringWithId(), relationType, relationSide);
       }
       return artifacts.get(0);
    }
@@ -419,11 +418,10 @@ public class RelationManager {
    private static void ensureSideWillSupport(Artifact artifact, IRelationType relationTypeToken, RelationSide relationSide, int artifactCount) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
-         throw new OseeArgumentException(
-            String.format(
-               "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
-               artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
-               relationType.getName(), relationType.getArtifactType(relationSide)));
+         throw new OseeArgumentException(String.format(
+            "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
+            artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
+            relationType.getName(), relationType.getArtifactType(relationSide)));
       }
 
       // ensure that we can add artifactCount number or artifacts to the side opposite this artifact
@@ -431,18 +429,16 @@ public class RelationManager {
       nextCount += artifactCount;
       RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
       if (!multiplicity.isWithinLimit(relationSide.oppositeSide(), nextCount)) {
-         throw new OseeArgumentException(
-            String.format(
-               "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",
-               artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(), relationType.getName(),
-               multiplicity.asLimitLabel(relationSide.oppositeSide())));
+         throw new OseeArgumentException(String.format(
+            "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",
+            artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(), relationType.getName(),
+            multiplicity.asLimitLabel(relationSide.oppositeSide())));
       }
    }
 
    public static void deleteRelation(IRelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
-      RelationLink relation =
-         relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType,
-            DeletionFlag.EXCLUDE_DELETED);
+      RelationLink relation = relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(),
+         relationType, DeletionFlag.EXCLUDE_DELETED);
       Conditions.checkNotNull(relation, "relationLink",
          "A relation link of type [%s] does exist in the cache between a artifact %d and b artifact %d", relationType,
          artifactA.getArtId(), artifactB.getArtId());
@@ -464,8 +460,8 @@ public class RelationManager {
       Set<Pair<IRelationType, RelationSide>> typesToUpdate = new HashSet<>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            typesToUpdate.add(new Pair<IRelationType, RelationSide>(relation.getRelationType(),
-               relation.getOppositeSide(artifact)));
+            typesToUpdate.add(
+               new Pair<IRelationType, RelationSide>(relation.getRelationType(), relation.getOppositeSide(artifact)));
             relation.delete(reorderRelations, transaction);
          }
       }
@@ -521,17 +517,15 @@ public class RelationManager {
    public static void addRelation(IRelationSorterId sorterId, IRelationType relationTypeToken, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(artifactA.equals(artifactB), "Not valid to relate artifact [%s] to itself",
          artifactA);
-      RelationLink relation =
-         relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationTypeToken,
-            INCLUDE_DELETED);
+      RelationLink relation = relationCache.getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(),
+         relationTypeToken, INCLUDE_DELETED);
 
       RelationType relationType = RelationTypeManager.getType(relationTypeToken);
       if (relation == null) {
          ensureRelationCanBeAdded(relationTypeToken, artifactA, artifactB);
 
-         relation =
-            getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
-               rationale, ModificationType.NEW);
+         relation = getOrCreate(artifactA.getArtId(), artifactB.getArtId(), artifactA.getBranch(), relationType, 0, 0,
+            rationale, ModificationType.NEW);
          relation.setDirty();
          if (relation.isDeleted()) {
             relation.undelete();
@@ -599,7 +593,7 @@ public class RelationManager {
    /**
     * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
     * link object twice.
-    * 
+    *
     * @param relationId 0 or relationId if already created
     * @throws OseeCoreException
     */
@@ -611,9 +605,8 @@ public class RelationManager {
          relation = getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
       }
       if (relation == null) {
-         relation =
-            new RelationLink(new RelationArtifactLinker(), aArtifactId, bArtifactId, branch, relationType, relationId,
-               gammaId, rationale, modificationType);
+         relation = new RelationLink(new RelationArtifactLinker(), aArtifactId, bArtifactId, branch, relationType,
+            relationId, gammaId, rationale, modificationType);
       }
       manageRelation(relation, RelationSide.SIDE_A);
       manageRelation(relation, RelationSide.SIDE_B);
