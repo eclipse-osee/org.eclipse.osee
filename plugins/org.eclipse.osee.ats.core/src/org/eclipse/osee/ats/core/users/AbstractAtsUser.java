@@ -36,11 +36,6 @@ public abstract class AbstractAtsUser implements IAtsUser {
    }
 
    @Override
-   public String getDescription() {
-      return getName();
-   }
-
-   @Override
    public String getEmail() {
       return "";
    }

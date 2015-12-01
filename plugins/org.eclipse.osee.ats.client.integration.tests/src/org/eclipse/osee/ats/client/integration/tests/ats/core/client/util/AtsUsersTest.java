@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.util;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -28,11 +29,11 @@ public class AtsUsersTest {
    @Test
    public void testGetUser() throws OseeCoreException {
       Assert.assertEquals(AtsCoreUsers.SYSTEM_USER,
-         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.SYSTEM_USER.getUserId()));
-      Assert.assertEquals(AtsCoreUsers.GUEST_USER,
-         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.GUEST_USER.getUserId()));
+         AtsClientService.get().getUserService().getUserById(SystemUser.OseeSystem.getUserId()));
+      Assert.assertEquals(AtsCoreUsers.ANONYMOUS_USER,
+         AtsClientService.get().getUserService().getUserById(SystemUser.Anonymous.getUserId()));
       Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER,
-         AtsClientService.get().getUserService().getUserById(AtsCoreUsers.UNASSIGNED_USER.getUserId()));
+         AtsClientService.get().getUserService().getUserById(SystemUser.UnAssigned.getUserId()));
    }
 
    @Test(expected = ArtifactDoesNotExist.class)
@@ -43,21 +44,6 @@ public class AtsUsersTest {
    @Test
    public void testGetUserWithNull() throws OseeCoreException {
       Assert.assertNull(AtsClientService.get().getUserService().getUserById(null));
-   }
-
-   @Test
-   public void testGetGuestUser() {
-      Assert.assertEquals(AtsCoreUsers.GUEST_USER, AtsCoreUsers.GUEST_USER);
-   }
-
-   @Test
-   public void testGetSystemUser() {
-      Assert.assertEquals(AtsCoreUsers.SYSTEM_USER, AtsCoreUsers.SYSTEM_USER);
-   }
-
-   @Test
-   public void testGetUnAssigned() {
-      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER, AtsCoreUsers.UNASSIGNED_USER);
    }
 
    @Test

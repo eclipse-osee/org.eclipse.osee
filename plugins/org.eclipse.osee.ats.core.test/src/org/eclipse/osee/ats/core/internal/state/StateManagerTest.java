@@ -111,7 +111,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
-      stateMgr.addAssignee(AtsCoreUsers.GUEST_USER);
+      stateMgr.addAssignee(AtsCoreUsers.ANONYMOUS_USER);
    }
 
    @Test
@@ -207,7 +207,7 @@ public class StateManagerTest extends AbstractUserTest {
       stateMgr.addState(new WorkStateImpl("endorse"));
       stateMgr.setCurrentStateName("endorse");
 
-      stateMgr.setAssignee(AtsCoreUsers.GUEST_USER);
+      stateMgr.setAssignee(AtsCoreUsers.ANONYMOUS_USER);
    }
 
    @Test

@@ -92,7 +92,7 @@ public class TransitionHelperAdapterTest {
       Assert.assertTrue(helper.isSystemUserAssingee(workItem));
 
       assignees.clear();
-      assignees.add(AtsCoreUsers.GUEST_USER);
+      assignees.add(AtsCoreUsers.ANONYMOUS_USER);
       Assert.assertTrue(helper.isSystemUserAssingee(workItem));
    }
 

@@ -23,4 +23,9 @@ public interface IAtsUser extends IAtsObject {
    public String getEmail() throws OseeCoreException;
 
    public boolean isActive() throws OseeCoreException;
+   
+   @Override
+   default String getDescription() {
+      return getName();
+   }
 }

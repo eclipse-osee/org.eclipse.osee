@@ -13,25 +13,20 @@ package org.eclipse.osee.ats.core.users;
 /**
  * @author Donald G. Dunne
  */
-public final class Guest extends AbstractAtsUser {
+public final class Anonymous extends AbstractAtsUser {
 
-   protected Guest() {
-      super("99999998");
+   protected Anonymous() {
+      super(org.eclipse.osee.framework.core.enums.SystemUser.Anonymous.getUserId());
    }
 
    @Override
    public String getName() {
-      return "Guest";
-   }
-
-   @Override
-   public boolean isActive() {
-      return true;
+      return org.eclipse.osee.framework.core.enums.SystemUser.Anonymous.getName();
    }
 
    @Override
    public long getUuid() {
-      return 1896;
+      return org.eclipse.osee.framework.core.enums.SystemUser.Anonymous.getUuid();
    }
 
 }

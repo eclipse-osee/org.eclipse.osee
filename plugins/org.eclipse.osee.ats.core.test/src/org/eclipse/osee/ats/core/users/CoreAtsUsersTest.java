@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.users;
 import java.util.HashMap;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
@@ -21,7 +22,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link SystemUser}<br/>
- * Test case for {@link Guest}<br/>
+ * Test case for {@link Anonymous}<br/>
  * Test case for {@link UnAssigned}<br/>
  * Test case for {@link AbstractAtsUser}
  * 
@@ -31,37 +32,37 @@ public class CoreAtsUsersTest {
 
    @Test
    public void testGetDescription() {
-      Assert.assertEquals("System User", AtsCoreUsers.SYSTEM_USER.getDescription());
-      Assert.assertEquals("Guest", AtsCoreUsers.GUEST_USER.getDescription());
-      Assert.assertEquals("UnAssigned", AtsCoreUsers.UNASSIGNED_USER.getDescription());
+      Assert.assertEquals(SystemUser.OseeSystem.getName(), AtsCoreUsers.SYSTEM_USER.getDescription());
+      Assert.assertEquals(SystemUser.Anonymous.getName(), AtsCoreUsers.ANONYMOUS_USER.getDescription());
+      Assert.assertEquals(SystemUser.UnAssigned.getName(), AtsCoreUsers.UNASSIGNED_USER.getDescription());
    }
 
    @Test
    public void testIsActive() {
       AtsCoreUsers.SYSTEM_USER.isActive();
-      AtsCoreUsers.GUEST_USER.isActive();
+      AtsCoreUsers.ANONYMOUS_USER.isActive();
       AtsCoreUsers.UNASSIGNED_USER.isActive();
       new TestUser().isActive();
    }
 
    @Test
    public void testGetName() {
-      Assert.assertEquals("OSEE System", AtsCoreUsers.SYSTEM_USER.getName());
-      Assert.assertEquals("Guest", AtsCoreUsers.GUEST_USER.getName());
-      Assert.assertEquals("UnAssigned", AtsCoreUsers.UNASSIGNED_USER.getName());
+      Assert.assertEquals(SystemUser.OseeSystem.getName(), AtsCoreUsers.SYSTEM_USER.getName());
+      Assert.assertEquals(SystemUser.Anonymous.getName(), AtsCoreUsers.ANONYMOUS_USER.getName());
+      Assert.assertEquals(SystemUser.UnAssigned.getName(), AtsCoreUsers.UNASSIGNED_USER.getName());
    }
 
    @Test
    public void testGetUuid() {
-      Assert.assertEquals(11L, AtsCoreUsers.SYSTEM_USER.getUuid());
-      Assert.assertEquals(1896L, AtsCoreUsers.GUEST_USER.getUuid());
+      Assert.assertEquals(SystemUser.OseeSystem.getUuid(), AtsCoreUsers.SYSTEM_USER.getUuid());
+      Assert.assertEquals(SystemUser.Anonymous.getUuid(), AtsCoreUsers.ANONYMOUS_USER.getUuid());
    }
 
    @Test
    public void testGetUserId() {
-      Assert.assertEquals("99999999", AtsCoreUsers.SYSTEM_USER.getUserId());
-      Assert.assertEquals("99999998", AtsCoreUsers.GUEST_USER.getUserId());
-      Assert.assertEquals("99999997", AtsCoreUsers.UNASSIGNED_USER.getUserId());
+      Assert.assertEquals(SystemUser.OseeSystem.getUserId(), AtsCoreUsers.SYSTEM_USER.getUserId());
+      Assert.assertEquals(SystemUser.Anonymous.getUserId(), AtsCoreUsers.ANONYMOUS_USER.getUserId());
+      Assert.assertEquals(SystemUser.UnAssigned.getUserId(), AtsCoreUsers.UNASSIGNED_USER.getUserId());
    }
 
    @Test
@@ -74,13 +75,13 @@ public class CoreAtsUsersTest {
    @Test
    public void testGetEmail() {
       Assert.assertEquals("", AtsCoreUsers.SYSTEM_USER.getEmail());
-      Assert.assertEquals("", AtsCoreUsers.GUEST_USER.getEmail());
+      Assert.assertEquals("", AtsCoreUsers.ANONYMOUS_USER.getEmail());
       Assert.assertEquals("", AtsCoreUsers.UNASSIGNED_USER.getEmail());
    }
 
    @Test
    public void testToString() {
-      Assert.assertEquals("User [Guest - 99999998 - ]", AtsCoreUsers.GUEST_USER.toString());
+      Assert.assertEquals("User [Anonymous - 99999998 - ]", AtsCoreUsers.ANONYMOUS_USER.toString());
    }
 
    @Test
@@ -119,7 +120,7 @@ public class CoreAtsUsersTest {
       user1.setUserId("234");
 
       TestUser user2 = new TestUser();
-      user2.setUserId(AtsCoreUsers.SYSTEM_USER.getUserId());
+      user2.setUserId(SystemUser.OseeSystem.getUserId());
 
       IAtsUser mapToPi = AtsCoreUsers.SYSTEM_USER;
       IAtsUser alsoMapToPi = user2;

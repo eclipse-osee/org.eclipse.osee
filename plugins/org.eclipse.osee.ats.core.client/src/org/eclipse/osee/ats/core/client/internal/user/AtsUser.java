@@ -33,11 +33,6 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public String getDescription() {
-      return user.getDescription();
-   }
-
-   @Override
    public int hashCode() {
       final int prime = 31;
       int result = 0;

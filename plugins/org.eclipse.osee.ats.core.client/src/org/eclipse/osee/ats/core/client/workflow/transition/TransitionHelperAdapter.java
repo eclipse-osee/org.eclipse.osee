@@ -58,7 +58,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
-      return workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.GUEST_USER) || workItem.getStateMgr().getAssignees().contains(
+      return workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.ANONYMOUS_USER) || workItem.getStateMgr().getAssignees().contains(
          AtsCoreUsers.SYSTEM_USER);
    }
 

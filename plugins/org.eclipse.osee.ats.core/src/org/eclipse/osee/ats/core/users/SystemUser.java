@@ -16,27 +16,17 @@ package org.eclipse.osee.ats.core.users;
 public final class SystemUser extends AbstractAtsUser {
 
    protected SystemUser() {
-      super("99999999");
+      super(org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem.getUserId());
    }
 
    @Override
    public String getName() {
-      return "OSEE System";
-   }
-
-   @Override
-   public String getDescription() {
-      return "System User";
-   }
-
-   @Override
-   public boolean isActive() {
-      return true;
+      return org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem.getName();
    }
 
    @Override
    public long getUuid() {
-      return 11;
+      return org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem.getUuid();
    }
 
 }

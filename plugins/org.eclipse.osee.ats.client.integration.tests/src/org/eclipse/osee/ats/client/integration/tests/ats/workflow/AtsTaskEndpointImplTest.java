@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.After;
@@ -95,7 +96,7 @@ public class AtsTaskEndpointImplTest {
       String taskDateStr = DateUtil.getDateNow(task1R.getCreatedDate(), DateUtil.MMDDYYHHMM);
       Assert.assertEquals(createdDateStr, taskDateStr);
       Assert.assertEquals(1, task1R.getAssigneeUserIds().size());
-      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getUserId(), task1R.getAssigneeUserIds().iterator().next());
+      Assert.assertEquals(SystemUser.UnAssigned.getUserId(), task1R.getAssigneeUserIds().iterator().next());
       List<JaxAttribute> attributes = task1R.getAttributes();
       // Work Definition should be set
       boolean found = false;
@@ -118,7 +119,7 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals("description", task2R.getDescription());
       Assert.assertEquals(true, task2R.isActive());
       Assert.assertEquals(1, task2R.getAssigneeUserIds().size());
-      Assert.assertEquals(AtsCoreUsers.UNASSIGNED_USER.getUserId(), task2R.getAssigneeUserIds().iterator().next());
+      Assert.assertEquals(SystemUser.UnAssigned.getUserId(), task2R.getAssigneeUserIds().iterator().next());
       // Work Definition attribute should NOT be set
       attributes = task2R.getAttributes();
       found = false;
@@ -167,7 +168,7 @@ public class AtsTaskEndpointImplTest {
       task.setCreatedDate(createdDate);
       if (assigneeUserIds == null || assigneeUserIds.isEmpty()) {
          assigneeUserIds = new ArrayList<>();
-         assigneeUserIds.add(AtsCoreUsers.UNASSIGNED_USER.getUserId());
+         assigneeUserIds.add(SystemUser.UnAssigned.getUserId());
       }
       task.setAssigneeUserIds(assigneeUserIds);
       return task;

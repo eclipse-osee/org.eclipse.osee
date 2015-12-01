@@ -16,22 +16,17 @@ package org.eclipse.osee.ats.core.users;
 public final class UnAssigned extends AbstractAtsUser {
 
    protected UnAssigned() {
-      super("99999997");
+      super(org.eclipse.osee.framework.core.enums.SystemUser.UnAssigned.getUserId());
    }
 
    @Override
    public String getName() {
-      return "UnAssigned";
-   }
-
-   @Override
-   public boolean isActive() {
-      return true;
+      return org.eclipse.osee.framework.core.enums.SystemUser.UnAssigned.getName();
    }
 
    @Override
    public long getUuid() {
-      return 33429;
+      return org.eclipse.osee.framework.core.enums.SystemUser.UnAssigned.getUuid();
    }
 
 }

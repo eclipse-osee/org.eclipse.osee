@@ -664,7 +664,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public void setTransitionAssignees(Collection<IAtsUser> assignees) throws OseeCoreException {
-      if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.GUEST_USER)) {
+      if (assignees.contains(AtsCoreUsers.SYSTEM_USER) || assignees.contains(AtsCoreUsers.ANONYMOUS_USER)) {
          throw new OseeArgumentException("Can not assign workflow to OseeSystem or Guest");
       }
       if (assignees.size() > 1 && assignees.contains(AtsCoreUsers.UNASSIGNED_USER)) {

@@ -123,7 +123,7 @@ public class NoteItem {
                   NoteItem item =
                      new NoteItem(element.getAttribute("type"),
                         element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                        element.getAttribute("date"), AtsCoreUsers.GUEST_USER,
+                        element.getAttribute("date"), AtsCoreUsers.ANONYMOUS_USER,
                         element.getAttribute("msg"));
                   logItems.add(item);
                }
