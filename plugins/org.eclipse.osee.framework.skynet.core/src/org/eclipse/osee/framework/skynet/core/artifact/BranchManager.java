@@ -612,7 +612,9 @@ public final class BranchManager {
    }
 
    public static boolean isEditable(IOseeBranch branch) {
-      return getBranch(branch).isEditable();
+      Branch fullBranch = getBranch(branch);
+      BranchState state = fullBranch.getBranchState();
+      return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && fullBranch.getArchiveState().isUnArchived();
    }
 
    public static void resetWasLoaded() {

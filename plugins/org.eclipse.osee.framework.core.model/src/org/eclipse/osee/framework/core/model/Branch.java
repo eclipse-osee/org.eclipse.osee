@@ -172,12 +172,6 @@ public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IA
       setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, toInherit);
    }
 
-   @Override
-   public boolean isEditable() {
-      BranchState state = getBranchState();
-      return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && getArchiveState().isUnArchived();
-   }
-
    public boolean isCreated() {
       return getStorageState() == StorageState.CREATED;
    }

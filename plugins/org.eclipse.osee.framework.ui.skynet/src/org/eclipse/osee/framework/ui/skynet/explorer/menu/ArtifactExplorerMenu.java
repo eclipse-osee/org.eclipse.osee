@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -145,7 +146,8 @@ public class ArtifactExplorerMenu {
                Level.FINE).matched();
          }
          boolean isBranchEditable =
-            getBranch().isEditable() && AccessControlManager.hasPermission(getBranch(), PermissionEnum.WRITE);
+            BranchManager.isEditable(getBranch()) && AccessControlManager.hasPermission(getBranch(),
+               PermissionEnum.WRITE);
 
          GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
@@ -266,7 +268,8 @@ public class ArtifactExplorerMenu {
                // check branch permissions
                else {
                   boolean isBranchEditable =
-                     getBranch().isEditable() && AccessControlManager.hasPermission(getBranch(), PermissionEnum.WRITE);
+                     BranchManager.isEditable(getBranch()) && AccessControlManager.hasPermission(getBranch(),
+                        PermissionEnum.WRITE);
                   if (!isBranchEditable) {
                      MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                         "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");

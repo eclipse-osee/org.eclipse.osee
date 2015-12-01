@@ -23,8 +23,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface BranchReadable extends IOseeBranch {
 
-   boolean isEditable();
-
    BranchType getBranchType();
 
    BranchState getBranchState();
