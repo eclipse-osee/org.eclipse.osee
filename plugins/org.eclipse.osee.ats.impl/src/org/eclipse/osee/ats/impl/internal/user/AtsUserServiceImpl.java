@@ -18,8 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -28,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -149,22 +146,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
          }
          loaded = true;
       }
-   }
-
-   @Override
-   public boolean currentUserHasAccessToAtsBranch(Long branchUuid) {
-      boolean hasPermission = false;
-      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid);
-      if (!orcsApi.getQueryFactory().branchQuery().andIds(configAtsBranch).getResults().isEmpty()) {
-         String userId = getCurrentUserId();
-         if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
-            ResultSet<ArtifactReadable> results =
-               orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(CoreArtifactTypes.User).and(
-                  CoreAttributeTypes.UserId, userId).getResults();
-            hasPermission = (results.size() == 1);
-         }
-      }
-      return hasPermission;
    }
 
    @Override

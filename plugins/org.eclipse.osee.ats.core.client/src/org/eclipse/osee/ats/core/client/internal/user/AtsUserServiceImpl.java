@@ -23,18 +23,13 @@ import org.eclipse.osee.ats.core.client.util.AtsGroup;
 import org.eclipse.osee.ats.core.users.AbstractAtsUserService;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -106,26 +101,6 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
          }
       }
       return users;
-   }
-
-   @Override
-   public boolean currentUserHasAccessToAtsBranch(Long branchUuid) {
-      boolean hasPermission = false;
-      IOseeBranch configAtsBranch = TokenFactory.createBranch(branchUuid);
-      if (BranchManager.getBranch(configAtsBranch) != null) {
-         String userId = getCurrentUserId();
-         if (Strings.isValid(userId) && !userId.equals(SystemUser.Anonymous.getUserId())) {
-            Artifact userArt = null;
-            try {
-               userArt = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
-                  CoreAttributeTypes.UserId, userId, configAtsBranch);
-            } catch (ArtifactDoesNotExist ex) {
-               // do nothing
-            }
-            hasPermission = userArt != null;
-         }
-      }
-      return hasPermission;
    }
 
    /************************************************

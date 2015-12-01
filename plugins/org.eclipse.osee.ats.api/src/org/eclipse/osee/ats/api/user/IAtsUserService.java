@@ -45,8 +45,6 @@ public interface IAtsUserService {
 
    void clearCache();
 
-   boolean currentUserHasAccessToAtsBranch(Long branchUuid);
-
    void releaseUser();
 
    Collection<IAtsUser> getSubscribed(IAtsWorkItem workItem);
