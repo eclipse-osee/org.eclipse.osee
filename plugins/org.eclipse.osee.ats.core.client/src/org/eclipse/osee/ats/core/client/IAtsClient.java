@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
@@ -140,6 +141,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsActionFactory getActionFactory();
 
+   @Override
    IAtsProgramService getProgramService();
 
    IAtsTeamDefinitionService getTeamDefinitionService();
@@ -163,6 +165,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    Artifact getArtifactByAtsId(String id);
 
+   @Override
    IAtsQueryService getQueryService();
 
    IArtifactMembersCache<GoalArtifact> getGoalMembersCache();
@@ -183,4 +186,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    @Override
    IAtsTaskService getTaskService();
+
+   List<IAtsSearchDataProvider> getSearchDataProviders();
 }

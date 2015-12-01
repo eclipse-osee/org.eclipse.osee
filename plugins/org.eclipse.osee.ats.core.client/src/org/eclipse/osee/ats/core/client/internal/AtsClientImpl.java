@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.task.IAtsTaskService;
 import org.eclipse.osee.ats.api.team.ChangeType;
@@ -180,6 +181,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private TeamWorkflowProviders teamWorkflowProvidersLazy;
    private IAtsTaskService taskService;
    private Log logger;
+   List<IAtsSearchDataProvider> searchDataProviders;
+
+   public AtsClientImpl() {
+      searchDataProviders = new ArrayList<>();
+   }
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -191,6 +197,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    public void setLogger(Log logger) {
       this.logger = logger;
+   }
+
+   public void addSearchDataProvider(IAtsSearchDataProvider provider) {
+      searchDataProviders.add(provider);
+   }
+
+   public void removeSearchDataProvider(IAtsSearchDataProvider provider) {
+      searchDataProviders.remove(provider);
    }
 
    public void start() throws OseeCoreException {
@@ -808,6 +822,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public ArtifactId getArtifactByName(IArtifactType artType, String name) {
       return ArtifactQuery.getArtifactFromTypeAndNameNoException(artType, name, AtsUtilCore.getAtsBranch());
+   }
+
+   @Override
+   public List<IAtsSearchDataProvider> getSearchDataProviders() {
+      return searchDataProviders;
    }
 
 }

@@ -27,6 +27,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
+import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.query.ReleasedOption;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
@@ -74,6 +75,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    protected Long workPackageUuid;
    protected List<Integer> onlyIds = null;
    private ReleasedOption releasedOption;
+   protected final List<IAtsQueryFilter> queryFilters;
 
    public AbstractAtsQueryImpl(IAtsServices services) {
       this.services = services;
@@ -86,6 +88,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       aiUuids = new ArrayList<>();
       uuids = new ArrayList<>();
       teamWorkflowAttr = new ArrayList<>();
+      queryFilters = new ArrayList<>();
    }
 
    @Override
@@ -133,6 +136,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       getGoalsFromSearchCriteria(allResults, allArtTypes);
       getSprintsFromSearchCriteria(allResults, allArtTypes);
 
+      for (IAtsQueryFilter filter : queryFilters) {
+         allResults = filter.applyFilter(allResults);
+      }
       return allResults;
    }
 
@@ -152,9 +158,17 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
                workItems.add((T) services.getWorkItemFactory().getWorkItem(artifact));
             }
          }
-         allResults.addAll(handleReleasedOption(workItems));
+         addtoResultsWithNullCheck(allResults, handleReleasedOption(workItems));
       }
       return workItems;
+   }
+
+   private <T> void addtoResultsWithNullCheck(Set<T> allResults, Collection<? extends T> workItems) {
+      if (workItems.contains(null)) {
+         System.err.println("Null found in results.");
+      } else {
+         allResults.addAll(workItems);
+      }
    }
 
    private Collection<? extends Integer> handleReleaseOption(List<Integer> queryGetIds) {
@@ -960,6 +974,12 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions) {
       teamWorkflowAttr.add(new AtsAttributeQuery(attributeType, values, queryOptions));
+      return this;
+   }
+
+   @Override
+   public IAtsQuery andFilter(IAtsQueryFilter queryFilter) {
+      queryFilters.add(queryFilter);
       return this;
    }
 

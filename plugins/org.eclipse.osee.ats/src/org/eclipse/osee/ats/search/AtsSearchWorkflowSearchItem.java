@@ -17,6 +17,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.internal.Activator;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 
@@ -38,28 +40,28 @@ import org.eclipse.ui.forms.IManagedForm;
  */
 public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem {
 
+   private static final AtsImage IMAGE = AtsImage.SEARCH;
    private static final String TITLE = "ATS Search";
    protected WorldSearchItem searchItem;
    private long searchUuid = Lib.generateUuid();
    private String searchName = "";
-   public static final String NAMESPACE = "ats.search";
    protected AtsSearchData savedData;
 
    public AtsSearchWorkflowSearchItem() {
-      super(TITLE, AtsImage.SEARCH);
+      super(TITLE, IMAGE);
       setShortName(TITLE);
    }
 
-   public AtsSearchWorkflowSearchItem(String name, AtsImage image) {
+   public AtsSearchWorkflowSearchItem(String name, KeyedImage image) {
       super(name, image);
       setShortName(name);
    }
 
    public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem) {
-      this(searchItem, TITLE, AtsImage.SEARCH);
+      this(searchItem, TITLE, IMAGE);
    }
 
-   public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, AtsImage image) {
+   public AtsSearchWorkflowSearchItem(AtsSearchWorkflowSearchItem searchItem, String name, KeyedImage image) {
       super(searchItem, image);
       setShortName(name);
    }
@@ -76,6 +78,10 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
       if (showWorkItemWidgets()) {
          getWorkItemType().addWidget(14);
       }
+      addBaseWidgets();
+   }
+
+   protected void addBaseWidgets() {
       getTitle().addWidget();
       getAi().addWidget(3);
       getTeamDef().addWidget(2);
@@ -281,7 +287,7 @@ public class AtsSearchWorkflowSearchItem extends WorldEditorParameterSearchItem 
    }
 
    public String getNamespace() {
-      return NAMESPACE;
+      return AtsSearchUtil.ATS_QUERY_NAMESPACE;
    }
 
    public AtsSearchData getSavedData() {

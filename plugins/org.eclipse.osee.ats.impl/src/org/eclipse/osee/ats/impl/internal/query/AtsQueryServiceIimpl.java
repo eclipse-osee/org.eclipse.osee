@@ -74,4 +74,9 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       throw new UnsupportedOperationException("Unsupported on the server");
    }
 
+   @Override
+   public AtsSearchData createSearchData(String namespace, String searchName) {
+      throw new UnsupportedOperationException("Unsupported on the server");
+   }
+
 }

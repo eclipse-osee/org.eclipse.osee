@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.search;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 
@@ -34,7 +35,9 @@ public final class ClearSearchAction extends Action {
 
    @Override
    public void run() {
-      searchItem.loadWidgets(new AtsSearchData("ATS Search"));
+      AtsSearchData searchData = AtsClientService.get().getQueryService().createSearchData(searchItem.getNamespace(),
+         searchItem.getSearchName());
+      searchItem.loadWidgets(searchData);
    }
 
    @Override

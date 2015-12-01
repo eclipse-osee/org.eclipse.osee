@@ -58,10 +58,11 @@ import org.eclipse.osee.ats.version.ReleaseVersionItem;
 import org.eclipse.osee.ats.workdef.config.ImportAIsAndTeamDefinitionsItem;
 import org.eclipse.osee.ats.workdef.config.ImportWorkDefinitionsItem;
 import org.eclipse.osee.ats.workdef.config.ValidateWorkspaceToDatabaseWorkDefinitions;
+import org.eclipse.osee.ats.world.AtsWorldEditorItems;
+import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
-import org.eclipse.osee.ats.world.search.AtsSearchReviewSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
@@ -318,14 +319,15 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createMySearchesSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem searches = new XNavigateItem(parent, "Saved Searches", AtsImage.SEARCH);
-         for (AtsSearchWorkflowSearchItem item : Arrays.asList(new AtsSearchWorkflowSearchItem(),
-            new AtsSearchTeamWorkflowSearchItem(), new AtsSearchReviewSearchItem(), new AtsSearchGoalSearchItem())) {
-            for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
-               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
-               AtsSearchWorkflowSearchItem searchItem = item.copy();
-               searchItem.setSavedData(data);
-               SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
-               navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+         for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
+            for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
+               for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
+                  AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
+                  AtsSearchWorkflowSearchItem searchItem = item.copy();
+                  searchItem.setSavedData(data);
+                  SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
+                  navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+               }
             }
          }
          items.add(searches);

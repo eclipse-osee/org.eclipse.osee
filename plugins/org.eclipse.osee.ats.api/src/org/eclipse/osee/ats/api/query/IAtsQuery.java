@@ -102,4 +102,6 @@ public interface IAtsQuery {
 
    IAtsQuery andTeamWorkflowAttr(IAttributeType attributeType, List<String> values, QueryOption... queryOptions);
 
+   IAtsQuery andFilter(IAtsQueryFilter queryFilter);
+
 }

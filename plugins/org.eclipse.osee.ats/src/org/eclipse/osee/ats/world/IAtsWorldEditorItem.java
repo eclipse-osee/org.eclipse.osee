@@ -14,6 +14,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
@@ -49,4 +50,6 @@ public interface IAtsWorldEditorItem {
    public default IAdaptable getNewWorldEditorInputFromNamespace(String namespace, long atsSearchUuid) {
       return null;
    }
+
+   public List<AtsSearchWorkflowSearchItem> getSearchWorkflowSearchItems();
 }

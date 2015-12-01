@@ -36,4 +36,6 @@ public interface IAtsQueryService {
 
    AtsSearchData getSearch(String jsonStr);
 
+   AtsSearchData createSearchData(String namespace, String searchName);
+
 }

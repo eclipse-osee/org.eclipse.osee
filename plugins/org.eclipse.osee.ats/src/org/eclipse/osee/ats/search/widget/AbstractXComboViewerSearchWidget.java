@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.search.widget;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
@@ -72,7 +73,8 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    }
 
    public void handleRightClickLabel() {
-      set(new AtsSearchData());
+      AtsSearchData searchData = AtsClientService.get().getQueryService().createSearchData("", "");
+      set(searchData);
    }
 
    public String getInitialText() {

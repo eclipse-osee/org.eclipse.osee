@@ -14,11 +14,14 @@ import java.util.Collection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
+import org.eclipse.osee.ats.api.query.IAtsSearchDataProvider;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -38,6 +41,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class AtsQueryServiceIimpl implements IAtsQueryService {
 
    private final IAtsClient atsClient;
+   private static final Pattern namespacePattern = Pattern.compile("\"namespace\":\"(.*?)\"");
 
    public AtsQueryServiceIimpl(IAtsClient atsClient) {
       this.atsClient = atsClient;
@@ -66,9 +70,13 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
          AtsAttributeTypes.QuickSearch)) {
          String jsonValue = ((String) attr.getValue());
          if (jsonValue.contains("\"namespace\":\"" + namespace + "\"")) {
-            AtsSearchData data = fromJson(jsonValue);
-            if (data != null) {
-               searches.add(data);
+            try {
+               AtsSearchData data = fromJson(jsonValue);
+               if (data != null) {
+                  searches.add(data);
+               }
+            } catch (Exception ex) {
+               // do nothing
             }
          }
       }
@@ -101,9 +109,13 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(artifact,
          AtsAttributeTypes.QuickSearch)) {
          String jsonValue = ((String) attr.getValue());
-         AtsSearchData data = fromJson(jsonValue);
-         if (attrId.equals(data.getUuid())) {
-            return attr;
+         try {
+            AtsSearchData data = fromJson(jsonValue);
+            if (attrId.equals(data.getUuid())) {
+               return attr;
+            }
+         } catch (Exception ex) {
+            // do nothing
          }
       }
       return null;
@@ -148,11 +160,25 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
    }
 
    private AtsSearchData fromJson(String jsonValue) {
+      Matcher m = namespacePattern.matcher(jsonValue);
+      if (m.find()) {
+         return fromJson(m.group(1), jsonValue);
+      }
+      return null;
+   }
+
+   private AtsSearchData fromJson(String namespace, String jsonValue) {
       AtsSearchData data = null;
       try {
-         data = AtsJsonFactory.getMapper().readValue(jsonValue, AtsSearchData.class);
+         for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
+            data = provider.fromJson(namespace, jsonValue);
+            if (data != null) {
+               break;
+            }
+         }
       } catch (Exception ex) {
-         OseeLog.logf(Activator.class, Level.SEVERE, ex, "Can't deserialize ATS Quick Search value [%s]", jsonValue);
+         OseeLog.logf(Activator.class, Level.WARNING, ex,
+            "Can't deserialize ATS Quick Search value [%s] for namespace [%s]", jsonValue, namespace);
       }
       return data;
    }
@@ -160,6 +186,23 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
    @Override
    public AtsSearchData getSearch(String jsonStr) {
       return fromJson(jsonStr);
+   }
+
+   @Override
+   public AtsSearchData createSearchData(String namespace, String searchName) {
+      AtsSearchData data = null;
+      try {
+         for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
+            data = provider.createSearchData(namespace, searchName);
+            if (data != null) {
+               break;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.logf(Activator.class, Level.WARNING, ex,
+            "Can't create ATS Quick Search namespace [%s] and searchName [%s]", namespace, searchName);
+      }
+      return data;
    }
 
 }

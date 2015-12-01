@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 
 /**
@@ -20,15 +21,15 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
  */
 public class AtsSearchGoalSearchItem extends AbstractWorkItemSearchItem {
 
-   public static final String NAMESPACE = "ats.search.goal";
    private static final String TITLE = "Goal Search";
+   public static final String NAMESPACE = AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE;
 
    public AtsSearchGoalSearchItem() {
-      super(TITLE, NAMESPACE, AtsImage.GOAL);
+      super(TITLE, AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE, AtsImage.GOAL);
    }
 
    public AtsSearchGoalSearchItem(AbstractWorkItemSearchItem searchItem) {
-      super(searchItem, TITLE, NAMESPACE, AtsImage.GOAL);
+      super(searchItem, TITLE, AtsSearchUtil.ATS_QUERY_GOAL_NAMESPACE, AtsImage.GOAL);
    }
 
    @Override

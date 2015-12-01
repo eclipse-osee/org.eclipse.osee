@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world.search;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.api.query.AtsSearchUtil;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 
 /**
@@ -20,15 +21,16 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
  */
 public class AtsSearchTeamWorkflowSearchItem extends AbstractWorkItemSearchItem {
 
-   public static final String NAMESPACE = "ats.search.team";
+   private static final AtsImage IMAGE = AtsImage.TEAM_WORKFLOW;
    private static final String TITLE = "Team Workflow Search";
+   public static final String NAMESPACE = AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE;
 
    public AtsSearchTeamWorkflowSearchItem() {
-      super(TITLE, NAMESPACE, AtsImage.TEAM_WORKFLOW);
+      super(TITLE, AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE, IMAGE);
    }
 
    public AtsSearchTeamWorkflowSearchItem(AbstractWorkItemSearchItem searchItem) {
-      super(searchItem, TITLE, NAMESPACE, AtsImage.TEAM_WORKFLOW);
+      super(searchItem, TITLE, AtsSearchUtil.ATS_QUERY_TEAM_WF_NAMESPACE, IMAGE);
    }
 
    public AtsSearchTeamWorkflowSearchItem(String title, String namespace, AtsImage image) {

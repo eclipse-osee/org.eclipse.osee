@@ -72,7 +72,8 @@ public final class SaveSearchAction extends Action {
          AtsSearchData data = existingData;
          if (data == null) {
             Conditions.checkNotNullOrEmpty(searchItem.getSearchName(), "New Search Name");
-            data = new AtsSearchData(searchItem.getSearchName());
+            String namespace = searchItem.getNamespace();
+            data = AtsClientService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
             if (searchItem.getSearchUuid() > 0) {
                data.setUuid(searchItem.getSearchUuid());
             } else if (searchItem.getSearchUuid() <= 0) {
