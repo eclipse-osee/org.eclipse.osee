@@ -411,7 +411,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          try {
             Long branchId = settings.getLong(BRANCH_KEY);
             if (branchId > 0) {
-               branchSelectComposite.setSelected(BranchManager.getBranch(branchId));
+               branchSelectComposite.setSelected(BranchManager.getBranchToken(branchId));
             }
          } catch (Exception ex) {
             // Do Nothing

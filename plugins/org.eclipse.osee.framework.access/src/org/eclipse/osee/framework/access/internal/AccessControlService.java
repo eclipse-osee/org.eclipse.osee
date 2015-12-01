@@ -331,8 +331,8 @@ public class AccessControlService implements IAccessControlService {
       ensurePopulated();
       List<String> key = new LinkedList<>();
       for (Object o : objectsToCheck) {
-         if (o instanceof Branch) {
-            key.add(String.valueOf(((Branch) o).getGuid()));
+         if (o instanceof BranchId) {
+            key.add(String.valueOf(((BranchId) o).getGuid()));
          } else if (o instanceof Artifact) {
             key.add(((Artifact) o).getGuid() + ((Artifact) o).getBranchId());
          } else {

@@ -103,7 +103,7 @@ public abstract class GeneralBranchHandler extends CommandHandler {
    private boolean canEnableBranches(List<? extends BranchId> branches) {
       boolean canBeDeleted = true;
       for (BranchId branch : branches) {
-         if (!isEnableAllowed(BranchManager.getBranch(branch))) {
+         if (!isEnableAllowed(branch)) {
             canBeDeleted = false;
             break;
          }

@@ -20,7 +20,6 @@ import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -307,7 +306,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
       }
    }
 
-   public void setBranch(IOseeBranch branch) {
+   public void setBranch(BranchId branch) {
       this.branch = branch;
    }
 }

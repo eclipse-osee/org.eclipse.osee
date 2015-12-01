@@ -11,34 +11,15 @@
 package org.eclipse.osee.orcs.core.internal.branch;
 
 import com.google.common.collect.Lists;
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.BranchReadable;
 
-public class BranchUtil {
+public final class BranchUtil {
 
    private BranchUtil() {
       //Utility class
-   }
-
-   public static List<Branch> orderByParent(Iterable<Branch> branches) throws OseeCoreException {
-
-      ArrayList<Branch> sorted = Lists.newArrayList(branches);
-      for (int i = 0; i < sorted.size(); i++) {
-         Branch current = sorted.get(i);
-         Branch parent = current.getParentBranch();
-         int parentIdx = sorted.indexOf(parent);
-         if (parentIdx >= 0 && parentIdx < i) {
-            sorted.set(i, parent);
-            sorted.set(parentIdx, current);
-            i = -1; // start over
-         }
-      }
-
-      return sorted;
    }
 
    public static List<BranchReadable> orderByParentReadable(Iterable<? extends BranchReadable> branches) throws OseeCoreException {

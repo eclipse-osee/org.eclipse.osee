@@ -158,8 +158,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    }
 
    public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord transactionId, final TransactionRecord commitTrans, boolean showConflicts) {
-      this.sourceBranch = BranchManager.getBranch(sourceBranch);
-      this.destBranch = BranchManager.getBranch(destBranch);
+      this.sourceBranch = BranchManager.getBranchToken(sourceBranch);
+      this.destBranch = BranchManager.getBranchToken(destBranch);
       this.transactionId = transactionId;
       this.commitTrans = commitTrans;
       try {

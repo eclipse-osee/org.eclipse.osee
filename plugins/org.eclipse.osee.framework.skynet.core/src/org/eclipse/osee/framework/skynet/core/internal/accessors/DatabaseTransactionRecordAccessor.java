@@ -3,7 +3,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -13,7 +13,6 @@ import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
@@ -92,7 +91,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord loadInternalTransaction(JdbcStatement stmt) {
-      IOseeBranch branch = BranchManager.getBranch(stmt.getLong("branch_id"));
+      BranchId branch = TokenFactory.createBranch(stmt.getLong("branch_id"));
       int transactionNumber = stmt.getInt("transaction_id");
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");

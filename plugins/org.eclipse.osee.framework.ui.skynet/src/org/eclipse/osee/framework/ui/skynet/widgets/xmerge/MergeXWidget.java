@@ -28,6 +28,7 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -205,7 +206,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             monitor.beginTask("ApplyingPreviousMerge", conflicts.length);
             for (Conflict conflict : conflicts) {
                try {
-                  IOseeBranch destinationBranch = BranchManager.getBranch(destBranchId);
+                  BranchId destinationBranch = TokenFactory.createBranch(destBranchId);
                   IOseeBranch mergeBranch = BranchManager.getMergeBranch(conflict.getSourceBranch(), destinationBranch);
                   conflict.applyPreviousMerge(mergeBranch.getUuid(), destBranchId);
                } catch (OseeCoreException ex) {
@@ -493,7 +494,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
          try {
             boolean rebase = BranchManager.getState(sourceBranch).isRebaselineInProgress();
             boolean isValidUpdate =
-               rebase && BranchManager.isParent(sourceBranch, BranchManager.getParentBranchId(destBranch));
+               rebase && BranchManager.isParent(sourceBranch, BranchManager.getParentBranch(destBranch));
             boolean isValidCommit = BranchManager.hasMergeBranches(sourceBranch) && !rebase;
 
             isVisible &= (isValidUpdate || isValidCommit);
@@ -697,7 +698,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());
                   for (Long branchUuid : destBranches) {
                      if (!branchUuid.equals(destBranch.getUuid())) {
-                        selections.add(BranchManager.getBranch(branchUuid).getName());
+                        selections.add(BranchManager.getBranchName(branchUuid));
                         branchUuids.add(branchUuid);
                      }
                   }

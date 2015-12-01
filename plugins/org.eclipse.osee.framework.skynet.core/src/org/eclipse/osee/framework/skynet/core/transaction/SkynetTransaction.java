@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -384,8 +383,7 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private IOperation createStorageOp() throws OseeCoreException {
-      IOseeBranch branch = BranchManager.getBranch(getBranch());
-      transaction = TransactionManager.internalCreateTransactionRecord(branch, getAuthor(), comment);
+      transaction = TransactionManager.internalCreateTransactionRecord(getBranch(), getAuthor(), comment);
       transactionId = transaction.getId();
       return new StoreSkynetTransactionOperation(getName(), getBranch(), transaction, getTransactionData(),
          getArtifactReferences());

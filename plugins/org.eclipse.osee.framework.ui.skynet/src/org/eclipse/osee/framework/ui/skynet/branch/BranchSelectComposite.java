@@ -15,10 +15,12 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -38,7 +40,7 @@ public class BranchSelectComposite extends Composite {
 
    private Button branchSelectButton;
    private Text branchSelectTextWidget;
-   private IOseeBranch selectedBranch;
+   private BranchId selectedBranch;
    private final Set<Listener> listeners;
    private final boolean allowOnlyWorkingBranches;
 
@@ -107,7 +109,7 @@ public class BranchSelectComposite extends Composite {
       });
    }
 
-   public IOseeBranch getSelectedBranch() {
+   public BranchId getSelectedBranch() {
       return selectedBranch;
    }
 
@@ -131,12 +133,12 @@ public class BranchSelectComposite extends Composite {
       }
    }
 
-   public void setSelected(IOseeBranch branch) {
+   public void setSelected(BranchId branch) {
       selectedBranch = branch;
       if (branch == null) {
          branchSelectTextWidget.setText(" -- Select A Branch -- ");
       } else {
-         branchSelectTextWidget.setText(selectedBranch.getName());
+         branchSelectTextWidget.setText(BranchManager.getBranchName(selectedBranch));
       }
    }
 
@@ -163,7 +165,7 @@ public class BranchSelectComposite extends Composite {
    /**
     * @param defaultSelectedBranch the defaultSelectedBranch to set
     */
-   public void setDefaultSelectedBranch(IOseeBranch defaultSelectedBranch) {
+   public void setDefaultSelectedBranch(BranchId defaultSelectedBranch) {
       setSelected(defaultSelectedBranch);
    }
 

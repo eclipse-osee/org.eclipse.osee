@@ -145,7 +145,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                         assocArt.getName()}));
                   } else {
                      rd.addRaw(AHTML.addRowMultiColumnTable(
-                        new String[] {"Branch", "", BranchManager.getBranch(branch).getName()}));
+                        new String[] {"Branch", "", BranchManager.getBranchToken(branch).getName()}));
                   }
                   workingBranchesFound = true;
                }

@@ -71,7 +71,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
                try {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getUuid());
-                  BranchId parentBranch = BranchManager.getParentBranchId(selectedBranch);
+                  BranchId parentBranch = BranchManager.getParentBranch(selectedBranch);
                   if (parentBranch != null && !BranchManager.getType(
                      selectedBranch).isMergeBranch() && !destBranches.contains(parentBranch.getUuid())) {
                      destBranches.add(parentBranch.getUuid());
@@ -102,7 +102,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       parameters.put(BranchView.BRANCH_ID, Long.toString(branchUuid));
       CommandContributionItem contributionItem;
       String label =
-         branchUuid.equals(0L) ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchUuid).getName();
+         branchUuid.equals(0L) ? "Can't Merge a Root Branch" : BranchManager.getBranchToken(branchUuid).getName();
 
       contributionItem = new CommandContributionItem(
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,

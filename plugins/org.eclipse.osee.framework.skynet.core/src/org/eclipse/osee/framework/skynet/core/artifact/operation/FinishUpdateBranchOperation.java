@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -48,7 +49,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       monitor.worked(calculateWork(0.60));
 
       IOseeBranch sourceBranch = conflictManager.getSourceBranch();
-      IOseeBranch destinationBranch = BranchManager.getBranch(conflictManager.getDestinationBranch());
+      BranchId destinationBranch = conflictManager.getDestinationBranch();
 
       String originalBranchName = sourceBranch.getName();
 

@@ -55,13 +55,13 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
          @Override
          public void done(IJobChangeEvent event) {
             try {
-               Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
+               Artifact assocArt = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
                if (assocArt == null) {
                   AWorkbench.popup("ERROR", "Cannot access associated artifact.");
                } else if (assocArt instanceof User) {
                   AWorkbench.popup(String.format("Associated with user [%s]", assocArt.getName()));
                } else {
-                  RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch(null)),
+                  RendererManager.openInJob(BranchManager.getAssociatedArtifact(branchProvider.getBranch()),
                      PresentationType.SPECIALIZED_EDIT);
                }
             } catch (OseeCoreException ex) {
@@ -75,7 +75,7 @@ public class OpenAssociatedArtifactFromBranchProvider extends Action {
       Artifact associatedArtifact = null;
       boolean isEnabled;
       try {
-         associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
+         associatedArtifact = BranchManager.getAssociatedArtifact(branchProvider.getBranch());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.listener.ITransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
@@ -149,7 +148,7 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
 
    public void recomputeBranchTransactions(boolean isReloadAllowed) {
       OperationBuilder builder = Operations.createBuilder("Load Branch Transactions");
-      branchTransactionData = new BranchTransactionUiData(BranchManager.getBranch(getEditorInput().getBranch()),
+      branchTransactionData = new BranchTransactionUiData(getEditorInput().getBranch(),
          (XBranchContentProvider) xBranchWidget.getXViewer().getContentProvider());
       builder.addOp(new LoadBranchTransactionsOperation(branchTransactionData));
       builder.addOp(new LoadAssociatedArtifactOperation(getEditor().getChanges()));

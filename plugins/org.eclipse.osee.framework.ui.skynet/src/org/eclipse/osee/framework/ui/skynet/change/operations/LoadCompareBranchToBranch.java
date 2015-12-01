@@ -37,7 +37,7 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       BranchId startBranch = uiData.getTxDelta().getStartTx().getBranch();
-      BranchId otherBranch = branchProvider.getBranch(monitor);
+      BranchId otherBranch = branchProvider.getBranch();
       checkForCancelledStatus(monitor);
 
       Conditions.checkNotNull(otherBranch, "other branch to compare to");

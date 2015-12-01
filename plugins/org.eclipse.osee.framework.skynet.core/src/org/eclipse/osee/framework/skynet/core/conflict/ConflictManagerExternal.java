@@ -33,8 +33,8 @@ public class ConflictManagerExternal {
    private List<Conflict> originalConflicts;
 
    public ConflictManagerExternal(BranchId destinationBranch, BranchId sourceBranch) throws OseeCoreException {
-      this.destinationBranch = BranchManager.getBranch(destinationBranch);
-      this.sourceBranch = BranchManager.getBranch(sourceBranch);
+      this.destinationBranch = BranchManager.getBranchToken(destinationBranch);
+      this.sourceBranch = BranchManager.getBranchToken(sourceBranch);
    }
 
    public List<Conflict> getOriginalConflicts() throws OseeCoreException {

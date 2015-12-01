@@ -64,7 +64,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
       JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
       jdbcClient.invalidateSequences();
 
-      Conditions.checkNotNull(BranchManager.getBranch(SYSTEM_ROOT), "System root was not created - ");
+      Conditions.checkNotNull(BranchManager.getBranchToken(SYSTEM_ROOT), "System root was not created - ");
 
       ClientSessionManager.releaseSession();
       ClientSessionManager.authenticate(new BaseCredentialProvider() {

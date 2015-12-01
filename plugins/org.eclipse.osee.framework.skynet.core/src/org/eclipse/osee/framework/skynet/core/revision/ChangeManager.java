@@ -81,7 +81,7 @@ public final class ChangeManager {
     */
    public static IOperation comparedToParent(BranchId branch, Collection<Change> changes) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranchId(branch));
+      TransactionRecord endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranch(branch));
 
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return new ChangeDataLoader(changes, txDelta);
@@ -111,7 +111,7 @@ public final class ChangeManager {
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
             transactionNumber = BranchManager.getSourceTransaction(branch).getId();
-            branch = BranchManager.getParentBranchId(branch);
+            branch = BranchManager.getParentBranch(branch);
             joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
          }
       }
@@ -152,7 +152,7 @@ public final class ChangeManager {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
          for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
-            if (artifact.isOnBranch(BranchManager.getParentBranchId(workingBranch))) {
+            if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
                joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
             }
          }
@@ -168,7 +168,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                if (chStmt.getInt("tx_count") > 0) {
                   BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
-                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranchId(branch));
+                  Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), BranchManager.getParentBranch(branch));
                   branchMap.put(artifact, branch);
                }
             }

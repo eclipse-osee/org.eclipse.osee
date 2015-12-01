@@ -35,12 +35,11 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
    }
 
    @Override
-   public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       final IOseeBranch[] selectedBranch = new IOseeBranch[1];
       final Collection<? extends BranchId> selectable = BranchManager.getBaselineBranches();
       selectable.remove(uiData.getTxDelta().getStartTx().getBranch());
-      IStatus status = executeInUiThread(selectable, selectedBranch);
-      monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
+      executeInUiThread(selectable, selectedBranch);
       return selectedBranch[0];
    }
 

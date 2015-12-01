@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 
@@ -24,8 +22,8 @@ public final class ParentBranchProvider implements IBranchProvider {
    }
 
    @Override
-   public BranchId getBranch(IProgressMonitor monitor) throws OseeCoreException {
+   public BranchId getBranch() {
       BranchId childBranch = uiData.getTxDelta().getStartTx().getBranch();
-      return BranchManager.getParentBranchId(childBranch);
+      return BranchManager.getParentBranch(childBranch);
    }
 }

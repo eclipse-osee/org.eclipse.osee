@@ -92,7 +92,8 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getUuid()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
       CommandContributionItem contributionItem;
-      String label = "Commit into Parent Branch: " + BranchManager.getParentBranch(branch).getName();
+      String label =
+         "Commit into Parent Branch: " + BranchManager.getBranchName(BranchManager.getParentBranch(branch));
 
       contributionItem = new CommandContributionItem(
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,

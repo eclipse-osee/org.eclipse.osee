@@ -183,7 +183,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       for (int i = 0; i < values.size(); i++) {
          Long toStore = values.get(i);
          try {
-            IOseeBranch branch = BranchManager.getBranch(toStore);
+            IOseeBranch branch = BranchManager.getBranchToken(toStore);
 
             String branchName = branch.getName();
             branchSelectCombo.add(branchName);

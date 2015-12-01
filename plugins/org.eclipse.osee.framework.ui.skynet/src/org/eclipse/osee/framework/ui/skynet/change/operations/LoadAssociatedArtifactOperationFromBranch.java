@@ -27,9 +27,8 @@ public class LoadAssociatedArtifactOperationFromBranch extends AbstractOperation
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      branchProvider.getBranch(monitor);
       monitor.worked(calculateWork(0.80));
-      BranchManager.getAssociatedArtifact(branchProvider.getBranch(null));
+      BranchManager.getAssociatedArtifact(branchProvider.getBranch());
       monitor.worked(calculateWork(0.20));
    }
 }

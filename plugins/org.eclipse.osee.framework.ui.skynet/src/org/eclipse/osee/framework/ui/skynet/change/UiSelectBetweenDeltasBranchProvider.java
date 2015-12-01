@@ -35,7 +35,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
    }
 
    @Override
-   public BranchId getBranch(IProgressMonitor monitor) throws OseeCoreException {
+   public BranchId getBranch() {
       final BranchId[] selectedBranch = new BranchId[1];
 
       TransactionDelta txDelta = uiData.getTxDelta();
@@ -45,8 +45,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
          final Collection<BranchId> selectable = new ArrayList<>();
          selectable.add(uiData.getTxDelta().getStartTx().getBranch());
          selectable.add(uiData.getTxDelta().getEndTx().getBranch());
-         IStatus status = executeInUiThread(selectable, selectedBranch);
-         monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
+         executeInUiThread(selectable, selectedBranch);
       }
       return selectedBranch[0];
    }

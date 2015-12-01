@@ -48,7 +48,7 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
    }
 
    @Override
-   public Branch getParentBranch() throws OseeCoreException {
+   public BranchId getParentBranch() throws OseeCoreException {
       return parent;
    }
 
@@ -153,9 +153,9 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
    @Override
    public Collection<BranchId> getAncestors() throws OseeCoreException {
       List<BranchId> ancestors = new ArrayList<>();
-      BranchReadable branchCursor = this;
+      Branch branchCursor = this;
       ancestors.add(branchCursor);
-      while ((branchCursor = branchCursor.getParentBranch()) != null) {
+      while ((branchCursor = branchCursor.parent) != null) {
          ancestors.add(branchCursor);
       }
       return ancestors;
@@ -181,7 +181,7 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
 
    public boolean hasAncestor(BranchId ancestor) {
       Branch branchCursor = this;
-      while ((branchCursor = branchCursor.getParentBranch()) != null) {
+      while ((branchCursor = branchCursor.parent) != null) {
          if (branchCursor.equals(ancestor)) {
             return true;
          }

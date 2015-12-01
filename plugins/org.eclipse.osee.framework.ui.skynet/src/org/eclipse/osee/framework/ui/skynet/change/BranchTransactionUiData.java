@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.change;
 
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchContentProvider;
 
 /**
@@ -19,10 +19,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.XBranchContentProvid
 public class BranchTransactionUiData {
 
    Object[] transactions;
-   private final Branch branch;
+   private final BranchId branch;
    private final XBranchContentProvider branchContentProvider;
 
-   public BranchTransactionUiData(Branch branch, XBranchContentProvider branchContentProvider) {
+   public BranchTransactionUiData(BranchId branch, XBranchContentProvider branchContentProvider) {
       this.branch = branch;
       this.branchContentProvider = branchContentProvider;
    }
@@ -35,7 +35,7 @@ public class BranchTransactionUiData {
       this.transactions = transactions;
    }
 
-   public Branch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.ganttchart.GanttEvent;
 import org.eclipse.osee.branch.gantt.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -133,7 +132,7 @@ public class BranchVisualizationView extends ViewPart {
          String branchUuid = UserManager.getUser().getSetting(BRANCH_KEY);
          if (Strings.isValid(branchUuid)) {
             try {
-               IOseeBranch branch = BranchManager.getBranch(Long.valueOf(branchUuid));
+               IOseeBranch branch = BranchManager.getBranchToken(Long.valueOf(branchUuid));
                xBranchSelectWidget.setSelection(branch);
             } catch (Exception ex) {
                // do nothing
@@ -168,20 +167,8 @@ public class BranchVisualizationView extends ViewPart {
       ganttChart.setLayout(new GridLayout(1, false));
       ganttChart.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      //      ganttChart.getSettings().getInitialZoomLevel()
-
       try {
-         BranchId oseeBranch = getSelectedBranch();
-         Branch selectedBranch = null;
-         if (oseeBranch != null) {
-            selectedBranch = BranchManager.getBranch(oseeBranch);
-         }
-         if (selectedBranch != null) {
-            createEvents(null, selectedBranch, true);
-         } else {
-            System.out.println("selected branch is null");
-         }
-
+         createEvents(null, BranchManager.getBranchToken(getSelectedBranch()), true);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

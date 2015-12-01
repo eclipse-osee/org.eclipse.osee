@@ -72,7 +72,7 @@ public final class ChangeUiUtil {
    }
 
    public static ChangeReportEditorInput createInput(BranchId branch, boolean loadOnOpen) throws OseeCoreException {
-      BranchId parentBranch = BranchManager.getParentBranchId(branch);
+      BranchId parentBranch = BranchManager.getParentBranch(branch);
       return createInput(branch, parentBranch, loadOnOpen);
    }
 

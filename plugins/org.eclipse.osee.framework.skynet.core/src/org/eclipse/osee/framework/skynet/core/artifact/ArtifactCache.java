@@ -188,7 +188,7 @@ public final class ArtifactCache {
     * @throws OseeStateException if more than one artifact stored.
     */
    public static Artifact getByTextId(String key, BranchId branch) throws OseeCoreException {
-      Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
+      Artifact artifact = ACTIVE_CACHE.getByText(key, branch);
       // decache if deleted
       if (artifact != null && artifact.isDeleted()) {
          ACTIVE_CACHE.deCacheByText(key, branch, artifact);
@@ -197,14 +197,14 @@ public final class ArtifactCache {
    }
 
    public static Artifact deCacheByTextId(String key, BranchId branch) throws OseeCoreException {
-      Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
+      Artifact artifact = ACTIVE_CACHE.getByText(key, branch);
       ACTIVE_CACHE.deCacheByText(key, branch, artifact);
       return artifact;
    }
 
    public static Collection<Artifact> getListByTextId(String key, BranchId branch) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<>();
-      Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, BranchManager.getBranch(branch));
+      Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, branch);
       // decache any deleted artifacts
       for (Artifact artifact : cached) {
          if (artifact.isDeleted()) {

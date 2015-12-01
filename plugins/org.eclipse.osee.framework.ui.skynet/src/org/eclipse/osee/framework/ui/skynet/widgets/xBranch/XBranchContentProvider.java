@@ -79,7 +79,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
-   public Object[] getBranchChildren(Branch branch) {
+   public Object[] getBranchChildren(BranchId branch) {
       try {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<>();
@@ -125,7 +125,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          }
          if (!showChildBranchesAtMainLevel) {
             if (AccessControlManager.isOseeAdmin()) {
-               branchesToReturn.add(BranchManager.getBranch(SYSTEM_ROOT));
+               branchesToReturn.add(SYSTEM_ROOT);
             } else {
                branchTypes.add(BranchType.BASELINE);
                BranchFilter filter =

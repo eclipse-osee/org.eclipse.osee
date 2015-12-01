@@ -95,7 +95,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public IOseeBranch getBranchByUuid(long branchUuid) {
-      return BranchManager.getBranch(branchUuid);
+      return BranchManager.getBranchToken(branchUuid);
    }
 
    @Override
@@ -115,11 +115,11 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public BranchId getParentBranch(BranchId branch) {
-      return BranchManager.getParentBranchId(branch);
+      return BranchManager.getParentBranch(branch);
    }
 
    @Override
-   public ITransaction getBaseTransaction(BranchId destinationBranch) {
-      return BranchManager.getBranch(destinationBranch).getBaseTransaction();
+   public ITransaction getBaseTransaction(BranchId branch) {
+      return BranchManager.getBaseTransaction(branch);
    }
 }

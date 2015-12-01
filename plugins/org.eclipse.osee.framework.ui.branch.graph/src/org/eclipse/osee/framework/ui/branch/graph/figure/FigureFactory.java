@@ -20,6 +20,7 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
@@ -62,8 +63,8 @@ public class FigureFactory {
       Color bgcolor = GraphColorConstants.getBranchColor(branchModel);
       Color fgcolor = GraphColorConstants.FONT_COLOR;
 
-      IOseeBranch branch = BranchManager.getBranch(branchModel.getBranch());
-      String branchName = branch.getName();
+      BranchId branch = branchModel.getBranch();
+      String branchName = BranchManager.getBranchName(branch);
       Image image = GraphImageConstants.getImage(branch);
 
       return new BranchFigure(branchName, image, createBranchNoteFigure(branchModel), bgcolor, fgcolor);
@@ -77,13 +78,13 @@ public class FigureFactory {
 
    public static IFigure createTxNoteFigure(TxModel txModel) {
       TxData txData = txModel.getTxData();
-      IOseeBranch branch = BranchManager.getBranch(txData.getBranch());
+      IOseeBranch branch = BranchManager.getBranchToken(txData.getBranch());
       String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getShortName());
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());
    }
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
-      IOseeBranch branch = BranchManager.getBranch(branchModel.getBranch());
+      IOseeBranch branch = BranchManager.getBranchToken(branchModel.getBranch());
       String title = String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
       TxData txData = branchModel.getFirstTx().getTxData();
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());

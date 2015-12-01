@@ -146,12 +146,32 @@ public final class BranchManager {
       return branches;
    }
 
+   public static IOseeBranch getBranchToken(BranchId branch) throws OseeCoreException {
+      return getBranch(branch);
+   }
+
+   public static IOseeBranch getBranchToken(Long branchId) throws OseeCoreException {
+      return getBranch(branchId);
+   }
+
    public static Branch getBranch(BranchId branch) throws OseeCoreException {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
-         return getBranch(branch.getUuid());
+         return getBranch(branch.getId());
       }
+   }
+
+   public static Branch getBranch(Long branchId) throws OseeCoreException {
+      if (branchId == null) {
+         throw new BranchDoesNotExist("Branch Uuid is null");
+      }
+
+      Branch branch = getCache().getById(branchId);
+      if (branch == null) {
+         branch = loadBranchToCache(branchId);
+      }
+      return branch;
    }
 
    /**
@@ -211,18 +231,6 @@ public final class BranchManager {
     */
    public static boolean doesMergeBranchExist(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
-   }
-
-   public static Branch getBranch(Long branchId) throws OseeCoreException {
-      if (branchId == null) {
-         throw new BranchDoesNotExist("Branch Uuid is null");
-      }
-
-      Branch branch = getCache().getById(branchId);
-      if (branch == null) {
-         branch = loadBranchToCache(branchId);
-      }
-      return branch;
    }
 
    public static void reloadBranch(BranchId branch) {
@@ -566,7 +574,7 @@ public final class BranchManager {
             lastBranch = getBranch(branchUuid);
          } catch (Exception ex) {
             try {
-               lastBranch = getBranch(getDefaultInitialBranch());
+               lastBranch = getBranchToken(getDefaultInitialBranch());
                UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
             } catch (OseeCoreException ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);
@@ -634,11 +642,7 @@ public final class BranchManager {
       getCache().invalidate();
    }
 
-   public static IOseeBranch getParentBranch(BranchId branch) {
-      return getBranch(branch).getParentBranch();
-   }
-
-   public static BranchId getParentBranchId(BranchId branch) {
+   public static BranchId getParentBranch(BranchId branch) {
       return getBranch(branch).getParentBranch();
    }
 
@@ -647,7 +651,7 @@ public final class BranchManager {
    }
 
    public static boolean isParent(BranchId branch, BranchId parentBranch) {
-      return parentBranch.equals(getParentBranchId(branch));
+      return parentBranch.equals(getParentBranch(branch));
    }
 
    public static TransactionRecord getBaseTransaction(BranchId branch) {
@@ -718,6 +722,10 @@ public final class BranchManager {
 
    public static String getBranchName(BranchId branch) {
       return getBranch(branch).getName();
+   }
+
+   public static String getBranchName(Long branchId) {
+      return getBranch(branchId).getName();
    }
 
    public static String getBranchShortName(BranchId branch) {

@@ -96,11 +96,9 @@ public class AttributeCheckOperation extends AbstractOperation {
       return mostPopular;
    }
 
-   @SuppressWarnings("unchecked")
    private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder, IProgressMonitor monitor) throws OseeCoreException {
       if (!allDescendants.isEmpty()) {
-         BranchId tempBranch = allDescendants.get(0).getBranch();
-         Branch branch = BranchManager.getBranch(tempBranch);
+         BranchId branch = allDescendants.get(0).getBranch();
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Attribute Check Blam");
          if (!BranchManager.getType(branch).isWorkingBranch()) {
             changeValues = false;

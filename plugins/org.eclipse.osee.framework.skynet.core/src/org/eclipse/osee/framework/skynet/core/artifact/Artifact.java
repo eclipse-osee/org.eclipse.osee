@@ -237,7 +237,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    public final IOseeBranch getBranchToken() {
-      return BranchManager.getBranch(branch);
+      return BranchManager.getBranchToken(branch);
    }
 
    public final String getArtifactTypeName() {

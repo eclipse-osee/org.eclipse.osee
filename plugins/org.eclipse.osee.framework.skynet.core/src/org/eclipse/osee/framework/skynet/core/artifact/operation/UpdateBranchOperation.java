@@ -33,7 +33,7 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 public class UpdateBranchOperation extends AbstractOperation {
    private final IOseeBranch originalBranch;
    private final ConflictResolverOperation resolver;
-   private final IOseeBranch fromBranch;
+   private IOseeBranch newBranch;
 
    public UpdateBranchOperation(final IOseeBranch branch, final ConflictResolverOperation resolver) {
       this(branch, null, resolver);
@@ -42,7 +42,6 @@ public class UpdateBranchOperation extends AbstractOperation {
    public UpdateBranchOperation(final IOseeBranch branch, final IOseeBranch fromBranch, final ConflictResolverOperation resolver) {
       super(String.format("Update Branch [%s]", branch.getShortName()), Activator.PLUGIN_ID);
       this.originalBranch = branch;
-      this.fromBranch = fromBranch;
       this.resolver = resolver;
    }
 
@@ -61,16 +60,16 @@ public class UpdateBranchOperation extends AbstractOperation {
          OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
 
-         IOseeBranch useFromBranch = fromBranch != null ? fromBranch : BranchManager.getParentBranch(originalBranch);
-         proxy.logBranchActivity(String.format(
-            "Branch Operation Update Branch {branchUUID: %s, branchName: %s fromBranchUUID: %s fromBranchName: %s ",
-            originalBranch.getUuid(), originalBranch.getName(), useFromBranch.getId(), useFromBranch.getName()));
+         BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
+         proxy.logBranchActivity(
+            String.format("Branch Operation Update Branch {branchUUID: %s, branchName: %s parentBranchId: %s",
+               originalBranch.getUuid(), originalBranch.getName(), parentBranch.getId()));
       }
    }
 
    private IOseeBranch createTempBranch(IOseeBranch originalBranch) throws OseeCoreException {
-      IOseeBranch useFromBranch = fromBranch != null ? fromBranch : BranchManager.getParentBranch(originalBranch);
-      return BranchManager.createWorkingBranch(useFromBranch, getUpdatedName(originalBranch.getName()));
+      BranchId parentBranch = BranchManager.getParentBranch(originalBranch);
+      return BranchManager.createWorkingBranch(parentBranch, getUpdatedName(originalBranch.getName()));
    }
 
    private void performUpdate(IProgressMonitor monitor, IOseeBranch originalBranch) throws Exception {

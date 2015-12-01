@@ -219,7 +219,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
       if (settings != null) {
          String lastSelected = settings.get(TestRunStorageKey.SELECTED_BRANCH_ID);
          try {
-            branchSelect.setSelection(BranchManager.getBranch(Long.parseLong(lastSelected)));
+            branchSelect.setSelection(BranchManager.getBranchToken(Long.parseLong(lastSelected)));
          } catch (Exception ex) {
             OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
          }

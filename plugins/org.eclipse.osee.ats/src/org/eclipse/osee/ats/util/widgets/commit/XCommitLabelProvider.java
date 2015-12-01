@@ -178,7 +178,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleDestBranchColumn(Object element, BranchId branchToken) {
-      IOseeBranch branch = BranchManager.getBranch(branchToken);
+      IOseeBranch branch = BranchManager.getBranchToken(branchToken);
       if (element instanceof IAtsVersion) {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
       } else if (element instanceof IAtsTeamDefinition) {

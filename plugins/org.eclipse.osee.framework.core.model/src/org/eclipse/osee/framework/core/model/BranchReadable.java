@@ -35,7 +35,7 @@ public interface BranchReadable extends IOseeBranch {
 
    TransactionRecord getSourceTransaction() throws OseeCoreException;
 
-   BranchReadable getParentBranch() throws OseeCoreException;
+   BranchId getParentBranch() throws OseeCoreException;
 
    Collection<? extends BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException;
 

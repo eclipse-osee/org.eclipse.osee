@@ -242,8 +242,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    }
 
    private String getConnectionLabel(TxModel source, TxModel target) {
-      String sourceName = BranchManager.getBranch(source.getParentBranchModel().getBranch()).getShortName();
-      String targetName = BranchManager.getBranch(target.getParentBranchModel().getBranch()).getShortName();
+      String sourceName = BranchManager.getBranchShortName(source.getParentBranchModel().getBranch());
+      String targetName = BranchManager.getBranchShortName(target.getParentBranchModel().getBranch());
       return String.format("%s:%s - %s:%s", sourceName, source.getRevision(), targetName, target.getRevision());
    }
 

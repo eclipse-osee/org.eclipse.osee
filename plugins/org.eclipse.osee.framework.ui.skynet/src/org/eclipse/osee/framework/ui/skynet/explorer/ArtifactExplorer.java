@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -104,7 +103,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private Artifact explorerRoot;
    private TreeEditor myTreeEditor;
    private XBranchSelectWidget branchSelect;
-   private IOseeBranch branch;
+   private BranchId branch;
    private IGlobalMenuHelper globalMenuHelper;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
@@ -165,8 +164,8 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                   try {
                      BranchId selectedBranch = branchSelect.getData();
                      if (selectedBranch != null) {
-                        branch = BranchManager.getBranch(selectedBranch);
-                        dragAndDropWorker.updateBranch(selectedBranch);
+                        branch = selectedBranch;
+                        dragAndDropWorker.updateBranch(branch);
                         explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                      }
                   } catch (Exception ex) {
@@ -412,7 +411,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       artifactExplorerMenu.setupPopupMenu();
    }
 
-   public void setBranch(Branch branch) {
+   public void setBranch(IOseeBranch branch) {
       this.branch = branch;
    }
 
@@ -424,11 +423,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    }
 
    @Override
-   public IOseeBranch getBranch(IProgressMonitor monitor) {
-      return branch;
-   }
-
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

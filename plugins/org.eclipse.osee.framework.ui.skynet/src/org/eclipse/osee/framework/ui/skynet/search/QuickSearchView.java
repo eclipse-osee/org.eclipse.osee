@@ -22,7 +22,6 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -147,7 +146,7 @@ public class QuickSearchView extends GenericViewPart {
             String uuid = memento.getString(LAST_BRANCH_UUID);
             if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
-                  branchSelect.setSelection(BranchManager.getBranch(Long.valueOf(uuid)));
+                  branchSelect.setSelection(BranchManager.getBranchToken(Long.valueOf(uuid)));
                } catch (OseeCoreException ex) {
                   // do nothing
                }
@@ -245,7 +244,7 @@ public class QuickSearchView extends GenericViewPart {
       }
    }
 
-   public void setBranch(IOseeBranch branch) {
+   public void setBranch(BranchId branch) {
       if (branchSelect != null) {
          branchSelect.setSelection(branch);
          // branch has been selected; allow user to set up search string

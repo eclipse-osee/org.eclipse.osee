@@ -217,7 +217,7 @@ public final class ReplaceWithBaselineTest {
    }
 
    private void setupBackgroundForScenario() throws Exception {
-      baselineBranch = BranchManager.getBranch(SAW_Bld_1);
+      baselineBranch = SAW_Bld_1;
 
       //Setup data before the working branch has been created
       for (TestData testData : this.testDatas) {

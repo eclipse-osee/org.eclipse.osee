@@ -144,7 +144,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return String.valueOf(branch.getUuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
          try {
-            return branch.equals(CoreBranches.SYSTEM_ROOT) ? "none" : BranchManager.getParentBranch(branch).getName();
+            return branch.equals(CoreBranches.SYSTEM_ROOT) ? "none" : BranchManager.getBranchName(
+               BranchManager.getParentBranch(branch));
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }

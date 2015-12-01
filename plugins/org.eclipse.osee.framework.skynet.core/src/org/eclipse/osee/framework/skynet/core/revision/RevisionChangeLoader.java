@@ -87,7 +87,7 @@ public final class RevisionChangeLoader {
       loadTransactions(branch, artifact, transactionId, transactionIds);
 
       if (recurseThroughBranchHierarchy) {
-         BranchId parentBranch = BranchManager.getParentBranchId(branch);
+         BranchId parentBranch = BranchManager.getParentBranch(branch);
          TransactionRecord baseTx = BranchManager.getBaseTransaction(branch);
 
          if (!BranchManager.isParentSystemRoot(branch)) {

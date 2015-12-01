@@ -24,7 +24,6 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -239,7 +238,7 @@ public class ArtifactExplorerMenu {
       treeViewer.getTree().setMenu(popupMenu);
    }
 
-   private IOseeBranch getBranch() {
+   private BranchId getBranch() {
       return artifactExplorer.getBranch();
    }
 

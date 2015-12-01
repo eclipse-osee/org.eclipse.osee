@@ -74,14 +74,14 @@ public final class ArtifactGuis {
 
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
-            BranchId parentBranch = BranchManager.getParentBranchId(artifact.getBranch());
+            BranchId parentBranch = BranchManager.getParentBranch(artifact.getBranch());
             chStmt.runPreparedQuery(ART_DELETED_ON_PARENT, artifact.getArtId(), parentBranch);
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");
                StringBuilder branches = new StringBuilder();
                branches.append("\n\t");
-               branches.append(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
+               branches.append(BranchManager.getBranchToken(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
                otherBranches.add(branches.toString());
                wasModified = true;
             }
@@ -140,14 +140,14 @@ public final class ArtifactGuis {
          try {
             BranchId branch = artifact.getBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),
-               BranchManager.getParentBranchId(branch).getId(), BranchType.WORKING.getValue());
+               BranchManager.getParentBranch(branch).getId(), BranchType.WORKING.getValue());
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");
                chStmt.getInt("mod_type");
                StringBuilder branches = new StringBuilder();
                branches.append("\n\t");
-               branches.append(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
+               branches.append(BranchManager.getBranchToken(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));
                otherBranches.add(branches.toString());
                wasModified = true;
             }

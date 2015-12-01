@@ -54,31 +54,31 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class ConflictManagerInternal {
 
    private static final String MULTIPLICITY_DETECTION = "with " + //
-   "attr_c as (select attr_src.art_id as src_art_id, " + //
-   "attr_src.attr_id as src_attr_id, " + //
-   "attr_src.attr_type_id as src_attr_tid, " + //
-   "txs_src.gamma_id as src_txs_gid " + //
-   "from osee_txs txs_src, osee_attribute attr_src where " + //
-   "branch_id = ? and " + //
-   "tx_current = 1 and " + //
-   "transaction_id > ? and " + //
-   "txs_src.gamma_id = attr_src.gamma_id), " + //
-   "sj_c as (select attr_c.src_art_id as sj_art_id, " + //
-   "attr_c.src_attr_id as sj_attr_id, " + //
-   "attr_c.src_attr_tid as sj_attr_tid " + //
-   "from attr_c, osee_join_id jid where " + //
-   "attr_c.src_attr_tid = jid.id and " + //
-   "jid.query_id = ?) " + //
-   "select attr_d.art_id as art_id, " + //
-   "sj_c.sj_attr_id as source_attr_id, " + //
-   "attr_d.attr_id as dest_attr_id " + //
-   "from sj_c, osee_attribute attr_d, osee_txs txs_d where " + //
-   "txs_d.branch_id = ? and " + //
-   "txs_d.tx_current = 1 and " + //
-   "txs_d.gamma_id = attr_d.gamma_id and " + //
-   "attr_d.attr_type_id = sj_c.sj_attr_tid and " + //
-   "attr_d.art_id = sj_c.sj_art_id and " + //
-   "attr_d.attr_id <> sj_c.sj_attr_id";
+      "attr_c as (select attr_src.art_id as src_art_id, " + //
+      "attr_src.attr_id as src_attr_id, " + //
+      "attr_src.attr_type_id as src_attr_tid, " + //
+      "txs_src.gamma_id as src_txs_gid " + //
+      "from osee_txs txs_src, osee_attribute attr_src where " + //
+      "branch_id = ? and " + //
+      "tx_current = 1 and " + //
+      "transaction_id > ? and " + //
+      "txs_src.gamma_id = attr_src.gamma_id), " + //
+      "sj_c as (select attr_c.src_art_id as sj_art_id, " + //
+      "attr_c.src_attr_id as sj_attr_id, " + //
+      "attr_c.src_attr_tid as sj_attr_tid " + //
+      "from attr_c, osee_join_id jid where " + //
+      "attr_c.src_attr_tid = jid.id and " + //
+      "jid.query_id = ?) " + //
+      "select attr_d.art_id as art_id, " + //
+      "sj_c.sj_attr_id as source_attr_id, " + //
+      "attr_d.attr_id as dest_attr_id " + //
+      "from sj_c, osee_attribute attr_d, osee_txs txs_d where " + //
+      "txs_d.branch_id = ? and " + //
+      "txs_d.tx_current = 1 and " + //
+      "txs_d.gamma_id = attr_d.gamma_id and " + //
+      "attr_d.attr_type_id = sj_c.sj_attr_tid and " + //
+      "attr_d.art_id = sj_c.sj_art_id and " + //
+      "attr_d.attr_id <> sj_c.sj_attr_id";
 
    private static final String CONFLICT_CLEANUP =
       "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id and (t1.conflict_type = transaction_id or transaction_id is NULL))";
@@ -101,7 +101,7 @@ public class ConflictManagerInternal {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
             commitTransaction.getId());
          while (chStmt.next()) {
-            IOseeBranch sourceBranch = BranchManager.getBranch(chStmt.getLong("source_branch_id"));
+            IOseeBranch sourceBranch = BranchManager.getBranchToken(chStmt.getLong("source_branch_id"));
             if (BranchManager.isArchived(sourceBranch)) {
                sourceBranch = null;
             }
@@ -109,7 +109,7 @@ public class ConflictManagerInternal {
                chStmt.getInt("dest_gamma_id"), chStmt.getInt("art_id"), null, commitTransaction,
                chStmt.getString("source_value"), chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
                TokenFactory.createBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
-               BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
+               BranchManager.getBranchToken(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);
          }
@@ -269,7 +269,7 @@ public class ConflictManagerInternal {
                artId = nextArtId;
 
                if (destModType == ModificationType.DELETED && sourceModType == ModificationType.MODIFIED || //
-               destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
+                  destModType == ModificationType.MODIFIED && sourceModType == ModificationType.DELETED) {
 
                   artifactConflictBuilder = new ArtifactConflictBuilder(sourceGamma, destGamma, artId,
                      baselineTransaction, sourceBranch, destinationBranch, sourceModType, destModType, artTypeId);

@@ -31,7 +31,7 @@ import org.junit.Test;
 
 /**
  * High-level test to ensure demo artifact types correctly inherit from artifact
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactTypeInheritanceTest {

@@ -91,7 +91,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
       this.attributeType = attributeTypeName;
       Long storedUuid = getStoredUuid();
       if (storedUuid != null && storedUuid > 0) {
-         setSelection(BranchManager.getBranch(storedUuid));
+         setSelection(BranchManager.getBranchToken(storedUuid));
       }
    }
 

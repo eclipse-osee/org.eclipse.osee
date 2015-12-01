@@ -39,7 +39,7 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = BranchManager.getBranch(txDelta.getStartTx().getBranch()).getShortName(BRANCH_NAME_LEN);
+         branchName = BranchManager.getBranchToken(txDelta.getStartTx().getBranch()).getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";

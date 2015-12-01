@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
@@ -18,5 +17,5 @@ import org.eclipse.osee.framework.core.data.BranchId;
  */
 public interface IBranchProvider {
 
-   public BranchId getBranch(IProgressMonitor monitor);
+   public BranchId getBranch();
 }

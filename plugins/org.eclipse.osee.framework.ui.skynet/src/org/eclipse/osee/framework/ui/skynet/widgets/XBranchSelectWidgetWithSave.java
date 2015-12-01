@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -33,7 +33,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
       addXModifiedListener(new DirtyListener());
    }
 
-   public List<IOseeBranch> getStored() throws OseeCoreException {
+   public List<BranchId> getStored() throws OseeCoreException {
       return artifact.getAttributeValues(attributeType);
    }
 
@@ -56,8 +56,8 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    public Result isDirty() {
       if (isEditable()) {
          try {
-            Collection<IOseeBranch> storedValues = getStored();
-            Collection<IOseeBranch> widgetInput = Arrays.asList(getSelection());
+            Collection<BranchId> storedValues = getStored();
+            Collection<BranchId> widgetInput = Arrays.asList(getSelection());
             if (!Collections.isEqual(widgetInput, storedValues)) {
                return new Result(true, getAttributeType() + " is dirty");
             }
@@ -72,7 +72,7 @@ public class XBranchSelectWidgetWithSave extends XBranchSelectWidget implements 
    public void setAttributeType(Artifact artifact, IAttributeType attributeTypeName) throws OseeCoreException {
       this.artifact = artifact;
       this.attributeType = attributeTypeName;
-      List<IOseeBranch> storedBranchReference = getStored();
+      List<BranchId> storedBranchReference = getStored();
       if (!storedBranchReference.isEmpty()) {
          setSelection(storedBranchReference.get(0));
       }

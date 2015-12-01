@@ -40,7 +40,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = BranchManager.getBranch(txDelta.getEndTx().getBranch()).getShortName(BRANCH_NAME_LEN);
+         branchName = BranchManager.getBranchToken(txDelta.getEndTx().getBranch()).getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
