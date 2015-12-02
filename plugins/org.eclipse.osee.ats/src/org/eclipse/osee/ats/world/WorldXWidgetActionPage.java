@@ -585,29 +585,6 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    @Override
-   public void handleSaveButtonPressed() {
-      try {
-         if (isSaveButtonAvailable() && worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-            ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).handleSaveButtonPressed();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
-   @Override
-   public boolean isSaveButtonAvailable() {
-      try {
-         if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {
-            return ((IWorldEditorParameterProvider) worldEditor.getWorldEditorProvider()).isSaveButtonAvailable();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
-   @Override
    public void createParametersSectionCompleted(IManagedForm managedForm, Composite mainComp) {
       try {
          if (worldEditor.getWorldEditorProvider() instanceof IWorldEditorParameterProvider) {

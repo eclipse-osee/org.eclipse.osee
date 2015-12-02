@@ -295,10 +295,10 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
          if (taskComposite.getTaskXViewer() != null && taskComposite.getTaskXViewer().getSelectedSMAArtifacts() != null && !taskComposite.getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
-            taskComposite.showReleaseMetricsLabel.setText(WorkflowMetrics.getEstRemainMetrics(
-               taskComposite.getTaskXViewer().getSelectedSMAArtifacts(), null,
-               taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
-               null));
+            taskComposite.showReleaseMetricsLabel.setText(
+               WorkflowMetrics.getEstRemainMetrics(taskComposite.getTaskXViewer().getSelectedSMAArtifacts(), null,
+                  taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+                  null));
          } else {
             taskComposite.showReleaseMetricsLabel.setText("");
          }
@@ -308,7 +308,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    public void updateExtendedStatusString() {
       taskComposite.getTaskXViewer().setExtendedStatusString(
-      //
+         //
          (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
          //
          (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
@@ -375,16 +375,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
       };
       exportMetricsReportAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA));
 
-   }
-
-   @Override
-   public void handleSaveButtonPressed() {
-      // do nothing
-   }
-
-   @Override
-   public boolean isSaveButtonAvailable() {
-      return false;
    }
 
 }

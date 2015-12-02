@@ -154,16 +154,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return tableLoadOptions;
    }
 
-   @Override
-   public void handleSaveButtonPressed() {
-      // do nothing
-   }
-
-   @Override
-   public boolean isSaveButtonAvailable() {
-      return false;
-   }
-
    /**
     * Called in the display thread to allow parameters to be retrieved or other setup prior to searching in background
     * thread.

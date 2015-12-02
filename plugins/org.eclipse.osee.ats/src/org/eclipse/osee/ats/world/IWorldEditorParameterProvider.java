@@ -28,10 +28,6 @@ public interface IWorldEditorParameterProvider extends IWorldEditorProvider {
 
    public String[] getWidgetOptions(XWidgetRendererItem xWidgetData);
 
-   public boolean isSaveButtonAvailable();
-
-   public void handleSaveButtonPressed();
-
    /**
     * Create extra controls and return title if it changed
     */

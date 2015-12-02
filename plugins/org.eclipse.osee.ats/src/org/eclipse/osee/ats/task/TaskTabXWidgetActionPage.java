@@ -266,7 +266,7 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    public void updateExtendedStatusString() {
       taskComposite.getTaskXViewer().setExtendedStatusString(
-      //
+         //
          (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
          //
          (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
@@ -310,16 +310,6 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
       };
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
       filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
-   }
-
-   @Override
-   public void handleSaveButtonPressed() {
-      // do nothing
-   }
-
-   @Override
-   public boolean isSaveButtonAvailable() {
-      return false;
    }
 
 }

@@ -120,18 +120,6 @@ public class WorldEditorParameterSearchItemProvider extends WorldEditorProvider 
       return null;
    }
 
-   @Override
-   public void handleSaveButtonPressed() {
-      if (isSaveButtonAvailable()) {
-         worldParameterSearchItem.handleSaveButtonPressed();
-      }
-   }
-
-   @Override
-   public boolean isSaveButtonAvailable() {
-      return worldParameterSearchItem.isSaveButtonAvailable();
-   }
-
    /**
     * Available for actions needing to be done after controls are created
     */

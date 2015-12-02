@@ -130,7 +130,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
       createButtonCompositeOnLeft(mainComp);
       createSearchParametersOnRight(managedForm, mainComp);
-      createSaveButtonCompositeOnRight(mainComp);
       createParametersSectionCompleted(managedForm, mainComp);
 
       return parameterSection;
@@ -175,27 +174,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       buttonComp.layout();
    }
 
-   public void createSaveButtonCompositeOnRight(Composite mainComp) {
-      if (isSaveButtonAvailable()) {
-         Composite buttonComp = toolkit.createComposite(mainComp, SWT.NONE);
-         buttonComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-         buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.FILL, false, true));
-         GridData gridData = new GridData(SWT.FILL, SWT.TOP, true, false);
-
-         Button saveButton = toolkit.createButton(buttonComp, "Save Options", SWT.PUSH);
-         saveButton.setToolTipText("Save search selections as default");
-         gridData = new GridData(SWT.FILL, SWT.TOP, true, true);
-         saveButton.setLayoutData(gridData);
-         saveButton.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               handleSaveButtonPressed();
-            }
-         });
-      }
-
-   }
-
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() throws OseeCoreException {
       return null;
    }
@@ -205,10 +183,6 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    }
 
    public abstract void handleSearchButtonPressed();
-
-   public abstract boolean isSaveButtonAvailable();
-
-   public abstract void handleSaveButtonPressed();
 
    /**
     * Create extra controls and return title if it changed
