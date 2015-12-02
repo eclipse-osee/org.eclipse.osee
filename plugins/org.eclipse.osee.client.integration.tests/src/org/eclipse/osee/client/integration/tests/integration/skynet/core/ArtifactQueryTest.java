@@ -186,7 +186,7 @@ public class ArtifactQueryTest {
    @Test
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
-      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
       Artifact artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
@@ -198,7 +198,7 @@ public class ArtifactQueryTest {
    @Test
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
-      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist(testInfo.getTestName());
@@ -214,7 +214,7 @@ public class ArtifactQueryTest {
 
    @Test
    public void testQueryById() throws OseeCoreException {
-      Branch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
 
       List<Integer> newIdsInOrder = new LinkedList<>();
       Map<Integer, TransactionRecord> idToTxId = new HashMap<>();

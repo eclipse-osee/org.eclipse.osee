@@ -120,7 +120,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Creating root branch");
       }
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
+      IOseeBranch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
 
       TestUtil.sleep(2000);
 
@@ -241,7 +241,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Creating root branch");
       }
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
+      IOseeBranch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
 
       TestUtil.sleep(2000);
 

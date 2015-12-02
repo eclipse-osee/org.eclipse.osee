@@ -186,7 +186,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testBlankWordTemplateContent() {
-      Branch rootBr = BranchManager.createTopLevelBranch("Root Branch");
+      IOseeBranch rootBr = BranchManager.createTopLevelBranch("Root Branch");
       SkynetTransaction tx =
          TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
       Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Volume 4");

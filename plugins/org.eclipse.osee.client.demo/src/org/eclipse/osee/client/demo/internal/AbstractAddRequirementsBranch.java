@@ -35,7 +35,7 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
 
    @Override
    public void run() throws OseeCoreException {
-      Branch requirementsBranch = BranchManager.createTopLevelBranch(branch);
+      IOseeBranch requirementsBranch = BranchManager.createTopLevelBranch(branch);
 
       Artifact sawProduct =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, "SAW Product Decomposition");

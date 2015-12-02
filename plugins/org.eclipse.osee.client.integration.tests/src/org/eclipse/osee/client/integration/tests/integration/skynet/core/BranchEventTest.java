@@ -59,7 +59,7 @@ public class BranchEventTest {
    public TestInfo method = new TestInfo();
 
    private IOseeBranch mainBranch;
-   private Branch topLevel;
+   private IOseeBranch topLevel;
 
    private BranchEventListener branchEventListener;
 
@@ -255,9 +255,9 @@ public class BranchEventTest {
       return workingBranch;
    }
 
-   private Branch testEvents__topLevelAdded() throws Exception {
+   private IOseeBranch testEvents__topLevelAdded() throws Exception {
       branchEventListener.reset();
-      Branch branch = BranchManager.createTopLevelBranch(mainBranch);
+      IOseeBranch branch = BranchManager.createTopLevelBranch(mainBranch);
       Assert.assertNotNull(branch);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Added,

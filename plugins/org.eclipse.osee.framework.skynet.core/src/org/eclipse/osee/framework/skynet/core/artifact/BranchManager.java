@@ -503,13 +503,12 @@ public class BranchManager {
     *
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     */
-   public static Branch createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
+   public static IOseeBranch createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
       return createBaselineBranch(CoreBranches.SYSTEM_ROOT, branch, null);
    }
 
-   public static Branch createTopLevelBranch(final String branchName) throws OseeCoreException {
-      IOseeBranch branchToken = TokenFactory.createBranch(branchName);
-      return createTopLevelBranch(branchToken);
+   public static IOseeBranch createTopLevelBranch(final String branchName) throws OseeCoreException {
+      return createTopLevelBranch(TokenFactory.createBranch(branchName));
    }
 
    public static List<? extends IOseeBranch> getBaselineBranches() throws OseeCoreException {
