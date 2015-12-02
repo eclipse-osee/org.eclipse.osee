@@ -15,6 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   AtsCoreServiceImplTest.class,
    VisitedItemCacheTest.class,
    AtsObjectsTest.class,
    AtsUserGroupTest.class,
