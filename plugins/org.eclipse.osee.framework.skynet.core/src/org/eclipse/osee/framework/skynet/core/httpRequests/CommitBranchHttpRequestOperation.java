@@ -175,7 +175,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
                DefaultBasicUuidRelation defaultBasicGuidRelation =
-                  new DefaultBasicUuidRelation(relChange.getBranch().getUuid(), relChange.getRelationType().getGuid(),
+                  new DefaultBasicUuidRelation(relChange.getBranchId(), relChange.getRelationType().getGuid(),
                      relChange.getItemId(), (int) relChange.getGamma(),
                      relChange.getChangeArtifact().getBasicGuidArtifact(),
                      relChange.getEndTxBArtifact().getBasicGuidArtifact());
@@ -199,7 +199,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
                   if (artEvent == null) {
                      artEvent =
-                        new EventModifiedBasicGuidArtifact(newTransaction.getBranch().getUuid(),
+                        new EventModifiedBasicGuidArtifact(newTransaction.getBranchId(),
                            change.getArtifactType().getGuid(), changedArtifact.getGuid(),
                            new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);

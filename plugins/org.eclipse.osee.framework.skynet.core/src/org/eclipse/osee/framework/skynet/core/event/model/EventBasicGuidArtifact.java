@@ -33,7 +33,7 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
-      this(eventModType, artifact.getBranch().getUuid(), artifact.getArtifactType().getGuid(), artifact.getGuid());
+      this(eventModType, artifact.getBranchId(), artifact.getArtifactType().getGuid(), artifact.getGuid());
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) {

@@ -309,7 +309,7 @@ public final class FrameworkEventUtil {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranch().getUuid(), artifact.getArtTypeGuid(),
+      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(),
          artifact.getGuid());
    }
 

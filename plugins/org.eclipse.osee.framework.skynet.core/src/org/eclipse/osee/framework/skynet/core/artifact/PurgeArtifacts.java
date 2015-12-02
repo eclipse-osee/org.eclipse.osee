@@ -85,7 +85,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       ArtifactJoinQuery artJoin2 = JoinUtility.createArtifactJoinQuery(getJdbcClient());
       try {
          for (Artifact art : artifactsToPurge) {
-            artJoin2.add(art.getArtId(), art.getFullBranch().getUuid());
+            artJoin2.add(art.getArtId(), art.getBranchId());
          }
          artJoin2.store(connection);
 

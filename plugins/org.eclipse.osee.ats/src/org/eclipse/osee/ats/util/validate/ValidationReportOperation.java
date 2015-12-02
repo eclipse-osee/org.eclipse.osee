@@ -137,6 +137,6 @@ public class ValidationReportOperation extends AbstractOperation {
    public static String getRequirementHyperlink(Artifact art) throws OseeCoreException {
       String atsId = AtsUtilClient.getAtsId(art);
       String linkName = String.format("%s(%s)", art.getName(), atsId);
-      return XResultDataUI.getHyperlink(linkName, atsId, art.getFullBranch().getUuid());
+      return XResultDataUI.getHyperlink(linkName, atsId, art.getBranchId());
    }
 }

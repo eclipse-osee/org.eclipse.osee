@@ -671,7 +671,7 @@ public class AccessControlService implements IAccessControlService {
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
          Integer subjectArtId = subject.getArtId();
-         Long objectBranchId = object.getFullBranch().getUuid();
+         Long objectBranchId = object.getBranchId();
 
          if (!artifactLockCache.containsKey(objectBranchId, objectArtId)) {
             AccessObject accessObject = getAccessObject(object);
@@ -698,7 +698,7 @@ public class AccessControlService implements IAccessControlService {
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
-         Long branchUuid = object.getFullBranch().getUuid();
+         Long branchUuid = object.getBranchId();
 
          if (artifactLockCache.containsKey(branchUuid, objectArtId) && canUnlockObject(object, subject)) {
             AccessObject accessObject = getAccessObject(object);
@@ -730,12 +730,12 @@ public class AccessControlService implements IAccessControlService {
          return false;
       }
 
-      return artifactLockCache.containsKey(object.getFullBranch().getUuid(), object.getArtId());
+      return artifactLockCache.containsKey(object.getBranchId(), object.getArtId());
    }
 
    public boolean canUnlockObject(Artifact object, Artifact subject) throws OseeCoreException {
       ensurePopulated();
-      Integer subjectId = artifactLockCache.get(object.getFullBranch().getUuid(), object.getArtId());
+      Integer subjectId = artifactLockCache.get(object.getBranchId(), object.getArtId());
       return subjectId != null && subjectId.intValue() == subject.getArtId();
    }
 
@@ -745,7 +745,7 @@ public class AccessControlService implements IAccessControlService {
 
       if (object instanceof Artifact) {
          Artifact art = (Artifact) object;
-         Integer subjectArtId = artifactLockCache.get(art.getFullBranch().getUuid(), art.getArtId());
+         Integer subjectArtId = artifactLockCache.get(art.getBranchId(), art.getArtId());
 
          if (subjectArtId != null) {
             subject = UserManager.getUserByArtId(subjectArtId);
@@ -763,7 +763,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       if (hasLock(object)) {
-         long branchUuid = object.getFullBranch().getUuid();
+         long branchUuid = object.getBranchId();
          hasAccess = artifactLockCache.get(branchUuid, object.getArtId()) == UserManager.getUser().getArtId();
       }
       return hasAccess;

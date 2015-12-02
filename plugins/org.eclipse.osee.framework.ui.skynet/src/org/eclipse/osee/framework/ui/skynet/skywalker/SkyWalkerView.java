@@ -358,7 +358,7 @@ public class SkyWalkerView extends GenericViewPart {
       memento = memento.createChild(INPUT_KEY);
       memento.putString(GUID_KEY, artifact.getGuid());
       try {
-         memento.putString(BRANCHID_KEY, String.valueOf(artifact.getFullBranch().getUuid()));
+         memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranchId()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.WARNING, "Sky Walker error on save: ", ex);
       }

@@ -126,7 +126,7 @@ public class ConflictDeletionTest {
             dumpArtifact(artifact);
          } else {
             try {
-               chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getFullBranch().getUuid(),
+               chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getBranchId(),
                   artifact.getTransactionNumber(), artifact.getArtId());
                if (chStmt.next()) {
                   fail("Artifact " + artifact.getArtId() + " old Transaction < " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
@@ -135,7 +135,7 @@ public class ConflictDeletionTest {
                chStmt.close();
             }
             try {
-               chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT, artifact.getFullBranch().getUuid(),
+               chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT, artifact.getBranchId(),
                   artifact.getArtId());
                if (chStmt.next()) {
                   assertTrue(
@@ -181,7 +181,7 @@ public class ConflictDeletionTest {
                dumpArtifact(artifact);
             } else {
                try {
-                  chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getFullBranch().getUuid(),
+                  chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT, artifact.getBranchId(),
                      deletionTransaction, artifact.getArtId());
                   if (chStmt.next()) {
                      if (deletionTransaction == chStmt.getInt("transaction_id")) {
@@ -204,7 +204,7 @@ public class ConflictDeletionTest {
                   dumpAttribute(attribute);
                } else {
                   try {
-                     chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getFullBranch().getUuid(),
+                     chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranchId(),
                         deletionTransaction, attribute.getId());
                      if (chStmt.next()) {
                         if (deletionTransaction == chStmt.getInt("transaction_id")) {
@@ -226,7 +226,7 @@ public class ConflictDeletionTest {
                   dumpRelation(relation, artifact);
                } else {
                   try {
-                     chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getFullBranch().getUuid(),
+                     chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getBranchId(),
                         deletionTransaction, relation.getId());
                      if (chStmt.next()) {
                         if (deletionTransaction == chStmt.getInt("transaction_id")) {
@@ -299,7 +299,7 @@ public class ConflictDeletionTest {
    private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getFullBranch().getUuid(),
+         chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranchId(),
             artifact.getTransactionNumber(), attribute.getId());
          if (chStmt.next()) {
             fail("Attribute " + attribute.getId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
@@ -308,7 +308,7 @@ public class ConflictDeletionTest {
          chStmt.close();
       }
       try {
-         chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_ATTRIBUTE, artifact.getFullBranch().getUuid(), value,
+         chStmt.runPreparedQuery(CHECK_FOR_DELETED_TX_CURRENT_ATTRIBUTE, artifact.getBranchId(), value,
             attribute.getId());
          if (chStmt.next()) {
             assertTrue(
@@ -328,7 +328,7 @@ public class ConflictDeletionTest {
          "Relation should be deleted between Parent: " + relation.getAArtifactId() + " and child " + relation.getBArtifactId(),
          relation.isDeleted());
       try {
-         chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getFullBranch().getUuid(),
+         chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_RELATION, artifact.getBranchId(),
             artifact.getTransactionNumber(), relation.getId());
          if (chStmt.next()) {
             fail("Relation " + relation.getId() + " old Transaction < : " + artifact.getTransactionNumber() + "  is set to " + chStmt.getInt("tx_current") + " , should be 0 on branch " + artifact.getBranch().getGuid());
@@ -359,7 +359,7 @@ public class ConflictDeletionTest {
       try {
          if (DEBUG) {
             System.out.println("  Artifact Dump : " + artifact.getName());
-            chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getFullBranch().getUuid(), artifact.getArtId());
+            chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranchId(), artifact.getArtId());
             while (chStmt.next()) {
                System.out.println(String.format(
                   "      Art Id = %d  Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",
@@ -377,7 +377,7 @@ public class ConflictDeletionTest {
       try {
          if (DEBUG) {
             System.out.println("  Attribute Dump");
-            chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getFullBranch().getUuid(),
+            chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getBranchId(),
                attribute.getId());
             while (chStmt.next()) {
                System.out.println(String.format(
@@ -397,7 +397,7 @@ public class ConflictDeletionTest {
       try {
          if (DEBUG) {
             System.out.println("  Relation Dump");
-            chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getFullBranch().getUuid(), relation.getId());
+            chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranchId(), relation.getId());
             while (chStmt.next()) {
                System.out.println(String.format(
                   "        Relation Id = %d  a_art_id = %d b_art_id = %d Branch Uuid = %d TX_Current = %d mod_type = %d Transaction_id = %d Gamma_id = %d",

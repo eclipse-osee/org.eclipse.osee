@@ -34,7 +34,7 @@ public class ArtifactURL {
    public static URL getExternalArtifactLink(final Artifact artifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<>();
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchUuid", String.valueOf(artifact.getBranch().getUuid()));
+      parameters.put("branchUuid", String.valueOf(artifact.getBranchId()));
       String urlString = getPermanentLinkBaseUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
       URL url = null;
       try {

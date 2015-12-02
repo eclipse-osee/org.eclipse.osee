@@ -105,7 +105,7 @@ public class ArtifactMatchInterpreter {
             Conditions.checkExpressionFailOnTrue(!GUID.isValid(input), "guid");
             break;
          case BRANCH_UUID:
-            Long uuid = proxy.getBranch().getUuid();
+            Long uuid = proxy.getBranchId();
             Conditions.checkExpressionFailOnTrue(uuid <= 0L,
                String.format("branchUuid should be > 0, but is [%d]", uuid));
             input = String.valueOf(uuid);

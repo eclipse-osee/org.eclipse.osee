@@ -112,7 +112,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranch().getUuid(), artifact.getArtTypeGuid(),
+      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(),
          artifact.getGuid());
    }
 

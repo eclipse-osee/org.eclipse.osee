@@ -89,7 +89,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
             Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
             if (!attrChanges.isEmpty()) {
                EventModifiedBasicGuidArtifact guidArt =
-                  new EventModifiedBasicGuidArtifact(artifact.getBranch().getUuid(),
+                  new EventModifiedBasicGuidArtifact(artifact.getBranchId(),
                      artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
                artifactEvent.getArtifacts().add(guidArt);
             }
