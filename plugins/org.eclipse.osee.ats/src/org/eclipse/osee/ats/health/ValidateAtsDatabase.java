@@ -791,7 +791,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
       Date date = new Date();
       try {
-         Branch branch = BranchManager.getBranchByUuid(parentBranchUuid);
+         Branch branch = BranchManager.getBranch(parentBranchUuid);
          if (branch.getArchiveState().isArchived()) {
             results.log("validateBranchUuid", String.format(
                "Error: [%s][%d][%s] has Parent Branch Uuid attribute set to Archived Branch [%s] named [%s]",

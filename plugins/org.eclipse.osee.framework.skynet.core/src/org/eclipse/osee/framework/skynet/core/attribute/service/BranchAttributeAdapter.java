@@ -27,7 +27,7 @@ public class BranchAttributeAdapter implements AttributeAdapter<IOseeBranch> {
    @Override
    public IOseeBranch adapt(Attribute<?> attribute, Identity<String> identity) throws OseeCoreException {
       String uuid = identity.getGuid();
-      return Strings.isNumeric(uuid) ? BranchManager.getBranchByUuid(Long.valueOf(uuid)) : null;
+      return Strings.isNumeric(uuid) ? BranchManager.getBranch(Long.valueOf(uuid)) : null;
    }
 
    @Override

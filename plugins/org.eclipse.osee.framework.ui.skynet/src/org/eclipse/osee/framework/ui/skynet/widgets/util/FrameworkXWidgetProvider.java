@@ -387,7 +387,7 @@ public final class FrameworkXWidgetProvider {
                if (Strings.isValid(branchUuid)) {
                   try {
                      Long uuid = Long.valueOf(branchUuid);
-                     widget.setSelection(BranchManager.getBranchByUuid(uuid));
+                     widget.setSelection(BranchManager.getBranch(uuid));
                   } catch (Exception ex) {
                      // do nothing
                   }

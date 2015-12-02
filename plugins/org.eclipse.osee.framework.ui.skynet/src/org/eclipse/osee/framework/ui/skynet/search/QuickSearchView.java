@@ -147,7 +147,7 @@ public class QuickSearchView extends GenericViewPart {
             String uuid = memento.getString(LAST_BRANCH_UUID);
             if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
-                  Branch branch = BranchManager.getBranchByUuid(Long.valueOf(uuid));
+                  Branch branch = BranchManager.getBranch(Long.valueOf(uuid));
                   branchSelect.setSelection(branch);
                } catch (OseeCoreException ex) {
                   // do nothing

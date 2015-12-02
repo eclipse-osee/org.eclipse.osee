@@ -63,7 +63,7 @@ public class ArtifactURIHandler extends URIHandlerImpl {
 
    private <T> T createStream(URI uri, BiFunction<Artifact, Long, T> function) {
       String[] segments = uri.segments();
-      IOseeBranch branch = BranchManager.getBranchByUuid(Long.parseLong(segments[0]));
+      IOseeBranch branch = BranchManager.getBranch(Long.parseLong(segments[0]));
       Artifact artifact = ArtifactQuery.getArtifactFromId(Long.parseLong(segments[2]), branch);
       Long attributeId = Long.parseLong(segments[4]);
       return function.apply(artifact, attributeId);

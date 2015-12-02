@@ -143,7 +143,7 @@ public class BranchManager {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
-         return getBranchByUuid(branch.getUuid());
+         return getBranch(branch.getUuid());
       }
    }
 
@@ -518,7 +518,7 @@ public class BranchManager {
    private void initializeLastBranchValue() {
       try {
          Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
-         lastBranch = getBranchByUuid(branchUuid);
+         lastBranch = getBranch(branchUuid);
       } catch (Exception ex) {
          try {
             lastBranch = getDefaultInitialBranch();
@@ -641,15 +641,6 @@ public class BranchManager {
    
    public static boolean isEditable(IOseeBranch branch) {
       return getBranch(branch).isEditable();
-   }
-
-   public static Branch getBranchByUuid(Long uuid) {
-      checkAndReload(uuid);
-      Branch branch = getCache().getByGuid(uuid);
-      if (branch == null) {
-         throw new BranchDoesNotExist("Branch with guid [%s] does not exist", uuid);
-      }
-      return branch;
    }
 
    public static void resetWasLoaded() {

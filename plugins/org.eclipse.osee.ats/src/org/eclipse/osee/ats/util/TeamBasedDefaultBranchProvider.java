@@ -44,7 +44,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
 
          Branch branch;
          for (IAtsTeamDefinition team : teams) {
-            branch = BranchManager.getBranchByUuid(team.getTeamBranchUuid());
+            branch = BranchManager.getBranch(team.getTeamBranchUuid());
             if (branch != null) {
                branches.add(branch);
             }

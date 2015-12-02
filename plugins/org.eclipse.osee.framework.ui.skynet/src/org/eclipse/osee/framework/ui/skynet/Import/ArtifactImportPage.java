@@ -378,7 +378,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             if (GUID.isValid(guid) && Strings.isNumeric(branchUuidStr)) {
                try {
                   Long bramchUuid = Long.valueOf(branchUuidStr);
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranchByUuid(bramchUuid));
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(bramchUuid));
                   artifactSelectPanel.setDefaultItem(artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE,

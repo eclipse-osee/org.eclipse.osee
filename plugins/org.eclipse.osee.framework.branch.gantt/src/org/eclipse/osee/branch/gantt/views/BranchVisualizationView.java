@@ -133,7 +133,7 @@ public class BranchVisualizationView extends ViewPart {
          if (Strings.isValid(branchUuid)) {
             try {
                Long uuid = Long.valueOf(branchUuid);
-               Branch branch = BranchManager.getBranchByUuid(uuid);
+               Branch branch = BranchManager.getBranch(uuid);
                if (branch != null) {
                   xBranchSelectWidget.setSelection(branch);
                }

@@ -32,7 +32,7 @@ public abstract class XTypeListViewer extends XListViewer {
 
    public IOseeBranch resolveBranch(long branchUuid) {
       try {
-         return BranchManager.getBranchByUuid(branchUuid);
+         return BranchManager.getBranch(branchUuid);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
