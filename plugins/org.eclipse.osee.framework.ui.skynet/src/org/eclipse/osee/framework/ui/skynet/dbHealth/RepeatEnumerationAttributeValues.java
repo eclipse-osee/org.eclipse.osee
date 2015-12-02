@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -53,12 +54,12 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    @Override
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
-      HashCollection<Branch, AttrData> attributesWithErrors = new HashCollection<>();
-      List<Branch> branches = BranchManager.getBaselineBranches();
+      HashCollection<IOseeBranch, AttrData> attributesWithErrors = new HashCollection<>();
+      List<? extends IOseeBranch> branches = BranchManager.getBaselineBranches();
       if (branches.isEmpty()) {
          throw new OseeStateException("no branches found");
       }
-      for (Branch branch : branches) {
+      for (IOseeBranch branch : branches) {
          Collection<AttrData> datas = getRepeatEnumeratedAttrs(monitor, branch);
          if (!datas.isEmpty()) {
             attributesWithErrors.put(branch, datas);
@@ -68,7 +69,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
       appendToDetails(AHTML.beginMultiColumnTable(100, 1));
       appendToDetails(AHTML.addHeaderRowMultiColumnTable(new String[] {"GUID", "ATTR TYPE ID", "VALUE"}));
-      for (Branch branch : attributesWithErrors.keySet()) {
+      for (IOseeBranch branch : attributesWithErrors.keySet()) {
          appendToDetails(AHTML.addRowSpanMultiColumnTable(branch.getName(), 3));
          for (AttrData attrData : attributesWithErrors.getValues(branch)) {
             appendToDetails(AHTML.addRowMultiColumnTable(new String[] {
@@ -85,7 +86,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       setItemsToFix(attributesWithErrors.size());
       checkForCancelledStatus(monitor);
       if (isFixOperationEnabled() && hadItemsToFix()) {
-         for (Branch branch : attributesWithErrors.keySet()) {
+         for (IOseeBranch branch : attributesWithErrors.keySet()) {
             Collection<AttrData> attributeData = attributesWithErrors.getValues(branch);
             List<String> artifactGuids = new ArrayList<>(attributeData.size());
             for (AttrData attrData : attributeData) {
@@ -93,9 +94,8 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
             }
 
             ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
-            SkynetTransaction transaction =
-               TransactionManager.createTransaction(branch,
-                  "Delete Repeat Attribute Values for" + branch.getShortName());
+            SkynetTransaction transaction = TransactionManager.createTransaction(branch,
+               "Delete Repeat Attribute Values for" + Branch.getShortName(branch));
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
                AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId());
@@ -123,7 +123,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       return "Deletes the repeat attribute values using a transaction directly on the branch";
    }
 
-   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeCoreException {
+   private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, IOseeBranch branch) throws OseeCoreException {
       Set<AttrData> attrData = new HashSet<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {

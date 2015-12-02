@@ -512,7 +512,7 @@ public class BranchManager {
       return createTopLevelBranch(branchToken);
    }
 
-   public static List<Branch> getBaselineBranches() throws OseeCoreException {
+   public static List<? extends IOseeBranch> getBaselineBranches() throws OseeCoreException {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 

@@ -38,14 +38,14 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
    @Override
    public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
       final Branch[] selectedBranch = new Branch[1];
-      final Collection<Branch> selectable = BranchManager.getBaselineBranches();
+      final Collection<? extends IOseeBranch> selectable = BranchManager.getBaselineBranches();
       selectable.remove(uiData.getTxDelta().getStartTx().getBranch());
       IStatus status = executeInUiThread(selectable, selectedBranch);
       monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<Branch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
+   private IStatus executeInUiThread(final Collection<? extends IOseeBranch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {
@@ -67,7 +67,7 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
       return status;
    }
 
-   private IStatus getUserSelection(Collection<Branch> selectable, Branch[] selectedBranch) {
+   private IStatus getUserSelection(Collection<? extends IOseeBranch> selectable, Branch[] selectedBranch) {
       IStatus status = Status.OK_STATUS;
       BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
       int result = dialog.open();

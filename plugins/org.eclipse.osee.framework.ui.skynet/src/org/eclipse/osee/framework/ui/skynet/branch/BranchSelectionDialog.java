@@ -52,14 +52,14 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
    private static IOseeBranch lastSelectedBranch;
    private XBranchWidget branchWidget;
    private boolean allowOnlyWorkingBranches;
-   private final Collection<Branch> branches;
+   private final Collection<? extends IOseeBranch> branches;
 
    public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
       this(title, null);
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
    }
 
-   public BranchSelectionDialog(String title, Collection<Branch> branches) {
+   public BranchSelectionDialog(String title, Collection<? extends IOseeBranch> branches) {
       super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
       allowOnlyWorkingBranches = false;
       selected = null;
