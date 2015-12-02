@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -484,9 +485,9 @@ public class AttributeConflict extends Conflict {
          Artifact destArtifact;
          try {
             mergeArtifact =
-               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(mergeBranchId));
+               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), TokenFactory.createBranch(mergeBranchId));
             destArtifact =
-               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), BranchManager.getBranch(destBranchId));
+               ArtifactQuery.getArtifactFromId(getArtifact().getArtId(), TokenFactory.createBranch(destBranchId));
          } catch (ArtifactDoesNotExist ex) {
             return false;
          }

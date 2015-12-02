@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -340,7 +341,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
          try {
             if (memento != null && memento.getString(ROOT_UUID) != null && memento.getString(ROOT_BRANCH) != null) {
-               Branch branch = BranchManager.getBranch(Long.parseLong(memento.getString(ROOT_BRANCH)));
+               BranchId branch = TokenFactory.createBranch(Long.parseLong(memento.getString(ROOT_BRANCH)));
 
                if (!BranchManager.isArchived(branch) || AccessControlManager.isOseeAdmin()) {
                   Artifact previousArtifact =

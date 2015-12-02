@@ -30,7 +30,6 @@ import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -172,7 +171,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    /**
     * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
     * and enablements for controls on this page. Subclasses may extend.
-    * 
+    *
     * @param event Event
     */
    @Override
@@ -410,12 +409,9 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          }
 
          try {
-            Long branchUuid = settings.getLong(BRANCH_KEY);
-            if (branchUuid > 0) {
-               Branch branch = BranchManager.getBranch(branchUuid);
-               if (branch != null) {
-                  branchSelectComposite.setSelected(branch);
-               }
+            Long branchId = settings.getLong(BRANCH_KEY);
+            if (branchId > 0) {
+               branchSelectComposite.setSelected(BranchManager.getBranch(branchId));
             }
          } catch (Exception ex) {
             // Do Nothing

@@ -16,9 +16,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -173,7 +174,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
                   int artId = chStmt.getInt("art_id");
                   long branchUuid = chStmt.getLong("branch_id");
                   if (recurseChildrenBranches) {
-                     Branch branch = BranchManager.getBranch(branchUuid);
+                     BranchId branch = TokenFactory.createBranch(branchUuid);
                      Artifact artifactFromId = ArtifactQuery.getArtifactFromId(artId, branch);
                      artifactsToPurge.add(artifactFromId);
                   } else {

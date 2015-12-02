@@ -122,7 +122,7 @@ public class XBranchWidget extends GenericXWidget {
       refresh();
    }
 
-   public void reveal(Branch branch) {
+   public void reveal(BranchId branch) {
       branchXViewer.reveal(branch);
       branchXViewer.setSelection(new StructuredSelection(branch), true);
       refresh();

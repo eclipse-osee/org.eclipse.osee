@@ -52,6 +52,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -771,7 +772,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    public static void validateBranchUuid(IAtsConfigObject name, long parentBranchUuid, ValidateResults results) {
       Date date = new Date();
       try {
-         BranchId branch = BranchManager.getBranch(parentBranchUuid);
+         BranchId branch = TokenFactory.createBranch(parentBranchUuid);
          if (BranchManager.isArchived(branch)) {
             results.log("validateBranchUuid",
                String.format(

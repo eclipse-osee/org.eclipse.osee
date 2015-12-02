@@ -29,6 +29,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -336,7 +337,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                   String branchUuidStr = memento.getString(BRANCH_ID);
                   if (Strings.isValid(branchUuidStr)) {
                      Long branchUuid = Long.valueOf(branchUuidStr);
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchUuid));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid,TokenFactory.createBranch(branchUuid));
                      openViewUpon(artifact, false);
                   }
                } else {

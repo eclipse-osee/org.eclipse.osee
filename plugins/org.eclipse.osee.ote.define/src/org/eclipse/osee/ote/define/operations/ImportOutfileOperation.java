@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -38,9 +37,9 @@ import org.eclipse.osee.ote.define.jobs.OutfileToArtifactJob;
 public class ImportOutfileOperation {
 
    private final URI[] fileSystemObjects;
-   private final Branch selectedBranch;
+   private final BranchId selectedBranch;
 
-   public ImportOutfileOperation(Branch selectedBranch, URI... fileSystemObjects) throws OseeCoreException {
+   public ImportOutfileOperation(BranchId selectedBranch, URI... fileSystemObjects) throws OseeCoreException {
       checkForNull(selectedBranch);
       checkForNull(fileSystemObjects);
       checkForEmpty(fileSystemObjects);

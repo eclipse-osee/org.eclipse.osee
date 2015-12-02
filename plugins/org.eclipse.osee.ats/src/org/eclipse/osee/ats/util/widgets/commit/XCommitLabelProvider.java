@@ -21,7 +21,8 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -101,17 +102,17 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      Branch branch = null;
+      BranchId branch;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
          if (!AtsClientService.get().getBranchService().isBranchValid(configArt)) {
             return String.format("Branch not configured for [%s]", element);
          } else {
-            branch = BranchManager.getBranch(configArt.getBaselineBranchUuid());
+            branch = TokenFactory.createBranch(configArt.getBaselineBranchUuid());
          }
       } else if (element instanceof TransactionRecord) {
          TransactionRecord txRecord = (TransactionRecord) element;
-         branch = txRecord.getFullBranch();
+         branch = txRecord.getBranch();
       } else {
          throw new OseeArgumentException("Unhandled element type [%s]", element.getClass().toString());
       }
@@ -176,7 +177,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "Not Committed";
    }
 
-   private String handleDestBranchColumn(Object element, Branch branch) {
+   private String handleDestBranchColumn(Object element, BranchId branchToken) {
+      IOseeBranch branch = BranchManager.getBranch(branchToken);
       if (element instanceof IAtsVersion) {
          return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : branch.getShortName();
       } else if (element instanceof IAtsTeamDefinition) {
@@ -187,17 +189,23 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String handleDestBranchCreationDateColumn(Object element, Branch branch) throws OseeCoreException {
+   private String handleDestBranchCreationDateColumn(Object element, BranchId branch) throws OseeCoreException {
       if (element instanceof IAtsVersion) {
-         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(
-            branch.getBaseTransaction().getTimeStamp());
+         return getColumnText("Version", element, branch);
       } else if (element instanceof IAtsTeamDefinition) {
-         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(
-            branch.getBaseTransaction().getTimeStamp());
+         return getColumnText("Team Definition", element, branch);
       } else if (element instanceof TransactionRecord) {
-         return DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+         return getColumnText(null, element, branch);
       }
       return "";
+   }
+
+   private String getColumnText(String elementType, Object element, BranchId branch) {
+      if (branch == null) {
+         return "Parent Branch Not Configured for " + elementType + " [" + element + "]";
+      } else {
+         return DateUtil.getMMDDYYHHMM(BranchManager.getBaseTransaction(branch).getTimeStamp());
+      }
    }
 
    private String handleActionColumn(BranchId branch) throws OseeCoreException {

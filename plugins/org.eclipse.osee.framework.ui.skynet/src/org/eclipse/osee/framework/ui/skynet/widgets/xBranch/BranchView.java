@@ -21,7 +21,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -156,7 +156,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
       mm.insertBefore(XViewer.MENU_GROUP_PRE, new SetAsFavoriteAction(xBranchWidget));
    }
 
-   public static void revealBranch(Branch branch) throws OseeCoreException {
+   public static void revealBranch(BranchId branch) throws OseeCoreException {
       try {
          BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
          branchView.reveal(branch);
@@ -165,7 +165,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
       }
    }
 
-   private void reveal(Branch branch) {
+   private void reveal(BranchId branch) {
       if (isInitialized()) {
          xBranchWidget.reveal(branch);
       }

@@ -504,7 +504,7 @@ public final class BranchManager {
       return getCache().getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
-   private static IOseeBranch getDefaultInitialBranch() throws OseeCoreException {
+   private static BranchId getDefaultInitialBranch() throws OseeCoreException {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
          new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
             "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
@@ -512,7 +512,7 @@ public final class BranchManager {
       for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions
-            for (Branch branch : provider.getDefaultInitialBranches()) {
+            for (BranchId branch : provider.getDefaultInitialBranches()) {
                if (branch != null) {
                   return branch;
                }
@@ -532,7 +532,7 @@ public final class BranchManager {
             lastBranch = getBranch(branchUuid);
          } catch (Exception ex) {
             try {
-               lastBranch = getDefaultInitialBranch();
+               lastBranch = getBranch(getDefaultInitialBranch());
                UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
             } catch (OseeCoreException ex1) {
                OseeLog.log(Activator.class, Level.SEVERE, ex1);

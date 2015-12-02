@@ -17,10 +17,10 @@ import org.eclipse.osee.ats.api.config.AtsConfiguration;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.swt.SWT;
@@ -67,7 +67,7 @@ public class AtsConfigPreferencePage extends PreferencePage implements IWorkbenc
 
                if (dialog.open() == 0) {
                   AtsConfiguration config = (AtsConfiguration) dialog.getResult()[0];
-                  Branch branch = BranchManager.getBranch(config.getBranchUuid());
+                  BranchId branch = TokenFactory.createBranch(config.getBranchUuid());
 
                   AtsUtilCore.storeAtsBranch(branch, config.getName());
 

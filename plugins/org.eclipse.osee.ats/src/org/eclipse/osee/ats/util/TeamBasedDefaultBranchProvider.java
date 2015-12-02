@@ -19,11 +19,11 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesProvider;
 
 /**
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IDefaultInitialBranchesPr
 public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesProvider {
 
    @Override
-   public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException {
+   public Collection<BranchId> getDefaultInitialBranches() throws OseeCoreException {
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       try {
          Collection<IAtsTeamDefinition> teams = new ArrayList<>();
@@ -40,14 +40,10 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
             AtsRelationTypes.TeamMember_Team)) {
             teams.add(AtsClientService.get().getConfig().getSoleByUuid(art.getUuid(), IAtsTeamDefinition.class));
          }
-         Collection<Branch> branches = new LinkedList<>();
 
-         Branch branch;
+         Collection<BranchId> branches = new LinkedList<>();
          for (IAtsTeamDefinition team : teams) {
-            branch = BranchManager.getBranch(team.getTeamBranchUuid());
-            if (branch != null) {
-               branches.add(branch);
-            }
+            branches.add(TokenFactory.createBranch(team.getTeamBranchUuid()));
          }
 
          return branches;

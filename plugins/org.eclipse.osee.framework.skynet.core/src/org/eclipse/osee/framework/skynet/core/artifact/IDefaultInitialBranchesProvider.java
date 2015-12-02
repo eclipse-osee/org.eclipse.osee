@@ -11,12 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Robert A. Fisher
  */
 public interface IDefaultInitialBranchesProvider {
-   public Collection<Branch> getDefaultInitialBranches() throws OseeCoreException;
+   public Collection<BranchId> getDefaultInitialBranches() throws OseeCoreException;
 }

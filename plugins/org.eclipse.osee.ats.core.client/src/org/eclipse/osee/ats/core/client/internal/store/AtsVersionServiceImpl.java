@@ -27,13 +27,13 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.version.AbstractAtsVersionServiceImpl;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * @author Donald G Dunne
@@ -151,11 +151,11 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    }
 
    @Override
-   public Branch getBranch(IAtsVersion version) {
-      Branch branch = null;
+   public BranchId getBranch(IAtsVersion version) {
+      BranchId branch = null;
       Long branchUuid = getBranchId(version);
       if (branchUuid != null && branchUuid > 0) {
-         branch = BranchManager.getBranch(branchUuid);
+         branch = TokenFactory.createBranch(branchUuid);
       }
       return branch;
    }

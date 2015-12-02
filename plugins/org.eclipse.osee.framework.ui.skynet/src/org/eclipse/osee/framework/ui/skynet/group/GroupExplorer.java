@@ -24,9 +24,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,7 +80,7 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
    private Collection<GroupExplorerItem> selected;
    private Object[] expanded = new Object[] {};
    private XBranchSelectWidget branchSelect;
-   private Branch branch;
+   private IOseeBranch branch;
    private GroupExplorerDragAndDrop groupExpDnd;
 
    private NeedProjectMenuListener needProjectListener;
@@ -469,15 +469,13 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
             memento = memento.getChild(INPUT);
             if (memento != null) {
                branchUuid = Long.parseLong(memento.getString(BRANCH_ID));
-               if (branchUuid != null) {
-                  try {
-                     branch = BranchManager.getBranch(branchUuid);
-                     if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
-                        branch = null;
-                     }
-                  } catch (BranchDoesNotExist ex) {
+               try {
+                  branch = BranchManager.getBranch(branchUuid);
+                  if (BranchManager.getState(branch).isDeleted() || BranchManager.isArchived(branch)) {
                      branch = null;
                   }
+               } catch (BranchDoesNotExist ex) {
+                  branch = null;
                }
             }
          }

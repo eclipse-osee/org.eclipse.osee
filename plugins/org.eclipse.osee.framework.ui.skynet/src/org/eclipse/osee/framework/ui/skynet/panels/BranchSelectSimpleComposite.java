@@ -163,41 +163,39 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
          }
       }
 
-      List<String> branchUuidsToUse = new ArrayList<>();
+      List<Long> branchUuidsToUse = new ArrayList<>();
       for (String id : branchUuids) {
          try {
-            Branch branch = BranchManager.getBranch(Long.parseLong(id));
-            if (branch != null) {
-               branchUuidsToUse.add(id);
+            Long branchId = Long.parseLong(id);
+            if (BranchManager.branchExists(branchId)) {
+               branchUuidsToUse.add(branchId);
             }
          } catch (Exception ex) {
             // Do nothing
          }
       }
 
-      setCombo(branchUuidsToUse.toArray(new String[branchUuidsToUse.size()]), lastSelected);
+      setCombo(branchUuidsToUse, lastSelected);
    }
 
-   private void setCombo(String[] values, String lastSelected) {
+   private void setCombo(List<Long> values, String lastSelected) {
       int toSelect = 0;
-      for (int i = 0; i < values.length; i++) {
-         String toStore = values[i];
-         if (Strings.isValid(toStore)) {
-            try {
-               Branch branch = BranchManager.getBranch(Long.parseLong(toStore));
+      for (int i = 0; i < values.size(); i++) {
+         Long toStore = values.get(i);
+         try {
+            IOseeBranch branch = BranchManager.getBranch(toStore);
 
-               String branchName = branch.getName();
-               branchSelectCombo.add(branchName);
-               branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
-               branchSelectCombo.setData(branchName, branch);
-               if (toStore.equals(lastSelected)) {
-                  toSelect = i;
-                  branchSelectCombo.select(toSelect);
-               }
-            } catch (Exception ex) {
-               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch uuid [%s] to selection list.",
-                  toStore);
+            String branchName = branch.getName();
+            branchSelectCombo.add(branchName);
+            branchSelectCombo.setData(String.valueOf(branch.getUuid()), branch);
+            branchSelectCombo.setData(branchName, branch);
+            if (toStore.equals(lastSelected)) {
+               toSelect = i;
+               branchSelectCombo.select(toSelect);
             }
+         } catch (Exception ex) {
+            OseeLog.logf(Activator.class, Level.SEVERE, "Unable to add invalid branch uuid [%s] to selection list.",
+               toStore);
          }
       }
    }

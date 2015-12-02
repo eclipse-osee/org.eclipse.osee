@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -62,7 +63,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
@@ -254,7 +254,7 @@ public class AccessControlService implements IAccessControlService {
                   artifactLockCache.put(branchUuid, objectId, subjectId);
                } else {
                   AccessObject accessObject =
-                     ArtifactAccessObject.getArtifactAccessObject(objectId, BranchManager.getBranch(branchUuid));
+                     ArtifactAccessObject.getArtifactAccessObject(objectId, TokenFactory.createBranch(branchUuid));
                   cacheAccessObject(objectId, subjectId, permission, accessObject);
 
                   ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
@@ -540,7 +540,7 @@ public class AccessControlService implements IAccessControlService {
 
             if (recurse) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                  BranchManager.getBranch(artifactAccessObject.getBranchId()));
+                  TokenFactory.createBranch(artifactAccessObject.getBranchId()));
 
                for (Artifact child : artifact.getChildren()) {
                   AccessControlData childAccessControlData = null;
@@ -651,7 +651,7 @@ public class AccessControlService implements IAccessControlService {
 
    private PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Object object) throws OseeCoreException {
       long branchUuid = ((AccessObject) object).getBranchId();
-      Branch branch = BranchManager.getBranch(branchUuid);
+      BranchId branch = TokenFactory.createBranch(branchUuid);
 
       return getBranchPermission(subject, branch);
    }

@@ -86,5 +86,4 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       artifact.setSoleAttributeFromString(CoreAttributeTypes.GeneralStringData, data);
       artifact.persist(transaction);
    }
-
 }

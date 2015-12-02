@@ -14,12 +14,11 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 import java.net.URL;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.cm.IOseeCmService;
 import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
@@ -67,7 +66,7 @@ public class XResultBrowserListener implements LocationListener {
                   if (m.find()) {
                      String guid = m.group(1);
                      Long branchUuid = Long.parseLong(m.group(2));
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, BranchManager.getBranch(branchUuid));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(branchUuid));
                      RendererManager.openInJob(artifact, PresentationType.DEFAULT_OPEN);
                   }
                } catch (Exception ex) {
@@ -81,9 +80,7 @@ public class XResultBrowserListener implements LocationListener {
                break;
             case openBranch:
                event.doit = false;
-               long branchUuid = new Long(value);
-               Branch branch = BranchManager.getBranch(branchUuid);
-               BranchView.revealBranch(branch);
+               BranchView.revealBranch(TokenFactory.createBranch(Long.valueOf(value)));
                break;
             case browserInternal:
                event.doit = false;

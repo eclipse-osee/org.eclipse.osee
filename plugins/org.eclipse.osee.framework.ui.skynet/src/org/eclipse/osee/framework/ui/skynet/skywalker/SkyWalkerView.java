@@ -24,6 +24,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -156,7 +157,7 @@ public class SkyWalkerView extends GenericViewPart {
       try {
          if (storedGuid != null) {
             Artifact art =
-               ArtifactQuery.getArtifactFromId(storedGuid, BranchManager.getBranch(Long.parseLong(storedBrandId)));
+               ArtifactQuery.getArtifactFromId(storedGuid, TokenFactory.createBranch(Long.parseLong(storedBrandId)));
             if (art != null) {
                explore(art);
             }

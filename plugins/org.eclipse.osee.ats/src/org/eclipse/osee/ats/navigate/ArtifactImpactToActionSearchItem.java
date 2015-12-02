@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -121,7 +120,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
 
          HashCollection<Artifact, TransactionRecord> transactionMap =
             ChangeManager.getModifingTransactions(processArts);
-         HashCollection<Artifact, IOseeBranch> branchMap = ChangeManager.getModifingBranches(processArts);
+         HashCollection<Artifact, BranchId> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
             // System.out.println(str);
@@ -134,9 +133,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             // Check for changes on working branches
             boolean workingBranchesFound = false;
 
-            Collection<IOseeBranch> branches = branchMap.getValues(srchArt);
+            Collection<BranchId> branches = branchMap.getValues(srchArt);
             if (branches != null) {
-               for (IOseeBranch branch : branches) {
+               for (BranchId branch : branches) {
                   Artifact assocArt = BranchManager.getAssociatedArtifact(branch);
                   if (assocArt != null && !assocArt.equals(AtsCoreUsers.SYSTEM_USER)) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
@@ -145,7 +144,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                         XResultDataUI.getHyperlink(assocArt),
                         assocArt.getName()}));
                   } else {
-                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Branch", "", branch.getName()}));
+                     rd.addRaw(AHTML.addRowMultiColumnTable(
+                        new String[] {"Branch", "", BranchManager.getBranch(branch).getName()}));
                   }
                   workingBranchesFound = true;
                }

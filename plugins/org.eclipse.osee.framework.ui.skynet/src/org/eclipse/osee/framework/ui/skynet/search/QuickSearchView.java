@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -148,8 +147,7 @@ public class QuickSearchView extends GenericViewPart {
             String uuid = memento.getString(LAST_BRANCH_UUID);
             if (Strings.isValid(uuid) && uuid.matches("\\d+")) {
                try {
-                  Branch branch = BranchManager.getBranch(Long.valueOf(uuid));
-                  branchSelect.setSelection(branch);
+                  branchSelect.setSelection(BranchManager.getBranch(Long.valueOf(uuid)));
                } catch (OseeCoreException ex) {
                   // do nothing
                }

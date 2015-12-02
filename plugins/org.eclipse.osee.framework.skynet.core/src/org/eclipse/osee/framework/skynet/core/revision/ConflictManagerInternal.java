@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
@@ -107,7 +108,7 @@ public class ConflictManagerInternal {
             AttributeConflict attributeConflict = new AttributeConflict(chStmt.getInt("source_gamma_id"),
                chStmt.getInt("dest_gamma_id"), chStmt.getInt("art_id"), null, commitTransaction,
                chStmt.getString("source_value"), chStmt.getInt("attr_id"), chStmt.getLong("attr_type_id"),
-               BranchManager.getBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
+               TokenFactory.createBranch(chStmt.getLong("merge_branch_id")), sourceBranch,
                BranchManager.getBranch(chStmt.getLong("dest_branch_id")));
             attributeConflict.setStatus(ConflictStatus.valueOf(chStmt.getInt("status")));
             conflicts.add(attributeConflict);

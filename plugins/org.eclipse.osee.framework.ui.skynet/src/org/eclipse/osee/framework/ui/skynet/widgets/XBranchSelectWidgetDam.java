@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -92,10 +91,7 @@ public class XBranchSelectWidgetDam extends XBranchSelectWidget implements IAttr
       this.attributeType = attributeTypeName;
       Long storedUuid = getStoredUuid();
       if (storedUuid != null && storedUuid > 0) {
-         IOseeBranch branch = BranchManager.getBranch(storedUuid);
-         if (branch != null) {
-            setSelection(branch);
-         }
+         setSelection(BranchManager.getBranch(storedUuid));
       }
    }
 

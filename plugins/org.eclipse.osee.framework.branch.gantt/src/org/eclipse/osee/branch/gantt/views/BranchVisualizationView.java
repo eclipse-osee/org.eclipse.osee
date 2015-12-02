@@ -133,11 +133,8 @@ public class BranchVisualizationView extends ViewPart {
          String branchUuid = UserManager.getUser().getSetting(BRANCH_KEY);
          if (Strings.isValid(branchUuid)) {
             try {
-               Long uuid = Long.valueOf(branchUuid);
-               Branch branch = BranchManager.getBranch(uuid);
-               if (branch != null) {
-                  xBranchSelectWidget.setSelection(branch);
-               }
+               IOseeBranch branch = BranchManager.getBranch(Long.valueOf(branchUuid));
+               xBranchSelectWidget.setSelection(branch);
             } catch (Exception ex) {
                // do nothing
             }

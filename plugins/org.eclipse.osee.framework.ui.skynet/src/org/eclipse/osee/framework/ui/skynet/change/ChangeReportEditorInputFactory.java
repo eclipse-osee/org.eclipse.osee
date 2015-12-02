@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -55,8 +56,7 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
                String branchUuid = memento.getString(BRANCH_ID_KEY);
                if (Strings.isNumeric(branchUuid)) {
                   try {
-                     Branch branch = BranchManager.getBranch(Long.valueOf(branchUuid));
-                     toReturn.setBranch(branch);
+                     toReturn.setBranch(TokenFactory.createBranch(Long.valueOf(branchUuid)));
                   } catch (Exception ex) {
                      // do nothing
                   }
