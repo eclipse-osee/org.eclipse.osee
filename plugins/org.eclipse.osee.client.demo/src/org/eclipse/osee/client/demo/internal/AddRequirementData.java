@@ -82,7 +82,7 @@ public class AddRequirementData implements IDbInitializationTask {
             OseeLog.log(AddRequirementData.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+         IOseeBranch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          sleep(5000);
          // need to update the branch type;

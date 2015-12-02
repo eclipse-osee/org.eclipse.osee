@@ -220,7 +220,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+         IOseeBranch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
