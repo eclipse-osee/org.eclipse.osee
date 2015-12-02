@@ -467,11 +467,11 @@ public class BranchManager {
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
-   public static Branch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
       return createWorkingBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
    }
 
-   public static Branch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getUuid(), associatedArtifact);
    }

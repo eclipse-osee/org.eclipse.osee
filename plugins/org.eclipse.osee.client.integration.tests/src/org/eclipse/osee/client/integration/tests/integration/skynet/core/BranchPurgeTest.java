@@ -86,7 +86,7 @@ public class BranchPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      Branch branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
+      IOseeBranch branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts =
          TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, method.getQualifiedTestName(),
             branch);

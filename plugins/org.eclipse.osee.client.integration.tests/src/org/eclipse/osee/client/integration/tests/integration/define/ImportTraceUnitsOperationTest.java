@@ -89,7 +89,7 @@ public final class ImportTraceUnitsOperationTest {
       "Robot Interfaces", "Individual robot events", "Collaborative Robot");
 
    private IOseeBranch branch;
-   private Branch importToBranch;
+   private IOseeBranch importToBranch;
    private File testFile;
 
    @Before

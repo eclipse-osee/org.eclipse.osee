@@ -60,7 +60,7 @@ public class RelationIntegrityCheckTest {
    private final DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map =
       new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
    private IOseeBranch parentBranch;
-   private Branch workingBranch;
+   private IOseeBranch workingBranch;
 
    @Before
    public void setUp() throws Exception {
