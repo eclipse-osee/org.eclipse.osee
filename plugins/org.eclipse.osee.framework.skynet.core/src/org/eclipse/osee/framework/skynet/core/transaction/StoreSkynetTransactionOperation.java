@@ -94,9 +94,9 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       TransactionManager.internalPersist(connection, transactionRecord);
       if (!txDatas.isEmpty()) {
          executeTransactionDataItems(connection);
-      }
-      if (BranchManager.getState(branch).isCreated()) {
-         BranchManager.getBranch(branch).setBranchState(BranchState.MODIFIED);
+         if (BranchManager.getState(branch).isCreated()) {
+            BranchManager.setState(branch, BranchState.MODIFIED);
+         }
       }
    }
 

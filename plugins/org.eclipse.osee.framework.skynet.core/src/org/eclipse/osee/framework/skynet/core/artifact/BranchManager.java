@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,13 +57,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateAssociatedArtifactHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchArchivedStateHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchNameHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -72,6 +75,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcStatement;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
@@ -279,9 +283,13 @@ public final class BranchManager {
       Operations.executeWorkAndCheckStatus(operation, monitor);
    }
 
-   public static void updateBranchState(IProgressMonitor monitor, final long branchUuid, final BranchState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchStateHttpRequestOperation(branchUuid, state);
-      Operations.executeWorkAndCheckStatus(operation, monitor);
+   public static void setState(BranchId branch, BranchState state) {
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+      Response response = proxy.setBranchState(branch.getId(), state);
+      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+         BranchManager.getBranch(branch).setBranchState(state);
+         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.StateUpdated, branch));
+      }
    }
 
    public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchUuid, final BranchArchivedState state) throws OseeCoreException {

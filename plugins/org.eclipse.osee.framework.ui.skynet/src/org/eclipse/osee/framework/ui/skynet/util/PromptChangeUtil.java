@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -48,8 +49,7 @@ public class PromptChangeUtil {
       if (result == 0) {
          BranchState state = ld.getSelection();
          for (TreeItem item : branches) {
-            Branch branch = (Branch) item.getData();
-            BranchManager.updateBranchState(null, branch.getUuid(), state);
+            BranchManager.setState((BranchId) item.getData(), state);
          }
          return true;
       }

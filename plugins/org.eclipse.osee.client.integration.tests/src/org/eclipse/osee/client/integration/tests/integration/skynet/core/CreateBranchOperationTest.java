@@ -53,9 +53,8 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
-      workingBranch.setBranchState(BranchState.DELETED);
-      BranchManager.persist(workingBranch);
+      IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
+      BranchManager.setState(workingBranch, BranchState.DELETED);
 
       Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
@@ -70,9 +69,8 @@ public class CreateBranchOperationTest {
       Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
       folder.persist("");
 
-      Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
-      workingBranch.setBranchState(BranchState.REBASELINED);
-      BranchManager.persist(workingBranch);
+      IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
+      BranchManager.setState(workingBranch, BranchState.REBASELINED);
 
       Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
@@ -97,9 +95,9 @@ public class CreateBranchOperationTest {
          Artifact folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, CoreBranches.COMMON);
          folder.persist("");
 
-         Branch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
-         workingBranch.setBranchState(state);
-         BranchManager.persist(workingBranch);
+         IOseeBranch workingBranch =
+            BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
+         BranchManager.setState(workingBranch, state);
 
          try {
             BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);

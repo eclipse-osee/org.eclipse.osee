@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.apache.commons.lang.mutable.MutableBoolean;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -50,18 +51,17 @@ public class RebaselineInProgressHandler {
       MergeView.openView(branch, mergeBranch.getDestinationBranch(), branch.getBaseTransaction());
    }
 
-   public static void cancelCurrentUpdate(Branch branch, boolean isSkipPrompt) throws OseeCoreException {
+   public static void cancelCurrentUpdate(BranchId branch, boolean isSkipPrompt) throws OseeCoreException {
       if (isSkipPrompt || promptUser(branch)) {
          MergeBranch mergeBranch = BranchManager.getFirstMergeBranch(branch);
-         if (branch.getBranchState() == BranchState.REBASELINE_IN_PROGRESS) {
+         if (BranchManager.getState(branch).isRebaselineInProgress()) {
             BranchManager.purgeBranch(mergeBranch.getDestinationBranch());
-            branch.setBranchState(BranchState.MODIFIED);
-            BranchManager.persist(branch);
+            BranchManager.setState(branch, BranchState.MODIFIED);
          }
       }
    }
 
-   private static boolean promptUser(Branch sourceBranch) {
+   private static boolean promptUser(BranchId sourceBranch) {
       final MutableBoolean isUserSure = new MutableBoolean(false);
       final String message = String.format(
          "Are you sure you want to Abondon the Update for [%s].  Any resolved conflicts will be lost.", sourceBranch);

@@ -203,7 +203,7 @@ public class BranchEventTest {
 
       Assert.assertNotNull(workingBranch);
       Assert.assertEquals(BranchState.CREATED, workingBranch.getBranchState());
-      BranchManager.updateBranchState(null, workingBranch.getUuid(), BranchState.MODIFIED);
+      BranchManager.setState(workingBranch, BranchState.MODIFIED);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.StateUpdated,
          workingBranch);

@@ -95,25 +95,31 @@ public final class JaxRsExceptions {
       String message = "";
       if (response == null) {
          message = "Error mapping response exception - response was null";
-      } else if (response.hasEntity()) {
-         Object entity = response.getEntity();
-         try {
-            if (isErrorResponse(response)) {
-               message = readEntity(response, ErrorResponse.class).toString();
-            } else if (entity instanceof InputStream) {
-               MediaType mediaType = response.getMediaType();
-               message = readStream((InputStream) entity, mediaType);
-            } else {
-               message = String.format("%s [%s]", getResponseString(response), entity);
-            }
-         } catch (Throwable th) {
-            message = String.format("Error processing reponse error - %s [%s]", getResponseString(response),
-               th.getLocalizedMessage());
-         }
       } else {
-         message = getResponseString(response);
+         if (response.hasEntity()) {
+            if (response.getStatus() == Response.Status.NOT_MODIFIED.getStatusCode()) {
+               return null;
+            }
+            Object entity = response.getEntity();
+            try {
+               if (isErrorResponse(response)) {
+                  message = readEntity(response, ErrorResponse.class).toString();
+               } else if (entity instanceof InputStream) {
+                  MediaType mediaType = response.getMediaType();
+                  message = readStream((InputStream) entity, mediaType);
+               } else {
+                  message = String.format("%s [%s]", getResponseString(response), entity);
+               }
+            } catch (Throwable th) {
+               message = String.format("Error processing reponse error - %s [%s]", getResponseString(response),
+                  th.getLocalizedMessage());
+            }
+         } else {
+            message = getResponseString(response);
+         }
+         message = message + ".  HTTP Reason: " + response.getStatusInfo().getReasonPhrase();
       }
-      return new OseeCoreException(message);
+      return new OseeCoreException(message + ". HTTP Status: " + response.getStatusInfo().getReasonPhrase());
    }
 
    private static String getResponseString(Response response) {

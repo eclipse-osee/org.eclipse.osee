@@ -115,7 +115,7 @@ public class UpdateBranchOperation extends AbstractOperation {
 
       newWorkingBranch.setName(originalBranchName);
       newWorkingBranch.setAssociatedArtifactId(originalBranch.getAssociatedArtifactId());
-      originalBranch.setBranchState(BranchState.REBASELINED);
+      BranchManager.setState(originalBranch, BranchState.REBASELINED);
 
       BranchManager.persist(originalBranch, newWorkingBranch);
       BranchManager.deleteBranch(originalBranch).join();
