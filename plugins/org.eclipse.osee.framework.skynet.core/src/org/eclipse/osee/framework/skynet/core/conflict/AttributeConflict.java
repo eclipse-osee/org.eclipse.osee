@@ -182,29 +182,19 @@ public class AttributeConflict extends Conflict {
       return destObject;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   @SuppressWarnings("rawtypes")
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(getClass())) {
+         return (T) this;
       }
 
-      if (adapter.isInstance(this)) {
-         return this;
-      }
-
-      try {
-         Attribute attribute = null;
+      if (type.isInstance(attribute)) {
          try {
-            attribute = getSourceAttribute(true);
-         } catch (AttributeDoesNotExist ex) {
-            // do nothing
+            return (T) getSourceAttribute(true);
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
-         if (adapter.isInstance(attribute)) {
-            return attribute;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       return null;

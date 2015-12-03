@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.test.manager.core;
 
 import java.io.File;
 import java.io.InputStream;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.resources.IWorkspace;
@@ -73,13 +72,10 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    public boolean exists() {
       return true;
    }
-
-   /*
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
+   
    @Override
-   public Object getAdapter(Class adapter) {
-      return iFile.getAdapter(adapter);
+   public <T> T getAdapter(Class<T> type) {
+      return iFile.getAdapter(type);
    }
 
    @Override
@@ -131,12 +127,12 @@ public class TestManagerEditorInput implements IFileEditorInput, IPersistableEle
    }
 
    @Override
-   public IStorage getStorage() throws CoreException {
+   public IStorage getStorage() {
       return new IStorage() {
 
          @Override
-         public Object getAdapter(Class adapter) {
-            return iFile.getAdapter(adapter);
+         public <T> T getAdapter(Class<T> type) {
+            return iFile.getAdapter(type);
          }
 
          @Override

@@ -165,19 +165,15 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
 
    public abstract Class<? extends IChangeWorker> getWorker();
 
+   @SuppressWarnings("unchecked")
    @Override
-   @SuppressWarnings("rawtypes")
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(getChangeArtifact())) {
-         return getChangeArtifact();
-      } else if (isHistorical() && adapter.isInstance(getTxDelta().getEndTx())) {
-         return getTxDelta().getEndTx();
-      } else if (adapter.isInstance(this)) {
-         return this;
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(Artifact.class)) {
+         return (T) getChangeArtifact();
+      } else if (isHistorical() && type.isInstance(getTxDelta().getEndTx())) {
+         return (T)getTxDelta().getEndTx();
+      } else if (type.isAssignableFrom(getClass())) {
+         return (T) this;
       }
       return null;
    }

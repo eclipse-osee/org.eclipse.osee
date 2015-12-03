@@ -64,12 +64,6 @@ public final class ErrorChange extends Change {
       return errorMessage;
    }
 
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
-
    @Override
    public LoadChangeType getChangeType() {
       return null;

@@ -102,21 +102,21 @@ public class TreeNode implements ITreeNode, Serializable {
       }
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
+   public <T> T getAdapter(Class<T> type) {
+      if (type == null) {
          throw new IllegalArgumentException("adapter can not be null");
       } else if (backingData instanceof IAdaptable) {
-         return ((IAdaptable) backingData).getAdapter(adapter);
+         return ((IAdaptable) backingData).getAdapter(type);
       }
 
-      else if (adapter.isInstance(backingData)) {
-         return backingData;
+      else if (type.isInstance(backingData)) {
+         return (T) backingData;
       }
 
-      else if (adapter.isInstance(this)) {
-         return this;
+      else if (type.isInstance(this)) {
+         return (T) this;
       }
       return null;
    }

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * @author Jeff C. Phillips
  * @author Theron Virgin
  */
-public abstract class Conflict implements IAdaptable {
+public abstract class Conflict implements Adaptable  {
    protected ConflictStatus status;
    protected int sourceGamma;
    protected int destGamma;

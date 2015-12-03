@@ -245,17 +245,17 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return formPage;
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == IContentOutlinePage.class) {
+   public <T> T getAdapter(Class<T> type) {
+      if (type == IContentOutlinePage.class) {
          ArtifactEditorOutlinePage page = getOutlinePage();
          page.setInput(this);
-         return page;
-      } else if (adapter == RelationsComposite.class) {
-         return getFormPage().getRelationsComposite();
+         return (T) page;
+      } else if (type == RelationsComposite.class) {
+         return (T) getFormPage().getRelationsComposite();
       }
-      return super.getAdapter(adapter);
+      return super.getAdapter(type);
    }
 
    public ArtifactEditorOutlinePage getOutlinePage() {

@@ -153,10 +153,10 @@ public class AtsWorkDefConfigEditor extends GraphicalEditorWithFlyoutPalette {
       // do nothing
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings({"unchecked", "rawtypes"})
    @Override
    public Object getAdapter(Class type) {
-      if (type == IContentOutlinePage.class) {
+      if (type != null && type.isAssignableFrom(IContentOutlinePage.class)) {
          return new ShapesOutlinePage(new TreeViewer());
       }
       return super.getAdapter(type);

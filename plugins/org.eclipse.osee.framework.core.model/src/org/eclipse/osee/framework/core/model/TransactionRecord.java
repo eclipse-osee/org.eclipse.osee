@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model;
 
 import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.Date;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
+public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, Adaptable {
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
@@ -87,15 +87,6 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
 
    public void setCommit(int commitArtId) {
       this.commitArtId = commitArtId;
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter != null && getClass().isAssignableFrom(adapter)) {
-         return this;
-      }
-      return null;
    }
 
    @Override

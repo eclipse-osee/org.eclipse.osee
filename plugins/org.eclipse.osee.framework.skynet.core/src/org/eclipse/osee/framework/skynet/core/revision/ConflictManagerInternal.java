@@ -346,7 +346,7 @@ public class ConflictManagerInternal {
       // We just need the largest value at first so the complete source branch
       // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
-
+ 
       for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
          if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);

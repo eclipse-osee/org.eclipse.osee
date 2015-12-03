@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,7 +25,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IPersistableElement;
 
-public class ChangeReportEditorInput implements IEditorInput, IPersistableElement {
+public class ChangeReportEditorInput implements IEditorInput, IPersistableElement, Adaptable {
 
    private final ChangeUiData changeData;
    private BranchId branch;
@@ -84,12 +85,6 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
    @Override
    public String getToolTipText() {
       return getTitle();
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 
    public ChangeUiData getChangeData() {

@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.search.AtsSearchWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -28,7 +29,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditorInput implements IEditorInput, IPersistableElement {
+public class WorldEditorInput implements IEditorInput, IPersistableElement, Adaptable  {
 
    IWorldEditorProvider iWorldEditorProvider;
    WorldEditor editor;
@@ -88,12 +89,6 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return "Exception getting name: " + ex.getLocalizedMessage();
       }
-   }
-
-   @Override
-   @SuppressWarnings({"rawtypes", "unchecked"})
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 
    @Override

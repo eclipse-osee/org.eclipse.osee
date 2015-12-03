@@ -19,6 +19,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ui.test.manager.internal.TestManagerPlugin;
@@ -30,7 +31,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class TestManagerInput implements IEditorInput {
+public class TestManagerInput implements IEditorInput, Adaptable {
    private final HashMap<String, String> keyValue;
 
    public TestManagerInput() {
@@ -49,11 +50,6 @@ public class TestManagerInput implements IEditorInput {
    @Override
    public boolean exists() {
       return false;
-   }
-
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 
    public String getDefaultXML() {

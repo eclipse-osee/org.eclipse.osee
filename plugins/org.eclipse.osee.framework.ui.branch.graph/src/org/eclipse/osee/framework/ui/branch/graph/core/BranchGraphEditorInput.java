@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -22,7 +23,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchGraphEditorInput implements IEditorInput {
+public class BranchGraphEditorInput implements IEditorInput, Adaptable {
 
    private final IOseeBranch branch;
    private TransactionRecord transactionId;
@@ -82,10 +83,4 @@ public class BranchGraphEditorInput implements IEditorInput {
       }
       return super.equals(obj);
    }
-
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
-
 }

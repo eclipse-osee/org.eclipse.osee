@@ -56,11 +56,11 @@ class WrapperForRelationLink implements IAdaptable {
       }
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class arg0) {
-      if (arg0.equals(Artifact.class)) {
-         return other;
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(Artifact.class)) {
+         return (T) other;
       }
       return null;
    }

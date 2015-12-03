@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends NamedId implements BranchReadable, IAdaptable {
+public class Branch extends NamedId implements BranchReadable, Adaptable {
 
    private final Set<Branch> childBranches = new HashSet<>();
    private BranchType branchType;
@@ -159,19 +159,6 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
          ancestors.add(branchCursor);
       }
       return ancestors;
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(this)) {
-         return this;
-      }
-      return null;
    }
 
    @Override

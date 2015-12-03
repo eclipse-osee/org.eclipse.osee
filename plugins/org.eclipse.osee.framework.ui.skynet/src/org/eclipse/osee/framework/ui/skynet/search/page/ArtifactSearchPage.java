@@ -33,6 +33,7 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
@@ -68,7 +69,7 @@ import org.eclipse.ui.part.IPageSite;
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements IAdaptable, IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
+public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implements Adaptable , IRebuildMenuListener, IArtifactEventListener, IBranchProvider {
    private static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactSearchView";
 
    protected static final Match[] EMPTY_MATCH_ARRAY = new Match[0];
@@ -258,12 +259,6 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    public void saveState(IMemento memento) {
       super.saveState(memento);
       memento.putInteger(KEY_LIMIT, getElementLimit().intValue());
-   }
-
-   @Override
-   @SuppressWarnings("rawtypes")
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 
    @Override

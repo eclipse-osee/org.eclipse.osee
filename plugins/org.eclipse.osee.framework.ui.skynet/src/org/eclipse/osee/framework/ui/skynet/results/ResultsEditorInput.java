@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -21,7 +22,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class ResultsEditorInput implements IEditorInput {
+public class ResultsEditorInput implements IEditorInput, Adaptable {
 
    IResultsEditorProvider iresultsEditorProvider;
 
@@ -59,12 +60,6 @@ public class ResultsEditorInput implements IEditorInput {
    @Override
    public String getToolTipText() {
       return "";
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
    }
 
    @Override

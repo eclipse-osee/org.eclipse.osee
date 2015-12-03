@@ -184,15 +184,11 @@ public class GroupExplorerItem implements IAdaptable {
       return artifact.getGuid().hashCode() + (getParentItem() != null ? getParentItem().getArtifact().getGuid().hashCode() : 0);
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter == Artifact.class) {
-         return getArtifact();
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(Artifact.class)) {
+         return (T) getArtifact();
       }
       return null;
    }

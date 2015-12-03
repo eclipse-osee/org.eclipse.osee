@@ -46,20 +46,6 @@ public class ArtifactConflict extends Conflict {
    }
 
    @Override
-   @SuppressWarnings("rawtypes")
-   public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(this)) {
-         return this;
-      }
-
-      return null;
-   }
-
-   @Override
    public boolean clearValue() {
       return false;
    }

@@ -12,13 +12,14 @@ package org.eclipse.osee.ats.workdef.viewer;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsWorkDefConfigEditorInput implements IEditorInput {
+public class AtsWorkDefConfigEditorInput implements IEditorInput, Adaptable {
    protected IAtsWorkDefinition workflow;
 
    public AtsWorkDefConfigEditorInput(IAtsWorkDefinition workflow) {
@@ -66,11 +67,4 @@ public class AtsWorkDefConfigEditorInput implements IEditorInput {
    public String getToolTipText() {
       return getName();
    }
-
-   @Override
-   @SuppressWarnings({"rawtypes", "unchecked"})
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
-
 }

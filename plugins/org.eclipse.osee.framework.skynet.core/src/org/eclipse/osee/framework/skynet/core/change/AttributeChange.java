@@ -112,15 +112,15 @@ public final class AttributeChange extends Change {
          getBranch().getGuid());
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      Object toReturn = super.getAdapter(adapter);
+   public <T> T getAdapter(Class<T> type) {
+      T toReturn = super.getAdapter(type);
       if (toReturn == null) {
          try {
             Attribute<?> attr = getAttribute();
-            if (adapter.isInstance(attr)) {
-               toReturn = attr;
+            if (type.isInstance(attr)) {
+               toReturn = (T) attr;
             }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

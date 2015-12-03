@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -90,7 +90,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends FullyNamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact, Id {
+public class Artifact extends FullyNamedIdentity<String> implements IArtifact, Adaptable, IBasicGuidArtifact, Id {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1543,19 +1543,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       }
 
       return elementName;
-   }
-
-   @Override
-   @SuppressWarnings({"rawtypes"})
-   public final Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(this)) {
-         return this;
-      }
-      return null;
    }
 
    /**

@@ -95,12 +95,6 @@ public class RelationConflict extends Conflict {
       return false;
    }
 
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
-
    @Override
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");

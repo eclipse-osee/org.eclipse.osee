@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.massEditor;
 
 import java.util.Collection;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.ui.IEditorInput;
@@ -20,7 +21,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class MassArtifactEditorInput implements IEditorInput {
+public class MassArtifactEditorInput implements IEditorInput, Adaptable {
 
    private final Collection<? extends Artifact> artifacts;
    private final String name;
@@ -64,11 +65,4 @@ public class MassArtifactEditorInput implements IEditorInput {
    public String getToolTipText() {
       return "";
    }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class adapter) {
-      return null;
-   }
-
 }

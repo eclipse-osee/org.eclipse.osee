@@ -156,15 +156,15 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       return aei;
    }
 
-   @SuppressWarnings({"rawtypes", "unchecked"})
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (adapter == IContentOutlinePage.class) {
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(IContentOutlinePage.class)) {
          WfeOutlinePage page = getOutlinePage();
          page.setInput(this);
-         return page;
+         return (T) page;
       }
-      return super.getAdapter(adapter);
+      return super.getAdapter(type);
    }
 
    public WfeOutlinePage getOutlinePage() {

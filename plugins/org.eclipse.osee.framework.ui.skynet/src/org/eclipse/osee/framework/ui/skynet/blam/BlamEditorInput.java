@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
@@ -18,7 +19,7 @@ import org.eclipse.ui.IPersistableElement;
 /**
  * @author Donald G. Dunne
  */
-public class BlamEditorInput implements IEditorInput {
+public class BlamEditorInput implements IEditorInput, Adaptable {
 
    private final AbstractBlam blamOperation;
 
@@ -65,12 +66,6 @@ public class BlamEditorInput implements IEditorInput {
    @Override
    public String getToolTipText() {
       return "";
-   }
-
-   @SuppressWarnings("rawtypes")
-   @Override
-   public Object getAdapter(Class arg0) {
-      return null;
    }
 
    @Override

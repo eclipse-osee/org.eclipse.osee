@@ -138,7 +138,7 @@ public class TransactionRecordTest {
    @Test
    public void testAdaptable() {
       Assert.assertNull(transaction.getAdapter(null));
-      Assert.assertNull(transaction.getAdapter(Object.class));
+      Assert.assertSame(transaction, transaction.getAdapter(Object.class));
       Assert.assertSame(transaction, transaction.getAdapter(TransactionRecord.class));
    }
 

@@ -62,11 +62,11 @@ public class ArtifactEditorInput implements IEditorInput {
       return getName();
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (Artifact.class.equals(adapter)) {
-         return getArtifact();
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(Artifact.class)) {
+         return (T) getArtifact();
       }
       return null;
    }

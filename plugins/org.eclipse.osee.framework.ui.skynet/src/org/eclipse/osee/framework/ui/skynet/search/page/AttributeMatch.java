@@ -65,11 +65,11 @@ public class AttributeMatch extends Match implements IAdaptable {
       return fLineElement;
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings("unchecked")
    @Override
-   public Object getAdapter(Class adapter) {
-      if (Artifact.class.equals(adapter)) {
-         return this.getArtifact();
+   public <T> T getAdapter(Class<T> type) {
+      if (type != null && type.isAssignableFrom(Artifact.class)) {
+         return (T) getArtifact();
       }
       return null;
    }

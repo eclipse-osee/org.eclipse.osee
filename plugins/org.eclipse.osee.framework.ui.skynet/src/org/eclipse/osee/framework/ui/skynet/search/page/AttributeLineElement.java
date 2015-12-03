@@ -88,15 +88,14 @@ public class AttributeLineElement implements IAdaptable {
       return attribute;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
-   @SuppressWarnings("rawtypes")
-   public Object getAdapter(Class adapter) {
-      if (adapter == Artifact.class) {
-         return getParent();
-      } else if (adapter == Attribute.class) {
-         return getAttribute();
+   public <T> T getAdapter(Class<T> type) {
+      if (type == Artifact.class) {
+         return (T) getParent();
+      } else if (type == Attribute.class) {
+         return (T) Integer.valueOf(getAttribute());
       }
       return null;
    }
-
 }

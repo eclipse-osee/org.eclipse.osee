@@ -63,8 +63,4 @@ public class TreeObject {
    public void setChecked(boolean isChecked) {
       this.isChecked = isChecked;
    }
-
-   public Object getAdapter(Class<?> adapter) {
-      return null;
-   }
 }
