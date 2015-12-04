@@ -19,6 +19,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import com.google.common.collect.Ordering;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -207,6 +208,73 @@ public class OrcsQueryTest {
          assertEquals(0, loc1.getStartPosition());
          assertEquals("User Groups".length(), loc1.getEndPosition());
       }
+   }
+   
+   @Test
+   public void testQueryMultipleArtifactType() throws OseeCoreException {
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      builder.andIsOfType(CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
+      
+      assertEquals(2, builder.getCount());
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      assertEquals(2, artifacts.size());
+      
+      checkContainsTypes(artifacts, CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.GlobalPreferences);
+
+      Iterator<ArtifactReadable> iterator = sort(artifacts);
+      assertEquals("Framework Access Model", iterator.next().getName());
+      assertEquals("Global Preferences", iterator.next().getName());
+   }
+   
+   @Test
+   public void testQueryMultipleAttributeExistsType() throws OseeCoreException {
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.AccessContextId, CoreAttributeTypes.Dictionary);
+      builder.andExists(attributeTypes);
+      
+      assertEquals(0, builder.getCount());
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      assertEquals(0, artifacts.size());
+   }
+   
+   @Test
+   public void testQueryMultipleAttributeNotExistsType() throws OseeCoreException {
+      QueryBuilder builder = factory.fromBranch(COMMON_ID);
+      List<IAttributeType> attributeTypes = Arrays.asList(CoreAttributeTypes.ContentUrl, CoreAttributeTypes.Name);
+      builder.andNotExists(attributeTypes);
+      
+      assertEquals(26, builder.getCount());
+      ResultSet<ArtifactReadable> artifacts = builder.getResults();
+      assertEquals(26, artifacts.size());
+
+      Iterator<ArtifactReadable> iterator = sort(artifacts);
+      assertEquals("Alex Kay", iterator.next().getName());
+      assertEquals("Anonymous", iterator.next().getName());
+      assertEquals("Boot Strap", iterator.next().getName());
+      assertEquals("Default Hierarchy Root", iterator.next().getName());
+      assertEquals("Document Templates", iterator.next().getName());
+      assertEquals("Everyone", iterator.next().getName());
+      assertEquals("Framework Access Model", iterator.next().getName());
+      assertEquals("Global Preferences", iterator.next().getName());
+      assertEquals("Inactive Steve", iterator.next().getName());
+      assertEquals("Jason Michael", iterator.next().getName());
+      assertEquals("Joe Smith", iterator.next().getName());
+      assertEquals("Kay Jones", iterator.next().getName());
+      assertEquals("OSEE System", iterator.next().getName());
+      assertEquals("OseeAdmin", iterator.next().getName());
+      assertEquals("PREVIEW_ALL", iterator.next().getName());
+      assertEquals("PREVIEW_ALL_RECURSE", iterator.next().getName());
+      assertEquals("Root Artifact", iterator.next().getName());
+      assertEquals("UnAssigned", iterator.next().getName());
+      assertEquals("User Groups", iterator.next().getName());
+      assertEquals("Word Edit Template", iterator.next().getName());
+      assertEquals("Word Edit Template", iterator.next().getName());
+      assertEquals("XViewer Global Customization", iterator.next().getName());
+      
+      assertEquals("org.eclipse.osee.client.demo.OseeTypes_ClientDemo", iterator.next().getName());
+      assertEquals("org.eclipse.osee.coverage.OseeTypes_Coverage", iterator.next().getName());
+      assertEquals("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework", iterator.next().getName());
+      assertEquals("org.eclipse.osee.ote.define.OseeTypesOTE", iterator.next().getName());    
    }
 
    @Test
