@@ -25,10 +25,12 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.util.AtsEvents;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.ev.WorkPackageArtifact;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -37,6 +39,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 
 /**
  * @author Donald G. Dunne
@@ -138,7 +142,11 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          workPackageEp.setWorkPackage(workPackage.getUuid(), data);
       }
 
-      // TBD OseeEventManager.kickPersistEvent(getClass(), artifactEvent);
+      TopicEvent event =
+         new TopicEvent(AtsEvents.WORK_ITEM_MODIFIED, AtsEvents.WORK_ITEM_UUDS, AtsObjects.toUuidsString(";", workItems));
+      OseeEventManager.kickTopicEvent(getClass(), event);
+
+      AtsClientService.get().getStoreService().reload(workItems);
    }
 
    @Override

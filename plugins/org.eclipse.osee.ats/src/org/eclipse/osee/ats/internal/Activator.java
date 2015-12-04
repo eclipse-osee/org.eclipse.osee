@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.internal;
 
+import org.eclipse.osee.ats.api.util.AtsEvents;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.ats.workflow.AtsWorkItemEventHandler;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 /**
  * @author Donald G. Dunne
@@ -21,7 +26,8 @@ public class Activator implements BundleActivator {
 
    @Override
    public void start(final BundleContext context) {
-      //
+      context.registerService(EventHandler.class.getName(), new AtsWorkItemEventHandler(),
+         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AtsEvents.WORK_ITEM_MODIFIED));
    }
 
    @Override

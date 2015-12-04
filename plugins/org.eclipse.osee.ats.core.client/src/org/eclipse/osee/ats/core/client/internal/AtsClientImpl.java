@@ -256,7 +256,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       atsLogFactory = AtsCoreFactory.newLogFactory();
       atsStateFactory = AtsCoreFactory.newStateFactory(getServices(), atsLogFactory);
-      atsStoreService = new AtsStoreService();
+      atsStoreService = new AtsStoreService(workItemFactory);
 
       actionableItemManager = new ActionableItemManager(getConfig(), attributeResolverService, atsStoreService);
       sequenceProvider = new ISequenceProvider() {

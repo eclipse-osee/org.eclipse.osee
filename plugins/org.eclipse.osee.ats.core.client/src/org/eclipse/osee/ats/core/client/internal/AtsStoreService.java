@@ -11,12 +11,14 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
@@ -30,6 +32,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class AtsStoreService implements IAtsStoreService {
    private static Map<String, Long> guidToUuid;
+   private final IAtsWorkItemFactory workItemFactory;
+
+   public AtsStoreService(IAtsWorkItemFactory workItemFactory) {
+      this.workItemFactory = workItemFactory;
+   }
 
    @Override
    public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
@@ -42,7 +49,7 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public List<IAtsWorkItem> reload(List<IAtsWorkItem> workItems) {
+   public List<IAtsWorkItem> reload(Collection<IAtsWorkItem> workItems) {
       List<IAtsWorkItem> results = new ArrayList<>();
       try {
          List<Artifact> artifacts = new LinkedList<Artifact>();
@@ -53,7 +60,7 @@ public class AtsStoreService implements IAtsStoreService {
          }
          for (Artifact art : ArtifactQuery.reloadArtifacts(artifacts)) {
             if (!art.isDeleted()) {
-               IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(art);
+               IAtsWorkItem workItem = workItemFactory.getWorkItem(art);
                if (workItem != null) {
                   results.add(workItem);
                }

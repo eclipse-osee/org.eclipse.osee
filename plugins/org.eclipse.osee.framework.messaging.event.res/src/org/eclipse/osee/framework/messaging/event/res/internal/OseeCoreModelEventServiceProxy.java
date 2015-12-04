@@ -43,6 +43,7 @@ public class OseeCoreModelEventServiceProxy implements IOseeCoreModelEventServic
       eventMessageConfig.put(ResMessages.RemoteBranchEvent1, Boolean.TRUE);
       eventMessageConfig.put(ResMessages.RemoteBroadcastEvent1, Boolean.TRUE);
       eventMessageConfig.put(ResMessages.RemotePersistEvent1, Boolean.FALSE);
+      eventMessageConfig.put(ResMessages.RemoteTopicEvent1, Boolean.FALSE);
       eventMessageConfig.put(ResMessages.RemoteTransactionEvent1, Boolean.TRUE);
 
       proxiedService = new OseeCoreModelEventServiceImpl(messageService, eventMessageConfig);

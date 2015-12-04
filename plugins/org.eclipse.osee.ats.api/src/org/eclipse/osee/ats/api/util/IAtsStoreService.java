@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -21,7 +22,7 @@ public interface IAtsStoreService {
 
    IAtsChangeSet createAtsChangeSet(String comment);
 
-   List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows);
+   List<IAtsWorkItem> reload(Collection<IAtsWorkItem> workItems);
 
    boolean isDeleted(IAtsObject atsObject);
 

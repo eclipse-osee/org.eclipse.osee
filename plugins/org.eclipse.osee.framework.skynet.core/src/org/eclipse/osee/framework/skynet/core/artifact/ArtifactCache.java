@@ -56,7 +56,7 @@ public final class ArtifactCache {
     * De-caches all artifacts from <code>HISTORICAL_CACHE</code> and <code>ACTIVE_CACHE</code> for a specific branch.
     * This method is usually called by a purge operation or at the end of a unit test/suite.
     * </p>
-    * 
+    *
     * @param branch of which artifacts (all) will be de-cache'ed.
     */
    public static void deCache(IOseeBranch branch) {
@@ -184,7 +184,7 @@ public final class ArtifactCache {
 
    /**
     * Return single active artifact stored by text and branch or null if none.
-    * 
+    *
     * @throws OseeStateException if more than one artifact stored.
     */
    public static Artifact getByTextId(String key, IOseeBranch branch) throws OseeCoreException {
@@ -214,6 +214,14 @@ public final class ArtifactCache {
          }
       }
       return artifacts;
+   }
+
+   public static void deCache(Long uuid, Long branchUuid) {
+      ACTIVE_CACHE.deCache(uuid, branchUuid);
+   }
+
+   public static Artifact getActive(Long uuid, Long branchUuid) {
+      return ACTIVE_CACHE.getById(uuid.intValue(), branchUuid);
    }
 
 }

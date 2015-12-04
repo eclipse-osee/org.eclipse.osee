@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
@@ -148,5 +150,11 @@ public class AtsUtilCore {
 
    public static Long getUuidFromGuid(String guid) {
       return guidToUuidMap.get(guid);
+   }
+
+   public static Dictionary<String, ?> hashTable(String key, String value) {
+      Hashtable<String, String> table = new Hashtable<>();
+      table.put(key, value);
+      return table;
    }
 }

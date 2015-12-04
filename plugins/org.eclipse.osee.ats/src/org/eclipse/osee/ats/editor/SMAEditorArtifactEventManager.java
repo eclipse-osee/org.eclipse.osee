@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  */
 public class SMAEditorArtifactEventManager implements IArtifactEventListener {
 
-   List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
+   static List<ISMAEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static SMAEditorArtifactEventManager instance = new SMAEditorArtifactEventManager();
 
    private SMAEditorArtifactEventManager() {
@@ -57,12 +57,12 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
    }
 
    public static void add(ISMAEditorEventHandler iWorldEventHandler) {
-      instance.handlers.add(iWorldEventHandler);
+      SMAEditorArtifactEventManager.handlers.add(iWorldEventHandler);
    }
 
    public static void remove(ISMAEditorEventHandler iWorldEventHandler) {
       if (instance != null) {
-         instance.handlers.remove(iWorldEventHandler);
+         SMAEditorArtifactEventManager.handlers.remove(iWorldEventHandler);
       }
    }
 
@@ -291,6 +291,21 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
+      }
+      return false;
+   }
+
+   public static boolean isLoaded(Artifact artifact) {
+      for (ISMAEditorEventHandler handler : handlers) {
+         try {
+            if (!handler.isDisposed()) {
+               if (artifact.equals(handler.getSMAEditor().getArtifactFromEditorInput())) {
+                  return true;
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error processing event handler for - %s", handler);
+         }
       }
       return false;
    }

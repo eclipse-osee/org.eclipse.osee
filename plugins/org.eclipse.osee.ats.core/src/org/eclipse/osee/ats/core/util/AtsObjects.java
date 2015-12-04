@@ -23,6 +23,10 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class AtsObjects {
 
+   public static String toUuidsString(String separator, Collection<? extends IAtsObject> atsObjects) {
+      return Collections.toString(separator, toUuids(atsObjects));
+   }
+
    public static List<Long> toUuids(Collection<? extends IAtsObject> atsObjects) {
       List<Long> uuids = new ArrayList<>(atsObjects.size());
       for (IAtsObject atsObject : atsObjects) {
@@ -80,6 +84,17 @@ public class AtsObjects {
          guids.add(action.getAtsId());
       }
       return Collections.toString(", ", guids);
+   }
+
+   /**
+    * @param semicolon delimited list of uuids
+    */
+   public static Collection<Long> uuidsToLong(String separator, String uuidsList) {
+      List<Long> uuids = new ArrayList<>();
+      for (String uuid : uuidsList.split(separator)) {
+         uuids.add(Long.valueOf(uuid));
+      }
+      return uuids;
    }
 
 }

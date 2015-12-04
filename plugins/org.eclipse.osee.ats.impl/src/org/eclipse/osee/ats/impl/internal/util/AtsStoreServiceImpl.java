@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.impl.internal.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -61,7 +62,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows) {
+   public List<IAtsWorkItem> reload(Collection<IAtsWorkItem> inWorkWorkflows) {
       List<IAtsWorkItem> workItems = new ArrayList<>(inWorkWorkflows.size());
       List<String> guids = AtsObjects.toGuids(inWorkWorkflows);
       Iterator<ArtifactReadable> arts =

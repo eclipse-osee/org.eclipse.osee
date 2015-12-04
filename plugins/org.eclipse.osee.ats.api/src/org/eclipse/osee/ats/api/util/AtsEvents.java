@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,22 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.internal;
+package org.eclipse.osee.ats.api.util;
 
-import org.osgi.framework.BundleActivator;
-import org.osgi.framework.BundleContext;
+/**
+ * @author Donald G. Dunne
+ */
+public class AtsEvents {
 
-public class Activator implements BundleActivator {
+   public static final String WORK_ITEM_MODIFIED = "ats/workitem/modified";
+   public static final String WORK_ITEM_UUDS = "workItemUuids";
 
-   public static final String PLUGIN_ID = "org.eclipse.osee.ats.core.client";
-
-   @Override
-   public void start(BundleContext bundleContext) throws Exception {
-   }
-
-   @Override
-   public void stop(BundleContext bundleContext) throws Exception {
-      //
+   private AtsEvents() {
+      // utility class
    }
 
 }

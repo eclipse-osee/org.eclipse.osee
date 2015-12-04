@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReord
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
+import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
@@ -42,6 +44,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventChangeTypeBasicGu
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.NetworkSender;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
@@ -368,5 +371,20 @@ public final class FrameworkEventUtil {
       networkSender.setPort(localSender.port);
       networkSender.setClientVersion(localSender.clientVersion);
       return networkSender;
+   }
+
+   public static RemoteEvent getRemoteTopicEvent(TopicEvent event) {
+      RemoteTopicEvent1 remEvent = new RemoteTopicEvent1();
+      remEvent.setNetworkSender(getRemoteNetworkSender(event.getNetworkSender()));
+      remEvent.getProperties().putAll(event.getProperties());
+      remEvent.setTopic(event.getTopic());
+      return remEvent;
+   }
+
+   public static TopicEvent getTopicEvent(RemoteTopicEvent1 remoteEvent) {
+      TopicEvent event = new TopicEvent(remoteEvent.getTopic());
+      event.getProperties().putAll(remoteEvent.getProperties());
+      event.setNetworkSender(getNetworkSender(remoteEvent.getNetworkSender()));
+      return event;
    }
 }

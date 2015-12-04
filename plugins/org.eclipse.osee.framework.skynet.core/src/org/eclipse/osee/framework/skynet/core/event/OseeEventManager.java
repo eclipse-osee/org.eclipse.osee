@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -39,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegist
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
  * framework events.
- * 
+ *
  * @author Donald G. Dunne
  */
 public final class OseeEventManager {
@@ -121,6 +122,11 @@ public final class OseeEventManager {
    // Kick LOCAL and REMOTE transaction deleted event
    public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent) throws OseeCoreException {
       getEventService().send(source, transactionEvent);
+   }
+
+   // Kick LOCAL and REMOTE transaction event
+   public static void kickTopicEvent(Object source, TopicEvent artifactEvent) throws OseeCoreException {
+      getEventService().send(source, artifactEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event

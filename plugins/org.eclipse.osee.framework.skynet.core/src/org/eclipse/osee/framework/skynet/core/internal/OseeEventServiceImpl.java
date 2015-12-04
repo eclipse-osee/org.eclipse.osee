@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.IOseeCoreModelEventService;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
+import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBroadcastEvent1;
@@ -37,12 +38,14 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.FrameworkEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.RemoteEventServiceEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.event.ConnectionListenerImpl;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlers;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventTransport;
 import org.eclipse.osee.framework.skynet.core.internal.event.OseeEventThreadFactory;
+import org.eclipse.osee.framework.skynet.core.internal.event.TopicEventAdmin;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.AccessControlEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.AccessControlRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactEventHandler;
@@ -50,6 +53,8 @@ import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactRe
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.RemoteServiceEventHandler;
+import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TopicLocalEventHandler;
+import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TopicRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TransactionEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.TransactionRemoteEventHandler;
 import org.osgi.framework.Bundle;
@@ -137,6 +142,7 @@ public class OseeEventServiceImpl implements OseeEventService {
       registerEventHandlers(handlers);
 
       executor = createExecutor("Osee Client Events");
+      listeners.addListener(EventQosType.PRIORITY, new TopicEventAdmin());
       eventTransport = new EventTransport(preferences, handlers, listeners, executor, messagingService);
       connectionStatus = new ConnectionListenerImpl(preferences, eventTransport);
 
@@ -202,11 +208,13 @@ public class OseeEventServiceImpl implements OseeEventService {
       handlers.addLocalHandler(BranchEvent.class, new BranchEventHandler());
       handlers.addLocalHandler(RemoteEventServiceEventType.class, new RemoteServiceEventHandler());
       handlers.addLocalHandler(TransactionEvent.class, new TransactionEventHandler());
+      handlers.addLocalHandler(TopicEvent.class, new TopicLocalEventHandler());
 
       handlers.addRemoteHandler(RemoteAccessControlEvent1.class, new AccessControlRemoteEventHandler());
       handlers.addRemoteHandler(RemotePersistEvent1.class, new ArtifactRemoteEventHandler());
       handlers.addRemoteHandler(RemoteBranchEvent1.class, new BranchRemoteEventHandler());
       handlers.addRemoteHandler(RemoteTransactionEvent1.class, new TransactionRemoteEventHandler());
+      handlers.addRemoteHandler(RemoteTopicEvent1.class, new TopicRemoteEventHandler());
    }
 
    private void deregisterEventHandlers(EventHandlers handlers) {

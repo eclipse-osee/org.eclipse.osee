@@ -71,7 +71,8 @@ Import-Package: com.google.common.cache,
  org.eclipse.osee.logger,
  org.eclipse.osee.orcs.rest.client,
  org.eclipse.osee.orcs.search,
- org.osgi.framework
+ org.osgi.framework,
+ org.osgi.service.event
 Export-Package: org.eclipse.osee.ats.core.client,
  org.eclipse.osee.ats.core.client.access,
  org.eclipse.osee.ats.core.client.action,

@@ -216,5 +216,6 @@ Import-Package: com.google.common.cache,
  org.eclipse.xtext.resource,
  org.eclipse.zest.core.viewers,
  org.eclipse.zest.core.widgets,
- org.json
+ org.json,
+ org.osgi.service.event
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8

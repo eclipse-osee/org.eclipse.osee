@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * A hash map implementation that uses two objects to form a single composite key. The thread safety of this class is
  * determined by the isThreadSafe of its constructors.
- * 
+ *
  * @author Ken J. Aguilar
  */
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
@@ -60,7 +60,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    /**
     * Use this method to determine if any puts(keyOne, anything) have occurred
-    * 
+    *
     * @return whether the map contains the key keyOne
     */
    @Override
@@ -78,7 +78,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
 
    /**
     * determines if at least one of the compound keys are mapped to this value
-    * 
+    *
     * @return whether the map contains this value
     */
    @Override
@@ -91,9 +91,14 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       return map.entrySet();
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Value get(Object key) {
-      throw new UnsupportedOperationException("use getValues() instead");
+      List<Value> values = getValues((KeyOne) key);
+      if (values != null && !values.isEmpty()) {
+         return values.iterator().next();
+      }
+      return null;
    }
 
    public Map<KeyTwo, Value> getKeyedValues(KeyOne key1) {
@@ -164,9 +169,14 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Value remove(Object key) {
-      throw new UnsupportedOperationException("use removeValues() instead");
+      Collection<Value> values = removeValues((KeyOne) key);
+      if (values != null && !values.isEmpty()) {
+         return values.iterator().next();
+      }
+      return null;
    }
 
    /**

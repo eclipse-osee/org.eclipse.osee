@@ -68,4 +68,8 @@ public final class ArtifactKey {
       }
       return true;
    }
+
+   public IOseeBranch getBranch() {
+      return branch;
+   }
 }
