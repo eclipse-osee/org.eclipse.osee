@@ -285,7 +285,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
       commands.add(
-         new MenuCmdDef(CommandGroup.EDIT, GENERALIZED_EDIT, "Artifact Editor", FrameworkImage.ARTIFACT_EDITOR));
+         new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Artifact Editor", FrameworkImage.ARTIFACT_EDITOR));
       commands.add(new MenuCmdDef(CommandGroup.EDIT, GENERALIZED_EDIT, "Mass Editor",
          FrameworkImage.ARTIFACT_MASS_EDITOR, OPEN_OPTION, OPEN_IN_TABLE_EDITOR));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Artifact Explorer",
