@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.Collection;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -22,13 +24,17 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.util.ColorTeam;
+import org.eclipse.osee.ats.api.util.ColorTeams;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -36,10 +42,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
 
+   private static final String COLOR_TEAM_KEY = "colorTeam";
    private final IAtsServer atsServer;
+   private final Gson gson;
 
    public AtsWorkPackageEndpointImpl(IAtsServer atsServer) {
       this.atsServer = atsServer;
+      gson = new GsonBuilder().create();
    }
 
    @GET
@@ -80,11 +89,44 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
                workItem.getArtifactTypeName());
          }
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackageArt.getGuid());
+         autoAddWorkItemToGoalColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
       }
       if (!changes.isEmpty()) {
          changes.execute();
       }
       return Response.ok().build();
+   }
+
+   private void autoAddWorkItemToGoalColorTeamGoals(ColorTeams colorTeams, ArtifactReadable workPackageArt, long workPackageId, IAtsWorkItem workItem, IAtsChangeSet changes) {
+      String workPackageColorTeam =
+         atsServer.getAttributeResolver().getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, null);
+      if (Strings.isValid(workPackageColorTeam)) {
+         for (ColorTeam team : colorTeams.getTeams()) {
+            if (!team.getGoalUuids().isEmpty() && team.getName().equals(workPackageColorTeam)) {
+               for (Long uuid : team.getGoalUuids()) {
+                  ArtifactReadable goalArt = atsServer.getArtifact(uuid);
+                  if (goalArt != null) {
+                     IAtsWorkItem goalWorkItem = atsServer.getWorkItemFactory().getWorkItem(goalArt);
+                     if (!atsServer.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
+                        workItem)) {
+                        changes.relate(goalWorkItem, AtsRelationTypes.Goal_Member, workItem);
+                     }
+                  }
+               }
+            }
+         }
+      }
+   }
+
+   private ColorTeams getColorTeams() {
+      String colorTeamStr = atsServer.getConfigValue(COLOR_TEAM_KEY);
+      ColorTeams teams = null;
+      if (Strings.isValid(colorTeamStr)) {
+         teams = gson.fromJson(colorTeamStr, ColorTeams.class);
+      } else {
+         teams = new ColorTeams();
+      }
+      return teams;
    }
 
    @DELETE
