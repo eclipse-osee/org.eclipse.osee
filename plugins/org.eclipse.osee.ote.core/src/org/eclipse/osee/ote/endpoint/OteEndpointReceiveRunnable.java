@@ -54,10 +54,14 @@ public class OteEndpointReceiveRunnable implements Runnable {
                channel.configureBlocking(true);
              
                while (run) {
-                  buffer.clear();
-                  channel.receive(buffer);
-                  buffer.flip();
-                  processBuffer(buffer);
+                  try{
+                     buffer.clear();
+                     channel.receive(buffer);
+                     buffer.flip();
+                     processBuffer(buffer);
+                  } catch (Throwable th){
+                     th.printStackTrace();
+                  }
                }
             } catch (BindException ex) {
                if(debugOutput){

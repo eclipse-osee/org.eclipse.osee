@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.core.log.record;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -188,10 +190,11 @@ public abstract class TestRecord extends LogRecord implements Xmlizable, Xmlizab
 
 	@Override
 	public void toXml(XMLStreamWriter writer) throws XMLStreamException {
-		writer.writeStartElement(getLevel().getName());
-		writeLocationCheckLocationLoggingOn(writer);
-		writeMessage(writer);
-		writer.writeEndElement();
+	   writer.writeStartElement("OteLog");
+	   writer.writeAttribute("Level", getLevel().getName());
+	   writeMessage(writer);
+	   writeLocationCheckLocationLoggingOn(writer);
+	   writer.writeEndElement();
 	}
 
 	public Object getSource() {
