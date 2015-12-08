@@ -102,7 +102,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... options) throws OseeCoreException {
       if (presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE)) {
          return PRESENTATION_TYPE;
       }

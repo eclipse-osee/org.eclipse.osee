@@ -45,7 +45,7 @@ public class TisRenderer extends WordTemplateRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       if (artifact.getArtifactType().inheritsFrom(CoreArtifactTypes.TestInformationSheet) && presentationType.matches(
          DEFAULT_OPEN, PREVIEW)) {
          return SPECIALIZED_MATCH;

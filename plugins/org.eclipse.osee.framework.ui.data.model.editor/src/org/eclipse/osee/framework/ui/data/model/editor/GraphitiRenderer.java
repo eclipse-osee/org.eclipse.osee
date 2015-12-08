@@ -50,7 +50,7 @@ public class GraphitiRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       int rating = IRenderer.NO_MATCH;
       if (artifact.getArtifactType().inheritsFrom(CoreArtifactTypes.ModelDiagram)) {
          if (presentationType.matches(RENDER_AS_HUMAN_READABLE_TEXT, PREVIEW, DEFAULT_OPEN, SPECIALIZED_EDIT)) {

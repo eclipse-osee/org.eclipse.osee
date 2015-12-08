@@ -99,12 +99,12 @@ public final class RendererManager {
    }
 
    public static IRenderer getBestRenderer(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
-      IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact).newInstance();
+      IRenderer bestRenderer = getBestRendererPrototype(presentationType, artifact, options).newInstance();
       bestRenderer.setOptions(options);
       return bestRenderer;
    }
 
-   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+   private static IRenderer getBestRendererPrototype(PresentationType presentationType, Artifact artifact, Object... options) throws OseeCoreException {
       if (presentationType == DEFAULT_OPEN && UserManager.getBooleanSetting(
          UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
          presentationType = GENERAL_REQUESTED;
@@ -113,7 +113,7 @@ public final class RendererManager {
       int bestRating = IRenderer.NO_MATCH;
       ensurePopulated();
       for (IRenderer renderer : renderers) {
-         int rating = renderer.getApplicabilityRating(presentationType, artifact);
+         int rating = renderer.getApplicabilityRating(presentationType, artifact, options);
          if (rating > bestRating) {
             bestRendererPrototype = renderer;
             bestRating = rating;
@@ -158,7 +158,7 @@ public final class RendererManager {
       HashCollection<IRenderer, Artifact> prototypeRendererArtifactMap =
          new HashCollection<IRenderer, Artifact>(false, LinkedList.class);
       for (Artifact artifact : artifacts) {
-         IRenderer renderer = getBestRendererPrototype(presentationType, artifact);
+         IRenderer renderer = getBestRendererPrototype(presentationType, artifact, options);
          prototypeRendererArtifactMap.put(renderer, artifact);
       }
 

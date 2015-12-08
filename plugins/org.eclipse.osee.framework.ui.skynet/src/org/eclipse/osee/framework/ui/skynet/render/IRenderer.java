@@ -89,7 +89,7 @@ public interface IRenderer {
 
    public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
 
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException;
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException;
 
    public String getName();
 

@@ -36,7 +36,7 @@ public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isOfType(AtsArtifactTypes.Task) && !aArtifact.isHistorical() && !presentationType.matches(
          GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {

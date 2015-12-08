@@ -97,7 +97,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.PlainTextContent)) {
          if (presentationType.matches(SPECIALIZED_EDIT, PREVIEW, DEFAULT_OPEN, PRODUCE_ATTRIBUTE, DIFF)) {

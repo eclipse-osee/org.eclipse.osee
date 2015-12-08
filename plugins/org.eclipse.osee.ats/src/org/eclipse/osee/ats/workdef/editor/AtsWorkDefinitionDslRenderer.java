@@ -67,7 +67,7 @@ public final class AtsWorkDefinitionDslRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isOfType(AtsArtifactTypes.WorkDefinition) && presentationType != GENERALIZED_EDIT) {
          return PRESENTATION_SUBTYPE_MATCH;

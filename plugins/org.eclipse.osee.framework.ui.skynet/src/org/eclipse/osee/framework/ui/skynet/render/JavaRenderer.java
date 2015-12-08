@@ -66,7 +66,7 @@ public class JavaRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       int toReturn = NO_MATCH;
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isOfType(CoreArtifactTypes.TestCase)) {

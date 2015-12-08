@@ -45,7 +45,7 @@ public class OpenOfficeWriterRenderer extends FileSystemRenderer implements ITem
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) {
       return NO_MATCH;
    }
 

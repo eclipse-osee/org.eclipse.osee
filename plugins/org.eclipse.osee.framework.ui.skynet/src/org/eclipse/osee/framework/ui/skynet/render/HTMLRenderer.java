@@ -97,7 +97,7 @@ public class HTMLRenderer extends FileSystemRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       int toReturn = NO_MATCH;
       if (aArtifact.isAttributeTypeValid(CoreAttributeTypes.HTMLContent)) {

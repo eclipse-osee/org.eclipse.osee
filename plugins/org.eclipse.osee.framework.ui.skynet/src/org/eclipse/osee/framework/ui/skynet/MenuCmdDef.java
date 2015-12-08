@@ -44,6 +44,10 @@ public class MenuCmdDef {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, imageEnum, null, null);
    }
 
+   public MenuCmdDef(CommandGroup commandGroup, String commandId, PresentationType presentationType, String label, KeyedImage imageEnum) {
+      this(commandGroup, commandId, presentationType, label, imageEnum, null, null);
+   }
+
    public MenuCmdDef(CommandGroup commandGroup, PresentationType presentationType, String label, KeyedImage imageEnum, String optionKey, String optionValue) {
       this(commandGroup, GENERALIZED_CMD_ID, presentationType, label, imageEnum, optionKey, optionValue);
    }

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
@@ -32,15 +33,25 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
  */
 public class AtsWorldEditorRenderer extends AbstractAtsRenderer {
 
+   private static final String Option_WORLD_EDITOR = "world.editor.option";
+
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact) throws OseeCoreException {
+   public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isHistorical() || presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
          return NO_MATCH;
       }
+
+      VariableMap options = new VariableMap();
+      options.setValues(objects);
       if (aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
-         return PRESENTATION_SUBTYPE_MATCH;
+         if (Option_WORLD_EDITOR.equals(options.getString(OPEN_OPTION))) {
+            return SPECIALIZED_KEY_MATCH;
+         } else {
+            return PRESENTATION_SUBTYPE_MATCH;
+         }
       }
+
       if (aArtifact.isOfType(CoreArtifactTypes.UniversalGroup)) {
          if (aArtifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
             return NO_MATCH;
@@ -56,7 +67,8 @@ public class AtsWorldEditorRenderer extends AbstractAtsRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS World Editor", AtsImage.GLOBE));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS World Editor", AtsImage.GLOBE, OPEN_OPTION,
+         Option_WORLD_EDITOR));
    }
 
    @Override
