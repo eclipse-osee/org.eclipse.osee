@@ -110,6 +110,13 @@
 <!-- 		</pluginRepository> -->
 <!-- 	</pluginRepositories> -->
 	<build>
+	<extensions>
+  <extension>
+	<groupId>io.takari.maven</groupId>
+	<artifactId>maven-timeline</artifactId>
+	<version>1.6</version>
+</extension>
+	</extensions>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
 			<plugin>
