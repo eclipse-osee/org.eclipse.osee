@@ -19,9 +19,6 @@ import org.eclipse.osee.orcs.core.annotations.OseeAttribute;
  */
 @OseeAttribute("EnumeratedAttribute")
 public class EnumeratedAttribute extends StringAttribute {
-   // When an enumerated attribute is required for an artifact, yet doesn't exist yet, it is created upon
-   // init of the artifact and given the "Unspecified" value
-   public static String UNSPECIFIED_VALUE = "Unspecified";
 
    @Override
    public String getDisplayableString() throws OseeCoreException {

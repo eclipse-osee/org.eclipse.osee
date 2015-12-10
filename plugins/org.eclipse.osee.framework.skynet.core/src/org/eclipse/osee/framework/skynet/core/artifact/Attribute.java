@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -36,7 +37,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 /**
  * @author Ryan D. Brooks
  */
-public abstract class Attribute<T> implements Comparable<Attribute<T>> {
+public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribute {
    private WeakReference<Artifact> artifactRef;
    private IAttributeDataProvider attributeDataProvider;
    private int attrId;

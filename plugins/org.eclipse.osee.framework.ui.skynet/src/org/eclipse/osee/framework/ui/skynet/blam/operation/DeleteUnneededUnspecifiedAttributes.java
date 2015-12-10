@@ -15,11 +15,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -40,16 +40,16 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       Branch branch = variableMap.getBranch("Branch");
       AttributeType attributeType = variableMap.getAttributeType("Attribute Type");
       List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromAttribute(attributeType, EnumeratedAttribute.UNSPECIFIED_VALUE, branch);
+         ArtifactQuery.getArtifactListFromAttribute(attributeType, IAttribute.UNSPECIFIED, branch);
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType);
          for (Attribute<String> attribute1 : attributes) {
-            if (!attribute1.getValue().equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
+            if (!attribute1.getValue().equals(IAttribute.UNSPECIFIED)) {
                for (Attribute<String> attribute : attributes) {
-                  if (attribute.getValue().equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
+                  if (attribute.getValue().equals(IAttribute.UNSPECIFIED)) {
                      attribute.delete();
                   }
                }

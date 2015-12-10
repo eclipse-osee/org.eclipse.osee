@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.render.word.template;
 
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -33,7 +34,7 @@ public class SRSSpecialPublishingAttributeHandler implements ITemplateAttributeH
       if (attribute.getName().equals(CoreAttributeTypes.Partition.getName()) || attribute.getName().equals(
          CoreAttributeTypes.SafetyCriticality.getName())) {
          for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.Partition)) {
-            if (partition.getValue().equals("Unspecified")) {
+            if (partition.getValue().equals(IAttribute.UNSPECIFIED)) {
                return true;
             }
          }

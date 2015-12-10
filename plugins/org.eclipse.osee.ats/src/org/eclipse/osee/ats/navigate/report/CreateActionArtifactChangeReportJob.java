@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -131,7 +131,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+            attrStrs.add(IAttribute.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(
@@ -141,7 +141,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+            attrStrs.add(IAttribute.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(
@@ -152,7 +152,7 @@ public class CreateActionArtifactChangeReportJob extends Job {
          ModificationType.MODIFIED)) {
          List<String> attrStrs = artChg.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
-            attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
+            attrStrs.add(IAttribute.UNSPECIFIED);
          }
          for (String attrStr : attrStrs) {
             rd.addRaw(AHTML.addRowMultiColumnTable(

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,7 +40,6 @@ import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -335,7 +335,7 @@ public class SystemSubsystemReport extends AbstractBlam {
                subsysMarkedCount++;
 
                String qualMethod = child.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
-               if (!qualMethod.equals(EnumeratedAttribute.UNSPECIFIED_VALUE)) {
+               if (!qualMethod.equals(IAttribute.UNSPECIFIED)) {
                   subsysMarkedAndQualifiedCount++;
                }
 

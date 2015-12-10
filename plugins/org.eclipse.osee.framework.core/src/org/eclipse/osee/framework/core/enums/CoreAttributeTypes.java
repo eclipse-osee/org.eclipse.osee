@@ -113,6 +113,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType XViewerCustomization = TokenFactory.createAttributeType(0x1000000000000065L, "XViewer Customization");
    public static final IAttributeType XViewerDefaults = TokenFactory.createAttributeType(0x1000000000000066L, "XViewer Defaults");
    public static final IAttributeType Zip = TokenFactory.createAttributeType(0x100000000000005FL, "Zip");
+
    // @formatter:on
 
    private CoreAttributeTypes() {
