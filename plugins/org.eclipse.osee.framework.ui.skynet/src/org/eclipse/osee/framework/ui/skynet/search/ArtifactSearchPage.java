@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
@@ -122,7 +123,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
          branchSelect.setSelection(BranchManager.getLastBranch());
          branchSelect.createWidgets(mainComposite, 2);
          branchSelect.addListener(new BranchSelectListener(branchSelect));
-         
+
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
          addFilterListeners();
@@ -260,20 +261,23 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       attributeControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       Label typeLabel = new Label(attributeControls, SWT.HORIZONTAL);
       typeLabel.setText("Attribute Type:");
-    
+
       final ComboViewer attributeTypeList = new ComboViewer(attributeControls, SWT.DROP_DOWN | SWT.READ_ONLY);
       attributeTypeList.setContentProvider(new SearchContentProvider());
       attributeTypeList.setLabelProvider(new StringLabelProvider());
       attributeTypeList.setSorter(new ToStringViewerSorter());
-      
+
       Label valueLabel = new Label(attributeControls, SWT.HORIZONTAL);
       valueLabel.setText("Attribute Value:");
       Text attributeValue = new Text(attributeControls, SWT.BORDER);
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Collection<IAttributeType> taggableTypes = AttributeTypeManager.getTaggableTypes();
       try {
          for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
-            attributeTypeList.add(type);
-            attributeTypeList.setData(type.getName(), type);
+            if (taggableTypes.contains(type)) {
+               attributeTypeList.add(type);
+               attributeTypeList.setData(type.getName(), type);
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error encountered while getting list of attribute types",
@@ -337,15 +341,15 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       filterGroup.setText("Create a Filter");
       filterGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       filterGroup.setLayout(new GridLayout());
-      
+
       Composite composite = new Composite(filterGroup, SWT.BORDER);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       composite.setLayout(new GridLayout(2, false));
-      
+
       Composite text = new Composite(filterGroup, SWT.NONE);
       text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       text.setLayout(new GridLayout());
-      
+
       searchTypeList = new ComboViewer(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
       searchTypeList.setContentProvider(new SearchContentProvider());
       searchTypeList.setLabelProvider(new StringLabelProvider());
@@ -357,7 +361,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       optionsComposite.setLayout(new GridLayout());
       optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
       optionsComposite.setLayout(selectionLayout);
-      
+
       createAttributeSearchControls(optionsComposite);
       createAttributeExistsControls(optionsComposite);
       createArtifactTypeSearchControls(optionsComposite);
@@ -371,13 +375,13 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
             lastSearchTypeListSelected = searchTypeList.getCombo().getSelectionIndex();
          }
       });
-      
+
       textDescription = new StyledText(text, SWT.NONE);
       textDescription.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       textDescription.setEditable(true);
       SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchTypeList.getCombo().getText());
       addTextDescription(searchFilter);
-      
+
       addButton = new Button(filterGroup, SWT.PUSH);
       addButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.BEGINNING, true, false));
       addButton.setText("Add Filter");
@@ -418,9 +422,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       selectionLayout.topControl.getParent().layout();
       addTextDescription(searchFilter);
    }
-   
-   private void addTextDescription(SearchFilter searchFilter)
-   {
+
+   private void addTextDescription(SearchFilter searchFilter) {
       String searchDesc = searchFilter.getSearchDescription();
       if (searchDesc == null) {
          textDescription.setText(" ");
@@ -526,7 +529,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    public void updateOKStatus() {
-      if (isBranchReadable(getSelectedBranch()) && filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
+      if (isBranchReadable(
+         getSelectedBranch()) && filterviewer == null || filterviewer.getFilterList().getFilters().isEmpty()) {
          getContainer().setPerformActionEnabled(false);
       } else {
          getContainer().setPerformActionEnabled(true);
