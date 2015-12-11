@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.eclipse.osee.ats.core.config.RuleManager;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class MockStateDefinition implements IAtsStateDefinition {
    private StateType StateType;
    private int ordinal = 0;
    private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
-   private final MockRuleManager ruleMgr = new MockRuleManager();
+   private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private IAtsStateDefinition defaultToState;
    private final List<IAtsStateDefinition> overrideAttributeValidationStates = new ArrayList<>(5);
@@ -169,7 +170,7 @@ public class MockStateDefinition implements IAtsStateDefinition {
    /**
     * Set how much (of 100%) this state's percent complete will contribute to the full percent complete of work
     * definitions.
-    * 
+    *
     * @param percentWeight int value where all stateWeights in workdefinition == 100
     */
 

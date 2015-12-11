@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link AtsActionGroup}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsActionGroupTest {

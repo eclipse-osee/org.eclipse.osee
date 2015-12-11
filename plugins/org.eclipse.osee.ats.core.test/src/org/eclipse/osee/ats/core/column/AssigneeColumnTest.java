@@ -20,9 +20,10 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AbstractUserTest;
-import org.eclipse.osee.ats.core.mock.MockActionGroup;
 import org.eclipse.osee.ats.core.model.impl.AtsActionGroup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Before;
 import org.mockito.Mock;
@@ -136,7 +137,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       implementStateImplementers.add(joe);
       when(workItem2.getImplementers()).thenReturn(implementStateImplementers);
 
-      MockActionGroup group = new MockActionGroup("group");
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateUuid());
       group.addAction(workItem);
       group.addAction(workItem2);
 
@@ -181,7 +182,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem2.getAssignees()).thenReturn(assigneesToReturn2);
       when(stateMgr2.getStateType()).thenReturn(StateType.Working);
 
-      MockActionGroup group = new MockActionGroup("group");
+      AtsActionGroup group = new AtsActionGroup(GUID.create(), "group", Lib.generateUuid());
       group.addAction(workItem);
       group.addAction(workItem2);
 

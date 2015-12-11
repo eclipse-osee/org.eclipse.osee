@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewManager;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
+import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
-import org.eclipse.osee.ats.mocks.MockDecisionReviewOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
@@ -36,7 +36,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test for {@link DecisionReviewManager}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DecisionReviewManagerTest extends DecisionReviewManager {
@@ -59,8 +59,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsDecisionReviewOption> options = new ArrayList<>();
-      options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
-      options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
+      options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
+      options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
 
       // create and transition decision review
@@ -87,8 +87,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       List<IAtsDecisionReviewOption> options = new ArrayList<>();
-      options.add(new MockDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
-      options.add(new MockDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
+      options.add(new SimpleDecisionReviewOption(DecisionReviewState.Completed.getName(), false, null));
+      options.add(new SimpleDecisionReviewOption(DecisionReviewState.Followup.getName(), true,
          Arrays.asList(AtsClientService.get().getUserService().getCurrentUser().getUserId())));
 
       // create and transition decision review

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.review.defect;
+package org.eclipse.osee.ats.mocks;
 
 import java.util.Collection;
 import java.util.Collections;

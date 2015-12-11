@@ -18,6 +18,9 @@ import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.workdef.SimpleWidgetDefinitionFloatMinMaxConstraint;
+import org.eclipse.osee.ats.mocks.MockStateDefinition;
+import org.eclipse.osee.ats.mocks.MockValueProvider;
+import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 

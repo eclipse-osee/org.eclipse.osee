@@ -16,8 +16,7 @@ Import-Package: com.google.common.cache,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.xml,
  org.eclipse.osee.framework.logging,
- org.eclipse.osee.logger,
- org.eclipse.osee.orcs.rest.client
+ org.eclipse.osee.logger
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.ats.core,
  org.eclipse.osee.ats.core.ai,

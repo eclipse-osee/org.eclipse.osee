@@ -12,14 +12,28 @@ package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 
 /**
  * Test case for {@link WorkDefinitionMatch}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorkDefinitionMatchTest {
+
+   // @formatter:off
+   @Mock private IAtsWorkDefinition workDef;
+   // @formatter:on
+
+   @Before
+   public void setup() {
+      MockitoAnnotations.initMocks(this);
+      Mockito.when(workDef.getName()).thenReturn("mine");
+   }
 
    @Test
    public void testWorkDefinitionMatch() {
@@ -30,19 +44,10 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testWorkDefinitionMatchWorkDefinitionString() {
-      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertNotNull(match.getWorkDefinition());
       Assert.assertFalse(match.getTrace().isEmpty());
-   }
-
-   @Test
-   public void testGetSetWorkDefinition() {
-      WorkDefinitionMatch match = new WorkDefinitionMatch();
-      Assert.assertNull(match.getWorkDefinition());
-      match.setWorkDefinition(new MockWorkDefinition("mine"));
-      Assert.assertNotNull(match.getWorkDefinition());
    }
 
    @Test
@@ -61,7 +66,6 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testIsMatched() {
-      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertTrue(match.isMatched());
@@ -71,7 +75,6 @@ public class WorkDefinitionMatchTest {
 
    @Test
    public void testToString() {
-      IAtsWorkDefinition workDef = new MockWorkDefinition("mine");
       WorkDefinitionMatch match = new WorkDefinitionMatch(workDef.getName(), "trace");
       match.setWorkDefinition(workDef);
       Assert.assertEquals("mine", match.toString());

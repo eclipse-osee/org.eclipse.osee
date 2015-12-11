@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.review.defect;
 import java.util.ArrayList;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
+import org.eclipse.osee.ats.mocks.MockValueProvider;
 import org.junit.Assert;
 
 /**
