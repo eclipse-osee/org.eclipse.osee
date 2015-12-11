@@ -115,7 +115,7 @@ public class JaxAtsTask extends JaxAtsObject {
       for (long relationUuid : relatedUuid) {
          relation.getRelatedUuids().add(relationUuid);
       }
-      relations.add(relation);
+      getRelations().add(relation);
    }
 
    public List<JaxRelation> getRelations() {

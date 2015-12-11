@@ -65,4 +65,7 @@ public class NewTaskData {
       return "NewTaskData [teamUuid=" + teamWfUuid + ", tasks=" + newTasks + ", asUserId=" + asUserId + ", commitComment=" + commitComment + "]";
    }
 
+   public boolean isEmpty() {
+      return newTasks == null || newTasks.isEmpty();
+   }
 }

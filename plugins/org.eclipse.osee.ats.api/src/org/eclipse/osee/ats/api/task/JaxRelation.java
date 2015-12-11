@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.task;
 
+import java.util.LinkedList;
 import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -40,6 +41,9 @@ public class JaxRelation {
    }
 
    public List<Long> getRelatedUuids() {
+      if (relatedUuids == null) {
+         relatedUuids = new LinkedList<>();
+      }
       return relatedUuids;
    }
 

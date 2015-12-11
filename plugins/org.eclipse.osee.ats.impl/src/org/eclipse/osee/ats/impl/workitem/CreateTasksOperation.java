@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
 import org.eclipse.osee.ats.api.task.JaxAttribute;
+import org.eclipse.osee.ats.api.task.JaxRelation;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -30,11 +31,16 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.impl.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -78,6 +84,7 @@ public class CreateTasksOperation {
          Long teamWfUuid = newTaskData.getTeamWfUuid();
          if (teamWfUuid == null) {
             resultData.error("Team Workflow uuid not specified");
+            continue;
          }
          ArtifactReadable teamWfArt = atsServer.getArtifact(teamWfUuid);
          if (teamWfArt == null) {
@@ -102,7 +109,7 @@ public class CreateTasksOperation {
 
          for (JaxAtsTask task : newTaskData.getNewTasks()) {
             Long taskUuid = task.getUuid();
-            if (teamWfUuid != null && taskUuid > 0L) {
+            if (taskUuid > 0L) {
                ArtifactReadable taskArt = atsServer.getArtifact(taskUuid);
                if (taskArt != null) {
                   resultData.errorf("Task with uuid %d already exists for %s", taskUuid, task);
@@ -161,9 +168,38 @@ public class CreateTasksOperation {
                      attribute.getAttrTypeName(), task);
                }
             }
+
+            for (JaxRelation relation : task.getRelations()) {
+               IRelationType relationType = getRelationType(atsServer, relation.getRelationTypeName());
+               if (relationType == null) {
+                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
+                     relation.getRelationTypeName(), task);
+               }
+               if (relation.getRelatedUuids().isEmpty()) {
+                  resultData.errorf("Relation [%s] Uuids must be suplied Task creation in %s",
+                     relation.getRelationTypeName(), task);
+               }
+               Collection<Integer> foundUuids = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+                  relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItemIds();
+               List<Long> notFoundUuids = relation.getRelatedUuids();
+               notFoundUuids.removeAll(foundUuids);
+               if (foundUuids.size() != relation.getRelatedUuids().size()) {
+                  resultData.errorf("Relation [%s] Uuids [%s] do not match Work Items in task %s",
+                     relation.getRelationTypeName(), notFoundUuids, task);
+               }
+            }
          }
       }
       return resultData;
+   }
+
+   private IRelationType getRelationType(IAtsServer atsServer, String relationTypeName) {
+      for (IRelationType relation : atsServer.getOrcsApi().getOrcsTypes().getRelationTypes().getAll()) {
+         if (relation.getName().equals(relation.getName())) {
+            return relation;
+         }
+      }
+      return null;
    }
 
    private static IAttributeType getAttributeType(IAtsServer atsServer, String attrTypeName) {
@@ -263,6 +299,22 @@ public class CreateTasksOperation {
                changes.setValues(task, attrType, attribute.getValues());
             }
 
+            for (JaxRelation relation : jaxTask.getRelations()) {
+               IRelationType relationType = getRelationType(atsServer, relation.getRelationTypeName());
+               if (relationType == null) {
+                  resultData.errorf("Relation Type [%s] not valid for Task creation in %s",
+                     relation.getRelationTypeName(), task);
+               }
+               Collection<IAtsWorkItem> items = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+                  relation.getRelatedUuids().toArray(new Long[relation.getRelatedUuids().size()])).getItems();
+               IRelationTypeSide side = null;
+               if (relation.isSideA()) {
+                  side = new RelationTypeSide(relationType, RelationSide.SIDE_A);
+               } else {
+                  side = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+               }
+               changes.setRelations(task, side, items);
+            }
             changes.add(taskArt);
          }
       }
