@@ -70,6 +70,14 @@ public class VariableMap {
       return getSingleCollectionValue(ArtifactType.class, parameterName);
    }
 
+   public List<IArtifactType> getArtifactTypes(String parameterName) throws OseeArgumentException {
+      Collection<IArtifactType> artTypes = getCollection(IArtifactType.class, parameterName);
+      if (artTypes == null) {
+         return new ArrayList<IArtifactType>();
+      }
+      return new ArrayList<IArtifactType>(artTypes);
+   }
+
    public Artifact getArtifact(String parameterName) throws OseeArgumentException {
       Object object = variableMap.get(parameterName);
       if (object instanceof Artifact) {

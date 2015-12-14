@@ -38,6 +38,7 @@ import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -128,6 +129,7 @@ public class WordTemplateProcessor {
    private final DataRightInput request;
 
    private final DataRightProvider provider;
+   private IArtifactType[] excludeArtifactTypes;
 
    public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightProvider provider) {
       this.renderer = renderer;
@@ -167,6 +169,8 @@ public class WordTemplateProcessor {
             renderer.setOption(ALL_ATTRIBUTES, true);
          }
       }
+
+      excludeArtifactTypes = renderer.getArtifactTypesOption("EXCLUDE ARTIFACT TYPES").toArray(new IArtifactType[0]);
       IFile file =
          RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
       AIFile.writeToFile(file, applyTemplate(artifacts, masterTemplate, file.getParent(), null, null, PREVIEW));
@@ -400,12 +404,13 @@ public class WordTemplateProcessor {
          if (!processedArtifacts.contains(artifact)) {
 
             boolean ignoreArtifact = excludeFolders && artifact.isOfType(CoreArtifactTypes.Folder);
+            boolean ignoreArtType = excludeArtifactTypes != null && artifact.isOfType(excludeArtifactTypes);
             boolean publishInline = artifact.getSoleAttributeValue(CoreAttributeTypes.PublishInline, false);
             boolean startedSection = false;
             boolean templateOnly = renderer.getBooleanOption("TEMPLATE ONLY");
             boolean includeUUIDs = renderer.getBooleanOption("INCLUDE UUIDS");
 
-            if (!ignoreArtifact) {
+            if (!ignoreArtifact && !ignoreArtType) {
                if (outlining && !templateOnly) {
                   String headingText = artifact.getSoleAttributeValue(headingAttributeType, "");
 

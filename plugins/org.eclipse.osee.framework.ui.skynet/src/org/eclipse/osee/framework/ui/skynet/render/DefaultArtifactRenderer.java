@@ -22,6 +22,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -294,5 +295,10 @@ public class DefaultArtifactRenderer implements IRenderer {
          OPEN_OPTION, OPEN_IN_HISTORY));
       commands.add(new MenuCmdDef(CommandGroup.SHOW, GENERALIZED_EDIT, "Sky Walker", FrameworkImage.SKYWALKER,
          OPEN_OPTION, OPEN_IN_GRAPH));
+   }
+
+   @Override
+   public List<IArtifactType> getArtifactTypesOption(String key) throws OseeArgumentException {
+      return options.getArtifactTypes(key);
    }
 }

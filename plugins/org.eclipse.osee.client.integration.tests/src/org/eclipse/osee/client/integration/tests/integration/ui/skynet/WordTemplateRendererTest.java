@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -134,6 +135,8 @@ public class WordTemplateRendererTest {
             true,
             "Exclude Folders",
             true,
+         "EXCLUDE ARTIFACT TYPES",
+         new ArrayList<IArtifactType>(),
             "Recurse On Load",
             true,
             "Maintain Order",

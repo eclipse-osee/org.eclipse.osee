@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -102,6 +103,8 @@ public interface IRenderer {
    public Object getOption(String key) throws OseeArgumentException;
 
    public List<Artifact> getArtifactsOption(String key) throws OseeArgumentException;
+
+   public List<IArtifactType> getArtifactTypesOption(String key) throws OseeArgumentException;
 
    public boolean getBooleanOption(String key) throws OseeArgumentException;
 

@@ -51,6 +51,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
    private final String USE_PARAGRAPH_NUMBERS = "Use Paragraph Numbers";
    private final String UPDATE_PARAGRAPH_NUMBERS = "Update Paragraph Numbers (If authorized)";
+   private final String EXCLUDE_ARTIFACT_TYPES = "Exclude Artifact Types";
    private final String MASTER_TEMPLATE = "Master Template";
    private final String SLAVE_TEMPLATE = "Slave Template";
    private final String IS_ARTIFACTS = "IS Artifacts";
@@ -125,6 +126,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
             linkType,
             WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
             variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS),
+         "EXCLUDE ARTIFACT TYPES",
+         variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES),
             ITemplateRenderer.TRANSACTION_OPTION,
             transaction,
             IRenderer.SKIP_ERRORS,
@@ -155,6 +158,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       sb.append("<li>Select Update Paragraph Numbers if authorized to update them</li>");
       sb.append("<li>Choose whether or not you want the UUIDs published</li>");
       sb.append("<li>Select the Document Link format(s)</li>");
+      sb.append("<li>Choose artifact type(s) to exclude</li>");
       sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
       sb.append("<li>Drag &amp; Drop the IS Artifacts into the box</li>");
       sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
@@ -180,6 +184,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          USE_PARAGRAPH_NUMBERS));
+      builder.append(String.format(
+         "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Exclude Artifact Types\" />",
+         EXCLUDE_ARTIFACT_TYPES));
 
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\" \" /><XWidget xwidgetType=\"XCombo(");
       for (Artifact art : templates) {
