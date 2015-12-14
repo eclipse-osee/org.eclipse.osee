@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
@@ -81,6 +82,7 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -201,6 +203,23 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
             treeViewer.setLabelProvider(new ArtifactLabelProvider(artifactDecorator));
             treeViewer.addDoubleClickListener(new ArtifactDoubleClick());
             treeViewer.getControl().setLayoutData(gridData);
+            treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+               @Override
+               public void selectionChanged(SelectionChangedEvent event) {
+                  if (treeViewer != null) {
+                     Tree viewer = treeViewer.getTree();
+                     if (viewer != null && !viewer.isDisposed()) {
+                        viewer.redraw();
+                     }
+                     Control control = treeViewer.getControl();
+                     if (control != null && !control.isDisposed()) {
+                        control.redraw();
+                     }
+                  }
+               }
+
+            });
 
             /**
              * We can not use the hash lookup because an artifact may not have a good equals. This can be added back
