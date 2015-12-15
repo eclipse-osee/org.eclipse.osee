@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.rest.internal.cpa;
 
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.ats.core.cpa.CpaFactory;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 
 /**
  * @author Donald G. dunne

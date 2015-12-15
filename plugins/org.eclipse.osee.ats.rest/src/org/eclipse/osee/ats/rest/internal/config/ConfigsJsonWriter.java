@@ -14,7 +14,7 @@ import javax.ws.rs.ext.Provider;
 import org.codehaus.jackson.JsonFactory;
 import org.codehaus.jackson.JsonGenerator;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 
@@ -33,7 +33,7 @@ public class ConfigsJsonWriter implements MessageBodyWriter<Collection<IAtsConfi
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.impl.config.JsonFactory.create();
+      jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
    }
 
    public void stop() {

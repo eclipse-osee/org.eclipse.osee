@@ -29,8 +29,8 @@ import org.eclipse.osee.ats.api.workdef.RunRuleData;
 import org.eclipse.osee.ats.api.workdef.RunRuleResults;
 import org.eclipse.osee.ats.api.workflow.AtsRuleEndpointApi;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.util.WorkflowRuleRunner;
+import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.internal.util.WorkflowRuleRunner;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 

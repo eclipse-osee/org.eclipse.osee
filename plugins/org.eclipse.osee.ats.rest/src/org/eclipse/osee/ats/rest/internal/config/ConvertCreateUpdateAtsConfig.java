@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.internal.config;
 
 import org.eclipse.osee.ats.api.util.IAtsDatabaseConversion;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.XResultData;
 
 /**

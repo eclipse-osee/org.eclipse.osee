@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.rest.internal.config;
 
 import javax.ws.rs.Path;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.config.AbstractConfigResource;
+import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.ats.rest.util.AbstractConfigResource;
 
 /**
  * Donald G. Dunne

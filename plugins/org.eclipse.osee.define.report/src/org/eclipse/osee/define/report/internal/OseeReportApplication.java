@@ -16,7 +16,7 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.app.OseeAppResourceTokens;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.WordUpdateEndpointImpl;
 import org.eclipse.osee.define.report.api.DefineApi;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;

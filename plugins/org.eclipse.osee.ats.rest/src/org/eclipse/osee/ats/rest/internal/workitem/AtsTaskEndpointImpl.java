@@ -24,8 +24,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.ats.impl.workitem.CreateTasksOperation;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 

@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.jaxrs.mvc.IdentityView;
@@ -49,7 +49,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.impl.config.JsonFactory.create();
+      jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
    }
 
    public void stop() {

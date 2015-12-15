@@ -26,7 +26,7 @@ import org.codehaus.jackson.JsonProcessingException;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.config.ConfigJsonWriter;
 import org.eclipse.osee.ats.rest.internal.util.ActionPage;
 import org.eclipse.osee.ats.rest.internal.util.RestUtil;
@@ -50,7 +50,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
    }
 
    public void start() {
-      jsonFactory = org.eclipse.osee.ats.impl.config.JsonFactory.create();
+      jsonFactory = org.eclipse.osee.ats.rest.util.JsonFactory.create();
    }
 
    public void stop() {

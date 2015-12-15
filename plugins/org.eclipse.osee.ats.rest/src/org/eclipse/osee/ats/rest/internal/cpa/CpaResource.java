@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.cpa.DecisionUpdate;
 import org.eclipse.osee.ats.api.cpa.DuplicateCpa;
 import org.eclipse.osee.ats.api.cpa.IAtsCpaService;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;

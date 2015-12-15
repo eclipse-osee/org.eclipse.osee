@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.NewActionAdapter;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
@@ -229,8 +229,7 @@ public class WordUpdateArtifact {
    private IAtsTeamWorkflow getSafetyWorkflow(ArtifactReadable workflowArt) {
       Conditions.checkNotNull(workflowArt, "work flow artifact");
       IAtsTeamWorkflow safetyWorkflow = null;
-      ArtifactReadable safetyActionableItemArt =
-         atsServer.getArtifact(AtsArtifactToken.SafetyActionableItem.getUuid());
+      ArtifactReadable safetyActionableItemArt = atsServer.getArtifact(AtsArtifactToken.SafetyActionableItem.getUuid());
       IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(workflowArt);
       IAtsActionableItem actionableItem = atsServer.getConfigItemFactory().getActionableItem(safetyActionableItemArt);
       for (IAtsTeamWorkflow sibling : atsServer.getActionFactory().getSiblingTeamWorkflows(teamWf)) {
@@ -262,13 +261,13 @@ public class WordUpdateArtifact {
          teamWorkflow = atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
             java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
 
-            @Override
-            public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
-               changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
-                  "Review System Safety Changes for the associated RPCR to Complete the Workflow");
-            }
+               @Override
+               public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
+                     "Review System Safety Changes for the associated RPCR to Complete the Workflow");
+               }
 
-         });
+            });
          changes.setSoleAttributeValue(teamWorkflow, CoreAttributeTypes.Name,
             "Safety Workflow for " + teamWf.getAtsId());
          changes.execute();

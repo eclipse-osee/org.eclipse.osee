@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report;
 
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;

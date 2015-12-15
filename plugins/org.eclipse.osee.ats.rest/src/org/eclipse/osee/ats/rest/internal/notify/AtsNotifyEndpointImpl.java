@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.rest.internal.notify;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
-import org.eclipse.osee.ats.impl.IAtsServer;
+import org.eclipse.osee.ats.rest.IAtsServer;
 
 /**
  * @author Donald G. Dunne
