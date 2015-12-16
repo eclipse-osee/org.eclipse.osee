@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributeTypeUtil;
@@ -69,6 +70,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class AttributeFormPart extends AbstractFormPart {
 
+   private static final String ATTR_FORM_PART_LINE_LIMIT = "attr.form.part.line.limit";
    private final ArtifactEditor editor;
    private Composite composite;
    private final XWidgetDecorator decorator = new XWidgetDecorator();
@@ -125,7 +127,10 @@ public class AttributeFormPart extends AbstractFormPart {
 
    public static void computeXTextSize(XText xText) {
       if (Widgets.isAccessible(xText.getStyledText())) {
-         int height = xText.getStyledText().getLineCount() * xText.getStyledText().getLineHeight();
+         int lineCount = xText.getStyledText().getLineCount();
+         int lineLimit = Integer.valueOf(OseeInfo.getCachedValue(ATTR_FORM_PART_LINE_LIMIT));
+         lineCount = lineCount > lineLimit ? lineLimit : lineCount;
+         int height = lineCount * xText.getStyledText().getLineHeight();
          GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
          if (xText.isFillVertically() && height < 60) {
             formTextGd.heightHint = 60;

@@ -66,6 +66,17 @@ public class OseeInfo {
       return getValue(DB_ID_KEY);
    }
 
+   public static String getCachedValue(String key) {
+      Pair<Long, String> cacheValue = cache.get(key);
+      String value;
+      if (cacheValue == null) {
+         value = getValue(ConnectionHandler.getJdbcClient(), key);
+      } else {
+         value = cacheValue.getSecond();
+      }
+      return value;
+   }
+
    private static void cacheValue(String key, String value) {
       Long time = System.currentTimeMillis();
       cache.put(key, new Pair<Long, String>(time, value));
