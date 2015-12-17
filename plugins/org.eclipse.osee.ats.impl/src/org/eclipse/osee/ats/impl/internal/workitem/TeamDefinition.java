@@ -57,9 +57,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    public Collection<IAtsActionableItem> getActionableItems() {
       Set<IAtsActionableItem> ais = new HashSet<>();
       try {
-         for (Object aiGuidObj : getArtifact().getAttributeValues(AtsAttributeTypes.ActionableItem)) {
-            String aiGuid = (String) aiGuidObj;
-            ArtifactReadable aiArt = atsServer.getArtifactByGuid(aiGuid);
+         for (ArtifactReadable aiArt : getArtifact().getRelated(AtsRelationTypes.TeamActionableItem_ActionableItem)) {
             IAtsActionableItem ai = atsServices.getConfigItemFactory().getActionableItem(aiArt);
             ais.add(ai);
          }
