@@ -10,10 +10,29 @@ artifactType "Access Control Model" extends "General Data" {
 	uuid 0x0000000000000002
 }
 
+artifactType "Enumerated Artifact" extends "Artifact" {
+	uuid 0x401B08C5219804F3
+}
+
+artifactType "Osee Type Enum" extends "Enumerated Artifact" {
+	uuid 0x4B9A7DCF0856C368
+	attribute "Id Value"
+}
+
 artifactType "Global Preferences" extends "Artifact" {
 	uuid 0x0000000000000003
 	attribute "Dictionary"
 	attribute "osee.config.Default Mail Server"
+}
+
+attributeType "Id Value" extends StringAttribute {
+	uuid 0x100004651100057
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	description "Key-Value attribute where key (attribute id) is supplied by framework and value is supplied by user."
+	mediaType "text/plain"
 }
 
 attributeType "Artifact Reference" extends ArtifactReferenceAttribute {

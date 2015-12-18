@@ -59,6 +59,7 @@ public final class CoreAttributeTypes {
    public static final IAttributeType HazardSeverity = TokenFactory.createAttributeType(0x10000000000000A5L, "Hazard Severity");
    public static final IAttributeType HTMLContent = TokenFactory.createAttributeType(0x100000000000037DL, "HTML Content");
    public static final IAttributeType ImageContent = TokenFactory.createAttributeType(0x100000000000037CL, "Image Content");
+   public static final IAttributeType IdValue = TokenFactory.createAttributeType(0x100004651100057L, "ID Value");
    public static final IAttributeType LegacyId = TokenFactory.createAttributeType(0x1000000000000083L, "Legacy Id");
    public static final IAttributeType MobilePhone = TokenFactory.createAttributeType(0x1000000000000068L, "Mobile Phone");
    public static final IAttributeType Name = TokenFactory.createAttributeType(0x1000000000000070L, "Name");

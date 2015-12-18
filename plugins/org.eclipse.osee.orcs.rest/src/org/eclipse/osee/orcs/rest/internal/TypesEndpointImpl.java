@@ -17,17 +17,27 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Callable;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.HexUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsTypes;
+import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.data.EnumEntry;
+import org.eclipse.osee.orcs.data.EnumType;
+import org.eclipse.osee.orcs.data.JaxEnumAttribute;
+import org.eclipse.osee.orcs.data.JaxEnumEntry;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
 
 /**
@@ -121,5 +131,64 @@ public class TypesEndpointImpl implements TypesEndpoint {
       public boolean isCompressed() {
          return false;
       }
+   }
+
+   @Override
+   public Response getEnums() {
+      List<JaxEnumAttribute> attributes = new ArrayList<>();
+      AttributeTypes attributeTypes = orcsApi.getOrcsTypes().getAttributeTypes();
+      for (IAttributeType type : attributeTypes.getAll()) {
+         if (attributeTypes.isEnumerated(type)) {
+            JaxEnumAttribute enumAttr = createJaxEnumAttribute(attributeTypes, type);
+            attributes.add(enumAttr);
+         }
+      }
+      return Response.ok(attributes).build();
+
+   }
+
+   private JaxEnumAttribute createJaxEnumAttribute(AttributeTypes attributeTypes, IAttributeType type) {
+      JaxEnumAttribute enumAttr = new JaxEnumAttribute();
+      enumAttr.setName(type.getName());
+      enumAttr.setDescription(type.getDescription());
+      enumAttr.setUuid(type.getGuid().toString());
+      enumAttr.setDataProvider(attributeTypes.getAttributeProviderId(type));
+      enumAttr.setDefaultValue(attributeTypes.getDefaultValue(type));
+      enumAttr.setMax(attributeTypes.getMaxOccurrences(type));
+      enumAttr.setMin(attributeTypes.getMinOccurrences(type));
+      enumAttr.setMediaType(attributeTypes.getMediaType(type));
+      EnumType enumType = attributeTypes.getEnumType(type);
+      enumAttr.setEnumTypeName(enumType.getName());
+      enumAttr.setEnumTypeUuid(enumType.getGuid().toString());
+      for (EnumEntry enumEntry : enumType.values()) {
+         JaxEnumEntry entry = new JaxEnumEntry();
+         entry.setName(enumEntry.getName());
+         Long uuid = null;
+         String guid = enumEntry.getGuid();
+         if (Strings.isNumeric(guid)) {
+            uuid = Long.valueOf(guid);
+         } else if (HexUtil.isHexString(guid)) {
+            uuid = HexUtil.toLong(guid);
+         }
+         if (uuid != null) {
+            entry.setUuid(uuid);
+         }
+         enumAttr.getEntries().add(entry);
+      }
+      return enumAttr;
+   }
+
+   @Override
+   public Response getEnums(Long uuid) {
+      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(uuid);
+      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
+      return Response.ok().entity(jaxEnumAttribute).build();
+   }
+
+   @Override
+   public Response getEnumEntries(Long uuid) {
+      IAttributeType attrType = orcsApi.getOrcsTypes().getAttributeTypes().getByUuid(uuid);
+      JaxEnumAttribute jaxEnumAttribute = createJaxEnumAttribute(orcsApi.getOrcsTypes().getAttributeTypes(), attrType);
+      return Response.ok().entity(jaxEnumAttribute.getEntries()).build();
    }
 }

@@ -50,6 +50,8 @@ public class AttributeTypeToXWidgetName {
             xWidgetName = "XBranchSelectWidget";
          } else if (baseType.contains("artifactreference")) {
             xWidgetName = "XListDropViewWithSave";
+         } else if (attributeType.equals(CoreAttributeTypes.IdValue)) {
+            xWidgetName = "XTextFlatDam";
          } else if (baseType.contains("string")) {
             if (maxOccurrence == 1) {
                xWidgetName = "XTextDam";

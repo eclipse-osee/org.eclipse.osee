@@ -69,6 +69,8 @@ public class AttributeTypeToXWidgetName {
          xWidgetName = "XBranchSelectWidget";
       } else if (AttributeTypeManager.isBaseTypeCompatible(ArtifactReferenceAttribute.class, attributeType)) {
          xWidgetName = "XListDropViewWithSave";
+      } else if (attributeType.equals(CoreAttributeTypes.IdValue)) {
+         xWidgetName = "XTextFlatDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeType)) {
          if (maxOccurrence == 1) {
             xWidgetName = "XTextDam";

@@ -284,17 +284,17 @@ attributeType "ats.Color Team" extends EnumeratedAttribute {
 
 oseeEnumType "enum.color.team" {
    uuid 0x456632C8BB903677
-   entry "Blood Red Team" entryGuid "ABfJoxJFl10q090OgIwA"
-   entry "Blue Crew Team" entryGuid "ABfJoxJcgGruKefBlQwA"
-   entry "Mean Green Team" entryGuid "ABfJoxJmhQmioTwMDYgA"
-   entry "Purple Team" entryGuid "ABfJoxJvHSt7juKTa6wA"
-   entry "Burnt Orange Team" entryGuid "ABfJoxJ3tEYgQSsthRQA"
-   entry "Bronze Team" entryGuid "ABfJoxKGBTMzbtqxckwA"
-   entry "Silver Team" entryGuid "ABfJoxKOnEHOCR2edQAA"
-   entry "Pirate Black Team" entryGuid "ABfJoxKVxVj7wb2h5pQA"
-   entry "Gold Team" entryGuid "ABfJoxKeXFkUFozwjNAA"
-   entry "Plaid Team" entryGuid "AroCJt6_UXb4x4mwtUQA"
-   entry "Unspecified" entryGuid "Ad6XYA7hyWB+07DIAfwA"
+   entry "Blood Red Team" entryGuid "74310723"
+   entry "Blue Crew Team" entryGuid "74310724"
+   entry "Mean Green Team" entryGuid "74310725"
+   entry "Purple Team" entryGuid "74310726"
+   entry "Burnt Orange Team" entryGuid "74319302"
+   entry "Bronze Team" entryGuid "74319303"
+   entry "Silver Team" entryGuid "74319304"
+   entry "Pirate Black Team" entryGuid "74319305"
+   entry "Gold Team" entryGuid "74319306"
+   entry "Plaid Team" entryGuid "74319307"
+   entry "Unspecified" entryGuid "74319308"
 }
 
 attributeType "ats.ATS Configured Branch" extends StringAttribute {

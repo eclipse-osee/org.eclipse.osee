@@ -53,6 +53,7 @@ public final class CoreArtifactTypes {
    public static final IArtifactType WholeWord = TokenFactory.createArtifactType(0x0000000000000012L, "MS Word Whole Document");
    public static final IArtifactType OseeApp = TokenFactory.createArtifactType(0x0000000000000059L, "OSEE App");
    public static final IArtifactType OseeTypeDefinition = TokenFactory.createArtifactType(0x000000000000003CL, "Osee Type Definition");
+   public static final IArtifactType OseeTypesEnum = TokenFactory.createArtifactType(0x4B9A7DCF0856C368L, "Osee Type Enum");
    public static final IArtifactType RendererTemplate = TokenFactory.createArtifactType(0x0000000000000009L, "Renderer Template");
    public static final IArtifactType Requirement = TokenFactory.createArtifactType(0x0000000000000015L, "Requirement");
    public static final IArtifactType RootArtifact = TokenFactory.createArtifactType(0x000000000000000AL, "Root Artifact");
