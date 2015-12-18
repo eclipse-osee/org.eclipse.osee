@@ -20,11 +20,8 @@ public final class CoreArtifactTypes {
 
    // @formatter:off
    public static final IArtifactType AccessControlModel = TokenFactory.createArtifactType(0x0000000000000002L, "Access Control Model");
-   public static final IArtifactType AbstractHeading = TokenFactory.createArtifactType(0x0000000000000325L, "Abstract Heading");
    public static final IArtifactType AbstractSoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000017L, "Abstract Software Requirement");
    public static final IArtifactType AbstractSystemRequirement = TokenFactory.createArtifactType(0x000000000000031CL, "Abstract System Requirement");
-   public static final IArtifactType AbstractSubsystemRequirement = TokenFactory.createArtifactType(0x000000000001001EL, "Abstract Subsystem Requirement");
-   public static final IArtifactType AbstractTestResult = TokenFactory.createArtifactType(0x0000000000000026L, "Abstract Test Result");
    public static final IArtifactType Artifact = TokenFactory.createArtifactType(0x0000000000000001L, "Artifact");
    public static final IArtifactType Breaker = TokenFactory.createArtifactType(0x0000AB6700000034L, "Breaker");
    public static final IArtifactType CodeUnit = TokenFactory.createArtifactType(0x000000000000003AL, "Code Unit");
@@ -79,7 +76,6 @@ public final class CoreArtifactTypes {
    public static final IArtifactType TestInformationSheet = TokenFactory.createArtifactType(0x0000000000000029L, "Test Information Sheet");
    public static final IArtifactType TestPlanElement = TokenFactory.createArtifactType(0x0000000000000025L, "Test Plan Element");
    public static final IArtifactType TestProcedure = TokenFactory.createArtifactType(0x000000000000002EL, "Test Procedure");
-   public static final IArtifactType TestProcedureNative = TokenFactory.createArtifactType(0x0000000000000030L, "Test Procedure Native");
    public static final IArtifactType TestProcedureWML = TokenFactory.createArtifactType(0x000000000000002FL, "Test Procedure WML");
    public static final IArtifactType TestResultNative = TokenFactory.createArtifactType(0x0000000000000027L, "Test Result Native");
    public static final IArtifactType TestResultWML = TokenFactory.createArtifactType(0x0000000000000028L, "Test Result WML");
