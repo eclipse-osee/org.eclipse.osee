@@ -14,20 +14,24 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.util.Iterator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
+import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,6 +42,8 @@ import org.json.JSONObject;
  */
 public class ExportSet {
    private final DispoApi dispoApi;
+   private int totalStatementCount;
+   private int totalCoveredCount;
 
    public ExportSet(DispoApi dispoApi) {
       this.dispoApi = dispoApi;
@@ -95,7 +101,17 @@ public class ExportSet {
    }
 
    public void runCoverageReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
+      totalStatementCount = 0;
+      totalCoveredCount = 0;
       List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid());
+
+      Map<String, Integer> resolutionToCount = new HashMap<>();
+      Map<String, Pair<Integer, Integer>> unitToCovered = new HashMap<>();
+      DispoConfig config = dispoApi.getDispoConfig(program);
+      config.getValidResolutions();
+      for (ResolutionMethod resolution : config.getValidResolutions()) {
+         resolutionToCount.put(resolution.getText(), 0);
+      }
 
       try {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
@@ -110,54 +126,167 @@ public class ExportSet {
             JSONArray annotations = item.getAnnotationsList();
             for (int i = 0; i < annotations.length(); i++) {
                DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotations.getJSONObject(i));
-               writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName());
-            }
-
-            JSONObject discrepancies = item.getDiscrepanciesList();
-            @SuppressWarnings("rawtypes")
-            Iterator keys = discrepancies.keys();
-            while (keys.hasNext()) {
-               String key = (String) keys.next();
-               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancies.getJSONObject(key));
-               writeRowDiscrepancy(sheetWriter, columns, item, discrepancy, setPrimary.getName());
+               writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(), resolutionToCount,
+                  unitToCovered, totalStatementCount);
             }
          }
 
          sheetWriter.endSheet();
+
+         // Write Cover Sheet
+         sheetWriter.startSheet("Cover Sheet", headers.length);
+         String[] coverSheetHeaders = {" ", setPrimary.getName()};
+         sheetWriter.writeRow(coverSheetHeaders);
+         String[] row = new String[2];
+         row[0] = "All Coverage Methods";
+         row[1] = getPercent(totalCoveredCount, totalStatementCount, false);
+         sheetWriter.writeRow(row);
+         for (String resolution : resolutionToCount.keySet()) {
+            row[0] = resolution;
+            row[1] = getPercent(resolutionToCount.get(resolution), totalStatementCount, false);
+            sheetWriter.writeRow(row);
+         }
+         sheetWriter.endSheet();
+
+         // Write Summary Sheet
+         sheetWriter.startSheet("Summary Sheet", headers.length);
+         String[] summarySheetHeaders = {"Unit", "Lines Covered", "Total Lines", "Percent Coverage"};
+         sheetWriter.writeRow(summarySheetHeaders);
+         String[] row2 = new String[4];
+         for (String unit : unitToCovered.keySet()) {
+            row2[0] = unit;
+            Pair<Integer, Integer> coveredOverTotal = unitToCovered.get(unit);
+            int covered = coveredOverTotal.getFirst();
+            int total = coveredOverTotal.getSecond();
+            row2[1] = String.valueOf(covered);
+            row2[2] = String.valueOf(total);
+            Double percent = (((double) covered / total) * 100);
+            row2[3] = String.format("%2.2f%%", percent);
+            sheetWriter.writeRow(row2);
+         }
+         sheetWriter.endSheet();
+
          sheetWriter.endWorkbook();
-      } catch (Exception ex) {
+      } catch (Exception ex)
+
+      {
          throw new OseeCoreException(ex);
       }
 
    }
 
-   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName) throws IOException {
+   private String getPercent(int complete, int total, boolean showZero) {
+      if (total == 0 || complete == 0) {
+         return getPercentString(0, complete, total, showZero);
+      }
+      Double percent = new Double(complete);
+      percent = percent / total;
+      percent = percent * 100;
+      return getPercentString(percent, complete, total, showZero);
+   }
+
+   private String getPercentString(double percent, int complete, int total, boolean showZero) {
+      if (!showZero && percent == 0.0 && complete == 0) {
+         return "0%";
+      }
+      if (percent == 100.0) {
+         return String.format("100%% - %d / %d", complete, total);
+      }
+      if (percent == 0.0) {
+         return String.format("0%% - %d / %d", complete, total);
+      }
+      return String.format("%2.2f%% - %d / %d", percent, complete, total);
+   }
+
+   private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName, Map<String, Integer> resolutionToCount, Map<String, Pair<Integer, Integer>> unitToCovered, Integer totalNumber) throws IOException {
+      totalStatementCount++;
+
+      //      String namespace = generateNamespace(setName, item.getName());
+
       String[] row = new String[columns];
       int index = 0;
       row[index++] = getNameSpace(item, setName);
-      row[index++] = getNormalizedName(item.getName());
+      String unit = getNormalizedName(item.getName());
+      row[index++] = unit;
       row[index++] = item.getName().replaceAll(".*\\.", "");
       row[index++] = String.valueOf(item.getMethodNumber());
       row[index++] = String.valueOf(annotation.getLocationRefs());
-      row[index++] = annotation.getResolutionType();
-      row[index++] = annotation.getResolution();
-      row[index++] = annotation.getCustomerNotes();
+      String coverageMethod = annotation.getResolutionType();
+      if (Strings.isValid(coverageMethod)) {
+         row[index++] = coverageMethod;
+         String rationale = annotation.getResolution();
+         if (coverageMethod.equalsIgnoreCase("Test_Script") || !Strings.isValid(rationale)) {
+            row[index++] = "N/A";
+         } else {
+            row[index++] = rationale;
+         }
+      } else {
+         row[index++] = "Uncovered";
+         row[index++] = "N/A";
+      }
+
       sheetWriter.writeRow((Object[]) row);
+
+      // Update Coverage Resolution Count
+      Integer count = resolutionToCount.get(coverageMethod);
+      if (Strings.isValid(coverageMethod)) {
+         if (count == null) {
+            resolutionToCount.put(coverageMethod, 1);
+         } else {
+            resolutionToCount.put(coverageMethod, ++count);
+         }
+      }
+
+      // Update
+      Pair<Integer, Integer> coveredOverTotal = unitToCovered.get(unit);
+      int coveredCount;
+      if (Strings.isValid(coverageMethod)) {
+         coveredCount = 1;
+         totalCoveredCount++;
+      } else {
+         coveredCount = 0;
+      }
+      if (coveredOverTotal == null) {
+         Pair<Integer, Integer> newCount = new Pair<Integer, Integer>(coveredCount, 1);
+         unitToCovered.put(unit, newCount);
+      } else {
+         Integer currentCovered = coveredOverTotal.getFirst();
+         Integer currentTotal = coveredOverTotal.getSecond();
+         Pair<Integer, Integer> newCount = new Pair<Integer, Integer>(currentCovered + coveredCount, ++currentTotal);
+         unitToCovered.put(unit, newCount);
+      }
    }
 
-   private void writeRowDiscrepancy(ExcelXmlWriter sheetWriter, int columns, DispoItem item, Discrepancy discrepancy, String setName) throws IOException {
-      String[] row = new String[columns];
-      int index = 0;
-      row[index++] = getNameSpace(item, setName);
-      row[index++] = getNormalizedName(item.getName());
-      row[index++] = item.getName().replaceAll(".*\\.", "");
-      row[index++] = String.valueOf(item.getMethodNumber());
-      row[index++] = String.valueOf(discrepancy.getLocation());
-      row[index++] = "Uncovered";
-      row[index++] = "N/A";
-      row[index++] = discrepancy.getText();
-      sheetWriter.writeRow((Object[]) row);
+   //////////////////////////////////
+   private String generateNamespace(String prefix, String filename) {
+      int lastIndexOf = filename.lastIndexOf('.');
+      String filenameNormalized = filename.substring(0, lastIndexOf);
+      StringBuffer sb = new StringBuffer();
+      sb.append(prefix);
+      if (!prefix.endsWith(".")) {
+         sb.append(".");
+      }
+      String namespaceFilename = null;
+      if (filenameNormalized.endsWith(".c")) {
+         namespaceFilename = "c_files." + filenameNormalized;
+         captureNamespace(namespaceFilename, 2, sb);
+      } else {
+         namespaceFilename = filenameNormalized;
+         captureNamespace(namespaceFilename, 3, sb);
+      }
+      return sb.toString().replaceFirst("\\.$", "");
    }
+
+   private void captureNamespace(String filename, int namesOverLength, StringBuffer sb) {
+      String[] names = filename.split("\\.");
+      if (names.length > namesOverLength) {
+         for (int x = 0; x < names.length - namesOverLength; x++) {
+            sb.append(names[x]);
+            sb.append(".");
+         }
+      }
+   }
+   ////////////////////
 
    private String getNormalizedName(String fullName) {
       if (fullName.contains(".2.ada")) {
@@ -231,8 +360,8 @@ public class ExportSet {
          "Method Number", //
          "Execution Line Number", //
          "Coverage Method", //
-         "Coverage Rationale", //
-         "Text"};
+         "Coverage Rationale"}; //
+      //         "Text"};
       return toReturn;
    }
 }

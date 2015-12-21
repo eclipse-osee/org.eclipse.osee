@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.resources;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
@@ -82,7 +83,9 @@ public class DispoAdminResource {
       final DispoSet dispoSet = dispoApi.getDispoSetById(program, primarySet);
       final ExportSet writer = new ExportSet(dispoApi);
       final String options = option;
-      final String fileName = String.format("Export_%s", System.currentTimeMillis());
+      Date date = new Date();
+      String newstring = new SimpleDateFormat("yyyy-MM-dd").format(date);
+      final String fileName = String.format("Coverage_%s", newstring);
 
       StreamingOutput streamingOutput = new StreamingOutput() {
 
