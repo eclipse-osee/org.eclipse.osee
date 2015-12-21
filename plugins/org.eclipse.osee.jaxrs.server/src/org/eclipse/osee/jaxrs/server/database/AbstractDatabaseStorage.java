@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.account.admin.internal.oauth;
+package org.eclipse.osee.jaxrs.server.database;
 
 import java.util.ArrayList;
 import java.util.Arrays;

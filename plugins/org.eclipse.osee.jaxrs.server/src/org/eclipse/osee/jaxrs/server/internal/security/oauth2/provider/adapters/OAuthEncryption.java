@@ -27,6 +27,7 @@ import org.apache.cxf.rs.security.oauth2.tokens.refresh.RefreshToken;
 import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
 import org.apache.cxf.rs.security.oauth2.utils.crypto.KeyProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.server.session.SessionData;
 
 /**
  * @author Roberto E. Escobar
@@ -86,6 +87,15 @@ public class OAuthEncryption {
       return state.toString();
    }
 
+   public String encryptSessionToken(SessionData session, SecretKey secretKey) {
+      return encryptSessionToken(session, secretKey, null);
+   }
+
+   private String encryptSessionToken(SessionData session, SecretKey secretKey, KeyProperties props) {
+      String tokenSequence = tokenizeSessionToken(session);
+      return CryptoUtils.encryptSequence(tokenSequence, secretKey, props);
+   }
+
    public String encryptAccessToken(AccessToken token, SecretKey secretKey) {
       return encryptAccessToken(token, secretKey, null);
    }
@@ -120,9 +130,8 @@ public class OAuthEncryption {
 
    private static ServerAuthorizationCodeGrant recreateCodeGrantInternal(OAuthDataProvider provider, String sequence) {
       String[] parts = getParts(sequence);
-      ServerAuthorizationCodeGrant grant =
-         new ServerAuthorizationCodeGrant(provider.getClient(parts[0]), parts[1], Long.valueOf(parts[2]),
-            Long.valueOf(parts[3]));
+      ServerAuthorizationCodeGrant grant = new ServerAuthorizationCodeGrant(provider.getClient(parts[0]), parts[1],
+         Long.valueOf(parts[2]), Long.valueOf(parts[3]));
       grant.setRedirectUri(getStringPart(parts[4]));
       grant.setAudience(getStringPart(parts[5]));
       grant.setClientCodeVerifier(getStringPart(parts[6]));
@@ -172,6 +181,25 @@ public class OAuthEncryption {
 
    private static String[] getParts(String sequence) {
       return sequence.split("\\" + SEP);
+   }
+
+   public SessionData decryptSessionToken(String token, SecretKey secretKey) {
+      String decryptedSequence = CryptoUtils.decryptSequence(token, secretKey, null);
+      String[] parts = getParts(decryptedSequence);
+
+      UserSubject recreateUserSubject = recreateUserSubject(parts[9]);
+
+      SessionData toReturn = new SessionData(parts[0]);
+      toReturn.setAccountActive(Boolean.getBoolean(parts[1]));
+      toReturn.setExpiresIn(Long.valueOf(parts[2]));
+      toReturn.setIssuedAt(Long.valueOf(parts[3]));
+      toReturn.setAccountDisplayName(parts[4]);
+      toReturn.setAccountEmail(parts[5]);
+      toReturn.setAccountName(parts[6]);
+      toReturn.setAccountUsername(parts[7]);
+      toReturn.setAccountId(Long.valueOf(parts[8]));
+      toReturn.setSubject(recreateUserSubject);
+      return toReturn;
    }
 
    public ServerAccessToken decryptAccessToken(OAuthDataProvider provider, String token, SecretKey secretKey) {
@@ -246,6 +274,41 @@ public class OAuthEncryption {
       return seq + SEP + token.getAccessTokens().toString();
    }
 
+   private static String tokenizeSessionToken(SessionData session) {
+      StringBuilder state = new StringBuilder();
+      // 0: key
+      state.append(tokenizeString(session.getGuid()));
+      // 1: active
+      state.append(SEP);
+      state.append(session.getAccountActive());
+      // 2: expiresIn
+      state.append(SEP);
+      state.append(session.getExpiresIn());
+      // 3: issuedAt
+      state.append(SEP);
+      state.append(session.getIssuedAt());
+      // 4: display name
+      state.append(SEP);
+      state.append(tokenizeString(session.getAccountDisplayName()));
+      // 5: email
+      state.append(SEP);
+      state.append(tokenizeString(session.getAccountEmail()));
+      // 6: name
+      state.append(SEP);
+      state.append(tokenizeString(session.getAccountName()));
+      // 7: username
+      state.append(SEP);
+      state.append(tokenizeString(session.getAccountUsername()));
+      // 8: id
+      state.append(SEP);
+      state.append(session.getAccountId());
+      // 9: user subject
+      state.append(SEP);
+      tokenizeUserSubject(state, session.getSubject());
+
+      return state.toString();
+   }
+
    private static String tokenizeServerToken(ServerAccessToken token) {
       StringBuilder state = new StringBuilder();
       // 0: key
@@ -253,7 +316,7 @@ public class OAuthEncryption {
       // 1: type
       state.append(SEP);
       state.append(tokenizeString(token.getTokenType()));
-      // 2: expiresIn 
+      // 2: expiresIn
       state.append(SEP);
       state.append(token.getExpiresIn());
       // 3: issuedAt

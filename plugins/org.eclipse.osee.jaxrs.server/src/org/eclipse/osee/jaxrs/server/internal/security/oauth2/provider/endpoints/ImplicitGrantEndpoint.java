@@ -64,6 +64,30 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
       return response;
    }
 
+   @Override
+   protected Response createErrorResponse(MultivaluedMap<String, String> params, String redirectUri, String error) {
+      Response response = super.createErrorResponse(params, redirectUri, error);
+
+      String forwardedServer = OAuthUtil.getForwarderServer();
+
+      if (Strings.isValid(forwardedServer)) {
+         URI location = response.getLocation();
+         String scheme = location.getScheme();
+
+         URI finalUri = UriBuilder//
+            .fromPath(forwardedServer)//
+            .scheme(scheme)//
+            .path(location.getRawPath())//
+            .replaceQuery(location.getRawQuery())//
+            .fragment(location.getRawFragment())//
+            .buildFromEncoded();
+
+         response = Response.seeOther(finalUri).build();
+      }
+
+      return response;
+   }
+
    /**
     * If a client does not include a redirect_uri parameter but has an exactly one pre-registered redirect_uri then use
     * that redirect_uri
@@ -82,14 +106,46 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
    @Override
    protected OAuthAuthorizationData createAuthorizationData(Client client, MultivaluedMap<String, String> params, UserSubject subject, String redirectUri, List<OAuthPermission> perms) {
       OAuthAuthorizationData secData = super.createAuthorizationData(client, params, subject, redirectUri, perms);
+
+      String oldReplyTo = secData.getReplyTo();
+      URI replyToUri = UriBuilder.fromPath(oldReplyTo).buildFromEncoded();
+
+      String forwardedServer = OAuthUtil.getForwarderServer();
+
+      if (Strings.isValid(forwardedServer)) {
+         String scheme = replyToUri.getScheme();
+
+         URI newReplyTo = UriBuilder//
+            .fromPath(forwardedServer)//
+            .scheme(scheme)//
+            .path(replyToUri.getRawPath())//
+            .replaceQuery(replyToUri.getRawQuery())//
+            .fragment(replyToUri.getRawFragment())//
+            .buildFromEncoded();
+
+         secData.setReplyTo(newReplyTo.toString());
+      }
+
       secData.setApplicationName(client.getApplicationName());
       secData.setApplicationCertificates(client.getApplicationCertificates());
 
       UriInfo uriInfo = getMessageContext().getUriInfo();
       URI clientLogoUri = clientLogoUriResolver.getClientLogoUri(uriInfo, client);
-      String applicationLogoUri = clientLogoUri.toASCIIString();
 
-      secData.setApplicationLogoUri(applicationLogoUri);
+      if (Strings.isValid(forwardedServer)) {
+         String scheme = clientLogoUri.getScheme();
+
+         URI newClientLogoUri = UriBuilder//
+            .fromPath(forwardedServer)//
+            .scheme(scheme)//
+            .path(clientLogoUri.getRawPath())//
+            .replaceQuery(clientLogoUri.getRawQuery())//
+            .fragment(clientLogoUri.getRawFragment())//
+            .buildFromEncoded();
+
+         secData.setApplicationLogoUri(newClientLogoUri.toString());
+      }
+
       return secData;
    }
 

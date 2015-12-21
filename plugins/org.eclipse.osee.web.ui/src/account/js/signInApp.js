@@ -1,7 +1,7 @@
 (function() {
 
 	var app = angular.module('signInApp', [ 'ngRoute' ]);
-
+	
 	app.controller('signInController', [
 			'$http',
 			'$location',
@@ -38,7 +38,14 @@
 						method : 'GET',
 						headers : header
 					}).success(function(data, status, headers, config) {
-						location.assign(store.continueTo);
+						if(data.startsWith('<!--ERROR PAGE-->', 0)) {
+							var currentUrl = window.location.href;
+							var errorPage = currentUrl.replace("login", "loginError");
+							location.assign(errorPage);
+						} else {
+							location.assign(store.continueTo);
+						}
+						
 					}).error(function(data, status, headers, config) {
 						alert("Failed to Log in")
 					});

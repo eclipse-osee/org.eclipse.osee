@@ -10,18 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import javax.servlet.http.HttpSession;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
+import org.eclipse.osee.jaxrs.server.session.SessionData;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface JaxRsSessionProvider {
 
-   String createSessionToken(Long subjectId);
+   String createAuthenticitySessionToken(Long subjectId);
 
-   String removeSessionToken(Long subjectId);
+   void storeSession(SessionData session);
 
-   String getSessionToken(Long subjectId);
+   String removeSessionAuthenticityToken(Long subjectId);
+
+   String getSessionAuthenticityToken(Long subjectId);
+
+   SessionData getSession(String sessionId);
+
+   SessionData removeSession(String sessionId);
+
+   HttpSession getSession();
 
    OseePrincipal getSubjectById(Long subjectId);
 

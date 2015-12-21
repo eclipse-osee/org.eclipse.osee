@@ -35,6 +35,7 @@ import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
 import org.eclipse.osee.jaxrs.server.security.OAuthToken;
 import org.eclipse.osee.jaxrs.server.security.OAuthTokenType;
+import org.eclipse.osee.jaxrs.server.session.SessionData;
 
 /**
  * @author Roberto E. Escobar
@@ -211,6 +212,10 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
       return accessToken;
    }
 
+   public String createSessionToken(SessionData session) {
+      return serializer.encryptSessionToken(session, getSecretKey());
+   }
+
    @Override
    public ServerAccessToken getAccessToken(String accessToken) {
       return serializer.decryptAccessToken(this, accessToken, getSecretKey());
@@ -292,8 +297,8 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
    @Override
    public ServerAccessToken getPreauthorizedToken(Client client, List<String> requestedScopes, UserSubject subject, String grantType) {
-      // This is an optimization useful in cases where a client requests an authorization code: 
-      // if a user has already provided a given client with a pre-authorized token then challenging 
+      // This is an optimization useful in cases where a client requests an authorization code:
+      // if a user has already provided a given client with a pre-authorized token then challenging
       // a user with yet another form asking for the authorization is redundant
       long clientId = getClientId(client);
       long subjectId = getSubjectId(subject);
@@ -313,6 +318,8 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
 
                   if (!isExpired && entry.getGrantType().equals(grantType)) {
                      token = serializer.decryptAccessToken(this, entry.getTokenKey(), getSecretKey());
+                  } else if (isExpired) {
+                     revokeToken(client, entry.getTokenKey(), entry.getTokenType());
                   }
                   break;
                }
@@ -366,5 +373,4 @@ public class OAuth2DataProvider implements AuthorizationCodeDataProvider {
    private List<String> getApprovedScopes(List<String> requestedScopes, List<String> approvedScopes) {
       return approvedScopes.isEmpty() ? requestedScopes : approvedScopes;
    }
-
 }

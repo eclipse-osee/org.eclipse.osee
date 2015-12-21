@@ -48,6 +48,7 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private volatile boolean useUserSubject;
    private volatile URI redirectURI;
+   private volatile URI redirectErrorURI;
    private volatile boolean ignoreBasePath;
 
    public OAuth2RequestFilter(Log logger, JaxRsResourceManager resourceManager, SubjectProvider subjectProvider) {
@@ -61,6 +62,10 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
    public void setUseUserSubject(boolean useUserSubject) {
       super.setUseUserSubject(useUserSubject);
       this.useUserSubject = useUserSubject;
+   }
+
+   public void setRedirectErrorURI(URI redirectErrorURI) {
+      this.redirectErrorURI = redirectErrorURI;
    }
 
    public void setRedirectURI(URI redirectURI) {
@@ -133,12 +138,12 @@ public class OAuth2RequestFilter extends OAuthRequestFilter {
 
    private Response getAuthorizationRequired(Message msg, ContainerRequestContext context) {
       logger.debug("authorizationRequiredResponse called");
-      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg, context);
+      return newAuthorizationRequiredResponse(null, redirectURI, ignoreBasePath, realm, msg, context);
    }
 
    private Response getAuthenticationException(Exception ex, Message msg, ContainerRequestContext context) {
       logger.error(ex, "Authorization error [%s]", msg.toString());
-      return newAuthorizationRequiredResponse(redirectURI, ignoreBasePath, realm, msg, context);
+      return newAuthorizationRequiredResponse(ex, redirectErrorURI, ignoreBasePath, realm, msg, context);
    }
 
    private void doBasicAuthentication(MessageContext mc, String header) {

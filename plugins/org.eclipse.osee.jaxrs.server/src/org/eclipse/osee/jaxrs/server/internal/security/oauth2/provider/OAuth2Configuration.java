@@ -34,8 +34,10 @@ public class OAuth2Configuration {
    public static final String OAUTH2_PROVIDER__ACCESS_TOKEN_EXPIRATION = qualify("access.token.expiration");
    public static final String OAUTH2_PROVIDER__CODE_GRANT_EXPIRATION = qualify("code.grant.expiration");
    public static final String OAUTH2_PROVIDER__REFRESH_TOKEN_EXPIRATION = qualify("refresh.token.expiration");
+   public static final String OAUTH2_PROVIDER__SESSION_TOKEN_EXPIRATION = qualify("session.token.expiration");
    public static final String OAUTH2_PROVIDER__NONCE_ALLOWED_WINDOW = qualify("nonce.allowed.window");
    public static final String OAUTH2_PROVIDER__LOGIN_REDIRECT_URI = qualify("login.redirect.uri");
+   public static final String OAUTH2_PROVIDER__LOGIN_REDIRECT_ERROR_URI = qualify("login.redirect.error.uri");
    public static final String OAUTH2_PROVIDER__IGNORE_LOGIN_REDIRECT_BASE_PATH = qualify("ignore.login.redirect.base.path");
    public static final String OAUTH2_PROVIDER__REALM = qualify("realm");
    public static final String OAUTH2_PROVIDER__AUDIENCE_IS_ENDPOINT_ADDRESS = qualify("audience.is.endpoint.address");
@@ -60,9 +62,12 @@ public class OAuth2Configuration {
    public static final long DEFAULT_OAUTH2_PROVIDER__ACCESS_TOKEN_EXPIRATION = 10L * 60L * 1000L;
    public static final long DEFAULT_OAUTH2_PROVIDER__CODE_GRANT_EXPIRATION = 1L * 60L * 1000L;
    public static final long DEFAULT_OAUTH2_PROVIDER__REFRESH_TOKEN_EXPIRATION = 30L * 60L * 1000L;
+   public static final long DEFAULT_OAUTH2_PROVIDER__SESSION_TOKEN_EXPIRATION = 60L;
    public static final long DEFAULT_OAUTH2_PROVIDER__NONCE_ALLOWED_WINDOW = 2000L;
    public static final URI DEFAULT_OAUTH2_PROVIDER__LOGIN_REDIRECT_URI = null;
    public static final boolean DEFAULT_OAUTH2_PROVIDER__IGNORE_LOGIN_REDIRECT_BASE_PATH = false;
+   public static final URI DEFAULT_OAUTH2_PROVIDER__LOGIN_ERROR_REDIRECT_URI = null;
+   public static final boolean DEFAULT_OAUTH2_PROVIDER__IGNORE_LOGIN_ERROR_REDIRECT_BASE_PATH = false;
    public static final String DEFAULT_OAUTH2_PROVIDER__REALM = "OAuth2-OSEE";
    public static final boolean DEFAULT_OAUTH2_PROVIDER__AUDIENCE_IS_ENDPOINT_ADDRESS = false;
    public static final boolean DEFAULT_OAUTH2_PROVIDER__BLOCK_UNSECURED_REQUESTS = false;
@@ -99,6 +104,11 @@ public class OAuth2Configuration {
       return getBoolean(props, OAUTH2_PROVIDER__SERVICE_ENABLED, DEFAULT_OAUTH2_PROVIDER__SERVICE_ENABLED);
    }
 
+   public long getSessionTokenExpiration() {
+      return JaxRsUtils.getLong(props, OAUTH2_PROVIDER__SESSION_TOKEN_EXPIRATION,
+         DEFAULT_OAUTH2_PROVIDER__SESSION_TOKEN_EXPIRATION);
+   }
+
    public long getAccessTokenExpiration() {
       return JaxRsUtils.getLong(props, OAUTH2_PROVIDER__ACCESS_TOKEN_EXPIRATION,
          DEFAULT_OAUTH2_PROVIDER__ACCESS_TOKEN_EXPIRATION);
@@ -130,6 +140,19 @@ public class OAuth2Configuration {
          }
       }
       return loginRedirectURI;
+   }
+
+   public URI getLoginRedirectErrorURI() {
+      URI loginRedirectErrorURI = DEFAULT_OAUTH2_PROVIDER__LOGIN_ERROR_REDIRECT_URI;
+      String value = get(props, OAUTH2_PROVIDER__LOGIN_REDIRECT_ERROR_URI, null);
+      if (Strings.isValid(value)) {
+         try {
+            loginRedirectErrorURI = new URI(value);
+         } catch (URISyntaxException ex) {
+            // do nothing;
+         }
+      }
+      return loginRedirectErrorURI;
    }
 
    public boolean isIgnoreLoginRedirectBasePath() {
@@ -171,7 +194,8 @@ public class OAuth2Configuration {
    }
 
    public boolean isRefreshTokenAllowed() {
-      return getBoolean(props, OAUTH2_PROVIDER__REFRESH_TOKENS_ALLOWED, DEFAULT_OAUTH2_PROVIDER__REFRESH_TOKENS_ALLOWED);
+      return getBoolean(props, OAUTH2_PROVIDER__REFRESH_TOKENS_ALLOWED,
+         DEFAULT_OAUTH2_PROVIDER__REFRESH_TOKENS_ALLOWED);
    }
 
    public boolean isReportClientId() {

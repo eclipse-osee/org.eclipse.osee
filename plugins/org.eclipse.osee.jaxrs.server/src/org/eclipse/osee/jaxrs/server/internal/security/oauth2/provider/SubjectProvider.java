@@ -31,4 +31,9 @@ public interface SubjectProvider extends SessionAuthenticityTokenProvider, Subje
 
    UserSubject getSubjectById(long subjectId);
 
+   void setSecretKeyAlgorithm(String secretKeyAlgorithm);
+
+   void setSecretKeyEncoded(String encodedSecretKey);
+
+   void setSessionTokenExpiration(long accessTokenExpiration);
 }

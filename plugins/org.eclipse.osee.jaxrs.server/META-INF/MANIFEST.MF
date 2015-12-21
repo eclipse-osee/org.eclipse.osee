@@ -68,10 +68,12 @@ Import-Package: com.google.common.cache;version="15.0.0",
  org.eclipse.osee.jaxrs,
  org.eclipse.osee.jaxrs.client,
  org.eclipse.osee.jaxrs.mvc,
+ org.eclipse.osee.jdbc,
  org.eclipse.osee.logger,
  org.eclipse.osgi.util,
  org.osgi.framework,
  org.osgi.service.http
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Export-Package: org.eclipse.osee.jaxrs.server.security
+Export-Package: org.eclipse.osee.jaxrs.server.database,
+ org.eclipse.osee.jaxrs.server.security
 Bundle-ActivationPolicy: lazy

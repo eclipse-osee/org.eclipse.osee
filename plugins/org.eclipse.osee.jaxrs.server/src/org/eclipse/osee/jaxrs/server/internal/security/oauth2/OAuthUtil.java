@@ -130,11 +130,16 @@ public final class OAuthUtil {
       return finalRedirectURI;
    }
 
-   public static Response newAuthorizationRequiredResponse(URI redirectURI, boolean ignoreBasePath, String realmName, Message m, ContainerRequestContext context) {
+   public static Response newAuthorizationRequiredResponse(Exception ex, URI redirectURI, boolean ignoreBasePath, String realmName, Message m, ContainerRequestContext context) {
       HttpHeaders headers = new HttpHeadersImpl(m);
       if (redirectURI != null && JaxRsUtils.isHtmlSupported(headers.getAcceptableMediaTypes())) {
          URI finalRedirectURI = computeRedirectUri(redirectURI, ignoreBasePath, m, context);
-         return Response.temporaryRedirect(finalRedirectURI).build();
+         ResponseBuilder toReturn = Response.temporaryRedirect(finalRedirectURI);
+
+         if (ex != null) {
+            toReturn.entity("Incorrect Username/Password");
+         }
+         return toReturn.build();
       } else {
          ResponseBuilder builder = Response.status(Response.Status.UNAUTHORIZED);
          StringBuilder sb = new StringBuilder();
@@ -206,12 +211,18 @@ public final class OAuthUtil {
       }
       UserSubject data = new UserSubject();
       data.setId(String.valueOf(subject.getGuid()));
-      data.setLogin(subject.getUserName());
+      String userName = subject.getUserName();
+      if (Strings.isValid(userName)) {
+         data.setLogin(subject.getUserName());
+      } else {
+         data.setLogin(subject.getLogin());
+      }
       data.setRoles(roles);
 
       Map<String, String> properties = new HashMap<>();
       properties.put(SUBJECT_USERNAME, subject.getUserName());
       String displayName = subject.getDisplayName();
+
       if (displayName.contains(",")) {
          String[] names = displayName.split(",");
          displayName = String.format("%s %s", names[1].trim(), names[0].trim());

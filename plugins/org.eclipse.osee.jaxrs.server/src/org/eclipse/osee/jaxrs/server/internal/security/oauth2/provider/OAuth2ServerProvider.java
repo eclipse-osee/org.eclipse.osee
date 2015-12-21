@@ -89,6 +89,7 @@ public class OAuth2ServerProvider {
    private JaxRsAuthenticator authenticator;
    private JaxRsSessionProvider sessionProvider;
    private JaxRsOAuthStorage storage;
+   private SubjectProvider subjectProvider;
 
    private final AtomicBoolean wasRegistered = new AtomicBoolean();
 
@@ -143,12 +144,12 @@ public class OAuth2ServerProvider {
    }
 
    private void initialize(OAuth2Configuration config) {
-      SubjectProvider subjectProvider = new SubjectProviderImpl(logger, sessionProvider, authenticator);
+      OAuthEncryption serializer = new OAuthEncryption();
+      subjectProvider = new SubjectProviderImpl(logger, sessionProvider, authenticator, serializer);
       ClientProvider clientProvider = new ClientProviderImpl(subjectProvider, storage);
 
       audiences = Collections.emptyList();
 
-      OAuthEncryption serializer = new OAuthEncryption();
       dataProvider = new OAuth2DataProvider(clientProvider, subjectProvider, serializer, storage);
 
       filter = new OAuth2RequestFilter(logger, resourceManager, subjectProvider);
@@ -230,6 +231,7 @@ public class OAuth2ServerProvider {
 
    private void configure(OAuth2Configuration config) {
       configure(config, filter);
+      configure(config, subjectProvider);
       configure(config, dataProvider);
       configure(config, nonceVerifier);
 
@@ -256,6 +258,12 @@ public class OAuth2ServerProvider {
       configureObject(config, provider);
    }
 
+   private void configure(OAuth2Configuration config, SubjectProvider provider) {
+      provider.setSessionTokenExpiration(config.getSessionTokenExpiration());
+      provider.setSecretKeyAlgorithm(config.getSecretKeyAlgorithm());
+      provider.setSecretKeyEncoded(config.getEncodedSecretKey());
+   }
+
    private void configure(OAuth2Configuration config, NonceVerifier object) {
       if (object instanceof NonceVerifierImpl) {
          NonceVerifierImpl nonceVerifier = (NonceVerifierImpl) object;
@@ -271,6 +279,8 @@ public class OAuth2ServerProvider {
       filter.setRealm(config.getRealm());
 
       filter.setRedirectURI(config.getLoginRedirectURI());
+      filter.setRedirectErrorURI(config.getLoginRedirectErrorURI());
+
       filter.setIgnoreBasePath(config.isIgnoreLoginRedirectBasePath());
       filter.setRealm(config.getRealm());
       configureObject(config, filter);
