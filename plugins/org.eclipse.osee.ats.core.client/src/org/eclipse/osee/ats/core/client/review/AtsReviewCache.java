@@ -14,14 +14,13 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Review cache for reviewable workflows
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsReviewCache {
@@ -40,7 +39,7 @@ public class AtsReviewCache {
       }
    }
 
-   public static void decache(AbstractTaskableArtifact sma) {
+   public static void decache(TeamWorkFlowArtifact sma) {
       if (sma != null) {
          teamReviewCache.remove(sma.getGuid());
       }

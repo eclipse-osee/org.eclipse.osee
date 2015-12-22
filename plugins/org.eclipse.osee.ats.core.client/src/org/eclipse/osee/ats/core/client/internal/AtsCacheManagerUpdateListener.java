@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
@@ -107,7 +106,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
                   }
                }
                for (Artifact artifact : ArtifactCache.getActive(guidRel)) {
-                  if (artifact instanceof AbstractTaskableArtifact) {
+                  if (artifact instanceof TeamWorkFlowArtifact) {
                      AtsTaskCache.decache(artifact);
                   }
                }
@@ -170,7 +169,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          if (artifact.isOfType(AtsArtifactTypes.Task) && !artifact.isDeleted()) {
             AtsTaskCache.decache(((TaskArtifact) artifact).getParentAWA());
          }
-         if (artifact instanceof AbstractTaskableArtifact) {
+         if (artifact instanceof TeamWorkFlowArtifact) {
             AtsTaskCache.decache(artifact);
          }
          if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact) && !artifact.isDeleted()) {
@@ -203,7 +202,7 @@ public class AtsCacheManagerUpdateListener implements IArtifactEventListener {
          }
       }
       Artifact artifact = ArtifactCache.getActive(guidArt);
-      if (artifact instanceof AbstractTaskableArtifact) {
+      if (artifact instanceof TeamWorkFlowArtifact) {
          AtsTaskCache.decache(artifact);
       }
       if (artifact instanceof AbstractReviewArtifact) {

@@ -12,10 +12,13 @@ package org.eclipse.osee.ats.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -95,6 +98,14 @@ public class AtsObjects {
          uuids.add(Long.valueOf(uuid));
       }
       return uuids;
+   }
+
+   public static Collection<ArtifactId> getArtifacts(Collection<IAtsTask> tasks) {
+      List<ArtifactId> artifacts = new LinkedList<>();
+      for (IAtsTask task : tasks) {
+         artifacts.add(task.getStoreObject());
+      }
+      return artifacts;
    }
 
 }

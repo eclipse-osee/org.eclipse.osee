@@ -16,7 +16,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -87,9 +86,9 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
       }
       int spent = 0;
       int size = 0;
-      if (artifact instanceof AbstractTaskableArtifact) {
-         AbstractTaskableArtifact abstractTaskableArtifact = (AbstractTaskableArtifact) artifact;
-         Collection<TaskArtifact> taskArts = abstractTaskableArtifact.getTaskArtifacts();
+      if (artifact instanceof TeamWorkFlowArtifact) {
+         TeamWorkFlowArtifact TeamWorkFlowArtifact = (TeamWorkFlowArtifact) artifact;
+         Collection<TaskArtifact> taskArts = TeamWorkFlowArtifact.getTaskArtifacts();
          for (TaskArtifact taskArt : taskArts) {
             spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
          }

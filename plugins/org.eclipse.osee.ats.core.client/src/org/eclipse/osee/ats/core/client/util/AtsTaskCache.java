@@ -14,20 +14,20 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * Tasks cache for taskable workflows
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsTaskCache {
 
-   private static Map<AbstractTaskableArtifact, Collection<TaskArtifact>> teamTasksCache =
-      new ConcurrentHashMap<AbstractTaskableArtifact, Collection<TaskArtifact>>();
+   private static Map<TeamWorkFlowArtifact, Collection<TaskArtifact>> teamTasksCache =
+      new ConcurrentHashMap<TeamWorkFlowArtifact, Collection<TaskArtifact>>();
 
    private AtsTaskCache() {
       // Utility class
@@ -39,13 +39,13 @@ public class AtsTaskCache {
       }
    }
 
-   public static void decache(AbstractTaskableArtifact sma) {
+   public static void decache(TeamWorkFlowArtifact sma) {
       if (sma != null) {
          teamTasksCache.remove(sma);
       }
    }
 
-   public static Collection<TaskArtifact> getTaskArtifacts(AbstractTaskableArtifact sma) throws OseeCoreException {
+   public static Collection<TaskArtifact> getTaskArtifacts(TeamWorkFlowArtifact sma) throws OseeCoreException {
       Collection<TaskArtifact> tasks = teamTasksCache.get(sma);
       if (tasks == null || containsDeleted(tasks)) {
          //         System.out.println("caching tasks for " + sma.toStringWithId());

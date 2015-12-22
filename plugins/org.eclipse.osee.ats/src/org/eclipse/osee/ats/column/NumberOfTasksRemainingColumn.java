@@ -12,17 +12,20 @@ package org.eclipse.osee.ats.column;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
@@ -67,8 +70,8 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
             }
             return Collections.toString(", ", strs);
          }
-         if (element instanceof AbstractTaskableArtifact) {
-            int num = ((AbstractTaskableArtifact) element).getNumTasksInWork();
+         if (element instanceof TeamWorkFlowArtifact) {
+            int num = getNumTasksInWork(((TeamWorkFlowArtifact) element));
             if (num == 0) {
                return "";
             }
@@ -79,4 +82,19 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
       }
       return "";
    }
+
+   public int getNumTasksInWork(TeamWorkFlowArtifact teamWf) {
+      int num = 0;
+      try {
+         for (TaskArtifact taskArt : teamWf.getTaskArtifacts()) {
+            if (taskArt.isInWork()) {
+               num++;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return num;
+   }
+
 }

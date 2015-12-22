@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.TaskAddAction;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.export.AtsExportAction;
@@ -111,8 +111,8 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    private static String getTabName(AbstractWorkflowArtifact awa) {
       try {
-         if (awa instanceof AbstractTaskableArtifact) {
-            return String.format("Tasks (%d)", ((AbstractTaskableArtifact) awa).getTaskArtifacts().size());
+         if (awa instanceof TeamWorkFlowArtifact) {
+            return String.format("Tasks (%d)", ((TeamWorkFlowArtifact) awa).getTaskArtifacts().size());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -198,10 +198,10 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage {
          addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
          try {
             if (taskComposite.getIXTaskViewer().isTasksEditable()) {
-               addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
-               addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                  (AbstractTaskableArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
+               addActionToMenu(fMenu,
+                  new ImportTasksViaSpreadsheet((TeamWorkFlowArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
+               addActionToMenu(fMenu,
+                  new ImportTasksViaSimpleList((TeamWorkFlowArtifact) taskComposite.getIXTaskViewer().getAwa(), null));
 
             }
          } catch (OseeCoreException ex) {

@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -45,8 +44,8 @@ public class ReloadAction extends AbstractAtsAction {
       if (sma.isTeamWorkflow()) {
          relatedArts.addAll(ReviewManager.getReviews((TeamWorkFlowArtifact) sma));
       }
-      if (sma instanceof AbstractTaskableArtifact) {
-         relatedArts.addAll(((AbstractTaskableArtifact) sma).getTaskArtifacts());
+      if (sma instanceof TeamWorkFlowArtifact) {
+         relatedArts.addAll(((TeamWorkFlowArtifact) sma).getTaskArtifacts());
       }
       ArtifactQuery.reloadArtifacts(relatedArts);
       // Don't need to re-open editor cause event handler will do that

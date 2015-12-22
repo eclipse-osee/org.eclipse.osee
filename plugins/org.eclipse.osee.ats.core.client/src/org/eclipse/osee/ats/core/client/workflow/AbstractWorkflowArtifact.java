@@ -44,7 +44,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.note.ArtifactNote;
 import org.eclipse.osee.ats.core.client.workflow.note.AtsNote;
@@ -230,17 +230,24 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    }
 
    public double getEstimatedHoursFromTasks(IStateToken relatedToState) throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
+      if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getEstimatedHoursFromTasks(relatedToState);
+      return getEstimatedHoursFromTasks(((TeamWorkFlowArtifact) this), relatedToState);
    }
 
+   /**
+    * Return Estimated Hours for all tasks
+    */
    public double getEstimatedHoursFromTasks() throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
+      if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getEstimatedHoursFromTasks();
+      double hours = 0;
+      for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) this).getTaskArtifacts()) {
+         hours += taskArt.getEstimatedHoursFromArtifact();
+      }
+      return hours;
    }
 
    public double getEstimatedHoursFromReviews() throws OseeCoreException {
@@ -282,11 +289,18 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return getRemainHoursFromArtifact() + getRemainFromTasks() + getRemainFromReviews();
    }
 
+   /**
+    * Return Remain Hours for all tasks
+    */
    public double getRemainFromTasks() throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
+      if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getRemainHoursFromTasks();
+      double hours = 0;
+      for (TaskArtifact taskArt : ((TeamWorkFlowArtifact) this).getTaskArtifacts()) {
+         hours += taskArt.getRemainHoursFromArtifact();
+      }
+      return hours;
    }
 
    public double getRemainFromReviews() throws OseeCoreException {
@@ -394,10 +408,10 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     * Return Percent Complete ONLY on tasks related to stateName. Total Percent / # Tasks
     */
    public int getPercentCompleteSMAStateTasks(IStateToken state) throws OseeCoreException {
-      if (!(this instanceof AbstractTaskableArtifact)) {
+      if (!(this instanceof TeamWorkFlowArtifact)) {
          return 0;
       }
-      return ((AbstractTaskableArtifact) this).getPercentCompleteFromTasks(state);
+      return ((TeamWorkFlowArtifact) this).getPercentCompleteFromTasks(state);
    }
 
    public String getWorldViewLastUpdated() throws OseeCoreException {
@@ -795,6 +809,54 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public void setStateManager(IAtsStateManager stateManager) {
       this.stateMgr = stateManager;
+   }
+
+   /**
+    * Return Estimated Task Hours of "Related to State" stateName
+    *
+    * @param relatedToState state name of parent workflow's state
+    * @return Returns the Estimated Hours
+    */
+   public double getEstimatedHoursFromTasks(TeamWorkFlowArtifact teamWf, IStateToken relatedToState) throws OseeCoreException {
+      double hours = 0;
+      for (TaskArtifact taskArt : teamWf.getTaskArtifacts(relatedToState)) {
+         hours += taskArt.getEstimatedHoursTotal();
+      }
+      return hours;
+   }
+
+   /**
+    * Return Total Percent Complete / # Tasks for "Related to State" stateName
+    *
+    * @param relatedToState state name of parent workflow's state
+    * @return Returns the Percent Complete.
+    */
+   public int getPercentCompleteFromTasks(IStateToken relatedToState) throws OseeCoreException {
+      int spent = 0, result = 0;
+      if (this instanceof TeamWorkFlowArtifact) {
+         Collection<TaskArtifact> taskArts = ((TeamWorkFlowArtifact) this).getTaskArtifacts(relatedToState);
+         for (TaskArtifact taskArt : taskArts) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
+         }
+         if (spent > 0) {
+            result = spent / taskArts.size();
+         }
+      }
+      return result;
+   }
+
+   public int getPercentCompleteFromTasks() {
+      int spent = 0, result = 0;
+      if (this instanceof TeamWorkFlowArtifact) {
+         Collection<TaskArtifact> taskArts = ((TeamWorkFlowArtifact) this).getTaskArtifacts();
+         for (TaskArtifact taskArt : taskArts) {
+            spent += PercentCompleteTotalUtil.getPercentCompleteTotal(taskArt, AtsClientService.get().getServices());
+         }
+         if (spent > 0) {
+            result = spent / taskArts.size();
+         }
+      }
+      return result;
    }
 
 }

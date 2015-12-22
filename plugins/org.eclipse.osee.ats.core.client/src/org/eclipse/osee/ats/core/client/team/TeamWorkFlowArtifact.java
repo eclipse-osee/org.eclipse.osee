@@ -11,8 +11,10 @@
 
 package org.eclipse.osee.ats.core.client.team;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
@@ -22,6 +24,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionArtifactRollup;
@@ -30,12 +34,14 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -49,7 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
 /**
  * @author Donald G. Dunne
  */
-public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
+public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IAtsTeamWorkflow, IATSStateMachineArtifact {
 
    private static final Set<Integer> teamArtsWithNoAction = new HashSet<>();
    private final ActionableItemManager actionableItemsDam;
@@ -66,6 +72,9 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       super.getSmaArtifactsOneLevel(smaArtifact, artifacts);
       try {
          artifacts.addAll(ReviewManager.getReviews(this));
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTaskArtifacts(this)) {
+            artifacts.add((Artifact) task.getStoreObject());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -154,6 +163,9 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
       super.atsDelete(deleteArts, allRelated);
       for (AbstractReviewArtifact reviewArt : ReviewManager.getReviews(this)) {
          reviewArt.atsDelete(deleteArts, allRelated);
+      }
+      for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(this)) {
+         ((AbstractWorkflowArtifact) task.getStoreObject()).atsDelete(deleteArts, allRelated);
       }
    }
 
@@ -263,6 +275,34 @@ public class TeamWorkFlowArtifact extends AbstractTaskableArtifact implements IA
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       return getActionableItemsDam().getActionableItems();
+   }
+
+   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
+      return AtsTaskCache.getTaskArtifacts(this);
+   }
+
+   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
+      List<TaskArtifact> arts = new ArrayList<>();
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
+         if (taskArt.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "").equals(state.getName())) {
+            arts.add(taskArt);
+         }
+      }
+      return arts;
+   }
+
+   public Result areTasksComplete() {
+      try {
+         for (TaskArtifact taskArt : getTaskArtifacts()) {
+            if (taskArt.isInWork()) {
+               return new Result(false, "Task " + taskArt.getGuid() + " Not Complete");
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Result(false, "Exception " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
    }
 
 }

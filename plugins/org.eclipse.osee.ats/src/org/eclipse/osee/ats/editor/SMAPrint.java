@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.artifact.WorkflowManager;
 import org.eclipse.osee.ats.column.DeadlineColumn;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
@@ -130,7 +129,7 @@ public class SMAPrint extends Action {
    }
 
    private void getTaskHtml(XResultData rd) {
-      if (!(sma instanceof AbstractTaskableArtifact)) {
+      if (!(sma instanceof TeamWorkFlowArtifact)) {
          return;
       }
       try {
@@ -138,7 +137,7 @@ public class SMAPrint extends Action {
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
          rd.addRaw(
             AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution", "ID"}));
-         for (TaskArtifact art : ((AbstractTaskableArtifact) sma).getTaskArtifacts()) {
+         for (TaskArtifact art : ((TeamWorkFlowArtifact) sma).getTaskArtifacts()) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),
                art.getStateMgr().getCurrentStateName().replaceAll("(Task|State)", ""),

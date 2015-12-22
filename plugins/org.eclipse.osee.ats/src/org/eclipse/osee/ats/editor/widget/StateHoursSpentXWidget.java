@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
@@ -84,7 +83,8 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
             String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
-         if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
+         if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
+            ((TeamWorkFlowArtifact) sma))) {
             sb.append(String.format("\n        Task  Hours: %5.2f",
                HoursSpentUtil.getHoursSpentFromStateTasks(sma, page, AtsClientService.get().getServices())));
             breakoutNeeded = true;

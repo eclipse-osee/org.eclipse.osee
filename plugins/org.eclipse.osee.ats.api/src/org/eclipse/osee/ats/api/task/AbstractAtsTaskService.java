@@ -127,4 +127,15 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
       return java.util.Collections.emptyList();
    }
 
+   @Override
+   public boolean hasTasks(IAtsTeamWorkflow teamWf) {
+      return services.getRelationResolver().getRelatedCount(teamWf, AtsRelationTypes.TeamWfToTask_Task) > 0;
+   }
+
+   @Override
+   public boolean isRelatedToState(IAtsTask task, String stateName) {
+      return services.getAttributeResolver().getSoleAttributeValue(task, AtsAttributeTypes.RelatedToState, "").equals(
+         stateName);
+   }
+
 }

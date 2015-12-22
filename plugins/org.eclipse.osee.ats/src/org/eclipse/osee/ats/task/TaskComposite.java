@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskMover;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -182,7 +181,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
             AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
             taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getUuid());
-            AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+            AtsTaskCache.decache((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -340,7 +339,7 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
 
    public void onTasksDeleted() {
       try {
-         AtsTaskCache.decache((AbstractTaskableArtifact) iXTaskViewer.getAwa());
+         AtsTaskCache.decache((TeamWorkFlowArtifact) iXTaskViewer.getAwa());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.WARNING, ex);
       }

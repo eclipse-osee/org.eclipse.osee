@@ -15,12 +15,14 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsTransitionManager;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionOption;
 import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
@@ -28,6 +30,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,12 +52,12 @@ public class TaskInfoXWidget extends XLabelValueBase {
 
    private final IStateToken forState;
    private final IManagedForm managedForm;
-   private final AbstractTaskableArtifact taskableArt;
+   private final TeamWorkFlowArtifact teamWf;
 
-   public TaskInfoXWidget(IManagedForm managedForm, final AbstractTaskableArtifact taskableArt, final IStateToken forState, Composite composite, int horizontalSpan) {
+   public TaskInfoXWidget(IManagedForm managedForm, final TeamWorkFlowArtifact teamWf, final IStateToken forState, Composite composite, int horizontalSpan) {
       super("\"" + forState.getName() + "\" State Tasks");
       this.managedForm = managedForm;
-      this.taskableArt = taskableArt;
+      this.teamWf = teamWf;
       this.forState = forState;
       setToolTip("Tasks must be completed before transtion.  Select \"Task\" tab to view tasks");
       setFillHorizontally(true);
@@ -65,7 +68,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
    @Override
    public String toString() {
       try {
-         return "TaskInfoXWidget for SMA \"" + taskableArt + "\"";
+         return "TaskInfoXWidget for SMA \"" + teamWf + "\"";
       } catch (Exception ex) {
          return "TaskInfoXWidget " + ex.getLocalizedMessage();
       }
@@ -77,12 +80,12 @@ public class TaskInfoXWidget extends XLabelValueBase {
          dispose();
       }
       try {
-         if (taskableArt.getTaskArtifacts(forState).size() > 0) {
-            setValueText(getStatus(taskableArt, forState));
+         if (teamWf.getTaskArtifacts(forState).size() > 0) {
+            setValueText(getStatus(teamWf, forState));
          } else {
             setValueText("No Tasks Created");
          }
-         if (taskableArt.areTasksComplete(forState).isFalse()) {
+         if (areTasksComplete(teamWf, forState).isFalse()) {
             IMessageManager messageManager = managedForm.getMessageManager();
             if (messageManager != null) {
                messageManager.addMessage("validation.error",
@@ -99,9 +102,24 @@ public class TaskInfoXWidget extends XLabelValueBase {
       }
    }
 
-   private String getStatus(AbstractTaskableArtifact taskableArt, IStateToken state) throws OseeCoreException {
+   public static Result areTasksComplete(IAtsTeamWorkflow teamWf, IStateToken state) {
+      try {
+         for (IAtsTask task : AtsClientService.get().getTaskService().getTaskArtifacts(teamWf)) {
+            if (task.getStateMgr().getStateType().isInWork() && AtsClientService.get().getTaskService().isRelatedToState(
+               task, state.getName())) {
+               return new Result(false, "Task " + task.getUuid() + " Not Complete");
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return new Result(false, "Exception " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
+   }
+
+   private String getStatus(TeamWorkFlowArtifact teamWf, IStateToken state) throws OseeCoreException {
       int completed = 0, cancelled = 0, inWork = 0;
-      for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(state)) {
+      for (TaskArtifact taskArt : teamWf.getTaskArtifacts(state)) {
          if (taskArt.isCompleted()) {
             completed++;
          } else if (taskArt.isCancelled()) {
@@ -111,7 +129,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
          }
       }
       return String.format("Total: %d - InWork: %d - Completed: %d - Cancelled: %d",
-         taskableArt.getTaskArtifacts(state).size(), inWork, completed, cancelled);
+         teamWf.getTaskArtifacts(state).size(), inWork, completed, cancelled);
    }
 
    public void addAdminRightClickOption() {
@@ -128,7 +146,7 @@ public class TaskInfoXWidget extends XLabelValueBase {
                      }
                      try {
                         AtsChangeSet changes = new AtsChangeSet("ATS Auto Complete Tasks");
-                        for (TaskArtifact taskArt : taskableArt.getTaskArtifacts(forState)) {
+                        for (TaskArtifact taskArt : teamWf.getTaskArtifacts(forState)) {
                            if (!taskArt.isCompletedOrCancelled()) {
                               if (taskArt.getStateMgr().isUnAssigned()) {
                                  taskArt.getStateMgr().setAssignee(

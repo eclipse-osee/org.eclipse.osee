@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -49,7 +48,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    public final static String TASK_IMPORT_SPREADSHEET = "Task Import Spreadsheet";
    public final static String TEAM_WORKFLOW = "Taskable Workflow (drop here)";
    public final static String EMAIL_POCS = "Email POCs";
-   private AbstractTaskableArtifact taskableStateMachineArtifact;
+   private TeamWorkFlowArtifact taskableStateMachineArtifact;
 
    @Override
    public String getName() {
@@ -84,14 +83,14 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
    /**
     * @return the TaskableStateMachineArtifact
     */
-   public AbstractTaskableArtifact getTaskableStateMachineArtifact() {
+   public TeamWorkFlowArtifact getTaskableStateMachineArtifact() {
       return taskableStateMachineArtifact;
    }
 
    /**
     * @param taskableStateMachineArtifact the TaskableStateMachineArtifact to set
     */
-   public void setTaskableStateMachineArtifact(AbstractTaskableArtifact taskableStateMachineArtifact) {
+   public void setTaskableStateMachineArtifact(TeamWorkFlowArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 

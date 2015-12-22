@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -536,8 +535,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
                      for (TeamWorkFlowArtifact team : ActionManager.getTeams(art)) {
                         arts.addAll(team.getTaskArtifacts());
                      }
-                  } else if (art instanceof AbstractTaskableArtifact) {
-                     arts.addAll(((AbstractTaskableArtifact) art).getTaskArtifacts());
+                  } else if (art instanceof TeamWorkFlowArtifact) {
+                     arts.addAll(((TeamWorkFlowArtifact) art).getTaskArtifacts());
                   }
                }
                worldComposite.load(worldEditor.getWorldXWidgetActionPage().getCurrentTitleLabel(), arts);

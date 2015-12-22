@@ -33,8 +33,8 @@ import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -567,29 +567,29 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
 
    @Override
    public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
-      if (awa instanceof AbstractTaskableArtifact) {
-         return ((AbstractTaskableArtifact) awa).getTaskArtifacts(state);
+      if (awa instanceof TeamWorkFlowArtifact) {
+         return ((TeamWorkFlowArtifact) awa).getTaskArtifacts(state);
       }
       return Collections.emptyList();
    }
 
    @Override
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      if (awa instanceof AbstractTaskableArtifact) {
-         return ((AbstractTaskableArtifact) awa).getTaskArtifacts();
+      if (awa instanceof TeamWorkFlowArtifact) {
+         return ((TeamWorkFlowArtifact) awa).getTaskArtifacts();
       }
       return Collections.emptyList();
    }
 
    @Override
    public boolean isTaskable() {
-      return awa instanceof AbstractTaskableArtifact;
+      return awa instanceof TeamWorkFlowArtifact;
    }
 
    @Override
    public boolean isTasksEditable() {
       boolean editable = true;
-      if (!(awa instanceof AbstractTaskableArtifact) || awa.isCompletedOrCancelled()) {
+      if (!(awa instanceof TeamWorkFlowArtifact) || awa.isCompletedOrCancelled()) {
          editable = false;
       }
       return editable;

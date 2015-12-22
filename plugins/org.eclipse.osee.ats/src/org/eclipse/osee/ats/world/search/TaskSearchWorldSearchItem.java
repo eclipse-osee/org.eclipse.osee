@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.version.VersionReleaseType;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.Versions;
@@ -173,8 +172,8 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
             for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                if (art.isOfType(AtsArtifactTypes.Task)) {
                   taskArts.add((TaskArtifact) art);
-               } else if (art instanceof AbstractTaskableArtifact) {
-                  taskArts.addAll(((AbstractTaskableArtifact) art).getTaskArtifacts());
+               } else if (art instanceof TeamWorkFlowArtifact) {
+                  taskArts.addAll(((TeamWorkFlowArtifact) art).getTaskArtifacts());
                }
             }
          }

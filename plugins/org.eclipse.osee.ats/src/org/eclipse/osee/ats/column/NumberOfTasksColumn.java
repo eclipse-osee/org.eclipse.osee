@@ -16,7 +16,6 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -67,8 +66,8 @@ public class NumberOfTasksColumn extends XViewerAtsColumn implements IXViewerVal
             }
             return Collections.toString(", ", strs);
          }
-         if (element instanceof AbstractTaskableArtifact) {
-            int num = ((AbstractTaskableArtifact) element).getTaskArtifacts().size();
+         if (element instanceof TeamWorkFlowArtifact) {
+            int num = ((TeamWorkFlowArtifact) element).getTaskArtifacts().size();
             if (num == 0) {
                return "";
             }

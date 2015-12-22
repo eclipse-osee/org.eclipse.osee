@@ -14,7 +14,6 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
@@ -80,8 +79,8 @@ public class PercentCompleteTasksColumn extends XViewerAtsColumn implements IXVi
          Double rollPercent = percent / ActionManager.getTeams(artifact).size();
          return rollPercent.intValue();
       }
-      if (artifact instanceof AbstractTaskableArtifact) {
-         return ((AbstractTaskableArtifact) artifact).getPercentCompleteFromTasks();
+      if (artifact instanceof TeamWorkFlowArtifact) {
+         return ((TeamWorkFlowArtifact) artifact).getPercentCompleteFromTasks();
       }
       return 0;
    }

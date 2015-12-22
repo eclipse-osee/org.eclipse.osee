@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -115,10 +114,10 @@ public class AtsOseeCmService implements IOseeCmService {
 
    @Override
    public List<Artifact> getTaskArtifacts(Artifact pcrArtifact) {
-      if (pcrArtifact instanceof AbstractTaskableArtifact) {
+      if (pcrArtifact instanceof TeamWorkFlowArtifact) {
          try {
             List<Artifact> arts = new ArrayList<>();
-            arts.addAll(((AbstractTaskableArtifact) pcrArtifact).getTaskArtifacts());
+            arts.addAll(((TeamWorkFlowArtifact) pcrArtifact).getTaskArtifacts());
             return arts;
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -27,10 +27,10 @@ import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -104,7 +104,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                List<Artifact> arts = new ArrayList<>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(ReviewManager.getReviews(teamArt));
-               arts.addAll(teamArt.getTaskArtifactsSorted());
+               arts.addAll(getTaskArtifactsSorted(teamArt));
                relatedArts.addAll(arts);
                return arts.toArray();
             }
@@ -113,6 +113,10 @@ public class WorldContentProvider implements ITreeContentProvider {
          }
       }
       return org.eclipse.osee.framework.jdk.core.util.Collections.EMPTY_ARRAY;
+   }
+
+   public Collection<TaskArtifact> getTaskArtifactsSorted(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
+      return AtsTaskCache.getTaskArtifacts(teamArt);
    }
 
    @Override
@@ -173,7 +177,7 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }
-      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(
+      if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(
          AtsRelationTypes.TeamWfToTask_Task) > 0) {
          return true;
       }

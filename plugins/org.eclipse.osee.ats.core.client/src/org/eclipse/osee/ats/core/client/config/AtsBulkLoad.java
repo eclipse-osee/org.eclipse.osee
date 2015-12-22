@@ -21,7 +21,6 @@ import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.review.AtsReviewCache;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -79,8 +78,8 @@ public class AtsBulkLoad {
          AtsRelationTypes.ActionToWorkflow_WorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review));
       arts.addAll(artifacts);
       for (Artifact art : arts) {
-         if (art instanceof AbstractTaskableArtifact) {
-            AtsTaskCache.getTaskArtifacts((AbstractTaskableArtifact) art);
+         if (art instanceof TeamWorkFlowArtifact) {
+            AtsTaskCache.getTaskArtifacts((TeamWorkFlowArtifact) art);
          }
          if (art instanceof TeamWorkFlowArtifact) {
             AtsReviewCache.getReviewArtifacts((TeamWorkFlowArtifact) art);

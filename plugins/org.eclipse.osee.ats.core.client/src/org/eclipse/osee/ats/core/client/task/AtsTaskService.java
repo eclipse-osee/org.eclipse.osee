@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -86,7 +87,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
       List<Long> artUuids = new LinkedList<>();
 
       teamWf.reloadAttributesAndRelations();
-      AtsTaskCache.decache((AbstractTaskableArtifact) teamWf);
+      AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf);
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsUtilCore.getAtsBranch());

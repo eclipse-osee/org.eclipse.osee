@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -51,7 +50,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    public final static String ASSIGNEES = "Assignees";
    public final static String TASK_IMPORT_TITLES = "Task Import Titles";
    public final static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private AbstractTaskableArtifact taskableStateMachineArtifact;
+   private TeamWorkFlowArtifact taskableStateMachineArtifact;
    private XCombo stateCombo;
 
    @Override
@@ -131,10 +130,10 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
             @Override
             public void widgetModified(XWidget widget) {
                List<Artifact> artifacts = viewer.getArtifacts();
-               if (artifacts.isEmpty() || !(artifacts.iterator().next() instanceof AbstractTaskableArtifact)) {
+               if (artifacts.isEmpty() || !(artifacts.iterator().next() instanceof TeamWorkFlowArtifact)) {
                   taskableStateMachineArtifact = null;
                } else {
-                  taskableStateMachineArtifact = (AbstractTaskableArtifact) artifacts.iterator().next();
+                  taskableStateMachineArtifact = (TeamWorkFlowArtifact) artifacts.iterator().next();
                }
                try {
                   refreshStateCombo();
@@ -152,8 +151,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    private void refreshStateCombo() throws OseeStateException {
       if (stateCombo != null && taskableStateMachineArtifact != null) {
-         List<String> names =
-            RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) taskableStateMachineArtifact);
+         List<String> names = RelatedToStateColumn.getValidInWorkStates(taskableStateMachineArtifact);
          stateCombo.setDataStrings(names.toArray(new String[names.size()]));
       }
    }
@@ -179,14 +177,14 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
    /**
     * @return the TaskableStateMachineArtifact
     */
-   public AbstractTaskableArtifact getTaskableStateMachineArtifact() {
+   public TeamWorkFlowArtifact getTaskableStateMachineArtifact() {
       return taskableStateMachineArtifact;
    }
 
    /**
     * @param defaultTeamWorkflowArtifact the defaultTeamWorkflowArtifact to set
     */
-   public void setTaskableStateMachineArtifact(AbstractTaskableArtifact taskableStateMachineArtifact) {
+   public void setTaskableStateMachineArtifact(TeamWorkFlowArtifact taskableStateMachineArtifact) {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 

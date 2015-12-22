@@ -32,7 +32,6 @@ import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
@@ -282,7 +281,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    /**
     * @return the defaultTeamWorkflows
     */
-   public Collection<? extends AbstractTaskableArtifact> getDefaultTeamWorkflows() {
+   public Collection<? extends TeamWorkFlowArtifact> getDefaultTeamWorkflows() {
       return defaultTeamWorkflows;
    }
 

@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor.widget;
 import java.util.Collections;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -84,9 +83,10 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
          StringBuffer sb = new StringBuffer(
             String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
-         if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
+         if (sma instanceof TeamWorkFlowArtifact && AtsClientService.get().getTaskService().hasTasks(
+            (TeamWorkFlowArtifact) sma)) {
             sb.append(String.format("\n        Task  Percent: %d",
-               ((AbstractTaskableArtifact) sma).getPercentCompleteFromTasks(page)));
+               ((TeamWorkFlowArtifact) sma).getPercentCompleteFromTasks(page)));
             breakoutNeeded = true;
          }
          if (sma.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) sma)) {

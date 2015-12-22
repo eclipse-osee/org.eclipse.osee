@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.WorkflowManagerCore;
@@ -303,12 +302,12 @@ public class SMAWorkFlowSection extends SectionPart {
    }
 
    private void createTaskFooter(Composite parent, IStateToken state) {
-      if (sma instanceof AbstractTaskableArtifact) {
+      if (sma instanceof TeamWorkFlowArtifact) {
          Composite comp = new Composite(parent, SWT.None);
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), (AbstractTaskableArtifact) sma, state, comp, 2));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((TeamWorkFlowArtifact) sma), state, comp, 2));
       }
    }
 
