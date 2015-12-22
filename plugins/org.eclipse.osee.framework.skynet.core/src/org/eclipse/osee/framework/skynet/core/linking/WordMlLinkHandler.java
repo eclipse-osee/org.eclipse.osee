@@ -271,6 +271,11 @@ public class WordMlLinkHandler {
       public int end() {
          return end;
       }
+      
+      @Override
+      public String toString() {
+         return "{" + start + ", " + end + "}";
+      }
    }
 
 }
