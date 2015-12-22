@@ -14,11 +14,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.client.demo.DemoWorkType;
+import org.eclipse.osee.ats.client.integration.tests.ats.core.client.task.TaskTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.column.NumberOfTasksColumn;
 import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.framework.core.util.Result;
@@ -47,7 +47,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Collection<IAtsUser> taskAssignees = new HashSet<>();
       taskAssignees.addAll(codeArt.getStateMgr().getAssignees());
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 2, changes);
+      Result result = TaskTestUtil.transitionToCompleted(taskArt, 0.0, 2, changes);
       Assert.assertEquals(true, result.isTrue());
       changes.execute();
 
@@ -55,7 +55,7 @@ public class NumberOfTasksAndInWorkTasksColumnsTest {
       Assert.assertEquals("5", NumberOfTasksRemainingColumn.getInstance().getColumnText(codeArt, null, 0));
 
       changes.clear();
-      result = TaskManager.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, changes);
+      result = TaskTestUtil.transitionToInWork(taskArt, taskAssignees.iterator().next(), 0, -2, changes);
       Assert.assertEquals(true, result.isTrue());
       changes.execute();
 

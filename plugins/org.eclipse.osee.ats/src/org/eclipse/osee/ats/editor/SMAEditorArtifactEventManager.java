@@ -18,11 +18,11 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
-import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -274,9 +274,9 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          if (artifactEvent.isReloaded(sma)) {
             return true;
          }
-         if (sma instanceof AbstractTaskableArtifact) {
-            for (TaskArtifact taskArt : ((AbstractTaskableArtifact) sma).getTaskArtifacts()) {
-               if (artifactEvent.isReloaded(taskArt)) {
+         if (sma instanceof TeamWorkFlowArtifact) {
+            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks((TeamWorkFlowArtifact) sma)) {
+               if (artifactEvent.isReloaded((TaskArtifact) task.getStoreObject())) {
                   return true;
                }
             }

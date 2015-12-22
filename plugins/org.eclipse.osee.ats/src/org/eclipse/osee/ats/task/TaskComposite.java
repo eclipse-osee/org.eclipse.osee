@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
+import org.eclipse.osee.ats.core.client.task.TaskMover;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
@@ -273,7 +273,9 @@ public class TaskComposite extends Composite implements IWorldViewerEventHandler
                AWorkbench.popup("No Tasks To Drop");
                return;
             }
-            TaskManager.moveTasks((TeamWorkFlowArtifact) iXTaskViewer.getAwa(), taskArts);
+            TaskMover mover = new TaskMover(AtsClientService.get().getWorkDefinitionAdmin(),
+               (TeamWorkFlowArtifact) iXTaskViewer.getAwa(), taskArts);
+            mover.moveTasks();
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }

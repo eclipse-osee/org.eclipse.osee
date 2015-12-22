@@ -20,7 +20,7 @@ import org.junit.runners.Suite;
  * @author Donald G. Dunne
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({TaskManagerTest.class})
+@Suite.SuiteClasses({TaskMoverTest.class})
 public class AtsCoreClient_Task_Suite {
    @BeforeClass
    public static void setUp() throws Exception {

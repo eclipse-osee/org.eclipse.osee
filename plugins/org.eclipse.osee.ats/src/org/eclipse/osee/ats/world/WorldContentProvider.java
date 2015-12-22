@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
@@ -127,7 +127,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return TeamWorkFlowManager.cast(artifact).getParentActionArtifact();
             }
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
-               return TaskManager.cast(artifact).getParentAWA();
+               return ((TaskArtifact) artifact).getParentAWA();
             }
             if (artifact.isOfType(AtsArtifactTypes.ReviewArtifact)) {
                return ReviewManager.cast(artifact).getParentAWA();

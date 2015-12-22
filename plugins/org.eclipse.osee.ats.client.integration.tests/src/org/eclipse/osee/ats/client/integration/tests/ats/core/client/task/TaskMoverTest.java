@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,11 +24,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.client.task.TaskManager;
-import org.eclipse.osee.ats.core.client.task.TaskStates;
+import org.eclipse.osee.ats.core.client.task.TaskMover;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,11 +36,10 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test unit for {@link TaskManager}
- *
  * @author Donald G. Dunne
  */
-public class TaskManagerTest extends TaskManager {
+
+public class TaskMoverTest {
 
    // @formatter:off
    @Mock private IAtsTeamWorkflow teamWf, teamWf2;
@@ -81,7 +77,9 @@ public class TaskManagerTest extends TaskManager {
       Assert.assertNotNull(taskWorkDef);
 
       Assert.assertEquals(taskWorkDef, newTaskWorkDef);
-      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
+      TaskMover mover =
+         new TaskMover(AtsClientService.get().getWorkDefinitionAdmin(), teamWf2, Arrays.asList(taskToMove));
+      Result result = mover.moveTasks();
 
       Assert.assertTrue("This failed: " + result.getText(), result.isTrue());
    }
@@ -98,20 +96,23 @@ public class TaskManagerTest extends TaskManager {
       when(task1.getParentTeamWorkflow()).thenReturn(teamWf);
 
       // fail when moving to same workflow as is already parent
-      Result result = TaskManager.moveTasksIsValid(teamWf, tasks, workDefinitionAdmin);
+      TaskMover mover = new TaskMover(workDefinitionAdmin, teamWf, tasks);
+      Result result = mover.validate();
       Assert.assertTrue(result.isFalse());
       Assert.assertTrue(result.toString().contains("workflows are the same"));
 
       // move if task defines it's own work definition
       when(workDefinitionAdmin.isTaskOverridingItsWorkDefinition(task1)).thenReturn(true);
-      result = TaskManager.moveTasksIsValid(teamWf2, tasks, workDefinitionAdmin);
+      mover = new TaskMover(workDefinitionAdmin, teamWf2, tasks);
+      result = mover.validate();
       Assert.assertTrue(result.isTrue());
 
       when(workDefinitionAdmin.isTaskOverridingItsWorkDefinition(task1)).thenReturn(false);
       when(workDefinitionAdmin.getWorkDefinitionForTaskNotYetCreated(teamWf2)).thenReturn(match1);
       when(match1.getWorkDefinition()).thenReturn(taskWorkDef1);
       when(task1.getWorkDefinition()).thenReturn(taskWorkDef2);
-      result = TaskManager.moveTasksIsValid(teamWf2, tasks, workDefinitionAdmin);
+      mover = new TaskMover(workDefinitionAdmin, teamWf2, tasks);
+      result = mover.validate();
       Assert.assertTrue(result.isFalse());
       Assert.assertTrue(result.toString().contains("does not match current"));
    }
@@ -150,7 +151,9 @@ public class TaskManagerTest extends TaskManager {
             teamWf2).getWorkDefinition();
       Assert.assertNotNull(taskWorkDef);
       Assert.assertSame("Should be same", taskWorkDef, newTaskWorkDef);
-      Result result = TaskManager.moveTasks(teamWf2, Arrays.asList(taskToMove));
+      TaskMover mover =
+         new TaskMover(AtsClientService.get().getWorkDefinitionAdmin(), teamWf2, Arrays.asList(taskToMove));
+      Result result = mover.moveTasks();
 
       Assert.assertTrue("This should pass: " + result.getText(), result.isTrue());
    }
@@ -169,40 +172,6 @@ public class TaskManagerTest extends TaskManager {
       }
       jaxWorkDef.setWorkDefDsl(workDefXml);
       AtsClientService.getConfigEndpoint().storeWorkDef(jaxWorkDef);
-   }
-
-   @org.junit.Test
-   public void testTransitionToCompletedThenInWork() throws OseeCoreException {
-
-      AtsTestUtil.cleanupAndReset("TaskManagerTest - TransitionToCompleted");
-
-      TaskArtifact taskArt = AtsTestUtil.getOrCreateTaskOffTeamWf1();
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      // transition to Completed
-      AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 1");
-      Result result = TaskManager.transitionToCompleted(taskArt, 0.0, 3, changes);
-      Assert.assertEquals(Result.TrueResult, result);
-      changes.execute();
-
-      Assert.assertEquals(TaskStates.Completed.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.0, HoursSpentUtil.getHoursSpentTotal(taskArt, AtsClientService.get().getServices()), 0.0);
-      Assert.assertEquals("", taskArt.getStateMgr().getAssigneesStr());
-
-      // ensure nothing dirty
-      AtsTestUtil.validateArtifactCache();
-
-      // transition back to InWork
-      changes = new AtsChangeSet(getClass().getSimpleName() + " testTransitionToCompletedThenInWork() 2");
-      result = TaskManager.transitionToInWork(taskArt, AtsClientService.get().getUserService().getCurrentUser(), 45, .5,
-         changes);
-      Assert.assertEquals(Result.TrueResult, result);
-      changes.execute();
-      Assert.assertEquals(TaskStates.InWork.getName(), taskArt.getCurrentStateName());
-      Assert.assertEquals(3.5, HoursSpentUtil.getHoursSpentTotal(taskArt, AtsClientService.get().getServices()), 0.0);
-      Assert.assertEquals("Joe Smith", taskArt.getStateMgr().getAssigneesStr());
    }
 
 }
