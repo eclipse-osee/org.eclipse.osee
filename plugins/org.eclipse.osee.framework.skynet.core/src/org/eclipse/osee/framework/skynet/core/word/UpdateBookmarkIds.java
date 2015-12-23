@@ -18,7 +18,6 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import javax.xml.xpath.XPath;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -125,7 +124,7 @@ public class UpdateBookmarkIds {
             toReturn = stripOffBodyTag(Jaxp.xmlToString(document, false));
          }
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
       return toReturn;

@@ -17,11 +17,11 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 /**
- * {@link OseeExceptions}
- * 
+ * {@link OseeCoreException}
+ *
  * @author Karol M. Wilk
  */
-public class OseeExceptionsTest {
+public class OseeCoreExceptionsTest {
 
    @Rule
    public TestName test = new TestName();
@@ -31,7 +31,7 @@ public class OseeExceptionsTest {
       String resultMessage = null;
 
       try {
-         OseeExceptions.wrapAndThrow(new RuntimeException(test.getMethodName()));
+         OseeCoreException.wrapAndThrow(new RuntimeException(test.getMethodName()));
       } catch (Exception ex) {
          Assert.assertTrue(ex.getStackTrace().length > 0);
          resultMessage = ex.getMessage();
@@ -45,7 +45,7 @@ public class OseeExceptionsTest {
       String resultMessage = null;
 
       try {
-         OseeExceptions.wrapAndThrow(new OseeCoreException(test.getMethodName()));
+         OseeCoreException.wrapAndThrow(new OseeCoreException(test.getMethodName()));
       } catch (OseeCoreException ex) {
          Assert.assertTrue(ex.getStackTrace().length > 0);
          resultMessage = ex.getMessage();
@@ -59,7 +59,7 @@ public class OseeExceptionsTest {
       String resultMessage = null;
 
       try {
-         OseeExceptions.wrapAndThrow(new OseeWrappedException(test.getMethodName(), new Throwable()));
+         OseeCoreException.wrapAndThrow(new OseeWrappedException(test.getMethodName(), new Throwable()));
       } catch (OseeCoreException ex) {
          Assert.assertTrue(ex.getStackTrace().length > 0);
          resultMessage = ex.getMessage();

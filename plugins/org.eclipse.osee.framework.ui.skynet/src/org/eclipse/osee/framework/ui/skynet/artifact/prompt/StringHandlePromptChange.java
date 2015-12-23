@@ -15,7 +15,6 @@ import java.text.ParseException;
 import java.util.Collection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -97,7 +96,7 @@ public class StringHandlePromptChange implements IHandlePromptChange {
                toReturn = String.valueOf(format.parse(value).doubleValue()); // TODO check for dot in integers
             }
          } catch (ParseException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
       return toReturn;

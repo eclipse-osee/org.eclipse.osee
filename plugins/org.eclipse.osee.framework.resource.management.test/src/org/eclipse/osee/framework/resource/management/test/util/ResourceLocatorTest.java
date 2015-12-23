@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.resource.management.test.util;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -75,7 +74,7 @@ public class ResourceLocatorTest {
          URI uri = new URI(path);
          locator = new ResourceLocator(uri);
       } catch (URISyntaxException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return locator;
    }

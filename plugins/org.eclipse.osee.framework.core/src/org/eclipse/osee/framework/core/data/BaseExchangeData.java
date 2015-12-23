@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.util.Properties;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
@@ -42,7 +41,7 @@ public class BaseExchangeData implements Serializable {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.load(backingData, inputStream);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
@@ -54,7 +53,7 @@ public class BaseExchangeData implements Serializable {
          PropertyStoreWriter writer = new PropertyStoreWriter();
          writer.save(backingData, outputStream);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

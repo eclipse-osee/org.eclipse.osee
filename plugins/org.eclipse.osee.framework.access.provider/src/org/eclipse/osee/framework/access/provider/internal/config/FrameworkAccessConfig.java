@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.access.provider.internal.DefaultFrameworkAcces
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -52,13 +51,9 @@ public class FrameworkAccessConfig implements IDbInitializationTask {
          artifact.setName(DefaultFrameworkAccessConstants.STORAGE_ARTIFACT_NAME);
          artifact.setSoleAttributeFromStream(CoreAttributeTypes.GeneralStringData, inputStream);
          artifact.persist(transaction);
-
-         //         Artifact atsConfigFolder = AtsUtilCore.getFromToken(AtsArtifactToken.ConfigFolder);
-         //         atsConfigFolder.addChild(artifact);
-         //         atsConfigFolder.persist(transaction);
          transaction.execute();
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }

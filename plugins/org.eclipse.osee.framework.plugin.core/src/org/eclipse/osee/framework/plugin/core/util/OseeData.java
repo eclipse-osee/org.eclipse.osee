@@ -21,7 +21,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
@@ -110,8 +109,7 @@ public final class OseeData {
          }
          return folder;
       } catch (CoreException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
    }
 }

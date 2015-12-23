@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
 import java.io.InputStream;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.XmlTextInputStream;
@@ -45,7 +44,7 @@ public class StringAttribute extends CharacterBackedAttribute<String> {
          inputStream = new XmlTextInputStream(getValue());
          toReturn = Lib.inputStreamToString(inputStream);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }

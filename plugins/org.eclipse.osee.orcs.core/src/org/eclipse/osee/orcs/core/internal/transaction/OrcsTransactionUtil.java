@@ -41,11 +41,7 @@ public class OrcsTransactionUtil {
       try {
          return callable.call();
       } catch (Exception ex) {
-         if (ex instanceof OseeCoreException) {
-            throw (OseeCoreException) ex;
-         } else {
-            throw new OseeCoreException(ex);
-         }
+         throw OseeCoreException.wrap(ex);
       }
    }
 }

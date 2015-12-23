@@ -39,7 +39,6 @@ import org.eclipse.core.net.proxy.IProxyChangeEvent;
 import org.eclipse.core.net.proxy.IProxyChangeListener;
 import org.eclipse.core.net.proxy.IProxyData;
 import org.eclipse.core.net.proxy.IProxyService;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -224,7 +223,7 @@ public class HttpProcessor {
          }
 
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(responseInputStream);
          method.releaseConnection();
@@ -256,7 +255,7 @@ public class HttpProcessor {
             throw new OseeCoreException(exceptionString);
          }
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(httpInputStream);
          result.setCode(statusCode);
@@ -289,7 +288,7 @@ public class HttpProcessor {
             throw new OseeCoreException(exceptionString);
          }
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(httpInputStream);
          result.setCode(statusCode);

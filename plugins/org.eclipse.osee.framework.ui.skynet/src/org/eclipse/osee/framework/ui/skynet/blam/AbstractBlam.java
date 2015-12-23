@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -139,7 +138,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
          inStream = bundle.getEntry(file).openStream();
          contents = Lib.inputStreamToString(inStream);
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inStream);
       }

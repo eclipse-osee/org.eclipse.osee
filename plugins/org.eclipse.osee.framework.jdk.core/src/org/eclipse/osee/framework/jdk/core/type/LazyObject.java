@@ -44,7 +44,7 @@ public abstract class LazyObject<T> {
             if (cause == null) {
                cause = ex;
             }
-            throw new OseeCoreException(cause);
+            throw OseeCoreException.wrap(cause);
          }
       }
       return object;

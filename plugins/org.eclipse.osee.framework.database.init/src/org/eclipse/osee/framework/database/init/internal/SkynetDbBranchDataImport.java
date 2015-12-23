@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.OseeNotFoundException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
@@ -92,8 +91,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
             try {
                exchangeFile = getExchangeFile(bundleName, branchData);
             } catch (Exception ex) {
-               OseeExceptions.wrapAndThrow(ex);
-               return null; // unreachable since wrapAndThrow() always throws an exception
+               throw OseeCoreException.wrap(ex);
             }
             ImportData importData = new ImportData(exchangeFile);
             for (IConfigurationElement innerElement : element.getChildren(BRANCHES_TO_IMPORT)) {
@@ -135,8 +133,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
          }
          return toReturn;
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
    }
 

@@ -14,7 +14,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -80,7 +79,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
                builder.append("/");
             }
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
 
          builder.append(name);

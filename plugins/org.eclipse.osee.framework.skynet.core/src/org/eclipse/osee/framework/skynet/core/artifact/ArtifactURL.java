@@ -18,7 +18,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilderClient;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -40,7 +39,7 @@ public class ArtifactURL {
       try {
          url = new URL(urlString);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return url;
    }
@@ -61,7 +60,7 @@ public class ArtifactURL {
       try {
          url = new URL(urlString);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return url;
    }
@@ -74,8 +73,7 @@ public class ArtifactURL {
       try {
          return HttpUrlBuilder.createURL(getSelectedPermanenrLinkUrl(), context, parameters);
       } catch (UnsupportedEncodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
    }
 

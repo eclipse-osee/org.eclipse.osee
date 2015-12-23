@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -228,10 +227,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
       try {
          exchangeDataProcessor.parse(exportItem, handler);
       } catch (Exception ex) {
-         if (ex instanceof OseeCoreException) {
-            throw (OseeCoreException) ex;
-         }
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -266,14 +262,12 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
          @Override
          public InputStream getContent() throws OseeCoreException {
-            InputStream inputStream = null;
             try {
                URL url = modelUri.toURL();
-               inputStream = new BufferedInputStream(url.openStream());
+               return new BufferedInputStream(url.openStream());
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               throw OseeCoreException.wrap(ex);
             }
-            return inputStream;
          }
 
          @Override

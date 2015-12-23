@@ -18,7 +18,6 @@ import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -291,7 +290,7 @@ public class DataLoaderImpl implements DataLoader {
          }
       }
       if (saveException != null) {
-         OseeExceptions.wrapAndThrow(saveException);
+         OseeCoreException.wrapAndThrow(saveException);
       }
    }
 

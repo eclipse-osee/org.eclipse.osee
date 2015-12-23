@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -92,7 +91,7 @@ public class ResourceDataProxyFactory implements DataProxyFactory {
          dataProxy = clazz.newInstance();
       } catch (Exception ex) {
          getLogger().error(ex, "Error creating data proxy for [%s]", factoryAlias);
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       dataProxy.setLogger(getLogger());
       dataProxy.setStorage(createStorage());

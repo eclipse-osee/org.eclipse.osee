@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -163,7 +162,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             try {
                guid = guidUtility.getSourceTag(uriPath);
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
          if (guid != null) {
@@ -171,7 +170,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
                try {
                   guidUtility.removeSourceTag(uriPath);
                } catch (IOException ex) {
-                  OseeExceptions.wrapAndThrow(ex);
+                  OseeCoreException.wrapAndThrow(ex);
                }
             } else {
                traceUnitArtifact =
@@ -198,7 +197,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             guidUtility.removeSourceTag(traceUnit.getUriPath());
             guidUtility.addSourceTag(traceUnit.getUriPath(), traceUnitArtifact.getGuid());
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
 
          }
       }

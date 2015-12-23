@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,7 +87,7 @@ public class TisRenderer extends WordTemplateRenderer {
          WordMLProducer wordMl = new WordMLProducer(charBak);
          wtm.processArtifacts(wordMl, artifacts);
       } catch (CharacterCodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return charBak;
    }

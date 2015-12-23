@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -35,35 +34,29 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery>im
 
    @Override
    public ResultSet<TransactionReadable> getResults() throws OseeCoreException {
-      ResultSet<TransactionReadable> result = null;
       try {
-         result = createSearch().call();
+         return createSearch().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override
    public ResultSet<Integer> getResultsAsIds() throws OseeCoreException {
-      ResultSet<Integer> result = null;
       try {
-         result = createSearchResultsAsIds().call();
+         return createSearchResultsAsIds().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override
    public int getCount() throws OseeCoreException {
-      Integer result = -1;
       try {
-         result = createCount().call();
+         return createCount().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override

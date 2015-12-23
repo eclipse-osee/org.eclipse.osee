@@ -14,7 +14,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -63,7 +62,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
             response = true;
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return response;
    }
@@ -76,7 +75,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
          try {
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
 
@@ -91,7 +90,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       } else {
          toReturn = "";
@@ -106,7 +105,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
       return setValue(toSet);

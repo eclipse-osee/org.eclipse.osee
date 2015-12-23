@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.attribute;
 
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -74,14 +73,10 @@ public class AttributeClassResolver {
     */
    @SuppressWarnings("unchecked")
    private <T> Attribute<T> createAttribute(Class<? extends Attribute<?>> attributeClass) throws OseeCoreException {
-      Attribute<T> attribute = null;
       try {
-         attribute = (Attribute<T>) attributeClass.newInstance();
-      } catch (InstantiationException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-      } catch (IllegalAccessException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         return (Attribute<T>) attributeClass.newInstance();
+      } catch (Exception ex) {
+         throw OseeCoreException.wrap(ex);
       }
-      return attribute;
    }
 }

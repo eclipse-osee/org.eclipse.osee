@@ -21,7 +21,6 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -162,7 +161,7 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
          BranchView branchView = (BranchView) AWorkbench.getActivePage().showView(VIEW_ID);
          branchView.reveal(branch);
       } catch (PartInitException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

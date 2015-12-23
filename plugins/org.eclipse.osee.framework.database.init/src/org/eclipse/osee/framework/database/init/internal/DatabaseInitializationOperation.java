@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.init.DefaultDbInitTasks;
 import org.eclipse.osee.framework.database.init.IDatabaseInitConfiguration;
@@ -104,7 +103,7 @@ public class DatabaseInitializationOperation extends AbstractOperation {
             System.out.println("Database Initialization Complete");
          } catch (Exception ex) {
             OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, ex);
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             OseeClientProperties.setInDbInit(false);
          }
@@ -220,12 +219,11 @@ public class DatabaseInitializationOperation extends AbstractOperation {
             }
          }
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
    private IDbInitializationRule createTask(Bundle bundle, String initRuleClassName) throws OseeCoreException {
-      IDbInitializationRule rule = null;
       Class<?> taskClass = null;
       try {
          taskClass = bundle.loadClass(initRuleClassName);
@@ -239,11 +237,10 @@ public class DatabaseInitializationOperation extends AbstractOperation {
          }
       }
       try {
-         rule = (IDbInitializationRule) taskClass.newInstance();
+         return (IDbInitializationRule) taskClass.newInstance();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return rule;
    }
 
    private String waitForUserResponse() {

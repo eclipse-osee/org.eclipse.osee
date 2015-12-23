@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -454,9 +453,9 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          attribute = attributeClass.newInstance();
          attributes.put(attributeType, attribute);
       } catch (InstantiationException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } catch (IllegalAccessException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return attribute;
    }
@@ -662,12 +661,12 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          try {
             toReturn = Lib.inputStreamToString(inputStream);
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             try {
                inputStream.close();
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
       } else {

@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.UnsecuredOseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -145,7 +144,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
                Lib.inputStreamToOutputStream(inputStream, response.getOutputStream());
                response.flushBuffer();
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             } finally {
                Lib.close(inputStream);
             }
@@ -157,7 +156,7 @@ public class ArtifactFileServlet extends UnsecuredOseeHttpServlet {
          try {
             response.getWriter().write(String.format("Unable to find resource: [%s]", request));
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
    }

@@ -16,7 +16,6 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -42,7 +41,7 @@ public class Resources {
          inputStream = resource.getContent();
          buffer = Lib.compressStream(inputStream, resource.getName());
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }
@@ -60,7 +59,7 @@ public class Resources {
          fileName = Lib.decompressStream(inputStream, outputStream);
          fileName = URLEncoder.encode(fileName, "UTF-8");
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
          Lib.close(outputStream);
@@ -74,12 +73,10 @@ public class Resources {
    }
 
    public static IResource createResourceFromBytes(byte[] bytes, String path, boolean isCompressed) throws OseeCoreException {
-      IResource resource = null;
       try {
-         resource = new CompressedResourceBridge(bytes, new URI(path), isCompressed);
+         return new CompressedResourceBridge(bytes, new URI(path), isCompressed);
       } catch (URISyntaxException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return resource;
    }
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 
 import java.io.File;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -76,7 +75,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
       try {
          extractor.process(logger, file.toURI(), tempCollector);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       // pass through all the collected items
       collector.addAllRoughArtifacts(tempCollector.getRoughArtifacts());

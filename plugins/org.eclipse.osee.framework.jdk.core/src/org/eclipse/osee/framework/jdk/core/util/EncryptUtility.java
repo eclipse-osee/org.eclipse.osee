@@ -59,7 +59,7 @@ public final class EncryptUtility {
       try {
          toReturn = encryptWithExceptions(plainText, secret, TRANSFORMATION, ALGORITHM);
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
       return toReturn;
    }
@@ -72,7 +72,7 @@ public final class EncryptUtility {
       try {
          toReturn = decryptWithExceptions(codedText, secret, TRANSFORMATION, ALGORITHM);
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
       return toReturn;
    }

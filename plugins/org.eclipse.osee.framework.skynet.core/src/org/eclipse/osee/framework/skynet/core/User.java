@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -171,7 +170,7 @@ public class User extends Artifact {
          try {
             userSettings.save(stringWriter);
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
          setSoleAttributeFromString(CoreAttributeTypes.UserSettings, stringWriter.toString());
          if (transaction == null) {
@@ -191,7 +190,7 @@ public class User extends Artifact {
                store.load(new StringReader(settings));
             }
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
          userSettings = store;
       }

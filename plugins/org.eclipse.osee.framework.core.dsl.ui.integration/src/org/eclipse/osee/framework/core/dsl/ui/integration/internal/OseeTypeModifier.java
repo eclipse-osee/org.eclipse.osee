@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeDsl;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.OseeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
@@ -40,7 +39,7 @@ public class OseeTypeModifier implements AttributeModifier {
       try {
          value = Lib.fileToString(file);
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromType(OseeTypeDefinition, COMMON);
@@ -58,7 +57,7 @@ public class OseeTypeModifier implements AttributeModifier {
       try {
          oseeDsl = OseeDslResourceUtil.loadModel("osee:/TypeModel.osee", combinedSheets.toString()).getModel();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
       Set<Long> uuids = new HashSet<>();
@@ -73,7 +72,7 @@ public class OseeTypeModifier implements AttributeModifier {
       try {
          inputStream = Lib.stringToInputStream(value);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return inputStream;
    }

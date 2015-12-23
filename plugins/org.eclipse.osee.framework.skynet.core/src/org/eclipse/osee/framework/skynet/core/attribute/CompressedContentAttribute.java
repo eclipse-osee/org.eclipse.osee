@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 
@@ -40,7 +39,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
             response = getAttributeDataProvider().setValue(ByteBuffer.wrap(data));
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       if (response) {
          markAsNewOrChanged();
@@ -53,8 +52,7 @@ public final class CompressedContentAttribute extends BinaryAttribute<InputStrea
       try {
          return Lib.stringToInputStream(value);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
    }
 

@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -57,7 +56,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
             branchView.changePresentation(BranchOptionsEnum.SHOW_ARCHIVED_BRANCHES, !itemChk);
          }
       } catch (ExecutionException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return null;
    }

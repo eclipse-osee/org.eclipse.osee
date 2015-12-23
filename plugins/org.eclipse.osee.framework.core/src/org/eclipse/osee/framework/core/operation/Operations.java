@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.core.internal.OperationBuilderImpl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -61,7 +60,7 @@ public final class Operations {
       if (status.getSeverity() == IStatus.ERROR) {
          Throwable th = status.getException();
          if (th != null) {
-            OseeExceptions.wrapAndThrow(th);
+            OseeCoreException.wrapAndThrow(th);
          } else {
             throw new OseeStateException(status.getMessage());
          }

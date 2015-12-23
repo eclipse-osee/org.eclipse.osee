@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -59,7 +58,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
             providerClass.getConstructor(Attribute.class);
          attributeDataProvider = providerConstructor.newInstance(this);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
       if (setDefaultValue) {
@@ -159,8 +158,7 @@ public abstract class Attribute<T> implements Comparable<Attribute<T>>, IAttribu
          }
          return response;
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return false; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
    }
 

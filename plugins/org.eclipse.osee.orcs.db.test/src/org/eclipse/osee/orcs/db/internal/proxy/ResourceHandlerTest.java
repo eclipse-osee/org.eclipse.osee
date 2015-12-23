@@ -16,7 +16,6 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.Arrays;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -113,7 +112,7 @@ public class ResourceHandlerTest {
                byte[] data = Lib.inputStreamToBytes(resource.getContent());
                Assert.assertTrue(Arrays.equals(zippedData, data));
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
             return locator;
          }

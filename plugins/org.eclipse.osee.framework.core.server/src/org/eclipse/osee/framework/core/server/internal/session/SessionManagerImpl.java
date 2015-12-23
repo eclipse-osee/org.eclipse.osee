@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -80,7 +79,7 @@ public final class SessionManagerImpl implements ISessionManager {
             Session session = sessionCache.get(newSessionId, callable);
             sessionGrant = sessionFactory.createSessionGrant(session, userToken, authenticationManager.getProtocol());
          } catch (Exception e) {
-            OseeExceptions.wrapAndThrow(e);
+            OseeCoreException.wrapAndThrow(e);
          }
 
       }
@@ -112,7 +111,7 @@ public final class SessionManagerImpl implements ISessionManager {
       try {
          all = sessionCache.getAll();
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         OseeCoreException.wrapAndThrow(e);
       }
       if (all != null) {
          for (Session session : all) {
@@ -145,7 +144,7 @@ public final class SessionManagerImpl implements ISessionManager {
             toReturn.add(session);
          }
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         OseeCoreException.wrapAndThrow(e);
       }
       return toReturn;
    }

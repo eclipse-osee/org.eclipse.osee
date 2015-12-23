@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses({OseeCoreExceptionTest.class, OseeExceptionsTest.class})
+@Suite.SuiteClasses({OseeCoreExceptionTest.class, OseeCoreExceptionsTest.class})
 /**
  * @author Ryan D. Brooks
  */

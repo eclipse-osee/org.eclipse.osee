@@ -15,7 +15,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -52,7 +51,7 @@ public final class OseeLinkParser {
             try {
                branchUuid = Integer.parseInt(branchUuidStr);
             } catch (Exception ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
       }
@@ -71,7 +70,7 @@ public final class OseeLinkParser {
                      guidToReturn = guid;
                   }
                } catch (Exception ex) {
-                  OseeExceptions.wrapAndThrow(ex);
+                  OseeCoreException.wrapAndThrow(ex);
                }
             } else {
                guidToReturn = guid;

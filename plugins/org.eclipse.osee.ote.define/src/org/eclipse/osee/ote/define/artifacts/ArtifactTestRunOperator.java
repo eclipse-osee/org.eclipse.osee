@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -134,13 +133,11 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    public String getOutfileContents() throws OseeCoreException {
-      String toReturn = null;
       try {
-         toReturn = Lib.inputStreamToString(new URI(getOutfileUrl()).toURL().openStream());
+         return Lib.inputStreamToString(new URI(getOutfileUrl()).toURL().openStream());
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return toReturn;
    }
 
    public Attribute<InputStream> getOutfileAttribute() throws AttributeDoesNotExist, OseeCoreException {

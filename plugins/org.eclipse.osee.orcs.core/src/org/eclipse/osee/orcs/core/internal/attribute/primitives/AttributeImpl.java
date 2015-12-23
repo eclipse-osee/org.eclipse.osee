@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.lang.ref.Reference;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -119,7 +118,7 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
             markAsNewOrChanged();
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return success;
    }

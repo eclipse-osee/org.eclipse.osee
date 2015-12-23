@@ -18,7 +18,6 @@ import java.io.Writer;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -58,12 +57,12 @@ public final class ExchangeDataProcessor {
          tempFile.delete();
       } catch (Exception ex) {
          renameExportItem(tempFile, targetFile);
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          try {
             transformer.finish();
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             Lib.close(fileWriter);
          }
@@ -101,7 +100,7 @@ public final class ExchangeDataProcessor {
       try {
          Lib.copyFile(source, destination);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
@@ -113,7 +112,7 @@ public final class ExchangeDataProcessor {
       try {
          ExchangeUtil.readExchange(dataProvider.getFile(exportItem), handler);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
@@ -121,7 +120,7 @@ public final class ExchangeDataProcessor {
       try {
          rule.process(dataProvider.getFile(exportItem));
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

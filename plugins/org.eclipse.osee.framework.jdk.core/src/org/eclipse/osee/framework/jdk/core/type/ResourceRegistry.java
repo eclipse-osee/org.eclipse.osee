@@ -32,7 +32,7 @@ public class ResourceRegistry implements IResourceRegistry {
       try {
          return token.getUrl().openStream();
       } catch (IOException ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

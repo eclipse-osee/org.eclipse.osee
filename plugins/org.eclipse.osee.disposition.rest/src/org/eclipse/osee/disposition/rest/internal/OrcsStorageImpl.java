@@ -230,7 +230,7 @@ public class OrcsStorageImpl implements Storage {
       try {
          getBranchFactory().createWorkingBranch(branch, author, dispoBranch, null).call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
 
       return branch.getGuid();

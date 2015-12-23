@@ -23,7 +23,7 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.StringOutputStream;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -57,7 +57,7 @@ public class ArtifactURIHandler extends URIHandlerImpl {
          return Lib.stringToInputStream(value.toString());
       } catch (UnsupportedEncodingException ex) {
          OseeLog.log(ArtifactURIHandler.class, Level.SEVERE, ex);
-         throw OseeExceptions.wrap(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

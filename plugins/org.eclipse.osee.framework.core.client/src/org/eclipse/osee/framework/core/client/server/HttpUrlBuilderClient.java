@@ -17,7 +17,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.CoreClientConstants;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.client.internal.CoreClientActivator;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.HttpUrlBuilder;
@@ -87,8 +86,7 @@ public final class HttpUrlBuilderClient {
             url = HttpUrlBuilder.createURL(applicationServerPrefix, context, parameters);
          }
       } catch (UnsupportedEncodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
-         return null; // unreachable since wrapAndThrow() always throws an exception
+         throw OseeCoreException.wrap(ex);
       }
       return url;
    }

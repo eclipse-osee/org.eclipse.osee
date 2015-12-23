@@ -24,7 +24,6 @@ import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.utility.IResourceHandler;
 import org.eclipse.osee.define.utility.IResourceLocator;
 import org.eclipse.osee.define.utility.UriResourceContentFinder;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -142,7 +141,7 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
          try {
             tagger.removeSourceTag(uriPath);
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
    }

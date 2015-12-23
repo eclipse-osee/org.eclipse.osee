@@ -23,7 +23,6 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.text.rules.ReplaceAll;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -87,7 +86,7 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, false).call();
          TxCurrentsOpFactory.createTxCurrentsAndModTypesOp(logger, session, jdbcClient, true).call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -133,12 +132,12 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
          }
          tempFile.delete();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          try {
             transformer.finish();
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             Lib.close(fileWriter);
          }

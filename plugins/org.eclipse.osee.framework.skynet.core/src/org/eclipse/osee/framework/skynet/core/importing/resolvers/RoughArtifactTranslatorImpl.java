@@ -16,7 +16,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -64,7 +63,7 @@ public class RoughArtifactTranslatorImpl implements IRoughArtifactTranslator {
                }
                artifact.setBinaryAttributeFromValues(attributeType, streams);
             } catch (Exception ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             } finally {
                for (InputStream inputStream : streams) {
                   Lib.close(inputStream);

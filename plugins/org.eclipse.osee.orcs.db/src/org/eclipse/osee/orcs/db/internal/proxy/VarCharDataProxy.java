@@ -13,7 +13,6 @@ package org.eclipse.osee.orcs.db.internal.proxy;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -71,7 +70,7 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
             fromStorage = new String(data, "UTF-8");
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return fromStorage;
    }
@@ -86,7 +85,7 @@ public class VarCharDataProxy extends AbstractDataProxy implements CharacterData
             getStorage().setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawStringValue = "";
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       } else {
          this.rawStringValue = value;

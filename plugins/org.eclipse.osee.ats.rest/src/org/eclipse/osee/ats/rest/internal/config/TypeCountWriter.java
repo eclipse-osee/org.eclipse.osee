@@ -107,7 +107,7 @@ public class TypeCountWriter {
          sheetWriter.endSheet();
          sheetWriter.endWorkbook();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

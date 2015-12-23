@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -66,7 +65,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
             }
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return response;
    }
@@ -79,7 +78,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             decompressed = ByteBuffer.wrap(Lib.decompressBytes(new ByteArrayInputStream(rawData)));
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
 
@@ -94,7 +93,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toReturn = new String(data.array(), "UTF-8");
          } catch (UnsupportedEncodingException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       } else {
          toReturn = "";
@@ -109,7 +108,7 @@ public class UriAttributeDataProvider extends AbstractAttributeDataProvider impl
          try {
             toSet = ByteBuffer.wrap(value.getBytes("UTF-8"));
          } catch (UnsupportedEncodingException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
       setValue(toSet);

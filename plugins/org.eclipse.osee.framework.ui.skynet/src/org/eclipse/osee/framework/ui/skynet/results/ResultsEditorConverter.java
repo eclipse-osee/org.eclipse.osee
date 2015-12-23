@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -155,9 +154,7 @@ public class ResultsEditorConverter {
             }
             writer.write(END_HTML);
          } catch (Exception ex) {
-            if (!(ex instanceof OseeCoreException)) {
-               OseeExceptions.wrapAndThrow(ex);
-            }
+            throw OseeCoreException.wrap(ex);
          }
       }
 
@@ -204,9 +201,7 @@ public class ResultsEditorConverter {
             }
             sheetWriter.endWorkbook();
          } catch (Exception ex) {
-            if (!(ex instanceof OseeCoreException)) {
-               OseeExceptions.wrapAndThrow(ex);
-            }
+            throw OseeCoreException.wrap(ex);
          }
       }
 
@@ -260,9 +255,7 @@ public class ResultsEditorConverter {
             writerAdaptor.close();
             writer.write(outputStream.toString("ISO-8859-1"));
          } catch (Exception ex) {
-            if (!(ex instanceof OseeCoreException)) {
-               OseeExceptions.wrapAndThrow(ex);
-            }
+            throw OseeCoreException.wrap(ex);
          }
       }
 

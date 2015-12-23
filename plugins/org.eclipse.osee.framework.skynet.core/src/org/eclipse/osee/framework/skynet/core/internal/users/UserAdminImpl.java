@@ -18,7 +18,6 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.exception.UserDataStoreException;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -130,7 +129,7 @@ public class UserAdminImpl implements UserAdmin {
          if (userEx != null) {
             throw userEx;
          } else {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
       return user;
@@ -155,7 +154,7 @@ public class UserAdminImpl implements UserAdmin {
       try {
          all = cache.getAll();
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         OseeCoreException.wrapAndThrow(e);
       }
       for (User user : all) {
          if (user.isActive()) {
@@ -173,7 +172,7 @@ public class UserAdminImpl implements UserAdmin {
       try {
          all = cache.getAll();
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         OseeCoreException.wrapAndThrow(e);
       }
       for (User user : all) {
          users.add(user);

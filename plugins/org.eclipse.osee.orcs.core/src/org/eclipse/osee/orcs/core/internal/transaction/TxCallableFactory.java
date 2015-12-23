@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ITransaction;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
@@ -76,7 +75,7 @@ public class TxCallableFactory {
                } catch (Exception ex2) {
                   toThrow = new OseeCoreException("Exception during rollback and commit", ex);
                } finally {
-                  OseeExceptions.wrapAndThrow(toThrow);
+                  OseeCoreException.wrapAndThrow(toThrow);
                }
             } finally {
                txManager.endTx(txData);

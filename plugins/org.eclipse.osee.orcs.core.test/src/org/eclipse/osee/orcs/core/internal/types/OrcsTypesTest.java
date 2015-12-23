@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -980,14 +979,11 @@ public class OrcsTypesTest {
 
       @Override
       public InputStream getContent() throws OseeCoreException {
-         InputStream stream = null;
-         InputSupplier<InputStream> join = ByteStreams.join(suppliers);
          try {
-            stream = join.getInput();
+            return ByteStreams.join(suppliers).getInput();
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            throw OseeCoreException.wrap(ex);
          }
-         return stream;
       }
 
       @Override

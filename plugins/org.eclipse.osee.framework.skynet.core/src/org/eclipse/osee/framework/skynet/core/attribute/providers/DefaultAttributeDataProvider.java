@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -55,7 +54,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
             fromStorage = new String(data, "UTF-8");
          }
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       String toReturn = fromStorage != null ? fromStorage : rawStringValue;
       return toReturn != null ? toReturn : "";
@@ -85,7 +84,7 @@ public class DefaultAttributeDataProvider extends AbstractAttributeDataProvider 
             dataStore.setContent(compressed, "zip", "application/zip", "ISO-8859-1");
             this.rawStringValue = "";
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       } else {
          this.rawStringValue = value;

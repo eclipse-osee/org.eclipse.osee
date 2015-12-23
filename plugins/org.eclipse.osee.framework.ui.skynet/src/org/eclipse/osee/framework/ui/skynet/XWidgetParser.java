@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,7 +45,7 @@ public class XWidgetParser {
          Element rootElement = document.getDocumentElement();
          data = extractlayoutDatas(dynamicXWidgetLayout, rootElement);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return data;
    }
@@ -58,7 +57,7 @@ public class XWidgetParser {
          Element rootElement = document.getDocumentElement();
          data = extractWorkAttribute(dynamicXWidgetLayout, rootElement);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return data;
    }
@@ -93,7 +92,7 @@ public class XWidgetParser {
          doc.appendChild(element);
          xmlData = Jaxp.getDocumentXml(doc);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       return xmlData;
    }

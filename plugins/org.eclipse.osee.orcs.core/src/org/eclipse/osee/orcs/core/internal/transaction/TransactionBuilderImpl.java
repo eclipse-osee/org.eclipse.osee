@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -323,14 +322,12 @@ public class TransactionBuilderImpl implements TransactionBuilder {
 
    @Override
    public TransactionReadable commit() throws OseeCoreException {
-      TransactionReadable tx = null;
       try {
          CancellableCallable<TransactionReadable> callable = txFactory.createTx(txData);
-         tx = callable.call();
+         return callable.call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return tx;
    }
 
    private void checkAreOnDifferentBranches(TxData txData, Long sourceBranch) throws OseeCoreException {

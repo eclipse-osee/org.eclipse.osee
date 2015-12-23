@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.internal;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -133,13 +132,11 @@ public class TestCoreGuiPlugin implements BundleActivator {
    }
 
    private IWorkbenchUserService getWorkbenchUserService() throws OseeCoreException {
-      IWorkbenchUserService service = null;
       try {
-         service = (IWorkbenchUserService) workbenchUserServiceTracker.waitForService(3000);
+         return (IWorkbenchUserService) workbenchUserServiceTracker.waitForService(3000);
       } catch (InterruptedException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return service;
    }
 
    public static TestCoreGuiPlugin getDefault() {

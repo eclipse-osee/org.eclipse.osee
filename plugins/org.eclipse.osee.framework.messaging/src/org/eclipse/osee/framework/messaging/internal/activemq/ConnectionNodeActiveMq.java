@@ -32,7 +32,6 @@ import javax.jms.Session;
 import javax.jms.TemporaryTopic;
 import javax.jms.Topic;
 import org.apache.activemq.ActiveMQConnectionFactory;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -98,7 +97,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          connection.start();
          started = true;
       } catch (Throwable ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
@@ -129,7 +128,7 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          }
       } catch (Exception ex) {
          statusCallback.fail(ex);
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

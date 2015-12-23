@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -85,7 +84,7 @@ public class ChangeArtifactType {
          app.internalChangeArtifactType(inputArtifacts, newArtifactType, prompt);
       } catch (Exception ex) {
          ArtifactQuery.reloadArtifacts(app.modifiedArtifacts);
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
    }
@@ -229,9 +228,7 @@ public class ChangeArtifactType {
          try {
             result = DebugPlugin.getDefault().getStatusHandler(promptStatus).handleStatus(promptStatus, sb.toString());
          } catch (CoreException ex) {
-            OseeExceptions.wrapAndThrow(ex);
-            // the following will never execute - above line always exceptions
-            return false;
+            throw OseeCoreException.wrap(ex);
          }
 
          return (Boolean) result;

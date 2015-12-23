@@ -23,7 +23,6 @@ import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -139,7 +138,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
                addToQueue(data, handler);
             }
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             if (cancellation.isCancelled()) {
                cancelFutures();
@@ -202,7 +201,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
          try {
             waitForResults();
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             cancelFutures();
             executorStarted.set(false);
@@ -306,7 +305,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             forwardArtifacts();
          } catch (Exception ex) {
             logger.error(ex, "Error waiting for query post process results");
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             getCounter().getAndSet(acceptedArtIds.size());
             reset();

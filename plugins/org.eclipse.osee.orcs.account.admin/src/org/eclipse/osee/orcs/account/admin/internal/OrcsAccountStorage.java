@@ -182,7 +182,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
          settings.save(stringWriter);
          return stringWriter.toString();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -210,7 +210,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       try {
          return sessionStore.getAccountSessionByAccountId(accountId).call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -219,7 +219,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       try {
          return sessionStore.getAccountSessionBySessionToken(sessionToken).call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -231,7 +231,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
          sessionStore.createAccountSession(Collections.singleton(session)).call();
          return session;
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 
@@ -240,7 +240,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
       try {
          sessionStore.deleteAccountSessionBySessionToken(sessionToken).call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -96,7 +95,7 @@ public class XDslEditorWidgetDam extends XDslEditorWidget implements IAttributeW
       try {
          encodedName = URLEncoder.encode(artifact.getSafeName(), "UTF-8");
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       String uriString = String.format("branch/%s/artifact/%s/%s.%s", artifact.getBranchId(), artifact.getGuid(),
          encodedName, extension);

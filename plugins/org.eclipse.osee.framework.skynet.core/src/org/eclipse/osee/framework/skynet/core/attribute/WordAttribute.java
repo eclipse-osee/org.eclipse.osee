@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.debug.core.IStatusHandler;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,9 +64,9 @@ public class WordAttribute extends StringAttribute {
                   art.getName(), art.getArtId(), fullBranch.getName(), fullBranch.getUuid()));
             }
          } catch (CoreException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } catch (ClassCastException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
       }
       return returnValue;
@@ -86,7 +85,7 @@ public class WordAttribute extends StringAttribute {
          inputStream = new XmlTextInputStream(getValue());
          toReturn = Lib.inputStreamToString(inputStream);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(inputStream);
       }

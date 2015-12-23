@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -84,7 +83,7 @@ public class OrderParser {
                streamReader.next();
             }
          } catch (XMLStreamException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          } finally {
             Lib.close(reader);
          }
@@ -147,13 +146,13 @@ public class OrderParser {
          xmlWriter.writeEndElement();
          xmlWriter.writeEndDocument();
       } catch (XMLStreamException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          if (xmlWriter != null) {
             try {
                xmlWriter.close();
             } catch (XMLStreamException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
       }

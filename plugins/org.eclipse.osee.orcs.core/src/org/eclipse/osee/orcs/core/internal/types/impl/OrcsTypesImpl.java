@@ -18,7 +18,7 @@ import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
@@ -119,7 +119,7 @@ public class OrcsTypesImpl implements OrcsTypes {
                checkForCancelled();
                Lib.inputStreamToOutputStream(inputStream, outputStream);
             } catch (Exception ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             } finally {
                Lib.close(inputStream);
                Lib.close(outputStream);

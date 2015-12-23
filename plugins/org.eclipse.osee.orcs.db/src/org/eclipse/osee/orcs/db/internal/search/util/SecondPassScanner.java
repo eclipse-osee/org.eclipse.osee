@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -45,7 +45,7 @@ public final class SecondPassScanner {
       try {
          this.input = Lib.stringToInputStream(input);
       } catch (UnsupportedEncodingException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
 
       this.delimiter = delimiter;
@@ -75,7 +75,7 @@ public final class SecondPassScanner {
          try {
             read = input.read();
          } catch (IOException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
 
          if (!isMultibyte(read)) { // increment byte count for anything that's not a non-initial multibyte char

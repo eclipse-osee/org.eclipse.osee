@@ -16,7 +16,6 @@ import org.eclipse.osee.cache.admin.CacheAdmin;
 import org.eclipse.osee.cache.admin.CacheConfiguration;
 import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.OseeSessionGrant;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISession;
 import org.eclipse.osee.framework.core.server.ISessionManager;
@@ -64,7 +63,7 @@ public final class SessionManagerService implements ISessionManager {
       try {
          sessionCache = cacheAdmin.createLoadingCache(config, accessor, accessor);
       } catch (Exception e) {
-         OseeExceptions.wrapAndThrow(e);
+         OseeCoreException.wrapAndThrow(e);
       }
 
       proxiedSessionManager = new SessionManagerImpl(sessionFactory, sessionCache, authenticationManager, accessor);

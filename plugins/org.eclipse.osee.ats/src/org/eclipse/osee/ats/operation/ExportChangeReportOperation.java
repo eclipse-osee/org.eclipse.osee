@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -84,7 +83,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                   resultFolder.append(modifiedPath);
                }
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
       };
@@ -110,7 +109,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
                }
                Lib.writeStringToFile(artIdsAsString, new File(resultFolder + prefix + "_ids.txt"));
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
          monitor.worked(calculateWork(0.50));

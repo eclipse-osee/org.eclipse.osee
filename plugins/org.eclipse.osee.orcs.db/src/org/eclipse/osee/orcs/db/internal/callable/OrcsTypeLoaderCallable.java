@@ -20,7 +20,6 @@ import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -131,7 +130,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
                builder.append("\n\n");
                builder.append(oseeTypeFragment);
             } catch (IOException ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             } finally {
                Lib.close(inputStream);
             }
@@ -140,7 +139,7 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
          try {
             toReturn = Lib.stringToInputStream(builder.toString());
          } catch (UnsupportedEncodingException ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
          return toReturn;
       }

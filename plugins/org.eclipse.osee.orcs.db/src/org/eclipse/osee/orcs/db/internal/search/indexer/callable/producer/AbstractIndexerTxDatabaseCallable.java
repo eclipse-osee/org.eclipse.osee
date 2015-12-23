@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -64,7 +63,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
       try {
          convertInput(connection);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
       storeQueryIds(connection);
       if (collector != null) {
@@ -99,7 +98,7 @@ public abstract class AbstractIndexerTxDatabaseCallable extends AbstractDatastor
                Future<?> future = consumer.submitTaskId(getSession(), types, collector, queryId);
                futures.add(future);
             } catch (Exception ex) {
-               OseeExceptions.wrapAndThrow(ex);
+               OseeCoreException.wrapAndThrow(ex);
             }
          }
       }

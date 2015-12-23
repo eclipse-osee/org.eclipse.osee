@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -118,7 +117,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          writer.append("End Sub\n\nmain");
 
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(writer);
       }
@@ -223,7 +222,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
 
          process.waitFor();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          if (process != null) {
             process.destroy();

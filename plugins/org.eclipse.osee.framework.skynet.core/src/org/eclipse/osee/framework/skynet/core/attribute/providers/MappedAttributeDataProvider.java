@@ -20,7 +20,6 @@ import java.util.zip.ZipInputStream;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -123,7 +122,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       } catch (OseeCoreException ex) {
          throw ex; // keep exceptions of type OseeCoreException from being unnecessarily wrapped
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
@@ -147,7 +146,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
             }
          }
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

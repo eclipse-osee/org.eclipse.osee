@@ -10,7 +10,6 @@ import org.eclipse.birt.report.viewer.utilities.WebViewer;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,14 +57,12 @@ public class BirtReportViewerTab implements IResultsEditorTab {
    }
 
    private URL getReportPath(String bundleId, String reportPath) throws OseeCoreException {
-      URL url = null;
       try {
          Bundle bundle = Platform.getBundle(bundleId);
-         url = FileLocator.find(bundle, new Path(reportPath), null);
-         url = FileLocator.toFileURL(url);
+         URL url = FileLocator.find(bundle, new Path(reportPath), null);
+         return FileLocator.toFileURL(url);
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return url;
    }
 }

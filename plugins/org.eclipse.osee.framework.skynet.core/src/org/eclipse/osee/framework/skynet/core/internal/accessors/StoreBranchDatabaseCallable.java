@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
@@ -65,7 +64,7 @@ public class StoreBranchDatabaseCallable {
                try {
                   task.handleTxWork();
                } catch (Exception ex) {
-                  OseeExceptions.wrapAndThrow(ex);
+                  OseeCoreException.wrapAndThrow(ex);
                }
             }
          }

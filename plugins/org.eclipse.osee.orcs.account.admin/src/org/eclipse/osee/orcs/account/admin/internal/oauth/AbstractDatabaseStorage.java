@@ -54,7 +54,7 @@ public abstract class AbstractDatabaseStorage<T> {
       try {
          return callable.call();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
    }
 

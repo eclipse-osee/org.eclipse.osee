@@ -96,7 +96,7 @@ public class DslToTypeLoader implements TypesLoader {
          inputStream = supplier.getInput();
          loadModel = OseeDslResourceUtil.loadModel("osee:/text.osee", inputStream);
       } catch (Exception ex) {
-         throw asOseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       } finally {
          Lib.close(inputStream);
       }
@@ -112,10 +112,6 @@ public class DslToTypeLoader implements TypesLoader {
       buffer.copyAttrTypes(caches.getAttributeTypeCache());
       buffer.copyArtTypes(caches.getArtifactTypeCache());
       buffer.copyRelTypes(caches.getRelationTypeCache());
-   }
-
-   private OseeCoreException asOseeCoreException(Exception ex) {
-      return ex instanceof OseeCoreException ? (OseeCoreException) ex : new OseeCoreException(ex);
    }
 
    private void loadTypes(TypeBuffer buffer, BranchCache branchCache, OseeDsl model) {

@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.core.internal.search;
 
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.HasLocalId;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -38,46 +37,38 @@ public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder>impl
 
    @Override
    public ResultSet<ArtifactReadable> getResults() throws OseeCoreException {
-      ResultSet<ArtifactReadable> result = null;
       try {
-         result = createSearch().call();
+         return createSearch().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override
    public ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> getMatches() throws OseeCoreException {
-      ResultSet<Match<ArtifactReadable, AttributeReadable<?>>> result = null;
       try {
-         result = createSearchWithMatches().call();
+         return createSearchWithMatches().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override
    public int getCount() throws OseeCoreException {
-      Integer result = -1;
       try {
-         result = createCount().call();
+         return createCount().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override
    public ResultSet<HasLocalId<Integer>> getResultsAsLocalIds() throws OseeCoreException {
-      ResultSet<HasLocalId<Integer>> result = null;
       try {
-         result = createSearchResultsAsLocalIds().call();
+         return createSearchResultsAsLocalIds().call();
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return result;
    }
 
    @Override

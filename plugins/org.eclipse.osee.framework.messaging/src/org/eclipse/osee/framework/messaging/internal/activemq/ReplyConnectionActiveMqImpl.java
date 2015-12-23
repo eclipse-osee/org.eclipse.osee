@@ -16,7 +16,6 @@ import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
@@ -62,7 +61,7 @@ class ReplyConnectionActiveMqImpl implements ReplyConnection {
          OseeLog.logf(Activator.class, Level.INFO, "Sending Reply Message %s", message.toString());
       } catch (JMSException ex) {
          statusCallback.fail(ex);
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 

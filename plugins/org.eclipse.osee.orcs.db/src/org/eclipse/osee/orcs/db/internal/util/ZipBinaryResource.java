@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -40,13 +39,11 @@ public final class ZipBinaryResource implements IResource {
 
    @Override
    public InputStream getContent() throws OseeCoreException {
-      InputStream inputStream = null;
       try {
-         inputStream = new BufferedInputStream(new FileInputStream(entry));
+         return new BufferedInputStream(new FileInputStream(entry));
       } catch (IOException ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         throw OseeCoreException.wrap(ex);
       }
-      return inputStream;
    }
 
    @Override

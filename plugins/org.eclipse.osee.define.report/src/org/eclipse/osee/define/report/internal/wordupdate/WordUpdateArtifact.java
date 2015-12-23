@@ -86,7 +86,7 @@ public class WordUpdateArtifact {
          extractorDatas = elementExtractor.extractElements();
          oleDataElement = elementExtractor.getOleDataElement();
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       }
       return wordArtifactUpdate(data, extractorDatas, oleDataElement);
    }
@@ -185,7 +185,7 @@ public class WordUpdateArtifact {
          }
 
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw OseeCoreException.wrap(ex);
       } finally {
          if (!deletedArtifacts.isEmpty()) {
             throw new OseeStateException("The following deleted artifacts could not be saved [%s]",

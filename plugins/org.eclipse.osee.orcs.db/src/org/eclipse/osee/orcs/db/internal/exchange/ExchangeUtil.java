@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import org.eclipse.osee.framework.core.exception.OseeExceptions;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -65,7 +64,7 @@ public class ExchangeUtil {
          try {
             Lib.decompressStream(new FileInputStream(source), importSource);
          } catch (Exception ex) {
-            OseeExceptions.wrapAndThrow(ex);
+            OseeCoreException.wrapAndThrow(ex);
          }
          wasZipExtractionRequired = true;
       } else {
@@ -98,7 +97,7 @@ public class ExchangeUtil {
          reader.setContentHandler(handler);
          reader.parse(new InputSource(byteStream));
       } catch (Exception ex) {
-         OseeExceptions.wrapAndThrow(ex);
+         OseeCoreException.wrapAndThrow(ex);
       } finally {
          Lib.close(byteStream);
       }
