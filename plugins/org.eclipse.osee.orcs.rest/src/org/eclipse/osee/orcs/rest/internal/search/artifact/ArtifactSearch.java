@@ -18,15 +18,12 @@ import javax.ws.rs.core.UriInfo;
  * @author Roberto E. Escobar
  */
 public abstract class ArtifactSearch {
-
    private final UriInfo uriInfo;
    private final Request request;
-   private final Long branchUuid;
 
-   public ArtifactSearch(UriInfo uriInfo, Request request, Long branchUuid) {
+   public ArtifactSearch(UriInfo uriInfo, Request request) {
       this.uriInfo = uriInfo;
       this.request = request;
-      this.branchUuid = branchUuid;
    }
 
    public UriInfo getUriInfo() {
@@ -36,9 +33,4 @@ public abstract class ArtifactSearch {
    public Request getRequest() {
       return request;
    }
-
-   public Long getBranchUuid() {
-      return branchUuid;
-   }
-
 }

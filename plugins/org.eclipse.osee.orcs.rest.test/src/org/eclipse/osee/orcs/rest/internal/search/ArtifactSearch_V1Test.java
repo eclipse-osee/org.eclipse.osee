@@ -54,7 +54,7 @@ public class ArtifactSearch_V1Test {
    @Before
    public void setup() {
       MockitoAnnotations.initMocks(this);
-      search = new ArtifactSearch_V1(uriInfo, request, COMMON_ID, orcsApi);
+      search = new ArtifactSearch_V1(uriInfo, request, orcsApi);
    }
 
    @Test

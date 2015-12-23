@@ -44,8 +44,8 @@ public class ArtifactSearch_V1 extends ArtifactSearch {
    private final SearchQueryBuilder searchQueryBuilder;
    private final OrcsApi orcsApi;
 
-   public ArtifactSearch_V1(UriInfo uriInfo, Request request, Long branchUuid, OrcsApi orcsApi) {
-      super(uriInfo, request, branchUuid);
+   public ArtifactSearch_V1(UriInfo uriInfo, Request request, OrcsApi orcsApi) {
+      super(uriInfo, request);
       this.orcsApi = orcsApi;
       searchQueryBuilder = DslFactory.createQueryBuilder();
    }

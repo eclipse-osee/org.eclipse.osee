@@ -49,7 +49,7 @@ public class ArtifactsResource {
 
    @Path("search/v1")
    public ArtifactSearch_V1 getSearch() {
-      return new ArtifactSearch_V1(uriInfo, request, branchUuid, orcsApi);
+      return new ArtifactSearch_V1(uriInfo, request, orcsApi);
    }
 
    @Path("{uuid}")
