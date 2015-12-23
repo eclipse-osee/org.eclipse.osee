@@ -23,6 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -503,14 +504,14 @@ public class ArtifactExplorerMenu {
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
-            Branch branch = BranchSelectionDialog.getBranchFromUser();
+            IOseeBranch branch = BranchSelectionDialog.getBranchFromUser();
             if (branch != null) {
                for (Artifact artifact : getSelection().toList()) {
                   try {
                      ArtifactExplorer.revealArtifact(ArtifactQuery.getArtifactFromId(artifact.getArtId(), branch));
                   } catch (OseeCoreException ex) {
                      OseeLog.logf(Activator.class, OseeLevel.SEVERE_POPUP,
-                        "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch.getName());
+                        "Could not find Artifact \'%s\' on Branch \'%s\'", artifact.getName(), branch);
                   }
                }
 

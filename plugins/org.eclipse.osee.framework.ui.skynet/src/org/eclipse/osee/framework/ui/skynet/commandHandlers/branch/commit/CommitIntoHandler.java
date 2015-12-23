@@ -62,10 +62,10 @@ public class CommitIntoHandler extends CommitHandler {
          if (result == Window.OK) {
             CheckBoxDialog dialog = new CheckBoxDialog("Commit Into",
                String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
-                  branchSelection.getSelected()),
+                  branchSelection.getSelection()),
                "Archive Source Branch");
             if (dialog.open() == 0) {
-               Jobs.startJob(new CommitJob(sourceBranch, branchSelection.getSelected(), dialog.isChecked()));
+               Jobs.startJob(new CommitJob(sourceBranch, branchSelection.getSelection(), dialog.isChecked()));
             }
          }
       } else {

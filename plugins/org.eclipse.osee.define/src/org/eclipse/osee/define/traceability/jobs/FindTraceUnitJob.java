@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.operations.FindTraceUnitFromResource;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -49,7 +49,7 @@ public class FindTraceUnitJob extends Job {
             @Override
             public void done(IJobChangeEvent event) {
                FetchBranchJob fetcherJob = (FetchBranchJob) event.getJob();
-               final Branch branch = fetcherJob.getSelectedBranch();
+               final IOseeBranch branch = fetcherJob.getSelectedBranch();
                if (branch != null) {
                   IExceptionableRunnable runnable = new IExceptionableRunnable() {
 
@@ -67,11 +67,10 @@ public class FindTraceUnitJob extends Job {
       return Status.OK_STATUS;
    }
    private static final class FetchBranchJob extends UIJob {
-      private Branch branch;
+      private IOseeBranch branch;
 
       public FetchBranchJob(String name) {
          super(name);
-         branch = null;
       }
 
       @Override
@@ -80,7 +79,7 @@ public class FindTraceUnitJob extends Job {
          return Status.OK_STATUS;
       }
 
-      public Branch getSelectedBranch() {
+      public IOseeBranch getSelectedBranch() {
          return branch;
       }
    }

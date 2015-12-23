@@ -17,7 +17,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -36,7 +35,7 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
 
    @Override
    public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
-      final Branch[] selectedBranch = new Branch[1];
+      final IOseeBranch[] selectedBranch = new IOseeBranch[1];
       final Collection<? extends IOseeBranch> selectable = BranchManager.getBaselineBranches();
       selectable.remove(uiData.getTxDelta().getStartTx().getBranch());
       IStatus status = executeInUiThread(selectable, selectedBranch);
@@ -44,7 +43,7 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<? extends IOseeBranch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
+   private IStatus executeInUiThread(final Collection<? extends IOseeBranch> selectable, final IOseeBranch[] selectedBranch) throws OseeCoreException {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {
@@ -66,12 +65,12 @@ public final class UiOtherBranchDialogProvider implements IBranchProvider {
       return status;
    }
 
-   private IStatus getUserSelection(Collection<? extends IOseeBranch> selectable, Branch[] selectedBranch) {
+   private IStatus getUserSelection(Collection<? extends IOseeBranch> selectable, IOseeBranch[] selectedBranch) {
       IStatus status = Status.OK_STATUS;
       BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
       int result = dialog.open();
       if (result == Window.OK) {
-         selectedBranch[0] = dialog.getSelected();
+         selectedBranch[0] = dialog.getSelection();
       } else {
          status = Status.CANCEL_STATUS;
       }

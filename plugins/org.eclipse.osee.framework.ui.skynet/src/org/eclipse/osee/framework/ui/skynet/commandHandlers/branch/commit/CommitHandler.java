@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -122,11 +123,11 @@ public abstract class CommitHandler extends CommandHandler {
          branch) && !branch.getArchiveState().isArchived();
    }
    protected class CommitJob extends Job {
-      private final Branch sourceBranch;
-      private final Branch destinationBranch;
+      private final IOseeBranch sourceBranch;
+      private final IOseeBranch destinationBranch;
       private final boolean archiveSourceBranch;
 
-      public CommitJob(Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) {
+      public CommitJob(IOseeBranch sourceBranch, IOseeBranch destinationBranch, boolean archiveSourceBranch) {
          super("Commit Branch");
          this.destinationBranch = destinationBranch;
          this.sourceBranch = sourceBranch;

@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -51,10 +52,10 @@ public class BranchXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
-      ArrayList<Branch> branches = xBranchViewer.getSelectedBranches();
+      ArrayList<IOseeBranch> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
-         for (Branch branch : branches) {
-            BranchType type = branch.getBranchType();
+         for (IOseeBranch branch : branches) {
+            BranchType type = BranchManager.getBranchType(branch);
             if (!type.isSystemRootBranch()) {
                if (!type.isMergeBranch()) {
                   ArtifactExplorer.exploreBranch(branch);

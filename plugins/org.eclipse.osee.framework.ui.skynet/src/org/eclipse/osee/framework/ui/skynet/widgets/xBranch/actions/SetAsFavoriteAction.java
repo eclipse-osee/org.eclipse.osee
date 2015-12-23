@@ -15,7 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -53,14 +53,14 @@ public class SetAsFavoriteAction extends Action {
             AWorkbench.popup("Can not set favorite as system user");
             return;
          }
-         List<Branch> branches = xBranchViewer.getSelectedBranches();
+         List<IOseeBranch> branches = xBranchViewer.getSelectedBranches();
          if (branches.isEmpty()) {
             AWorkbench.popup("Must select branches");
             return;
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
             "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
-            for (Branch branch : branches) {
+            for (IOseeBranch branch : branches) {
                user.toggleFavoriteBranch(branch);
             }
             user.persist("Toggle Branch Favorites");

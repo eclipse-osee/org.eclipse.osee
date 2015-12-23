@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -37,13 +36,13 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
 
    @Override
    public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
-      final Branch[] selectedBranch = new Branch[1];
+      final IOseeBranch[] selectedBranch = new IOseeBranch[1];
 
       TransactionDelta txDelta = uiData.getTxDelta();
       if (txDelta.areOnTheSameBranch()) {
          selectedBranch[0] = txDelta.getStartTx().getFullBranch();
       } else {
-         final Collection<Branch> selectable = new ArrayList<>();
+         final Collection<IOseeBranch> selectable = new ArrayList<>();
          selectable.add(uiData.getTxDelta().getStartTx().getFullBranch());
          selectable.add(uiData.getTxDelta().getEndTx().getFullBranch());
          IStatus status = executeInUiThread(selectable, selectedBranch);
@@ -52,7 +51,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<Branch> selectable, final Branch[] selectedBranch) throws OseeCoreException {
+   private IStatus executeInUiThread(final Collection<IOseeBranch> selectable, final IOseeBranch[] selectedBranch) throws OseeCoreException {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {
@@ -74,12 +73,12 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       return status;
    }
 
-   private IStatus getUserSelection(Collection<Branch> selectable, Branch[] selectedBranch) {
+   private IStatus getUserSelection(Collection<IOseeBranch> selectable, IOseeBranch[] selectedBranch) {
       IStatus status = Status.OK_STATUS;
       BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
       int result = dialog.open();
       if (result == Window.OK) {
-         selectedBranch[0] = dialog.getSelected();
+         selectedBranch[0] = dialog.getSelection();
       } else {
          status = Status.CANCEL_STATUS;
       }

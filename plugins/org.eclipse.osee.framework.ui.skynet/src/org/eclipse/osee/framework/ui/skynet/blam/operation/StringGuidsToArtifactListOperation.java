@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IXWidgetInputAddable;
 public class StringGuidsToArtifactListOperation extends AbstractOperation {
 
    private final String rawGuidsData;
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final IXWidgetInputAddable widget;
 
    public final static String splitRegex = "\\s+";
@@ -47,7 +47,7 @@ public class StringGuidsToArtifactListOperation extends AbstractOperation {
     * @param branch on which the artifacts live on
     * @param widget accepting input by implementing <code>IXWidgetInputAddable</code> interface
     */
-   public StringGuidsToArtifactListOperation(OperationLogger logger, String guidData, Branch branch, IXWidgetInputAddable widget) {
+   public StringGuidsToArtifactListOperation(OperationLogger logger, String guidData, IOseeBranch branch, IXWidgetInputAddable widget) {
       super(taskName, Activator.PLUGIN_ID, logger);
       this.rawGuidsData = guidData;
       this.branch = branch;

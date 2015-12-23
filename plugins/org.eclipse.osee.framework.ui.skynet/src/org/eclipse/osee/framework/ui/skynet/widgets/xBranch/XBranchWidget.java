@@ -218,8 +218,8 @@ public class XBranchWidget extends GenericXWidget {
       }
    }
 
-   public ArrayList<Branch> getSelectedBranches() {
-      ArrayList<Branch> items = new ArrayList<>();
+   public ArrayList<IOseeBranch> getSelectedBranches() {
+      ArrayList<IOseeBranch> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }

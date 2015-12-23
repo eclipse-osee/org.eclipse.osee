@@ -47,7 +47,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class BranchSelectionDialog extends MessageDialog implements IBranchWidgetMenuListener {
 
-   private Branch selected;
+   private IOseeBranch selected;
    private IOseeBranch defaultSelected;
    private static IOseeBranch lastSelectedBranch;
    private XBranchWidget branchWidget;
@@ -71,7 +71,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       defaultSelected = branch;
    }
 
-   public Branch getSelection() {
+   public IOseeBranch getSelection() {
       return selected;
    }
 
@@ -153,12 +153,8 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       return selectionButton;
    }
 
-   public Branch getSelected() {
-      return selected;
-   }
-
    private void storeSelectedBranch() {
-      List<Branch> branches = branchWidget.getSelectedBranches();
+      List<IOseeBranch> branches = branchWidget.getSelectedBranches();
 
       if (!branches.isEmpty()) {
          selected = branches.iterator().next();
@@ -172,8 +168,8 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       okPressed();
    }
 
-   private static Branch createDialog(boolean allowOnlyWorkingBranches) {
-      Branch toReturn = null;
+   private static IOseeBranch createDialog(boolean allowOnlyWorkingBranches) {
+      IOseeBranch toReturn = null;
       BranchSelectionDialog branchSelection = new BranchSelectionDialog("Select Branch", allowOnlyWorkingBranches);
       if (lastSelectedBranch != null) {
          try {
@@ -192,11 +188,11 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       return toReturn;
    }
 
-   public static Branch getBranchFromUser() {
+   public static IOseeBranch getBranchFromUser() {
       return createDialog(false);
    }
 
-   public static Branch getWorkingBranchFromUser() {
+   public static IOseeBranch getWorkingBranchFromUser() {
       return createDialog(true);
    }
 }

@@ -18,7 +18,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.ClientLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -116,7 +116,7 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
                   try {
                      TextTransfer transfer = TextTransfer.getInstance();
                      String data = (String) cb.getContents(transfer);
-                     Branch branch = BranchSelectionDialog.getBranchFromUser();
+                     IOseeBranch branch = BranchSelectionDialog.getBranchFromUser();
                      Operations.executeAsJob(new StringGuidsToArtifactListOperation(new ClientLogger(Activator.class),
                         data, branch, XListDropViewer.this), true);
                   } finally {
