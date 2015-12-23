@@ -104,15 +104,6 @@ public class TransactionRecord extends BaseIdentity<Integer>implements ITransact
       this.commitArtId = commitArtId;
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof ITransaction) {
-         ITransaction other = (ITransaction) obj;
-         return super.equals(other);
-      }
-      return false;
-   }
-
    @SuppressWarnings("rawtypes")
    @Override
    public Object getAdapter(Class adapter) {
@@ -120,11 +111,6 @@ public class TransactionRecord extends BaseIdentity<Integer>implements ITransact
          return this;
       }
       return null;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
    }
 
    @Override
