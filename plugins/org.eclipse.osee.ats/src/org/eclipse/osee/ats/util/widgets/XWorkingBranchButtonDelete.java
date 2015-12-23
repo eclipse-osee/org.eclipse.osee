@@ -43,7 +43,7 @@ public class XWorkingBranchButtonDelete extends XWorkingBranchButtonAbstract {
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && (isWorkingBranchInWork() && !isCommittedBranchExists()));
+      button.setEnabled(!disableAll && isWorkingBranchInWork() && !isCommittedBranchExists());
    }
 
 }

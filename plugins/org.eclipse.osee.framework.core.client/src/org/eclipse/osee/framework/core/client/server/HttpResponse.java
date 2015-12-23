@@ -44,6 +44,7 @@ public class HttpResponse {
    private static final String CONTENT_DISPOSITION = "Content-Disposition";
 
    private static Map<Integer, String> codes;
+
    static {
       HttpResponse.codes = new HashMap<>();
       codes.put(100, StatusCodes.STATUS_100);
@@ -193,8 +194,8 @@ public class HttpResponse {
    public void outputStandardError(int errorCode, String reason) {
       String errorStr = getStatus(errorCode);
       String reasonStr = reason != null ? "Reason: " + reason : "";
-      String html =
-         AHTML.simplePage("<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+      String html = AHTML.simplePage(
+         "<h1>Error " + errorStr + "</h1><h2>OSEE was unable to handle the request.</h2>" + reasonStr + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
       OseeLog.log(CoreClientActivator.class, Level.SEVERE, "HttpServer Request failed. " + reasonStr);
       try {
          printStream.println(html);

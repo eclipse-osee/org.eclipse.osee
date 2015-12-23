@@ -48,7 +48,8 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       StringBuilder widgets = new StringBuilder();
       widgets.append("<xWidgets>");
       widgets.append("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"Artifacts\" />)");
-      widgets.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Recurse Over Hierarchy\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      widgets.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Recurse Over Hierarchy\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       widgets.append("</xWidgets>");
       return widgets.toString();
    }

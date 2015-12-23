@@ -78,7 +78,7 @@ public class XHyperlabelTeamDefinitionSelection extends XHyperlinkLabelCmdValueS
          if (result == 0) {
             selectedTeamDefs.clear();
             for (Object obj : dialog.getResultAndRecursedTeamDefs()) {
-               selectedTeamDefs.add(( IAtsTeamDefinition) obj);
+               selectedTeamDefs.add((IAtsTeamDefinition) obj);
             }
             notifyXModifiedListeners();
          }

@@ -52,7 +52,8 @@ public class HTMLTransferFormatter {
          StringBuilder sb = new StringBuilder();
 
          if (applyWordTagWrap) {
-            sb.append("Version:1.0\r\nStartHTML:2\r\nEndHTML:170\r\nStartFragment:140\r\nEndFragment:160\r\n" + "StartSelection:140\r\nEndSelection:160\r\n<HTML><HEAD><TITLE> The HTML Clipboard</TITLE></HEAD><BODY>\r\n" + "<!--StartFragment -->\r\n");
+            sb.append(
+               "Version:1.0\r\nStartHTML:2\r\nEndHTML:170\r\nStartFragment:140\r\nEndFragment:160\r\n" + "StartSelection:140\r\nEndSelection:160\r\n<HTML><HEAD><TITLE> The HTML Clipboard</TITLE></HEAD><BODY>\r\n" + "<!--StartFragment -->\r\n");
          }
 
          List<String> urls = new ArrayList<>(artifacts.length);
@@ -61,9 +62,8 @@ public class HTMLTransferFormatter {
             try {
                link = ArtifactURL.getOpenInOseeLink(artifact).toString();
             } catch (OseeCoreException ex) {
-               link =
-                  String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
-                     artifact.getBranch().getGuid(), artifact.getGammaId());
+               link = String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
+                  artifact.getBranch().getGuid(), artifact.getGammaId());
                OseeLog.logf(Activator.class, Level.WARNING, ex, "Error creating link for: [%s]", artifact);
             }
             urls.add(link + "\">" + artifact.getName());

@@ -127,9 +127,8 @@ public class RelationOrderData {
             relationOrderModType = RelationOrderModType.Absolute;
          }
          IOseeBranch branch = getIArtifact().getBranch();
-         DefaultBasicGuidArtifact guidArtifact =
-            new DefaultBasicGuidArtifact(branch.getUuid(), getIArtifact().getArtifactType().getGuid(),
-               getIArtifact().getGuid());
+         DefaultBasicGuidArtifact guidArtifact = new DefaultBasicGuidArtifact(branch.getUuid(),
+            getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid());
 
          DefaultBasicUuidRelationReorder reorder =
             new DefaultBasicUuidRelationReorder(relationOrderModType, branch.getUuid(), type.getGuid(), guidArtifact);

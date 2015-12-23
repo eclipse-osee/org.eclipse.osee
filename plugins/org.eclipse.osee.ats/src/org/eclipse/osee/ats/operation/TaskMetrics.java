@@ -93,8 +93,8 @@ public class TaskMetrics extends AbstractBlam {
          if (!versionArtifacts.isEmpty()) {
             Set<IAtsTeamWorkflow> teamWorkflows = new HashSet<>();
             for (IAtsObject version : versionArtifacts) {
-               teamWorkflows.addAll(AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
-                  (IAtsVersion) version));
+               teamWorkflows.addAll(
+                  AtsClientService.get().getVersionService().getTargetedForTeamWorkflows((IAtsVersion) version));
             }
 
             for (IAtsTeamWorkflow team : teamWorkflows) {

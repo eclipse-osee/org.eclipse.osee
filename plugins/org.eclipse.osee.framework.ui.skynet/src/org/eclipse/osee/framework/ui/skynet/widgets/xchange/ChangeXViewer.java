@@ -45,7 +45,7 @@ public class ChangeXViewer extends XViewer {
          return;
       }
       Change change = getSelectedChanges().iterator().next();
-      Artifact artifact = (Artifact) ((IAdaptable) change).getAdapter(Artifact.class);
+      Artifact artifact = ((IAdaptable) change).getAdapter(Artifact.class);
       ArtifactDoubleClick.open(artifact);
    }
 

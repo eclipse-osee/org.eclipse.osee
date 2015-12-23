@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.tests;
 import static org.eclipse.osee.orcs.script.dsl.tests.OsFieldUtil.newCollectClause;
 import static org.eclipse.osee.orcs.script.dsl.tests.OsFieldUtil.newCollectObject;
 import static org.junit.Assert.assertEquals;
+import com.google.inject.Inject;
 import java.util.Iterator;
 import java.util.Set;
 import java.util.SortedSet;
@@ -31,7 +32,6 @@ import org.eclipse.xtext.junit4.InjectWith;
 import org.eclipse.xtext.junit4.XtextRunner;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.google.inject.Inject;
 
 /**
  * Test Case for {@link OrcsScriptDslFormatter}
@@ -99,7 +99,7 @@ public class OsFieldResolverTest {
    @Test
    public void testGetAllowedCollectTypes() {
       OsCollectType[] expecteds =
-      {OsCollectType.BRANCHES, OsCollectType.TXS, OsCollectType.ARTIFACTS, OsCollectType.ARTIFACTS};
+         {OsCollectType.BRANCHES, OsCollectType.TXS, OsCollectType.ARTIFACTS, OsCollectType.ARTIFACTS};
       int index = 0;
       for (Scope scope : Scope.values()) {
          OsCollectClause clause = newCollectClause(scope, "object-name");

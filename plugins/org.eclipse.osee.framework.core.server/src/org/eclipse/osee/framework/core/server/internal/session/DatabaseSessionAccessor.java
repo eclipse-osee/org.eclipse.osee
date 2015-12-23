@@ -79,9 +79,8 @@ public final class DatabaseSessionAccessor implements CacheDataLoader<String, Se
 
          @Override
          public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
-            Session session =
-               getFactory().createLoadedSession(guid, userId, creationDate, clientVersion, clientMachineName,
-                  clientAddress, clientPort);
+            Session session = getFactory().createLoadedSession(guid, userId, creationDate, clientVersion,
+               clientMachineName, clientAddress, clientPort);
             sessions.put(guid, session);
          }
       };

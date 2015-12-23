@@ -37,12 +37,16 @@ public class StpCsciToTestTable implements ISimpleTable {
       builder.append("<Column ss:StyleID=\"s38\" ss:AutoFitWidth=\"0\" ss:Width=\"53.25\"/>");
       builder.append("<Column ss:StyleID=\"s38\" ss:AutoFitWidth=\"0\" ss:Width=\"47.25\"/>");
       builder.append("<Row ss:Height=\"13.5\">");
-      builder.append("<Cell ss:MergeAcross=\"4\" ss:StyleID=\"s21\"><Data ss:Type=\"String\">Table X.X: CSCI Requirements to Test Traceability</Data></Cell>");
+      builder.append(
+         "<Cell ss:MergeAcross=\"4\" ss:StyleID=\"s21\"><Data ss:Type=\"String\">Table X.X: CSCI Requirements to Test Traceability</Data></Cell>");
       builder.append("</Row><Row ss:Height=\"14.25\">");
-      builder.append("<Cell ss:MergeAcross=\"1\" ss:StyleID=\"m15143714\"><Data ss:Type=\"String\">CSCI Requirement</Data></Cell>");
+      builder.append(
+         "<Cell ss:MergeAcross=\"1\" ss:StyleID=\"m15143714\"><Data ss:Type=\"String\">CSCI Requirement</Data></Cell>");
       builder.append("<Cell ss:MergeDown=\"1\" ss:StyleID=\"m15143754\"><Data ss:Type=\"String\">Test</Data></Cell>");
-      builder.append("<Cell ss:MergeDown=\"1\" ss:StyleID=\"m15143724\"><Data ss:Type=\"String\">Qual Method</Data></Cell>");
-      builder.append("<Cell ss:MergeDown=\"1\" ss:StyleID=\"m15143734\"><Data ss:Type=\"String\">Qual Facility</Data></Cell>");
+      builder.append(
+         "<Cell ss:MergeDown=\"1\" ss:StyleID=\"m15143724\"><Data ss:Type=\"String\">Qual Method</Data></Cell>");
+      builder.append(
+         "<Cell ss:MergeDown=\"1\" ss:StyleID=\"m15143734\"><Data ss:Type=\"String\">Qual Facility</Data></Cell>");
       builder.append("</Row><Row ss:Height=\"14.25\">");
       builder.append("<Cell ss:StyleID=\"s26\"><Data ss:Type=\"String\">Paragraph #</Data></Cell>");
       builder.append("<Cell ss:StyleID=\"s26\"><Data ss:Type=\"String\">Paragraph Title</Data></Cell>");

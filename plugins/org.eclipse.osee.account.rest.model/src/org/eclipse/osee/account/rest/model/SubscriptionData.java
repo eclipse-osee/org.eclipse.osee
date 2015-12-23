@@ -84,4 +84,4 @@ public class SubscriptionData implements Identifiable<String> {
       return String.valueOf(getGuid());
    }
 
-   }
+}

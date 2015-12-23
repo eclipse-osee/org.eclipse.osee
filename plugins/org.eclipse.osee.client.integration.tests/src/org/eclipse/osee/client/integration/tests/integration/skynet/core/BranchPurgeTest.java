@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -58,12 +57,8 @@ public class BranchPurgeTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private static final String[] TABLES = new String[] {
-      "osee_attribute",
-      "osee_artifact",
-      "osee_relation_link",
-      "osee_tx_details",
-      "osee_txs"};
+   private static final String[] TABLES =
+      new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
 
    private IOseeBranch workingBranch;
 
@@ -77,19 +72,20 @@ public class BranchPurgeTest {
       if (BranchManager.branchExists(workingBranch)) {
          BranchManager.purgeBranch(workingBranch);
       }
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      Operations.executeWorkAndCheckStatus(
+         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
    @Test
    public void testPurgeBranch() throws Exception {
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      Operations.executeWorkAndCheckStatus(
+         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
       IOseeBranch branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
-      Collection<Artifact> softArts =
-         TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, method.getQualifiedTestName(),
-            branch);
+      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+         method.getQualifiedTestName(), branch);
       Artifacts.persistInTransaction("Test purge branch", softArts);
 
       SkynetTransaction transaction = TransactionManager.createTransaction(branch, method.getQualifiedTestName());

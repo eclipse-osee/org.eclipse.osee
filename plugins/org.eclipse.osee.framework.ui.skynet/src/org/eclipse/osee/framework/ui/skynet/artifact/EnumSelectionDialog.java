@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Control;
  */
 public class EnumSelectionDialog extends FilteredCheckboxTreeDialog {
 
-   private final XRadioButton addSelectedRadioButton = new XRadioButton(
-      "Add selected item(s) to existing if not already chosen.");
+   private final XRadioButton addSelectedRadioButton =
+      new XRadioButton("Add selected item(s) to existing if not already chosen.");
    private final XRadioButton replaceAllRadioButton = new XRadioButton("Replace all existing with selected item(s)");
    private final XRadioButton deleteSelectedRadioButton =
       new XRadioButton("Remove selected item(s) if already chosen.");

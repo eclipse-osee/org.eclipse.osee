@@ -41,10 +41,12 @@ public class JaxAgileTeam extends JaxAtsObject {
       this.backlogUuid = backlogUuid;
    }
 
+   @Override
    public String getDescription() {
       return description;
    }
 
+   @Override
    public void setDescription(String description) {
       this.description = description;
    }

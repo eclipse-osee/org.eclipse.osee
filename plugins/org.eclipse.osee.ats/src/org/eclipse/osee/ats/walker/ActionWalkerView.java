@@ -308,8 +308,8 @@ public class ActionWalkerView extends GenericViewPart implements IPartListener, 
          return;
       }
       if (artifactEvent.isModifiedReloaded(activeAwa) ||
-         //
-         artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
+      //
+      artifactEvent.isRelAddedChangedDeleted(activeAwa)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

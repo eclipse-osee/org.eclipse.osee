@@ -93,7 +93,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
 
    public static Date getDate(Object object) throws OseeCoreException {
       if (Artifacts.isOfType(object, AtsArtifactTypes.Action)) {
-         return getDate((ActionManager.getFirstTeam(object)));
+         return getDate(ActionManager.getFirstTeam(object));
       } else if (Artifacts.isOfType(object, AtsArtifactTypes.TeamWorkflow)) {
          Date date =
             ((TeamWorkFlowArtifact) object).getSoleAttributeValue(AtsAttributeTypes.EstimatedCompletionDate, null);

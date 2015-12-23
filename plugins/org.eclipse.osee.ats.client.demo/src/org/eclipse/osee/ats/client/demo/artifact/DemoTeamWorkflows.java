@@ -30,7 +30,8 @@ public class DemoTeamWorkflows extends TeamWorkflowProviderAdapter {
       try {
          TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) workItem.getParentTeamWorkflow();
          if (teamWf != null) {
-            return (teamWf.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow) || teamWf.isOfType(DemoArtifactTypes.DemoReqTeamWorkflow) || teamWf.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow));
+            return teamWf.isOfType(DemoArtifactTypes.DemoCodeTeamWorkflow) || teamWf.isOfType(
+               DemoArtifactTypes.DemoReqTeamWorkflow) || teamWf.isOfType(DemoArtifactTypes.DemoTestTeamWorkflow);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

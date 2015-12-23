@@ -32,8 +32,9 @@ public class DirtyArtifactCacheTest {
          OseeLog.logf(getClass(), Level.WARNING, "Name: %s Type: %s ", artifact.getName(),
             artifact.getArtifactTypeName());
       }
-      Assert.assertTrue(String.format(
-         "After all tests are run, there should be no dirty artifacts in Artifact Cache; \n Found [%s]",
-         Artifacts.getNames(dirtyArtifacts)), dirtyArtifacts.isEmpty());
+      Assert.assertTrue(
+         String.format("After all tests are run, there should be no dirty artifacts in Artifact Cache; \n Found [%s]",
+            Artifacts.getNames(dirtyArtifacts)),
+         dirtyArtifacts.isEmpty());
    }
 }

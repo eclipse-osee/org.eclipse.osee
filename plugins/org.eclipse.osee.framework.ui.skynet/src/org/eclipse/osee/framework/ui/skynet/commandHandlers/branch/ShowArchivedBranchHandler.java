@@ -45,7 +45,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
    private boolean itemChk;
 
    public ShowArchivedBranchHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.service = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override
@@ -53,7 +53,7 @@ public class ShowArchivedBranchHandler extends CommandHandler implements IElemen
       try {
          IWorkbenchPart part = HandlerUtil.getActivePartChecked(event);
          if (part instanceof BranchView) {
-            BranchView branchView = ((BranchView) part);
+            BranchView branchView = (BranchView) part;
             branchView.changePresentation(BranchOptionsEnum.SHOW_ARCHIVED_BRANCHES, !itemChk);
          }
       } catch (ExecutionException ex) {

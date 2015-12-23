@@ -86,9 +86,8 @@ public class SMAWorkFlowSection extends SectionPart {
       this.sma = sma;
       this.editor = editor;
 
-      isEditable =
-         WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
-            page.getStateDefinition(), editor.isPrivilegedEditModeEnabled(), AtsClientService.get().getUserService());
+      isEditable = WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
+         page.getStateDefinition(), editor.isPrivilegedEditModeEnabled(), AtsClientService.get().getUserService());
       isGlobalEditable = !sma.isReadOnly() && sma.isAccessControlWrite() && editor.isPrivilegedEditModeEnabled();
       isCurrentState = sma.isInState(page);
       // parent.setBackground(Displays.getSystemColor(SWT.COLOR_CYAN));
@@ -174,9 +173,8 @@ public class SMAWorkFlowSection extends SectionPart {
          labelComp.setLayoutData(new GridData(GridData.FILL_BOTH));
          labelComp.setLayout(ALayout.getZeroMarginLayout());
 
-         Label descLabel =
-            editor.getToolkit().createLabel(labelComp,
-               " State Description: " + statePage.getStateDefinition().getDescription());
+         Label descLabel = editor.getToolkit().createLabel(labelComp,
+            " State Description: " + statePage.getStateDefinition().getDescription());
          GridData gd = new GridData(SWT.FILL, SWT.NONE, true, false);
          descLabel.setBackground(AtsUtil.ACTIVE_COLOR);
          descLabel.setLayoutData(gd);
@@ -299,7 +297,8 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(1, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1));
+         allXWidgets.add(
+            new ReviewInfoXWidget(this, editor.getToolkit(), (TeamWorkFlowArtifact) sma, forState, comp, 1));
       }
    }
 
@@ -309,7 +308,7 @@ public class SMAWorkFlowSection extends SectionPart {
          GridLayout layout = new GridLayout(6, false);
          comp.setLayout(layout);
          comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), ((AbstractTaskableArtifact) sma), state, comp, 2));
+         allXWidgets.add(new TaskInfoXWidget(getManagedForm(), (AbstractTaskableArtifact) sma, state, comp, 2));
       }
    }
 
@@ -439,11 +438,7 @@ public class SMAWorkFlowSection extends SectionPart {
             // Notify extensions of widget modified
             for (IAtsStateItem item : AtsStateItemManager.getStateItems()) {
                try {
-                  item.widgetModified(
-                     xWidget,
-                     editor.getToolkit(),
-                     sma.getStateDefinition(),
-                     sma,
+                  item.widgetModified(xWidget, editor.getToolkit(), sma.getStateDefinition(), sma,
                      WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), sma,
                         sma.getStateDefinition(), false, AtsClientService.get().getUserService()));
                } catch (Exception ex) {

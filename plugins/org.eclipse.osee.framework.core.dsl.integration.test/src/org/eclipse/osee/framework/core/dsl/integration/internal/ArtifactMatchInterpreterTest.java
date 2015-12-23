@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.dsl.oseeDsl.XLogicOperator;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -153,7 +152,8 @@ public class ArtifactMatchInterpreterTest {
    public void testArtifactBranchUuidLike() throws OseeCoreException {
       XArtifactMatcher matcher = MockModel.createMatcher("artifactMatcher \"Test\" where branchUuid LIKE \"\\w+\";");
 
-      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_UUID, CompareOp.LIKE, "\\w+");
+      DslAsserts.assertEquals(matcher.getConditions().iterator().next(), MatchField.BRANCH_UUID, CompareOp.LIKE,
+         "\\w+");
 
       ArtifactProxy proxy = createProxy(GUID.create(), "art1", Lib.generateUuid(), "");
       boolean actual = interpreter.matches(matcher, proxy);
@@ -162,8 +162,8 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testCompoundCondition1() throws OseeCoreException {
-      XArtifactMatcher andMatcher =
-         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
+      XArtifactMatcher andMatcher = MockModel.createMatcher(
+         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator = andMatcher.getConditions().iterator();
       DslAsserts.assertEquals(iterator.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
@@ -172,8 +172,8 @@ public class ArtifactMatchInterpreterTest {
       Assert.assertEquals(1, andMatcher.getOperators().size());
       Assert.assertEquals(XLogicOperator.AND, andMatcher.getOperators().iterator().next());
 
-      XArtifactMatcher orMatcher =
-         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
+      XArtifactMatcher orMatcher = MockModel.createMatcher(
+         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" OR artifactName EQ \"myArtifact\";");
 
       Iterator<Condition> iterator2 = orMatcher.getConditions().iterator();
       DslAsserts.assertEquals(iterator2.next(), MatchField.ARTIFACT_GUID, CompareOp.EQ, "ABCDEFGHIJK123456789");
@@ -200,8 +200,8 @@ public class ArtifactMatchInterpreterTest {
 
    @Test
    public void testCompoundCondition2() throws OseeCoreException {
-      XArtifactMatcher matcher =
-         MockModel.createMatcher("artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchUuid EQ \"3456789101112131415\");");
+      XArtifactMatcher matcher = MockModel.createMatcher(
+         "artifactMatcher \"Test\" where artifactGuid EQ \"ABCDEFGHIJK123456789\" AND (branchName EQ \"myArtifact\" OR branchUuid EQ \"3456789101112131415\");");
 
       Assert.assertEquals(2, matcher.getConditions().size());
       Iterator<Condition> iterator = matcher.getConditions().iterator();
@@ -217,7 +217,6 @@ public class ArtifactMatchInterpreterTest {
 
       Assert.assertEquals(2, compoundCondition.getConditions().size());
 
-
       String badArtGuid = "1BCDEFGHIJK123456789";
       Long badBranchGuid = 333333333123456789L;
       String badBranchName = "xArtifact";
@@ -226,11 +225,9 @@ public class ArtifactMatchInterpreterTest {
       Long goodBranchGuid = 3456789101112131415L;
       String goodBranchName = "myArtifact";
 
-      
       Iterator<SimpleCondition> iterator2 = compoundCondition.getConditions().iterator();
       DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_NAME, CompareOp.EQ, "myArtifact");
-      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ,
-         String.valueOf(goodBranchGuid));
+      DslAsserts.assertEquals(iterator2.next(), MatchField.BRANCH_UUID, CompareOp.EQ, String.valueOf(goodBranchGuid));
 
       Assert.assertEquals(1, compoundCondition.getOperators().size());
       Assert.assertEquals(XLogicOperator.OR, compoundCondition.getOperators().iterator().next());

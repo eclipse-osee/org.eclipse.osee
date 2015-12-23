@@ -98,10 +98,10 @@ public class ArtifactFormPage extends FormPage {
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.TWISTIE;
 
-      sectionParts.put(SectionEnum.Attributes, new AttributesFormSection(getEditor(), form.getBody(), toolkit,
-         sectionStyle | ExpandableComposite.EXPANDED));
-      sectionParts.put(SectionEnum.Relations, new RelationsFormSection(getEditor(), form.getBody(), toolkit,
-         sectionStyle));
+      sectionParts.put(SectionEnum.Attributes,
+         new AttributesFormSection(getEditor(), form.getBody(), toolkit, sectionStyle | ExpandableComposite.EXPANDED));
+      sectionParts.put(SectionEnum.Relations,
+         new RelationsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
       sectionParts.put(SectionEnum.Details, new DetailsFormSection(getEditor(), form.getBody(), toolkit, sectionStyle));
 
       for (SectionPart part : sectionParts.values()) {
@@ -174,11 +174,10 @@ public class ArtifactFormPage extends FormPage {
       String description;
       try {
          Artifact artifact = getEditor().getEditorInput().getArtifact();
-         description =
-            String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
-               !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
-               ReservedCharacters.encodeXmlEntities(artifact.getFullBranch().getShortName()),
-               artifact.getArtifactTypeName(), artifact.getUuid());
+         description = String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
+            !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
+            ReservedCharacters.encodeXmlEntities(artifact.getFullBranch().getShortName()),
+            artifact.getArtifactTypeName(), artifact.getUuid());
       } catch (Exception ex) {
          description = Lib.exceptionToString(ex);
       }

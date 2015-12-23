@@ -114,7 +114,8 @@ public class GlobalMenu {
                deleteMenuItem.setEnabled(!artifacts.isEmpty() && permiss.isWritePermission());
             }
             if (purgeMenuItem != null) {
-               purgeMenuItem.setEnabled(!artifacts.isEmpty() && permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
+               purgeMenuItem.setEnabled(
+                  !artifacts.isEmpty() && permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -141,10 +142,9 @@ public class GlobalMenu {
       public void run() {
          try {
             final Collection<Artifact> artifactsToBeDeleted = globalMenuHelper.getArtifacts();
-            MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
+               " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+               MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
                try {
                   for (GlobalMenuListener listener : listeners) {
@@ -183,12 +183,10 @@ public class GlobalMenu {
       public void run() {
          final Collection<Artifact> artifactsToBePurged = globalMenuHelper.getArtifacts();
 
-         final MessageDialogWithToggle dialog =
-            MessageDialogWithToggle.openOkCancelConfirm(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-               "Confirm Artifact Purge ",
-               " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
-               "Purge selected artifact's children?", false, null, null);
+         final MessageDialogWithToggle dialog = MessageDialogWithToggle.openOkCancelConfirm(
+            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Confirm Artifact Purge ",
+            " Are you sure you want to purge this artifact and all history associated from the database? (cannot be undone)",
+            "Purge selected artifact's children?", false, null, null);
 
          if (dialog.getReturnCode() == Window.OK) {
             final boolean recusivePurge =

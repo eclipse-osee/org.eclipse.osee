@@ -59,7 +59,7 @@ public class OrcsAttributeLoadingTest {
       assertEquals(3, builder.getCount());
 
       Map<Integer, ArtifactReadable> lookup = createLookup(resultSet);
-      ArtifactReadable art6 = lookup.get(6);
+      lookup.get(6);
       ArtifactReadable art7 = lookup.get(7);
       ArtifactReadable art8 = lookup.get(8);
 
@@ -73,8 +73,7 @@ public class OrcsAttributeLoadingTest {
 
    @Test
    public void testLoadWordTemplateContentAttributes() throws OseeCoreException {
-      QueryBuilder builder =
-         query.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
+      QueryBuilder builder = query.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.Name, "Haptic Constraints");
 
       ResultSet<ArtifactReadable> resultSet = builder.getResults();
 

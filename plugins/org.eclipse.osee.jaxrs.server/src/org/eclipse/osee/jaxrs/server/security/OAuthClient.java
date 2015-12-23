@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar

@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import com.google.common.collect.Lists;
 
 public class BranchUtil {
 

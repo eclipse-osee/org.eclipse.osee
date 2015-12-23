@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql.join;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +24,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Multimaps;
 
 /**
  * If -1 is found in the expires_in column, it means never expire.
@@ -44,7 +44,7 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
    }
 
    private boolean isExpired(Long issuedAt, Long lifetime) {
-      return lifetime != -1 && ((issuedAt + lifetime) < (System.currentTimeMillis() / 1000));
+      return lifetime != -1 && issuedAt + lifetime < System.currentTimeMillis() / 1000;
    }
 
    @Override

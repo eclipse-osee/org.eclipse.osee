@@ -81,13 +81,12 @@ public class WorkDaysNeededColumn extends XViewerAtsColumn implements IXViewerVa
          AbstractWorkflowArtifact aba = null;
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
-         } else if (Artifacts.isOfType(treeItem.getData(), AtsArtifactTypes.Action) && ActionManager.getTeams(
-            treeItem.getData()).size() == 1) {
+         } else if (Artifacts.isOfType(treeItem.getData(),
+            AtsArtifactTypes.Action) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
             aba = ActionManager.getFirstTeam(treeItem.getData());
          }
          if (aba != null) {
-            AWorkbench.popup(
-               "Calculated Field",
+            AWorkbench.popup("Calculated Field",
                "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + aba.getManHrsPerDayPreference() + ")");
          }
       } catch (OseeCoreException ex) {

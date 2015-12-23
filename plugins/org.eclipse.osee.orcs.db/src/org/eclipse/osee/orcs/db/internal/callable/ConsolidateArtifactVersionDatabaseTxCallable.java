@@ -117,7 +117,8 @@ public class ConsolidateArtifactVersionDatabaseTxCallable extends AbstractDatast
       ArtifactJoinQuery artifactJoinQuery = populateJoinTableWithArtifacts();
       List<Address> mods = new ArrayList<>();
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, FIND_ARTIFACT_MODS, artifactJoinQuery.getQueryId());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, FIND_ARTIFACT_MODS,
+            artifactJoinQuery.getQueryId());
          while (chStmt.next()) {
             int artifactId = chStmt.getInt("art_id");
             long branchUuid = chStmt.getLong("branch_id");

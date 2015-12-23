@@ -137,7 +137,8 @@ public class PredicateFactoryImpl implements PredicateFactory {
             values.add(id.toString());
          }
       }
-      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()), values);
+      return new Predicate(SearchMethod.RELATED_TO, Arrays.asList(side + relationTypeSide.getGuid().toString()),
+         values);
    }
 
    private List<String> getLongIds(Collection<? extends Identity<Long>> types) {

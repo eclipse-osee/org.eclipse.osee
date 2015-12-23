@@ -85,7 +85,7 @@ public class WorldContentProvider implements ITreeContentProvider {
             }
             if (artifact.isOfType(AtsArtifactTypes.Action)) {
                relatedArts.addAll(ActionManager.getTeams(artifact));
-               return ActionManager.getTeams((artifact)).toArray();
+               return ActionManager.getTeams(artifact).toArray();
             }
             if (artifact.isOfType(AtsArtifactTypes.Goal)) {
                List<Artifact> arts = AtsClientService.get().getGoalMembersCache().getMembers((GoalArtifact) artifact);
@@ -94,8 +94,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return arts.toArray(new Artifact[arts.size()]);
             }
             if (artifact.isOfType(AtsArtifactTypes.AgileSprint)) {
-               List<Artifact> arts =
-                  AtsClientService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
+               List<Artifact> arts = AtsClientService.get().getSprintItemsCache().getMembers((SprintArtifact) artifact);
                relatedArts.addAll(arts);
                AtsBulkLoad.bulkLoadArtifacts(relatedArts);
                return arts.toArray(new Artifact[arts.size()]);
@@ -174,16 +173,19 @@ public class WorldContentProvider implements ITreeContentProvider {
       if (workflow.isOfType(AtsArtifactTypes.Task)) {
          return false;
       }
-      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.TeamWfToTask_Task) > 0) {
+      if (workflow instanceof AbstractTaskableArtifact && workflow.getRelatedArtifactsCount(
+         AtsRelationTypes.TeamWfToTask_Task) > 0) {
          return true;
       }
-      if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0) {
+      if (workflow instanceof TeamWorkFlowArtifact && workflow.getRelatedArtifactsCount(
+         AtsRelationTypes.TeamWorkflowToReview_Review) > 0) {
          return true;
       }
       if (workflow instanceof GoalArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member) > 0) {
          return true;
       }
-      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(AtsRelationTypes.AgileSprintToItem_AtsItem) > 0) {
+      if (workflow instanceof SprintArtifact && workflow.getRelatedArtifactsCount(
+         AtsRelationTypes.AgileSprintToItem_AtsItem) > 0) {
          return true;
       }
       return false;

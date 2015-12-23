@@ -43,9 +43,8 @@ public class AttributeTypeToXWidgetName {
             xWidgetName =
                "XComboDam(" + Collections.toString(",", AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
          } else {
-            xWidgetName =
-               "XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
+            xWidgetName = "XSelectFromMultiChoiceDam(" + Collections.toString(",",
+               AttributeTypeManager.getEnumerationValues(attributeType)) + ")";
          }
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          if (minOccurrence == 1) {
@@ -53,7 +52,8 @@ public class AttributeTypeToXWidgetName {
          } else {
             xWidgetName = "XComboBooleanDam";
          }
-      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
+      } else if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class,
+         attributeType) || attributeType.equals(CoreAttributeTypes.RelationOrder)) {
          xWidgetName = "XStackedDam";
       } else if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          xWidgetName = "XDateDam";

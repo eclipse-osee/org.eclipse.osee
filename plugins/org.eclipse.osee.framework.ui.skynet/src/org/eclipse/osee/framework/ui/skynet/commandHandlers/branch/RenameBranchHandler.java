@@ -132,8 +132,9 @@ public class RenameBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).getBranchType().isWorkingBranch() || branches.get(
-         0).getBaseTransaction().getAuthor() == UserManager.getUser().getArtId());
+      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(
+         0).getBranchType().isWorkingBranch() || branches.get(
+            0).getBaseTransaction().getAuthor() == UserManager.getUser().getArtId());
    }
 
 }

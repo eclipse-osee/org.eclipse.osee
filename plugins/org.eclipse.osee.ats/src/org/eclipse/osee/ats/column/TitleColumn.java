@@ -39,8 +39,8 @@ public class TitleColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private TitleColumn() {
-      super(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, SWT.LEFT, true,
-         SortDataType.String, true, "");
+      super(CoreAttributeTypes.Name, "framework.artifact.name.Title", "Title", 150, SWT.LEFT, true, SortDataType.String,
+         true, "");
    }
 
    /**

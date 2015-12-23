@@ -10,11 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.dsl.integration.internal.model;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.ReviewBlockType;
 import org.eclipse.osee.ats.api.workdef.StateEventType;
-import org.eclipse.osee.ats.dsl.integration.internal.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.model.DecisionReviewOption;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

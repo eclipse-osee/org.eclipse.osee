@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.distributed;
 
-
 /**
  * @author Roberto E. Escobar
  */

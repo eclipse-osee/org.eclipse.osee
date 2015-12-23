@@ -108,8 +108,8 @@ public final class AttributeChange extends Change {
             return attribute;
          }
       }
-      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId,
-         getArtId(), getBranch().getGuid());
+      throw new AttributeDoesNotExist("Attribute %d could not be found on artifact %d on branch %s", attrId, getArtId(),
+         getBranch().getGuid());
    }
 
    @SuppressWarnings("rawtypes")

@@ -163,9 +163,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
                IOseeBranch parentBranch =
                   AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
                // Retrieve parent branch to create working branch from
-               if (!MessageDialog.openConfirm(
-                  Displays.getActiveShell(),
-                  "Create Working Branch",
+               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
                   "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
                   enablement.refresh();
                   refreshEnablement();
@@ -262,16 +260,16 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       } else {
          someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
       }
-      lockBranchButton.setImage(ImageManager.getImage((noBranch || someAccessControlSet) ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
+      lockBranchButton.setImage(ImageManager.getImage(
+         noBranch || someAccessControlSet ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
       lockBranchButton.redraw();
       lockBranchButton.getParent().redraw();
    }
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user =
-            AtsClientService.get().getUserServiceClient().getOseeUser(
-               AtsClientService.get().getUserService().getCurrentUser());
+         User user = AtsClientService.get().getUserServiceClient().getOseeUser(
+            AtsClientService.get().getUserService().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
@@ -282,9 +280,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             return;
          }
          boolean isFavorite = user.isFavoriteBranch(branch);
-         String message =
-            String.format("Working branch is currently [%s]\n\nToggle favorite?",
-               isFavorite ? "Favorite" : "NOT Favorite");
+         String message = String.format("Working branch is currently [%s]\n\nToggle favorite?",
+            isFavorite ? "Favorite" : "NOT Favorite");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
             user.toggleFavoriteBranch(branch);
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getUuid()));
@@ -309,19 +306,20 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             isLocked = false;
          } else {
             AccessControlData data = datas.iterator().next();
-            if (data.getSubject().equals(SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+            if (data.getSubject().equals(
+               SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
                isLocked = true;
             } else {
                manuallyLocked = true;
             }
          }
          if (manuallyLocked) {
-            AWorkbench.popup("Manual access control applied to branch.  Can't override.\n\nUse Access Control option of Branch Manager");
+            AWorkbench.popup(
+               "Manual access control applied to branch.  Can't override.\n\nUse Access Control option of Branch Manager");
             return;
          }
-         String message =
-            String.format("Working branch is currently [%s]\n\n%s the Branch?", isLocked ? "Locked" : "NOT Locked",
-               isLocked ? "UnLock" : "Lock");
+         String message = String.format("Working branch is currently [%s]\n\n%s the Branch?",
+            isLocked ? "Locked" : "NOT Locked", isLocked ? "UnLock" : "Lock");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Lock", message)) {
             if (isLocked) {
                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());

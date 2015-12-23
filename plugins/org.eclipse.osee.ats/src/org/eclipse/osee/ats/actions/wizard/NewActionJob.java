@@ -71,10 +71,9 @@ public class NewActionJob extends Job {
             title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
          }
          AtsChangeSet changes = new AtsChangeSet("Create New Action");
-         actionArt =
-            ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
-               actionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
-               newActionListener, changes);
+         actionArt = ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired,
+            needByDate, actionableItems, new Date(), AtsClientService.get().getUserService().getCurrentUser(),
+            newActionListener, changes);
 
          if (wizard != null) {
             wizard.notifyAtsWizardItemExtensions(actionArt, changes);

@@ -108,9 +108,8 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (searchType == SearchType.ReSearch && selectedUser != null) {
          return;
       }
-      UserListDialog ld =
-         new UserListDialog(Displays.getActiveShell(), "Select User",
-            AtsClientService.get().getUserServiceClient().getOseeUsersSorted(active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select User",
+         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(active));
       int result = ld.open();
       if (result == 0) {
          selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
@@ -138,13 +137,15 @@ public abstract class UserSearchItem extends WorldUISearchItem {
       if (obj instanceof UserSearchItem) {
          UserSearchItem wsi = (UserSearchItem) obj;
          try {
-            if (!getClass().equals(obj.getClass()) || !wsi.getName().equals(getName()) || wsi.getLoadView() != getLoadView()) {
+            if (!getClass().equals(obj.getClass()) || !wsi.getName().equals(
+               getName()) || wsi.getLoadView() != getLoadView()) {
                return false;
             }
          } catch (OseeCoreException ex) {
             return false;
          }
-         if (getDefaultUser() != null && wsi.getDefaultUser() != null && !wsi.getDefaultUser().equals(getDefaultUser())) {
+         if (getDefaultUser() != null && wsi.getDefaultUser() != null && !wsi.getDefaultUser().equals(
+            getDefaultUser())) {
             return false;
          }
          return true;

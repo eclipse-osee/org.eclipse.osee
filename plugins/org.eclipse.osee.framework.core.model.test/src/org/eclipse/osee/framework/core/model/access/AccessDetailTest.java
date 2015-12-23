@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.core.model.access;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.model.access.Scope;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
@@ -99,7 +97,8 @@ public class AccessDetailTest {
    @Test
    public void testToString() {
       String expected =
-         "AccessDetail [permission=" + expPermission + ", scope=" + scope + ", accessObject=" + expAccessObject + ", reason=" + (Strings.isValid(expReason) ? expReason : scope) + "]";
+         "AccessDetail [permission=" + expPermission + ", scope=" + scope + ", accessObject=" + expAccessObject + ", reason=" + (Strings.isValid(
+            expReason) ? expReason : scope) + "]";
       Assert.assertEquals(expected, target.toString());
    }
 

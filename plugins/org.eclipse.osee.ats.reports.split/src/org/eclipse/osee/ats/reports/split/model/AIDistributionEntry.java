@@ -41,9 +41,8 @@ public class AIDistributionEntry {
     * @throws OseeCoreException :
     */
    public void computeAISplit() throws OseeCoreException {
-      Collection<TeamWorkFlowArtifact> teamWorkflows =
-         this.versionArtifact.getRelatedArtifactsOfType(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
-            TeamWorkFlowArtifact.class);
+      Collection<TeamWorkFlowArtifact> teamWorkflows = this.versionArtifact.getRelatedArtifactsOfType(
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
       for (TeamWorkFlowArtifact workflow : teamWorkflows) {
          Set<IAtsActionableItem> actionableItems = workflow.getActionableItemsDam().getActionableItems();
          for (IAtsActionableItem aiArtifact : actionableItems) {

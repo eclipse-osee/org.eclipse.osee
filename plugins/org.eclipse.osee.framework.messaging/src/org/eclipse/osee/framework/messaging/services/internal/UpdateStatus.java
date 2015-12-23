@@ -37,9 +37,8 @@ public class UpdateStatus implements Runnable {
       health.setServiceUniqueId(serviceUniqueId);
       health.setRefreshRateInSeconds(refreshRateInSeconds);
       health.setStopping(false);
-      errorMsg =
-         String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(),
-            health.getServiceName(), health.getServiceVersion(), health.getServiceUniqueId());
+      errorMsg = String.format("Failed to send %s to %s v[%s][%s]", BaseMessages.ServiceHealth.getName(),
+         health.getServiceName(), health.getServiceVersion(), health.getServiceUniqueId());
       this.infoPopulator = infoPopulator;
    }
 
@@ -48,8 +47,8 @@ public class UpdateStatus implements Runnable {
       try {
          health.getServiceDescription().clear();
          infoPopulator.updateServiceInfo(health.getServiceDescription());
-         connectionNode.send(BaseMessages.ServiceHealth, health, new OseeMessagingStatusImpl(errorMsg,
-            UpdateStatus.class));
+         connectionNode.send(BaseMessages.ServiceHealth, health,
+            new OseeMessagingStatusImpl(errorMsg, UpdateStatus.class));
       } catch (Exception ex) {
          OseeLog.log(UpdateStatus.class, Level.SEVERE, ex);
       }

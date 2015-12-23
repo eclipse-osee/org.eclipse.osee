@@ -49,9 +49,8 @@ public class PeerReviewDefinitionManager extends TransitionAdapter {
          // Already created this review
          return null;
       }
-      PeerToPeerReviewArtifact peerArt =
-         PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, title, peerRevDef.getRelatedToState(), createdDate,
-            createdBy, changes);
+      PeerToPeerReviewArtifact peerArt = PeerToPeerReviewManager.createNewPeerToPeerReview(teamArt, title,
+         peerRevDef.getRelatedToState(), createdDate, createdBy, changes);
       if (Strings.isValid(peerRevDef.getDescription())) {
          peerArt.setSoleAttributeFromString(AtsAttributeTypes.Description, peerRevDef.getDescription());
       }

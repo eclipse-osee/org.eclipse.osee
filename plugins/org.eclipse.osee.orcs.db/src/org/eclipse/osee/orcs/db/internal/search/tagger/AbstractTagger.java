@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
-
 /**
  * @author Roberto E. Escobar
  */

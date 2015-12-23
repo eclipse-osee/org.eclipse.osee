@@ -37,7 +37,8 @@ public class ArtifactTypeWithInheritenceSearchItem extends WorldUISearchItem {
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
+      return ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, AtsUtilCore.getAtsBranch(),
+         EXCLUDE_DELETED);
    }
 
    @Override

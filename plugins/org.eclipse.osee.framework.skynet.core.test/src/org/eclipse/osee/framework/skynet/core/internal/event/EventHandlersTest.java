@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.event;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBranchEvent1;
@@ -22,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.internal.event.handlers.AccessCont
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.AccessControlRemoteEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.ArtifactEventHandler;
 import org.eclipse.osee.framework.skynet.core.internal.event.handlers.BranchRemoteEventHandler;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

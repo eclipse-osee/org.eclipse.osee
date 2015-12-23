@@ -80,9 +80,8 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
          return "page == null";
       }
       try {
-         StringBuffer sb =
-            new StringBuffer(String.format("        State Hours: %5.2f",
-               sma.getStateMgr().getHoursSpent(page.getName())));
+         StringBuffer sb = new StringBuffer(
+            String.format("        State Hours: %5.2f", sma.getStateMgr().getHoursSpent(page.getName())));
          setEditable(isCurrentState && !sma.isReadOnly());
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {

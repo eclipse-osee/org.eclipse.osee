@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
-
 public interface HasNetworkSender {
 
    NetworkSender getNetworkSender();

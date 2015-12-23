@@ -70,7 +70,8 @@ public class DispoAdminResource {
       };
       String contentDisposition =
          String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
-      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/xml").build();
    }
 
    @Path("/export")
@@ -98,7 +99,8 @@ public class DispoAdminResource {
       };
       String contentDisposition =
          String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
-      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/xml").build();
    }
 
    @Path("/copyCoverage")

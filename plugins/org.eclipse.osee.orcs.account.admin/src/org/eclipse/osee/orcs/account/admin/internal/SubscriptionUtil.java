@@ -72,7 +72,7 @@ public final class SubscriptionUtil {
       }
    }
 
-   private static class SubscriptionImpl extends NamedIdentity<String> implements Subscription {
+   private static class SubscriptionImpl extends NamedIdentity<String>implements Subscription {
 
       private final long accountId;
       private final String accountDisplayName;

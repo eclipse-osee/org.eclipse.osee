@@ -45,9 +45,8 @@ public class UserArtifactEventListener implements IArtifactEventListener {
 
    public UserArtifactEventListener(LazyObject<Cache<String, User>> cacheProvider, LazyObject<Iterable<? extends String>> keysProvider) {
       super();
-      this.eventFilters =
-         Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.User), new BranchUuidEventFilter(
-            CoreBranches.COMMON));
+      this.eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.User),
+         new BranchUuidEventFilter(CoreBranches.COMMON));
       this.cacheProvider = cacheProvider;
       this.keysProvider = keysProvider;
    }

@@ -34,8 +34,8 @@ public final class JaxRsUtils {
    }
 
    public static final String UTF_8_ENCODING = "UTF-8";
-   public static final List<MediaType> HTML_MEDIA_TYPES = Collections.unmodifiableList(Arrays.asList(
-      MediaType.TEXT_HTML_TYPE, MediaType.APPLICATION_XHTML_XML_TYPE));
+   public static final List<MediaType> HTML_MEDIA_TYPES =
+      Collections.unmodifiableList(Arrays.asList(MediaType.TEXT_HTML_TYPE, MediaType.APPLICATION_XHTML_XML_TYPE));
 
    public static boolean isHtmlSupported(List<MediaType> acceptableMediaTypes) {
       return !JAXRSUtils.intersectMimeTypes(acceptableMediaTypes, HTML_MEDIA_TYPES, false).isEmpty();

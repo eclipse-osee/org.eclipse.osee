@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -23,7 +24,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
-import com.google.common.collect.Iterables;
 
 /**
  * Handles connection recovery in the event of database connection being lost

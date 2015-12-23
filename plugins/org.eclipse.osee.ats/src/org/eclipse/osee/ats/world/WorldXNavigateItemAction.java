@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.swt.KeyedImage;
 public class WorldXNavigateItemAction extends XNavigateItemAction {
 
    public WorldXNavigateItemAction(XNavigateItem parent, String name, KeyedImage oseeImage) {
-      super(parent, name, (oseeImage == null ? determineImage(name) : oseeImage));
+      super(parent, name, oseeImage == null ? determineImage(name) : oseeImage);
    }
 
    public WorldXNavigateItemAction(XNavigateItem parent, String name) {

@@ -204,7 +204,7 @@ public class XCombo extends XButtonCommon {
          displayArray = new String[inDataStrings.length + 1];
          displayArray[0] = "--select--";
          for (int i = 0; i < inDataStrings.length; i++) {
-            displayDataStrings.put(inDataStrings[i], (i + 1));
+            displayDataStrings.put(inDataStrings[i], i + 1);
             displayArray[i + 1] = inDataStrings[i];
          }
       } else {

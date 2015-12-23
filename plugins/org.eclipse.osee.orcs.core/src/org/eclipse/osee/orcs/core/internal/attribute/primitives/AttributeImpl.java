@@ -240,7 +240,8 @@ public abstract class AttributeImpl<T> implements Comparable<AttributeImpl<T>>, 
    @Override
    public boolean isDeleteAllowed() {
       try {
-         return !isDeleted() && getContainer().getAttributeCount(getAttributeType()) > attributeTypeCache.getMinOccurrences(getAttributeType());
+         return !isDeleted() && getContainer().getAttributeCount(
+            getAttributeType()) > attributeTypeCache.getMinOccurrences(getAttributeType());
       } catch (OseeCoreException ex) {
          return false;
       }

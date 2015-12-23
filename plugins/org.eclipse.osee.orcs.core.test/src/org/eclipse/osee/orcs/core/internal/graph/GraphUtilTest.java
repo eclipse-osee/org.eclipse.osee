@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;

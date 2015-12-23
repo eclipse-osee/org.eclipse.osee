@@ -72,7 +72,8 @@ public class SendNotificationEvents {
          for (IAtsUser user : AtsUsersUtility.getValidEmailUsers(uniqueUusers)) {
             List<AtsNotificationEvent> notifyEvents = new ArrayList<>();
             for (AtsNotificationEvent notificationEvent : notificationEvents) {
-               if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(user)) {
+               if (isTesting() || AtsUsersUtility.getUsers(notificationEvent.getUserIds(), userService).contains(
+                  user)) {
                   notifyEvents.add(notificationEvent);
                }
             }
@@ -101,7 +102,8 @@ public class SendNotificationEvents {
    }
 
    private String getHyperlink(AtsNotificationEvent notificationEvent) {
-      return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(), "More Info") : "";
+      return Strings.isValid(notificationEvent.getUrl()) ? AHTML.getHyperlink(notificationEvent.getUrl(),
+         "More Info") : "";
    }
 
    private void notifyUser(IAtsUser user, List<AtsNotificationEvent> notificationEvents, XResultData resultData) throws OseeCoreException {

@@ -81,8 +81,9 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    private boolean isApplicable(SMAWorkFlowSection section) {
-      return section.getSma().isOfType(AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
-         DecisionReviewState.Decision.getName());
+      return section.getSma().isOfType(
+         AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
+            DecisionReviewState.Decision.getName());
    }
 
    public String getOverrideTransitionToStateName(DecisionReviewArtifact decArt, XComboDam decisionComboDam) throws OseeCoreException {

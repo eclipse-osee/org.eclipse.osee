@@ -32,11 +32,8 @@ public final class NavigateTestUtil {
 
    private static boolean ensurePopulatedRanOnce = false;
 
-   public static final String[] expectedErrorCols1 = {
-      "ats.column.type",
-      "ats.column.team",
-      "ats.column.initWf",
-      "ats.column.origWf"};
+   public static final String[] expectedErrorCols1 =
+      {"ats.column.type", "ats.column.team", "ats.column.initWf", "ats.column.origWf"};
 
    public static final String[] expectedErrorCols2 = {
       "ats.column.state",
@@ -95,9 +92,8 @@ public final class NavigateTestUtil {
 
    public static void testExpectedVersusActual(String name, Collection<? extends Artifact> arts, IArtifactType artType, int expectedNumOfType) {
       int actualNumOfType = numOfType(arts, artType);
-      String expectedStr =
-         String.format("\"%s\"   Expected: %s   Found: %s   Of Type: %s", name, expectedNumOfType, actualNumOfType,
-            artType);
+      String expectedStr = String.format("\"%s\"   Expected: %s   Found: %s   Of Type: %s", name, expectedNumOfType,
+         actualNumOfType, artType);
       compare(expectedNumOfType, actualNumOfType, expectedStr);
    }
 

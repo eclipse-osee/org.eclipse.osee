@@ -75,7 +75,8 @@ public class ObjectFactory {
     */
    @XmlElementDecl(namespace = "", name = "ServiceHealthRequest")
    public JAXBElement<ServiceHealthRequest> createServiceHealthRequest(ServiceHealthRequest value) {
-      return new JAXBElement<ServiceHealthRequest>(_ServiceHealthRequest_QNAME, ServiceHealthRequest.class, null, value);
+      return new JAXBElement<ServiceHealthRequest>(_ServiceHealthRequest_QNAME, ServiceHealthRequest.class, null,
+         value);
    }
 
 }

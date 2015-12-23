@@ -126,8 +126,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
 
    private IArtifactSearchContentProvider fContentProvider;
    private ISelectionProvider selectionProvider;
-   private final ArtifactDecorator artifactDecorator = new ArtifactDecorator(
-      Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
+   private final ArtifactDecorator artifactDecorator =
+      new ArtifactDecorator(Activator.ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF);
 
    public ArtifactSearchPage() {
       setElementLimit(new Integer(DEFAULT_ELEMENT_LIMIT));
@@ -197,8 +197,8 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
          @Override
          public void run() {
             Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-            PreferencesUtil.createPreferenceDialogOn(shell, "org.eclipse.search.preferences.SearchPreferencePage",
-               null, null).open();
+            PreferencesUtil.createPreferenceDialogOn(shell, "org.eclipse.search.preferences.SearchPreferencePage", null,
+               null).open();
          }
       });
    }
@@ -399,10 +399,10 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
       for (Object object : objects) {
          Artifact toAdd = null;
          if (object instanceof AttributeLineElement) {
-            toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+            toAdd = ((IAdaptable) object).getAdapter(Artifact.class);
             artifacts.add(toAdd);
          } else if (object instanceof IAdaptable) {
-            toAdd = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+            toAdd = ((IAdaptable) object).getAdapter(Artifact.class);
          } else if (object instanceof Match) {
             toAdd = (Artifact) ((Match) object).getElement();
          }

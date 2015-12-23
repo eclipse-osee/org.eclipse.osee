@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.HashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Assert;
 
 /**

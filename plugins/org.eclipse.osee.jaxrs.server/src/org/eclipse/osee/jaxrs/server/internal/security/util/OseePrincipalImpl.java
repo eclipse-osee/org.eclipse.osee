@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
+public class OseePrincipalImpl extends BaseIdentity<Long>implements OseePrincipal {
 
    private final String displayName;
    private final String email;

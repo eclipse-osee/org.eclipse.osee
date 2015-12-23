@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
+import com.google.common.collect.Lists;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import com.google.common.collect.Lists;
 
 /**
  * Test unit for {@link WordUpdateEndpoint}

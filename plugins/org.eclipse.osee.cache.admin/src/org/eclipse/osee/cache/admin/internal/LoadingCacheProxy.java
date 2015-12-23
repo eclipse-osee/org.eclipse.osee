@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.cache.admin.internal;
 
-import java.util.Map;
-import java.util.concurrent.Callable;
-
-import org.eclipse.osee.cache.admin.Cache;
-import org.eclipse.osee.cache.admin.CacheKeysLoader;
-
 import com.google.common.cache.CacheLoader.InvalidCacheLoadException;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableMap;
@@ -23,6 +17,10 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ExecutionError;
 import com.google.common.util.concurrent.UncheckedExecutionException;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import org.eclipse.osee.cache.admin.Cache;
+import org.eclipse.osee.cache.admin.CacheKeysLoader;
 
 /**
  * @author John Misinco
@@ -73,8 +71,8 @@ public class LoadingCacheProxy<K, V> implements Cache<K, V> {
       ImmutableMap<K, V> items = null;
       try {
          items = proxied.getAll(keys);
-      }  catch (InvalidCacheLoadException ex) {
-         throw new Exception(ex); 
+      } catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex);
       } catch (UncheckedExecutionException ex) {
          throw new Exception(ex);
       } catch (ExecutionError ex) {
@@ -94,8 +92,8 @@ public class LoadingCacheProxy<K, V> implements Cache<K, V> {
       V toReturn = null;
       try {
          toReturn = proxied.get(key);
-      }  catch (InvalidCacheLoadException ex) {
-         throw new Exception(ex); 
+      } catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex);
       } catch (UncheckedExecutionException ex) {
          throw new Exception(ex);
       } catch (ExecutionError ex) {
@@ -134,8 +132,8 @@ public class LoadingCacheProxy<K, V> implements Cache<K, V> {
       V toReturn = null;
       try {
          toReturn = proxied.get(key, callable);
-      }  catch (InvalidCacheLoadException ex) {
-         throw new Exception(ex); 
+      } catch (InvalidCacheLoadException ex) {
+         throw new Exception(ex);
       } catch (UncheckedExecutionException ex) {
          throw new Exception(ex);
       } catch (ExecutionError ex) {

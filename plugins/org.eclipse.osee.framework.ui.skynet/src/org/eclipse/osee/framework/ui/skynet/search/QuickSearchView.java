@@ -269,7 +269,8 @@ public class QuickSearchView extends GenericViewPart {
                branchLabel.setText("Error: Must Select a Branch");
             } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {
                AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
-            } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(event) && Widgets.isAccessible(optionsComposite)) {
+            } else if (Widgets.isAccessible(attrSearchComposite) && attrSearchComposite.isExecuteSearchEvent(
+               event) && Widgets.isAccessible(optionsComposite)) {
                DeletionFlag allowDeleted = isIncludeDeletedEnabled() ? INCLUDE_DELETED : EXCLUDE_DELETED;
                NewSearchUI.activateSearchResultView();
 
@@ -304,7 +305,7 @@ public class QuickSearchView extends GenericViewPart {
                branchLabel.setText("Error: Must Select a Branch");
             } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {
                // since AttributeSearchListener is called when Select Branch is actioned, only display if this is the guid search button
-               if ((event.widget instanceof Button) && ((Button) event.widget).getText().equals("Search")) {
+               if (event.widget instanceof Button && ((Button) event.widget).getText().equals("Search")) {
                   AWorkbench.popup(String.format("Access Denied for branch [%s]", branch));
                }
             } else if (Widgets.isAccessible(guidSearchComposite) && guidSearchComposite.isExecuteSearchEvent(event)) {

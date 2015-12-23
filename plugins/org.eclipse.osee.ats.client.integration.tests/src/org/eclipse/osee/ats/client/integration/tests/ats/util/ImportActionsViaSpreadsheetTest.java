@@ -45,8 +45,8 @@ public class ImportActionsViaSpreadsheetTest {
    private static final String FIRST_ACTION_TITLE = "Fix the SAW Editor";
    private static final String SECOND_ACTION_TITLE = "Add the new feature";
    private static final String THIRD_ACTION_TITLE = "Help the users";
-   private static List<String> ActionTitles = Arrays.asList(FIRST_ACTION_TITLE, SECOND_ACTION_TITLE,
-      THIRD_ACTION_TITLE, "ImportActionsViaSpreadsheetTest");
+   private static List<String> ActionTitles =
+      Arrays.asList(FIRST_ACTION_TITLE, SECOND_ACTION_TITLE, THIRD_ACTION_TITLE, "ImportActionsViaSpreadsheetTest");
 
    @Before
    @After
@@ -60,7 +60,8 @@ public class ImportActionsViaSpreadsheetTest {
       assertFalse(AtsUtil.isProductionDb());
 
       for (String title : ActionTitles) {
-         List<Artifact> arts = ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
+         List<Artifact> arts =
+            ArtifactQuery.getArtifactListFromName(title, AtsUtilCore.getAtsBranch(), EXCLUDE_DELETED);
          Assert.assertEquals(String.format("Action [%s] should have been purged before test start.", title), 0,
             arts.size());
       }

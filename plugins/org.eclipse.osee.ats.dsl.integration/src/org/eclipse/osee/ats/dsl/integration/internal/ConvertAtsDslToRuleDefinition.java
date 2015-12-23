@@ -98,7 +98,7 @@ public class ConvertAtsDslToRuleDefinition {
       newRule.setRelatedToState(Strings.unquote(dslRule.getRelatedToState()));
       newRule.setBlockingType(ReviewBlockType.valueOf(dslRule.getBlockingType().getName()));
       newRule.getRuleEvents().add(RuleEventType.valueOf(dslRule.getStateEvent().getName()));
-      newRule.setAutoTransitionToDecision((dslRule.getAutoTransitionToDecision() == BooleanDef.TRUE));
+      newRule.setAutoTransitionToDecision(dslRule.getAutoTransitionToDecision() == BooleanDef.TRUE);
       createUserListFromNames(newRule.getAssignees(), dslRule.getAssignees());
    }
 

@@ -58,7 +58,7 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          if (treeItem.getData() instanceof Artifact) {
             Artifact selectedArt = (Artifact) treeItem.getData();
             AbstractWorkflowArtifact useAwa = null;
-            if ((selectedArt instanceof IAtsAction) && ActionManager.getTeams(selectedArt).size() == 1) {
+            if (selectedArt instanceof IAtsAction && ActionManager.getTeams(selectedArt).size() == 1) {
                useAwa = ActionManager.getFirstTeam(selectedArt);
             } else if (selectedArt instanceof AbstractWorkflowArtifact) {
                useAwa = (AbstractWorkflowArtifact) selectedArt;

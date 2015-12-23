@@ -80,7 +80,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                break;
             default:
                // Unknown mod type
-               EventUtil.eventLog(String.format("REM: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
+               EventUtil.eventLog(
+                  String.format("REM: updateArtifacts - Unhandled mod type [%s]", guidArt.getModType()));
                break;
          }
       }
@@ -136,9 +137,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                            attribute.setNotDirty();
                            attribute.internalSetGammaId(attrChange.getGammaId());
                         } catch (OseeCoreException ex) {
-                           EventUtil.eventLog(
-                              String.format("REM: Exception updating %s's attribute %d [/n%s/n].",
-                                 artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
+                           EventUtil.eventLog(String.format("REM: Exception updating %s's attribute %d [/n%s/n].",
+                              artifact.getSafeName(), attribute.getId(), attribute.toString()), ex);
                         }
                      }
                      // Otherwise, attribute needs creation
@@ -156,7 +156,8 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
                   } catch (OseeCoreException ex) {
                      EventUtil.eventLog(
                         String.format("REM: Exception updating %s's attribute change for attributeTypeId %d.",
-                           artifact.getSafeName(), attributeType.getId()), ex);
+                           artifact.getSafeName(), attributeType.getId()),
+                        ex);
                   }
                }
             }
@@ -184,18 +185,16 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
 
             if (aArtifactLoaded || bArtifactLoaded) {
                IOseeBranch branch = TokenFactory.createBranch(guidArt.getArtA().getBranchId());
-               RelationLink relation =
-                  RelationManager.getLoadedRelationById(guidArt.getRelationId(), guidArt.getArtAId(),
-                     guidArt.getArtBId(), branch);
+               RelationLink relation = RelationManager.getLoadedRelationById(guidArt.getRelationId(),
+                  guidArt.getArtAId(), guidArt.getArtBId(), branch);
 
                RelationEventType eventType = guidArt.getModType();
                switch (eventType) {
                   case Added:
                      if (relation == null || relation.getModificationType() == ModificationType.DELETED || relation.getModificationType() == ModificationType.ARTIFACT_DELETED) {
-                        relation =
-                           RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch, relationType,
-                              guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
-                              ModificationType.NEW);
+                        relation = RelationManager.getOrCreate(guidArt.getArtAId(), guidArt.getArtBId(), branch,
+                           relationType, guidArt.getRelationId(), guidArt.getGammaId(), guidArt.getRationale(),
+                           ModificationType.NEW);
                      }
                      break;
                   case ModifiedRationale:

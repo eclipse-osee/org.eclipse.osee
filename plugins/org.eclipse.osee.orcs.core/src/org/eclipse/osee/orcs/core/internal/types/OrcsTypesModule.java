@@ -11,8 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.types;
 
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.OrcsSession;
+import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.OrcsTypesDataStore;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesImpl;
 import org.eclipse.osee.orcs.core.internal.types.impl.OrcsTypesIndexProviderImpl;

@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.tests;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.VALIDATION_ERROR__TIMESTAMP_RANGE_INVALID__CODE;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.VALIDATION_ERROR__TIMESTAMP_RANGE_TEMPLATE__MSG;
 import static org.eclipse.osee.orcs.script.dsl.tests.OsFieldUtil.newCollectClauseWithAlias;
+import com.google.inject.Inject;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptDslInjectorProvider;
@@ -29,7 +30,6 @@ import org.eclipse.xtext.junit4.validation.AssertableDiagnostics;
 import org.eclipse.xtext.junit4.validation.ValidatorTester;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.google.inject.Inject;
 
 /**
  * Test Case for {@link OrcsScriptDslValidator}
@@ -79,8 +79,8 @@ public class OrcsScriptDslValidatorTest {
       AssertableDiagnostics diagnostics = validator.validate(clause);
       diagnostics.assertDiagnosticsCount(1);
 
-      String errorMsg =
-         String.format("Invalid timestamp format - format should be [%s] or [", OrcsScriptDslConstants.TIMESTAMP_FORMAT);
+      String errorMsg = String.format("Invalid timestamp format - format should be [%s] or [",
+         OrcsScriptDslConstants.TIMESTAMP_FORMAT);
       diagnostics.assertError(OrcsScriptDslConstants.CONVERSION_ERROR__BAD_TIMESTAMP_FORMAT__CODE, errorMsg);
    }
 
@@ -94,18 +94,16 @@ public class OrcsScriptDslValidatorTest {
       AssertableDiagnostics diagnostics = validator.validate(clause);
       diagnostics.assertDiagnosticsCount(1);
 
-      String errorMsg =
-         String.format("Invalid timestamp format - format should be [%s] or [", OrcsScriptDslConstants.TIMESTAMP_FORMAT);
+      String errorMsg = String.format("Invalid timestamp format - format should be [%s] or [",
+         OrcsScriptDslConstants.TIMESTAMP_FORMAT);
       diagnostics.assertError(OrcsScriptDslConstants.CONVERSION_ERROR__BAD_TIMESTAMP_FORMAT__CODE, errorMsg);
    }
 
    @Test
    public void testOsCollectStatement1() {
-      EObject data =
-         newCollectClauseWithAlias(Scope.ARTIFACT_QUERY, "artifacts",
-            "alias-1", //
-            "id", "alias-2", "guid", "alias-3", "mod-type", "alias-4", "attributes", "alias-5", "relations", "alias-6",
-            "txs", "alias-7");
+      EObject data = newCollectClauseWithAlias(Scope.ARTIFACT_QUERY, "artifacts", "alias-1", //
+         "id", "alias-2", "guid", "alias-3", "mod-type", "alias-4", "attributes", "alias-5", "relations", "alias-6",
+         "txs", "alias-7");
 
       AssertableDiagnostics diagnostics = validator.validate(data);
       diagnostics.assertOK();
@@ -127,9 +125,8 @@ public class OrcsScriptDslValidatorTest {
          "alias-1", //
          "uri", null, "txs", "alias-2");
       AssertableDiagnostics diagnostics = validator.validate(data);
-      String errorMsg =
-         String.format(OrcsScriptDslConstants.VALIDATION_ERROR__INVALID_FIELD__MSG, "[uri]",
-            "[gamma-id, guid, id, mod-type, type, txs, attributes, relations]");
+      String errorMsg = String.format(OrcsScriptDslConstants.VALIDATION_ERROR__INVALID_FIELD__MSG, "[uri]",
+         "[gamma-id, guid, id, mod-type, type, txs, attributes, relations]");
       diagnostics.assertError(OrcsScriptDslConstants.VALIDATION_ERROR__INVALID_FIELD__CODE, errorMsg);
    }
 

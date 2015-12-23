@@ -32,12 +32,12 @@ public final class DoorsToOseeRule extends Rule {
 
    private final Pattern bodyRegex = Pattern.compile("<w:body>(.*?)</w:body>", Pattern.DOTALL);
    private final Pattern paragraphRegex = Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL);
-   private final Pattern objectNumberParagraphRegex = Pattern.compile(
-      "<w:t>.*?((?>\\d+\\.)+\\d+-\\d+(?>\\.\\d+-\\d+)*).*</w:t>", Pattern.DOTALL | Pattern.MULTILINE);
-   private final Pattern regularObjectNumberParagraphRegex = Pattern.compile(
-      "<w:t>.*?Object Number\\s*.*:\\s+(.*?)</w:t>", Pattern.DOTALL | Pattern.MULTILINE);
-   private final Pattern objectShortTextParagraphRegex = Pattern.compile(
-      "<w:p[ >].*?Object Short Text.*?<w:t>\\s+:\\s+(.*?)</w:t>.*?</w:p>", Pattern.DOTALL);
+   private final Pattern objectNumberParagraphRegex =
+      Pattern.compile("<w:t>.*?((?>\\d+\\.)+\\d+-\\d+(?>\\.\\d+-\\d+)*).*</w:t>", Pattern.DOTALL | Pattern.MULTILINE);
+   private final Pattern regularObjectNumberParagraphRegex =
+      Pattern.compile("<w:t>.*?Object Number\\s*.*:\\s+(.*?)</w:t>", Pattern.DOTALL | Pattern.MULTILINE);
+   private final Pattern objectShortTextParagraphRegex =
+      Pattern.compile("<w:p[ >].*?Object Short Text.*?<w:t>\\s+:\\s+(.*?)</w:t>.*?</w:p>", Pattern.DOTALL);
    private final Pattern headingParagraphRegex = Pattern.compile(
       "<w:p[ >].*?<w:pStyle w:val=\"Heading\\d\"/>.*?<w:t>(\\d+\\s+.*?)</w:t>.*?</w:p>", Pattern.DOTALL);
 
@@ -204,6 +204,6 @@ public final class DoorsToOseeRule extends Rule {
    private ChangeSet decideOnResult(StringBuilder modifiedFile, CharSequence entireFile) {
       boolean insertModified = modifiedText.length() > 0;
       setRuleWasApplicable(insertModified);
-      return new ChangeSet((insertModified) ? modifiedText : entireFile);
+      return new ChangeSet(insertModified ? modifiedText : entireFile);
    }
 }

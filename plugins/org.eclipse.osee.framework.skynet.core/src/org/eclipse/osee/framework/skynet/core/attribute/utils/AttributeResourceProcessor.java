@@ -67,9 +67,8 @@ public class AttributeResourceProcessor {
          }
          String resourceName = builder.toString();
 
-         Response response =
-            endpoint.saveResource(inputStream, BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId,
-               resourceName, overwriteAllowed, compressOnSave);
+         Response response = endpoint.saveResource(inputStream, BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL,
+            resourceId, resourceName, overwriteAllowed, compressOnSave);
          String location = BinaryContentUtils.getAttributeLocation(response);
          dataStore.setLocator(location);
       } catch (Exception ex) {

@@ -54,10 +54,9 @@ public class CatchTrackedChanges implements CommitAction {
 
                if (attribute instanceof WordAttribute) {
                   if (((WordAttribute) attribute).containsWordAnnotations()) {
-                     throw new OseeCoreException(
-                        String.format(
-                           "Commit Branch Failed Artifact \"%s\" Art_ID \"%d\" contains Tracked Changes. Accept all revision changes and then recommit",
-                           attribute.getArtifact().getSafeName(), attribute.getArtifact().getArtId()));
+                     throw new OseeCoreException(String.format(
+                        "Commit Branch Failed Artifact \"%s\" Art_ID \"%d\" contains Tracked Changes. Accept all revision changes and then recommit",
+                        attribute.getArtifact().getSafeName(), attribute.getArtifact().getArtId()));
                   }
                }
             }

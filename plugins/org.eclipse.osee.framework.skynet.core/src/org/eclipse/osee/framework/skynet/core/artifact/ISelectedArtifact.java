@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-
 public interface ISelectedArtifact {
 
    public Artifact getSelectedArtifact();

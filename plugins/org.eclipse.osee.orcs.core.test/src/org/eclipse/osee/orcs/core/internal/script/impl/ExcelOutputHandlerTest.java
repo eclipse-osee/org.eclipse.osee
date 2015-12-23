@@ -49,25 +49,25 @@ public class ExcelOutputHandlerTest {
       "Heading 7",
       "Heading 8"};
 
-   private static final String[] values = { 
-      "one", 
-      "two", 
-      "three", 
-      "four", 
-      "five", 
-      "six", 
-      "seven", 
+   private static final String[] values = {
+      "one",
+      "two",
+      "three",
+      "four",
+      "five",
+      "six",
+      "seven",
       "eight"};
 
-   private static final String[] groups = { 
-      "group 1", 
-      "group 2", 
-      "group 3", 
-      "group 4", 
+   private static final String[] groups = {
+      "group 1",
+      "group 2",
+      "group 3",
+      "group 4",
       "group 5"};
 
    private static final String[] innerName = {
-      "name", 
+      "name",
       "value"};
 
    @Mock private ScriptContext context;

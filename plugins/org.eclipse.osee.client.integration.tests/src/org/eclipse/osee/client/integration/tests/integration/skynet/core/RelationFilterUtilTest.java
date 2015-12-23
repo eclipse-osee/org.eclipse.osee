@@ -112,7 +112,7 @@ public class RelationFilterUtilTest {
       Assert.assertEquals(1, destination.size());
       Assert.assertEquals(sourceLinks.get(2), destination.iterator().next());
 
-      // Add two more Relations with RelationId == 2 so we have more than one match 
+      // Add two more Relations with RelationId == 2 so we have more than one match
       // Check we only return the first match
       sourceLinks.add(TestUtil.createRelationLink(2, 55, 66, branch1, relationType));
       sourceLinks.add(TestUtil.createRelationLink(2, 77, 88, branch1, relationType));

@@ -89,9 +89,8 @@ public class DemoDbUtil {
          OseeLog.log(Activator.class, Level.INFO,
             "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
       }
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
-            QueryOption.CONTAINS_MATCH_OPTIONS);
+      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
+         QueryOption.CONTAINS_MATCH_OPTIONS);
 
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Found " + arts.size() + " Artifacts");

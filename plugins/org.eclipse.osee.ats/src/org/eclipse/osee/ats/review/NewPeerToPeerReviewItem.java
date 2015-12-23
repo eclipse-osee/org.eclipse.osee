@@ -42,10 +42,8 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      final ActionableItemListDialog ld =
-         new ActionableItemListDialog(
-            Active.Active,
-            "Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
+      final ActionableItemListDialog ld = new ActionableItemListDialog(Active.Active,
+         "Select Actionable Items to Review\n\nNOTE: To create a review against " + "an Action and Team Workflow\nopen the object in ATS and select the " + "review to create from the editor.");
       int result = ld.open();
       if (result == Window.OK) {
          final EntryDialog ed = new EntryDialog("Peer Review Title", "Enter Peer Review Title");

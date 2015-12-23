@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.exception;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
-
 public class OseeInvalidInheritanceException extends OseeCoreException {
 
    public OseeInvalidInheritanceException(String message, Throwable cause) {

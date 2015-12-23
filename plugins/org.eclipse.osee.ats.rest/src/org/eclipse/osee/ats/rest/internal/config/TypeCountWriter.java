@@ -51,7 +51,8 @@ public class TypeCountWriter {
 
          if (!newArts.isEmpty()) {
             ResultSet<ArtifactReadable> newArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(newArts).getResults();
+               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(
+                  newArts).getResults();
             for (ArtifactReadable art : newArtifacts) {
                String[] row = new String[columns];
                int index = 0;
@@ -69,7 +70,8 @@ public class TypeCountWriter {
 
          if (!modifiedArts.isEmpty()) {
             ResultSet<ArtifactReadable> modifiedArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(modifiedArts).getResults();
+               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(
+                  modifiedArts).getResults();
             for (ArtifactReadable art : modifiedArtifacts) {
                String[] row = new String[columns];
                int index = 0;
@@ -86,7 +88,8 @@ public class TypeCountWriter {
 
          if (!deletedArts.isEmpty()) {
             ResultSet<ArtifactReadable> deletedArtifacts =
-               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(deletedArts).getResults();
+               orcsApi.getQueryFactory().fromBranch(branchUuid).andTypeEquals(artifactTypes).andUuids(
+                  deletedArts).getResults();
             for (ArtifactReadable art : deletedArtifacts) {
                String[] row = new String[columns];
                int index = 0;

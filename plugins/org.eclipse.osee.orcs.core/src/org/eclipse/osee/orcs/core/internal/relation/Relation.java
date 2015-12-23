@@ -117,7 +117,7 @@ public class Relation implements HasOrcsData<RelationData>, OrcsWriteable {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((relationData == null) ? 0 : relationData.hashCode());
+      result = prime * result + (relationData == null ? 0 : relationData.hashCode());
       return result;
    }
 

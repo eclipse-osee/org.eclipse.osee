@@ -114,17 +114,14 @@ public class RelationOrderRendererTest {
       IRelationSorter sorter = sorterProvider.getRelationOrder(relationOrderIdGuid);
       expectedOrderId = sorter.getSorterId().getName();
 
-      expectedData.add(new Object[] {
-         relationType,
-         relationSideName,
-         side.name().toLowerCase(),
-         expectedOrderId,
-         artGuids});
+      expectedData.add(
+         new Object[] {relationType, relationSideName, side.name().toLowerCase(), expectedOrderId, artGuids});
    }
 
    private String getExpected(List<Object[]> data) {
       StringBuilder builder = new StringBuilder();
-      builder.append("<wx:sub-section><w:tbl><w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
+      builder.append(
+         "<wx:sub-section><w:tbl><w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
       if (data.isEmpty()) {
          builder.append("<w:tr>");
          builder.append("<w:tc>");
@@ -204,9 +201,8 @@ public class RelationOrderRendererTest {
    }
 
    private final static void createRelationType(AbstractOseeCache<Long, RelationType> cache, String name, IArtifactType artifactType1, IArtifactType artifactType2) throws OseeCoreException {
-      RelationType type =
-         new RelationType(0x00L, name, name + "_A", name + "_B", artifactType1, artifactType2,
-            RelationTypeMultiplicity.MANY_TO_MANY, "");
+      RelationType type = new RelationType(0x00L, name, name + "_A", name + "_B", artifactType1, artifactType2,
+         RelationTypeMultiplicity.MANY_TO_MANY, "");
       cache.cache(type);
    }
    private final static class MockRelationOrderData extends RelationOrderData {

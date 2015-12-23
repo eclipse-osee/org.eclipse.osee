@@ -49,9 +49,8 @@ public class ExcelXmlArtifact implements RowProcessor {
    }
 
    private void startParsing() throws OseeCoreException, IOException, SAXException {
-      Artifact artifact =
-         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument, CoreAttributeTypes.StaticId,
-            staticId, branch, true);
+      Artifact artifact = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument,
+         CoreAttributeTypes.StaticId, staticId, branch, true);
       if (artifact != null) {
          String xmlData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NativeContent, null);
          Reader reader = new StringReader(xmlData);

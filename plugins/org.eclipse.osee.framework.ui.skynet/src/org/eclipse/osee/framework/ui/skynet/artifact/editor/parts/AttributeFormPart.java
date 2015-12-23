@@ -165,7 +165,8 @@ public class AttributeFormPart extends AbstractFormPart {
 
       for (IAttributeType attributeType : attributeTypes) {
          Composite internalComposite;
-         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType) || DslGrammarManager.isDslAttributeType(attributeType)) {
+         if (DefaultAttributeXWidgetProvider.useMultiLineWidget(attributeType) || DslGrammarManager.isDslAttributeType(
+            attributeType)) {
             internalComposite = createAttributeTypeControlsInSection(composite, attributeType, isEditable, 15);
          } else {
             internalComposite = createAttributeTypeControls(composite, artifact, attributeType, isEditable, false, 20);

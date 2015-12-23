@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
+import com.google.common.base.Stopwatch;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesResourceProvider;
-import com.google.common.base.Stopwatch;
 
 /**
  * @author Roberto E. Escobar

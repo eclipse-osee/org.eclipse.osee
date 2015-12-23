@@ -39,7 +39,7 @@ public interface OrcsBranch {
    /// isArchived
    /// baseline TxId
 
-   // Branch Metadata 
+   // Branch Metadata
    // branch guid -- artifact guid
    // branch name
    // branch type

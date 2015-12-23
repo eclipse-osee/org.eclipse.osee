@@ -34,8 +34,8 @@ public final class HelpContext {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((name == null) ? 0 : name.hashCode());
-      result = prime * result + ((pluginId == null) ? 0 : pluginId.hashCode());
+      result = prime * result + (name == null ? 0 : name.hashCode());
+      result = prime * result + (pluginId == null ? 0 : pluginId.hashCode());
       return result;
    }
 

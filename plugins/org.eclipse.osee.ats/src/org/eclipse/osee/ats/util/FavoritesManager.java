@@ -52,12 +52,11 @@ public class FavoritesManager {
 
    public void toggleFavorite(boolean prompt) {
       try {
-         if ((amIFavorite(awas.iterator().next()))) {
+         if (amIFavorite(awas.iterator().next())) {
             boolean result = true;
             if (prompt) {
-               result =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
+               result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             }
             if (result) {
                SkynetTransaction transaction =
@@ -70,9 +69,8 @@ public class FavoritesManager {
          } else {
             boolean result = true;
             if (prompt) {
-               result =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Favorite", "Are you sure you wish add this as a Favorite?");
+               result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Favorite", "Are you sure you wish add this as a Favorite?");
             }
             if (result) {
                SkynetTransaction transaction =

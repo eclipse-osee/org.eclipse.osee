@@ -58,7 +58,7 @@ public class SprintMemberProvider extends AbstractMemberProvider {
 
    @Override
    public SprintArtifact getArtifact() {
-      return ((SprintArtifact) sprint.getStoreObject());
+      return (SprintArtifact) sprint.getStoreObject();
    }
 
    @Override
@@ -101,8 +101,8 @@ public class SprintMemberProvider extends AbstractMemberProvider {
       StringBuilder builder = new StringBuilder();
       for (Artifact art : artifacts) {
          List<Artifact> relatedSprints = art.getRelatedArtifacts(AtsRelationTypes.AgileSprintToItem_Sprint);
-         if (relatedSprints.size() > 1 || (relatedSprints.size() == 1 && !relatedSprints.iterator().next().equals(
-            getArtifact()))) {
+         if (relatedSprints.size() > 1 || relatedSprints.size() == 1 && !relatedSprints.iterator().next().equals(
+            getArtifact())) {
             builder.append(art.getArtifactTypeName());
             builder.append(" ");
             builder.append(art.toStringWithId());

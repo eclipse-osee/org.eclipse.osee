@@ -150,7 +150,7 @@ public class Xml {
 
    public static String treatNonUTF8Characters(String contentString) {
       String resultString = contentString;
-      String[][] nonUTF8CharactersOfInterest = { {"�", "-"}, {"�", "'"}, {"�", "'"}, {"�", "\""}, {"�", "\""}};//Wider than usual dash , smaller than usual bullet
+      String[][] nonUTF8CharactersOfInterest = {{"�", "-"}, {"�", "'"}, {"�", "'"}, {"�", "\""}, {"�", "\""}};//Wider than usual dash , smaller than usual bullet
       for (int i = 0; i < nonUTF8CharactersOfInterest.length; i++) {
          String[] splitsOfNonUTF8 = resultString.split(nonUTF8CharactersOfInterest[i][0]);//Wider than usual dash or bullet
          if (splitsOfNonUTF8.length > 1) {
@@ -285,23 +285,20 @@ public class Xml {
          if (mywilfo.length > 0) {
             String myLastUsedListInitializeListFormat = mywilfo[0].getNodeValue();//
             int myNextILFO = Integer.parseInt(myLastUsedListInitializeListFormat);
-            Node[] myListDefinition =
-               selectNodeList(myDocumentElement,
-                  "descendant::w:listDef[child::w:lvl[1]/w:pStyle/@w:val = 'listlvl1'][1]");//<w:pStyle w:val="listlvl1"/>
+            Node[] myListDefinition = selectNodeList(myDocumentElement,
+               "descendant::w:listDef[child::w:lvl[1]/w:pStyle/@w:val = 'listlvl1'][1]");//<w:pStyle w:val="listlvl1"/>
             if (myListDefinition.length > 0) {
                String mylistDefaultID = selectNodeList(myListDefinition[0], "@w:listDefId")[0].getNodeValue();
                Node[] myWord_Formatted_Contents = selectNodeList(myDocument, "descendant::ns1:Word_Formatted_Content");
                for (int i = 0; i < myWord_Formatted_Contents.length; i++) {
-                  Node[] myPStyles =
-                     selectNodeList(myWord_Formatted_Contents[i],
-                        "descendant::w:pPr[child::w:pStyle[@w:val = 'listlvl1']]");
+                  Node[] myPStyles = selectNodeList(myWord_Formatted_Contents[i],
+                     "descendant::w:pPr[child::w:pStyle[@w:val = 'listlvl1']]");
                   for (int j = 0; j < Math.min(1, myPStyles.length); j++) {
                      Node[] myListProperties = selectNodeList(myPStyles[j], "child::w:listPr");
                      if (myListProperties.length > 0) {
                         myNextILFO++;
-                        Element newWList =
-                           appendNewElementWithTextAndOneAttribute(myListss[0], "w:list", null, "w:ilfo",
-                              "" + myNextILFO);
+                        Element newWList = appendNewElementWithTextAndOneAttribute(myListss[0], "w:list", null,
+                           "w:ilfo", "" + myNextILFO);
                         appendNewElementWithTextAndOneAttribute(newWList, "w:ilst", null, "w:val", mylistDefaultID);
                         Element new_lvlOverride =
                            appendNewElementWithTextAndOneAttribute(newWList, "w:lvlOverride", null, "w:ilvl", "0");
@@ -356,7 +353,8 @@ public class Xml {
    }
 
    public static final boolean isSeriousXPath(String xPathExpression) {
-      return xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf("(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
+      return xPathExpression.indexOf("[") > -1 || xPathExpression.indexOf("]") > -1 || xPathExpression.indexOf(
+         "(") > -1 || xPathExpression.indexOf(")") > -1 || xPathExpression.indexOf(":") > -1;
    }
 
    public static final Node[] selectNodeList(Node startingNode, String xPathExpression) throws XPathExpressionException {
@@ -397,7 +395,8 @@ public class Xml {
       StringBuffer resultStringBuffer = new StringBuffer();
       NodeList childNodes = startingNode.getChildNodes();
       for (int i = 0; i < childNodes.getLength(); i++) {
-         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(i).getNodeType() == Node.TEXT_NODE) {
+         if (childNodes.item(i).getNodeType() == Node.CDATA_SECTION_NODE || childNodes.item(
+            i).getNodeType() == Node.TEXT_NODE) {
             resultStringBuffer.append(childNodes.item(i).getNodeValue().trim());
          }
       }
@@ -405,21 +404,16 @@ public class Xml {
    }
 
    public static final Element makeTable(Element parentDivElement, String caption, String[][] columnDescriptors) {
-      Element newTableElement =
-         appendNewElementWithTextAndAttributes(parentDivElement, "table", null, new String[][] {
-            {"border", "1"},
-            {"cellpadding", "3"},
-            {"cellspacing", "0"},
-            {"width", "100%"}});
+      Element newTableElement = appendNewElementWithTextAndAttributes(parentDivElement, "table", null,
+         new String[][] {{"border", "1"}, {"cellpadding", "3"}, {"cellspacing", "0"}, {"width", "100%"}});
       appendNewElementWithText(newTableElement, "caption", caption);
       Element columnGroupElement =
          appendNewElementWithTextAndAttributes(newTableElement, "colgroup", null, new String[][] {{"align", "left"}});
       String[] columnNames = new String[columnDescriptors.length];
       for (int i = 0; i < columnDescriptors.length; i++) {
          columnNames[i] = columnDescriptors[i][0];
-         appendNewElementWithTextAndAttributes(columnGroupElement, "col", null, new String[][] {{
-            "width",
-            columnDescriptors[i][1]}});//width,33
+         appendNewElementWithTextAndAttributes(columnGroupElement, "col", null,
+            new String[][] {{"width", columnDescriptors[i][1]}});//width,33
       }
       Element headingTableRowElement = appendNewElementWithText(newTableElement, "tr", null);
       appendNewElementsWithText(headingTableRowElement, "th", columnNames);

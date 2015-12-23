@@ -39,8 +39,8 @@ public class DateHandlePromptChange implements IHandlePromptChange {
       String diagTitle = "Select " + displayName;
       Date currentDate = null;
       try {
-         currentDate =
-            artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeType, (Date) null) : null;
+         currentDate = artifacts.size() == 1 ? artifacts.iterator().next().getSoleAttributeValue(attributeType,
+            (Date) null) : null;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -52,9 +52,8 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
             url = String.format("%s%s", getRemoteHostUrl(session), getLoopbackPostfix(request));
          } else {
             // No session found - redirect to web browser request handler.
-            url =
-               String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
-                  request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
+            url = String.format("http://%s:%s/%s?%s", getNormalizedAddress(request.getLocalAddr()),
+               request.getLocalPort(), OseeServerContext.ARTIFACT_CONTEXT, request.getQueryString());
          }
          response.setContentType("text/plain");
          response.sendRedirect(url);
@@ -69,7 +68,8 @@ public class SessionClientLoopbackServlet extends UnsecuredOseeHttpServlet {
    private String getRemoteHostUrl(ISession session) {
       String clientAddress = session.getClientAddress();
       try {
-         if (Arrays.equals(InetAddress.getByName(clientAddress).getAddress(), InetAddress.getLocalHost().getAddress())) {
+         if (Arrays.equals(InetAddress.getByName(clientAddress).getAddress(),
+            InetAddress.getLocalHost().getAddress())) {
             clientAddress = "localhost";
          }
       } catch (UnknownHostException ex) {

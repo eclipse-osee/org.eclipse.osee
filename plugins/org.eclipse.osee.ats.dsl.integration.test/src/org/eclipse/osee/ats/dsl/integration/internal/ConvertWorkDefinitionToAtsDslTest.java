@@ -31,8 +31,6 @@ import org.eclipse.osee.ats.dsl.atsDsl.StateDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WidgetDef;
 import org.eclipse.osee.ats.dsl.atsDsl.WorkflowEventType;
 import org.eclipse.osee.ats.dsl.atsDsl.impl.AtsDslFactoryImpl;
-import org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.dsl.integration.internal.ConvertWorkDefinitionToAtsDsl;
 import org.eclipse.osee.ats.dsl.integration.internal.model.CompositeLayoutItem;
 import org.eclipse.osee.ats.dsl.integration.internal.model.DecisionReviewDefinition;
 import org.eclipse.osee.ats.dsl.integration.internal.model.DecisionReviewOption;

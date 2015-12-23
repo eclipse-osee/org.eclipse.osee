@@ -24,7 +24,7 @@ import org.eclipse.osee.logger.Log;
 public final class Validators {
 
    private Validators() {
-      // 
+      //
    }
 
    public static Validator newAccountValidator(Log logger, AccountStorage storage) {

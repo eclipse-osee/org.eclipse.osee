@@ -132,7 +132,8 @@ public class JarChangeResourceListener<T extends JarCollectionNature> implements
                      break;
 
                   default:
-                     System.err.println("Do not expect change kind of " + generateKindString(affectedPluginDelta.getKind()));
+                     System.err.println(
+                        "Do not expect change kind of " + generateKindString(affectedPluginDelta.getKind()));
                }
             } catch (RuntimeException ex) {
                ex.printStackTrace();

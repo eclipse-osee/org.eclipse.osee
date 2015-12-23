@@ -172,9 +172,8 @@ public class BranchManager {
             int assocArtId = chStmt.getInt("associated_art_id");
             int inheritAccessControl = chStmt.getInt("inherit_access_control");
 
-            Branch created =
-               branchFactory.createOrUpdate(getCache(), branchUuid, branchName, branchType, branchState,
-                  archiveState.isArchived(), StorageState.LOADED, inheritAccessControl == 1);
+            Branch created = branchFactory.createOrUpdate(getCache(), branchUuid, branchName, branchType, branchState,
+               archiveState.isArchived(), StorageState.LOADED, inheritAccessControl == 1);
             created.setBaseTransaction(TransactionManager.getTransactionId(baseTx));
             created.setSourceTransaction(TransactionManager.getTransactionId(sourceTx));
             created.setAssociatedArtifactId(assocArtId);
@@ -357,9 +356,8 @@ public class BranchManager {
    }
 
    private static void runCommitExtPointActions(ConflictManagerExternal conflictManager) throws OseeCoreException {
-      ExtensionDefinedObjects<CommitAction> extensions =
-         new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
-            "CommitActions", "className");
+      ExtensionDefinedObjects<CommitAction> extensions = new ExtensionDefinedObjects<CommitAction>(
+         "org.eclipse.osee.framework.skynet.core.CommitActions", "CommitActions", "className");
       for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
       }
@@ -374,9 +372,8 @@ public class BranchManager {
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
       } else {
-         UpdateMergeBranch op =
-            new UpdateMergeBranch(ConnectionHandler.getJdbcClient(), mergeBranch, expectedArtIds, destBranch,
-               sourceBranch);
+         UpdateMergeBranch op = new UpdateMergeBranch(ConnectionHandler.getJdbcClient(), mergeBranch, expectedArtIds,
+            destBranch, sourceBranch);
          Operations.executeWorkAndCheckStatus(op);
       }
       return mergeBranch;
@@ -392,13 +389,11 @@ public class BranchManager {
          joinQuery.store();
 
          int parentTxId = sourceBranch.getBaseTransaction().getId();
-         String creationComment =
-            String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
-               destBranch.getName());
+         String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
+            parentTxId, destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
-         mergeBranch =
-            (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName,
-               Lib.generateUuid(), UserManager.getUser(), creationComment, joinQuery.getQueryId(), destBranch.getUuid());
+         mergeBranch = (MergeBranch) createBranch(BranchType.MERGE, sourceBranch.getBaseTransaction(), branchName,
+            Lib.generateUuid(), UserManager.getUser(), creationComment, joinQuery.getQueryId(), destBranch.getUuid());
          mergeBranch.setSourceBranch(sourceBranch);
          mergeBranch.setDestinationBranch(destBranch);
       } finally {
@@ -413,9 +408,8 @@ public class BranchManager {
 
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
       Conditions.notNull(childBranchUuid, "childBranchUuid");
-      String creationComment =
-         String.format("New Branch from %s (%s)", parentTransactionId.getBranch().getName(),
-            parentTransactionId.getId());
+      String creationComment = String.format("New Branch from %s (%s)", parentTransactionId.getBranch().getName(),
+         parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return createBranch(BranchType.WORKING, parentTransactionId, truncatedName, childBranchUuid, associatedArtifact,
@@ -426,30 +420,26 @@ public class BranchManager {
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
    public static Branch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      String creationComment =
-         String.format("New branch, copy of %s from transaction %s", parentTransactionId.getBranch().getName(),
-            parentTransactionId.getId());
+      String creationComment = String.format("New branch, copy of %s from transaction %s",
+         parentTransactionId.getBranch().getName(), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
-      CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(BranchType.WORKING, parentTransactionId, truncatedName,
-            Lib.generateUuid(), associatedArtifact, creationComment, -1, -1);
+      CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.WORKING,
+         parentTransactionId, truncatedName, Lib.generateUuid(), associatedArtifact, creationComment, -1, -1);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
 
    public static Branch createPortBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      String creationComment =
-         String.format("New port branch, copy of %s from transaction %s", parentTransactionId.getBranch().getName(),
-            parentTransactionId.getId());
+      String creationComment = String.format("New port branch, copy of %s from transaction %s",
+         parentTransactionId.getBranch().getName(), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
-      CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(BranchType.PORT, parentTransactionId, truncatedName, Lib.generateUuid(),
-            associatedArtifact, creationComment, -1, -1);
+      CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(BranchType.PORT,
+         parentTransactionId, truncatedName, Lib.generateUuid(), associatedArtifact, creationComment, -1, -1);
       operation.setTxCopyBranchType(true);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
@@ -491,9 +481,8 @@ public class BranchManager {
    }
 
    private static Branch createBranch(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) throws OseeCoreException {
-      CreateBranchHttpRequestOperation operation =
-         new CreateBranchHttpRequestOperation(branchType, parentTransaction, branchName, branchUuid,
-            associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranchId);
+      CreateBranchHttpRequestOperation operation = new CreateBranchHttpRequestOperation(branchType, parentTransaction,
+         branchName, branchUuid, associatedArtifact, creationComment, mergeAddressingQueryId, destinationBranchId);
       Operations.executeWorkAndCheckStatus(operation);
       return operation.getNewBranch();
    }
@@ -638,7 +627,7 @@ public class BranchManager {
    public static BranchType getBranchType(IOseeBranch branch) {
       return ((Branch) branch).getBranchType();
    }
-   
+
    public static boolean isEditable(IOseeBranch branch) {
       return getBranch(branch).isEditable();
    }

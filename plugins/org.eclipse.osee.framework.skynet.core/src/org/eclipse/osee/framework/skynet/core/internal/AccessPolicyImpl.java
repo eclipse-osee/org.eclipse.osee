@@ -199,9 +199,8 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    private PermissionStatus canRelationBeModifiedHelper(IBasicArtifact<?> subject, Collection<? extends IBasicArtifact<?>> toBeRelated, IRelationTypeSide relationTypeSide, Level level) throws OseeCoreException {
-      PermissionStatus status =
-         hasArtifactRelationPermission(java.util.Collections.singleton(subject),
-            java.util.Collections.singleton(relationTypeSide), PermissionEnum.WRITE, level);
+      PermissionStatus status = hasArtifactRelationPermission(java.util.Collections.singleton(subject),
+         java.util.Collections.singleton(relationTypeSide), PermissionEnum.WRITE, level);
 
       if (!status.matched()) {
          ArrayList<IBasicArtifact<?>> artifacts = new ArrayList<>();

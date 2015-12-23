@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
-
-
 /**
  * @author Roberto E. Escobar
  */

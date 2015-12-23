@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import java.awt.Color;
-import java.io.OutputStream;
 import com.lowagie.text.Cell;
 import com.lowagie.text.DocWriter;
 import com.lowagie.text.Document;
@@ -28,6 +26,8 @@ import com.lowagie.text.html.WebColors;
 import com.lowagie.text.pdf.BaseFont;
 import com.lowagie.text.pdf.PdfWriter;
 import com.lowagie.text.rtf.RtfWriter2;
+import java.awt.Color;
+import java.io.OutputStream;
 
 /**
  * @author Roberto E. Escobar
@@ -87,9 +87,8 @@ public class TableWriterAdaptor {
          cell.setBackgroundColor(WebColors.getRGBColor("#d9d9d9"));
          cell.setHorizontalAlignment(ElementTags.ALIGN_CENTER);
 
-         Font font =
-            FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
-               WebColors.getRGBColor("#000000"));
+         Font font = FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
+            WebColors.getRGBColor("#000000"));
          Paragraph paragraph = new Paragraph(header, font);
          paragraph.setAlignment(ElementTags.ALIGN_CENTER);
          cell.add(paragraph);
@@ -106,9 +105,8 @@ public class TableWriterAdaptor {
          Cell cell = new Cell();
          cell.setHeader(false);
          cell.setColspan(1);
-         Font font =
-            FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.NORMAL,
-               WebColors.getRGBColor("#000000"));
+         Font font = FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.NORMAL,
+            WebColors.getRGBColor("#000000"));
          Paragraph paragraph = new Paragraph(cellText, font);
          cell.add(paragraph);
          table.addCell(cell);
@@ -137,9 +135,8 @@ public class TableWriterAdaptor {
    }
 
    public void writeDocument() throws DocumentException {
-      Font font =
-         FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
-            WebColors.getRGBColor("#000000"));
+      Font font = FontFactory.getFont("Times New Roman", BaseFont.CP1252, BaseFont.EMBEDDED, 9, Font.BOLD,
+         WebColors.getRGBColor("#000000"));
       Paragraph paragraph = new Paragraph(title, font);
       paragraph.setAlignment(ElementTags.ALIGN_CENTER);
       document.add(paragraph);

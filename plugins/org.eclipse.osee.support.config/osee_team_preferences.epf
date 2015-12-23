@@ -20,7 +20,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_opening_brace_in_annotation_type_declaration=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_opening_bracket_in_array_allocation_expression=do not insert
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.text.custom_templates=<?xml version\="1.0" encoding\="UTF-8" standalone\="no"?><templates/>
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance=1.6
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.compliance=1.8
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_method_declaration=0
 @org.eclipse.mylyn.monitor.ui=3.4.0.v20100608-0100-e3x
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.indent_switchstatements_compare_to_cases=true
@@ -138,7 +138,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.continuation_indentation_for_array_initializer=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_block=insert
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.wrap_before_binary_operator=true
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source=1.6
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.source=1.8
 /instance/org.eclipse.jdt.ui/cleanup.remove_trailing_whitespaces=true
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.blank_lines_before_imports=1
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_selector_in_method_invocation=0
@@ -350,6 +350,7 @@
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.problem.undocumentedEmptyBlock=warning
 /instance/org.eclipse.jdt.ui/cleanup.use_blocks_only_for_return_and_throw=false
 /instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.javadoc=false
+/instance/org.eclipse.jdt.ui/org.eclipse.jdt.ui.importorder=		
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_before_comma_in_enum_declarations=do not insert
 /instance/org.eclipse.jdt.ui/sp_cleanup.add_default_serial_version_id=true
 @org.eclipse.jdt.ui=3.6.0.v20100602-1600
@@ -452,7 +453,7 @@ file_export_version=3.0
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_arguments_in_qualified_allocation_expression=16
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_new_line_in_empty_type_declaration=insert
 /instance/org.eclipse.jdt.ui/cleanup_settings_version=2
-/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6
+/instance/org.eclipse.jdt.core/org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.8
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.alignment_for_multiple_fields=16
 /instance/org.eclipse.jdt.core/org.eclipse.jdt.core.formatter.insert_space_after_comma_in_for_inits=insert
 /instance/org.eclipse.jdt.ui/cleanup.add_generated_serial_version_id=true

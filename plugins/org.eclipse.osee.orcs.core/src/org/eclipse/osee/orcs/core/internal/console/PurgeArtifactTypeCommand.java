@@ -73,7 +73,8 @@ public class PurgeArtifactTypeCommand implements ConsoleCommand {
             if (forcePurge && found) {
                orcsTypes.purgeArtifactsByArtifactType(types).call();
             }
-            console.writeln((found && !forcePurge) ? "To >DELETE Artifact DATA!< add --force to confirm." : "Operation finished.");
+            console.writeln(
+               found && !forcePurge ? "To >DELETE Artifact DATA!< add --force to confirm." : "Operation finished.");
             return null;
          }
 

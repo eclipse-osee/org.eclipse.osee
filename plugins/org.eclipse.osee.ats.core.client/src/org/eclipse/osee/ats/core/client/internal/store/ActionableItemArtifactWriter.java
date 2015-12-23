@@ -61,8 +61,8 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       // set new team definition if necessary
       if (ai.getTeamDefinition() != null) {
          Artifact teamDefArt = cache.getArtifact(ai.getTeamDefinition());
-         if (teamDefArt != null && !teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_ActionableItem).contains(
-            artifact)) {
+         if (teamDefArt != null && !teamDefArt.getRelatedArtifacts(
+            AtsRelationTypes.TeamActionableItem_ActionableItem).contains(artifact)) {
             artifact.deleteRelations(AtsRelationTypes.TeamActionableItem_Team);
             artifact.addRelation(AtsRelationTypes.TeamActionableItem_Team, teamDefArt);
             changes.add(teamDefArt);

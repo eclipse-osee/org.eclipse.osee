@@ -46,7 +46,8 @@ public class ArtifactEventHandler implements EventHandlerLocal<IArtifactEventLis
                   matchFound = true;
                }
                // If relations are in event and one or more artifacts of the relations match, pass events through
-               if (!matchFound && !event.getRelations().isEmpty() && eventFilter.isMatchRelationArtifacts(event.getRelations())) {
+               if (!matchFound && !event.getRelations().isEmpty() && eventFilter.isMatchRelationArtifacts(
+                  event.getRelations())) {
                   matchFound = true;
                }
                // If no match, don't pass events through

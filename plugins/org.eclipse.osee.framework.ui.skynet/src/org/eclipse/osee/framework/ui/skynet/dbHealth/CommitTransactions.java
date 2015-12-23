@@ -53,9 +53,8 @@ public class CommitTransactions extends DatabaseHealthOperation {
 
             while (chStmt.next()) {
                int transactionNumber = chStmt.getInt("transaction_id");
-               int updateCount =
-                  ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT, transactionNumber,
-                     transactionNumber);
+               int updateCount = ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT,
+                  transactionNumber, transactionNumber);
                int deleteAttrCount = ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, transactionNumber);
 
                getSummary().append(

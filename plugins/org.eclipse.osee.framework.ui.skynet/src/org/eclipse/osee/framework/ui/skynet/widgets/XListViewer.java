@@ -95,6 +95,7 @@ public class XListViewer extends GenericXWidget {
       this.contentProvider = contentProvider;
    }
 
+   @Override
    public void setLabelProvider(ILabelProvider labelProvider) {
       this.labelProvider = labelProvider;
       if (listViewer != null) {

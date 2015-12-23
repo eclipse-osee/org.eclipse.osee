@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.StateType;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

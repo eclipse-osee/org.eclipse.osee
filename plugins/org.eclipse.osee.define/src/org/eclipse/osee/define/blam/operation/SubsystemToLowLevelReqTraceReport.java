@@ -117,7 +117,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          if (isLowerLevelRequirement(lowLevelReq)) {
             row[2] = lowLevelReq.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod);
 
-            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(
+               CoreRelationTypes.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);
                row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[5] = subSysReq.getName();
@@ -160,7 +161,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          excelWriter.writeRow();
          excelWriter.writeRow();
-         excelWriter.writeRow("5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
+         excelWriter.writeRow(
+            "5.2." + count++ + " " + subSysName + " Requirements Allocation Traceability to Lower Level Requirements");
          excelWriter.writeRow(CoreArtifactTypes.SubsystemRequirementMSWord.getName(), null,
             "Traceable Lower Level Requirements", null);
          excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
@@ -172,7 +174,8 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                row[1] = higherLevelReq.getName();
 
-               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(
+                  CoreRelationTypes.Requirement_Trace__Lower_Level)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
                      row[3] = lowerLevelReq.getName();

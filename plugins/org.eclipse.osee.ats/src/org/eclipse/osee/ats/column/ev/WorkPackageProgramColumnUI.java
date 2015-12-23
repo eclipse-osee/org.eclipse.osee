@@ -48,9 +48,8 @@ public class WorkPackageProgramColumnUI extends AbstractWorkPackageRelatedColumn
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result =
-            AtsClientService.get().getColumnUtilities().getWorkPackageProgramUtility().getColumnText(
-               (IAtsObject) element);
+         result = AtsClientService.get().getColumnUtilities().getWorkPackageProgramUtility().getColumnText(
+            (IAtsObject) element);
       }
       return result;
    }

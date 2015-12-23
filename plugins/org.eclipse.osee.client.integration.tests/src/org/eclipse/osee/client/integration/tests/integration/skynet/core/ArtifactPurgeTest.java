@@ -55,12 +55,8 @@ public class ArtifactPurgeTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private static final String[] TABLES = new String[] {
-      "osee_attribute",
-      "osee_artifact",
-      "osee_relation_link",
-      "osee_tx_details",
-      "osee_txs"};
+   private static final String[] TABLES =
+      new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
 
    private IOseeBranch workingBranch;
 
@@ -85,9 +81,8 @@ public class ArtifactPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      Collection<Artifact> softArts =
-         TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, method.getQualifiedTestName(),
-            workingBranch);
+      Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
+         method.getQualifiedTestName(), workingBranch);
       Artifacts.persistInTransaction(method.getQualifiedTestName(), softArts);
 
       // make more changes to artifacts

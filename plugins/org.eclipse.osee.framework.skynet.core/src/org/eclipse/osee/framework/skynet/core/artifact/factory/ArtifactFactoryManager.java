@@ -43,12 +43,10 @@ public final class ArtifactFactoryManager {
             if (responsibleFactory == null) {
                responsibleFactory = factory;
             } else {
-               OseeLog.logf(
-                  Activator.class,
-                  Level.SEVERE,
-                  
-                     "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
-                     responsibleFactory, factory, artifactType);
+               OseeLog.logf(Activator.class, Level.SEVERE,
+
+               "Multiple ArtifactFactories [%s] [%s]responsible for same artifact type [%s].  Defaulting to DefaultArtifactFactory.",
+                  responsibleFactory, factory, artifactType);
                return getDefaultArtifactFactory();
             }
          }

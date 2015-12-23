@@ -24,7 +24,6 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -90,24 +89,24 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    private static final Criteria GUIDS = new CriteriaArtifactGuids(asList(GUID.create(), GUID.create()));
    private static final Criteria IDS = new CriteriaArtifactIds(asList(1L, 2L, 3L, 4L, 5L));
    private static final Criteria TYPES = new CriteriaArtifactType(null, asList(CoreArtifactTypes.CodeUnit), false);
-   private static final Criteria ATTRIBUTE = new CriteriaAttributeOther(Collections.singleton(CoreAttributeTypes.Name),
-      asList("Hello"));
+   private static final Criteria ATTRIBUTE =
+      new CriteriaAttributeOther(Collections.singleton(CoreAttributeTypes.Name), asList("Hello"));
    private static final Criteria ATTR_TYPE_EXITS = new CriteriaAttributeTypeExists(asList(CoreAttributeTypes.Name));
-   private static final Criteria REL_TYPE_EXISTS = new CriteriaRelationTypeExists(
-      CoreRelationTypes.Default_Hierarchical__Child);
+   private static final Criteria REL_TYPE_EXISTS =
+      new CriteriaRelationTypeExists(CoreRelationTypes.Default_Hierarchical__Child);
 
-   private static final Criteria ATTRIBUTE_KEYWORD = new CriteriaAttributeKeywords(false, asList(
-      CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent), null, QUICK_SEARCH_VALUE,
-      QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
-      QueryOption.CASE__MATCH);
+   private static final Criteria ATTRIBUTE_KEYWORD =
+      new CriteriaAttributeKeywords(false, asList(CoreAttributeTypes.Name, CoreAttributeTypes.WordTemplateContent),
+         null, QUICK_SEARCH_VALUE, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH,
+         QueryOption.TOKEN_COUNT__IGNORE, QueryOption.CASE__MATCH);
 
-   private static final Criteria RELATED_TO = new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child,
-      asList(45, 61));
+   private static final Criteria RELATED_TO =
+      new CriteriaRelatedTo(CoreRelationTypes.Default_Hierarchical__Child, asList(45, 61));
 
    private static final Criteria ALL_ARTIFACTS = new CriteriaAllArtifacts();
 
-   private static final Criteria FOLLOW_RELATION_TYPE = new CriteriaRelationTypeFollow(
-      CoreRelationTypes.Default_Hierarchical__Child);
+   private static final Criteria FOLLOW_RELATION_TYPE =
+      new CriteriaRelationTypeFollow(CoreRelationTypes.Default_Hierarchical__Child);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -182,16 +181,15 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected =
-         "SELECT/*+ ordered */ count(art2.art_id)\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?";
+      String expected = "SELECT/*+ ordered */ count(art2.art_id)\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?";
 
       queryData.addCriteria(GUIDS, IDS, TYPES);
 
@@ -221,7 +219,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
       "art1.art_type_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-      " AND \n" + // 
+      " AND \n" + //
       "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
@@ -247,17 +245,16 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQuery() throws Exception {
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES);
 
@@ -281,17 +278,16 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQuerySqlIncludeDeleted() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current IN (1, 2, 3) AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current IN (1, 2, 3) AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES);
       OptionsUtil.setIncludeDeletedArtifacts(queryData.getOptions(), true);
@@ -315,31 +311,30 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryHistorical() throws OseeCoreException {
-      String expected =
-         "WITH artUuid1 AS ( \n" + //
-         "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
-         "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
-         "    WHERE txs.gamma_id = art.gamma_id\n" + //
-         "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY art.art_id\n" + //
-         " )\n" + //
-         "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, artUuid1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-         " AND \n" + //
-         "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
-         " AND \n" + //
-         "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
-         " AND \n" + //"
-         "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " GROUP BY art2.art_id, txs2.branch_id\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "WITH artUuid1 AS ( \n" + //
+      "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+      "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
+      "    WHERE txs.gamma_id = art.gamma_id\n" + //
+      "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+      "    GROUP BY art.art_id\n" + //
+      " )\n" + //
+      "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, artUuid1\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+      " AND \n" + //
+      "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
+      " AND \n" + //
+      "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+      " AND \n" + //"
+      "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " GROUP BY art2.art_id, txs2.branch_id\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES);
       OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
@@ -374,60 +369,59 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryHistoricalMultipleItems() throws OseeCoreException {
-      String expected =
-         "WITH artUuid1 AS ( \n" + //
-         "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
-         "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
-         "    WHERE txs.gamma_id = art.gamma_id\n" + //
-         "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY art.art_id\n" + //
-         " ), \n" + //
-         " attrExt1 AS ( \n" + // 
-         "SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n" + //
-         "    FROM osee_txs txs, osee_attribute attr\n" + //
-         "    WHERE txs.gamma_id = attr.gamma_id\n" + //
-         "    AND att.attr_type_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
-         "    GROUP BY attr.art_id\n" + //
-         " )\n" + //
-         "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_relation_link rel1, osee_txs txs4, artUuid1, attrExt1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-         " AND \n" + //
-         "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
-         " AND \n" + //
-         "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
-         " AND \n" + //
-         "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.attr_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
-         " AND \n" + //
-         "attrExt1.transaction_id = txs3.transaction_id AND attrExt1.art_id = att1.art_id\n" + //
-         " AND \n" + //
-         "att1.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ?\n" + //
-         " AND \n" + //
-         "txs3.mod_type <> 3 AND txs3.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ?\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
-         " AND \n" + //
-         "rel1.gamma_id = txs4.gamma_id\n" + //
-         " AND \n" + //
-         "txs4.transaction_id <= ?\n" + //
-         " AND \n" + //
-         "txs4.mod_type <> 3 AND txs4.branch_id = ?\n" + //
-         " GROUP BY art2.art_id, txs2.branch_id\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "WITH artUuid1 AS ( \n" + //
+      "SELECT max(txs.transaction_id) as transaction_id, art.art_id as art_id\n" + //
+      "    FROM osee_txs txs, osee_artifact art, osee_join_char_id id\n" + //
+      "    WHERE txs.gamma_id = art.gamma_id\n" + //
+      "    AND art.guid = id.id AND id.query_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+      "    GROUP BY art.art_id\n" + //
+      " ), \n" + //
+      " attrExt1 AS ( \n" + //
+      "SELECT max(txs.transaction_id) as transaction_id, attr.art_id as art_id\n" + //
+      "    FROM osee_txs txs, osee_attribute attr\n" + //
+      "    WHERE txs.gamma_id = attr.gamma_id\n" + //
+      "    AND att.attr_type_id = ? AND txs.transaction_id <= ? AND txs.branch_id = ?\n" + //
+      "    GROUP BY attr.art_id\n" + //
+      " )\n" + //
+      "SELECT max(txs2.transaction_id) as transaction_id, art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_attribute att1, osee_txs txs3, osee_relation_link rel1, osee_txs txs4, artUuid1, attrExt1\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
+      " AND \n" + //
+      "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ?\n" + //
+      " AND \n" + //
+      "artUuid1.transaction_id = txs2.transaction_id AND artUuid1.art_id = art2.art_id AND art2.gamma_id = txs2.gamma_id AND txs2.transaction_id <= ?\n" + //
+      " AND \n" + //
+      "txs2.mod_type <> 3 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.attr_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
+      " AND \n" + //
+      "attrExt1.transaction_id = txs3.transaction_id AND attrExt1.art_id = att1.art_id\n" + //
+      " AND \n" + //
+      "att1.gamma_id = txs3.gamma_id AND txs3.transaction_id <= ?\n" + //
+      " AND \n" + //
+      "txs3.mod_type <> 3 AND txs3.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
+      " AND \n" + //
+      "rel1.gamma_id = txs4.gamma_id\n" + //
+      " AND \n" + //
+      "txs4.transaction_id <= ?\n" + //
+      " AND \n" + //
+      "txs4.mod_type <> 3 AND txs4.branch_id = ?\n" + //
+      " GROUP BY art2.art_id, txs2.branch_id\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, IDS, TYPES, ATTR_TYPE_EXITS, REL_TYPE_EXISTS);
       OptionsUtil.setFromTransaction(queryData.getOptions(), EXPECTED_TX_ID);
@@ -471,13 +465,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryGuids() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " ORDER BY art1.art_id, txs1.branch_id";
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(IDS);
 
@@ -497,7 +490,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryArtifactTypes() throws OseeCoreException {
-      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -522,12 +515,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAttribute() throws OseeCoreException {
-      String expected = "SELECT/*+ ordered */ art1.art_id, txs2.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs2.branch_id\n" + //
       " FROM \n" + //
       "osee_attribute att1, osee_txs txs1, osee_artifact art1, osee_txs txs2\n" + //
       " WHERE \n" + //
       "att1.attr_type_id = ? AND att1.value = ?\n" + //
-      " AND \n" + // 
+      " AND \n" + //
       "art1.art_id = att1.art_id AND att1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
       " AND \n" + //
       "art1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
@@ -553,7 +546,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAtttributeKeyword() throws OseeCoreException {
-      String expected = "WITH gamma1 AS ( \n" + // 
+      String expected = "WITH gamma1 AS ( \n" + //
       "  ( \n" + //
       "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       " INTERSECT \n" + //
@@ -561,7 +554,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " INTERSECT \n" + //
       "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
       "  ) \n" + //
-      " ), \n" + // 
+      " ), \n" + //
       " att1 AS ( \n" + //
       "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
       " WHERE \n" + //
@@ -575,7 +568,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " WHERE \n" + //
       "art1.art_id = att1.art_id\n" + //
       " AND \n" + //
-      "txs1.gamma_id = art1.gamma_id\n" + //      
+      "txs1.gamma_id = art1.gamma_id\n" + //
       " AND \n" + //
       "txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
@@ -661,36 +654,35 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryExistsNoBranch() throws OseeCoreException {
 
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
-         "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
-         "osee_attribute att1, osee_txs txs3, " + //
-         "osee_relation_link rel1, osee_txs txs4\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.attr_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
-         " AND \n" + //
-         "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ?\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
-         " AND \n" + // 
-         "rel1.gamma_id = txs4.gamma_id\n" + //
-         " AND \n" + //
-         "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
+      "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
+      "osee_attribute att1, osee_txs txs3, " + //
+      "osee_relation_link rel1, osee_txs txs4\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.attr_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
+      " AND \n" + //
+      "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
+      " AND \n" + //
+      "rel1.gamma_id = txs4.gamma_id\n" + //
+      " AND \n" + //
+      "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -716,36 +708,35 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryExistsWithBranch() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
-         "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
-         "osee_attribute att1, osee_txs txs3, " + //
-         "osee_relation_link rel1, osee_txs txs4\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.attr_type_id = ?\n" + //
-         " AND \n" + //
-         "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
-         " AND \n" + //
-         "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ?\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
-         " AND \n" + //
-         "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
-         " AND \n" + // 
-         "rel1.gamma_id = txs4.gamma_id\n" + //
-         " AND \n" + //
-         "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, " + //
+      "osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, " + //
+      "osee_attribute att1, osee_txs txs3, " + //
+      "osee_relation_link rel1, osee_txs txs4\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.attr_type_id = ?\n" + //
+      " AND \n" + //
+      "att1.art_id = art1.art_id AND att1.art_id = art2.art_id\n" + //
+      " AND \n" + //
+      "att1.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ?\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art1.art_id OR rel1.b_art_id = art1.art_id)\n" + //
+      " AND \n" + //
+      "(rel1.a_art_id = art2.art_id OR rel1.b_art_id = art2.art_id)\n" + //
+      " AND \n" + //
+      "rel1.gamma_id = txs4.gamma_id\n" + //
+      " AND \n" + //
+      "txs4.tx_current = 1 AND txs4.branch_id = ?\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, REL_TYPE_EXISTS, IDS, ATTR_TYPE_EXITS);
 
@@ -775,27 +766,26 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testRelatedTo() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ? AND rel1.b_art_id = jid2.id AND jid2.query_id = ?\n" + //
-         " AND \n" + //
-         "rel1.a_art_id = art1.art_id\n" + //
-         " AND \n" + //
-         "rel1.a_art_id = art2.art_id\n" + //
-         " AND \n" + //
-         "rel1.gamma_id = txs3.gamma_id\n" + //
-         " AND \n" + //
-         "txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs2.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs2.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1, osee_join_char_id jch1, osee_artifact art2, osee_txs txs2, osee_join_id jid2, osee_relation_link rel1, osee_txs txs3\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art2.guid = jch1.id AND jch1.query_id = ? AND art2.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_type_id = ? AND art2.art_type_id = ?\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ? AND rel1.b_art_id = jid2.id AND jid2.query_id = ?\n" + //
+      " AND \n" + //
+      "rel1.a_art_id = art1.art_id\n" + //
+      " AND \n" + //
+      "rel1.a_art_id = art2.art_id\n" + //
+      " AND \n" + //
+      "rel1.gamma_id = txs3.gamma_id\n" + //
+      " AND \n" + //
+      "txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+      " ORDER BY art2.art_id, txs2.branch_id";
 
       queryData.addCriteria(GUIDS, TYPES, IDS, RELATED_TO);
 
@@ -823,7 +813,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCountAllArtifactsFromBranch() throws OseeCoreException {
-      String expected = "SELECT/*+ ordered */ count(art1.art_id)\n" + // 
+      String expected = "SELECT/*+ ordered */ count(art1.art_id)\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -852,7 +842,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
       "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-      " AND \n" + // 
+      " AND \n" + //
       "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
       " GROUP BY art1.art_id, txs1.branch_id\n" + //
       ") xTable";
@@ -876,7 +866,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAllArtifactsFromBranch() throws OseeCoreException {
-      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
       " FROM \n" + //
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
@@ -901,12 +891,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryAllArtifactsFromBranchHistorical() throws OseeCoreException {
       String expected =
-         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + // 
+         "SELECT/*+ ordered */ max(txs1.transaction_id) as transaction_id, art1.art_id, txs1.branch_id\n" + //
          " FROM \n" + //
          "osee_artifact art1, osee_txs txs1\n" + //
          " WHERE \n" + //
          "art1.gamma_id = txs1.gamma_id AND txs1.transaction_id <= ?\n" + //
-         " AND \n" + // 
+         " AND \n" + //
          "txs1.mod_type <> 3 AND txs1.branch_id = ?\n" + //
          " GROUP BY art1.art_id, txs1.branch_id\n" + //
          " ORDER BY art1.art_id, txs1.branch_id";
@@ -930,13 +920,12 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testAllArtifactWithOtherCriteria() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + // 
-         " FROM \n" + //
-         "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " ORDER BY art1.art_id, txs1.branch_id";
+      String expected = "SELECT/*+ ordered */ art1.art_id, txs1.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_id jid1, osee_artifact art1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "art1.art_id = jid1.id AND jid1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " ORDER BY art1.art_id, txs1.branch_id";
 
       queryData.addCriteria(ALL_ARTIFACTS, IDS);
 
@@ -961,14 +950,14 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       "osee_artifact art1, osee_txs txs1\n" + //
       " WHERE \n" + //
       "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-      " AND \n" + //      
+      " AND \n" + //
       "NOT EXISTS (SELECT 1 FROM osee_relation_link rel, osee_txs txs WHERE rel.rel_link_type_id = ?\n" + //
       " AND \n" + //
       "(rel.a_art_id = art1.art_id OR rel.b_art_id = art1.art_id)\n" + //
       " AND \n" + //
       "rel.gamma_id = txs.gamma_id\n" + //
       " AND \n" + //
-      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //     
+      "txs.tx_current = 1 AND txs.branch_id = ?)\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
 
       Criteria relTypeNotExists = new CriteriaRelationTypeNotExists(CoreRelationTypes.Default_Hierarchical__Child);
@@ -1027,7 +1016,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
       " AND \n" + //
       "rel1.b_art_id = art1.art_id\n" + //
       " AND \n" + //
-      "rel1.gamma_id = txs2.gamma_id\n" + // 
+      "rel1.gamma_id = txs2.gamma_id\n" + //
       " AND \n" + //
       "txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
       " ORDER BY art1.art_id, txs1.branch_id";
@@ -1047,17 +1036,16 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testRelationTypeFollow() throws OseeCoreException {
-      String expected =
-         "SELECT/*+ ordered */ art2.art_id, txs3.branch_id\n" + //
-         " FROM \n" + //
-         "osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2, osee_artifact art2, osee_txs txs3\n" + //
-         " WHERE \n" + //
-         "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ? AND rel1.a_art_id = art1.art_id AND rel1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.b_art_id = art2.art_id AND art2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs3.branch_id";
+      String expected = "SELECT/*+ ordered */ art2.art_id, txs3.branch_id\n" + //
+      " FROM \n" + //
+      "osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2, osee_artifact art2, osee_txs txs3\n" + //
+      " WHERE \n" + //
+      "art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ? AND rel1.a_art_id = art1.art_id AND rel1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.b_art_id = art2.art_id AND art2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+      " ORDER BY art2.art_id, txs3.branch_id";
 
       queryData.addCriteria(FOLLOW_RELATION_TYPE);
 
@@ -1079,35 +1067,34 @@ public class ArtifactQuerySqlContextFactoryImplTest {
 
    @Test
    public void testRelationTypeFollowCombined() throws OseeCoreException {
-      String expected =
-         "WITH gamma1 AS ( \n" + //
-         "  ( \n" + //
-         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
-         " INTERSECT \n" + //
-         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
-         " INTERSECT \n" + // 
-         "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
-         "  ) \n" + //
-         " ), \n" + // 
-         " att1 AS ( \n" + //
-         "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
-         " WHERE \n" + //
-         "   att.gamma_id = gamma1.gamma_id AND att.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "   att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ?\n" + //
-         " )\n" + //
-         "SELECT art2.art_id, txs3.branch_id\n" + //
-         " FROM \n" + //
-         "osee_join_char_id jch1, osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2, osee_artifact art2, osee_txs txs3, att1\n" + //
-         " WHERE \n" + //
-         "art1.guid = jch1.id AND jch1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
-         " AND \n" + //
-         "art1.art_id = att1.art_id\n" + //
-         " AND \n" + //
-         "rel1.rel_link_type_id = ? AND rel1.a_art_id = art1.art_id AND rel1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
-         " AND \n" + //
-         "rel1.b_art_id = art2.art_id AND art2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
-         " ORDER BY art2.art_id, txs3.branch_id";
+      String expected = "WITH gamma1 AS ( \n" + //
+      "  ( \n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      " INTERSECT \n" + //
+      "    SELECT gamma_id FROM osee_search_tags WHERE coded_tag_id = ?\n" + //
+      "  ) \n" + //
+      " ), \n" + //
+      " att1 AS ( \n" + //
+      "   SELECT art_id FROM osee_attribute att, osee_txs txs, osee_join_id jid1, gamma1\n" + //
+      " WHERE \n" + //
+      "   att.gamma_id = gamma1.gamma_id AND att.attr_type_id = jid1.id AND jid1.query_id = ?\n" + //
+      " AND \n" + //
+      "   att.gamma_id = txs.gamma_id AND txs.tx_current = 1 AND txs.branch_id = ?\n" + //
+      " )\n" + //
+      "SELECT art2.art_id, txs3.branch_id\n" + //
+      " FROM \n" + //
+      "osee_join_char_id jch1, osee_artifact art1, osee_txs txs1, osee_relation_link rel1, osee_txs txs2, osee_artifact art2, osee_txs txs3, att1\n" + //
+      " WHERE \n" + //
+      "art1.guid = jch1.id AND jch1.query_id = ? AND art1.gamma_id = txs1.gamma_id AND txs1.tx_current = 1 AND txs1.branch_id = ?\n" + //
+      " AND \n" + //
+      "art1.art_id = att1.art_id\n" + //
+      " AND \n" + //
+      "rel1.rel_link_type_id = ? AND rel1.a_art_id = art1.art_id AND rel1.gamma_id = txs2.gamma_id AND txs2.tx_current = 1 AND txs2.branch_id = ?\n" + //
+      " AND \n" + //
+      "rel1.b_art_id = art2.art_id AND art2.gamma_id = txs3.gamma_id AND txs3.tx_current = 1 AND txs3.branch_id = ?\n" + //
+      " ORDER BY art2.art_id, txs3.branch_id";
 
       queryData.addCriteria(ATTRIBUTE_KEYWORD, FOLLOW_RELATION_TYPE, GUIDS);
 

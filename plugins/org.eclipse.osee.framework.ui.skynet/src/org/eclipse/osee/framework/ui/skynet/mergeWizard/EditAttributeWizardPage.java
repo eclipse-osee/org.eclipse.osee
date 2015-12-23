@@ -86,9 +86,8 @@ public class EditAttributeWizardPage extends WizardPage {
          this.conflict = conflict;
          changeType = conflict.getAttributeType().getName();
          if (!conflict.isWordAttribute()) {
-            editor =
-               EmbededAttributeEditorFactory.getEmbeddedEditor(conflict.getAttributeType(),
-                  conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
+            editor = EmbededAttributeEditorFactory.getEmbeddedEditor(conflict.getAttributeType(),
+               conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

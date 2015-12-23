@@ -38,8 +38,8 @@ public class AtsDecisionReviewPrepareStateItem extends AtsStateItem implements I
 
    @Override
    public void transitioning(TransitionResults results, IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees) throws OseeCoreException {
-      if ((workItem instanceof IAtsDecisionReview) && fromState.getName().equals(DecisionReviewState.Prepare.getName()) && toState.getName().equals(
-         DecisionReviewState.Decision.getName())) {
+      if (workItem instanceof IAtsDecisionReview && fromState.getName().equals(
+         DecisionReviewState.Prepare.getName()) && toState.getName().equals(DecisionReviewState.Decision.getName())) {
          XDecisionOptions decOptions = new XDecisionOptions(workItem);
          decOptions.validateDecisionOptions(results);
       }

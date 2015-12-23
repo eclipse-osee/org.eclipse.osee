@@ -177,8 +177,8 @@ public class HttpRequest {
    }
 
    /**
-    * Process new style requests are of the following format:
-    * http://127.0.0.1:<port>/<ProcessType>?key1=value1&key2=value2...&key3=value3
+    * Process new style requests are of the following format: http://127.0.0.1:<port>/
+    * <ProcessType>?key1=value1&key2=value2...&key3=value3
     */
    private void parseNewStyleRequests(String request) throws Exception {
       String noHostStr = request.replaceFirst("^http:\\/\\/(.*?)\\/", "/");
@@ -205,7 +205,6 @@ public class HttpRequest {
    /**
     * Process old format: http://127.0.0.1:<port>/get/guid/<guid>/<ats,Define> TODO old format should be removed once
     * all legacy references are change to new format
-    * 
     */
    private boolean parseOldSchoolStyleLinks(String entry) throws Exception {
       boolean handled = false;

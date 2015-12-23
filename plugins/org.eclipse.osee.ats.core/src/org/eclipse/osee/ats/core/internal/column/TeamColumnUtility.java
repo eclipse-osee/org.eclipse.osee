@@ -48,7 +48,7 @@ public class TeamColumnUtility implements IAtsColumnUtility {
          } else if (atsObject instanceof IAtsWorkItem) {
             result = getColumnText(((IAtsWorkItem) atsObject).getParentTeamWorkflow());
          }
-         if (!Strings.isValid(result) && (atsObject instanceof IAtsAbstractReview)) {
+         if (!Strings.isValid(result) && atsObject instanceof IAtsAbstractReview) {
             IAtsAbstractReview review = (IAtsAbstractReview) atsObject;
             if (reviewService.isStandAloneReview(review)) {
                List<IAtsTeamDefinition> teams = new ArrayList<>();

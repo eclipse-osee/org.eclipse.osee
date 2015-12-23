@@ -152,8 +152,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          handleArtifactEvents(newTransaction, changes);
       }
 
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Committed, sourceBranch.getUuid(),
-         destinationBranch.getUuid()));
+      OseeEventManager.kickBranchEvent(getClass(),
+         new BranchEvent(BranchEventType.Committed, sourceBranch.getUuid(), destinationBranch.getUuid()));
    }
 
    private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {
@@ -170,18 +170,16 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                // Don't do anything.  When kicking Persist event to all clients we need only to create the artifact changed based on the Changed Attributes
                break;
             case relation:
-               RelationChange relChange = ((RelationChange) change);
+               RelationChange relChange = (RelationChange) change;
                RelationEventType relationEventType =
                   change.getModificationType().isDeleted() ? RelationEventType.Deleted : change.getModificationType().isUnDeleted() ? RelationEventType.Undeleted : RelationEventType.Added;
 
-               DefaultBasicUuidRelation defaultBasicGuidRelation =
-                  new DefaultBasicUuidRelation(relChange.getBranchId(), relChange.getRelationType().getGuid(),
-                     relChange.getItemId(), (int) relChange.getGamma(),
-                     relChange.getChangeArtifact().getBasicGuidArtifact(),
-                     relChange.getEndTxBArtifact().getBasicGuidArtifact());
-               EventBasicGuidRelation event =
-                  new EventBasicGuidRelation(relationEventType, relChange.getArtId(), relChange.getBArtId(),
-                     defaultBasicGuidRelation);
+               DefaultBasicUuidRelation defaultBasicGuidRelation = new DefaultBasicUuidRelation(relChange.getBranchId(),
+                  relChange.getRelationType().getGuid(), relChange.getItemId(), (int) relChange.getGamma(),
+                  relChange.getChangeArtifact().getBasicGuidArtifact(),
+                  relChange.getEndTxBArtifact().getBasicGuidArtifact());
+               EventBasicGuidRelation event = new EventBasicGuidRelation(relationEventType, relChange.getArtId(),
+                  relChange.getBArtId(), defaultBasicGuidRelation);
                event.setRationale(relChange.getRationale());
                artifactEvent.getRelations().add(event);
                break;
@@ -198,10 +196,9 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
                   if (artEvent == null) {
-                     artEvent =
-                        new EventModifiedBasicGuidArtifact(newTransaction.getBranchId(),
-                           change.getArtifactType().getGuid(), changedArtifact.getGuid(),
-                           new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
+                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranchId(),
+                        change.getArtifactType().getGuid(), changedArtifact.getGuid(),
+                        new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);
                   }
 
@@ -211,8 +208,8 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
                   attrChangeEvent.setAttrTypeGuid(attributeChange.getAttributeType().getGuid());
                   attrChangeEvent.setGammaId((int) attributeChange.getGamma());
                   attrChangeEvent.setAttributeId(attributeChange.getAttrId());
-                  attrChangeEvent.setModTypeGuid(AttributeEventModificationType.getType(
-                     attributeChange.getModificationType()).getGuid());
+                  attrChangeEvent.setModTypeGuid(
+                     AttributeEventModificationType.getType(attributeChange.getModificationType()).getGuid());
 
                   Attribute<?> attribute = changedArtifact.getAttributeById(attributeChange.getAttrId(), true);
                   if (attribute != null) {

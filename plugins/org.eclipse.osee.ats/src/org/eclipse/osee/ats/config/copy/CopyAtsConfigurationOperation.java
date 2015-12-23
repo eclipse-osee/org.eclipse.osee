@@ -143,8 +143,8 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
-            resultData.warningf(
-               "No related Team Definition [%s] in scope for AI [%s].  Configure by hand.", fromTeamDefArt, newAiArt);
+            resultData.warningf("No related Team Definition [%s] in scope for AI [%s].  Configure by hand.",
+               fromTeamDefArt, newAiArt);
          } else {
             Artifact newTeamDefArt = AtsClientService.get().getConfigArtifact(newTeamDef);
             newAiArt.addRelation(AtsRelationTypes.TeamActionableItem_Team, newTeamDefArt);

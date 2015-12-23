@@ -95,7 +95,8 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    public void runGeneralTaskSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
       TaskEditor editor = getSingleEditorOrFail();
-      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(
+         UserManager.getUserByName(assignee));
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
@@ -109,22 +110,25 @@ public class AtsNavigateItemsToTaskEditorTest {
 
    public void runGeneralTaskSearchOnVersionTest(XNavigateItem item, String versionString, int expectedNum) throws Exception {
       TaskEditor editor = getSingleEditorOrFail();
-      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setVersion(versionString);
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setVersion(
+         versionString);
       runGeneralTaskSearchTest(item, expectedNum);
    }
 
    public void runGeneralTaskSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
-      Artifact groupArt =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
-            AtsUtilCore.getAtsBranch());
+      Artifact groupArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.UniversalGroup, "Test Group",
+         AtsUtilCore.getAtsBranch());
       Set<Artifact> selectedUsers = new HashSet<>();
       TaskEditor editor = getSingleEditorOrFail();
-      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(selected);
-      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCancelledCheckbox(selected);
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCompletedCheckbox(
+         selected);
+      ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setIncludeCancelledCheckbox(
+         selected);
       if (selected) {
          // select the group
          selectedUsers.add(groupArt);
-         ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedGroups(selectedUsers);
+         ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).setSelectedGroups(
+            selectedUsers);
       } else {
          // clear the group selected
          ((TaskSearchWorldSearchItem) editor.getTaskActionPage().getDynamicWidgetLayoutListener()).handleSelectedGroupsClear();

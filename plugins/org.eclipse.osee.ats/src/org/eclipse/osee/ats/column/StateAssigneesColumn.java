@@ -35,9 +35,9 @@ public class StateAssigneesColumn extends XViewerAtsColumn implements IXViewerVa
    private final String stateName;
 
    public StateAssigneesColumn(String stateName) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + "." + stateName + ".stateAssignee", String.format(
-         "State [%s] Assignees", stateName), 80, SWT.LEFT, false, SortDataType.String, false, String.format(
-         "User assigned to state [%s]", stateName));
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + "." + stateName + ".stateAssignee",
+         String.format("State [%s] Assignees", stateName), 80, SWT.LEFT, false, SortDataType.String, false,
+         String.format("User assigned to state [%s]", stateName));
       this.stateName = stateName;
    }
 

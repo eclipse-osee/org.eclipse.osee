@@ -55,7 +55,8 @@ public class WordImageChecker {
          boolean modified = false;
          int count = 0;
          for (int y = 0; y < oldPictures.size(); y++) {
-            if (y < newPictures.size() && oldPictures.get(y).getBinaryData() != null && newPictures.get(y).getBinaryData() != null) {
+            if (y < newPictures.size() && oldPictures.get(y).getBinaryData() != null && newPictures.get(
+               y).getBinaryData() != null) {
                WordImageCompare compare = new WordImageCompare();
                try {
                   if (!compare.compareFiles(oldPictures.get(y).getBinaryData(), newPictures.get(y).getBinaryData())) {

@@ -122,10 +122,9 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
-                  " Are you sure you want to delete this artifact and all of the default hierarchy children?",
-                  MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
+            MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Confirm Artifact Deletion", null,
+               " Are you sure you want to delete this artifact and all of the default hierarchy children?",
+               MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == Window.OK) {
                getSelectedArtifact().deleteAndPersist();
             }
@@ -204,7 +203,8 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       public CopyArtifactURLAction() {
          super();
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COPYTOCLIPBOARD));
-         setToolTipText("Copy artifact url link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
+         setToolTipText(
+            "Copy artifact url link to clipboard. NOTE: This is a link pointing to the latest version of the artifact.");
       }
 
       @Override

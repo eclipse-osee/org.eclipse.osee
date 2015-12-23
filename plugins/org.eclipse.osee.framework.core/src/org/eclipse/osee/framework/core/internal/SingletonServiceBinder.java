@@ -29,8 +29,8 @@ public final class SingletonServiceBinder extends AbstractServiceBinder {
    protected void doAdd(Collection<Object> associatedServices, Object service) {
       if (!associatedServices.isEmpty()) {
          if (!associatedServices.contains(service)) {
-            throw new IllegalStateException(String.format("Attempting to overwrite existing service reference: [%s]",
-               service.getClass().getName()));
+            throw new IllegalStateException(
+               String.format("Attempting to overwrite existing service reference: [%s]", service.getClass().getName()));
          }
       }
       associatedServices.add(service);

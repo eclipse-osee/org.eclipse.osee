@@ -25,8 +25,8 @@ public interface IAtsWizardItem {
 
    /**
     * Add the desired XWidget declarations to the stringbuffer. Selected AIAs are provided so validation can be done to
-    * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\"
-    * required=\"true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
+    * determine what (if any) widgets should be added. eg. <XWidget displayName=\"Description\" height=\"80\" required=\
+    * "true\" xwidgetType=\"XText\" fill=\"Vertically\" \"/>");
     */
    void getWizardXWidgetExtensions(Collection<IAtsActionableItem> aias, StringBuffer stringBuffer) throws Exception;
 

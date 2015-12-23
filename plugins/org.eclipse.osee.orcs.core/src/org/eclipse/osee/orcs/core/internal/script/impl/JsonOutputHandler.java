@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
+import com.google.common.collect.Iterables;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -49,7 +50,6 @@ import org.eclipse.osee.orcs.core.internal.script.OrcsScriptOutputHandler;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil.OsStorageOption;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar

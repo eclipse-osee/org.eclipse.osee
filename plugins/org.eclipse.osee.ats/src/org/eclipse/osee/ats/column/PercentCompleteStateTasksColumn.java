@@ -36,14 +36,8 @@ public class PercentCompleteStateTasksColumn extends XViewerAtsColumn implements
    }
 
    private PercentCompleteStateTasksColumn() {
-      super(
-         WorldXViewerFactory.COLUMN_NAMESPACE + ".stateTaskPercentComplete",
-         "State Task Percent Complete",
-         40,
-         SWT.CENTER,
-         false,
-         SortDataType.Percent,
-         false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateTaskPercentComplete", "State Task Percent Complete", 40,
+         SWT.CENTER, false, SortDataType.Percent, false,
          "Percent Complete for the tasks related to the current state.\n\nCalculation: total percent of all tasks related to state / number of tasks related to state");
    }
 

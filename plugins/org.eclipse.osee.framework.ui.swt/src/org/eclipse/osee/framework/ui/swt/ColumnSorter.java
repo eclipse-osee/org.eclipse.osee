@@ -68,7 +68,6 @@ public class ColumnSorter extends ViewerSorter {
    /**
     * Try and retrieve a number from a string. If a "..." is in the string, then only the portion of the string prior to
     * the "..." will be used.
-    * 
     */
    private int getIntValue(String string) throws NumberFormatException {
       int elipseIndex;

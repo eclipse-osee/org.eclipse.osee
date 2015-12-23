@@ -42,14 +42,8 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    private AnnualCostAvoidanceColumn() {
-      super(
-         WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance",
-         "Annual Cost Avoidance",
-         50,
-         SWT.LEFT,
-         false,
-         SortDataType.Float,
-         false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance", "Annual Cost Avoidance", 50, SWT.LEFT, false,
+         SortDataType.Float, false,
          "Hours that would be saved for the first year if this change were completed.\n\n" + "(Weekly Benefit Hours * 52 weeks) - Remaining Hours\n\n" + "If number is high, benefit is great given hours remaining.");
    }
 

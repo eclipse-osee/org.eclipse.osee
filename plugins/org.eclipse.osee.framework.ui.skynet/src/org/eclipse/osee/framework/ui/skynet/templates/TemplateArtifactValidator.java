@@ -35,7 +35,8 @@ public class TemplateArtifactValidator implements IOseeValidator {
 
    @Override
    public boolean isApplicable(Artifact artifact, IAttributeType attributeType) {
-      return artifact.isOfType(CoreArtifactTypes.RendererTemplate) && attributeType.equals(CoreAttributeTypes.TemplateMatchCriteria);
+      return artifact.isOfType(CoreArtifactTypes.RendererTemplate) && attributeType.equals(
+         CoreAttributeTypes.TemplateMatchCriteria);
    }
 
    @Override
@@ -50,9 +51,8 @@ public class TemplateArtifactValidator implements IOseeValidator {
             if (templates.isEmpty()) {
                return Status.OK_STATUS;
             } else {
-               String message =
-                  String.format("Invalid %s - unique constraint violation - value has already been used.",
-                     attributeType);
+               String message = String.format("Invalid %s - unique constraint violation - value has already been used.",
+                  attributeType);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID, message);
             }
          }

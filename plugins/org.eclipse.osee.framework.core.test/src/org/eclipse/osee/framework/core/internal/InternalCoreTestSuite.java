@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-SingletonServiceBinderTest.class, //
+   SingletonServiceBinderTest.class, //
    MultiServiceBinderTest.class, //
    ServiceBinderFactoryTest.class, //
 })

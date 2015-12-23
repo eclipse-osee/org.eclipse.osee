@@ -41,7 +41,7 @@ public final class ShowMergeBranchPresentationHandler extends AbstractHandler im
    private boolean itemChk;
 
    public ShowMergeBranchPresentationHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.service = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override

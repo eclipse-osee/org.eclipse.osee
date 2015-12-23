@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,11 +22,6 @@ import java.util.Map;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * @author Roberto E. Escobar

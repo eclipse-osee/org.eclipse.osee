@@ -56,7 +56,8 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    public IAtsVersion getTargetedVersionByTeamWf(IAtsTeamWorkflow teamWf) throws OseeCoreException {
       IAtsVersion version = versionCache.getVersion(teamWf);
       if (version == null) {
-         if (getArtifact(teamWf).getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
+         if (getArtifact(teamWf).getRelatedArtifactsCount(
+            AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
             List<Artifact> verArts =
                getArtifact(teamWf).getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
             if (verArts.size() > 1) {

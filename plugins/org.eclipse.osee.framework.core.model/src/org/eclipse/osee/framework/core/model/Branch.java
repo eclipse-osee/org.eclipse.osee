@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType<Long> implements WriteableBranch, IAdaptable {
+public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IAdaptable {
 
    private static final int SHORT_NAME_LIMIT = 35;
 

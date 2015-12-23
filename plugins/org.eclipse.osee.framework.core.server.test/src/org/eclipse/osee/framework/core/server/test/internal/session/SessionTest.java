@@ -114,15 +114,8 @@ public class SessionTest {
          Session session =
             new Session(guid, userId, creationDate, clientVersion, clientMachine, clientAddress, clientPort);
 
-         data.add(new Object[] {
-            session,
-            guid,
-            clientAddress,
-            clientMachine,
-            clientVersion,
-            clientPort,
-            creationDate,
-            userId
+         data.add(
+            new Object[] {session, guid, clientAddress, clientMachine, clientVersion, clientPort, creationDate, userId
 
          });
       }

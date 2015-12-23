@@ -72,9 +72,8 @@ public class SMAOperationsSection extends SectionPart {
    private synchronized void registerAdvancedSectionsFromExtensionPoints() {
       if (operationsSectionProviders == null) {
          operationsSectionProviders = new ArrayList<>();
-         ExtensionDefinedObjects<ISMAOperationsSection> extensions =
-            new ExtensionDefinedObjects<ISMAOperationsSection>(Activator.PLUGIN_ID + ".AtsAdvancedOperationAction",
-               "AtsAdvancedOperationAction", "classname", true);
+         ExtensionDefinedObjects<ISMAOperationsSection> extensions = new ExtensionDefinedObjects<ISMAOperationsSection>(
+            Activator.PLUGIN_ID + ".AtsAdvancedOperationAction", "AtsAdvancedOperationAction", "classname", true);
          for (ISMAOperationsSection item : extensions.getObjects()) {
             operationsSectionProviders.add(item);
          }
@@ -149,8 +148,9 @@ public class SMAOperationsSection extends SectionPart {
          new XButtonViaAction(new AccessControlAction(editor.getAwa())).createWidgets(sectionBody, 2);
       }
       if (editor.getAwa().isTask()) {
-         new XButtonViaAction(new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getAwa()))).createWidgets(
-            sectionBody, 2);
+         new XButtonViaAction(
+            new CreateActionFromTaskAction(Collections.singleton((TaskArtifact) editor.getAwa()))).createWidgets(
+               sectionBody, 2);
       }
       section.setClient(sectionBody);
    }

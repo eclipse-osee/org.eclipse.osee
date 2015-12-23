@@ -42,7 +42,8 @@ public class ConvertCreateUpdateAtsConfig implements IAtsDatabaseConversion {
    public String getDescription() {
       StringBuffer data = new StringBuffer();
       data.append("Updates AtsConfig artifact (optional but recommended conversion)\n\n");
-      data.append("This will add any new ATS columns that have been configured.\n\nCan be run multiple times without corruption.\nShould be run after each release.");
+      data.append(
+         "This will add any new ATS columns that have been configured.\n\nCan be run multiple times without corruption.\nShould be run after each release.");
       return data.toString();
    }
 

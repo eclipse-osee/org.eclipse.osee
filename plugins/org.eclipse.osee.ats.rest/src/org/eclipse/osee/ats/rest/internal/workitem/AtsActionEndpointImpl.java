@@ -190,7 +190,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       }
       IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create Action - Server", atsUser);
       orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(),
-         ((ArtifactReadable) atsUser.getStoreObject()), "Create Action - Server");
+         (ArtifactReadable) atsUser.getStoreObject(), "Create Action - Server");
 
       ChangeType changeType = null;
       try {

@@ -34,8 +34,8 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
    @Override
    public QueryBuilder handle(QueryBuilder builder, Predicate predicate) throws OseeCoreException {
       if (!predicate.getType().isOfType(SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE)) {
-         throw new OseeArgumentException("This predicate handler only supports [%s] and [%s]",
-            SearchMethod.EXISTS_TYPE, SearchMethod.NOT_EXISTS_TYPE);
+         throw new OseeArgumentException("This predicate handler only supports [%s] and [%s]", SearchMethod.EXISTS_TYPE,
+            SearchMethod.NOT_EXISTS_TYPE);
       }
       List<String> typeParameters = predicate.getTypeParameters();
       Collection<String> values = predicate.getValues();
@@ -51,7 +51,7 @@ public class ExistenceTypePredicateHandler implements PredicateHandler {
                if (checkExists(predicate.getType())) {
                   builder.andExists(attributeTypes);
                } else {
-                     builder.andNotExists(attributeTypes);
+                  builder.andNotExists(attributeTypes);
                }
             }
          } else if ("relType".equals(existsType)) {

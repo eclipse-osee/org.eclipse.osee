@@ -52,8 +52,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    private GroupsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".groups", "Groups", 100, SWT.LEFT, false, SortDataType.String,
-         true, "Groups");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".groups", "Groups", 100, SWT.LEFT, false, SortDataType.String, true,
+         "Groups");
    }
 
    /**
@@ -73,13 +73,13 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
             if (useArt.isOfType(AtsArtifactTypes.Action)) {
-               if ((ActionManager.getTeams(useArt)).size() == 1) {
-                  useArt = (ActionManager.getFirstTeam(useArt));
+               if (ActionManager.getTeams(useArt).size() == 1) {
+                  useArt = ActionManager.getFirstTeam(useArt);
                } else {
                   return false;
                }
             }
-            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+            if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
             boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());

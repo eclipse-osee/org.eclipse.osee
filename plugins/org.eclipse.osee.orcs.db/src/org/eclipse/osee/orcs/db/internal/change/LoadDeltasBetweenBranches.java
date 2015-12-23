@@ -148,8 +148,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
+         + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+         " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
             TxChange.NOT_CURRENT.getValue(), txBranchId, txId);
@@ -182,8 +182,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          String valueColumnName = columnValueName != null ? "item." + columnValueName + "," : "";
          query =
             "select " + valueColumnName + "item." + idColumnName + ", txs.gamma_id, txs.mod_type, txs.transaction_id from osee_join_id idj, " //
-               + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
-               " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
+            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + idColumnName + //
+            " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
             TxChange.NOT_CURRENT.getValue(), sourceBranchId);

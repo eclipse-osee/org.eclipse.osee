@@ -43,7 +43,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) {
       String toReturn = "";
       try {
-         if ((element instanceof Change)) {
+         if (element instanceof Change) {
             Change data = (Change) element;
 
             if (cCol.equals(HistoryXViewerFactory.transaction)) {

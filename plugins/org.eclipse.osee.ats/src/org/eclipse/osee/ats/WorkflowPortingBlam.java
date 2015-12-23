@@ -70,10 +70,9 @@ public class WorkflowPortingBlam extends AbstractBlam {
          if (sourceWorkflow.getRelatedArtifacts(AtsRelationTypes.Port_To).isEmpty()) {
             List<IAtsUser> assignees = sourceWorkflow.getStateMgr().getAssignees();
 
-            destinationWorkflow =
-               ActionManager.createTeamWorkflow(sourceWorkflow.getParentActionArtifact(), teamDefinition,
-                  actionableItems, assignees, changes, createdDate, createdBy, null,
-                  CreateTeamOption.Duplicate_If_Exists);
+            destinationWorkflow = ActionManager.createTeamWorkflow(sourceWorkflow.getParentActionArtifact(),
+               teamDefinition, actionableItems, assignees, changes, createdDate, createdBy, null,
+               CreateTeamOption.Duplicate_If_Exists);
 
             destinationWorkflow.setName(sourceWorkflow.getName());
             changes.add(destinationWorkflow);

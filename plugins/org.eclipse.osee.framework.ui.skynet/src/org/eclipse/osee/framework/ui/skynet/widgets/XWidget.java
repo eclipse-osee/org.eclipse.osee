@@ -116,7 +116,7 @@ public abstract class XWidget {
 
    public boolean isFormReady() {
       // Set to true if outside of a form;
-      return (managedForm == null) ? true : !managedForm.getForm().isDisposed();
+      return managedForm == null ? true : !managedForm.getForm().isDisposed();
    }
 
    public void setControlCausedMessage(String messageId, String messageText, int type) {

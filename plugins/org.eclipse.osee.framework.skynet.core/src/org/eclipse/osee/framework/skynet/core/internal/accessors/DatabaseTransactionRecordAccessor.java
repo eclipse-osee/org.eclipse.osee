@@ -88,7 +88,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       switch (transactionType) {
          case BASE:
             toReturn =
-            loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getUuid(), TransactionDetailsType.Baselined);
+               loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getUuid(), TransactionDetailsType.Baselined);
             break;
          case HEAD:
             toReturn = loadTransaction(cache, SELECT_HEAD_TRANSACTION, branch.getUuid(), branch.getUuid());
@@ -137,9 +137,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             int commitArtId = chStmt.getInt("commit_art_id");
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            record =
-               prepareTransactionRecord(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId,
-                  commitArtId, txType);
+            record = prepareTransactionRecord(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId,
+               commitArtId, txType);
          }
          numberLoaded.setValue(count);
       } finally {
@@ -149,9 +148,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord prepareTransactionRecord(TransactionCache cache, int transactionNumber, long branchUuid, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
-      TransactionRecord record =
-         factory.createOrUpdate(cache, transactionNumber, branchUuid, comment, timestamp, authorArtId, commitArtId,
-            txType, branchCache);
+      TransactionRecord record = factory.createOrUpdate(cache, transactionNumber, branchUuid, comment, timestamp,
+         authorArtId, commitArtId, txType, branchCache);
       record.clearDirty();
       return record;
    }

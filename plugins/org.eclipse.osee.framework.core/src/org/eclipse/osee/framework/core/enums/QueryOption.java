@@ -43,9 +43,7 @@ public enum QueryOption {
       QueryOption.TOKEN_DELIMITER__ANY,
       QueryOption.TOKEN_COUNT__IGNORE};
 
-   public static final QueryOption[] EXACT_MATCH_OPTIONS = {
-      QueryOption.TOKEN_COUNT__MATCH,
-      QueryOption.TOKEN_DELIMITER__EXACT,
-      QueryOption.TOKEN_MATCH_ORDER__MATCH};
+   public static final QueryOption[] EXACT_MATCH_OPTIONS =
+      {QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH};
 
 }

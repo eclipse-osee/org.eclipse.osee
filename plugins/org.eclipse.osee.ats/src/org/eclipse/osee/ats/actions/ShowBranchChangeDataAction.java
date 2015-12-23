@@ -40,13 +40,13 @@ public class ShowBranchChangeDataAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      if (!(awa.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+      if (!awa.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          AWorkbench.popup("Only valid for Team Workflow artifacts");
          return;
       }
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
-      if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt) && !AtsClientService.get().getBranchService().isWorkingBranchEverCommitted(
-         teamArt)) {
+      if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(
+         teamArt) && !AtsClientService.get().getBranchService().isWorkingBranchEverCommitted(teamArt)) {
          AWorkbench.popup("Working branch never created or committed.");
          return;
       }

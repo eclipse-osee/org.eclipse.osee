@@ -96,7 +96,7 @@ public class HtmlExportTable {
                   String csvRow = "";
                   while (thM.find()) {
                      String cellStr = removeLeadTrailSpaces(thM.group(1));
-                     String excelTextPrefix = (excelTextFields && !cellStr.contains(",")) ? "=" : "";
+                     String excelTextPrefix = excelTextFields && !cellStr.contains(",") ? "=" : "";
                      csvRow += excelTextPrefix + "\"" + cellStr + "\"" + speratorChar;
                   }
                   if (!csvRow.equals("")) {

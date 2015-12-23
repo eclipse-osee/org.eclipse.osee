@@ -28,8 +28,8 @@ public class LoadBranchTransactionsOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      branchTransactionData.setTransactions(branchTransactionData.getBranchContentProvider().getBranchChildren(
-         branchTransactionData.getBranch()));
+      branchTransactionData.setTransactions(
+         branchTransactionData.getBranchContentProvider().getBranchChildren(branchTransactionData.getBranch()));
    }
 
 }

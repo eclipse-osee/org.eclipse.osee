@@ -19,7 +19,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.util.ChecksumUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.osgi.framework.Bundle;
@@ -36,7 +35,6 @@ public class BundleInfoLite {
    private byte[] md5Digest;
    private Bundle bundle;
 
-   
    public BundleInfoLite(URL systemLocation) throws IOException {
       File tmpFile;
       try {
@@ -60,9 +58,9 @@ public class BundleInfoLite {
     */
    private String generateBundleName(Manifest jarManifest) {
       String nameEntry = jarManifest.getMainAttributes().getValue("Bundle-SymbolicName");
-	  if(nameEntry == null){
-	     return "unknown";
-	  }
+      if (nameEntry == null) {
+         return "unknown";
+      }
       // Sometimes there's a semicolon then extra info - ignore this
       int index = nameEntry.indexOf(';');
       if (index != -1) {
@@ -119,48 +117,49 @@ public class BundleInfoLite {
       }
       return md5Digest;
    }
-   
-   public void install(BundleContext context) throws BundleException, IOException{
-	   bundle = context.installBundle("reference:" + this.getSystemLocation().toExternalForm());
+
+   public void install(BundleContext context) throws BundleException, IOException {
+      bundle = context.installBundle("reference:" + this.getSystemLocation().toExternalForm());
    }
-   
-   public Bundle uninstall() throws BundleException{
-	   if(isInstalled()){
-		   bundle.uninstall();
-	   }
-	   return bundle;
+
+   public Bundle uninstall() throws BundleException {
+      if (isInstalled()) {
+         bundle.uninstall();
+      }
+      return bundle;
    }
-   
+
    public boolean isInstalled() {
-	   if(bundle == null){
-		   return false;
-	   } else {
-		   int state = bundle.getState();
-		   return state != Bundle.UNINSTALLED;
-	   }
+      if (bundle == null) {
+         return false;
+      } else {
+         int state = bundle.getState();
+         return state != Bundle.UNINSTALLED;
+      }
    }
-   
+
    public boolean isStarted() {
-	   if(isInstalled()){
-		   int state = bundle.getState();
-		   return state == Bundle.ACTIVE || state == Bundle.STARTING;
-	   } else {
-		   return false;
-	   }
+      if (isInstalled()) {
+         int state = bundle.getState();
+         return state == Bundle.ACTIVE || state == Bundle.STARTING;
+      } else {
+         return false;
+      }
    }
-   
-   public void start(BundleContext context) throws BundleException{
-	   if(bundle == null){
-		  for(Bundle findit:context.getBundles()){
-			  if(findit.getSymbolicName().equals(getSymbolicName())){
-				  findit.start();
-				  return;
-			  }
-		  }
-	      OseeLog.log(BundleInfoLite.class, Level.WARNING, String.format("Tried to start bundle [%s] that is not installed.", getSymbolicName()));  
-	   } else if (bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED){
-		   bundle.start();
-	   } 
+
+   public void start(BundleContext context) throws BundleException {
+      if (bundle == null) {
+         for (Bundle findit : context.getBundles()) {
+            if (findit.getSymbolicName().equals(getSymbolicName())) {
+               findit.start();
+               return;
+            }
+         }
+         OseeLog.log(BundleInfoLite.class, Level.WARNING,
+            String.format("Tried to start bundle [%s] that is not installed.", getSymbolicName()));
+      } else if (bundle.getState() == Bundle.INSTALLED || bundle.getState() == Bundle.RESOLVED) {
+         bundle.start();
+      }
    }
-   
+
 }

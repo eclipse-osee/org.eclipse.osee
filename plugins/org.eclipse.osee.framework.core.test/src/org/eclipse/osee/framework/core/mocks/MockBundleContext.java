@@ -14,7 +14,6 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Dictionary;
-
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
@@ -167,14 +166,13 @@ public class MockBundleContext implements BundleContext {
    }
 
    @Override
-   public <S> ServiceRegistration<S> registerService(Class<S> clazz,
-   		ServiceFactory<S> factory, Dictionary<String, ?> properties) {
-   	return null;
+   public <S> ServiceRegistration<S> registerService(Class<S> clazz, ServiceFactory<S> factory, Dictionary<String, ?> properties) {
+      return null;
    }
-   
+
    @Override
    public <S> ServiceObjects<S> getServiceObjects(ServiceReference<S> reference) {
-   	return null;
+      return null;
    }
 
 }

@@ -160,7 +160,7 @@ public final class ArtifactLoader {
          }
       } else {
          // artifact is in the cache, do not load it
-         if (!active.isDeleted() || (active.isDeleted() && allowDeleted == DeletionFlag.INCLUDE_DELETED)) {
+         if (!active.isDeleted() || active.isDeleted() && allowDeleted == DeletionFlag.INCLUDE_DELETED) {
             artifacts.add(active);
          }
          doNotLoad = true;
@@ -208,7 +208,8 @@ public final class ArtifactLoader {
             // assumption: sql is returning rows ordered by branch_id, art_id, transaction_id in descending order
             if (previousArtId != artId || previousBranchId != branchUuid) {
                // assumption: sql is returning unwanted deleted artifacts only in the historical case
-               if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(chStmt.getInt("mod_type")) != ModificationType.DELETED) {
+               if (!historical || allowDeleted == DeletionFlag.INCLUDE_DELETED || ModificationType.getMod(
+                  chStmt.getInt("mod_type")) != ModificationType.DELETED) {
                   Artifact shallowArtifact = retrieveShallowArtifact(chStmt, reload, historical);
                   loadedItems.add(shallowArtifact);
                }
@@ -317,9 +318,8 @@ public final class ArtifactLoader {
          ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =
-            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType,
-               chStmt.getInt("gamma_id"), branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")),
-               historical);
+            factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"), artifactType, chStmt.getInt("gamma_id"),
+               branch, transactionId, ModificationType.getMod(chStmt.getInt("mod_type")), historical);
       }
 
       if (reload == LoadType.RELOAD_CACHE) {

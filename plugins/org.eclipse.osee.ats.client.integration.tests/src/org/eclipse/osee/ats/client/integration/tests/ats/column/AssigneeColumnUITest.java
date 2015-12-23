@@ -39,8 +39,8 @@ public class AssigneeColumnUITest {
 
       Artifact actionArt = codeArt.getParentActionArtifact();
       List<String> results = Arrays.asList("Kay Jones; Joe Smith", "Joe Smith; Kay Jones");
-      Assert.assertTrue(results.contains(AssigneeColumnUI.getInstance().getColumnText(actionArt,
-         AssigneeColumnUI.getInstance(), 0)));
+      Assert.assertTrue(
+         results.contains(AssigneeColumnUI.getInstance().getColumnText(actionArt, AssigneeColumnUI.getInstance(), 0)));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }
@@ -50,15 +50,15 @@ public class AssigneeColumnUITest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertNotNull(ActionableItemsColumnUI.getInstance().getColumnImage(codeArt,
-         AssigneeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(
+         ActionableItemsColumnUI.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(), 0));
 
       Artifact actionArt = codeArt.getParentActionArtifact();
-      Assert.assertNotNull(ActionableItemsColumnUI.getInstance().getColumnImage(actionArt,
-         AssigneeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(
+         ActionableItemsColumnUI.getInstance().getColumnImage(actionArt, AssigneeColumnUI.getInstance(), 0));
 
-      Assert.assertNull(ActionableItemsColumnUI.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(),
-         0));
+      Assert.assertNull(
+         ActionableItemsColumnUI.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

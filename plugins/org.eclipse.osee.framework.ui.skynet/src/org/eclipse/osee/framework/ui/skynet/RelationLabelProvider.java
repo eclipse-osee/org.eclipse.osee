@@ -135,9 +135,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          } else if (columnIndex == 1) {
             String rationale = "";
             try {
-               RelationLink link =
-                  RelationManager.getRelationLink(wrapper.getArtifactA(), wrapper.getArtifactB(),
-                     wrapper.getRelationType());
+               RelationLink link = RelationManager.getRelationLink(wrapper.getArtifactA(), wrapper.getArtifactB(),
+                  wrapper.getRelationType());
                rationale = link.getRationale();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

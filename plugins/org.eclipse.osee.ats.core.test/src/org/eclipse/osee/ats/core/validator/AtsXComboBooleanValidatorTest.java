@@ -51,24 +51,21 @@ public class AtsXComboBooleanValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
-      WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XComboBooleanDam");
 
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
 
       // Check for "true" value

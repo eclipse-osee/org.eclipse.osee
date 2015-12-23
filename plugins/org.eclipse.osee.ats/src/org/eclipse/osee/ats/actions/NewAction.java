@@ -43,8 +43,8 @@ public class NewAction extends AbstractAtsAction {
    public void runWithException() throws OseeCoreException {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
-         wizard.setInitialAias(ActionableItems.getActionableItems(Arrays.asList(actionableItem),
-            AtsClientService.get().getConfig()));
+         wizard.setInitialAias(
+            ActionableItems.getActionableItems(Arrays.asList(actionableItem), AtsClientService.get().getConfig()));
       }
       if (initialDescription != null) {
          wizard.setInitialDescription(initialDescription);

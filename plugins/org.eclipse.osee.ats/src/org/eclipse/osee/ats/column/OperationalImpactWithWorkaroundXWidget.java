@@ -129,7 +129,8 @@ public class OperationalImpactWithWorkaroundXWidget extends XComboWithTextAndCom
    }
 
    private String getWorkaroundDescStr() {
-      if (getComboWithText() == null || getComboWithText().getText() == null || !Widgets.isAccessible(getComboWithText().getText().getStyledText())) {
+      if (getComboWithText() == null || getComboWithText().getText() == null || !Widgets.isAccessible(
+         getComboWithText().getText().getStyledText())) {
          return "";
       }
       return getComboWithText().getText().get();

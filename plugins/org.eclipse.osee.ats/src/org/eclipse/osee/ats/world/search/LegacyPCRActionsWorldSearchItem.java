@@ -102,7 +102,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
          }
       } else {
          for (IAtsWorkItem workItem : filter.getItems()) {
-            results.add(((AbstractWorkflowArtifact) workItem.getStoreObject()));
+            results.add((AbstractWorkflowArtifact) workItem.getStoreObject());
          }
       }
       return results;

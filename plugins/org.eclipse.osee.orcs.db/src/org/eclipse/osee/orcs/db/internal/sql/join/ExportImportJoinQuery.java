@@ -68,8 +68,8 @@ public final class ExportImportJoinQuery extends AbstractJoinQuery {
          final int prime = 31;
          int result = 1;
          result = prime * result + getOuterType().hashCode();
-         result = prime * result + ((id1 == null) ? 0 : id1.hashCode());
-         result = prime * result + ((id2 == null) ? 0 : id2.hashCode());
+         result = prime * result + (id1 == null ? 0 : id1.hashCode());
+         result = prime * result + (id2 == null ? 0 : id2.hashCode());
          return result;
       }
 

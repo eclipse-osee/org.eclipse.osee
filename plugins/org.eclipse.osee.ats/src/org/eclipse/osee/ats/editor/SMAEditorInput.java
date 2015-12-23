@@ -51,7 +51,7 @@ public class SMAEditorInput extends ArtifactEditorInput implements IPersistableE
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + artUuid;
-      result = prime * result + (int) (branchUuid ^ (branchUuid >>> 32));
+      result = prime * result + (int) (branchUuid ^ branchUuid >>> 32);
       return result;
    }
 

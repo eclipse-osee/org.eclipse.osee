@@ -88,7 +88,7 @@ public class VersionDataImpl implements VersionData {
       final int prime = 31;
       int result = 1;
       result = prime * result + branchId.hashCode();
-      result = prime * result + (int) (gamma ^ (gamma >>> 32));
+      result = prime * result + (int) (gamma ^ gamma >>> 32);
       result = prime * result + (historical ? 1231 : 1237);
       result = prime * result + stripeId;
       result = prime * result + txId;

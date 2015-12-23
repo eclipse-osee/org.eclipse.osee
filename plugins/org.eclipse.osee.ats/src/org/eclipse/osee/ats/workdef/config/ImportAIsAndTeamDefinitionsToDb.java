@@ -379,10 +379,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
          return parent;
       }
       for (Artifact child : parent.getChildren()) {
-         if (isTeamDef && !(child.isOfType(AtsArtifactTypes.TeamDefinition))) {
+         if (isTeamDef && !child.isOfType(AtsArtifactTypes.TeamDefinition)) {
             continue;
          }
-         if (!isTeamDef && !(child.isOfType(AtsArtifactTypes.ActionableItem))) {
+         if (!isTeamDef && !child.isOfType(AtsArtifactTypes.ActionableItem)) {
             continue;
          }
          if (child.getName().equals(artifactName)) {

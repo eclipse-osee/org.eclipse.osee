@@ -176,8 +176,8 @@ public class LatLongBox extends Composite {
                }
                if (value != prevValue.longValue()) {
                   double sign = value < 0 ? -1.0 : 1.0;
-                  dValue =
-                     value + sign * (Integer.parseInt(minutesTxt.getText()) / 60.0 + Integer.parseInt(secondsTxt.getText()) / 3600.0);
+                  dValue = value + sign * (Integer.parseInt(minutesTxt.getText()) / 60.0 + Integer.parseInt(
+                     secondsTxt.getText()) / 3600.0);
                   System.out.println("latlong degrees changed: degrees = " + value + ", dValue=" + dValue);
                }
             } catch (Throwable t) {
@@ -427,7 +427,8 @@ public class LatLongBox extends Composite {
 
    @Override
    public String toString() {
-      return String.format(degreesTxt.getText() + (char) 0xb0 + minutesTxt.getText() + "' " + secondsTxt.getText() + "\"");
+      return String.format(
+         degreesTxt.getText() + (char) 0xb0 + minutesTxt.getText() + "' " + secondsTxt.getText() + "\"");
    }
 
 }

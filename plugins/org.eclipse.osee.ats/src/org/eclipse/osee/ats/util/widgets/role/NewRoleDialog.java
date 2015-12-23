@@ -35,9 +35,8 @@ public class NewRoleDialog extends MessageDialog {
    private XHyperlabelMemberSelection users;
 
    public NewRoleDialog() {
-      super(Displays.getActiveShell(), "New Role", null, "Enter New Roles", MessageDialog.QUESTION, new String[] {
-         "OK",
-         "Cancel"}, 0);
+      super(Displays.getActiveShell(), "New Role", null, "Enter New Roles", MessageDialog.QUESTION,
+         new String[] {"OK", "Cancel"}, 0);
    }
 
    @Override

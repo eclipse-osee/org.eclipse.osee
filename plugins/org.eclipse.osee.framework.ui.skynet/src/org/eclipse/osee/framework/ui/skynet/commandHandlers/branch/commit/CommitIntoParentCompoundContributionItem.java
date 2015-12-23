@@ -39,9 +39,8 @@ import org.eclipse.ui.menus.CommandContributionItemParameter;
  * @author Jeff C. Phillips
  */
 public class CommitIntoParentCompoundContributionItem extends CompoundContributionProvider {
-   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF = new IParameter[] {
-      new BranchIdParameter(),
-      new CommitBranchParameter()};
+   private static final IParameter[] BRANCH_COMMIT_PARAMETER_DEF =
+      new IParameter[] {new BranchIdParameter(), new CommitBranchParameter()};
 
    private ICommandService commandService;
 
@@ -92,10 +91,9 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       CommandContributionItem contributionItem;
       String label = "Commit into Parent Branch: " + branch.getParentBranch().getName();
 
-      contributionItem =
-         new CommandContributionItem(new CommandContributionItemParameter(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
-            label, null, null, SWT.NONE, null, false));
+      contributionItem = new CommandContributionItem(
+         new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
+            parameters, null, null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

@@ -243,16 +243,14 @@ public class Benchmark {
       }
 
       // Sorry Need to keep this java 1.4 compatible
-      Object[] formatArgs =
-         {
-            new Long(bm.getTotalSamples()),
-            new Float((float) bm.getLongestSample() / 1000),
-            new Float((float) bm.getShortestSample() / 1000),
-            new Float((float) bm.getAverage() / 1000),
-            new Long(bm.getExceedCount())};
-      MessageFormat outmessage =
-         new MessageFormat(
-            "total samples: {0,number,integer}, max time: {1,number,integer}ms, min: {2,number,integer}ms, average: {3,number,integer}ms, exceed count: {4,number,integer}");
+      Object[] formatArgs = {
+         new Long(bm.getTotalSamples()),
+         new Float((float) bm.getLongestSample() / 1000),
+         new Float((float) bm.getShortestSample() / 1000),
+         new Float((float) bm.getAverage() / 1000),
+         new Long(bm.getExceedCount())};
+      MessageFormat outmessage = new MessageFormat(
+         "total samples: {0,number,integer}, max time: {1,number,integer}ms, min: {2,number,integer}ms, average: {3,number,integer}ms, exceed count: {4,number,integer}");
 
       System.out.println(outmessage.format(formatArgs));
 
@@ -260,9 +258,9 @@ public class Benchmark {
 
    @Override
    public String toString() {
-      return String.format("%s\t total samples: %d,\t average: %fms,\t max time: %f, min: %fms, exceed count: %d",
-         name, new Long(getTotalSamples()), new Float(getLongestSample() / 1000),
-         new Float(getShortestSample() / 1000), new Float(getAverage() / 1000), new Long(getExceedCount()));
+      return String.format("%s\t total samples: %d,\t average: %fms,\t max time: %f, min: %fms, exceed count: %d", name,
+         new Long(getTotalSamples()), new Float(getLongestSample() / 1000), new Float(getShortestSample() / 1000),
+         new Float(getAverage() / 1000), new Long(getExceedCount()));
    }
 
    public void addExceeder(String exceeder) {

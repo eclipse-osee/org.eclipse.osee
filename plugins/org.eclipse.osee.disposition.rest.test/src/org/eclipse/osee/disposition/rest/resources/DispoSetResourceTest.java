@@ -160,7 +160,7 @@ public class DispoSetResourceTest {
 
    @Test
    public void testPut() {
-      OperationReport report = new OperationReport();
+      new OperationReport();
 
       DispoSetData newSet = new DispoSetData();
       DispoSetData setToEdt = new DispoSetData();

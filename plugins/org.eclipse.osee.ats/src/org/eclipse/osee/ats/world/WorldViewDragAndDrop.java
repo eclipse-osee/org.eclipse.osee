@@ -107,8 +107,8 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
                            groupWorldSearchItem.setSelectedGroup(art);
-                           WorldEditor.open(new WorldEditorUISearchItemProvider(groupWorldSearchItem, null,
-                              TableLoadOption.NoUI));
+                           WorldEditor.open(
+                              new WorldEditorUISearchItemProvider(groupWorldSearchItem, null, TableLoadOption.NoUI));
                            return Status.OK_STATUS;
                         }
                      }
@@ -116,7 +116,8 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         if (AtsUtil.isAtsArtifact(art)) {
                            arts.add(art);
                         } else if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
-                           for (Artifact relArt : art.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
+                           for (Artifact relArt : art.getRelatedArtifacts(
+                              CoreRelationTypes.Universal_Grouping__Members)) {
                               if (AtsUtil.isAtsArtifact(relArt)) {
                                  arts.add(relArt);
                               }

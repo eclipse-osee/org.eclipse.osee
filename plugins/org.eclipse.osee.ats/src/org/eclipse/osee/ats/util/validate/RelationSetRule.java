@@ -34,7 +34,7 @@ public final class RelationSetRule extends AbstractValidationRule {
       this.relationEnum = relationEnum;
       this.minimumRelations = minimumRelations;
       this.ignoreArtifactTypes =
-         (ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes));
+         ignoreArtifactTypes.length == 0 ? new ArrayList<IArtifactType>() : Arrays.asList(ignoreArtifactTypes);
    }
 
    public Integer getMinimumRelations() {
@@ -58,7 +58,8 @@ public final class RelationSetRule extends AbstractValidationRule {
       if (!isIgnoreType(type) && hasArtifactType(type)) {
          Collection<Artifact> arts = artToValidate.getRelatedArtifacts(relationEnum);
          if (arts.size() < minimumRelations) {
-            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"");
+            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
+               artToValidate) + " (" + artToValidate.getGammaId() + ") has less than minimum " + minimumRelations + " relation for type \"" + relationEnum.getName() + "\"");
             validationPassed = false;
          }
       }

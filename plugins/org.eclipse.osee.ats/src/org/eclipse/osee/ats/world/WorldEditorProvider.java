@@ -150,8 +150,8 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             if (searchType == SearchType.ReSearch) {
                deCacheAndReload(worldEditor, selectedName, forcePend, artifacts);
             } else {
-               worldEditor.getWorldComposite().load((selectedName != null ? selectedName : ""), artifacts,
-                  customizeData, tableLoadOptions);
+               worldEditor.getWorldComposite().load(selectedName != null ? selectedName : "", artifacts, customizeData,
+                  tableLoadOptions);
             }
          } catch (final Exception ex) {
             String str = "Exception occurred.";
@@ -193,7 +193,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       for (Artifact art : artifacts) {
          ArtifactCache.deCache(art);
       }
-      worldEditor.getWorldComposite().load((name != null ? name : ""), artifacts, customizeData);
+      worldEditor.getWorldComposite().load(name != null ? name : "", artifacts, customizeData);
 
    }
 

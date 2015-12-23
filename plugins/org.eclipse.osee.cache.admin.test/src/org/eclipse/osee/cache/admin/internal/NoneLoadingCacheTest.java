@@ -17,6 +17,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.cache.admin.Cache;
@@ -25,7 +26,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.MockitoAnnotations;
-import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link CacheFactory, CacheProxy}

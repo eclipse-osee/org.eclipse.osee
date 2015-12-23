@@ -85,7 +85,8 @@ public class SqlContextImpl implements SqlContext {
 
    @Override
    public String toString() {
-      return "SqlContextImpl [session=" + session + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n", "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", options=" + options + "]";
+      return "SqlContextImpl [session=" + session + ", sql=" + (Strings.isValid(sql) ? sql.replaceAll("\n",
+         "") : "") + ", parameters=" + parameters + ", joinTables=" + joinTables + ", options=" + options + "]";
    }
 
 }

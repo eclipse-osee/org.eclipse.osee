@@ -67,8 +67,8 @@ public class RelationOrderMergeUtilityTest {
 
    @Before
    public void createBranch() throws OseeCoreException {
-      destBranch = BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT,
-         "RelationOrderMergeUtilityTest.createBranch");
+      destBranch =
+         BranchManager.createWorkingBranch(CoreBranches.SYSTEM_ROOT, "RelationOrderMergeUtilityTest.createBranch");
       hierType = RelationTypeManager.getType(defaultHierarchy);
       hierSide = defaultHierarchy.getSide();
    }

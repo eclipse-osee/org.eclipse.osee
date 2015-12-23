@@ -40,8 +40,8 @@ public class MailUtilsTest {
    private static final String HTML_DATA = "<html><body><h1>Page</h1> <b>body</b> is here</body></html>";
    private static final String HTML_PARSED_DATA = "Page body is here";
 
-   private static final Pattern MULTI_PART_PATTERN = Pattern.compile("_Part_\\d+_\\d+\\.\\d+\\s+(.*?)------=",
-      Pattern.DOTALL);
+   private static final Pattern MULTI_PART_PATTERN =
+      Pattern.compile("_Part_\\d+_\\d+\\.\\d+\\s+(.*?)------=", Pattern.DOTALL);
 
    @Test
    public void testCreateFromString() throws IOException {
@@ -164,12 +164,12 @@ public class MailUtilsTest {
      StringBuilder builder = new StringBuilder();
      builder.append("\nBEGIN:VCALENDAR\nPRODID:-//Microsoft Corporation//Outlook 10.0 MIMEDIR//EN\nVERSION:1.0\nBEGIN:VEVENT\nDTSTART:");
      builder.append(myDateFormat.format(startDate));
-     builder.append("\nDTEND:"); 
+     builder.append("\nDTEND:");
      builder.append(myDateFormat.format(endDate));
      builder.append("\nLOCATION;ENCODING=QUOTED-PRINTABLE:");
-     builder.append(location); 
+     builder.append(location);
      builder.append("\nTRANSP:1\nDESCRIPTION;ENCODING=QUOTED-PRINTABLE:=0D=0A\nSUMMARY;ENCODING=QUOTED-PRINTABLE:Event:");
-     builder.append(event); 
+     builder.append(event);
      builder.append("\nPRIORITY:3\nEND:VEVENT\nEND:VCALENDAR\n");
      return builder.toString();
    }

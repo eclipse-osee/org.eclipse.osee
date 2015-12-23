@@ -31,13 +31,13 @@ import static org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslUiConstants.STYLE
 import static org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslUiConstants.STYLE_ID__VARIABLE;
 import static org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslUiConstants.TEXT_FONT;
 import static org.eclipse.osee.orcs.script.dsl.ui.OrcsScriptDslUiConstants.VARIABLE;
+import com.google.inject.Singleton;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfiguration;
 import org.eclipse.xtext.ui.editor.syntaxcoloring.IHighlightingConfigurationAcceptor;
 import org.eclipse.xtext.ui.editor.utils.TextStyle;
-import com.google.inject.Singleton;
 
 /**
  * @author Roberto E. Escobar

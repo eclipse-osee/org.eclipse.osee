@@ -58,18 +58,18 @@ public class EmailWizard extends Wizard {
             return true;
          }
          if (wizardPage.getToAddresses().length == 0) {
-            AWorkbench.popup(String.format("Emails can not be resolved for recipients.\n\nEmail not be sent",
-               UserManager.getUser()));
+            AWorkbench.popup(
+               String.format("Emails can not be resolved for recipients.\n\nEmail not be sent", UserManager.getUser()));
             return true;
          }
-         OseeEmail emailMessage =
-            new OseeEmail(Arrays.asList(wizardPage.getToAddresses()), UserManager.getUser().getEmail(),
-               UserManager.getUser().getEmail(), subject, "", BodyType.Html);
+         OseeEmail emailMessage = new OseeEmail(Arrays.asList(wizardPage.getToAddresses()),
+            UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, "", BodyType.Html);
          emailMessage.setRecipients(Message.RecipientType.CC, wizardPage.getCcAddresses());
          emailMessage.setRecipients(Message.RecipientType.BCC, wizardPage.getBccAddresses());
          String otherText = wizardPage.getText();
          if (!otherText.equals("")) {
-            emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
+            emailMessage.setHTMLBody("<p>" + AHTML.textToHtml(
+               wizardPage.getText()) + "</p><p>--------------------------------------------------------</p>");
          }
          // Remove hyperlinks cause they won't work in email.
          emailMessage.addHTMLBody(htmlMessage);

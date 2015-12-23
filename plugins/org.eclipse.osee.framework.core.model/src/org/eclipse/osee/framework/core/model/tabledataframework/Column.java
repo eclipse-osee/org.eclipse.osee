@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.tabledataframework;
 
-
 /**
  * @author Shawn F. Cook
  */

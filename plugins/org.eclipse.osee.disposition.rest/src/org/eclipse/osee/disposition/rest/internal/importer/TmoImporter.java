@@ -115,8 +115,8 @@ public class TmoImporter implements DispoImporterApi {
                if (exisitingItems.containsKey(sanitizedFileName)) {
                   DispoItem oldItem = exisitingItems.get(sanitizedFileName);
                   Date lastUpdate = oldItem.getLastUpdate();
-                  boolean wasSameFile =
-                     DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream, false, lastUpdate);
+                  boolean wasSameFile = DiscrepancyParser.buildItemFromFile(itemToBuild, sanitizedFileName, inputStream,
+                     false, lastUpdate);
                   if (!wasSameFile) {
                      // Copy Id to tell callee that this is not a new Item
                      itemToBuild.setGuid(oldItem.getGuid());

@@ -88,7 +88,8 @@ public class IntroduceArtifactOperation {
       if (!sourceArtifact.isHistorical()) {
          introduceRelations(sourceArtifact, destinationArtifact);
          try {
-            if (sourceArtifact.hasParent() && !destinationArtifact.hasParent() && !sourceArtifacts.contains(sourceArtifact.getParent())) {
+            if (sourceArtifact.hasParent() && !destinationArtifact.hasParent() && !sourceArtifacts.contains(
+               sourceArtifact.getParent())) {
                fosterParent.addChild(destinationArtifact);
             }
          } catch (MultipleArtifactsExist ex) {
@@ -116,17 +117,17 @@ public class IntroduceArtifactOperation {
 
    private void introduceAttribute(Attribute<?> sourceAttribute, Artifact destinationArtifact) throws OseeDataStoreException, OseeCoreException {
       if (sourceAttribute.isDirty()) {
-         throw new OseeArgumentException(
-            "The un-persisted attribute [%s] can not be introduced until it is persisted.", sourceAttribute);
+         throw new OseeArgumentException("The un-persisted attribute [%s] can not be introduced until it is persisted.",
+            sourceAttribute);
 
       } else if (sourceAttribute.isInDb()) {
          Attribute<?> destinationAttribute = destinationArtifact.getAttributeById(sourceAttribute.getId(), true);
 
          if (destinationAttribute == null) {
-            destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
-               sourceAttribute.getId(), sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), true,
+            destinationArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(), sourceAttribute.getId(),
+               sourceAttribute.getGammaId(), sourceAttribute.getModificationType(), true,
                sourceAttribute.getAttributeDataProvider().getData()).internalSetModType(
-               sourceAttribute.getModificationType(), true, true);
+                  sourceAttribute.getModificationType(), true, true);
          } else {
             destinationAttribute.introduce(sourceAttribute);
          }
@@ -149,19 +150,17 @@ public class IntroduceArtifactOperation {
          throw new OseeArgumentException("The un-persisted relation [%s] can not be introduced until it is persisted.",
             sourceRelation);
       } else if (sourceRelation.isInDb()) {
-         RelationLink destinationRelation =
-            RelationManager.getLoadedRelationById(sourceRelation.getId(), sourceRelation.getAArtifactId(),
-               sourceRelation.getBArtifactId(), destinationBranch);
+         RelationLink destinationRelation = RelationManager.getLoadedRelationById(sourceRelation.getId(),
+            sourceRelation.getAArtifactId(), sourceRelation.getBArtifactId(), destinationBranch);
 
          if (destinationRelation == null) {
             int aArtifactId = sourceRelation.getAArtifactId();
             int bArtifactId = sourceRelation.getBArtifactId();
             if (doesRelatedArtifactExist(destinationArtifact, aArtifactId, bArtifactId)) {
                ModificationType modType = sourceRelation.getModificationType();
-               destinationRelation =
-                  RelationManager.getOrCreate(aArtifactId, bArtifactId, destinationBranch,
-                     sourceRelation.getRelationType(), sourceRelation.getId(), sourceRelation.getGammaId(),
-                     sourceRelation.getRationale(), modType);
+               destinationRelation = RelationManager.getOrCreate(aArtifactId, bArtifactId, destinationBranch,
+                  sourceRelation.getRelationType(), sourceRelation.getId(), sourceRelation.getGammaId(),
+                  sourceRelation.getRationale(), modType);
                destinationRelation.internalSetModType(modType, true, true);
             }
          } else {
@@ -173,7 +172,7 @@ public class IntroduceArtifactOperation {
    private void removeNewAttributesFromDestination(Artifact sourceArtifact, Artifact destinationArtifact) throws OseeCoreException {
       List<Attribute<?>> destAttributes = destinationArtifact.getAttributes(true);
 
-      // since introduce is 'replacing' the destination artifact with the source artifact, 
+      // since introduce is 'replacing' the destination artifact with the source artifact,
       // any new attributes from the destination artifact should be removed/deleted.
       for (Attribute<?> destAttribute : destAttributes) {
          Attribute<?> attribute = sourceArtifact.getAttributeById(destAttribute.getId(), true);

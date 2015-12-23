@@ -182,8 +182,8 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
    public Long createEntry(Long accountId, Long clientId, Long typeId, Long parentId, Integer status, String... messageArgs) {
       Object[] rootEntry = activityMonitor.getThreadRootEntry();
       Long serverId = LogEntry.SERVER_ID.from(rootEntry);
-      Object[] entry =
-         createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status, (Object[]) messageArgs);
+      Object[] entry = createEntry(parentId, typeId, accountId, serverId, clientId, computeDuration(), status,
+         (Object[]) messageArgs);
       return LogEntry.ENTRY_ID.from(entry);
    }
 
@@ -212,8 +212,7 @@ public class ActivityLogImpl implements ActivityLog, Callable<Void> {
             for (int i = JdbcConstants.JDBC__MAX_VARCHAR_LENGTH; i < fullMsg.length(); i +=
                JdbcConstants.JDBC__MAX_VARCHAR_LENGTH) {
                Long continueEntryId = Lib.generateUuid();
-               Object[] continueEntry =
-                  new Object[] {
+               Object[] continueEntry = new Object[] {
                   continueEntryId,
                   parentCursor,
                   Activity.MSG_CONTINUATION.getTypeId(),

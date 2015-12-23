@@ -26,8 +26,7 @@ public abstract class AbstractAtsProgramClient extends AbstractAtsProgram implem
    private Artifact artifact;
 
    public AbstractAtsProgramClient(Artifact artifact) {
-      super((artifact != null ? Long.valueOf(artifact.getArtId()) : 0L),
-         (artifact != null ? artifact.getName() : "Null"));
+      super(artifact != null ? Long.valueOf(artifact.getArtId()) : 0L, artifact != null ? artifact.getName() : "Null");
       this.artifact = artifact;
    }
 

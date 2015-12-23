@@ -49,22 +49,24 @@ public class UniqueNameRule extends AbstractValidationRule {
       boolean validationPassed = true;
       if (hasArtifactType(artToValidate.getArtifactType())) {
          // validate that no other artifact of the given Artifact Type has the same name.
-         List<Artifact> arts =
-            ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType, artToValidate.getBranch(),
-               DeletionFlag.EXCLUDE_DELETED);
+         List<Artifact> arts = ArtifactQuery.getArtifactListFromTypeWithInheritence(artifactType,
+            artToValidate.getBranch(), DeletionFlag.EXCLUDE_DELETED);
          for (Artifact art : arts) {
-            if (art.getName().equalsIgnoreCase(artToValidate.getName()) && art.getGuid() != artToValidate.getGuid() && !hasGuidPairAlreadyBeenEvaluated(
-               art.getGuid(), artToValidate.getGuid())) {
+            if (art.getName().equalsIgnoreCase(
+               artToValidate.getName()) && art.getGuid() != artToValidate.getGuid() && !hasGuidPairAlreadyBeenEvaluated(
+                  art.getGuid(), artToValidate.getGuid())) {
                /**************************************************************************
                 * Special case: Allow duplicate names of artifacts if<br/>
                 * 1) Artifact name is numeric <br/>
                 * 2) Artifact type is different<br/>
                 */
-               if (Strings.isNumeric(artToValidate.getName()) && !artToValidate.getArtifactType().equals(
-                  art.getArtifactType())) {
+               if (Strings.isNumeric(
+                  artToValidate.getName()) && !artToValidate.getArtifactType().equals(art.getArtifactType())) {
                   continue;
                }
-               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(art) + " have same name value:\"" + artToValidate.getName() + " \"");
+               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
+                  artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(
+                     art) + " have same name value:\"" + artToValidate.getName() + " \"");
                validationPassed = false;
                addGuidPair(art.getGuid(), artToValidate.getGuid());
             }
@@ -79,7 +81,7 @@ public class UniqueNameRule extends AbstractValidationRule {
 
    private boolean hasGuidPairAlreadyBeenEvaluated(String guidA, String guidB) {
       for (GuidPair guidPair : guidPairs) {
-         if ((guidPair.getGuidA().equals(guidA) && guidPair.getGuidB().equals(guidB)) || guidPair.getGuidA().equals(
+         if (guidPair.getGuidA().equals(guidA) && guidPair.getGuidB().equals(guidB) || guidPair.getGuidA().equals(
             guidB) && guidPair.getGuidB().equals(guidA)) {
             return true;
          }

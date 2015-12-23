@@ -12,7 +12,6 @@
 package org.eclipse.osee.disposition.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.json.JSONArray;
 
 /**
@@ -75,4 +74,4 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.importState = importState;
    }
 
-   }
+}

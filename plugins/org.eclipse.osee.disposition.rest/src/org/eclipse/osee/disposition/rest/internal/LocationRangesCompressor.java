@@ -36,7 +36,7 @@ public class LocationRangesCompressor {
          boolean isLastElement = !iterator.hasNext();
 
          // Starting a Range
-         if (currentTestPoint != 0 && previous == (currentTestPoint - 1) && startOfRange == -1) { // if the previous is 1 less than our current we are in a range
+         if (currentTestPoint != 0 && previous == currentTestPoint - 1 && startOfRange == -1) { // if the previous is 1 less than our current we are in a range
             isRange = true;
             endOfRange = false;
             startOfRange = previous;
@@ -47,7 +47,7 @@ public class LocationRangesCompressor {
                workingLocRefs.setLength(0);
             }
          }
-         if (isRange && (previous != (currentTestPoint - 1) || isLastElement)) { // End Range
+         if (isRange && (previous != currentTestPoint - 1 || isLastElement)) { // End Range
             endOfRange = true;
          }
 
@@ -56,7 +56,7 @@ public class LocationRangesCompressor {
          if (!isRange) { // If we are not in a range just add the single point
             toAppend.append(currentTestPoint);
          } else if (endOfRange) { // other wise check to see if we ended the range
-            if (previous != (currentTestPoint - 1)) {
+            if (previous != currentTestPoint - 1) {
                toAppend.append(new LocationRange(startOfRange, previous).toString()); // append the range ending with the previous point and append this current point
                toAppend.append(", ");
                toAppend.append(currentTestPoint);

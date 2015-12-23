@@ -126,7 +126,8 @@ public final class BranchData implements Cloneable {
       for (String key : this.backingData.keySet()) {
          Object obj1 = this.backingData.get(key);
          Object obj2 = other.backingData.get(key);
-         if (obj1 == null && obj2 != null || obj1 != null && obj2 == null || obj1 != null && obj2 != null && !obj1.equals(obj2)) {
+         if (obj1 == null && obj2 != null || obj1 != null && obj2 == null || obj1 != null && obj2 != null && !obj1.equals(
+            obj2)) {
             valuesMatch = false;
             break;
          }

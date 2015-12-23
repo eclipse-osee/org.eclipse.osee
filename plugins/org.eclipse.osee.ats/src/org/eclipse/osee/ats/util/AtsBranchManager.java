@@ -77,10 +77,9 @@ public final class AtsBranchManager {
                      destinationBranches.add(mergeBranch.getDestinationBranch());
                   }
                   if (mergeBranches.size() > 1) {
-                     FilteredTreeBranchDialog dialog =
-                        new FilteredTreeBranchDialog("Select Destination Branch",
-                           "Select The Destination Branch for which you want to open the Merge Manager",
-                           destinationBranches);
+                     FilteredTreeBranchDialog dialog = new FilteredTreeBranchDialog("Select Destination Branch",
+                        "Select The Destination Branch for which you want to open the Merge Manager",
+                        destinationBranches);
                      int result = dialog.open();
                      if (result == 0) {
                         selectedBranch = (Branch) dialog.getSelectedFirst();
@@ -223,9 +222,8 @@ public final class AtsBranchManager {
             return 0;
          }
       };
-      FilteredTreeDialog dialog =
-         new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
-            new TransactionIdLabelProvider(), sorter);
+      FilteredTreeDialog dialog = new FilteredTreeDialog(title, "Select Commit Branch", new ArrayTreeContentProvider(),
+         new TransactionIdLabelProvider(), sorter);
 
       dialog.setInput(transactionIds);
       if (dialog.open() == 0) {
@@ -303,8 +301,8 @@ public final class AtsBranchManager {
 
       IOperation operation = null;
       if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
-         operation =
-            ChangeManager.comparedToParent(AtsClientService.get().getBranchService().getWorkingBranch(teamArt), changes);
+         operation = ChangeManager.comparedToParent(AtsClientService.get().getBranchService().getWorkingBranch(teamArt),
+            changes);
          Operations.executeWorkAndCheckStatus(operation);
       } else {
          if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {

@@ -246,7 +246,8 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       }
       for (Artifact artifact : getLoadedArtifacts()) {
          IAtsWorkItem workItem = (IAtsWorkItem) artifact;
-         if (artifact instanceof IAtsWorkItem && AtsClientService.get().getVersionService().hasTargetedVersion(workItem)) {
+         if (artifact instanceof IAtsWorkItem && AtsClientService.get().getVersionService().hasTargetedVersion(
+            workItem)) {
             return AtsClientService.get().getVersionService().getTargetedVersion(workItem);
          }
       }

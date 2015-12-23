@@ -481,11 +481,10 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
                policyHandlerService = ServiceUtil.getAccessPolicy();
 
                RelationTypeSide rts = new RelationTypeSide(data.getRelationType(), data.getRelationSide());
-               valid =
-                  policyHandlerService.canRelationBeModified(
-                     artifact,
-                     java.util.Collections.singleton(data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA()),
-                     rts, Level.INFO).matched();
+               valid = policyHandlerService.canRelationBeModified(artifact,
+                  java.util.Collections.singleton(
+                     data.getArtifactA().equals(artifact) ? data.getArtifactB() : data.getArtifactA()),
+                  rts, Level.INFO).matched();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -529,10 +528,9 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
          //Ask if they are sure they want all artifacts to be deleted
          if (!artifactsToBeDeleted.isEmpty()) {
-            if (MessageDialog.openConfirm(
-               Displays.getActiveShell(),
-               "Delete Artifact (s)",
-               "Delete Artifact (s)?\n\n\"" + Collections.toString(",", artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
+            if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Artifact (s)",
+               "Delete Artifact (s)?\n\n\"" + Collections.toString(",",
+                  artifactsToBeDeleted) + "\"\n\nNOTE: This will delete the artifact from the system.  Use \"Delete Relation\" to remove this artifact from the relation.")) {
 
                for (Artifact artifact : artifactsToBeDeleted) {
                   artifact.deleteAndPersist();
@@ -627,7 +625,8 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
          if (object instanceof WrapperForRelationLink) {//used for ordering
             WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
             relationTypeSide = new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
-            artifacts.add(toCheck.equals(targetLink.getArtifactA()) ? targetLink.getArtifactB() : targetLink.getArtifactA());
+            artifacts.add(
+               toCheck.equals(targetLink.getArtifactA()) ? targetLink.getArtifactB() : targetLink.getArtifactA());
          } else if (object instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter group = (RelationTypeSideSorter) object;
             relationTypeSide = new RelationTypeSide(group.getRelationType(), group.getSide());

@@ -38,12 +38,11 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class UpdateMergeBranch extends AbstractDbTxOperation {
 
-   private static final String TX_CURRENT_SETTINGS =
-      "CASE" + //
-         " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
-         " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
-         " ELSE " + TxChange.CURRENT.getValue() + //
-         " END";
+   private static final String TX_CURRENT_SETTINGS = "CASE" + //
+   " WHEN txs1.mod_type = " + ModificationType.DELETED.getValue() + " THEN " + TxChange.DELETED.getValue() + //
+   " WHEN txs1.mod_type = " + ModificationType.ARTIFACT_DELETED.getValue() + " THEN " + TxChange.ARTIFACT_DELETED.getValue() + //
+   " ELSE " + TxChange.CURRENT.getValue() + //
+   " END";
 
    private static final String UPDATE_ARTIFACTS =
       "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) SELECT ?, txs1.gamma_id, txs1.mod_type, " + TX_CURRENT_SETTINGS + ", ? FROM osee_attribute attr1, osee_txs txs1 WHERE attr1.art_id = ? AND txs1.gamma_id = attr1.gamma_id AND txs1.branch_id = ? AND txs1.tx_current <> ? AND NOT EXISTS (SELECT 'x' FROM osee_txs txs2, osee_attribute attr2 WHERE txs2.branch_id = ? AND txs2.transaction_id = ? AND txs2.gamma_id = attr2.gamma_id AND attr2.attr_id = attr1.attr_id)";
@@ -101,8 +100,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
          }
       }
       if (DEBUG) {
-         System.out.println(String.format("          Deleting %d Damaged Artifacts took %s", count,
-            Lib.getElapseString(time)));
+         System.out.println(
+            String.format("          Deleting %d Damaged Artifacts took %s", count, Lib.getElapseString(time)));
          time = System.currentTimeMillis();
          count = 0;
       }
@@ -118,8 +117,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
          }
       }
       if (DEBUG) {
-         System.out.println(String.format("          Deleting %d unused Artifacts took %s", count,
-            Lib.getElapseString(time)));
+         System.out.println(
+            String.format("          Deleting %d unused Artifacts took %s", count, Lib.getElapseString(time)));
          time = System.currentTimeMillis();
          count = 0;
       }
@@ -127,10 +126,9 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       //Copy over any missing attributes
       int baselineTransaction = mergeBranch.getBaseTransaction().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
-         numberAttrUpdated +=
-            getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction, mergeBranch.getUuid(),
-               artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(), mergeBranch.getUuid(),
-               baselineTransaction);
+         numberAttrUpdated += getJdbcClient().runPreparedUpdate(connection, UPDATE_ARTIFACTS, baselineTransaction,
+            mergeBranch.getUuid(), artifact.getArtId(), sourceBranch.getUuid(), TxChange.NOT_CURRENT.getValue(),
+            mergeBranch.getUuid(), baselineTransaction);
       }
       if (DEBUG) {
          System.out.println(String.format("          Adding %d Attributes to Existing Artifacts took %s",
@@ -170,13 +168,13 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
       try {
          joinQuery.store(connection);
          Integer startTransactionNumber = mergeBranch.getBaseTransaction().getId();
-         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, joinQuery.getQueryId(),
-            sourceBranch, mergeBranch);
+         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, joinQuery.getQueryId(), sourceBranch,
+            mergeBranch);
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, joinQuery.getQueryId(), sourceBranch,
             mergeBranch);
       } catch (OseeCoreException ex) {
-         throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getUuid(), Collections.toString(
-            ",", artIds));
+         throw new OseeCoreException("Source Branch %s Artifact Ids: %s", sourceBranch.getUuid(),
+            Collections.toString(",", artIds));
       } finally {
          joinQuery.delete(connection);
       }
@@ -198,8 +196,8 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
             artSet.add(chStmt.getInt("art_id"));
          }
          if (DEBUG) {
-            System.out.println(String.format(
-               "          Getting Artifacts that are on the Merge Branch Completed in %s", Lib.getElapseString(time)));
+            System.out.println(String.format("          Getting Artifacts that are on the Merge Branch Completed in %s",
+               Lib.getElapseString(time)));
             time = System.currentTimeMillis();
          }
 

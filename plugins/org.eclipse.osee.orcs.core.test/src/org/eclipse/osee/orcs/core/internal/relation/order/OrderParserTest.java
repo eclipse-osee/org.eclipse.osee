@@ -54,8 +54,8 @@ public class OrderParserTest {
    private static final String REL_TYPE_2_NAME = "Another Type";
    private static final Long REL_TYPE_2_ID = 1231L;
 
-   private static final List<String> ORDER_LIST_1 = Arrays.asList("AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg",
-      "AAABDEJ_oQ8Bf8VXLX7U_g");
+   private static final List<String> ORDER_LIST_1 =
+      Arrays.asList("AAABDEJ_mIQBf8VXVtGqvA", "AAABDEJ_nMkBf8VXVXptpg", "AAABDEJ_oQ8Bf8VXLX7U_g");
    private static final List<String> ORDER_LIST_2 = Arrays.asList("AAABDEJ_mIQBf8VXVtGqvA");
    private static final List<String> ORDER_LIST_3 = Arrays.asList("AAABDEJ_mIQXf8VXVtGqvA", "AAABDEJ_oQVBf8VXLX7U_g");
 
@@ -68,8 +68,8 @@ public class OrderParserTest {
    
    private static final String DATA_1 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_1));
    private static final String DATA_2 = String.format(ONE_ENTRY_PATTERN, REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(),  Collections.toString(",", ORDER_LIST_2));
-   private static final String DATA_3 = String.format(TWO_ENTRY_PATTERN, 
-      REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2), 
+   private static final String DATA_3 = String.format(TWO_ENTRY_PATTERN,
+      REL_TYPE_1_NAME, RelationSide.SIDE_B, RelationOrderBaseTypes.USER_DEFINED.getGuid(), Collections.toString(",", ORDER_LIST_2),
       REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), Collections.toString(",", ORDER_LIST_3));
    private static final String DATA_4 = String.format(ONE_ENTRY_NO_LIST_PATTERN, REL_TYPE_2_NAME, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
    

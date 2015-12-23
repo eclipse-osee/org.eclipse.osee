@@ -78,7 +78,8 @@ public class UserNavigateView extends ViewPart implements IXNavigateEventListene
 
    @Override
    public void refresh(XNavigateItem item) {
-      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(
+         xNavComp.getFilteredTree().getViewer().getTree())) {
          xNavComp.getFilteredTree().getViewer().refresh(item);
       }
    }

@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import com.google.common.io.InputSupplier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.reflect.TypeToken;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -20,15 +24,11 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ClientArtifact extends BaseIdentity<String> implements OAuthClient, InputSupplier<InputStream> {
+public class ClientArtifact extends BaseIdentity<String>implements OAuthClient, InputSupplier<InputStream> {
 
    private final GsonBuilder builder;
    private final ArtifactReadable artifact;
@@ -103,7 +103,7 @@ public class ClientArtifact extends BaseIdentity<String> implements OAuthClient,
       if (Strings.isValid(data)) {
          Gson gson = builder.create();
          Type typeOfHashMap = new TypeToken<Map<String, String>>() { //
-            }.getType();
+         }.getType();
          toReturn = gson.fromJson(data, typeOfHashMap);
       }
       return toReturn;

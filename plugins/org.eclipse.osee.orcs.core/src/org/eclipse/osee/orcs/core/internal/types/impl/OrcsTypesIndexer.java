@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types.impl;
 
+import com.google.common.base.Stopwatch;
+import com.google.common.collect.Sets;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
@@ -56,8 +58,6 @@ import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
 import org.eclipse.osee.orcs.core.internal.types.OrcsTypesIndex;
 import org.eclipse.osee.orcs.data.EnumEntry;
 import org.eclipse.osee.orcs.data.EnumType;
-import com.google.common.base.Stopwatch;
-import com.google.common.collect.Sets;
 
 /**
  * @author Ryan D. Brooks

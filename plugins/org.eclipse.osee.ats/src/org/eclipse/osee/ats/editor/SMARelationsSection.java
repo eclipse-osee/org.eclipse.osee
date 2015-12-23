@@ -70,11 +70,11 @@ public class SMARelationsSection extends RelationsFormSection {
       }
    };
 
-   private static List<String> filteredRelationTypeNames = Arrays.asList(
-      AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWf.getName(),
-      AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
-      AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
-      AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
-      CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
+   private static List<String> filteredRelationTypeNames =
+      Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.TeamWfToTask_TeamWf.getName(),
+         AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
+         AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
+         CoreRelationTypes.Default_Hierarchical__Child.getName(), CoreRelationTypes.Users_Artifact.getName());
 
 }

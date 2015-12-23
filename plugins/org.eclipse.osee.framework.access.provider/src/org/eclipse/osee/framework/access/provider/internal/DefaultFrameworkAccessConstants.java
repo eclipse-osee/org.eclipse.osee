@@ -22,11 +22,11 @@ public final class DefaultFrameworkAccessConstants {
       //do nothing
    }
 
-   public static final IAccessContextId DEFAULT_FRAMEWORK_CONTEXT = TokenFactory.createAccessContextId(
-      "AeA3J6AvwgEG4HGsypAA", "guest.context");
+   public static final IAccessContextId DEFAULT_FRAMEWORK_CONTEXT =
+      TokenFactory.createAccessContextId("AeA3J6AvwgEG4HGsypAA", "guest.context");
 
-   public final static IAccessContextId INVALID_ASSOC_ART_ID = TokenFactory.createAccessContextId(
-      "ASwQLzdXySQfeyG57ywA", "famework.invalidAssocArtId");
+   public final static IAccessContextId INVALID_ASSOC_ART_ID =
+      TokenFactory.createAccessContextId("ASwQLzdXySQfeyG57ywA", "famework.invalidAssocArtId");
 
    public static final String STORAGE_ARTIFACT_NAME = "Framework Access Model";
 

@@ -91,7 +91,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   return;
                }
                Artifact artifact = artifacts.iterator().next();
-               if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+               if (!artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }

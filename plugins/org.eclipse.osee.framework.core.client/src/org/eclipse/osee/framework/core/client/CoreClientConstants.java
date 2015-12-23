@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.client;
 
-
 /**
  * @author Roberto E. Escobar
  */

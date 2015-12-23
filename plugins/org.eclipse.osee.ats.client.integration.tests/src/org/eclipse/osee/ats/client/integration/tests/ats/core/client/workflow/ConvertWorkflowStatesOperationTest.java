@@ -87,9 +87,8 @@ public class ConvertWorkflowStatesOperationTest {
       fromStateToStateMap.put("Analyze", "NewAnalyze");
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
-      Artifact teamWf =
-         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
-            "ConvertWorkflowStatesOperationTest.testDoWork");
+      Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
+         "ConvertWorkflowStatesOperationTest.testDoWork");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       teamWf.addAttribute(AtsAttributeTypes.State, "Analyze;");
       teamWf.addAttribute(AtsAttributeTypes.State, "Endorse;");
@@ -127,9 +126,8 @@ public class ConvertWorkflowStatesOperationTest {
       fromStateToStateMap.put("Endorse", "NewEndorse");
 
       List<AbstractWorkflowArtifact> workflows = new ArrayList<>();
-      Artifact teamWf =
-         ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
-            "ConvertWorkflowStatesOperationTest.testDoWork_persist");
+      Artifact teamWf = ArtifactTypeManager.addArtifact(AtsArtifactTypes.TeamWorkflow, AtsUtilCore.getAtsBranch(),
+         "ConvertWorkflowStatesOperationTest.testDoWork_persist");
       teamWf.addAttribute(AtsAttributeTypes.CurrentState, "Endorse;");
       workflows.add((AbstractWorkflowArtifact) teamWf);
 

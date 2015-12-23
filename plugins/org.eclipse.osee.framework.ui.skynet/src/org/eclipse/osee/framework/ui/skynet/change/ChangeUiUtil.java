@@ -41,9 +41,7 @@ public final class ChangeUiUtil {
       Branch heavyBranch = BranchManager.getBranch(branch);
       Conditions.checkNotNull(branch, "Branch");
       if (heavyBranch.getBranchType() == BranchType.BASELINE) {
-         if (!MessageDialog.openConfirm(
-            AWorkbench.getActiveShell(),
-            "Show Change Report",
+         if (!MessageDialog.openConfirm(AWorkbench.getActiveShell(), "Show Change Report",
             "You have chosen to show a " + (showTransactionTab ? "transaction report" : "change report") + " for a BASLINE branch.\n\n" + //
             "This could be a very long running task and consume large resources.\n\nAre you sure?")) {
             return;

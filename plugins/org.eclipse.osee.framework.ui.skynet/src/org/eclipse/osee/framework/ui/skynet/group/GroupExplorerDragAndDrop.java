@@ -188,8 +188,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                if (event.data instanceof ArtifactData) {
                   // If event originated outside, it's a copy event;
                   // OR if event is inside and ctrl is down, this is a copy; add items to group
-                  if (!((ArtifactData) event.data).getSource().equals(viewId) || ((ArtifactData) event.data).getSource().equals(
-                     viewId) && isCtrlPressed) {
+                  if (!((ArtifactData) event.data).getSource().equals(
+                     viewId) || ((ArtifactData) event.data).getSource().equals(viewId) && isCtrlPressed) {
                      copyArtifactsToGroup(event, dragOverExplorerItem);
                   }
                   // Else this is a move

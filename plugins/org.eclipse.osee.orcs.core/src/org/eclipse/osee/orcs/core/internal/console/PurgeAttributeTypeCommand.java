@@ -71,13 +71,14 @@ public class PurgeAttributeTypeCommand implements ConsoleCommand {
             boolean found = !types.isEmpty();
 
             if (found) {
-               console.writeln(!forcePurge ? String.format("Attribute Types: [%s]", types) : String.format(
-                  "Purging attribute types: [%s]", types));
+               console.writeln(!forcePurge ? String.format("Attribute Types: [%s]",
+                  types) : String.format("Purging attribute types: [%s]", types));
 
                if (forcePurge && found) {
                   orcsTypes.purgeAttributesByAttributeType(types).call();
                }
-               console.writeln((found && !forcePurge) ? "To >DELETE Attribute DATA!< add \"force=TRUE\" to confirm." : "Operation finished.");
+               console.writeln(
+                  found && !forcePurge ? "To >DELETE Attribute DATA!< add \"force=TRUE\" to confirm." : "Operation finished.");
             } else {
                console.writeln("No types found.  Aborting...");
             }

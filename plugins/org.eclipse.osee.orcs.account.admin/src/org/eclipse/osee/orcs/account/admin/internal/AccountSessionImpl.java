@@ -83,8 +83,8 @@ public class AccountSessionImpl implements AccountSession {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((sessionToken == null) ? 0 : sessionToken.hashCode());
-      result = prime * result + (int) (accountId ^ (accountId >>> 32));
+      result = prime * result + (sessionToken == null ? 0 : sessionToken.hashCode());
+      result = prime * result + (int) (accountId ^ accountId >>> 32);
       return result;
    }
 

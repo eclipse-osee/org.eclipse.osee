@@ -98,15 +98,15 @@ public class DecisionReviewManager {
          }
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.EstimatedHours, estimateHours);
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsClientService.get().getUserService().getCurrentUser());
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
    public static Result transitionToState(StateType StateType, boolean popup, IStateToken toState, DecisionReviewArtifact reviewArt, IAtsUser user, IAtsChangeSet changes) throws OseeCoreException {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
-            Arrays.asList((user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user)), null,
+            Arrays.asList(user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), null,
             changes, AtsClientService.get().getServices(), TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
@@ -125,15 +125,14 @@ public class DecisionReviewManager {
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Decision, decision ? "Yes" : "No");
 
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsClientService.get().getUserService().getCurrentUser());
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
    public static DecisionReviewArtifact createNewDecisionReviewAndTransitionToDecision(TeamWorkFlowArtifact teamArt, String reviewTitle, String description, String againstState, ReviewBlockType reviewBlockType, Collection<IAtsDecisionReviewOption> options, List<? extends IAtsUser> assignees, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
-      DecisionReviewArtifact decRev =
-         createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description, options, assignees,
-            createdDate, createdBy, changes);
+      DecisionReviewArtifact decRev = createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState,
+         description, options, assignees, createdDate, createdBy, changes);
       changes.add(decRev);
 
       // transition to decision

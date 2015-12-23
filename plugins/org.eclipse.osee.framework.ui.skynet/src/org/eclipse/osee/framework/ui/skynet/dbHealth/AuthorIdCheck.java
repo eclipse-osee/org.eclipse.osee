@@ -78,8 +78,8 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
             try {
                Artifact artifact = ArtifactQuery.getArtifactFromId(author, COMMON);
                if (artifact == null) {
-                  rd.addRaw(AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author),
-                     "Error: Artifact Not Found"));
+                  rd.addRaw(
+                     AHTML.addRowMultiColumnTable("TX_DETAILS", String.valueOf(author), "Error: Artifact Not Found"));
                   if (isFixOperationEnabled()) {
                      rd.addRaw("Fix needed here");
                   }
@@ -107,7 +107,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          getSummary().append("Processed " + authors.size() + " author ids\n");
 
       } finally {
-         XResultDataUI.report(rd,getName());
+         XResultDataUI.report(rd, getName());
       }
    }
 

@@ -99,10 +99,9 @@ public class OseeWebApplicationException extends WebApplicationException {
 
             toReturn = String.format(message, args);
          } catch (RuntimeException ex) {
-            toReturn =
-               String.format(
-                  "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]",
-                  message, Collections.toString(",", args), ex.toString());
+            toReturn = String.format(
+               "Exception message could not be formatted: [%s] with the following arguments [%s].  Cause [%s]", message,
+               Collections.toString(",", args), ex.toString());
          }
       }
       return toReturn;

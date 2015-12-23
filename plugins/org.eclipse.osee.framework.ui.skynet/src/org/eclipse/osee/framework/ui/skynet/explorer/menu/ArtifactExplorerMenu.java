@@ -151,7 +151,7 @@ public class ArtifactExplorerMenu {
 
          if (isArtifact) {
             lockMenuItem.setText(
-               (permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock"));
+               permiss.isLocked() ? "Unlock: (" + permiss.getSubjectFromLockedObjectName() + ")" : "Lock");
          }
 
          lockMenuItem.setEnabled(

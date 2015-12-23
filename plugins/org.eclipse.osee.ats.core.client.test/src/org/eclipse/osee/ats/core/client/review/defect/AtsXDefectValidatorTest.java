@@ -46,24 +46,21 @@ public class AtsXDefectValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XDefectViewer
-      WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XDefectViewer");
 
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Reviews do not require Defects to be entered, even if required for transition
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
    }
 

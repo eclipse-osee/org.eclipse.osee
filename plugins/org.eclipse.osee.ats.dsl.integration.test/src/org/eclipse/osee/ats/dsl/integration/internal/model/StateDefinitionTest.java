@@ -10,20 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.dsl.integration.internal.model;
 
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.workdef.IAtsCompositeLayoutItem;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.dsl.integration.internal.AtsWorkDefinitionServiceImpl;
-import org.eclipse.osee.ats.dsl.integration.internal.model.CompositeLayoutItem;
-import org.eclipse.osee.ats.dsl.integration.internal.model.DecisionReviewDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.model.LayoutItem;
-import org.eclipse.osee.ats.dsl.integration.internal.model.PeerReviewDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.model.StateDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.model.WidgetDefinition;
-import org.eclipse.osee.ats.dsl.integration.internal.model.WorkDefinition;
+import org.junit.Assert;
 import org.junit.Test;
 
 public class StateDefinitionTest {

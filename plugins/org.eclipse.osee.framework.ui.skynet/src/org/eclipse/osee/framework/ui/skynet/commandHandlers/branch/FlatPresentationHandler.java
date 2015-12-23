@@ -33,7 +33,7 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    private final ICommandService service;
 
    public FlatPresentationHandler() {
-      service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      service = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override
@@ -45,8 +45,9 @@ public class FlatPresentationHandler extends AbstractHandler implements IElement
    @SuppressWarnings("rawtypes")
    @Override
    public void updateElement(UIElement element, Map parameters) {
-      element.setChecked(Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(
-         BranchView.VIEW_ID).getBoolean(BranchOptionsEnum.FLAT_KEY.origKeyName, true));
+      element.setChecked(
+         Platform.getPreferencesService().getRootNode().node(InstanceScope.SCOPE).node(BranchView.VIEW_ID).getBoolean(
+            BranchOptionsEnum.FLAT_KEY.origKeyName, true));
    }
 
    @Override

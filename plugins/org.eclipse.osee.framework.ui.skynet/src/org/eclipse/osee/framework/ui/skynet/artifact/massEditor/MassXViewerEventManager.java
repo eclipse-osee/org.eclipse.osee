@@ -103,8 +103,8 @@ public class MassXViewerEventManager implements IArtifactEventListener {
                      handler.getMassXViewer().refresh(art);
                   }
                } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
-                     "Error processing event handler for modified - " + handler, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for modified - " + handler,
+                     ex);
                }
             }
          }

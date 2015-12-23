@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-InternalLifecycleTestSuite.class, //
+   InternalLifecycleTestSuite.class, //
 })
 public class AllLifecycleTestSuite {
    // Test Suite

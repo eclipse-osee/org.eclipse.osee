@@ -36,8 +36,8 @@ public final class WordUiUtil {
             invalidLinkMessage +=
                "\t\nInvalid Link: artifact with guid: " + unknownGuid + " does not exist on this branch.";
          }
-         displayUnhandledArtifacts(java.util.Collections.singleton(artifact), String.format(
-               "\nThe following GUIDs found in the artifact/artifact's children" + " are displayed as invalid hyperlinks within the document:  " + "\n%s",
+         displayUnhandledArtifacts(java.util.Collections.singleton(artifact),
+            String.format("\nThe following referenced GUIDs cannot be found:  \n\n%s",
                invalidLinkMessage));
       }
    }
@@ -54,9 +54,8 @@ public final class WordUiUtil {
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "GUID"}));
                for (Artifact artifact : artifacts) {
                   try {
-                     rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-                        artifact.toString(),
-                        XResultDataUI.getHyperlink(artifact)}));
+                     rd.addRaw(AHTML.addRowMultiColumnTable(
+                        new String[] {artifact.toString(), XResultDataUI.getHyperlink(artifact)}));
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }

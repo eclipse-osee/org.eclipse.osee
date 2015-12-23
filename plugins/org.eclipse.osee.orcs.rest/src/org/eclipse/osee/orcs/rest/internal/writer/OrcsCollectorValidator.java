@@ -107,9 +107,8 @@ public class OrcsCollectorValidator {
    private void validateCreateRelations(OwArtifact artifact, XResultData results) {
       for (OwRelation relation : artifact.getRelations()) {
          if (!branchValid) {
-            results.errorf(
-               "Invalid Branch; can't validate artifact uuid for artifact [%s] and relation [%s].\n", artifact,
-               relation);
+            results.errorf("Invalid Branch; can't validate artifact uuid for artifact [%s] and relation [%s].\n",
+               artifact, relation);
          } else {
             OwRelationType relType = relation.getType();
             try {
@@ -119,8 +118,8 @@ public class OrcsCollectorValidator {
                   OwArtifactToken artToken = relation.getArtToken();
                   long branchUuid = collector.getBranch().getUuid();
                   if (artToken == null) {
-                     results.errorf("Invalid artifact token [%s] for artifact [%s] and relation [%s].\n",
-                        artToken, artifact, relation);
+                     results.errorf("Invalid artifact token [%s] for artifact [%s] and relation [%s].\n", artToken,
+                        artifact, relation);
                   }
                   // for performance, check to see if this artifact token was validated
                   else if (!artifactsExist.contains(artToken.getUuid())) {
@@ -138,8 +137,8 @@ public class OrcsCollectorValidator {
                   }
                }
             } catch (Exception ex) {
-               results.errorf("Exception [%s] processing relation [%s] for relType [%s].\n",
-                  ex.getLocalizedMessage(), relation, relType);
+               results.errorf("Exception [%s] processing relation [%s] for relType [%s].\n", ex.getLocalizedMessage(),
+                  relation, relType);
             }
          }
       }
@@ -158,8 +157,7 @@ public class OrcsCollectorValidator {
             }
          } else {
             if (!helper.isAttributeTypeExists(attrType.getUuid())) {
-               results.errorf("Attribute Type [%s] does not exist for artifact [%s].\n", attrType,
-                  artifact);
+               results.errorf("Attribute Type [%s] does not exist for artifact [%s].\n", attrType, artifact);
             }
          }
       }

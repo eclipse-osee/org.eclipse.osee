@@ -99,7 +99,8 @@ public class CoverageAdapter {
          String resolutionFromCoverage = store.get("methodType").trim();
 
          Discrepancy matchedDiscrepancy = textToDiscrepancyMap.get(textFromCoverage);
-         if (!resolutionFromCoverage.equalsIgnoreCase("Test_Unit") && !resolutionFromCoverage.equalsIgnoreCase("Exception_Handling") && matchedDiscrepancy != null) {
+         if (!resolutionFromCoverage.equalsIgnoreCase("Test_Unit") && !resolutionFromCoverage.equalsIgnoreCase(
+            "Exception_Handling") && matchedDiscrepancy != null) {
             madeChange = true;
             // Add Annotation
             DispoAnnotationData newAnnotation = new DispoAnnotationData();

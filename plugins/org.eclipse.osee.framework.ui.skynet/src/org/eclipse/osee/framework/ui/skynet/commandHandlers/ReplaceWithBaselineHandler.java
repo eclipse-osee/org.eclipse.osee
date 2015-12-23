@@ -147,10 +147,10 @@ public class ReplaceWithBaselineHandler extends AbstractHandler {
          ReplaceWithBaselineVersionDialog dialog = new ReplaceWithBaselineVersionDialog(artEnabled, attrEnabled);
          if (dialog.open() == Window.OK) {
             OperationBuilder builder = Operations.createBuilder("Replace with Baseline Version");
-            IOperation op =
-               dialog.isAttributeSelected() ? new ReplaceAttributeWithBaselineOperation(
-                  Handlers.getArtifactChangesFromStructuredSelection(structuredSelection)) : new ReplaceArtifactWithBaselineOperation(
-                  changes, Handlers.getArtifactsFromStructuredSelection(structuredSelection));
+            IOperation op = dialog.isAttributeSelected() ? new ReplaceAttributeWithBaselineOperation(
+               Handlers.getArtifactChangesFromStructuredSelection(
+                  structuredSelection)) : new ReplaceArtifactWithBaselineOperation(changes,
+                     Handlers.getArtifactsFromStructuredSelection(structuredSelection));
             builder.addOp(op);
 
             IOperation finishDialog = new ReplaceBaselineFinishDialog();

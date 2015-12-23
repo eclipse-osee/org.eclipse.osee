@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.internal;
 
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.asResponse;
 import static org.eclipse.osee.orcs.rest.internal.OrcsRestUtil.executeCallable;
+import com.google.common.collect.Sets;
 import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
@@ -27,7 +28,6 @@ import org.eclipse.osee.orcs.rest.model.IndexerEndpoint;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.QueryIndexer;
-import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar

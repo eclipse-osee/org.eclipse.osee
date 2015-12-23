@@ -61,7 +61,7 @@ public class Scope implements Cloneable {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((scopePath == null) ? 0 : scopePath.hashCode());
+      result = prime * result + (scopePath == null ? 0 : scopePath.hashCode());
       return result;
    }
 

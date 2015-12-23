@@ -60,7 +60,7 @@ public class AtsWERenderer extends AbstractAtsRenderer {
       && !presentationType.matches(GENERALIZED_EDIT, PRODUCE_ATTRIBUTE) //
       && aArtifact.isOfType(AtsArtifactTypes.AtsArtifact)) {
 
-         if (Option_WORKFLOW_EDITOR.equals(options.getString(OPEN_OPTION))// 
+         if (Option_WORKFLOW_EDITOR.equals(options.getString(OPEN_OPTION))//
          && !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_EDIT) //
          && !UserManager.getBooleanSetting(UserManager.DOUBLE_CLICK_SETTING_KEY_ART_EDIT)) {
             return SPECIALIZED_MATCH;

@@ -36,6 +36,7 @@ public abstract class DynamicWizard implements IWizard {
    /*
     * Register the default page image
     */
+
    static {
       JFaceResources.getImageRegistry().put(DEFAULT_IMAGE,
          ImageDescriptor.createFromFile(Wizard.class, "images/page.gif"));//$NON-NLS-1$

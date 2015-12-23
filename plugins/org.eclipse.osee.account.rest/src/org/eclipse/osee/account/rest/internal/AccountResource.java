@@ -100,9 +100,8 @@ public class AccountResource {
    @GET
    public Response getSubscriptions(@Context UriInfo uriInfo) {
       URI requestUri = uriInfo.getRequestUri();
-      URI uri =
-         UriBuilder.fromUri(requestUri).path("../../../").path("subscriptions").path("for-account").path("{account-id}").build(
-            accountId);
+      URI uri = UriBuilder.fromUri(requestUri).path("../../../").path("subscriptions").path("for-account").path(
+         "{account-id}").build(accountId);
       return Response.seeOther(uri).build();
    }
 

@@ -52,9 +52,8 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
    protected Artifact getArtifactOrCreate(AtsArtifactConfigCache cache, IArtifactType artifactType, IAtsConfigObject atsObject, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = cache.getArtifact(atsObject);
       if (artifact == null) {
-         artifact =
-            ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), atsObject.getName(),
-               GUID.create(), atsObject.getUuid());
+         artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), atsObject.getName(),
+            GUID.create(), atsObject.getUuid());
          changes.add(artifact);
       }
       return artifact;

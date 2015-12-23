@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.integration.util;
 
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.disposition.rest.integration.util.DispositionTestUtil.SAW_Bld_1_FOR_DISPO;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
@@ -42,7 +42,8 @@ public class DispositionInitializer {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable getDispositionUser() throws OseeCoreException {
-      return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+         SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    private QueryFactory getQueryFactory() {
@@ -78,6 +79,7 @@ public class DispositionInitializer {
 
    @SuppressWarnings("unchecked")
    private ArtifactReadable findUser() {
-      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+         SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 }

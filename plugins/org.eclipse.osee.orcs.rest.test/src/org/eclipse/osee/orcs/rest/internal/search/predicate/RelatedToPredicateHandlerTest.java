@@ -52,8 +52,8 @@ public class RelatedToPredicateHandlerTest {
    @Test
    public void testRelatedToLocalIds() throws OseeCoreException {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
-      Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate = new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"),
+         Arrays.asList("4", "5"), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
       verify(builder, times(2)).andRelatedToLocalIds(rtsCaptor.capture(), idsCaptor.capture());
       List<IRelationTypeSide> rts = rtsCaptor.getAllValues();
@@ -69,9 +69,8 @@ public class RelatedToPredicateHandlerTest {
    @Test(expected = UnsupportedOperationException.class)
    public void testUnsupportedOperation() throws OseeCoreException {
       RelatedToPredicateHandler handler = new RelatedToPredicateHandler();
-      Predicate testPredicate =
-         new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"), Arrays.asList(GUID.create()),
-            QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate = new Predicate(SearchMethod.RELATED_TO, Arrays.asList("A1", "B2"),
+         Arrays.asList(GUID.create()), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
    }
 

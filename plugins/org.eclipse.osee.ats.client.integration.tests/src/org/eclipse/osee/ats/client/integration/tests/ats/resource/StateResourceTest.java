@@ -87,11 +87,12 @@ public class StateResourceTest extends AbstractRestTest {
       form.param("operation", "transition");
 
       AtsChangeSet changes = new AtsChangeSet(StateResourceTest.class.getName());
-      ActionArtifact action =
-         ActionManager.createAction(null, StateResourceTest.class.getName(), "description", ChangeType.Improvement,
-            "1", false, null, ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-               AtsClientService.get().getConfig()), new Date(),
-            AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null, changes);
+      ActionArtifact action = ActionManager.createAction(null, StateResourceTest.class.getName(), "description",
+         ChangeType.Improvement, "1", false, null,
+         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
+            AtsClientService.get().getConfig()),
+         new Date(), AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null,
+         changes);
       TeamWorkFlowArtifact teamWf = action.getFirstTeam();
       changes.execute();
       Assert.assertEquals("Endorse", teamWf.getCurrentStateName());
@@ -119,9 +120,8 @@ public class StateResourceTest extends AbstractRestTest {
    private Response post(Form form) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri = UriBuilder.fromUri(appServer).path("/ats/action/state").build();
-      Response response =
-         JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(
-            MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(Entity.form(form));
+      Response response = JaxRsClient.newBuilder().followRedirects(false).build().target(uri).request(
+         MediaType.APPLICATION_FORM_URLENCODED_TYPE).post(Entity.form(form));
       return response;
    }
 

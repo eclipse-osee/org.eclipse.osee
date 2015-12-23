@@ -48,7 +48,8 @@ public class DrainingIterator<T> implements Iterator<T>, Iterable<T> {
 
    @Override
    /**
-    * It is always unnecessary to call remove from a DrainingIterator since every call to next has already called remove.  This method always throws UnsupportedOperationException.
+    * It is always unnecessary to call remove from a DrainingIterator since every call to next has already called
+    * remove. This method always throws UnsupportedOperationException.
     */
    public void remove() {
       throw new UnsupportedOperationException(

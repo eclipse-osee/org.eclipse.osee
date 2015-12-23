@@ -43,9 +43,8 @@ public class DateSelectionDialog extends MessageDialog {
    }
 
    public DateSelectionDialog(String dialogTitle, String dialogMessage, Date selectedDate) {
-      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-         "Ok",
-         "Cancel"}, 0, selectedDate);
+      this(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {"Ok", "Cancel"}, 0, selectedDate);
    }
 
    @Override

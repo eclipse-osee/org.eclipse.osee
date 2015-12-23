@@ -42,9 +42,8 @@ public class AtsXWidgetsExampleBlamTest {
 
       boolean foundBlam = blams.containsKey(NAME_OF_ATS_ITEM);
       if (foundBlam) {
-         item =
-            new XNavigateItemBlam(new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM),
-               blams.get(NAME_OF_ATS_ITEM));
+         item = new XNavigateItemBlam(new XNavigateItem(null, "Blam Operations", FrameworkImage.BLAM),
+            blams.get(NAME_OF_ATS_ITEM));
       }
 
       Assert.assertTrue(String.format("%s not found from list of provided Blams.", NAME_OF_ATS_ITEM), foundBlam);

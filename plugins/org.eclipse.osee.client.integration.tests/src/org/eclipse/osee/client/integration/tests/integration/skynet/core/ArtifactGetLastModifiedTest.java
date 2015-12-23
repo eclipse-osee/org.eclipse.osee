@@ -51,8 +51,8 @@ public class ArtifactGetLastModifiedTest {
 
    @Before
    public void setup() throws Exception {
-      artifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, CoreBranches.COMMON, method.getQualifiedTestName());
+      artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralDocument, CoreBranches.COMMON,
+         method.getQualifiedTestName());
    }
 
    @After

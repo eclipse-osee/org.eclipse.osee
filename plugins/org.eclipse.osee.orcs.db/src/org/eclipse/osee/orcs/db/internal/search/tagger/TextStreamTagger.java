@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.tagger;
 
+import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -17,7 +18,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar

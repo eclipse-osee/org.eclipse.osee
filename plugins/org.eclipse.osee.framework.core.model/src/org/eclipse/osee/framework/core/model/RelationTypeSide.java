@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide extends FullyNamedIdentity<Long> implements IRelationTypeSide {
+public class RelationTypeSide extends FullyNamedIdentity<Long>implements IRelationTypeSide {
 
    private final IRelationType type;
    private final RelationSide side;

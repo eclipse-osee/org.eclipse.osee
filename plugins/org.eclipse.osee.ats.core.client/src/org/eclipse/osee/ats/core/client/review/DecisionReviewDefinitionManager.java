@@ -58,15 +58,13 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       }
       DecisionReviewArtifact decArt = null;
       if (revDef.isAutoTransitionToDecision()) {
-         decArt =
-            DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getReviewTitle(),
-               revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(),
-               users, createdDate, createdBy, changes);
+         decArt = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamArt, revDef.getReviewTitle(),
+            revDef.getDescription(), revDef.getRelatedToState(), revDef.getBlockingType(), revDef.getOptions(), users,
+            createdDate, createdBy, changes);
       } else {
-         decArt =
-            DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(), revDef.getReviewTitle(),
-               revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users, createdDate, createdBy,
-               changes);
+         decArt = DecisionReviewManager.createNewDecisionReview(teamArt, revDef.getBlockingType(),
+            revDef.getReviewTitle(), revDef.getRelatedToState(), revDef.getDescription(), revDef.getOptions(), users,
+            createdDate, createdBy, changes);
       }
       decArt.getLog().addLog(LogType.Note, null, String.format("Review [%s] auto-generated", revDef.getName()),
          AtsClientService.get().getUserService().getCurrentUser().getUserId());
@@ -88,10 +86,10 @@ public class DecisionReviewDefinitionManager extends TransitionAdapter {
       TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) workItem;
 
       for (IAtsDecisionReviewDefinition decRevDef : teamArt.getStateDefinition().getDecisionReviews()) {
-         if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(StateEventType.TransitionTo)) {
-            DecisionReviewArtifact decArt =
-               DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes, teamArt, createdDate,
-                  createdBy);
+         if (decRevDef.getStateEventType() != null && decRevDef.getStateEventType().equals(
+            StateEventType.TransitionTo)) {
+            DecisionReviewArtifact decArt = DecisionReviewDefinitionManager.createNewDecisionReview(decRevDef, changes,
+               teamArt, createdDate, createdBy);
             if (decArt != null) {
                changes.add(decArt);
             }

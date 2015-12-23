@@ -114,8 +114,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(),
-         artifact.getGuid());
+      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(), artifact.getGuid());
    }
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {

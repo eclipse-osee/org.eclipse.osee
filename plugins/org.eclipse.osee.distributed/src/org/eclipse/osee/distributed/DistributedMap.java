@@ -300,21 +300,21 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //    * Adds an index to this map for the specified entries so that queries can run faster.
    //    * <p/>
    //    * Let's say your map values are Employee objects.
-   //    * 
+   //    *
    //    * <pre>
    //    * public class Employee implements Serializable {
    //    *    private boolean active = false;
    //    *    private int age;
    //    *    private String name = null;
    //    *    // other fields.
-   //    * 
+   //    *
    //    *    // getters setter
-   //    * 
+   //    *
    //    * }
    //    * </pre>
    //    * <p/>
    //    * If you are querying your values mostly based on age and active then you should consider indexing these fields.
-   //    * 
+   //    *
    //    * <pre>
    //    * IMap imap = Hazelcast.getMap(&quot;employees&quot;);
    //    * imap.addIndex(&quot;age&quot;, true); // ordered, since we have ranged queries for this field
@@ -323,7 +323,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //    * <p/>
    //    * Index attribute should either have a getter method or be public. You should also make sure to add the indexes
    //    * before adding entries to this map.
-   //    * 
+   //    *
    //    * @param attribute attribute of value
    //    * @param ordered <tt>true</tt> if index should be ordered, <tt>false</tt> otherwise.
    //    */
@@ -331,7 +331,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //
    //   /**
    //    * Adds an index to this map based on the provided expression.
-   //    * 
+   //    *
    //    * @param expression expression for the index.
    //    * @param ordered <tt>true</tt> if index should be ordered, <tt>false</tt> otherwise.
    //    */
@@ -342,7 +342,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //    * <p/>
    //    * Since this stats are only for the local portion of this map, if you need the cluster-wide MapStats then you need
    //    * to get the LocalMapStats from all members of the cluster and combine them.
-   //    * 
+   //    *
    //    * @return this map's local statistics.
    //    */
    //   LocalMapStats getLocalMapStats();
@@ -357,7 +357,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //    * from member1, you call <code>map.put(key2, value2)</code>. If the key2 is owned by member2 then the local listener
    //    * will be notified for the add/update event. Also note that entries can migrate to other nodes for load balancing
    //    * and/or membership change.
-   //    * 
+   //    *
    //    * @param listener entry listener
    //    * @see #localKeySet()
    //    */
@@ -365,7 +365,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //
    //   /**
    //    * Adds an entry listener for this map. Listener will get notified for all map add/remove/update/evict events.
-   //    * 
+   //    *
    //    * @param listener entry listener
    //    * @param includeValue <tt>true</tt> if <tt>EntryEvent</tt> should contain the value.
    //    */
@@ -373,7 +373,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //
    //   /**
    //    * Removes the specified entry listener Returns silently if there is no such listener added before.
-   //    * 
+   //    *
    //    * @param listener entry listener
    //    */
    //   void removeEntryListener(EntryListener<K, V> listener);
@@ -381,7 +381,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //   /**
    //    * Adds the specified entry listener for the specified key. The listener will get notified for all
    //    * add/remove/update/evict events of the specified key only.
-   //    * 
+   //    *
    //    * @param listener entry listener
    //    * @param key key to listen
    //    * @param includeValue <tt>true</tt> if <tt>EntryEvent</tt> should contain the value.
@@ -391,7 +391,7 @@ public interface DistributedMap<K, V> extends ConcurrentMap<K, V>, DistributedCo
    //   /**
    //    * Removes the specified entry listener for the specified key. Returns silently if there is no such listener added
    //    * before for the key.
-   //    * 
+   //    *
    //    * @param listener
    //    * @param key
    //    */

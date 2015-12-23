@@ -97,7 +97,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();
       artifactSelectPanel.setDialogTitle("Select Destination Artifact");
-      artifactSelectPanel.setDialogMessage("Select a destination artifact. Imported items will be added as children of the selected artifact.");
+      artifactSelectPanel.setDialogMessage(
+         "Select a destination artifact. Imported items will be added as children of the selected artifact.");
 
       artifactSelectPanel.setDefaultItem(defaultDestinationArtifact);
 
@@ -107,7 +108,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       attributeTypeSelectPanel = new AttributeTypeSelectPanel();
       attributeTypeSelectPanel.setDialogTitle("Select Attribute Types");
-      attributeTypeSelectPanel.setDialogMessage("Select which attribute types should be used to match imported and existing artifacts.");
+      attributeTypeSelectPanel.setDialogMessage(
+         "Select which attribute types should be used to match imported and existing artifacts.");
 
       importContributionManager = new ArtifactExtractorContributionManager();
       parserSelectPanel = new ArtifactExtractorSelectPanel(importContributionManager);
@@ -222,7 +224,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       updateExistingArtifacts = new Button(updateComp, SWT.CHECK);
       updateExistingArtifacts.setText("Update existing child artifacts");
-      updateExistingArtifacts.setToolTipText("All imported artifacts will be checked against the root\n" + "import artifact and the content will be placed on the artifact\n" + "that has the same identifying attributes and level from the root");
+      updateExistingArtifacts.setToolTipText(
+         "All imported artifacts will be checked against the root\n" + "import artifact and the content will be placed on the artifact\n" + "that has the same identifying attributes and level from the root");
       updateExistingArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
       updateExistingArtifacts.setSelection(false);
 
@@ -235,7 +238,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
       deleteUnmatchedArtifacts = new Button(group, SWT.CHECK);
       deleteUnmatchedArtifacts.setText("Delete unmatched artifacts");
-      deleteUnmatchedArtifacts.setToolTipText("Any child artifacts that cannot be matched to an imported artifact will be deleted.");
+      deleteUnmatchedArtifacts.setToolTipText(
+         "Any child artifacts that cannot be matched to an imported artifact will be deleted.");
       deleteUnmatchedArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
       deleteUnmatchedArtifacts.setSelection(false);
       deleteUnmatchedArtifacts.setEnabled(false);
@@ -393,7 +397,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          if (toUpdate) {
             try {
                ArtifactType artType = ArtifactTypeManager.getType(getArtifactType());
-               attributeTypeSelectPanel.setAllowedAttributeTypes(artType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
+               attributeTypeSelectPanel.setAllowedAttributeTypes(
+                  artType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -443,16 +448,15 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
          operationReportMessages.setLength(0);
 
-         IOperation op =
-            ArtifactImportOperationFactory.createArtifactsCompOperation("Extracting data from source", sourceFile,
-               destinationArtifact, new OperationLogger() {
-                  @Override
-                  public void log(String... row) {
-                     for (String warningMessage : row) {
-                        operationReportMessages.append(warningMessage);
-                     }
-                  };
-               }, extractor, collector, selectedArtifactTypes, true);
+         IOperation op = ArtifactImportOperationFactory.createArtifactsCompOperation("Extracting data from source",
+            sourceFile, destinationArtifact, new OperationLogger() {
+               @Override
+               public void log(String... row) {
+                  for (String warningMessage : row) {
+                     operationReportMessages.append(warningMessage);
+                  }
+               };
+            }, extractor, collector, selectedArtifactTypes, true);
 
          selectedArtifactTypes.clear();
 
@@ -461,7 +465,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             try {
                if (getArtifactType() != null) {
                   ArtifactType specificArtifactType = ArtifactTypeManager.getType(getArtifactType());
-                  attributeTypeSelectPanel.setAllowedAttributeTypes(specificArtifactType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(
+                     specificArtifactType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -554,7 +559,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
 
       public boolean isValid() {
-         return Conditions.notNull(destinationArtifact, sourceFile, extractor) && (extractor.isDelegateRequired() ? extractor.hasDelegate() : true);
+         return Conditions.notNull(destinationArtifact, sourceFile,
+            extractor) && (extractor.isDelegateRequired() ? extractor.hasDelegate() : true);
       }
    }
 }

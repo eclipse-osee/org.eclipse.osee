@@ -52,18 +52,17 @@ public class BranchGraphPaletteProvider {
          String description = "example";
          Class<?> clazz = Object.class;
 
-         container.add(createComponent(name, description, clazz, FrameworkImage.RECTANGLE_16,
-            FrameworkImage.RECTANGLE_24));
+         container.add(
+            createComponent(name, description, clazz, FrameworkImage.RECTANGLE_16, FrameworkImage.RECTANGLE_24));
          paletteRoot.add(container);
       }
    }
 
    private ToolEntry createComponent(String label, String description, Class<?> clazz, KeyedImage smallImage, KeyedImage largeImage) {
-      ToolEntry toolEntry =
-         new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
-            ImageManager.getImageDescriptor(largeImage)) {
+      ToolEntry toolEntry = new ToolEntry(label, description, ImageManager.getImageDescriptor(smallImage),
+         ImageManager.getImageDescriptor(largeImage)) {
 
-         };
+      };
       return toolEntry;
    }
 

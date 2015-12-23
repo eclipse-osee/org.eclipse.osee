@@ -180,9 +180,8 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
       dialog.setSelectable(attrTypesUsed);
       if (dialog.open() == 0) {
          // perform deletion
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(selectedArtifacts.iterator().next().getBranch(),
-               "Mass Editor - Delete Attributes");
+         SkynetTransaction transaction = TransactionManager.createTransaction(
+            selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Attributes");
          for (Artifact art : selectedArtifacts) {
             for (IAttributeType attributeType : dialog.getChecked()) {
                art.deleteAttributes(attributeType);
@@ -233,10 +232,8 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
       // Do not allow drop if default branch is not same as artifacts that reside in this table
       DropTarget target = new DropTarget(getTree(), DND.DROP_COPY);
-      target.setTransfer(new Transfer[] {
-         FileTransfer.getInstance(),
-         TextTransfer.getInstance(),
-         ArtifactTransfer.getInstance()});
+      target.setTransfer(
+         new Transfer[] {FileTransfer.getInstance(), TextTransfer.getInstance(), ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
          @Override

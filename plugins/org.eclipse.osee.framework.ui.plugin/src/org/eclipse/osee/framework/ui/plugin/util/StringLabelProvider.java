@@ -28,8 +28,7 @@ public class StringLabelProvider implements ILabelProvider {
 
    @Override
    public String getText(Object arg0) {
-      if(arg0 instanceof String)
-      {
+      if (arg0 instanceof String) {
          return (String) arg0;
       }
       return arg0.toString();

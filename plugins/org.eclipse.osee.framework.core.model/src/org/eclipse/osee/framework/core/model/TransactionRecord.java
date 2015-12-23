@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
+public class TransactionRecord extends BaseIdentity<Integer>implements ITransaction, IAdaptable {
    private static final int NON_EXISTING_BRANCH = -1;
    private final TransactionDetailsType txType;
 

@@ -38,9 +38,10 @@ public class AtsXWidgetValidateManager {
                   results.add(status);
                }
             } catch (Exception ex) {
-               results.add(new WidgetResult(WidgetStatus.Exception, widgetDef, ex, String.format(
-                  "Exception retriving validation for widget [%s] Exception [%s]",
-                  validator.getClass().getSimpleName(), ex.getLocalizedMessage()), ex));
+               results.add(new WidgetResult(WidgetStatus.Exception, widgetDef, ex,
+                  String.format("Exception retriving validation for widget [%s] Exception [%s]",
+                     validator.getClass().getSimpleName(), ex.getLocalizedMessage()),
+                  ex));
                return;
             }
          }

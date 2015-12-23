@@ -29,7 +29,7 @@ public class ActionWalkerLabelProvider implements ILabelProvider {
    @Override
    public Image getImage(Object obj) {
       if (obj instanceof Artifact) {
-         return ArtifactImageManager.getImage(((Artifact) obj));
+         return ArtifactImageManager.getImage((Artifact) obj);
       } else if (obj instanceof IActionWalkerItem) {
          return ((IActionWalkerItem) obj).getImage();
       }

@@ -58,7 +58,7 @@ public class CompareData {
    }
 
    public void addMerge(String fileLocation) {
-      if ((fileLocation != null) && (fileLocation.length() > 0)) {
+      if (fileLocation != null && fileLocation.length() > 0) {
          mergeList.add(fileLocation);
       }
    }

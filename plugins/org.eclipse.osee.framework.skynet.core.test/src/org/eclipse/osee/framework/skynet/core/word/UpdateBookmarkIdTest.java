@@ -28,8 +28,7 @@ public class UpdateBookmarkIdTest {
          "<aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"133334\" w:type=\"Word.Bookmark.End\"/>";
       String modifiedContent = bookMarkIds.fixTags(bookmark);
 
-      Assert.assertEquals(
-         "The bookmark IDs have been reset",
+      Assert.assertEquals("The bookmark IDs have been reset",
          "<aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.Start\"/><aml:annotation aml:id=\"1001\" w:type=\"Word.Bookmark.End\"/>",
          modifiedContent);
    }

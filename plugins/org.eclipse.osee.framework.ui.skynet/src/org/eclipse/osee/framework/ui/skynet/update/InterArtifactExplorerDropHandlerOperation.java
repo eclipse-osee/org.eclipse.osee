@@ -78,19 +78,17 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
             public void run() {
                try {
                   if (prompt) {
-                     CheckBoxDialog confirm =
-                        new CheckBoxDialog(Displays.getActiveShell(), "Introduce Artifact(s)", null,
-                           "Introduce " + sourceArtifacts.size() + " Artifact(s)", "Include Children",
-                           MessageDialog.QUESTION, 0);
+                     CheckBoxDialog confirm = new CheckBoxDialog(Displays.getActiveShell(), "Introduce Artifact(s)",
+                        null, "Introduce " + sourceArtifacts.size() + " Artifact(s)", "Include Children",
+                        MessageDialog.QUESTION, 0);
                      if (confirm.open() == 0) {
                         if (confirm.isChecked()) {
                            sourceArtifacts.addAll(getRecurseChildren());
                         }
                      }
                   }
-                  SkynetTransaction transaction =
-                     TransactionManager.createTransaction(destinationBranch,
-                        String.format("Introduce %d artifact(s)", sourceArtifacts.size()));
+                  SkynetTransaction transaction = TransactionManager.createTransaction(destinationBranch,
+                     String.format("Introduce %d artifact(s)", sourceArtifacts.size()));
                   List<Artifact> destinationArtifacts =
                      new IntroduceArtifactOperation(destinationBranch).introduce(sourceArtifacts);
                   for (Artifact destinationArtifact : destinationArtifacts) {
@@ -114,8 +112,8 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
    }
 
    private boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return AccessControlManager.hasPermission(destinationBranch, PermissionEnum.WRITE) && AccessControlManager.hasPermission(
-         sourceBranch, PermissionEnum.READ);
+      return AccessControlManager.hasPermission(destinationBranch,
+         PermissionEnum.WRITE) && AccessControlManager.hasPermission(sourceBranch, PermissionEnum.READ);
    }
 
    private boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {

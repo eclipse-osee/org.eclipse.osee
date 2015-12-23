@@ -60,7 +60,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -224,9 +223,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {
-            BranchType.BASELINE.getValue(),
-            childBranch.getUuid()});
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE,
+            new Object[] {BranchType.BASELINE.getValue(), childBranch.getUuid()});
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -252,9 +250,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          OseeLog.log(Activator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_1");
       }
 
-      actions =
-         createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_1, TeamState.Completed,
-            changes);
+      actions = createActions(DemoDbActionData.getNonReqSawActionData(), DemoArtifactToken.SAW_Bld_1,
+         TeamState.Completed, changes);
       appendBuildNameToTitles(actions, SAW_Bld_1.toString(), changes);
 
       changes.execute();
@@ -293,15 +290,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
          IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
 
          for (String prefixTitle : aData.prefixTitles) {
-            ActionArtifact actionArt =
-               ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
-                  TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
-                  aData.getActionableItems(), createdDate, createdBy, null, changes);
+            ActionArtifact actionArt = ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
+               TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], aData.priority, false, null,
+               aData.getActionableItems(), createdDate, createdBy, null, changes);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
-               TeamWorkFlowManager dtwm =
-                  new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-                     TransitionOption.OverrideTransitionValidityCheck);
+               TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
+                  TransitionOption.OverrideTransitionValidityCheck);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {
@@ -319,15 +314,14 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
 
                // Transition to desired state
-               Result result =
-                  dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState),
-                     teamWf.getAssignees().iterator().next(), false, changes);
+               Result result = dtwm.transitionTo(toStateOverride != null ? toStateOverride : aData.toState,
+                  teamWf.getAssignees().iterator().next(), false, changes);
                if (result.isFalse()) {
                   throw new OseeCoreException("Error transitioning [%s] to state [%s]: [%s]", teamWf.toStringWithId(),
                      aData.toState.getName(), result.getText());
                }
                if (!teamWf.isCompletedOrCancelled()) {
-                  // Reset assignees that may have been overwritten during transition 
+                  // Reset assignees that may have been overwritten during transition
                   teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
                }
                if (versionToken != null) {
@@ -354,7 +348,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
       if (DEBUG) {
-         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", folderName, branch);
+         OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", folderName,
+            branch);
       }
       Artifact systemReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Folder, folderName, branch);
 
@@ -396,15 +391,15 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          Collection<Artifact> subSystemArts =
             DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
-         subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord,
-            "Video", branch));
+         subSystemArts.addAll(
+            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
          subSystemArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord,
             "Interface", branch));
 
          Collection<Artifact> softArts =
             DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
-         softArts.addAll(DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Interface",
-            branch));
+         softArts.addAll(
+            DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Interface", branch));
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
@@ -438,9 +433,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
             throw new IllegalStateException("Could not find Verification Tests header");
          }
          for (String str : new String[] {"A", "B", "C"}) {
-            Artifact newArt =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, verificationHeader.getBranch(),
-                  "Verification Test " + str);
+            Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase,
+               verificationHeader.getBranch(), "Verification Test " + str);
             verificationTests.add(newArt);
             verificationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);
@@ -455,9 +449,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
             throw new IllegalStateException("Could not find Validation Tests header");
          }
          for (String str : new String[] {"1", "2", "3"}) {
-            Artifact newArt =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, validationHeader.getBranch(),
-                  "Validation Test " + str);
+            Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
+               validationHeader.getBranch(), "Validation Test " + str);
             validationTests.add(newArt);
             validationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);
@@ -472,9 +465,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
             throw new IllegalStateException("Could not find integration Tests header");
          }
          for (String str : new String[] {"X", "Y", "Z"}) {
-            Artifact newArt =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, integrationHeader.getBranch(),
-                  "integration Test " + str);
+            Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
+               integrationHeader.getBranch(), "integration Test " + str);
             integrationTests.add(newArt);
             integrationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);

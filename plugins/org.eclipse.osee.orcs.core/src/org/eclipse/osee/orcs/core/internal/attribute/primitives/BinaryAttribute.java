@@ -11,9 +11,6 @@
 
 package org.eclipse.osee.orcs.core.internal.attribute.primitives;
 
-
-
-
 /**
  * @author Ryan D. Brooks
  */

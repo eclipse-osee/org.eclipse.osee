@@ -102,9 +102,8 @@ public final class AWorkbench {
    }
 
    public static void popup(String title, Result result) {
-      AWorkbench.popup(
-         Strings.isValid(title) ? title : ((result.isTrue() ? "Success" : "ERROR")),
-         Strings.isValid(result.getText()) ? result.getText() : result.isTrue() ? "Success" : "Error Encountered.  See Error Log View");
+      AWorkbench.popup(Strings.isValid(title) ? title : result.isTrue() ? "Success" : "ERROR", Strings.isValid(
+         result.getText()) ? result.getText() : result.isTrue() ? "Success" : "Error Encountered.  See Error Log View");
 
    }
 

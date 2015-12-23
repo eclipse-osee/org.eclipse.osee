@@ -50,8 +50,8 @@ public class ArtifactPromptChangeTest {
 
       ArtifactPrompt artifactPromptChange = new ArtifactPrompt(MockPromptFactory, policyHandler);
 
-      Assert.assertFalse(artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist,
-         false));
+      Assert.assertFalse(
+         artifactPromptChange.promptChangeAttribute(CoreAttributeTypes.Annotation, artifacts, persist, false));
       Assert.assertTrue(artifactPromptChange.promptChangeAttribute(TEST_ATTRIBUTE_TYPE, artifacts, persist, false));
    }
 

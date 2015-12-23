@@ -10,16 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.access.exp.AccessFilterChain;
-import org.eclipse.osee.framework.core.model.access.exp.ArtifactAccessFilter;
-import org.eclipse.osee.framework.core.model.access.exp.AttributeTypeAccessFilter;
-import org.eclipse.osee.framework.core.model.access.exp.BranchAccessFilter;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
@@ -67,7 +63,8 @@ public class AccessFilterChainTest {
       chain.add(attributeTypeAccessFilter);
 
       PermissionEnum agrPermission = null;
-      Assert.assertFalse(chain.doFilter(basicArtifact2, attributeTypeAccessFilter, PermissionEnum.WRITE, agrPermission));
+      Assert.assertFalse(
+         chain.doFilter(basicArtifact2, attributeTypeAccessFilter, PermissionEnum.WRITE, agrPermission));
    }
 
    @Test

@@ -160,7 +160,7 @@ public class HTMLRenderer extends FileSystemRenderer {
          } else {
             List<Attribute<Object>> attrs = artifact.getAttributes((IAttributeType) type);
             for (Object o : attrs) {
-               if ((o instanceof StringAttribute) || (o instanceof OutlineNumberAttribute)) {
+               if (o instanceof StringAttribute || o instanceof OutlineNumberAttribute) {
                   String attributeValue = artifact.getAttributesToString(type);
                   if (Strings.isValid(attributeValue)) {
                      output.append(blankLine);

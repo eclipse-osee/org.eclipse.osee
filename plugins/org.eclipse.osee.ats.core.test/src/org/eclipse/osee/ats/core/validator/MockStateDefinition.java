@@ -114,7 +114,7 @@ public class MockStateDefinition implements IAtsStateDefinition {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((getFullName() == null) ? 0 : getFullName().hashCode());
+      result = prime * result + (getFullName() == null ? 0 : getFullName().hashCode());
       return result;
    }
 

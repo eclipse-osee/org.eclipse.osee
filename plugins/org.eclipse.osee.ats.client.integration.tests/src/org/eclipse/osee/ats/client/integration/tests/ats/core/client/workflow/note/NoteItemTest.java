@@ -29,8 +29,8 @@ public class NoteItemTest {
    @Test
    public void testNoteItemNoteTypeStringStringUserString() throws OseeCoreException {
       Date date = new Date();
-      NoteItem item =
-         new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserService().getCurrentUser(), "my msg");
+      NoteItem item = new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()),
+         AtsClientService.get().getUserService().getCurrentUser(), "my msg");
       validate(item, date);
    }
 
@@ -42,15 +42,15 @@ public class NoteItemTest {
    }
 
    public static NoteItem getTestNoteItem(Date date) throws OseeCoreException {
-      return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserService().getCurrentUser(), "my msg");
+      return new NoteItem(NoteType.Comment, "Implement", String.valueOf(date.getTime()),
+         AtsClientService.get().getUserService().getCurrentUser(), "my msg");
    }
 
    @Test
    public void testNoteItemStringStringStringUserString() throws OseeCoreException {
       Date date = new Date();
-      NoteItem item =
-         new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()), AtsClientService.get().getUserService().getCurrentUser(),
-            "my msg");
+      NoteItem item = new NoteItem(NoteType.Comment.name(), "Implement", String.valueOf(date.getTime()),
+         AtsClientService.get().getUserService().getCurrentUser(), "my msg");
       validate(item, date);
    }
 
@@ -60,7 +60,8 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "Note: Comment from " + AtsClientService.get().getUserService().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "Note: Comment from " + AtsClientService.get().getUserService().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(
+            date) + " - my msg",
          item.toString());
    }
 
@@ -68,15 +69,13 @@ public class NoteItemTest {
    public void testToXmlFromXml() throws OseeCoreException {
       Date date = new Date();
       NoteItem item = getTestNoteItem(date);
-      NoteItem item2 =
-         new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()), AtsClientService.get().getUserService().getCurrentUser(),
-            "another message");
+      NoteItem item2 = new NoteItem(NoteType.Question.name(), "Analyze", String.valueOf(date.getTime()),
+         AtsClientService.get().getUserService().getCurrentUser(), "another message");
 
       String xml = NoteItem.toXml(Arrays.asList(item, item2));
-      Assert.assertEquals(
-         "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + AtsClientService.get().getUserService().getCurrentUser().getUserId() + "\"/>" + //
-         "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + AtsClientService.get().getUserService().getCurrentUser().getUserId() + "\"/></AtsNote>",
+      Assert.assertEquals("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?><AtsNote>" + //
+      "<Item date=\"" + date.getTime() + "\" msg=\"my msg\" state=\"Implement\" type=\"Comment\" userId=\"" + AtsClientService.get().getUserService().getCurrentUser().getUserId() + "\"/>" + //
+      "<Item date=\"" + date.getTime() + "\" msg=\"another message\" state=\"Analyze\" type=\"Question\" userId=\"" + AtsClientService.get().getUserService().getCurrentUser().getUserId() + "\"/></AtsNote>",
          xml);
 
       List<NoteItem> items = NoteItem.fromXml(xml, "ASDF4");
@@ -96,7 +95,8 @@ public class NoteItemTest {
       NoteItem item = getTestNoteItem(date);
 
       Assert.assertEquals(
-         "<b>Note:</b>Comment from " + AtsClientService.get().getUserService().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(date) + " - my msg",
+         "<b>Note:</b>Comment from " + AtsClientService.get().getUserService().getCurrentUser().getName() + " for \"Implement\" on " + DateUtil.getMMDDYYHHMM(
+            date) + " - my msg",
          item.toHTML());
    }
 

@@ -109,8 +109,8 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       try {
          TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-         dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active,
-            AtsClientService.get().getConfig()));
+         dialog.setInput(
+            TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
          int result = dialog.open();
          if (result == 0) {
             selectedTeamDef = dialog.getSelectedFirst();

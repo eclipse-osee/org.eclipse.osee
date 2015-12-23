@@ -237,7 +237,7 @@ public class MergeXWidget extends GenericXWidget {
                   if (conflicts[0].getToTransactionId() != null) {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
                         conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
-                        artifactChanges));
+                           artifactChanges));
                   } else {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getCommitTransactionId(),
                         monitor).toArray(artifactChanges));
@@ -302,7 +302,8 @@ public class MergeXWidget extends GenericXWidget {
          if (resolved == conflicts.length) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            extraInfoLabel.setText(displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
+            extraInfoLabel.setText(
+               displayLabelText + "\nConflicts : " + (conflicts.length - informational) + " <=> Resolved : " + resolved + (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
          }
       }
       checkForCompleteCommit();
@@ -368,9 +369,8 @@ public class MergeXWidget extends GenericXWidget {
                if (showConflicts) {
                   Conflict[] conflicts;
                   if (commitTrans == null) {
-                     conflicts =
-                        ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, monitor).toArray(
-                           new Conflict[0]);
+                     conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId,
+                        monitor).toArray(new Conflict[0]);
                   } else {
                      conflicts =
                         ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
@@ -418,7 +418,8 @@ public class MergeXWidget extends GenericXWidget {
       try {
          IArtifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          if (branchAssociatedArtifact != null) {
-            openAssociatedArtifactAction.setImageDescriptor(ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
+            openAssociatedArtifactAction.setImageDescriptor(
+               ArtifactImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
          }
       } catch (ArtifactDoesNotExist ex) {
@@ -461,10 +462,9 @@ public class MergeXWidget extends GenericXWidget {
          if (resolved == storedConflicts.length - informational) {
             extraInfoLabel.setText(displayLabelText + CONFLICTS_RESOLVED);
          } else {
-            String message =
-               String.format("%s\nConflicts : %s <=> Resolved : %s%s", displayLabelText,
-                  (storedConflicts.length - informational), resolved,
-                  (informational == 0 ? " " : "\nInformational Conflicts : " + informational));
+            String message = String.format("%s\nConflicts : %s <=> Resolved : %s%s", displayLabelText,
+               storedConflicts.length - informational, resolved,
+               informational == 0 ? " " : "\nInformational Conflicts : " + informational);
             extraInfoLabel.setText(message);
          }
       }
@@ -487,7 +487,7 @@ public class MergeXWidget extends GenericXWidget {
    }
 
    private void checkForCompleteCommit() {
-      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && (getConflicts().length > 0);
+      boolean isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved() && getConflicts().length > 0;
       if (null != sourceBranch) {
          try {
             boolean isValidUpdate =
@@ -496,7 +496,7 @@ public class MergeXWidget extends GenericXWidget {
             boolean isValidCommit =
                BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress();
 
-            isVisible &= (isValidUpdate || isValidCommit);
+            isVisible &= isValidUpdate || isValidCommit;
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             isVisible = false;
@@ -538,7 +538,8 @@ public class MergeXWidget extends GenericXWidget {
                   ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
                   IOperation operation = new FinishUpdateBranchOperation(conflictManager, true, false);
                   Operations.executeAsJob(operation, true);
-               } else if ((BranchManager.hasMergeBranches(sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress())) {
+               } else if (BranchManager.hasMergeBranches(
+                  sourceBranch) && !sourceBranch.getBranchState().isRebaselineInProgress()) {
                   Artifact art = BranchManager.getAssociatedArtifact(sourceBranch);
                   IOseeCmService cm = ServiceUtil.getOseeCmService();
 
@@ -564,10 +565,10 @@ public class MergeXWidget extends GenericXWidget {
             Displays.pendInDisplayThread(new Runnable() {
                @Override
                public void run() {
-                  CheckBoxDialog dialog =
-                     new CheckBoxDialog("Commit Into", String.format(
-                        "Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]", sourceBranch,
-                        destBranch), "Archive Source Branch");
+                  CheckBoxDialog dialog = new CheckBoxDialog("Commit Into",
+                     String.format("Commit from\n\nSource Branch: [%s]\n\ninto\n\nDestination Branch: [%s]",
+                        sourceBranch, destBranch),
+                     "Archive Source Branch");
                   if (dialog.open() == 0) {
                      archiveSourceBranch.setValue(dialog.isChecked());
                   }
@@ -575,9 +576,8 @@ public class MergeXWidget extends GenericXWidget {
             });
          }
 
-         IOperation operation =
-            new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
-               archiveSourceBranch.booleanValue(), false);
+         IOperation operation = new CommitBranchHttpRequestOperation(UserManager.getUser(), sourceBranch, destBranch,
+            archiveSourceBranch.booleanValue(), false);
          Operations.executeWorkAndCheckStatus(operation, null);
       }
    }
@@ -701,14 +701,13 @@ public class MergeXWidget extends GenericXWidget {
                      }
                   }
                   if (selections.size() > 0) {
-                     ListSelectionDialogNoSave dialog =
-                        new ListSelectionDialogNoSave(selections.toArray(), Displays.getActiveShell().getShell(),
-                           "Apply Prior Merge Resolution", null,
-                           "Select the destination branch that the previous commit was appplied to", 2, new String[] {
-                              "Apply",
-                              "Cancel"}, 1);
+                     ListSelectionDialogNoSave dialog = new ListSelectionDialogNoSave(selections.toArray(),
+                        Displays.getActiveShell().getShell(), "Apply Prior Merge Resolution", null,
+                        "Select the destination branch that the previous commit was appplied to", 2,
+                        new String[] {"Apply", "Cancel"}, 1);
                      if (dialog.open() == 0) {
-                        System.out.print("Applying the merge found for Branch " + branchUuids.toArray()[dialog.getSelection()]);
+                        System.out.print(
+                           "Applying the merge found for Branch " + branchUuids.toArray()[dialog.getSelection()]);
                         applyPreviousMerge(branchUuids.get(dialog.getSelection()));
                      }
                   }

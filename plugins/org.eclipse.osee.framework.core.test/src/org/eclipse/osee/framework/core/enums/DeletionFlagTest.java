@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.core.enums;
 
 import org.junit.Assert;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.junit.Test;
 
 /**

@@ -41,12 +41,11 @@ public class PropertyStoreWriterTest {
       store.put("key6.5", "");
       store.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      nested =
-         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
+      nested = PropertyStoreTestUtil.createPropertyStore(
+         PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
       nested.put("inner array 1", new String[] {"value1", "value2"});
-      nested.put(
-         "inner store 1",
-         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
+      nested.put("inner store 1", PropertyStoreTestUtil.createPropertyStore(
+         PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
       store.put("key9", nested);
    }
 

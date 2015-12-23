@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 /**
  * @author Roberto E. Escobar
  */
-public final class DefaultBasicArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
+public final class DefaultBasicArtifact extends NamedIdentity<String>implements IBasicArtifact<Object> {
 
    private final int artId;
 

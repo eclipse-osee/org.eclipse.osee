@@ -115,30 +115,35 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Info", "Status"}));
 
       try {
-         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty("user.dir") + "</td></tr>");
+         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2>" + System.getProperty(
+            "user.dir") + "</td></tr>");
       } catch (NullPointerException ex) {
-         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: System property 'user.dir' is missing.</b></font></td></tr>");
+         builder.append(
+            "<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: System property 'user.dir' is missing.</b></font></td></tr>");
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
-         builder.append("<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
+         builder.append(
+            "<tr><td><b>OSEE Client Version</b></td><td colspan=2>" + OseeCodeVersion.getVersion() + "</td></tr>");
       } catch (NullPointerException ex) {
-         builder.append("<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: OseeCodeVersion.getVersion() produced a null pointer exception.</b></font></td></tr>");
+         builder.append(
+            "<tr><td><b>OSEE Client Installation</b></td><td colspan=2><font color=\"red\"><b>WARNING: OseeCodeVersion.getVersion() produced a null pointer exception.</b></font></td></tr>");
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
-         builder.append("<tr><td><b>OSEE Application Server</b></td><td colspan=2>" + OseeClientProperties.getOseeApplicationServer() + "</td></tr>");
+         builder.append(
+            "<tr><td><b>OSEE Application Server</b></td><td colspan=2>" + OseeClientProperties.getOseeApplicationServer() + "</td></tr>");
       } catch (NullPointerException ex) {
-         builder.append("<tr><td><b>OSEE Application Server</b></td><td colspan=2><font color=\"red\"><b>WARNING: " + ex.getLocalizedMessage() + "</b></font></td></tr>");
+         builder.append(
+            "<tr><td><b>OSEE Application Server</b></td><td colspan=2><font color=\"red\"><b>WARNING: " + ex.getLocalizedMessage() + "</b></font></td></tr>");
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
       try {
          for (IHealthStatus status : OseeLog.getStatus()) {
-            builder.append(AHTML.addRowMultiColumnTable(
-               "<b>" + status.getSourceName() + "</b>",
+            builder.append(AHTML.addRowMultiColumnTable("<b>" + status.getSourceName() + "</b>",
                status.getMessage().replaceAll("]", "]<br/>"),
                status.isOk() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable</b></font>"));
 
@@ -150,8 +155,7 @@ public class ConfigurationDetails extends PreferencePage implements IWorkbenchPr
       }
 
       try {
-         builder.append(AHTML.addRowMultiColumnTable(
-            "<b>Remote Event Service</b>",
+         builder.append(AHTML.addRowMultiColumnTable("<b>Remote Event Service</b>",
             OseeEventManager.getConnectionDetails().replaceAll("]", "]<br/>"),
             OseeEventManager.isEventManagerConnected() ? "<font color=\"green\"><b>Ok</b></font>" : "<font color=\"red\"><b>Unavailable - " + getEventServiceDetails() + "</b></font>"));
       } catch (NullPointerException ex) {

@@ -22,7 +22,7 @@ public interface HasBranch {
    default Long getBranchId() {
       return getBranch().getUuid();
    }
-   
+
    default boolean isOnBranch(Long branchId) {
       return getBranchId().equals(branchId);
    }

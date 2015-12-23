@@ -65,9 +65,8 @@ public class AtsArtifactQuery {
       }
 
       if (!atsIds.isEmpty()) {
-         List<Artifact> fromIds =
-            ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds,
-               AtsUtilCore.getAtsBranch(), atsIds.size());
+         List<Artifact> fromIds = ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.AtsId, atsIds,
+            AtsUtilCore.getAtsBranch(), atsIds.size());
          toReturn.addAll(fromIds);
       }
 

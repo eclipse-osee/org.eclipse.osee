@@ -37,10 +37,9 @@ public class TxEditPart extends AbstractGraphicalEditPart {
 
       figure.add(txFigure, BorderLayout.CENTER);
 
-      Rectangle rect =
-         new Rectangle(GraphFigureConstants.TX_X_OFFSET + GraphFigureConstants.PLUS_MINUS_PADDING * 2,
-            10 + GraphFigureConstants.BRANCH_HEIGHT + txModel.getIndex() * GraphFigureConstants.TX_Y_OFFSET,
-            GraphFigureConstants.TX_WIDTH, GraphFigureConstants.TX_HEIGHT);
+      Rectangle rect = new Rectangle(GraphFigureConstants.TX_X_OFFSET + GraphFigureConstants.PLUS_MINUS_PADDING * 2,
+         10 + GraphFigureConstants.BRANCH_HEIGHT + txModel.getIndex() * GraphFigureConstants.TX_Y_OFFSET,
+         GraphFigureConstants.TX_WIDTH, GraphFigureConstants.TX_HEIGHT);
       ((AbstractGraphicalEditPart) getParent()).getFigure().getLayoutManager().setConstraint(txFigure, rect);
 
       return txFigure;

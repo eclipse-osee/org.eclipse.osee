@@ -98,9 +98,8 @@ public class BaseBrokerTesting {
          } else {
             exe = "eclipse";
          }
-         ProcessBuilder builder =
-            new ProcessBuilder(url.getPath() + exe, "-console", "-nosplash", "-application",
-               "jms.activemq.launch.RunActiveMq", DefaultNodeInfos.OSEE_JMS_DEFAULT_PORT);
+         ProcessBuilder builder = new ProcessBuilder(url.getPath() + exe, "-console", "-nosplash", "-application",
+            "jms.activemq.launch.RunActiveMq", DefaultNodeInfos.OSEE_JMS_DEFAULT_PORT);
          builder.directory(new File(url.getPath()));
          builder.redirectErrorStream(true);
          Process process = builder.start();

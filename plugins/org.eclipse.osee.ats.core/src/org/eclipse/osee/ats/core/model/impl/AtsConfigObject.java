@@ -110,10 +110,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
       Set<IAtsUser> results = new HashSet<>();
       try {
          for (Object userArt : atsServices.getRelationResolver().getRelated(artifact, relation)) {
-            IAtsUser lead =
-               atsServices.getUserService().getUserById(
-                  (String) atsServices.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
-                     CoreAttributeTypes.UserId, null));
+            IAtsUser lead = atsServices.getUserService().getUserById(
+               (String) atsServices.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+                  CoreAttributeTypes.UserId, null));
             results.add(lead);
          }
       } catch (OseeCoreException ex) {
@@ -124,7 +123,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
 
    @Override
    public ArtifactId getStoreObject() {
-      return (artifact != null ? artifact : super.getStoreObject());
+      return artifact != null ? artifact : super.getStoreObject();
    }
 
    @Override

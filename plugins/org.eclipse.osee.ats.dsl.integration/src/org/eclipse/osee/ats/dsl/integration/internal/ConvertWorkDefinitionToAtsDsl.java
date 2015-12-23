@@ -59,8 +59,7 @@ public class ConvertWorkDefinitionToAtsDsl {
    private final XResultData resultData;
    private final Map<String, WidgetDef> idToDslWidgetDefMap = new HashMap<>(15);
    private final Map<String, StateDef> nameToDslStateDefMap = new HashMap<>(15);
-   private final Map<String, DecisionReviewDef> nameToDslDecisionReviewDefMap = new HashMap<>(
-      0);
+   private final Map<String, DecisionReviewDef> nameToDslDecisionReviewDefMap = new HashMap<>(0);
    private final Map<String, PeerReviewDef> nameToDslPeerReviewDefMap = new HashMap<>(0);
 
    public ConvertWorkDefinitionToAtsDsl(XResultData resultData) {

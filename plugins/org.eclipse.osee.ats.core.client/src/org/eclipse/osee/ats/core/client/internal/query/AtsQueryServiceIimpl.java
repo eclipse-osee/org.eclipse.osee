@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.query;
 
-import java.util.Collection;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -68,7 +67,7 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       ArtifactId userArt = atsUser.getStoreObject();
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(userArt,
          AtsAttributeTypes.QuickSearch)) {
-         String jsonValue = ((String) attr.getValue());
+         String jsonValue = (String) attr.getValue();
          if (jsonValue.contains("\"namespace\":\"" + namespace + "\"")) {
             try {
                AtsSearchData data = fromJson(jsonValue);
@@ -108,7 +107,7 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
    private IAttribute<Object> getAttrById(ArtifactId artifact, Long attrId) {
       for (IAttribute<Object> attr : atsClient.getAttributeResolver().getAttributes(artifact,
          AtsAttributeTypes.QuickSearch)) {
-         String jsonValue = ((String) attr.getValue());
+         String jsonValue = (String) attr.getValue();
          try {
             AtsSearchData data = fromJson(jsonValue);
             if (attrId.equals(data.getUuid())) {

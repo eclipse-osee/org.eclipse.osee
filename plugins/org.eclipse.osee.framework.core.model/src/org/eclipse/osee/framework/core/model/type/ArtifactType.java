@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactType extends AbstractOseeIdType<Long> implements IArtifactType {
+public class ArtifactType extends AbstractOseeIdType<Long>implements IArtifactType {
 
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";

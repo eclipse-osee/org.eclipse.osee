@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
@@ -34,9 +37,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
 import org.junit.Test;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 
 /**
  * Test unit for {@link ActionResource}

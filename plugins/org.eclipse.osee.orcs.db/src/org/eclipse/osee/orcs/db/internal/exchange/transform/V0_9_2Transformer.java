@@ -70,8 +70,8 @@ public class V0_9_2Transformer implements IOseeExchangeVersionTransformer {
       tableToColumns.put("osee_branch", "<column id=\"baseline_transaction_id\" type=\"INTEGER\" />\n");
       processor.transform(ExportItem.EXPORT_DB_SCHEMA, new DbSchemaRuleAddColumn(tableToColumns));
 
-      processor.transform(ExportItem.EXPORT_MANIFEST, new ReplaceAll("<entry id=\"osee.artifact.version.data.xml[^<]+",
-         ""));
+      processor.transform(ExportItem.EXPORT_MANIFEST,
+         new ReplaceAll("<entry id=\"osee.artifact.version.data.xml[^<]+", ""));
       processor.deleteExportItem("osee.artifact.version.data.xml");
       return getMaxVersion();
    }

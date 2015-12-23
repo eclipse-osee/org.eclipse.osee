@@ -75,4 +75,4 @@ public class SubscriptionGroupData implements Identifiable<String> {
       return String.valueOf(getGuid());
    }
 
-   }
+}

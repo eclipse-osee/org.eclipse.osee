@@ -25,7 +25,8 @@ public class TISAttributeHandler implements ITemplateAttributeHandler {
    @Override
    public void process(WordMLProducer wordMl, Artifact artifact, TemplateAttribute attribute) throws OseeCoreException {
       for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationTypes.Verification__Requirement)) {
-         wordMl.addParagraphBold(requirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + "\t" + requirement.getName());
+         wordMl.addParagraphBold(
+            requirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "") + "\t" + requirement.getName());
          String str = requirement.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent);
          wordMl.addWordMl(str);
       }

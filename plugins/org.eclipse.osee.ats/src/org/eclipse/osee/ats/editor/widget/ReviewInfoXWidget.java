@@ -131,20 +131,18 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   if (smaWorkflowSection.getEditor().isDirty()) {
                      smaWorkflowSection.getEditor().doSave(null);
                   }
-                  StateListAndTitleDialog dialog =
-                     new StateListAndTitleDialog("Create Decision Review",
-                        "Select state to that review will be associated with.",
-                        AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
+                  StateListAndTitleDialog dialog = new StateListAndTitleDialog("Create Decision Review",
+                     "Select state to that review will be associated with.",
+                     AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
                   if (dialog.open() == 0) {
                      if (!Strings.isValid(dialog.getReviewTitle())) {
                         AWorkbench.popup("ERROR", "Must enter review title");
                         return;
                      }
-                     NewDecisionReviewJob job =
-                        new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(), dialog.getSelectedState(),
-                           null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null, new Date(),
-                           AtsClientService.get().getUserService().getCurrentUser());
+                     NewDecisionReviewJob job = new NewDecisionReviewJob(teamArt, null, dialog.getReviewTitle(),
+                        dialog.getSelectedState(), null, DecisionReviewManager.getDefaultDecisionReviewOptions(), null,
+                        new Date(), AtsClientService.get().getUserService().getCurrentUser());
                      job.setUser(true);
                      job.setPriority(Job.LONG);
                      job.schedule();
@@ -174,10 +172,9 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                   if (smaWorkflowSection.getEditor().isDirty()) {
                      smaWorkflowSection.getEditor().doSave(null);
                   }
-                  StateListAndTitleDialog dialog =
-                     new StateListAndTitleDialog("Add Peer to Peer Review",
-                        "Select state to that review will be associated with.",
-                        AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
+                  StateListAndTitleDialog dialog = new StateListAndTitleDialog("Add Peer to Peer Review",
+                     "Select state to that review will be associated with.",
+                     AtsClientService.get().getWorkDefinitionAdmin().getStateNames(teamArt.getWorkDefinition()));
                   dialog.setInitialSelections(new Object[] {forState.getName()});
                   dialog.setReviewTitle(PeerToPeerReviewManager.getDefaultReviewTitle(teamArt));
                   if (dialog.open() == 0) {
@@ -229,15 +226,13 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       }
       StringBuffer html = new StringBuffer();
       try {
-         html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT,
-            "\"" + forState.getName() + "\" State Reviews"));
+         html.append(
+            AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forState.getName() + "\" State Reviews"));
          html.append(AHTML.startBorderTable(100, Overview.normalColor, ""));
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Review Type", "Title", "ID"}));
          for (AbstractReviewArtifact art : ReviewManager.getReviews(teamArt, forState)) {
-            html.append(AHTML.addRowMultiColumnTable(new String[] {
-               art.getArtifactTypeName(),
-               art.getName(),
-               art.getAtsId()}));
+            html.append(
+               AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), art.getName(), art.getAtsId()}));
          }
          html.append(AHTML.endBorderTable());
       } catch (Exception ex) {
@@ -263,8 +258,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
          strLabel.setText("State Blocking [" + revArt.getArtifactTypeName() + "] must be completed: ");
          IMessageManager messageManager = managedForm.getMessageManager();
          if (messageManager != null) {
-            messageManager.addMessage(
-               "validation.error",
+            messageManager.addMessage("validation.error",
                "\"" + forState.getName() + "\" State has a blocking [" + revArt.getArtifactTypeName() + "] that must be completed.",
                null, IMessageProvider.ERROR, strLabel);
          }
@@ -277,12 +271,13 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                IMessageProvider.WARNING, strLabel);
          }
       } else {
-         strLabel.setText(revArt.getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
+         strLabel.setText(
+            revArt.getStateMgr().getCurrentStateName() + " [" + revArt.getArtifactTypeName() + "] exists: ");
       }
 
       String str = "[" + revArt.getName() + "]";
       Hyperlink hyperLabel =
-         toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str), SWT.NONE);
+         toolkit.createHyperlink(workComp, str.length() > 300 ? Strings.truncate(str, 300) + "..." : str, SWT.NONE);
       hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
          @Override
@@ -310,16 +305,16 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                            (AbstractReviewArtifact) AtsClientService.get().getArtifact(review);
                         if (!revArt.isCompletedOrCancelled()) {
                            if (revArt.getStateMgr().isUnAssigned()) {
-                              revArt.getStateMgr().setAssignee(AtsClientService.get().getUserService().getCurrentUser());
+                              revArt.getStateMgr().setAssignee(
+                                 AtsClientService.get().getUserService().getCurrentUser());
                            }
                            awas.add(revArt);
                         }
                      }
                      AtsChangeSet changes = new AtsChangeSet("Admin Auto-Complete Reviews");
-                     TransitionHelper helper =
-                        new TransitionHelper("ATS Auto Complete Reviews", awas, TeamState.Completed.getName(), null,
-                           null, changes, AtsClientService.get().getServices(),
-                           TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                     TransitionHelper helper = new TransitionHelper("ATS Auto Complete Reviews", awas,
+                        TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
+                        TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
                      IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                      TransitionResults results = transitionMgr.handleAllAndPersist();
                      if (!results.isEmpty()) {

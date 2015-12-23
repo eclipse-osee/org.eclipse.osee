@@ -50,7 +50,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH =SAW_Bld_1;
+   private static final IOseeBranch BRANCH = SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
    private static final int newArtTx = 12345;

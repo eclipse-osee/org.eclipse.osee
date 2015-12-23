@@ -41,8 +41,8 @@ public final class ClassBasedResourceToken extends ResourceToken {
       if (url == null) {
          url = clazz.getResource(path + getName());
          if (url == null) {
-            throw new OseeArgumentException("Unable to resolve url for class [%s] with path [%s] and token [%s]",
-               clazz, path, this);
+            throw new OseeArgumentException("Unable to resolve url for class [%s] with path [%s] and token [%s]", clazz,
+               path, this);
          }
       }
       return url;

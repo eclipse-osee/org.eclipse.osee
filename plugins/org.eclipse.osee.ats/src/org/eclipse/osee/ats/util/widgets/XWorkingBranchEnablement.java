@@ -144,10 +144,10 @@ public class XWorkingBranchEnablement {
                      (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
                   enablementData.setWorkingBranch(workingBranch);
 
-                  enablementData.setWorkingBranchInWork(AtsClientService.get().getBranchService().isWorkingBranchInWork(
-                     teamArt));
-                  enablementData.setCommittedBranchExists(AtsClientService.get().getBranchService().isCommittedBranchExists(
-                     teamArt));
+                  enablementData.setWorkingBranchInWork(
+                     AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt));
+                  enablementData.setCommittedBranchExists(
+                     AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt));
 
                   enablementData.setDisableAll(enablementData.isWorkingBranchCommitInProgress());
                }
@@ -187,7 +187,7 @@ public class XWorkingBranchEnablement {
       }
 
       public boolean isWorkingBranchCreationInProgress() {
-         return teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS);
+         return teamArt.isWorkingBranchCreationInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS;
       }
 
       public boolean isWorkingBranchCommitInProgress() {

@@ -69,9 +69,8 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
                      (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(
                         derivedTeamWf);
                   if (earliestTransactionId != null) {
-                     retArt =
-                        ArtifactQuery.getHistoricalArtifactFromId(guid, earliestTransactionId,
-                           DeletionFlag.EXCLUDE_DELETED);
+                     retArt = ArtifactQuery.getHistoricalArtifactFromId(guid, earliestTransactionId,
+                        DeletionFlag.EXCLUDE_DELETED);
                   }
                }
             }

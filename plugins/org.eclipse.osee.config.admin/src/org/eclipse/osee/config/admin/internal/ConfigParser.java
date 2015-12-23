@@ -22,24 +22,8 @@ import org.osgi.framework.Constants;
  * Parses JSON String with the following format:
  * 
  * <pre>
- * {
- *    "config": 
- *      [
- *         {
- *            "service.pid": "service-1",
- *            "key1": "val1",
- *            "key2": "val2"
- *         },
- *         {
- *            "service.pid": "service-2",
- *            "a": "34242",
- *            "b": "hello"
- *         },
- *         {
- *            "service.pid": "service-3"
- *         }
- *      ]
- * };
+ * { "config": [ { "service.pid": "service-1", "key1": "val1", "key2": "val2" }, { "service.pid": "service-2", "a":
+ * "34242", "b": "hello" }, { "service.pid": "service-3" } ] };
  * 
  * <pre/>
  * 

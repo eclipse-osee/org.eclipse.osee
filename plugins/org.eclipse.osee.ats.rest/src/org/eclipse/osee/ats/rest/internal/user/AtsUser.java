@@ -42,7 +42,7 @@ public class AtsUser implements IAtsUser {
       int result = 0;
       int userIdHashCode = 0;
       try {
-         userIdHashCode = (getUserId() == null) ? 0 : getUserId().hashCode();
+         userIdHashCode = getUserId() == null ? 0 : getUserId().hashCode();
       } catch (OseeCoreException ex) {
          // Do nothing;
       }

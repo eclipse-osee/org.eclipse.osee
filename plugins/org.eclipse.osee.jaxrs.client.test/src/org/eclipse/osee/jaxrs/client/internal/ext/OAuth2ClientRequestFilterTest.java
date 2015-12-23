@@ -347,9 +347,8 @@ public class OAuth2ClientRequestFilterTest {
    }
 
    private static HawkHeaderMatcher hawkHeader(String tokenId) {
-      String regex =
-         String.format("%s id=\"%s\",ts=\"\\d+\",nonce=\".+?\",mac=\".+?\"", OAuthConstants.HAWK_AUTHORIZATION_SCHEME,
-            tokenId);
+      String regex = String.format("%s id=\"%s\",ts=\"\\d+\",nonce=\".+?\",mac=\".+?\"",
+         OAuthConstants.HAWK_AUTHORIZATION_SCHEME, tokenId);
       Pattern pattern = Pattern.compile(regex);
       return new HawkHeaderMatcher(pattern);
    }

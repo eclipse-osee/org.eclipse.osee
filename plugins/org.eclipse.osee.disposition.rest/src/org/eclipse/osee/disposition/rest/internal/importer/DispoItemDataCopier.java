@@ -39,9 +39,8 @@ public class DispoItemDataCopier {
       JSONObject destItemDiscrepancies = destItem.getDiscrepanciesList();
       JSONArray sourceAnnotations = sourceItem.getAnnotationsList();
       Boolean needsReview = false;
-      HashMap<String, Integer> idsToUpdate =
-         matchupOldDiscrepancies(sourceItem.getDiscrepanciesList(), destItemDiscrepancies, sourceAnnotations, message,
-            needsReview);
+      HashMap<String, Integer> idsToUpdate = matchupOldDiscrepancies(sourceItem.getDiscrepanciesList(),
+         destItemDiscrepancies, sourceAnnotations, message, needsReview);
       updateTestPointNumbersForAnntations(idsToUpdate, sourceAnnotations, destItemDiscrepancies, message);
       destItem.setAnnotationsList(sourceAnnotations);
 
@@ -130,7 +129,7 @@ public class DispoItemDataCopier {
             Discrepancy matchedNewDiscrepancy = matchedPair.getFirst();
 
             if (matchedPair.getSecond()) {
-               // This discrepancy has text that's replicated so log as needs 
+               // This discrepancy has text that's replicated so log as needs
                needsReview = true;
             }
             String idToReplace = matchedNewDiscrepancy.getId();

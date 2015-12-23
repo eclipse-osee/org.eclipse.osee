@@ -29,8 +29,8 @@ public class AttributeTypeToXWidgetName {
                xWidgetName =
                   "XComboDam(" + Collections.toString(",", getEnumerationValues(orcsApi, attributeType)) + ")";
             } else {
-               xWidgetName =
-                  "XSelectFromMultiChoiceDam(" + Collections.toString(",", getEnumerationValues(orcsApi, attributeType)) + ")";
+               xWidgetName = "XSelectFromMultiChoiceDam(" + Collections.toString(",",
+                  getEnumerationValues(orcsApi, attributeType)) + ")";
             }
          } else if (baseType.contains("boolean")) {
             if (minOccurrence == 1) {

@@ -83,7 +83,7 @@ public class ClientRegistrationEndpoint extends AbstractClientService {
    @Path("/complete")
    @Consumes(MediaType.MULTIPART_FORM_DATA)
    public Response finishRegistration(@Context UriInfo uriInfo, //
-      MultipartBody multiPart) {
+   MultipartBody multiPart) {
       SecurityContext securityContext = getAndValidateSecurityContext();
       UserSubject userSubject = createUserSubject(securityContext);
 

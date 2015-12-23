@@ -348,9 +348,8 @@ public class OseeEmail extends MimeMessage {
    }
 
    public static void emailHtml(Collection<String> emails, String subject, String htmlBody) throws OseeCoreException {
-      OseeEmail emailMessage =
-         new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(), subject, htmlBody,
-            BodyType.Html);
+      OseeEmail emailMessage = new OseeEmail(emails, UserManager.getUser().getEmail(), UserManager.getUser().getEmail(),
+         subject, htmlBody, BodyType.Html);
       emailMessage.send();
    }
 

@@ -31,7 +31,7 @@ public class AttributeActionContribution implements IActionContributor {
 
    public AttributeActionContribution(AttributesFormSection attributesForm) {
       AttributeTypeEditPresenter.Display view = new AttributeTypeEditDisplay(attributesForm);
-      ArtifactEditor editor = (attributesForm.getEditor());
+      ArtifactEditor editor = attributesForm.getEditor();
       attributeTypeEditor = new AttributeTypeEditPresenter(new Model(editor), view);
    }
 

@@ -61,11 +61,11 @@ public final class SecondPassScanner {
     * </pre>
     */
    private boolean isMultibyteStart(int read) {
-      return (read >= 0xC2 && read <= 0xFD);
+      return read >= 0xC2 && read <= 0xFD;
    }
 
    private boolean isMultibyte(int read) {
-      return (read >= 0x80 && read <= 0xBF);
+      return read >= 0x80 && read <= 0xBF;
    }
 
    public boolean hasNext() {

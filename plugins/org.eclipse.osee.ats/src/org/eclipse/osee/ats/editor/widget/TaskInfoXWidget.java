@@ -134,11 +134,10 @@ public class TaskInfoXWidget extends XLabelValueBase {
                                  taskArt.getStateMgr().setAssignee(
                                     AtsClientService.get().getUserService().getCurrentUser());
                               }
-                              TransitionHelper helper =
-                                 new TransitionHelper("Transition to Completed", Arrays.asList(taskArt),
-                                    TaskStates.Completed.getName(), null, null, changes,
-                                    AtsClientService.get().getServices(),
-                                    TransitionOption.OverrideTransitionValidityCheck, TransitionOption.None);
+                              TransitionHelper helper = new TransitionHelper("Transition to Completed",
+                                 Arrays.asList(taskArt), TaskStates.Completed.getName(), null, null, changes,
+                                 AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
+                                 TransitionOption.None);
                               IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
                               TransitionResults results = transitionMgr.handleAll();
                               if (!results.isEmpty()) {

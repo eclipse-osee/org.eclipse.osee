@@ -59,10 +59,9 @@ public class CompletedDateColumnTest {
       Assert.assertNull(date);
       Assert.assertEquals("", CompletedDateColumn.getDateStr(teamArt));
 
-      TransitionHelper helper =
-         new TransitionHelper("Transition to Completed", Arrays.asList(teamArt), TeamState.Completed.getName(), null,
-            null, changes, AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
-            TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("Transition to Completed", Arrays.asList(teamArt),
+         TeamState.Completed.getName(), null, null, changes, AtsClientService.get().getServices(),
+         TransitionOption.OverrideTransitionValidityCheck, TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -74,11 +73,10 @@ public class CompletedDateColumnTest {
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date),
          CompletedDateColumn.getInstance().getColumnText(teamArt, CompletedDateColumn.getInstance(), 0));
 
-      helper =
-         new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
-            AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
-            TransitionOption.OverrideAssigneeCheck);
+      helper = new TransitionHelper("Transition to Endorse", Arrays.asList(teamArt), TeamState.Endorse.getName(),
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
+         AtsClientService.get().getServices(), TransitionOption.OverrideTransitionValidityCheck,
+         TransitionOption.OverrideAssigneeCheck);
       transitionMgr = TransitionFactory.getTransitionManager(helper);
       results = transitionMgr.handleAll();
       Assert.assertTrue(results.toString(), results.isEmpty());

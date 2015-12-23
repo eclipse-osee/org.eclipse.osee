@@ -44,7 +44,8 @@ public class DefineNavigateView extends GenericViewPart implements IXNavigateEve
    @Override
    public void refresh(XNavigateItem item) {
       if (DbConnectionExceptionComposite.dbConnectionIsOk()) {
-         if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+         if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(
+            xNavComp.getFilteredTree().getViewer().getTree())) {
             xNavComp.getFilteredTree().getViewer().refresh(item);
          }
       }

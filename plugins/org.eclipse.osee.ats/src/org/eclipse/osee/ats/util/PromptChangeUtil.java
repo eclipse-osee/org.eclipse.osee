@@ -63,7 +63,8 @@ public final class PromptChangeUtil {
 
    public static boolean promptChangeDate(AbstractWorkflowArtifact sma, IAttributeType attributeType, boolean persist) {
       try {
-         return ArtifactPromptChange.promptChangeAttribute(attributeType, java.util.Collections.singleton(sma), persist);
+         return ArtifactPromptChange.promptChangeAttribute(attributeType, java.util.Collections.singleton(sma),
+            persist);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
             "Can't save " + attributeType.getUnqualifiedName() + " date to artifact " + sma.getAtsId(), ex);

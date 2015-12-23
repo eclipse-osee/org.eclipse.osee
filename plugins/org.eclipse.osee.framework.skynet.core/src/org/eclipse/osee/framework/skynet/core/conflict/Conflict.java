@@ -82,9 +82,8 @@ public abstract class Conflict implements IAdaptable {
          if (commitTransactionId == null) {
             destArtifact = ArtifactQuery.getArtifactFromId(artId, destBranch, INCLUDE_DELETED);
          } else {
-            destArtifact =
-               ArtifactQuery.getHistoricalArtifactFromId(artId,
-                  TransactionManager.getPriorTransaction(commitTransactionId), INCLUDE_DELETED);
+            destArtifact = ArtifactQuery.getHistoricalArtifactFromId(artId,
+               TransactionManager.getPriorTransaction(commitTransactionId), INCLUDE_DELETED);
 
          }
       }
@@ -146,9 +145,8 @@ public abstract class Conflict implements IAdaptable {
       } catch (AttributeDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-      status =
-         ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getUuid(), objectID,
-            getConflictType().getValue(), passedStatus, mergeBranch.getBaseTransaction().getId());
+      status = ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getUuid(), objectID,
+         getConflictType().getValue(), passedStatus, mergeBranch.getBaseTransaction().getId());
       return status;
    }
 

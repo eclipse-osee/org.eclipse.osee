@@ -59,7 +59,7 @@ public final class BasicTemplateAttributeHandler implements ITemplateAttributeHa
          //            if (templateAttribute.hasLabel()) {
          //               wordMl.addParagraph(templateAttribute.getLabel());
          //            }
-         //    
+         //
          String valueList;
          if (attributeType.equals(CoreAttributeTypes.WordTemplateContent)) {
             wordMl.addWordMl((String) attribute.getValue());

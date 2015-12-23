@@ -38,9 +38,8 @@ public class BlamContributionManager implements IXNavigateCommonItem {
    public synchronized static Map<String, AbstractBlam> getBlamMap() {
       if (blams == null) {
          blams = new TreeMap<>();
-         ExtensionDefinedObjects<AbstractBlam> definedObjects =
-            new ExtensionDefinedObjects<AbstractBlam>("org.eclipse.osee.framework.ui.skynet.BlamOperation",
-               "Operation", "className");
+         ExtensionDefinedObjects<AbstractBlam> definedObjects = new ExtensionDefinedObjects<AbstractBlam>(
+            "org.eclipse.osee.framework.ui.skynet.BlamOperation", "Operation", "className");
          for (AbstractBlam blam : definedObjects.getObjects()) {
             blams.put(blam.getName(), blam);
          }
@@ -90,7 +89,8 @@ public class BlamContributionManager implements IXNavigateCommonItem {
          // Create categories first (so can have them up top)
          for (String category : blamOperation.getCategories()) {
             try {
-               if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains("Admin") && AccessControlManager.isOseeAdmin()) {
+               if (AccessControlManager.isOseeAdmin() || !category.contains("Admin") || category.contains(
+                  "Admin") && AccessControlManager.isOseeAdmin()) {
                   createCategories(category.split("\\."), 0, blamOperationItems, nameToParent);
                }
             } catch (OseeCoreException ex) {

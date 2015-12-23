@@ -54,9 +54,8 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New User(s)", null, "Enter User name(s) one per line",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New User(s)", null,
+         "Enter User name(s) one per line", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          Set<String> newUserNames = new HashSet<>();
@@ -102,7 +101,8 @@ public class CreateNewUsersByNameItem extends XNavigateItemAction {
    private Set<Artifact> createNewUserItemTx(SkynetTransaction transaction, Set<String> userNames) throws OseeCoreException {
       Set<Artifact> newVersions = new HashSet<>();
       for (String userName : userNames) {
-         Artifact userArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch(), userName);
+         Artifact userArt =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch(), userName);
          userArt.setSoleAttributeValue(CoreAttributeTypes.UserId, GUID.create());
          userArt.persist(transaction);
          newVersions.add(userArt);

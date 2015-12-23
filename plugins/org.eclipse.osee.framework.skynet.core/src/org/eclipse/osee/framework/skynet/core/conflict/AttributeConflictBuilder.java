@@ -45,9 +45,8 @@ public class AttributeConflictBuilder extends ConflictBuilder {
             return null;
          }
       }
-      AttributeConflict attributeConflict =
-         new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, null, sourceValue, attrId, attrTypeId,
-            mergeBranch, sourceBranch, destBranch);
+      AttributeConflict attributeConflict = new AttributeConflict(sourceGamma, destGamma, artId, toTransactionId, null,
+         sourceValue, attrId, attrTypeId, mergeBranch, sourceBranch, destBranch);
       if (attributeConflict.getChangeItem().toString().equals("Word Ole Data")) {
          return null;
       } else if (attributeConflict.getAttributeType().equals(CoreAttributeTypes.RelationOrder)) {

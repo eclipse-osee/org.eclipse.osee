@@ -158,7 +158,8 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       try {
          console.writeln("counter: [%s]", counter);
          console.writeln("query id: [%s]", gammaJoin.getQueryId());
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_RELATION_ADDRESSING,
+            gammaJoin.getQueryId());
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");

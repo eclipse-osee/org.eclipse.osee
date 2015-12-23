@@ -29,7 +29,8 @@ public class TeamWorkflowLabelProvider extends ArtifactLabelProvider {
       TeamWorkFlowArtifact teamWf = (TeamWorkFlowArtifact) element;
       try {
          if (AtsClientService.get().getVersionService().hasTargetedVersion(teamWf)) {
-            return "[" + teamWf.getTeamName() + "][" + Versions.getTargetedVersionStr(teamWf, AtsClientService.get().getVersionService()) + "] - " + teamWf.getName();
+            return "[" + teamWf.getTeamName() + "][" + Versions.getTargetedVersionStr(teamWf,
+               AtsClientService.get().getVersionService()) + "] - " + teamWf.getName();
          } else {
             return "[" + teamWf.getTeamName() + "] - " + teamWf.getName();
          }

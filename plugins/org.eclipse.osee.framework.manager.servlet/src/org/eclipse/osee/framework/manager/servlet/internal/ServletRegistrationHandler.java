@@ -97,7 +97,8 @@ public class ServletRegistrationHandler {
    private void registerServices(BundleContext context) {
       contexts.clear();
       JdbcClient jdbcClient = jdbcService.getClient();
-      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), OseeServerContext.PROCESS_CONTEXT);
+      register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
+         OseeServerContext.PROCESS_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient),
          OseeServerContext.ARTIFACT_CONTEXT);
       register(new ArtifactFileServlet(logger, resourceManager, orcsApi, jdbcClient), "index");

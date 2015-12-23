@@ -17,13 +17,13 @@ import org.eclipse.osee.framework.core.util.Result;
  */
 public class TransitionStatusDataResult {
 
-   public static final Result INVALID__UNCOMPLETE_PERCENT = new Result(
-      "Percent must be between 0 and 99.  Use Transition-To for completed.");
+   public static final Result INVALID__UNCOMPLETE_PERCENT =
+      new Result("Percent must be between 0 and 99.  Use Transition-To for completed.");
    public static final Result INVALID__PERCENT_MUST_BE_ENTERED = new Result("Percent must be entered.");
    public static final Result INVALID__HOURS_MUST_BE_SET = new Result("Hours must be entered.");
-   public static final Result INVALID__SELECT_EITHER_SPLIT_OR_APPLY = new Result(
-      "Either \"Split Hours Spent\" or \"Apply Hours Spent\" must be selected");
-   public static final Result INVALID__SELECT_ONLY_ONE_SPLIT_OR_APPLY = new Result(
-      "Select only \"Split Hours Spent\" or \"Apply Hours Spent\"");
+   public static final Result INVALID__SELECT_EITHER_SPLIT_OR_APPLY =
+      new Result("Either \"Split Hours Spent\" or \"Apply Hours Spent\" must be selected");
+   public static final Result INVALID__SELECT_ONLY_ONE_SPLIT_OR_APPLY =
+      new Result("Select only \"Split Hours Spent\" or \"Apply Hours Spent\"");
 
 }

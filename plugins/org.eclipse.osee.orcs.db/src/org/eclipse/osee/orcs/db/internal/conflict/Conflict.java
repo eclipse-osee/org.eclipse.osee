@@ -53,7 +53,7 @@ public final class Conflict implements IOseeStorable {
    public long getId() {
       return itemId;
    }
-   
+
    public MergeBranch getMergeBranch() {
       return mergeBranch;
    }

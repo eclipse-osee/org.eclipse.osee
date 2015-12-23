@@ -154,7 +154,8 @@ public class AttributeTypeRestrictionHandlerTest extends BaseRestrictionHandlerT
 
       // Make expectedAccessObject inherit from ArtifactType
       Set<ArtifactType> superTypes = new HashSet<>();
-      superTypes.add(new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
+      superTypes.add(
+         new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false));
       artArtifactType.setSuperTypes(superTypes);
 
       final MutableBoolean wasIsAttributeTypeValidCalled = new MutableBoolean(false);

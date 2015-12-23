@@ -101,8 +101,8 @@ public final class WordOutlineAndStyleTest {
     * 3.0   C
     * </pre>
     * 
-    * C's style is Normal should be treated as part of the body. This tests testing against last paragraph </br> number
-    * that follows the sequence but not the style of paragraph numbers. A and B are of the same style.
+    * C's style is Normal should be treated as part of the body. This tests testing against last paragraph </br>
+    * number that follows the sequence but not the style of paragraph numbers. A and B are of the same style.
     */
    private static final String CASE_3 = "WordOutlineAndStyle_case3.xml";
 
@@ -163,9 +163,8 @@ public final class WordOutlineAndStyleTest {
       Assert.assertTrue(inputTestCase.exists());
 
       try {
-         IArtifactImportResolver resolver =
-            ArtifactResolverFactory.createResolver(ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID,
-               CoreArtifactTypes.HeadingMSWord, null, true, true);
+         IArtifactImportResolver resolver = ArtifactResolverFactory.createResolver(
+            ArtifactCreationStrategy.CREATE_ON_NEW_ART_GUID, CoreArtifactTypes.HeadingMSWord, null, true, true);
 
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
@@ -176,9 +175,8 @@ public final class WordOutlineAndStyleTest {
          List<IArtifactType> list = new ArrayList<>();
          list.add(CoreArtifactTypes.HeadingMSWord);
 
-         IOperation operation =
-            ArtifactImportOperationFactory.createOperation(inputTestCase, folder, NullOperationLogger.getSingleton(),
-               extractor, resolver, collector, list, true, false, true);
+         IOperation operation = ArtifactImportOperationFactory.createOperation(inputTestCase, folder,
+            NullOperationLogger.getSingleton(), extractor, resolver, collector, list, true, false, true);
          Operations.executeWorkAndCheckStatus(operation);
 
          boolean newArtifactsFound = !folder.getDescendants().isEmpty();

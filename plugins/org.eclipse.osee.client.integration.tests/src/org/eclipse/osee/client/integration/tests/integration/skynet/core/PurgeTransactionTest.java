@@ -52,19 +52,16 @@ public class PurgeTransactionTest {
 
    private static final IOseeBranch BRANCH = SAW_Bld_2;
 
-   private static final String[] TABLES = new String[] {
-      "osee_attribute",
-      "osee_artifact",
-      "osee_relation_link",
-      "osee_tx_details",
-      "osee_txs"};
+   private static final String[] TABLES =
+      new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
 
    private Collection<Artifact> softArts;
 
    @Before
    @After
    public void cleanup() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      Operations.executeWorkAndCheckStatus(
+         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
    @Test
@@ -109,7 +106,8 @@ public class PurgeTransactionTest {
    private void purge(int transactionId) throws Exception {
       IOperation operation = PurgeTransactionOperationWithListener.getPurgeTransactionOperation(transactionId);
       Asserts.assertOperation(operation, IStatus.OK);
-      Operations.executeWorkAndCheckStatus(new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
+      Operations.executeWorkAndCheckStatus(
+         new PurgeUnusedBackingDataAndTransactions(NullOperationLogger.getSingleton()));
    }
 
    private int getCurrentRows(int createTxId) throws OseeCoreException {

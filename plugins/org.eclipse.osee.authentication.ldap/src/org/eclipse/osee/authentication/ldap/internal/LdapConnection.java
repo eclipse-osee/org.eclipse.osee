@@ -148,9 +148,8 @@ public class LdapConnection implements Closeable {
 
       boolean memberOfFieldInAccount = Strings.isValid(memberOfField) || defaultFilter.isGroupMembershipPartOfAccount();
       if (memberOfFieldInAccount) {
-         VariablePattern groupByGroupMemberPattern =
-            patternField(fieldsToGet, filter.getGroupByGroupMemberPattern(),
-               defaultFilter.getGroupByGroupMemberPattern());
+         VariablePattern groupByGroupMemberPattern = patternField(fieldsToGet, filter.getGroupByGroupMemberPattern(),
+            defaultFilter.getGroupByGroupMemberPattern());
          if (groupByGroupMemberPattern != null) {
             for (String variables : groupByGroupMemberPattern.getVariableNames()) {
                fieldsToGet.add(variables);

@@ -41,9 +41,8 @@ public class XArtifactTypeMultiChoiceSelect extends XSelectFromDialog<ArtifactTy
 
    @Override
    public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
-            new LabelProvider(), new ArtifactNameSorter());
+      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below",
+         new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
       dialog.setInput(ArtifactTypeManager.getAllTypes());
       return dialog;
    }

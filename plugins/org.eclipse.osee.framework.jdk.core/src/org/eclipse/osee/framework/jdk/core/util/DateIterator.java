@@ -218,9 +218,8 @@ public class DateIterator implements Iterator<Calendar>, Cloneable {
 
    @Override
    protected Object clone() {
-      DateIterator cloneDI =
-         new DateIterator((Calendar) startCal.clone(), (Calendar) endCal.clone(), intervalField, intervalQty,
-            normalize, calendarFieldToNormalize, calendarFieldValueToNormalizeOn);
+      DateIterator cloneDI = new DateIterator((Calendar) startCal.clone(), (Calendar) endCal.clone(), intervalField,
+         intervalQty, normalize, calendarFieldToNormalize, calendarFieldValueToNormalizeOn);
       return cloneDI;
    }
 }

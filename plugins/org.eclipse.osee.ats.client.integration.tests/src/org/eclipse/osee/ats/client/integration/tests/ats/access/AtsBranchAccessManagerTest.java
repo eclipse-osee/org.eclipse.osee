@@ -137,10 +137,9 @@ public class AtsBranchAccessManagerTest {
       Assert.assertEquals(2, mgr.getContextId(teamArt.getWorkingBranch()).size());
 
       String aiContextId = "ai.context.1";
-      Artifact aiArt =
-         AtsClientService.get().getConfigArtifact(
-            ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
-               AtsClientService.get().getConfig()).iterator().next());
+      Artifact aiArt = AtsClientService.get().getConfigArtifact(
+         ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
+            AtsClientService.get().getConfig()).iterator().next());
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 
@@ -163,7 +162,6 @@ public class AtsBranchAccessManagerTest {
 
    /**
     * Test method for {@link org.eclipse.osee.ats.access.AtsBranchAccessManager#convertAccessAttributeToGuid
-    * 
     */
    @Test
    public void testConvertAccessAttributeToGuid() throws Exception {

@@ -324,7 +324,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
             rString = RelationManager.reportHasDirtyLinks(awa);
          }
 
-         return new Result((rString != null), rString);
+         return new Result(rString != null, rString);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result(true, ex.getLocalizedMessage());

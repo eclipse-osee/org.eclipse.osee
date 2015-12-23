@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
@@ -27,8 +29,6 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 import org.eclipse.osee.framework.skynet.core.importing.parsers.DoorsTableRow.RowType;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.Node;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * @author David W. Miller
@@ -267,7 +267,7 @@ public class DoorsTableRowCollector {
    }
 
    // currently used only for debugging purposes
-   // this makes it simple to check the contents of the import using a diff 
+   // this makes it simple to check the contents of the import using a diff
    private void outputHTML(String file) throws FileNotFoundException, UnsupportedEncodingException {
       String outputfile = String.format("%s%s.html", file, Lib.getDateTimeString());
       PrintWriter writer = new PrintWriter(outputfile, "UTF-8");
@@ -280,12 +280,14 @@ public class DoorsTableRowCollector {
    }
 
    public void outputHTML(PrintWriter writer) {
-      writer.println("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
+      writer.println(
+         "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">");
       writer.println("<html>");
       writer.println("<head>");
       writer.println("<title> Testing reading requirements and outputting them </title>");
       writer.println("</head>");
-      writer.println("<body  bgcolor=\"#FFFFFF\" text=\"#000000\" link=\"#EE0000\" alink=\"#808080\" vlink=\"#808080\">");
+      writer.println(
+         "<body  bgcolor=\"#FFFFFF\" text=\"#000000\" link=\"#EE0000\" alink=\"#808080\" vlink=\"#808080\">");
       writer.println("<table border=\"\">");
       writer.println("<tbody>");
 

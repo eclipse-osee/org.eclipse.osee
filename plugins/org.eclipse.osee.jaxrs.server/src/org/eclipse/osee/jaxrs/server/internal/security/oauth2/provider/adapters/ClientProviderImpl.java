@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.adapters;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.io.InputSupplier;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -32,10 +36,6 @@ import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.SubjectPr
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.provider.endpoints.ClientFormData;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar
@@ -127,7 +127,7 @@ public class ClientProviderImpl implements ClientProvider {
       /**
        * <pre>
        * Additional Security options:
-       *  - restrict resource server 
+       *  - restrict resource server
        *  - restrict allowed grant types
        *  - register allowed scopes/permissions
        *  - restrict redirect/callback URIs

@@ -124,7 +124,8 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    private IUserToken getGrantedUserToken() {
       return TokenFactory.createUserToken(Lib.generateArtifactIdAsInt(), GUID.create(), getString(OSEE_USER_NAME),
-         getString(OSEE_USER_EMAIL), getString(OSEE_USER_ID), backingData.getBoolean(OSEE_IS_USER_ACTIVE), false, false);
+         getString(OSEE_USER_EMAIL), getString(OSEE_USER_ID), backingData.getBoolean(OSEE_IS_USER_ACTIVE), false,
+         false);
    }
 
    private final class GrantedDatabaseInfo implements IDatabaseInfo {

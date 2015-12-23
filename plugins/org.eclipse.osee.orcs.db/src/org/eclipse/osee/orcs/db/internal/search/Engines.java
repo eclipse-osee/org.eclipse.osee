@@ -111,9 +111,9 @@ public final class Engines {
       };
    }
 
-   public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, // 
-      IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, // 
-      ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+   public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
+   IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, //
+   ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
 
       SqlHandlerFactory handlerFactory =
          createObjectSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
@@ -141,8 +141,8 @@ public final class Engines {
 
    public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger, idService);
-      return newSqlContextFactory(logger, joinFactory, sqlProvider, TableEnum.BRANCH_TABLE, "branch_id",
-         handlerFactory, ObjectQueryType.BRANCH);
+      return newSqlContextFactory(logger, joinFactory, sqlProvider, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory,
+         ObjectQueryType.BRANCH);
    }
 
    public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider) {

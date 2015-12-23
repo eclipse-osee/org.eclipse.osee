@@ -63,10 +63,10 @@ public class SMAAssigneesHeader extends Composite {
                   if (editor.isDirty()) {
                      editor.doSave(null);
                   }
-                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
-                     AtsClientService.get().getUserService().getCurrentUser())) {
-                     AWorkbench.popup(
-                        "ERROR",
+                  if (!isEditable && !sma.getStateMgr().getAssignees().contains(
+                     AtsCoreUsers.UNASSIGNED_USER) && !sma.getStateMgr().getAssignees().contains(
+                        AtsClientService.get().getUserService().getCurrentUser())) {
+                     AWorkbench.popup("ERROR",
                         "You must be assigned to modify assignees.\nContact current Assignee or Select Privileged Edit for Authorized Overriders.");
                      return;
                   }

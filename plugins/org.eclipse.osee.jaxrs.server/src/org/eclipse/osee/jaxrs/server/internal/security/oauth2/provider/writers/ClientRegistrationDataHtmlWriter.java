@@ -45,7 +45,8 @@ public class ClientRegistrationDataHtmlWriter extends AbstractHtmlWriter<ClientR
       ViewModel model = new ViewModel(CLIENT_REG_FORM__TEMPLATE);
       model.param(CLIENT_REG_FORM__REPLY_TO_TAG, asTemplateValue(data.getReplyTo()));
       model.param(CLIENT_REG_FORM__REGISTRATION_DECISION, ClientConstants.CLIENT_REGISTRATION__DECISION_KEY);
-      model.param(CLIENT_REG_FORM__REGISTRATION_DECISION_ACCEPT, ClientConstants.CLIENT_REGISTRATION__DECISION_REGISTER);
+      model.param(CLIENT_REG_FORM__REGISTRATION_DECISION_ACCEPT,
+         ClientConstants.CLIENT_REGISTRATION__DECISION_REGISTER);
       model.param(CLIENT_REG_FORM__REGISTRATION_DECISION_CANCEL, ClientConstants.CLIENT_REGISTRATION__DECISION_CANCEL);
       model.param(CLIENT_REG_FORM__HIDDEN_FIELDS_SECTION_TAG, HiddenFormFields.newForm() //
       .add(CLIENT_REGISTRATION__APPLICATION_GUID, data.getClientGuid()) //

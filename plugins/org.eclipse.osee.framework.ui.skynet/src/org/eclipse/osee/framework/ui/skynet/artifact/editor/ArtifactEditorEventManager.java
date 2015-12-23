@@ -74,7 +74,8 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             handlers.remove(handler);
          }
       }
-      EventUtil.eventLog("ArtifactEditorEventManager: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
+      EventUtil.eventLog(
+         "ArtifactEditorEventManager: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
@@ -88,7 +89,8 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             if (!deletedPurgedChangedArts.isEmpty()) {
                for (IArtifactEditorEventHandler handler : handlers) {
                   try {
-                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && deletedPurgedChangedArts.contains(handler.getArtifactFromEditorInput())) {
+                     if (!handler.isDisposed() && handler.getArtifactFromEditorInput() != null && deletedPurgedChangedArts.contains(
+                        handler.getArtifactFromEditorInput())) {
                         handler.closeEditor();
                      }
                   } catch (Exception ex) {

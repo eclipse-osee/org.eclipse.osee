@@ -80,7 +80,7 @@ public class PluginUtil {
       Enumeration<?> enumeration = bundle.findEntries(directory, pattern, recurse);
       List<URL> inputs = new ArrayList<>();
       while (enumeration.hasMoreElements()) {
-         inputs.add(((URL) enumeration.nextElement()));
+         inputs.add((URL) enumeration.nextElement());
       }
       return inputs;
    }

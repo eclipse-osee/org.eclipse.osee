@@ -151,8 +151,9 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             Collection<TeamWorkFlowArtifact> arts =
                teamMet.getWorkflowsOriginatedBetween(nextReleaseStartDate, nextReleaseEndDate);
             for (TeamWorkFlowArtifact team : arts) {
-               if (!team.isCancelled() && ChangeTypeUtil.getChangeType(team) == ChangeType.Problem && (PriorityUtil.getPriorityStr(
-                  team).equals("1") || PriorityUtil.getPriorityStr(team).equals("2"))) {
+               if (!team.isCancelled() && ChangeTypeUtil.getChangeType(
+                  team) == ChangeType.Problem && (PriorityUtil.getPriorityStr(team).equals(
+                     "1") || PriorityUtil.getPriorityStr(team).equals("2"))) {
                   numOrigDurningNextReleaseCycle++;
                }
             }
@@ -172,7 +173,8 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
             DateUtil.getMMDDYY(thisReleaseEndDate),
             numOrigDurningNextReleaseCycle == 0 ? "N/A" : String.valueOf(numOrigDurningNextReleaseCycle),
             numNonSupportReleased == null ? "N/A" : String.valueOf(numNonSupportReleased),
-            numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtilCore.doubleToI18nString((double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
+            numOrigDurningNextReleaseCycle == 0 || numNonSupportReleased == null || numNonSupportReleased == 0 ? "N/A" : AtsUtilCore.doubleToI18nString(
+               (double) numOrigDurningNextReleaseCycle / (double) numNonSupportReleased)}));
          monitor.worked(1);
       }
       sb.append(AHTML.endMultiColumnTable());

@@ -49,9 +49,8 @@ public class OpenQuickSearchAction extends Action {
             try {
                IOseeBranch branch = branchProvider.getBranch(monitor);
                if (branch != null) {
-                  IViewPart viewPart =
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                        QuickSearchView.VIEW_ID);
+                  IViewPart viewPart = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                     QuickSearchView.VIEW_ID);
                   if (viewPart != null) {
                      ((QuickSearchView) viewPart).setBranch(branch);
                   }

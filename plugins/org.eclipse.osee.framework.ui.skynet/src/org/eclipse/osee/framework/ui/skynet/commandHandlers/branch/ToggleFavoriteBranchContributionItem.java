@@ -38,7 +38,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
    private final ICommandService commandService;
 
    public ToggleFavoriteBranchContributionItem() {
-      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override
@@ -76,10 +76,9 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
    private CommandContributionItem createCommand(String label, IOseeBranch branch, String commandId) {
       CommandContributionItem contributionItem;
 
-      contributionItem =
-         new CommandContributionItem(new CommandContributionItemParameter(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, null, null,
-            null, label, null, null, SWT.NONE, null, false));
+      contributionItem = new CommandContributionItem(
+         new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
+            Collections.EMPTY_MAP, null, null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

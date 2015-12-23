@@ -46,11 +46,9 @@ public class SubscribeManagerUI {
          if (SubscribeManager.amISubscribed(awas.iterator().next())) {
             boolean result = true;
             if (prompt) {
-               result =
-                  MessageDialog.openQuestion(
-                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Un-Subscribe",
-                     "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
+               result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Un-Subscribe",
+                  "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             }
             if (result) {
                SubscribeManager.toggleSubscribe(awas);
@@ -58,10 +56,8 @@ public class SubscribeManagerUI {
          } else {
             boolean result = true;
             if (prompt) {
-               result =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Subscribe",
-                     "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
+               result = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                  "Subscribe", "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             }
             if (result) {
                SubscribeManager.toggleSubscribe(awas);

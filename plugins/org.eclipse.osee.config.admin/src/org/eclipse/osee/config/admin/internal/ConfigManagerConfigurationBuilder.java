@@ -138,9 +138,9 @@ public class ConfigManagerConfigurationBuilder {
       public int hashCode() {
          final int prime = 31;
          int result = 1;
-         result = prime * result + ((configUri == null) ? 0 : configUri.hashCode());
-         result = prime * result + (int) (pollTime ^ (pollTime >>> 32));
-         result = prime * result + ((pollTimeUnit == null) ? 0 : pollTimeUnit.hashCode());
+         result = prime * result + (configUri == null ? 0 : configUri.hashCode());
+         result = prime * result + (int) (pollTime ^ pollTime >>> 32);
+         result = prime * result + (pollTimeUnit == null ? 0 : pollTimeUnit.hashCode());
          return result;
       }
 

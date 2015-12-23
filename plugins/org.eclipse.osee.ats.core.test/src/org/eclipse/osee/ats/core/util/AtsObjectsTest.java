@@ -49,7 +49,8 @@ public class AtsObjectsTest {
       objs.add("Just a String");
       Assert.assertEquals(
          String.format("%s; %s; %s; Just a String", AtsCoreUsers.SYSTEM_USER.getName(),
-            AtsCoreUsers.ANONYMOUS_USER.getName(), AtsCoreUsers.UNASSIGNED_USER.getName()), AtsObjects.toString("; ", objs));
+            AtsCoreUsers.ANONYMOUS_USER.getName(), AtsCoreUsers.UNASSIGNED_USER.getName()),
+         AtsObjects.toString("; ", objs));
    }
 
    @Test

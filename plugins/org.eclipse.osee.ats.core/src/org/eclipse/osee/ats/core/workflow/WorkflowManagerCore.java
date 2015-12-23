@@ -43,11 +43,11 @@ public class WorkflowManagerCore {
       // page is define to allow anyone to edit
       (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowEditToAll.name()) ||
       // team definition has allowed anyone to edit
-         teamDefHasRule(workItem, RuleDefinitionOption.AllowEditToAll) ||
-         // privileged edit mode is on
-         privilegedEditEnabled ||
-         // current user is assigned
-         workItem.getAssignees().contains(currentUser) ||
+      teamDefHasRule(workItem, RuleDefinitionOption.AllowEditToAll) ||
+      // privileged edit mode is on
+      privilegedEditEnabled ||
+      // current user is assigned
+      workItem.getAssignees().contains(currentUser) ||
       // current user is ats admin
       isAtsAdmin);
    }

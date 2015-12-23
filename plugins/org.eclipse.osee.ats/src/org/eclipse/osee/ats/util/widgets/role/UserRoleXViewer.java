@@ -163,7 +163,11 @@ public class UserRoleXViewer extends XViewer {
          List<UserRole> userRoles = new ArrayList<>();
          userRoles.add(userRole);
 
-         if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(UserRoleXViewerFactory.Role_Col)) {
+         if (aCol.equals(UserRoleXViewerFactory.Completed_Col) || aCol.equals(
+            UserRoleXViewerFactory.Hours_Spent_Col) || aCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || aCol.equals(
+               UserRoleXViewerFactory.Num_Major_Col) || aCol.equals(
+                  UserRoleXViewerFactory.Num_Issues_Col) || aCol.equals(UserRoleXViewerFactory.User_Col) || aCol.equals(
+                     UserRoleXViewerFactory.Role_Col)) {
             promptChangeDate(aCol, userRoles, false);
          } else {
             throw new OseeStateException("Unhandled user role column");
@@ -231,28 +235,26 @@ public class UserRoleXViewer extends XViewer {
       if (userRoles != null && !userRoles.isEmpty()) {
          UserRole userRole = (UserRole) userRoles.toArray()[0];
          if (xCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
-            String hours =
-               XPromptChange.promptChangeFloat(xCol.getName(),
-                  (columnMultiEdit ? 0 : userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent()));
+            String hours = XPromptChange.promptChangeFloat(xCol.getName(),
+               columnMultiEdit ? 0 : userRole.getHoursSpent() == null ? 0 : userRole.getHoursSpent());
             if (hours != null) {
                modified = setHoursSpent(userRoles, hours);
             }
-         } else if (xCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || xCol.equals(UserRoleXViewerFactory.Num_Major_Col) || xCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
+         } else if (xCol.equals(UserRoleXViewerFactory.Num_Minor_Col) || xCol.equals(
+            UserRoleXViewerFactory.Num_Major_Col) || xCol.equals(UserRoleXViewerFactory.Num_Issues_Col)) {
             AWorkbench.popup("ERROR", "Field is calculated");
          } else if (xCol.equals(UserRoleXViewerFactory.Completed_Col)) {
             modified = setCompleted(userRoles);
          } else if (xCol.equals(UserRoleXViewerFactory.User_Col)) {
-            UserListDialog ld =
-               new UserListDialog(Displays.getActiveShell(), "Select New User",
-                  AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
+            UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New User",
+               AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
             int result = ld.open();
             if (result == 0) {
                modified = setUser(userRoles, ld.getSelection());
             }
          } else if (xCol.equals(UserRoleXViewerFactory.Role_Col)) {
-            EnumStringSingleSelectionDialog enumDialog =
-               XPromptChange.promptChangeSingleSelectEnumeration(xCol.getName(), Role.strValues(),
-                  (columnMultiEdit ? null : userRole.getRole().name()));
+            EnumStringSingleSelectionDialog enumDialog = XPromptChange.promptChangeSingleSelectEnumeration(
+               xCol.getName(), Role.strValues(), columnMultiEdit ? null : userRole.getRole().name());
             if (enumDialog != null && enumDialog.getResult()[0] != null) {
                modified = setRole(userRoles, (String) enumDialog.getResult()[0]);
             }

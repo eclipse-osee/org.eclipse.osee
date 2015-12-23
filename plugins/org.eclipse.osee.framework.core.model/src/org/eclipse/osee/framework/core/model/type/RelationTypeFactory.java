@@ -39,9 +39,8 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(cache, "RelationTypeCache");
       RelationType relationType = cache.getByGuid(guid);
       if (relationType == null) {
-         relationType =
-            create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-               defaultOrderTypeGuid);
+         relationType = create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+            defaultOrderTypeGuid);
          relationType.setId(guid);
          cache.cache(relationType);
       } else {
@@ -55,9 +54,8 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(cache, "RelationTypeCache");
       RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
-         relationType =
-            create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
-               defaultOrderTypeGuid);
+         relationType = create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+            defaultOrderTypeGuid);
          relationType.setId(typeId);
          relationType.setStorageState(storageState);
          cache.cache(relationType);

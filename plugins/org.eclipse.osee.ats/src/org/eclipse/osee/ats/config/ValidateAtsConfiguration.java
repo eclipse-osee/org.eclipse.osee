@@ -50,10 +50,9 @@ public class ValidateAtsConfiguration extends XNavigateItemAction {
       rd.log(getName());
 
       try {
-         List<Artifact> configArts =
-            ArtifactQuery.getArtifactListFromType(
-               Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
-               AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+         List<Artifact> configArts = ArtifactQuery.getArtifactListFromType(
+            Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version),
+            AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
          SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), getName());
 
          ValidateResults results = new ValidateResults();

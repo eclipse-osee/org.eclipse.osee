@@ -77,15 +77,13 @@ public class OseeDslSegmentParserTest {
       IBasicArtifact<?> artifact = new MockArtifact(artifactGuid, artifactName, branch, CoreArtifactTypes.Artifact, 45);
 
       String actual = parser.getStartTag(artifact);
-      String expected =
-         String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
-            artifactName);
+      String expected = String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid,
+         branchName, artifactName);
       Assert.assertEquals(expected, actual);
 
       actual = parser.getEndTag(artifact);
-      expected =
-         String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
-            artifactName);
+      expected = String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
+         artifactName);
       Assert.assertEquals(expected, actual);
    }
 

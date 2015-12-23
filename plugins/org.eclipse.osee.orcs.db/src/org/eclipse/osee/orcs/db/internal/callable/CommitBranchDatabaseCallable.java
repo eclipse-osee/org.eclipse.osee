@@ -91,7 +91,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
    }
 
    private boolean isAllowableChange(ChangeIgnoreType type) {
-      return (type.isNone() || type.isResurrected());
+      return type.isNone() || type.isResurrected();
    }
 
    @Override

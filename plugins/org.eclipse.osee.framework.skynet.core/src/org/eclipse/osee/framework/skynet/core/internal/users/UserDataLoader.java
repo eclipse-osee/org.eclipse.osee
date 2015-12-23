@@ -51,9 +51,8 @@ public class UserDataLoader implements CacheDataLoader<String, User> {
    public User load(String userId) throws OseeCoreException {
       User user = null;
       try {
-         Artifact artifact =
-            ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.UserId, userId,
-               CoreBranches.COMMON);
+         Artifact artifact = ArtifactQuery.getArtifactFromTypeAndAttribute(CoreArtifactTypes.User,
+            CoreAttributeTypes.UserId, userId, CoreBranches.COMMON);
          user = (User) artifact;
       } catch (ArtifactDoesNotExist ex1) {
          throw new UserNotInDatabase(ex1, "Unable to load user with userId[%s]", userId);

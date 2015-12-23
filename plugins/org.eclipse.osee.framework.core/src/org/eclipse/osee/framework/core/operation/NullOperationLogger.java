@@ -19,7 +19,7 @@ public class NullOperationLogger extends OperationLogger {
 
    @Override
    public void log(String... row) {
-      // no implementation since this is a null logger 
+      // no implementation since this is a null logger
    }
 
    public static final OperationLogger getSingleton() {

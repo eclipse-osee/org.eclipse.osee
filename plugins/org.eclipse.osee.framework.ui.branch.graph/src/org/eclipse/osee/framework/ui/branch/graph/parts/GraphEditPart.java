@@ -151,7 +151,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             //               try {
             //                  result = m1.compareTo(m2);
             //               } catch (Exception ex) {
-            //                  OseeLog.logf(RevisionGraphActivator.class, Level.SEVERE, 
+            //                  OseeLog.logf(RevisionGraphActivator.class, Level.SEVERE,
             //                        "One of the branch models did not have a starting tx. 1:[%s] 2:[%s]", o1, o2);
             //               }
             //            }
@@ -175,8 +175,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
             txNumberToTxModelMap.put(txNumber, model);
             txNumberToTxFigureMap.put(txNumber, FigureFactory.createTxFigure(model));
          } else {
-            OseeLog.logf(Activator.class, Level.SEVERE,
-               "Orphan TxModel: [%s]", model.toString());
+            OseeLog.logf(Activator.class, Level.SEVERE, "Orphan TxModel: [%s]", model.toString());
          }
       }
 
@@ -232,7 +231,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                   TxFigure mergedView = txNumberToTxFigureMap.get(merged.getRevision());
                   if (mergedView != null) {
                      String message = getConnectionLabel(merged, txModel);
-                     connect(ConnectionType.MERGE, getFigure(), mergedView, txFigure, message, true, ColorConstants.red);
+                     connect(ConnectionType.MERGE, getFigure(), mergedView, txFigure, message, true,
+                        ColorConstants.red);
                   }
                }
             }
@@ -265,7 +265,8 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
                   TxFigure source = getTxFigure(sourceTx);
                   if (source != null) {
                      msg = getConnectionLabel(sourceTx, txModel);
-                     connect(ConnectionType.PARENT_CHILD, getFigure(), source, txFigure, msg, true, ColorConstants.blue);
+                     connect(ConnectionType.PARENT_CHILD, getFigure(), source, txFigure, msg, true,
+                        ColorConstants.blue);
                   }
                } else {
                   connectToBranchLabel = true;
@@ -281,8 +282,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          } else {
             TxModel txModel = branchModel.getFirstTx();
             if (txModel == null) {
-               OseeLog.logf(Activator.class, Level.SEVERE,
-                  "Branch did not have a starting tx [%s]", branchModel);
+               OseeLog.logf(Activator.class, Level.SEVERE, "Branch did not have a starting tx [%s]", branchModel);
             } else {
                if (txModel.getSourceTx() != null) {
                   TxModel sourceTx = txModel.getSourceTx();

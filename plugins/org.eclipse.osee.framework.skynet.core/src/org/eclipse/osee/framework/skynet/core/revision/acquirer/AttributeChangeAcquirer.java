@@ -71,10 +71,10 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          if (hasBranch) {
             fromTransactionId = getSourceBranch().getBaseTransaction();
             toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
-            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
-               getSourceBranch().getUuid(), fromTransactionId.getId());
+            chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS), getSourceBranch().getUuid(),
+               fromTransactionId.getId());
 
-         }//Changes per transaction number
+         } //Changes per transaction number
          else {
             toTransaction = getTransaction();
             if (hasSpecificArtifact) {
@@ -90,8 +90,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(),
             attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
             toTransaction, hasSpecificArtifact);
-         loadAttributeWasValues(getSourceBranch(), getTransaction(), getArtIds(), getMonitor(),
-            attributesWasValueCache, hasBranch);
+         loadAttributeWasValues(getSourceBranch(), getTransaction(), getArtIds(), getMonitor(), attributesWasValueCache,
+            hasBranch);
       } finally {
          chStmt.close();
       }
@@ -140,9 +140,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
                }
                IArtifactType artifactType = ArtifactTypeManager.getTypeByGuid(artTypeId);
                AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrTypeId);
-               attributeChangeBuilder =
-                  new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId, txDelta, modificationType,
-                     !hasBranch, isValue, "", attrId, attributeType, artModType);
+               attributeChangeBuilder = new AttributeChangeBuilder(sourceBranch, artifactType, sourceGamma, artId,
+                  txDelta, modificationType, !hasBranch, isValue, "", attrId, attributeType, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);
@@ -191,7 +190,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
 
                   if (previousAttrId != attrId) {
                      String wasValue = chStmt.getString("was_value");
-                     if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
+                     if (attributesWasValueCache.containsKey(
+                        attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
                         AttributeChangeBuilder changeBuilder =
                            (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
 

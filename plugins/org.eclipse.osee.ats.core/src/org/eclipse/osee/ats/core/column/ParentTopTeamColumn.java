@@ -42,7 +42,7 @@ public final class ParentTopTeamColumn {
          }
       }
       result = getTopTeamDefName(teamDef);
-      if (!Strings.isValid(result) && (atsObject instanceof IAtsActionableItemProvider)) {
+      if (!Strings.isValid(result) && atsObject instanceof IAtsActionableItemProvider) {
          IAtsActionableItemProvider provider = (IAtsActionableItemProvider) atsObject;
          Set<IAtsActionableItem> actionableItems = provider.getActionableItems();
          if (!actionableItems.isEmpty()) {

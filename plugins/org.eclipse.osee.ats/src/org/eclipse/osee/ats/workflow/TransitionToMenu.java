@@ -77,15 +77,15 @@ public class TransitionToMenu {
          }
       }
       if (toStateDefs.isEmpty()) {
-         editMenuManager.add(new Action("No Transitionable Selections",
-            ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
+         editMenuManager.add(
+            new Action("No Transitionable Selections", ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
 
-            @Override
-            public void run() {
-               AWorkbench.popup("Error", "No selection is in a transitionable state or transitionable together.");
-            }
+               @Override
+               public void run() {
+                  AWorkbench.popup("Error", "No selection is in a transitionable state or transitionable together.");
+               }
 
-         });
+            });
       } else {
          Set<Integer> stateOrdinals = new HashSet<>();
          for (final IAtsStateDefinition stateDef : toStateDefs) {
@@ -96,15 +96,15 @@ public class TransitionToMenu {
          for (Integer stateOrdinal : stateOrdinals) {
             for (final IAtsStateDefinition stateDef : toStateDefs) {
                if (stateDef.getOrdinal() == stateOrdinal) {
-                  editMenuManager.add(new Action(getTransitionToString(stateDef),
-                     ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
+                  editMenuManager.add(
+                     new Action(getTransitionToString(stateDef), ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
 
-                     @Override
-                     public void run() {
-                        handleTransitionToSelected(stateDef.getName(), workItems);
-                     }
+                        @Override
+                        public void run() {
+                           handleTransitionToSelected(stateDef.getName(), workItems);
+                        }
 
-                  });
+                     });
                }
             }
          }
@@ -124,8 +124,9 @@ public class TransitionToMenu {
    }
 
    private static String getStateTypeName(IAtsStateDefinition stateDef) {
-      return stateDef.getStateType().isWorkingState() || stateDef.getName().equals(TeamState.Completed.getName()) || stateDef.getName().equals(
-         TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
+      return stateDef.getStateType().isWorkingState() || stateDef.getName().equals(
+         TeamState.Completed.getName()) || stateDef.getName().equals(
+            TeamState.Cancelled.getName()) ? "" : " (" + stateDef.getStateType().name() + ")";
    }
 
    private static void handleTransitionToSelected(final String toStateName, final Set<IAtsWorkItem> workItems) {
@@ -146,7 +147,8 @@ public class TransitionToMenu {
                            workItems.iterator().next(), toStateName);
 
                      IAtsStateDefinition fromStateDefinition = workItems.iterator().next().getStateDefinition();
-                     if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDef.getStateType().isCancelledState()) {
+                     if (isRequireStateHoursSpentPrompt(
+                        fromStateDefinition) && !toStateDef.getStateType().isCancelledState()) {
 
                         boolean showPercentCompleted = !toStateDef.getStateType().isCompletedOrCancelledState();
                         TransitionStatusData data = new TransitionStatusData(getWorkItems(), showPercentCompleted);
@@ -217,9 +219,8 @@ public class TransitionToMenu {
                   IAtsWorkItem workItem = getWorkItems().iterator().next();
                   IAtsStateDefinition stateDef = null;
                   try {
-                     stateDef =
-                        AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(workItem,
-                           getToStateName());
+                     stateDef = AtsClientService.get().getWorkDefinitionAdmin().getStateDefinitionByName(workItem,
+                        getToStateName());
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }

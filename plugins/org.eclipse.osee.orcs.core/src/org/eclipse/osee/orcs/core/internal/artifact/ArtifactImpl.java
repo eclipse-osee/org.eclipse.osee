@@ -14,7 +14,6 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -132,7 +131,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    private boolean isReplaceWithVersion() {
-      return (getModificationType() == ModificationType.REPLACED_WITH_VERSION) || artifactData.isUseBackingData();
+      return getModificationType() == ModificationType.REPLACED_WITH_VERSION || artifactData.isUseBackingData();
    }
 
    private boolean hasDirtyArtifactType() {
@@ -157,8 +156,7 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    @Override
    public String getExceptionString() {
       try {
-         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(),
-            getBranchId());
+         return String.format("artifact type[%s] guid[%s] on branch[%s]", getArtifactType(), getGuid(), getBranchId());
       } catch (OseeCoreException ex) {
          return Lib.exceptionToString(ex);
       }

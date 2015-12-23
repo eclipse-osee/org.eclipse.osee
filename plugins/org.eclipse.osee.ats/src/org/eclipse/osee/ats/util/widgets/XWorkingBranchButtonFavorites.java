@@ -56,7 +56,8 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
 
    private void markWorkingBranchAsFavorite() {
       try {
-         User user = AtsClientService.get().getUserServiceClient().getOseeUser(AtsClientService.get().getUserService().getCurrentUser());
+         User user = AtsClientService.get().getUserServiceClient().getOseeUser(
+            AtsClientService.get().getUserService().getCurrentUser());
          if (user.isSystemUser()) {
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
@@ -67,9 +68,8 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
             return;
          }
          boolean isFavorite = user.isFavoriteBranch(branch);
-         String message =
-            String.format("Working branch is currently [%s]\n\nToggle favorite?",
-               isFavorite ? "Favorite" : "NOT Favorite");
+         String message = String.format("Working branch is currently [%s]\n\nToggle favorite?",
+            isFavorite ? "Favorite" : "NOT Favorite");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
             user.toggleFavoriteBranch(branch);
             OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getUuid()));

@@ -92,13 +92,12 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
                   return false;
                }
             }
-            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+            if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
-            boolean modified =
-               promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) useArt),
-                  AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
-                  AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
+            boolean modified = promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) useArt),
+               AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+               AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
             XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");
@@ -130,8 +129,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
-         if (AtsClientService.get().getVersionService().isReleased(teamArt) || AtsClientService.get().getVersionService().isVersionLocked(
-            teamArt)) {
+         if (AtsClientService.get().getVersionService().isReleased(
+            teamArt) || AtsClientService.get().getVersionService().isVersionLocked(teamArt)) {
             String error =
                "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
             if (AtsUtilClient.isAtsAdmin() && !MessageDialog.openConfirm(Displays.getActiveShell(), "Change Version",
@@ -155,12 +154,11 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
          return false;
       }
       TeamWorkFlowArtifact teamArt = awas.iterator().next();
-      final VersionListDialog dialog =
-         new VersionListDialog("Select Version", "Select Version", teamDefHoldingVersions.getVersions(
-            versionReleaseType, versionLockType));
+      final VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version",
+         teamDefHoldingVersions.getVersions(versionReleaseType, versionLockType));
       if (awas.size() == 1 && AtsClientService.get().getVersionService().hasTargetedVersion(teamArt)) {
-         dialog.setInitialSelections(Arrays.asList(AtsClientService.get().getVersionService().getTargetedVersion(
-            teamArt)));
+         dialog.setInitialSelections(
+            Arrays.asList(AtsClientService.get().getVersionService().getTargetedVersion(teamArt)));
       }
       int result = dialog.open();
       if (result != 0) {
@@ -222,8 +220,7 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
             }
          }
 
-         promptChangeVersion(awas,
-            AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
+         promptChangeVersion(awas, AtsUtilClient.isAtsAdmin() ? VersionReleaseType.Both : VersionReleaseType.UnReleased,
             AtsUtilClient.isAtsAdmin() ? VersionLockedType.Both : VersionLockedType.UnLocked);
          getXViewer().update(awas.toArray(), null);
          return;

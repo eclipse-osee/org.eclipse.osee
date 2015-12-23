@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.script.dsl;
 
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.TIMESTAMP_FORMAT;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.TIMEZONE_ID;
+import com.google.inject.Injector;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -35,7 +36,6 @@ import org.eclipse.xtext.resource.SaveOptions;
 import org.eclipse.xtext.resource.SaveOptions.Builder;
 import org.eclipse.xtext.resource.XtextResource;
 import org.eclipse.xtext.resource.XtextResourceSet;
-import com.google.inject.Injector;
 
 /**
  * @author Roberto E. Escobar

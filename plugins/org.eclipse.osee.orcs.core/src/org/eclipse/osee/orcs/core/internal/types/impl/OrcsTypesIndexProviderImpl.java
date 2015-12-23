@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.core.internal.types.OrcsTypesLoader;
 /**
  * @author Roberto E. Escobar
  */
-public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex> implements OrcsTypesIndexProvider {
+public class OrcsTypesIndexProviderImpl extends LazyObject<OrcsTypesIndex>implements OrcsTypesIndexProvider {
 
    private OrcsTypesLoader loader;
 

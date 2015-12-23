@@ -66,10 +66,9 @@ public class UiRenameConfirmer implements RenameConfirmer {
    }
 
    private MessageDialog createDialog(final Map<Artifact, String> nameUpdateRequired) {
-      MessageDialog dialog =
-         new XTableDialog(Displays.getActiveShell(), "Rename Artifacts", null,
-            "The following artifacts will be renamed.\n Select OK to continue with rename or Cancel to abort.",
-            MessageDialog.CONFIRM, new String[] {"Ok", "Cancel"}, 0, nameUpdateRequired);
+      MessageDialog dialog = new XTableDialog(Displays.getActiveShell(), "Rename Artifacts", null,
+         "The following artifacts will be renamed.\n Select OK to continue with rename or Cancel to abort.",
+         MessageDialog.CONFIRM, new String[] {"Ok", "Cancel"}, 0, nameUpdateRequired);
       return dialog;
    }
 
@@ -134,7 +133,7 @@ public class UiRenameConfirmer implements RenameConfirmer {
       @SuppressWarnings("unchecked")
       @Override
       public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) {
-         Entry<Artifact, String> item = ((Entry<Artifact, String>) element);
+         Entry<Artifact, String> item = (Entry<Artifact, String>) element;
          if (xCol.equals(XTableFactory.FROM_NAME_COLUMN)) {
             return item.getKey().getSafeName();
          }
@@ -177,7 +176,7 @@ public class UiRenameConfirmer implements RenameConfirmer {
          if (parentElement instanceof Map) {
             return ((Map<?, ?>) parentElement).entrySet().toArray();
          } else if (parentElement instanceof Entry) {
-            Entry<?, ?> entry = ((Entry<?, ?>) parentElement);
+            Entry<?, ?> entry = (Entry<?, ?>) parentElement;
             return new Object[] {entry.getKey(), entry.getValue()};
          }
          return new Object[] {};

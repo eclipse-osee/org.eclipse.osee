@@ -88,7 +88,8 @@ public class SafetyReportGenerator {
          traces.extractTraces(root);
       }
       ArtifactReadable functionsFolder =
-         queryFactory.fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Folder).andNameEquals("System Functions").getResults().getExactlyOne();
+         queryFactory.fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
+            "System Functions").getResults().getExactlyOne();
       processSystemFunctions(functionsFolder, writer);
 
       writer.endWorkbook();
@@ -106,15 +107,16 @@ public class SafetyReportGenerator {
             String criticality;
             if (systemFunction.getAttributes(CoreAttributeTypes.SafetyCriticality).size() != 1) {
                logger.debug("found too many attributes on %s", systemFunction.toString());
-               criticality =
-                  systemFunction.getAttributes(CoreAttributeTypes.SafetyCriticality).iterator().next().getDisplayableString();
+               criticality = systemFunction.getAttributes(
+                  CoreAttributeTypes.SafetyCriticality).iterator().next().getDisplayableString();
             } else {
                criticality = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SafetyCriticality);
             }
 
             writer.writeCell(criticality);
             writer.writeCell(getSFHAHazards(systemFunction));
-            for (ArtifactReadable systemRequirement : systemFunction.getRelated(CoreRelationTypes.Design__Requirement)) {
+            for (ArtifactReadable systemRequirement : systemFunction.getRelated(
+               CoreRelationTypes.Design__Requirement)) {
                writer.writeCell(systemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber, ""),
                   SYSTEM_REQUIREMENT_INDEX);
                writer.writeCell(systemRequirement.getName());

@@ -37,7 +37,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
    private ICommandService commandService;
 
    public ArchiveBranchCompoundContributionItem() {
-      this.commandService = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.commandService = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    public ArchiveBranchCompoundContributionItem(String id) {
@@ -61,8 +61,8 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
                CommandContributionItem contributionItem = null;
                BranchArchivedState archivedState = selectedBranch.getArchiveState();
                String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
-               ImageDescriptor descriptor =
-                  archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
+               ImageDescriptor descriptor = archivedState.isArchived() ? ImageManager.getImageDescriptor(
+                  FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
                contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
 
                if (command != null && command.isEnabled()) {
@@ -77,10 +77,9 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
    private CommandContributionItem createCommand(String label, Branch branch, String commandId, ImageDescriptor descriptor) {
       CommandContributionItem contributionItem;
 
-      contributionItem =
-         new CommandContributionItem(new CommandContributionItemParameter(
-            PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, Collections.EMPTY_MAP, descriptor,
-            null, null, label, null, null, SWT.NONE, null, false));
+      contributionItem = new CommandContributionItem(
+         new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,
+            Collections.EMPTY_MAP, descriptor, null, null, label, null, null, SWT.NONE, null, false));
 
       return contributionItem;
    }

@@ -75,8 +75,8 @@ public class FixAttributeOperationTest {
    @Mock private OperationLogger logger;
    @Mock private Display display;
  
-   @Captor private ArgumentCaptor<List<String[]>> captor; 
-   @Captor private ArgumentCaptor<List<String[]>> captor2; 
+   @Captor private ArgumentCaptor<List<String[]>> captor;
+   @Captor private ArgumentCaptor<List<String[]>> captor2;
   
    // @formatter:on
 
@@ -166,8 +166,8 @@ public class FixAttributeOperationTest {
 
       List<String> values = testRobotAPI.getAttributesToStringList(CoreAttributeTypes.Partition);
       Collections.sort(values);
-      assertEquals("Navigation", values.get(0)); 
-      assertEquals("Unspecified", values.get(1)); 
+      assertEquals("Navigation", values.get(0));
+      assertEquals("Unspecified", values.get(1));
       
       // Run Again Empty Report should result
       reset(display);
@@ -176,7 +176,7 @@ public class FixAttributeOperationTest {
       verify(display).displayReport(eq("Fix Duplicate Report"), captor2.capture());
       
       String expectedString = "-- no duplicates found --";
-      assertRow(captor2.getValue(), 0, expectedString, expectedString, expectedString, expectedString, expectedString, expectedString);      
+      assertRow(captor2.getValue(), 0, expectedString, expectedString, expectedString, expectedString, expectedString, expectedString);
    }
 
    private static void assertRow(List<String[]> data, int index, String... expecteds) {

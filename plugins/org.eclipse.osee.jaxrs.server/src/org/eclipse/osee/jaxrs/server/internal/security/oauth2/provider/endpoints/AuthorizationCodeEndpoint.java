@@ -54,7 +54,7 @@ public class AuthorizationCodeEndpoint extends AuthorizationCodeGrantService {
     *  - only confidential clients should have a client secret
     *  - if they are not confidential they should not have a client secret.
     * 
-    *  If desired, add the following: 
+    *  If desired, add the following:
     * && !c.isConfidential() && c.getClientSecret() == null
     * </pre>
     */

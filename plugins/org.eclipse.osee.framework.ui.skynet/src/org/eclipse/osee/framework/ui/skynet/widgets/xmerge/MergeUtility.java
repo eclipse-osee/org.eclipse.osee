@@ -125,9 +125,8 @@ public class MergeUtility {
                buttons = new String[] {"Continue with last Merge", "Begin New Merge", "Show Help", "Cancel"};
             }
 
-            MessageDialog dialog =
-               new MessageDialog(Displays.getActiveShell().getShell(), "Merge Word Artifacts", null, OPEN_MERGE_DIALOG,
-                  4, buttons, 2);
+            MessageDialog dialog = new MessageDialog(Displays.getActiveShell().getShell(), "Merge Word Artifacts", null,
+               OPEN_MERGE_DIALOG, 4, buttons, 2);
             int response = dialog.open();
             if (buttons.length == 3) {
                response++;
@@ -151,9 +150,8 @@ public class MergeUtility {
       try {
          if (Conditions.notNull(conflict.getSourceBranch())) {
             TransactionRecord baseTransaction = conflict.getSourceBranch().getBaseTransaction();
-            toReturn =
-               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
-                  INCLUDE_DELETED);
+            toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
+               INCLUDE_DELETED);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -167,9 +165,8 @@ public class MergeUtility {
          if (Conditions.notNull(conflict.getSourceBranch())) {
             TransactionRecord commonTransaction =
                ConflictManagerInternal.findCommonTransaction(conflict.getSourceBranch(), conflict.getDestBranch());
-            toReturn =
-               ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), commonTransaction,
-                  INCLUDE_DELETED);
+            toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), commonTransaction,
+               INCLUDE_DELETED);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -83,7 +83,8 @@ public class ReportResource {
       };
       String contentDisposition =
          String.format("attachment; filename=\"%s.xml\"; creation-date=\"%s\"", fileName, new Date());
-      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/xml").build();
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/xml").build();
    }
 
    private void buildArtIdToChangeMap(List<ChangeItem> changes, Map<Integer, Pair<ChangeItem, Set<ChangeItem>>> artToChanges) {

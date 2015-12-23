@@ -123,7 +123,7 @@ public class DispoItemDataCopierTest {
       // Make sure discrepancy10 in the new Item if the same as discrepancy9 from first item
       assertEquals(DispoStrings.Item_Complete, secondItemStatus);
 
-      // Make sure the annotations from the second item are the same as those from the first except for the location ranges which should all increase by 1. 
+      // Make sure the annotations from the second item are the same as those from the first except for the location ranges which should all increase by 1.
       assertEquals(annotationOneFirstItem.getGuid(), annotationOneSecondItem.getGuid());
       assertEquals("9", annotationOneFirstItem.getLocationRefs());
       assertEquals("10", annotationOneSecondItem.getLocationRefs());

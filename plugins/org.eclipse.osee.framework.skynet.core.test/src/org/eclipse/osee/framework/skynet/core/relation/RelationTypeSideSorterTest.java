@@ -204,8 +204,8 @@ public class RelationTypeSideSorterTest {
       String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
       IRelationSorterId expectedId = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       String expectedToString =
-         String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=[%s], sorterId=%s}",
-            relationType, relationSide, artGuid, expectedId);
+         String.format("Relation Sorter {relationType=%s, relationSide=[%s], artifact=[%s], sorterId=%s}", relationType,
+            relationSide, artGuid, expectedId);
       Assert.assertEquals(expectedToString, sorter.toString());
    }
 
@@ -248,9 +248,8 @@ public class RelationTypeSideSorterTest {
    private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
       IArtifactType type1 = new ArtifactType(0x01L, "1", false);
       IArtifactType type2 = new ArtifactType(0x02L, "2", false);
-      RelationType relationType =
-         new RelationType(0x03L, name, name + "_A", name + "_B", type1, type2, RelationTypeMultiplicity.MANY_TO_MANY,
-            delationRelationOrderGuid);
+      RelationType relationType = new RelationType(0x03L, name, name + "_A", name + "_B", type1, type2,
+         RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;
@@ -269,12 +268,11 @@ public class RelationTypeSideSorterTest {
       int index = 0;
       Assert.assertEquals(expectedValues.size(), orderData.size());
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
-         Object[] actual =
-            new Object[] {
-               entry.getKey().getFirst(),
-               entry.getKey().getSecond(),
-               entry.getValue().getFirst(),
-               entry.getValue().getSecond()};
+         Object[] actual = new Object[] {
+            entry.getKey().getFirst(),
+            entry.getKey().getSecond(),
+            entry.getValue().getFirst(),
+            entry.getValue().getSecond()};
          Object[] expected = expectedValues.get(index++);
          Assert.assertEquals(expected.length, actual.length);
          for (int index2 = 0; index2 < expected.length; index2++) {

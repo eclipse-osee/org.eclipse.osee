@@ -69,9 +69,8 @@ public class DateIteratorTest {
       calsExpected.add((Calendar) iCal.clone());
 
       //Perform the iteration
-      DateIterator dateIter =
-         new DateIterator(startCal, endCal, calendarFieldIter, iterRate, normalize, calendarFieldNormalize,
-            calendarValueNormalize);
+      DateIterator dateIter = new DateIterator(startCal, endCal, calendarFieldIter, iterRate, normalize,
+         calendarFieldNormalize, calendarValueNormalize);
       while (dateIter.hasNext()) {
          Calendar cal = dateIter.next();
          calsFromIter.add(cal);
@@ -96,7 +95,8 @@ public class DateIteratorTest {
       }
 
       for (Calendar cal : calsFromIter) {
-         assertTrue("calsFromIter has extra date: " + DateUtil.getMMDDYYHHMM(cal.getTime()), calsExpected.contains(cal));
+         assertTrue("calsFromIter has extra date: " + DateUtil.getMMDDYYHHMM(cal.getTime()),
+            calsExpected.contains(cal));
       }
    }
 

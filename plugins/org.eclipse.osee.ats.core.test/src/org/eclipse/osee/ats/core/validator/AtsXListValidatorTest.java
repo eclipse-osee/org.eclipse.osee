@@ -40,24 +40,21 @@ public class AtsXListValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
-      WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XListDam");
 
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
    }
 
@@ -78,9 +75,8 @@ public class AtsXListValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid is nothing entered
-      WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       //Invalid_Range if select more than supposed to

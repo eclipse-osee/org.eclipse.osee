@@ -196,8 +196,8 @@ public abstract class AbstractDatabaseStorage<T> {
             endTime = System.currentTimeMillis() - startTime;
          }
          if (logger.isTraceEnabled()) {
-            logger.trace("%s [finished] - [%s] [%s] [%s]", getClass().getSimpleName(), Lib.asTimeString(endTime),
-               query, data);
+            logger.trace("%s [finished] - [%s] [%s] [%s]", getClass().getSimpleName(), Lib.asTimeString(endTime), query,
+               data);
          }
          return result;
       }

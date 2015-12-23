@@ -59,7 +59,7 @@ public class IdJoinQuery extends AbstractJoinQuery {
          final int prime = 31;
          int result = 1;
          result = prime * result + getOuterType().hashCode();
-         result = prime * result + ((id == null) ? 0 : id.hashCode());
+         result = prime * result + (id == null ? 0 : id.hashCode());
          return result;
       }
 

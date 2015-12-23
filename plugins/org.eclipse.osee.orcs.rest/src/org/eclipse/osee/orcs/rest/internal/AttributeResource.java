@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.internal;
 
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import java.net.URLEncoder;
 import javax.ws.rs.GET;
 import javax.ws.rs.WebApplicationException;
@@ -25,9 +28,6 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar

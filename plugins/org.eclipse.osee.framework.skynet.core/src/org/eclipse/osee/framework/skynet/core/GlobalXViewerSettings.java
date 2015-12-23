@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+
 /**
  * This singleton artifact stores the default customizations for XViewers
  *
@@ -29,7 +30,7 @@ public final class GlobalXViewerSettings {
    }
 
    public static Artifact createCustomArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
-         COMMON, CoreArtifactTypes.XViewerGlobalCustomization.getName());
+      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization, COMMON,
+         CoreArtifactTypes.XViewerGlobalCustomization.getName());
    }
 }

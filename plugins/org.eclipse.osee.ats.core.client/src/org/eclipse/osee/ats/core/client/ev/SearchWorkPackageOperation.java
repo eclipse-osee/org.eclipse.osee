@@ -68,7 +68,7 @@ public class SearchWorkPackageOperation extends AbstractOperation {
       for (Artifact teamOrAiArt : AtsArtifactQuery.getArtifactListFromIds(guids)) {
          for (Artifact workPkgArt : teamOrAiArt.getRelatedArtifacts(AtsRelationTypes.WorkPackage_WorkPackage)) {
             boolean active = workPkgArt.getSoleAttributeValue(AtsAttributeTypes.Active, true);
-            if (activeWorkPkgs == Active.Both || ((active && activeWorkPkgs == Active.Active) || (!active && activeWorkPkgs == Active.InActive))) {
+            if (activeWorkPkgs == Active.Both || active && activeWorkPkgs == Active.Active || !active && activeWorkPkgs == Active.InActive) {
                results.add(workPkgArt);
             }
             checkForCancelledStatus(monitor);

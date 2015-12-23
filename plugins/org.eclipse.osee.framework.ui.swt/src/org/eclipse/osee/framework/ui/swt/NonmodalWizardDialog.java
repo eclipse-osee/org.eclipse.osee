@@ -44,7 +44,8 @@ public class NonmodalWizardDialog extends WizardDialog {
 
    public NonmodalWizardDialog(Shell shell, Wizard wizard) {
       super(new Shell(), wizard);
-      setShellStyle(SWT.MODELESS | SWT.SHELL_TRIM | SWT.CLOSE | SWT.TITLE | SWT.BORDER | SWT.RESIZE | SWT.ON_TOP | getDefaultOrientation());
+      setShellStyle(
+         SWT.MODELESS | SWT.SHELL_TRIM | SWT.CLOSE | SWT.TITLE | SWT.BORDER | SWT.RESIZE | SWT.ON_TOP | getDefaultOrientation());
 
       cancelListener = new SelectionAdapter() {
          @Override

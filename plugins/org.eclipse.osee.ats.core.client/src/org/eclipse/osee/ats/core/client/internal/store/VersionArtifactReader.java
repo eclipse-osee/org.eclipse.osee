@@ -41,8 +41,8 @@ public class VersionArtifactReader extends AbstractAtsArtifactReader<IAtsVersion
    public IAtsVersion load(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
       IAtsVersion version = getOrCreateVersion(cache, artifact);
 
-      version.setEstimatedReleasedDate(artifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate,
-         (Date) null));
+      version.setEstimatedReleasedDate(
+         artifact.getSoleAttributeValue(AtsAttributeTypes.EstimatedReleaseDate, (Date) null));
       version.setReleasedDate(artifact.getSoleAttributeValue(AtsAttributeTypes.ReleaseDate, (Date) null));
       version.setReleased(artifact.getSoleAttributeValue(AtsAttributeTypes.Released, false));
       version.setLocked(artifact.getSoleAttributeValue(AtsAttributeTypes.VersionLocked, false));

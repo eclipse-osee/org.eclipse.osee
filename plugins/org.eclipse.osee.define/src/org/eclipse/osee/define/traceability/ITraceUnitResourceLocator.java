@@ -24,5 +24,4 @@ public interface ITraceUnitResourceLocator extends IResourceLocator {
 
    public IArtifactType getTraceUnitType(String name, CharBuffer fileBuffer) throws OseeCoreException;
 
-
 }

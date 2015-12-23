@@ -110,4 +110,4 @@ public class AccountInfoData implements Identity<String> {
       return String.valueOf(getGuid());
    }
 
-   }
+}

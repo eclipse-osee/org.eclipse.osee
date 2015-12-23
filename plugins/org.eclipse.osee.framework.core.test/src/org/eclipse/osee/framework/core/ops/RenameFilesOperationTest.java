@@ -12,11 +12,10 @@ package org.eclipse.osee.framework.core.ops;
 
 import java.io.File;
 import java.io.IOException;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.operation.NullOperationLogger;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.ops.RenameFilesOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;

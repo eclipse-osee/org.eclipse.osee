@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.SetMultimap;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Set;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.SetMultimap;
 
 /**
  * @author Roberto E. Escobar

@@ -87,7 +87,7 @@ public class OrcsScriptDslFormatter extends AbstractDeclarativeFormatter impleme
       }
 
       // >>>>>>>>>>>>>>>>> Grammar
-      // Script Version 
+      // Script Version
       ScriptVersionElements version = grmr.getScriptVersionAccess();
       cfg.setLinewrap(0, 1, 2).before(version.getGroup());
       cfg.setLinewrap(1).after(version.getGroup());
@@ -102,7 +102,7 @@ public class OrcsScriptDslFormatter extends AbstractDeclarativeFormatter impleme
       cfg.setLinewrap(0, 1, 2).before(variable.getVarKeyword_1());
       cfg.setLinewrap(1, 1, 2).after(variable.getSemicolonKeyword_4());
 
-      // start from ....; 
+      // start from ....;
       OsQueryExpressionElements query = grmr.getOsQueryExpressionAccess();
       cfg.setLinewrap(1).before(query.getNameStartKeyword_1_0());
 

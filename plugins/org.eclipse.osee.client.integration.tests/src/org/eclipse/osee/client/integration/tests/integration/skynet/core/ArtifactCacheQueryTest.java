@@ -64,12 +64,8 @@ public class ArtifactCacheQueryTest {
    private static final String STATIC_ID_DDD = "ddd";
    private static final String STATIC_ID_EEE = "eee";
 
-   private static final String[] ALL_STATIC_IDS = new String[] {
-      STATIC_ID_AAA,
-      STATIC_ID_BBB,
-      STATIC_ID_CCC,
-      STATIC_ID_DDD,
-      STATIC_ID_EEE};
+   private static final String[] ALL_STATIC_IDS =
+      new String[] {STATIC_ID_AAA, STATIC_ID_BBB, STATIC_ID_CCC, STATIC_ID_DDD, STATIC_ID_EEE};
 
    private static final IOseeBranch branch = CoreBranches.COMMON;
 
@@ -87,9 +83,8 @@ public class ArtifactCacheQueryTest {
       transaction.execute();
 
       for (String staticIdValue : ALL_STATIC_IDS) {
-         Collection<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.GeneralData,
-               CoreAttributeTypes.StaticId, staticIdValue, branch);
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromTypeAndAttribute(
+            CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId, staticIdValue, branch);
          for (Artifact artifact : artifacts) {
             System.err.println("Search returned non-deleted " + artifact.getGuid());
          }
@@ -103,9 +98,8 @@ public class ArtifactCacheQueryTest {
    @Test
    public void testStaticIdsGettingCached() throws OseeCoreException {
       String staticId = "org." + GUID.create();
-      Artifact artifact =
-         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
-            CoreAttributeTypes.StaticId, staticId, branch);
+      Artifact artifact = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, staticId, branch);
       assertNotNull(artifact);
       artifact.addAttribute(CoreAttributeTypes.StaticId, staticId);
       artifact.persist(getClass().getSimpleName());
@@ -124,14 +118,12 @@ public class ArtifactCacheQueryTest {
     */
    @Test
    public void testGetSingletonArtifact() throws OseeCoreException {
-      Artifact artifact =
-         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId,
-            STATIC_ID_AAA, branch, true);
+      Artifact artifact = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_AAA, branch, true);
       assertNull(artifact);
 
-      artifact =
-         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
-            CoreAttributeTypes.StaticId, STATIC_ID_AAA, branch);
+      artifact = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_AAA, branch);
       assertNotNull(artifact);
 
       deleteArtifacts(Arrays.asList(artifact), STATIC_ID_AAA);
@@ -151,9 +143,8 @@ public class ArtifactCacheQueryTest {
       ArtifactCache.cacheByTextId(STATIC_ID_BBB, artifact);
 
       // call to search for artifact with STATIC_ID_BBB
-      Artifact artifactWithDoubleBbb =
-         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId,
-            STATIC_ID_BBB, branch, false);
+      Artifact artifactWithDoubleBbb = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_BBB, branch, false);
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
@@ -245,18 +236,16 @@ public class ArtifactCacheQueryTest {
       List<Artifact> itemsCreated = new ArrayList<>();
 
       // create single artifact with eee staticId
-      Artifact artifact =
-         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
-            CoreAttributeTypes.StaticId, STATIC_ID_EEE, branch);
+      Artifact artifact = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_EEE, branch);
       artifact.persist("create single artifact with eee staticId");
       assertNotNull(artifact);
 
       itemsCreated.add(artifact);
 
       // test that singleton comes back
-      artifact =
-         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId,
-            STATIC_ID_EEE, branch, false);
+      artifact = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_EEE, branch, false);
       assertNotNull(artifact);
 
       // create another artifact with eee staticId
@@ -267,16 +256,14 @@ public class ArtifactCacheQueryTest {
       itemsCreated.add(artifact);
 
       // test that there are now two artifacts with eee
-      Collection<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId,
-            STATIC_ID_EEE, branch);
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.GeneralData,
+         CoreAttributeTypes.StaticId, STATIC_ID_EEE, branch);
       assertTrue("Expected 2 artifacts; Returned " + artifacts.size(), artifacts.size() == 2);
 
       // test that call to get singleton does NOT exception
       try {
-         artifact =
-            ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData, CoreAttributeTypes.StaticId,
-               STATIC_ID_EEE, branch, false);
+         artifact = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralData,
+            CoreAttributeTypes.StaticId, STATIC_ID_EEE, branch, false);
          assertNotNull(artifact);
       } catch (Exception ex) {
          fail("Exception should not have occurred " + ex.getLocalizedMessage());

@@ -142,8 +142,8 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          workPackageEp.setWorkPackage(workPackage.getUuid(), data);
       }
 
-      TopicEvent event =
-         new TopicEvent(AtsEvents.WORK_ITEM_MODIFIED, AtsEvents.WORK_ITEM_UUDS, AtsObjects.toUuidsString(";", workItems));
+      TopicEvent event = new TopicEvent(AtsEvents.WORK_ITEM_MODIFIED, AtsEvents.WORK_ITEM_UUDS,
+         AtsObjects.toUuidsString(";", workItems));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
       AtsClientService.get().getStoreService().reload(workItems);

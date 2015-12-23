@@ -33,7 +33,7 @@ public class InsertionColumn {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          Pair<IAtsInsertion, Boolean> insertion = util.getInsertion(services, workItem);
          if (insertion.getFirst() != null) {
-            result = String.format("%s%s", insertion.getFirst().getName(), (insertion.getSecond() ? " (I)" : ""));
+            result = String.format("%s%s", insertion.getFirst().getName(), insertion.getSecond() ? " (I)" : "");
          }
       }
       return result;

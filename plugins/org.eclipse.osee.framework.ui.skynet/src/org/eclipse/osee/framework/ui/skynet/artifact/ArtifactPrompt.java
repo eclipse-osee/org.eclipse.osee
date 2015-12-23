@@ -37,13 +37,12 @@ public final class ArtifactPrompt {
 
    public boolean promptChangeAttribute(IAttributeType attributeType, final Collection<? extends Artifact> artifacts, boolean persist, boolean multiLine) throws OseeCoreException {
       boolean toReturn = false;
-      boolean hasPermission =
-         policyHandler.hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
-            OseeLevel.SEVERE_POPUP).matched();
+      boolean hasPermission = policyHandler.hasAttributeTypePermission(artifacts, attributeType, PermissionEnum.WRITE,
+         OseeLevel.SEVERE_POPUP).matched();
 
       if (hasPermission) {
-         IHandlePromptChange promptChange =
-            promptFactory.createPrompt(attributeType, attributeType.getUnqualifiedName(), artifacts, persist, multiLine);
+         IHandlePromptChange promptChange = promptFactory.createPrompt(attributeType,
+            attributeType.getUnqualifiedName(), artifacts, persist, multiLine);
          if (promptChange.promptOk()) {
             toReturn = promptChange.store();
          }

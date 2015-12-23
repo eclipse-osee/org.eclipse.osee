@@ -56,7 +56,8 @@ public class AtsXCommitManagerValidator extends AtsXWidgetValidator {
                         return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                            ALL_BRANCHES_MUST_BE_CONFIGURED_FOR_COMMIT);
                      }
-                     if (!transitionToWithWorkingBranchRuleExists(toStateDef) && !branchService.isBranchesAllCommitted(teamWf)) {
+                     if (!transitionToWithWorkingBranchRuleExists(toStateDef) && !branchService.isBranchesAllCommitted(
+                        teamWf)) {
                         return new WidgetResult(WidgetStatus.Invalid_Incompleted, widgetDef,
                            ALL_BRANCHES_MUST_BE_COMMITTED);
                      }

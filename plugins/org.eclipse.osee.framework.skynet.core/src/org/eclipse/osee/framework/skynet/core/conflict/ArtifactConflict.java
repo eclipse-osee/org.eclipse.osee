@@ -129,7 +129,8 @@ public class ArtifactConflict extends Conflict {
 
    @Override
    public int getMergeGammaId() throws BranchMergeException {
-      throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
+      throw new BranchMergeException(
+         "Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }
 
    @Override

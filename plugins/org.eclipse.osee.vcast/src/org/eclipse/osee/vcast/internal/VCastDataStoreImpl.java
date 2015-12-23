@@ -165,8 +165,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer num_conditions = stmt.getInt("num_conditions");
             String actual_expr = stmt.getString("actual_expr");
             String simplified_expr = stmt.getString("simplified_expr");
-            toReturn.add(new VCastMcdcCoverage(id, function_id, line, source_line, num_conditions, actual_expr,
-               simplified_expr));
+            toReturn.add(
+               new VCastMcdcCoverage(id, function_id, line, source_line, num_conditions, actual_expr, simplified_expr));
          }
 
       } finally {
@@ -303,7 +303,8 @@ public class VCastDataStoreImpl implements VCastDataStore {
             Integer instrumented_file_id = stmt.getInt("instrumented_file_id");
             Integer timestamp = stmt.getInt("timestamp");
             String build_md5sum = stmt.getString("build_md5sum");
-            toReturn.add(new VCastProjectFile(project_id, source_file_id, instrumented_file_id, timestamp, build_md5sum));
+            toReturn.add(
+               new VCastProjectFile(project_id, source_file_id, instrumented_file_id, timestamp, build_md5sum));
          }
 
       } finally {

@@ -61,30 +61,33 @@ public class AtsIdProviderTest {
 
    @Test
    public void testGetAttrValue() {
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         null);
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            null);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(null);
 
       Assert.assertNull(atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
 
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
-      when(attrResolver.getSoleAttributeValueAsString(parentTeamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         "ATS");
+      when(attrResolver.getSoleAttributeValueAsString(parentTeamDef, AtsAttributeTypes.AtsIdPrefix,
+         (String) null)).thenReturn("ATS");
 
       Assert.assertEquals("ATS", atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
 
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         "TEST");
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            "TEST");
 
       Assert.assertEquals("TEST", atsIdProvider.getAttrValue(AtsAttributeTypes.AtsIdPrefix));
    }
 
    @Test
    public void testGetNextAtsId() {
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         "ASDF");
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName, (String) null)).thenReturn(
-         "ASDF_SEQ");
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            "ASDF");
+      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
+         (String) null)).thenReturn("ASDF_SEQ");
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
 
       Assert.assertEquals("ASDF333", atsIdProvider.getNextAtsId());
@@ -94,10 +97,11 @@ public class AtsIdProviderTest {
    public void testSetAtsId() {
       when(attrResolver.getSoleAttributeValueAsString(newObject, AtsAttributeTypes.AtsId, (String) null)).thenReturn(
          null);
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         "ASDF");
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName, (String) null)).thenReturn(
-         "ASDF_SEQ");
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            "ASDF");
+      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
+         (String) null)).thenReturn("ASDF_SEQ");
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
 
@@ -111,10 +115,11 @@ public class AtsIdProviderTest {
    public void testNotSetAtsId() {
       when(attrResolver.getSoleAttributeValueAsString(newObject, AtsAttributeTypes.AtsId, (String) null)).thenReturn(
          "QQQQ444");
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
-         "ASDF");
-      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName, (String) null)).thenReturn(
-         "ASDF_SEQ");
+      when(
+         attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdPrefix, (String) null)).thenReturn(
+            "ASDF");
+      when(attrResolver.getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.AtsIdSequenceName,
+         (String) null)).thenReturn("ASDF_SEQ");
       when(sequenceProvider.getNext("ASDF_SEQ")).thenReturn(333L);
       when(teamDef.getTeamDefinitionHoldingVersions()).thenReturn(parentTeamDef);
 

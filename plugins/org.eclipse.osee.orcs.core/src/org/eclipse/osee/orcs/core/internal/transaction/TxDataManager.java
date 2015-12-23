@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.core.internal.transaction;
 
 import static java.util.Collections.singleton;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -40,8 +42,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.impl.RelationNodeAdjacencies;
 import org.eclipse.osee.orcs.core.internal.transaction.TxData.TxState;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar

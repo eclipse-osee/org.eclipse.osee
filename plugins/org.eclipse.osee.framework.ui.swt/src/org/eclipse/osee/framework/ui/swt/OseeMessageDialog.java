@@ -208,7 +208,8 @@ public class OseeMessageDialog extends IconAndMessageDialog {
     */
    protected void setButtons(Button[] buttons) {
       if (buttons == null) {
-         throw new NullPointerException("The array of buttons cannot be null.");} //$NON-NLS-1$
+         throw new NullPointerException("The array of buttons cannot be null."); //$NON-NLS-1$
+      }
       this.buttons = buttons;
    }
 
@@ -219,7 +220,8 @@ public class OseeMessageDialog extends IconAndMessageDialog {
     */
    protected void setButtonLabels(String[] buttonLabels) {
       if (buttonLabels == null) {
-         throw new NullPointerException("The array of button labels cannot be null.");} //$NON-NLS-1$
+         throw new NullPointerException("The array of button labels cannot be null."); //$NON-NLS-1$
+      }
       this.buttonLabels = buttonLabels;
    }
 }

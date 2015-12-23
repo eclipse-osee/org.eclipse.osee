@@ -150,8 +150,8 @@ public class FilteredCheckboxTree extends FilteredTree {
    @Override
    protected WorkbenchJob doCreateRefreshJob() {
       // Since refresh job is private, we have to get a handle to it
-      // when it is created, and store it locally.  
-      // 
+      // when it is created, and store it locally.
+      //
       // See: 218903: [Viewers] support extensibility of the refresh job in FilteredTree
       // https://bugs.eclipse.org/bugs/show_bug.cgi?id=218903
       WorkbenchJob job = super.doCreateRefreshJob();
@@ -435,7 +435,7 @@ public class FilteredCheckboxTree extends FilteredTree {
       protected void internalRefresh(Object element, boolean updateLabels) {
          String text = FilteredCheckboxTree.this.getFilterString();
          boolean initial = initialText != null && initialText.equals(text);
-         boolean filtered = (text.length() > 0 && !initial);
+         boolean filtered = text.length() > 0 && !initial;
 
          // Notify anybody who is listening for the refresh
          for (Iterator<PreRefreshNotifier> iterator = refreshingListeners.iterator(); iterator.hasNext();) {
@@ -568,7 +568,7 @@ public class FilteredCheckboxTree extends FilteredTree {
 
    @Override
    public void setEnabled(boolean enabled) {
-      if ((filterText.getStyle() & SWT.ICON_CANCEL) == 0) { // filter uses FilteredTree new look, not native 
+      if ((filterText.getStyle() & SWT.ICON_CANCEL) == 0) { // filter uses FilteredTree new look, not native
          int filterColor = enabled ? SWT.COLOR_LIST_BACKGROUND : SWT.COLOR_WIDGET_BACKGROUND;
          filterComposite.setBackground(getDisplay().getSystemColor(filterColor));
       }

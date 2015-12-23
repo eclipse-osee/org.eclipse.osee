@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.relation.order;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -36,8 +38,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.RelationTypes;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar

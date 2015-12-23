@@ -168,7 +168,7 @@ public class NullBranchViewPresentationPreferences extends BranchViewPresentatio
    }
 
    private void showImproperStateMessage() {
-      OseeLog.logf(NullBranchViewPresentationPreferences.class, Level.SEVERE,
-         "%s has not been properlly initialized.", BranchViewPresentationPreferences.class.getName());
+      OseeLog.logf(NullBranchViewPresentationPreferences.class, Level.SEVERE, "%s has not been properlly initialized.",
+         BranchViewPresentationPreferences.class.getName());
    }
 }

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.QueryFactory;
-import com.google.common.collect.Lists;
 
 /**
  * This class converts between OSEE hyperlink markers into wordML style links. <br/>

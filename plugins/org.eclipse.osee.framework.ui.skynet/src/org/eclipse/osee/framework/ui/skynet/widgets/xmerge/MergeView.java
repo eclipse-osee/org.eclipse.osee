@@ -97,11 +97,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                public void run() {
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
-                     IViewPart viewPart =
-                        page.showView(
-                           MergeView.VIEW_ID,
-                           String.valueOf(sourceBranch != null ? sourceBranch.getUuid() * 100000 + destBranch.getUuid() : commitTrans.getId()),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+                     IViewPart viewPart = page.showView(MergeView.VIEW_ID,
+                        String.valueOf(
+                           sourceBranch != null ? sourceBranch.getUuid() * 100000 + destBranch.getUuid() : commitTrans.getId()),
+                        IWorkbenchPage.VIEW_ACTIVATE);
                      if (viewPart instanceof MergeView) {
                         MergeView mergeView = (MergeView) viewPart;
                         mergeView.showConflicts = showConflicts;
@@ -221,7 +220,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.WARNING,
                         "Merge View can't init due to invalid transaction id " + transactionId);
-                     mergeXWidget.setLabel("Could not restore this Merge View due to invalid transaction id " + transactionId);
+                     mergeXWidget.setLabel(
+                        "Could not restore this Merge View due to invalid transaction id " + transactionId);
                      return;
                   }
                } else {
@@ -304,7 +304,9 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   }
                   break;
                default:
-                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchUuid()) && mergeXWidget != null && Widgets.isAccessible(mergeXWidget.getXViewer().getTree())) {
+                  if (isApplicableSourceOrDestEvent(
+                     branchEvent.getBranchUuid()) && mergeXWidget != null && Widgets.isAccessible(
+                        mergeXWidget.getXViewer().getTree())) {
                      mergeXWidget.refresh();
                   }
                   break;
@@ -325,7 +327,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    }
 
    private boolean isDisposed() {
-      return Conditions.anyNull(mergeXWidget.getXViewer(), mergeXWidget.getXViewer().getTree()) || mergeXWidget.getXViewer().getTree().isDisposed();
+      return Conditions.anyNull(mergeXWidget.getXViewer(),
+         mergeXWidget.getXViewer().getTree()) || mergeXWidget.getXViewer().getTree().isDisposed();
    }
 
    private boolean conflictInvovlesArtifact(Artifact artifact, Conflict conflict) {
@@ -377,10 +380,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                            mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
                               "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
-                              new MessageDialog(
-                                 Displays.getActiveShell().getShell(),
-                                 "Modifying Source artifact while merging",
-                                 null,
+                              new MessageDialog(Displays.getActiveShell().getShell(),
+                                 "Modifying Source artifact while merging", null,
                                  "Typically changes done while merging should be done on the merge branch.  You should not normally merge on the source branch.",
                                  2, new String[] {"OK"}, 1).open();
                            }
@@ -390,14 +391,11 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                            mergeXWidget.refresh();
                         }
                      }
-                     if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(conflicts[0].getDestBranch()))) {
-                        mergeXWidget.setInputData(
-                           sourceBranch,
-                           destBranch,
-                           transactionId,
-                           mergeView,
-                           commitTrans,
-                           branch.equals(conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
+                     if (conflicts.length > 0 && (branch.equals(conflicts[0].getSourceBranch()) || branch.equals(
+                        conflicts[0].getDestBranch()))) {
+                        mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                           branch.equals(
+                              conflicts[0].getSourceBranch()) ? "Source Branch Changed" : "Destination Branch Changed",
                            showConflicts);
                      }
                   }
@@ -411,14 +409,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                   Conflict[] conflicts = getConflicts();
                   boolean isOnSource = artifact.isOnBranch(conflicts[0].getSourceBranch());
                   if (conflicts.length > 0 && (isOnSource || artifact.isOnBranch(conflicts[0].getDestBranch()))) {
-                     mergeXWidget.setInputData(
-                        sourceBranch,
-                        destBranch,
-                        transactionId,
-                        mergeView,
-                        commitTrans,
-                        isOnSource ? "Source Branch Changed" : "Destination Branch Changed",
-                        showConflicts);
+                     mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
+                        isOnSource ? "Source Branch Changed" : "Destination Branch Changed", showConflicts);
                   }
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);

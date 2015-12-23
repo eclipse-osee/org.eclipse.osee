@@ -50,7 +50,8 @@ public class JdbcConnectionFactoryManager {
       try {
          connection = proxiedFactory.getConnection(dbInfo);
          DatabaseMetaData metadata = connection.getMetaData();
-         metaData.setTxIsolationLevelSupported(metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
+         metaData.setTxIsolationLevelSupported(
+            metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
          metaData.setValidationQuery(JdbcDbType.getValidationSql(metadata));
       } catch (SQLException ex) {
          throw JdbcException.newJdbcException(ex);

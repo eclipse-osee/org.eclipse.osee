@@ -32,7 +32,8 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  * Single combo box with options that upon selecting moreInfoOption will provide second text widget for extra
  * information.<br/>
  * <br/>
- * Example: Does this have impact, select Yes or No. Upon selecting Yes, description box shows for more information.<br/>
+ * Example: Does this have impact, select Yes or No. Upon selecting Yes, description box shows for more information.
+ * <br/>
  * <br/>
  * Note: This widget has a main and can be run to see an example
  * 

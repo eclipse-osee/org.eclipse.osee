@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.util;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.LinkedHashMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -17,10 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import com.google.common.base.Predicate;
-import com.google.common.collect.LinkedHashMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Multimaps;
 
 /**
  * @author Roberto E. Escobar

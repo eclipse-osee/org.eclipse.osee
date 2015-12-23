@@ -111,8 +111,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
    private boolean stateNameIsValid(String stateName, XResultData rd) {
       Matcher m = pattern.matcher(stateName);
       if (!m.find()) {
-         rd.errorf(
-            "State name must be alpha-numeric with dashes, spaces or underscores.  Invalid for [%s]", stateName);
+         rd.errorf("State name must be alpha-numeric with dashes, spaces or underscores.  Invalid for [%s]", stateName);
          return false;
       }
       return true;
@@ -137,7 +136,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
       for (Attribute<Object> attribute : awa.getAttributes(attrType)) {
          for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
             if (((String) attribute.getValue()).startsWith(fromToState.getKey() + ";")) {
-               String fromStr = ((String) attribute.getValue());
+               String fromStr = (String) attribute.getValue();
                String toStr = fromStr.replaceFirst(fromToState.getKey() + ";", fromToState.getValue() + ";");
                attribute.setValue(toStr);
                rd.logf("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);
@@ -169,7 +168,7 @@ public class ConvertWorkflowStatesOperation extends AbstractOperation {
          for (Attribute<Object> attribute : attributes) {
             for (Entry<String, String> fromToState : fromStateToStateMap.entrySet()) {
                if (attribute.getValue().equals(fromToState.getKey())) {
-                  String fromStr = ((String) attribute.getValue());
+                  String fromStr = (String) attribute.getValue();
                   String toStr = fromToState.getValue();
                   attribute.setValue(toStr);
                   rd.logf("Convert [%s] \n   [%s] to \n   [%s]\n", attrType.getName(), fromStr, toStr);

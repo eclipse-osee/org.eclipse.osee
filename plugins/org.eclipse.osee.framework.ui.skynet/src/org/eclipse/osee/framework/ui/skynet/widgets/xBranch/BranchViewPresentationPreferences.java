@@ -59,7 +59,8 @@ public class BranchViewPresentationPreferences {
 
       try {
          if (instanceNode.nodeExists(BranchView.VIEW_ID)) {
-            ((IEclipsePreferences) instanceNode.node(BranchView.VIEW_ID)).addPreferenceChangeListener(singletonPreferenceChangeListener());
+            ((IEclipsePreferences) instanceNode.node(BranchView.VIEW_ID)).addPreferenceChangeListener(
+               singletonPreferenceChangeListener());
          }
       } catch (BackingStoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -99,9 +100,8 @@ public class BranchViewPresentationPreferences {
 
                   refreshCommands();
 
-                  branchView.getXBranchWidget().setBranchOptions(
-                     getViewPreference().getBoolean(presEnum.origKeyName,
-                        (presEnum == BranchOptionsEnum.FAVORITE_KEY) ? false : true), presEnum);
+                  branchView.getXBranchWidget().setBranchOptions(getViewPreference().getBoolean(presEnum.origKeyName,
+                     presEnum == BranchOptionsEnum.FAVORITE_KEY ? false : true), presEnum);
                }
             }
          };
@@ -111,10 +111,10 @@ public class BranchViewPresentationPreferences {
    }
 
    private void refreshCommands() {
-      ICommandService service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      ICommandService service = PlatformUI.getWorkbench().getService(ICommandService.class);
       for (String command : listOfCommandIds) {
          service.refreshElements(command, null);
-         service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+         service = PlatformUI.getWorkbench().getService(ICommandService.class);
       }
    }
 

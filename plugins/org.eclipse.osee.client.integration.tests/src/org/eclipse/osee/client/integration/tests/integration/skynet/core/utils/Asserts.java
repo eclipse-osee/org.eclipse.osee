@@ -41,9 +41,8 @@ public final class Asserts {
          }
       }
       for (String tableName : prevCount.keySet()) {
-         Assert.assertTrue(
-            String.format("[%s] count not equal pre[%d] post[%d]", tableName, prevCount.get(tableName),
-               postCount.get(tableName)), postCount.get(tableName).equals(prevCount.get(tableName)));
+         Assert.assertTrue(String.format("[%s] count not equal pre[%d] post[%d]", tableName, prevCount.get(tableName),
+            postCount.get(tableName)), postCount.get(tableName).equals(prevCount.get(tableName)));
       }
    }
 
@@ -51,8 +50,8 @@ public final class Asserts {
       for (String name : prevCount.keySet()) {
          if (!OseeProperties.isInTest()) {
             String incStr = postCount.get(name) > prevCount.get(name) ? "Increased" : "ERROR, Not Increased";
-            System.out.println(String.format(incStr + ": [%s] pre[%d] vs post[%d]", name, prevCount.get(name),
-               postCount.get(name)));
+            System.out.println(
+               String.format(incStr + ": [%s] pre[%d] vs post[%d]", name, prevCount.get(name), postCount.get(name)));
          }
       }
       for (String name : prevCount.keySet()) {

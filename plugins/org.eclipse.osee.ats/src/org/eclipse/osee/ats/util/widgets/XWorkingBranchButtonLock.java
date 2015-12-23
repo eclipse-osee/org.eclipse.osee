@@ -73,7 +73,8 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       } else {
          someAccessControlSet = !AccessControlManager.getAccessControlList(branch).isEmpty();
       }
-      button.setImage(ImageManager.getImage((noBranch || someAccessControlSet) ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
+      button.setImage(ImageManager.getImage(
+         noBranch || someAccessControlSet ? FrameworkImage.LOCK_LOCKED : FrameworkImage.LOCK_UNLOCKED));
       button.redraw();
       button.getParent().redraw();
    }
@@ -93,19 +94,20 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             isLocked = false;
          } else {
             AccessControlData data = datas.iterator().next();
-            if (data.getSubject().equals(SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
+            if (data.getSubject().equals(
+               SystemGroup.Everyone.getArtifact()) && data.getBranchPermission() == PermissionEnum.READ) {
                isLocked = true;
             } else {
                manuallyLocked = true;
             }
          }
          if (manuallyLocked) {
-            AWorkbench.popup("Manual access control applied to branch.  Can't override.\n\nUse Access Control option of Branch Manager");
+            AWorkbench.popup(
+               "Manual access control applied to branch.  Can't override.\n\nUse Access Control option of Branch Manager");
             return;
          }
-         String message =
-            String.format("Working branch is currently [%s]\n\n%s the Branch?", isLocked ? "Locked" : "NOT Locked",
-               isLocked ? "UnLock" : "Lock");
+         String message = String.format("Working branch is currently [%s]\n\n%s the Branch?",
+            isLocked ? "Locked" : "NOT Locked", isLocked ? "UnLock" : "Lock");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Lock", message)) {
             if (isLocked) {
                AccessControlManager.removeAccessControlDataIf(true, datas.iterator().next());

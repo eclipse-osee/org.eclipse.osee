@@ -25,6 +25,7 @@ import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdsEqu
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+import com.google.common.base.Predicate;
 import java.util.Date;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.HasLocalId;
@@ -38,7 +39,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.google.common.base.Predicate;
 
 /**
  * Test Case for {@link OrcsPredicates}

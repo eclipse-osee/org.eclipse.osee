@@ -152,9 +152,8 @@ public class AccessDataQueryTest {
          new MockArtifact(GUID.create(), "test3", branch, CoreArtifactTypes.Folder, 47);
       IArtifactType artType = TokenFactory.createArtifactType(0x01L, "Folder");
 
-      AccessDetail<?> specificArtDetail =
-         MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
-            new Scope().add("very").add("specific"));
+      AccessDetail<?> specificArtDetail = MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.DENY, "",
+         new Scope().add("very").add("specific"));
       AccessDetail<?> legacyArtDetail =
          MockDataFactory.createAccessDetails(accessArtifact, PermissionEnum.FULLACCESS, "", Scope.createLegacyScope());
       AccessDetail<?> typeDetail =
@@ -187,7 +186,8 @@ public class AccessDataQueryTest {
       AccessData data = new AccessData();
 
       data.add(branchToCheck, new AccessDetail<IOseeBranch>(branchToCheck, PermissionEnum.WRITE, new Scope()));
-      data.add(artifactToCheck, new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
+      data.add(artifactToCheck,
+         new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
       data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE, new Scope()));
 
       return new TestObject(artifactToCheck, data);

@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.conversion;
 
+import com.google.inject.Singleton;
 import org.eclipse.xtext.conversion.IValueConverter;
 import org.eclipse.xtext.conversion.ValueConverter;
 import org.eclipse.xtext.conversion.impl.AbstractDeclarativeValueConverterService;
-import com.google.inject.Singleton;
 
 /**
  * @author Roberto E. Escobar

@@ -152,9 +152,8 @@ public class StateManagerStoreTest {
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       List<Object> objects = new ArrayList<>();
       when(changes.getObjects()).thenReturn(objects);
-      IExecuteListener listener =
-         StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr, stateMgr.getAssigneesAdded(),
-            attrResolver, workStateFactory, changes);
+      IExecuteListener listener = StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr,
+         stateMgr.getAssigneesAdded(), attrResolver, workStateFactory, changes);
 
       when(attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CurrentState, "")).thenReturn(
          "Analyze;<Joe><Kay>;;");
@@ -166,9 +165,8 @@ public class StateManagerStoreTest {
       objects.add(workItem);
       objects.add("now");
 
-      listener =
-         StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr, stateMgr.getAssigneesAdded(),
-            attrResolver, workStateFactory, changes);
+      listener = StateManagerStore.getPostPersistExecutionListener(asUser, workItem, stateMgr,
+         stateMgr.getAssigneesAdded(), attrResolver, workStateFactory, changes);
       listener.changesStored(changes);
 
       verify(notifications).addWorkItemNotificationEvent(any(AtsWorkItemNotificationEvent.class));

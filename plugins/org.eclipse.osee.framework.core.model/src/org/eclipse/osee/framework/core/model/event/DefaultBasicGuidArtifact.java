@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
+public class DefaultBasicGuidArtifact extends BaseIdentity<String>implements IBasicGuidArtifact {
    private final Long branchUuid;
    private Long artTypeGuid;
 

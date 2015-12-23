@@ -51,9 +51,8 @@ public class ConvertWorkflowStatesBlam extends AbstractBlam {
          @Override
          public void run() {
             try {
-               List<TeamWorkFlowArtifact> sourceTeamArts =
-                  org.eclipse.osee.framework.jdk.core.util.Collections.castAll(TeamWorkFlowArtifact.class,
-                     variableMap.getArtifacts(SOURCE_TEAM_WORKFLOWS));
+               List<TeamWorkFlowArtifact> sourceTeamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                  TeamWorkFlowArtifact.class, variableMap.getArtifacts(SOURCE_TEAM_WORKFLOWS));
                String fromToMapStr = variableMap.getString(FROM_TO_MAP);
                boolean persist = variableMap.getBoolean(PERSIST);
 

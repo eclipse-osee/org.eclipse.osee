@@ -31,22 +31,22 @@ public class AttributeEventModificationType {
       new HashMap<ModificationType, AttributeEventModificationType>(15);
    private static Map<String, AttributeEventModificationType> guidToEventType =
       new HashMap<String, AttributeEventModificationType>(15);
-   public static AttributeEventModificationType Modified = new AttributeEventModificationType(
-      ModificationType.MODIFIED, "AYsmVz6VujxZxW3ByjgA");
-   public static AttributeEventModificationType Artifact_Deleted = new AttributeEventModificationType(
-      ModificationType.ARTIFACT_DELETED, "AYsmWPvkJyoo4ynjAbgA");
-   public static AttributeEventModificationType Deleted = new AttributeEventModificationType(ModificationType.DELETED,
-      "AYsmWPxw7mAFrGVGf2AA");
-   public static AttributeEventModificationType Introduced = new AttributeEventModificationType(
-      ModificationType.INTRODUCED, "AYsmWPzUPCGfOdH5w3wA");
-   public static AttributeEventModificationType Merged = new AttributeEventModificationType(ModificationType.MERGED,
-      "AYsmWP0Gb1y5V6G9tRwA");
-   public static AttributeEventModificationType New = new AttributeEventModificationType(ModificationType.NEW,
-      "AYsmWP05uX1Dl6q2pIwA");
-   public static AttributeEventModificationType Undeleted = new AttributeEventModificationType(
-      ModificationType.UNDELETED, "AYsmWP1q1B2bK1kj0ugA");
-   public static AttributeEventModificationType replaceWithVersion = new AttributeEventModificationType(
-      ModificationType.REPLACED_WITH_VERSION, "AYsmWP1q1B2bK1kj0ugC");
+   public static AttributeEventModificationType Modified =
+      new AttributeEventModificationType(ModificationType.MODIFIED, "AYsmVz6VujxZxW3ByjgA");
+   public static AttributeEventModificationType Artifact_Deleted =
+      new AttributeEventModificationType(ModificationType.ARTIFACT_DELETED, "AYsmWPvkJyoo4ynjAbgA");
+   public static AttributeEventModificationType Deleted =
+      new AttributeEventModificationType(ModificationType.DELETED, "AYsmWPxw7mAFrGVGf2AA");
+   public static AttributeEventModificationType Introduced =
+      new AttributeEventModificationType(ModificationType.INTRODUCED, "AYsmWPzUPCGfOdH5w3wA");
+   public static AttributeEventModificationType Merged =
+      new AttributeEventModificationType(ModificationType.MERGED, "AYsmWP0Gb1y5V6G9tRwA");
+   public static AttributeEventModificationType New =
+      new AttributeEventModificationType(ModificationType.NEW, "AYsmWP05uX1Dl6q2pIwA");
+   public static AttributeEventModificationType Undeleted =
+      new AttributeEventModificationType(ModificationType.UNDELETED, "AYsmWP1q1B2bK1kj0ugA");
+   public static AttributeEventModificationType replaceWithVersion =
+      new AttributeEventModificationType(ModificationType.REPLACED_WITH_VERSION, "AYsmWP1q1B2bK1kj0ugC");
 
    public AttributeEventModificationType(ModificationType modificationType, String guid) {
       this.modificationType = modificationType;

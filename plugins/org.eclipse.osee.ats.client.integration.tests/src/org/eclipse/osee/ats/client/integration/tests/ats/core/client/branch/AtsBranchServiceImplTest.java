@@ -60,7 +60,8 @@ public class AtsBranchServiceImplTest {
 
    @Test
    public void testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset(AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef");
+      AtsTestUtil.cleanupAndReset(
+         AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_teamDef");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
 
       //Test Team Def-base Team Arts
@@ -76,7 +77,8 @@ public class AtsBranchServiceImplTest {
 
    @Test
    public void testGetCommitTransactionsAndConfigItemsForTeamWf_versions() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset(AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
+      AtsTestUtil.cleanupAndReset(
+         AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeamWf_versions");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       //Test Version-based Team Arts
       IAtsVersion verArt1 = AtsTestUtil.getVerArt1();
@@ -92,7 +94,8 @@ public class AtsBranchServiceImplTest {
 
    @Test
    public void testGetCommitTransactionsAndConfigItemsForTeam_txRecords() throws OseeCoreException {
-      AtsTestUtil.cleanupAndReset(AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
+      AtsTestUtil.cleanupAndReset(
+         AtsBranchServiceImplTest.class.getSimpleName() + ".testGetCommitTransactionsAndConfigItemsForTeam_txRecords");
       TeamWorkFlowArtifact teamArt = AtsTestUtil.getTeamWf();
       IAtsTeamDefinition teamDef = teamArt.getTeamDefinition();
       teamDef.setBaselineBranchUuid(SAW_Bld_1.getUuid());

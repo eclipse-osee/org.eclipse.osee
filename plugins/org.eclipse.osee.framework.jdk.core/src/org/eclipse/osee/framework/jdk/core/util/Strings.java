@@ -46,7 +46,7 @@ public class Strings {
    }
 
    public static String intern(String str) {
-      return (str == null) ? null : str.intern();
+      return str == null ? null : str.intern();
    }
 
    public static boolean isValid(CharSequence... values) {
@@ -151,7 +151,8 @@ public class Strings {
       if (isValid(value)) {
          value = value.trim();
          if (unWrap) {
-            if (value.startsWith(surroundStr) && value.endsWith(surroundStr) && 2 * surroundStr.length() < value.length()) {
+            if (value.startsWith(surroundStr) && value.endsWith(
+               surroundStr) && 2 * surroundStr.length() < value.length()) {
                value = value.substring(surroundStr.length(), value.length() - surroundStr.length());
             }
          } else {

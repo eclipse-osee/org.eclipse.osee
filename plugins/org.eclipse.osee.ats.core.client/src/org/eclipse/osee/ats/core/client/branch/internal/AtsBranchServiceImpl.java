@@ -107,7 +107,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public Collection<ITransaction> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
       List<ITransaction> transactions = new ArrayList<>();
-      for (TransactionRecord trans : TransactionManager.getCommittedArtifactTransactionIds((Artifact) teamWf.getStoreObject())) {
+      for (TransactionRecord trans : TransactionManager.getCommittedArtifactTransactionIds(
+         (Artifact) teamWf.getStoreObject())) {
          transactions.add(trans);
       }
       return transactions;
@@ -126,9 +127,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    public boolean isMergeCompleted(TeamWorkFlowArtifact teamWf, IOseeBranch destinationBranch) throws OseeCoreException {
-      ConflictManagerExternal conflictManager =
-         new ConflictManagerExternal(destinationBranch, AtsClientService.get().getBranchService().getWorkingBranch(
-            teamWf));
+      ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch,
+         AtsClientService.get().getBranchService().getWorkingBranch(teamWf));
       return !conflictManager.remainingConflictsExist();
    }
 

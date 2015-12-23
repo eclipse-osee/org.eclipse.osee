@@ -100,8 +100,8 @@ public class OrcsBranchTest {
       int priorResult = query.fromBranch(priorBranch).andNameEquals(ARTIFACT_NAME).getResults().size();
       assertEquals(0, priorResult);
 
-      // finally, we copy another branch at transaction id 8, this is the transaction that added the 
-      // user Joe Smith, so if the code is correct, and the copy includes the final 
+      // finally, we copy another branch at transaction id 8, this is the transaction that added the
+      // user Joe Smith, so if the code is correct, and the copy includes the final
       // transaction, then this will produce the same result as the query of the common branch
       // create the branch with the copied transaction
       IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
@@ -118,7 +118,7 @@ public class OrcsBranchTest {
 
    @Test
    public void testCreateBranchCopyFromTx() throws Exception {
-      // this test shows that the change report for a transaction for the newly copied branch is 
+      // this test shows that the change report for a transaction for the newly copied branch is
       // the same as the change report on the branch the transaction is copied from
       int PRIOR_TX_ID = 15;
       int SOURCE_TX_ID = 16;

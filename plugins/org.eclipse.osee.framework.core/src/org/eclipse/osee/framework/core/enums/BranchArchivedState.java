@@ -31,11 +31,11 @@ public enum BranchArchivedState {
    }
 
    public boolean isBeingArchived() {
-	   return this == ARCHIVED_IN_PROGRESS;
+      return this == ARCHIVED_IN_PROGRESS;
    }
 
    public boolean isBeingUnarchived() {
-	   return this == UNARCHIVED_IN_PROGRESS;
+      return this == UNARCHIVED_IN_PROGRESS;
    }
 
    public boolean isArchived() {
@@ -51,13 +51,10 @@ public enum BranchArchivedState {
    }
 
    /**
-    * @return	mapping to BranchArchivedState subset.
-    *
+    * @return mapping to BranchArchivedState subset.
     * <p>
-    * <code>
-    * true == BranchArchivedState.ARCHIVED<br/>
-    * false == BranchArchivedState.UNARCHIVED
-    * <code>
+    * <code> true == BranchArchivedState.ARCHIVED<br/>
+    * false == BranchArchivedState.UNARCHIVED <code>
     * </p>
     */
    public static BranchArchivedState fromBoolean(boolean archived) {
@@ -65,17 +62,17 @@ public enum BranchArchivedState {
    }
 
    public static BranchArchivedState valueOf(int value) {
-	   switch (value) {
-	   case 1:
-		   return ARCHIVED;
-	   case 2:
-		   return ARCHIVED_IN_PROGRESS;
-	   case 3:
-		   return UNARCHIVED_IN_PROGRESS;
-	   case -1:
-	   case 0:
-	   default:
-		   return UNARCHIVED;
-	   }
+      switch (value) {
+         case 1:
+            return ARCHIVED;
+         case 2:
+            return ARCHIVED_IN_PROGRESS;
+         case 3:
+            return UNARCHIVED_IN_PROGRESS;
+         case -1:
+         case 0:
+         default:
+            return UNARCHIVED;
+      }
    }
 }

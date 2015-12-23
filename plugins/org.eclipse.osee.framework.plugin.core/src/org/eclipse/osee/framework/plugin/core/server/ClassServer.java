@@ -26,7 +26,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.internal.PluginCoreActivator;
 
@@ -54,11 +53,11 @@ public class ClassServer extends Thread {
             return th;
          }
       });
-      if(address instanceof Inet6Address){
-    	 hostName = new URL("http://[" + address.getHostAddress() + "]:" + server.getLocalPort() + "/"); 
-      } else { 
+      if (address instanceof Inet6Address) {
+         hostName = new URL("http://[" + address.getHostAddress() + "]:" + server.getLocalPort() + "/");
+      } else {
          hostName = new URL("http://" + address.getHostAddress() + ":" + server.getLocalPort() + "/");
-   	  }
+      }
       this.setName("OSEE ClassServer");
       this.resourceFinders = new ArrayList<>();
    }

@@ -84,20 +84,21 @@ public class WasIsCompareEditorAction extends Action {
             String was = change.getWasValue();
             int attrId = ((AttributeChange) change).getAttrId();
             Integer previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
-            if (!Strings.isValid(was) && (change instanceof AttributeChange)) {
+            if (!Strings.isValid(was) && change instanceof AttributeChange) {
                if (previousTransaction > 0) {
                   was = loadAttributeValue(attrId, previousTransaction, artifact);
                }
             }
 
             String is = change.getIsValue();
-            if (!Strings.isValid(is) && (change instanceof AttributeChange)) {
+            if (!Strings.isValid(is) && change instanceof AttributeChange) {
                is = loadAttributeValue(attrId, transactionId, artifact);
             }
-            CompareHandler compareHandler =
-               new CompareHandler(String.format("Compare [%s]", change), new CompareItem(String.format(
-                  "Was [Transaction: %d]", previousTransaction), was, System.currentTimeMillis()), new CompareItem(
-                  String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis()), null);
+            CompareHandler compareHandler = new CompareHandler(String.format("Compare [%s]", change),
+               new CompareItem(String.format("Was [Transaction: %d]", previousTransaction), was,
+                  System.currentTimeMillis()),
+               new CompareItem(String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis()),
+               null);
             compareHandler.compare();
          }
       } catch (Exception ex) {
@@ -131,7 +132,7 @@ public class WasIsCompareEditorAction extends Action {
       URI uri =
          UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(
             "artifact").path(artifact.getGuid()).path("attribute").path(String.valueOf(attrId)).path("version").path(
-            String.valueOf(transactionId)).build();
+               String.valueOf(transactionId)).build();
       try {
          return JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
       } catch (Exception ex) {

@@ -236,14 +236,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       String currentLetter = "";
       if (isNumeric) {
          int startPos = iPos;
-         while ((theChars[iPos] != '.') && theChars[iPos] != ')') {
+         while (theChars[iPos] != '.' && theChars[iPos] != ')') {
             iPos++;
          }
          String theNumber = returnString.substring(startPos, iPos);
          currentNumber = Integer.parseInt(theNumber);
       } else {
          int startPos = iPos;
-         while ((theChars[iPos] != '.') && theChars[iPos] != ')') {
+         while (theChars[iPos] != '.' && theChars[iPos] != ')') {
             iPos++;
          }
          currentLetter = returnString.substring(startPos, iPos);
@@ -294,7 +294,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          }
 
          if (theListData.getNewList()) {
-            int startPoint = (nextItem < startOfNextList) ? nextItem : startOfNextList;
+            int startPoint = nextItem < startOfNextList ? nextItem : startOfNextList;
             int delta = removeForcedSpaces(returnString, startPoint - 1, true);
             if (delta > 0) {
                theChars = stringBuilderToChars(returnString);
@@ -314,10 +314,10 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             theRawSublist = processList(theRawSublist);
             theSublist += theRawSublist;
             theSublist += LIST_ITEM_END_TAG;
-            delta = (theRawSublist.length() - initialLen) + LIST_ITEM_END_TAG.length();
+            delta = theRawSublist.length() - initialLen + LIST_ITEM_END_TAG.length();
             endOfList += delta;
             startOfNextList += delta;
-            if ((theListData.getNextItem() != -1) && (theListData.getNextItem() < (returnString.length() - 1))) {
+            if (theListData.getNextItem() != -1 && theListData.getNextItem() < returnString.length() - 1) {
                theSublist += returnString.substring(theListData.getNextItem() + 1);
             }
             returnString.delete(0, returnString.length());
@@ -375,7 +375,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          // verify the list doesn't end with <BR></BR>
          String test = returnString.toString();
          int lastPoint = test.lastIndexOf(BLANK_HTML_LINE);
-         if (lastPoint == (test.length() - BLANK_HTML_LINE.length())) {
+         if (lastPoint == test.length() - BLANK_HTML_LINE.length()) {
             returnString.delete(lastPoint, returnString.length());
          }
          returnString.append(tokenToInsert);
@@ -391,8 +391,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       boolean notFirst = false;
       boolean foundNonTagItem = false;
       while (iPos < theChars.length) {
-         while ((iPos < theChars.length) && ((theChars[iPos] == '\t') || (theChars[iPos] == '\n') || (Character.isWhitespace(
-            theChars[iPos])))) {
+         while (iPos < theChars.length && (theChars[iPos] == '\t' || theChars[iPos] == '\n' || Character.isWhitespace(
+            theChars[iPos]))) {
             iPos++;
          }
          if (iPos >= theChars.length) {
@@ -404,13 +404,13 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             iPos++;
             if (theChars[iPos] == '/') {
                tagCount--;
-               while ((iPos < theChars.length) && (theChars[iPos] != '>')) {
+               while (iPos < theChars.length && theChars[iPos] != '>') {
                   iPos++;
                }
-               if (((tagCount == 0) && foundNonTagItem) || (tagCount < 0)) {
+               if (tagCount == 0 && foundNonTagItem || tagCount < 0) {
                   iReturn[1] = startofCloseTag;
                   iReturn[2] = iPos;
-                  while ((iReturn[2] < theChars.length) && (theChars[iReturn[2]] != '<')) {
+                  while (iReturn[2] < theChars.length && theChars[iReturn[2]] != '<') {
                      iReturn[2] = iReturn[2] + 1;
                   }
                   break;
@@ -418,7 +418,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             } else {
                tagCount++;
             }
-            while ((iPos < theChars.length) && (theChars[iPos] != '>')) {
+            while (iPos < theChars.length && theChars[iPos] != '>') {
                iPos++;
             }
             iPos++;
@@ -431,13 +431,13 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                break;
             } else {
                // find next tag
-               while ((iPos < theChars.length) && (theChars[iPos] != '<')) {
+               while (iPos < theChars.length && theChars[iPos] != '<') {
                   iPos++;
                }
                iReturn[1] = iPos - 1;
                // find the end of the tag
                iReturn[2] = iPos;
-               while ((iReturn[2] < theChars.length) && (theChars[iReturn[2]] != '>')) {
+               while (iReturn[2] < theChars.length && theChars[iReturn[2]] != '>') {
                   iReturn[2] = iReturn[2] + 1;
                }
                iReturn[2] = iReturn[2] + 1;
@@ -515,7 +515,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       } else if (aListParen == -1) {
          aList = aListDot;
       } else {
-         aList = (aListDot < aListParen) ? aListDot : aListParen;
+         aList = aListDot < aListParen ? aListDot : aListParen;
       }
       int oneListDot = asString.indexOf("1.");
       int oneListParen = asString.indexOf("1)");
@@ -525,7 +525,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       } else if (aListParen == -1) {
          oneList = oneListDot;
       } else {
-         oneList = (oneListDot < oneListParen) ? oneListDot : oneListParen;
+         oneList = oneListDot < oneListParen ? oneListDot : oneListParen;
       }
 
       int nextListItem = -1;
@@ -569,7 +569,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
       if (nextListItem != -1) {
          // verify this is not just a char and period
          char prev = asString.charAt(nextListItem - 1);
-         while (!(Character.isWhitespace(prev) || (prev == ';') || (prev == '>'))) {
+         while (!(Character.isWhitespace(prev) || prev == ';' || prev == '>')) {
             nextListItem = asString.indexOf(nextItem, nextListItem + 1);
             if (nextListItem == -1) {
                break;
@@ -577,14 +577,14 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             prev = asString.charAt(nextListItem - 1);
          }
       }
-      if ((aList == -1) && (oneList == -1) && (nextListItem == -1)) {
+      if (aList == -1 && oneList == -1 && nextListItem == -1) {
          return -1;
       }
-      aList = (aList != -1) ? aList + iPos : theChars.length + 1;
-      oneList = (oneList != -1) ? oneList + iPos : theChars.length + 1;
-      nextListItem = (nextListItem != -1) ? nextListItem + iPos : theChars.length + 1;
-      int iReturn = (aList < oneList) ? aList : oneList;
-      iReturn = (iReturn < nextListItem) ? iReturn : nextListItem;
+      aList = aList != -1 ? aList + iPos : theChars.length + 1;
+      oneList = oneList != -1 ? oneList + iPos : theChars.length + 1;
+      nextListItem = nextListItem != -1 ? nextListItem + iPos : theChars.length + 1;
+      int iReturn = aList < oneList ? aList : oneList;
+      iReturn = iReturn < nextListItem ? iReturn : nextListItem;
       if (iReturn == nextListItem) {
          listData.setNewList(false);
          listData.setItemLength(nextItem.length());
@@ -659,8 +659,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        */
       for (int i = 0; i < VERIFICATION_KEYWORDS.length; i++) {
          // special case Criteria is a string attribute
-         if ((FIELD_TYPE[i] == null) && !((VERIFICATION_KEYWORDS[i].equals(
-            CRITERIA)) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
+         if (FIELD_TYPE[i] == null && !(VERIFICATION_KEYWORDS[i].equals(
+            CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
             continue;
          }
          int iStart = trimmed.indexOf(VERIFICATION_KEYWORDS[i]);
@@ -671,7 +671,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             rest = rest.trim();
             // is it empty?
             dataFound = !rest.isEmpty();
-            for (int j = 0; (j < VERIFICATION_KEYWORDS.length) && dataFound; j++) {
+            for (int j = 0; j < VERIFICATION_KEYWORDS.length && dataFound; j++) {
                dataFound = !rest.startsWith(VERIFICATION_KEYWORDS[j]);
             }
             if (dataFound) {
@@ -692,9 +692,9 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
                } else {
                   // find the start of the keyword
                   boolean foundKeyword = false;
-                  for (int j = 0; (j < VERIFICATION_KEYWORDS.length); j++) {
+                  for (int j = 0; j < VERIFICATION_KEYWORDS.length; j++) {
                      int theIndex = rest.indexOf(VERIFICATION_KEYWORDS[j]);
-                     if (theIndex != -1 && (theIndex == (colon - VERIFICATION_KEYWORDS[j].length() + 1))) {
+                     if (theIndex != -1 && theIndex == colon - VERIFICATION_KEYWORDS[j].length() + 1) {
                         int index = rest.indexOf(VERIFICATION_KEYWORDS[j]);
                         if (index >= 0) {
                            if (VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(
@@ -853,7 +853,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        */
       returnValue = returnValue.trim();
       int brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
-      while ((brTag != -1) && (brTag == returnValue.length() - BR_TAG.length())) {
+      while (brTag != -1 && brTag == returnValue.length() - BR_TAG.length()) {
          returnValue = returnValue.substring(0, brTag).trim();
          brTag = returnValue.toLowerCase().lastIndexOf(BR_TAG);
       }
@@ -892,8 +892,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
             }
             int nbspPos = returnString.lastIndexOf(nbsp, iPos);
             int tabPos = returnString.lastIndexOf(tab, iPos);
-            while ((nbspPos == (iPos - nbsp.length() + 1)) || (tabPos == (iPos - tab.length() + 1))) {
-               if (nbspPos == (iPos - nbsp.length() + 1)) {
+            while (nbspPos == iPos - nbsp.length() + 1 || tabPos == iPos - tab.length() + 1) {
+               if (nbspPos == iPos - nbsp.length() + 1) {
                   returnString.replace(nbspPos, nbspPos + nbsp.length(), "");
                   adjust += nbsp.length();
                   iPos -= nbsp.length();
@@ -908,7 +908,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
          } else {
             int nbspPos = returnString.indexOf(nbsp, iPos);
             int tabPos = returnString.indexOf(tab, iPos);
-            while ((nbspPos == iPos) || (tabPos == iPos)) {
+            while (nbspPos == iPos || tabPos == iPos) {
                if (nbspPos == iPos) {
                   returnString.replace(nbspPos, nbspPos + nbsp.length(), "");
                   adjust += nbsp.length();

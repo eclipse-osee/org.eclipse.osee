@@ -46,7 +46,7 @@ public class TaskWrapper implements IActionWalkerItem {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((teamArt == null) ? 0 : teamArt.hashCode());
+      result = prime * result + (teamArt == null ? 0 : teamArt.hashCode());
       return result;
    }
 

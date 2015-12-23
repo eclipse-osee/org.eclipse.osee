@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.authentication.admin;
 
-
 /**
  * @author Roberto E. Escobar
  */

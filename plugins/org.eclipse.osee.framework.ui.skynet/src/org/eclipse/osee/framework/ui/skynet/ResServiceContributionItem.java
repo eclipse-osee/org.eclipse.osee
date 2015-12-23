@@ -33,14 +33,15 @@ public class ResServiceContributionItem extends OseeStatusContributionItem imple
 
    public static final String ID = "res.service";
    private static final Image ENABLED_IMAGE = ImageManager.getImageDescriptor(FrameworkImage.RES).createImage();
-   private static final Image DISABLED_IMAGE = new OverlayImage(ENABLED_IMAGE,
-      ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
+   private static final Image DISABLED_IMAGE =
+      new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "Event Service is connected.";
    private static final String DISABLED_TOOLTIP = "Event Service is disconnected.";
 
    private static final Timer timer = new Timer("Event Service Update Status", true);
    private static final UpdateStatusTimerTask updateTask = new UpdateStatusTimerTask();
    private static final int FOUR_MINUTES = 1000 * 60 * 4;
+
    static {
       timer.schedule(updateTask, FOUR_MINUTES);
    }

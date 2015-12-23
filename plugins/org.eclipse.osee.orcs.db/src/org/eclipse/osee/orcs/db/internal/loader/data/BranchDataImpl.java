@@ -21,7 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchDataImpl extends OrcsObjectImpl<Long> implements BranchData, BranchReadable {
+public class BranchDataImpl extends OrcsObjectImpl<Long>implements BranchData, BranchReadable {
 
    private Long uuid = RelationalConstants.DEFAULT_UUID;
    private String name = "";

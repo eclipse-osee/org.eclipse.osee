@@ -58,9 +58,8 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
    }
 
    public FilteredCheckboxTreeDialog(String dialogTitle, String dialogMessage, IContentProvider contentProvider, IBaseLabelProvider labelProvider, ViewerSorter viewerSorter) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-         "OK",
-         "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {"OK", "Cancel"}, 0);
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerSorter = viewerSorter;
@@ -131,11 +130,9 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       aiComp.setLayout(ALayout.getZeroMarginLayout());
       aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      treeViewer =
-         new FilteredCheckboxTree(
-            aiComp,
-            SWT.CHECK | (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
-            patternFilter);
+      treeViewer = new FilteredCheckboxTree(aiComp,
+         SWT.CHECK | (multiSelect ? SWT.MULTI : SWT.NONE) | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER,
+         patternFilter);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;
       treeViewer.getViewer().getTree().setLayoutData(gd);

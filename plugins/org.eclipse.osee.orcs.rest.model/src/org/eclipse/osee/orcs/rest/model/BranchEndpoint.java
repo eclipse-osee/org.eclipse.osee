@@ -52,14 +52,14 @@ public interface BranchEndpoint {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    List<Branch> getBranches(@DefaultValue("") @QueryParam("branchUuids") String branchUuids, //
-      @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
-      @DefaultValue("") @QueryParam("branchStates") String branchStates, //
-      @QueryParam("deleted") boolean deleted, //
-      @QueryParam("archived") boolean archived, //
-      @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
-      @DefaultValue("") @QueryParam("namePattern") String namePattern, //
-      @QueryParam("childOf") Long childOf, //
-      @QueryParam("ancestorOf") Long ancestorOf);
+   @DefaultValue("") @QueryParam("branchTypes") String branchTypes, //
+   @DefaultValue("") @QueryParam("branchStates") String branchStates, //
+   @QueryParam("deleted") boolean deleted, //
+   @QueryParam("archived") boolean archived, //
+   @DefaultValue("") @QueryParam("nameEquals") String nameEquals, //
+   @DefaultValue("") @QueryParam("namePattern") String namePattern, //
+   @QueryParam("childOf") Long childOf, //
+   @QueryParam("ancestorOf") Long ancestorOf);
 
    @GET
    @Path("baseline")

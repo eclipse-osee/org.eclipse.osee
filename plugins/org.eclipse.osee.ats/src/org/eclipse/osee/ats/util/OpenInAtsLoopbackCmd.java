@@ -57,8 +57,8 @@ public class OpenInAtsLoopbackCmd extends BaseArtifactLoopbackCmd {
                   public void run() {
                      try {
                         AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
-                        String html =
-                           AHTML.simplePage("Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+                        String html = AHTML.simplePage(
+                           "Action [" + artifact.getName() + "]has been opened in OSEE ATS<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                         httpResponse.getPrintStream().println(html);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);

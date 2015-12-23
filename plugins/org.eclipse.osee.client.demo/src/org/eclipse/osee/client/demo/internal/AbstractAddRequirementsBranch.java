@@ -13,7 +13,6 @@ package org.eclipse.osee.client.demo.internal;
 import org.eclipse.osee.client.demo.DemoSubsystems;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -41,7 +40,8 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, "SAW Product Decomposition");
 
       for (String subsystem : DemoSubsystems.getSubsystems()) {
-         sawProduct.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, subsystem));
+         sawProduct.addChild(
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, subsystem));
       }
 
       Artifact programRoot = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(requirementsBranch);

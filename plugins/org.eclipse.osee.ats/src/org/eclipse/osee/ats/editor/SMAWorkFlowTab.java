@@ -436,7 +436,8 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       if (editor.isPrivilegedEditModeEnabled()) {
          Label label = toolkit.createLabel(comp, "(Privileged Edit Enabled)");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
-         label.setToolTipText("Privileged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
+         label.setToolTipText(
+            "Privileged Edit Mode is Enabled.  Editing any field in any state is authorized.  Select icon to disable");
       }
 
       // Current Assignees
@@ -473,8 +474,8 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       toolBarMgr.removeAll();
 
       if (awa.isTeamWorkflow() && (AtsClientService.get().getBranchService().isCommittedBranchExists(
-         ((TeamWorkFlowArtifact) awa)) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
-         ((TeamWorkFlowArtifact) awa)))) {
+         (TeamWorkFlowArtifact) awa) || AtsClientService.get().getBranchService().isWorkingBranchInWork(
+            (TeamWorkFlowArtifact) awa))) {
          toolBarMgr.add(new ShowMergeManagerAction((TeamWorkFlowArtifact) awa));
          toolBarMgr.add(new ShowChangeReportAction((TeamWorkFlowArtifact) awa));
       }
@@ -645,10 +646,8 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
 
    private void createLatestHeader(Composite comp, XFormToolkit toolkit) {
       if (awa.isHistoricalVersion()) {
-         Label label =
-            toolkit.createLabel(
-               comp,
-               "This is a historical version of this " + awa.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
+         Label label = toolkit.createLabel(comp,
+            "This is a historical version of this " + awa.getArtifactTypeName() + " and can not be edited; Select \"Open Latest\" to view/edit latest version.");
          label.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
       }
    }

@@ -48,10 +48,9 @@ public abstract class EndpointReceive {
     */
    protected void onReceive(final Message message) {
       if (distributer == null) {
-         String errorMsg =
-            String.format(
-               "We have recieved message [%s] from [%s], but have no active ApplicationDistributer available.",
-               message.getId().toString(), message.getSource().toString());
+         String errorMsg = String.format(
+            "We have recieved message [%s] from [%s], but have no active ApplicationDistributer available.",
+            message.getId().toString(), message.getSource().toString());
          OseeLog.log(Activator.class, Level.WARNING, errorMsg);
       } else {
          executor.execute(new Runnable() {

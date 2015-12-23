@@ -118,15 +118,15 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private void createLink(final Artifact art, String prefix, String action, Artifact thisArt) {
       try {
-         editor.getToolkit().createLabel(
-            this,
-            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
+         editor.getToolkit().createLabel(this,
+            prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(
+               art) + " \"" + art.getArtifactTypeName() + "\" ");
          Hyperlink link =
-            editor.getToolkit().createHyperlink(
-               this,
+            editor.getToolkit().createHyperlink(this,
                String.format("\"%s\" - %s",
                   art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
-                  AtsUtilClient.getAtsId(art)), SWT.NONE);
+                  AtsUtilClient.getAtsId(art)),
+               SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             @Override

@@ -46,7 +46,7 @@ public class GoalMemberWrapper implements IActionWalkerItem {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((goal == null) ? 0 : goal.hashCode());
+      result = prime * result + (goal == null ? 0 : goal.hashCode());
       return result;
    }
 

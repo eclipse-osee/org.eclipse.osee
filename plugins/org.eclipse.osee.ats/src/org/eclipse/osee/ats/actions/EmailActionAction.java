@@ -42,9 +42,8 @@ public class EmailActionAction extends AbstractAtsAction {
    }
 
    private void performEmail() throws OseeCoreException {
-      ArtifactEmailWizard wizard =
-         new ArtifactEmailWizard(
-            ((AbstractWorkflowArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
+      ArtifactEmailWizard wizard = new ArtifactEmailWizard(
+         (AbstractWorkflowArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next());
       WizardDialog dialog = new WizardDialog(Displays.getActiveShell(), wizard);
       dialog.create();
       dialog.open();
@@ -61,7 +60,8 @@ public class EmailActionAction extends AbstractAtsAction {
    }
 
    private void updateName() throws OseeCoreException {
-      setText("Email " + (selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1 ? selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next().getArtifactTypeName() : ""));
+      setText(
+         "Email " + (selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1 ? selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next().getArtifactTypeName() : ""));
    }
 
 }

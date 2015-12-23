@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.eclipse.osee.ats.client.demo.config.DemoCountry;
 import org.junit.Assert;
 import org.junit.Test;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 /**
  * Unit Test for {@link CountryResource}

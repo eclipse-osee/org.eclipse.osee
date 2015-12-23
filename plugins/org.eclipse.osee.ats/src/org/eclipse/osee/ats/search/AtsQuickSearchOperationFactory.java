@@ -24,8 +24,8 @@ public class AtsQuickSearchOperationFactory implements IOperationFactory {
       EntryCheckDialog dialog =
          new EntryCheckDialog("Search by Strings", "Enter search strings", "Include Completed/Cancelled Workflows");
       if (dialog.open() == 0) {
-         return new AtsQuickSearchOperation(new AtsQuickSearchData("Search by Strings", dialog.getEntry(),
-            dialog.isChecked()));
+         return new AtsQuickSearchOperation(
+            new AtsQuickSearchData("Search by Strings", dialog.getEntry(), dialog.isChecked()));
       }
       return null;
    }

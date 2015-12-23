@@ -45,8 +45,8 @@ public class PortPairsBlam extends AbstractBlam {
       sb.append("<XWidget xwidgetType=\"XText\" fill=\"Vertically\" displayName=\"");
       sb.append(PORT_NAME);
       sb.append("\" />");
-      sb.append(String.format("<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" horizontalLabel=\"true\"/>",
-         USE_ATSID));
+      sb.append(
+         String.format("<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" horizontalLabel=\"true\"/>", USE_ATSID));
       sb.append("</xWidgets>");
       return sb.toString();
    }

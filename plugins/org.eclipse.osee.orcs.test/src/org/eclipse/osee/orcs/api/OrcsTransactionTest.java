@@ -27,6 +27,9 @@ import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.concurrent.Callable;
@@ -51,7 +54,6 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
-import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.search.TransactionQuery;
@@ -63,9 +65,6 @@ import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.rules.TestName;
 import org.junit.rules.TestRule;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -135,7 +134,7 @@ public class OrcsTransactionTest {
       String expectedName = "Create A Folder";
       String expectedAnnotation = "Annotate It";
 
-      BranchQuery branchQuery = query.branchQuery();
+      query.branchQuery();
 
       TransactionQuery transactionQuery = query.transactionQuery();
       TransactionReadable previousTx = transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
@@ -174,10 +173,10 @@ public class OrcsTransactionTest {
       String expectedAnnotation = "Annotate It";
       String expectedQualifaction = "Test";
 
-      BranchQuery branchQuery = query.branchQuery();
+      query.branchQuery();
 
       TransactionQuery transactionQuery = query.transactionQuery();
-      TransactionReadable previousTx = transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
+      transactionQuery.andIsHead(COMMON_ID).getResults().getExactlyOne();
 
       TransactionBuilder tx = txFactory.createTransaction(COMMON_ID, userArtifact, comment);
 
@@ -187,10 +186,9 @@ public class OrcsTransactionTest {
       tx.setAttributesFromStrings(artifactId, CoreAttributeTypes.QualificationMethod, expectedQualifaction);
       assertEquals(expectedName, artifactId.getName());
 
-      TransactionReadable newTx = tx.commit();
+      tx.commit();
 
-      ArtifactReadable artifactReadable =
-         query.fromBranch(COMMON_ID).andIds(artifactId).getResults().getExactlyOne();
+      ArtifactReadable artifactReadable = query.fromBranch(COMMON_ID).andIds(artifactId).getResults().getExactlyOne();
       assertEquals(expectedName, artifactReadable.getName());
       assertEquals(expectedQualifaction,
          artifactReadable.getSoleAttributeAsString(CoreAttributeTypes.QualificationMethod));
@@ -199,8 +197,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testCopyArtifact() throws Exception {
-      ArtifactReadable user =
-         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+      ArtifactReadable user = query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       // duplicate on same branch
       TransactionBuilder transaction1 = createTx();
@@ -229,8 +226,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testIntroduceArtifact() throws Exception {
-      ArtifactReadable user =
-         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+      ArtifactReadable user = query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       IOseeBranch branchToken = TokenFactory.createBranch("IntroduceArtifact tests");
       BranchReadable topLevelBranch = orcsBranch.createTopLevelBranch(branchToken, userArtifact).call();
@@ -247,8 +243,7 @@ public class OrcsTransactionTest {
 
    @Test
    public void testIntroduceOnSameBranch() throws OseeCoreException {
-      ArtifactReadable user =
-         query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
+      ArtifactReadable user = query.fromBranch(COMMON_ID).andIds(SystemUser.Anonymous).getResults().getExactlyOne();
 
       TransactionBuilder tx = createTx();
 
@@ -284,8 +279,7 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       tx.commit();
 
-      toDelete =
-         query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
+      toDelete = query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
    }
@@ -326,8 +320,7 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       tx.commit();
 
-      toDelete =
-         query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
+      toDelete = query.fromBranch(COMMON_ID).andIds(artifact).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
 
@@ -363,8 +356,7 @@ public class OrcsTransactionTest {
       tx.deleteArtifact(toDelete);
       TransactionReadable tx4 = tx.commit();
 
-      toDelete =
-         query.fromBranch(COMMON_ID).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
+      toDelete = query.fromBranch(COMMON_ID).andIds(artifact1).includeDeletedArtifacts().getResults().getOneOrNull();
       assertNotNull(toDelete);
       assertTrue(toDelete.isDeleted());
       int[] toReturn = {tx1.getGuid(), tx2.getGuid(), tx3.getGuid(), tx4.getGuid()};
@@ -424,7 +416,6 @@ public class OrcsTransactionTest {
       ArtifactId[] theArtifacts = {null, null};
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
-      ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -439,7 +430,6 @@ public class OrcsTransactionTest {
       ArtifactId[] theArtifacts = {null, null};
       int[] transactions = setupHistory(theArtifacts);
       ArtifactId artifact1 = theArtifacts[0];
-      ArtifactId artifact2 = theArtifacts[1];
       QueryBuilder builder = query.fromBranch(COMMON_ID);
       builder.fromTransaction(transactions[1]);
       builder.andExists(CoreAttributeTypes.GeneralStringData, CoreAttributeTypes.Annotation);
@@ -614,11 +604,11 @@ public class OrcsTransactionTest {
       assertEquals(expectedSize, size);
       if (size > 0) {
          for (ArtifactReadable art : artifacts) {
-            if ((artifact != null) && art.matches(artifact)) {
+            if (artifact != null && art.matches(artifact)) {
                assertEquals(1,
                   art.getAttributeCount(CoreAttributeTypes.GeneralStringData, DeletionFlag.INCLUDE_DELETED));
                assertEquals(1, art.getAttributeCount(CoreAttributeTypes.PublishInline, DeletionFlag.INCLUDE_DELETED));
-            } else if ((artifact1 != null) && art.matches(artifact1)) {
+            } else if (artifact1 != null && art.matches(artifact1)) {
                assertEquals(1, art.getAttributeCount(CoreAttributeTypes.Annotation, DeletionFlag.INCLUDE_DELETED));
             } else {
                assertTrue("Unexpected artifact", false);
@@ -643,8 +633,7 @@ public class OrcsTransactionTest {
 
       assertTrue(startingTx != lastTx);
 
-      ArtifactReadable currentArtifact =
-         query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
+      ArtifactReadable currentArtifact = query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
       assertEquals(lastTx, currentArtifact.getTransaction());
    }
 
@@ -959,9 +948,8 @@ public class OrcsTransactionTest {
       TransactionReadable rec2 = tx2.commit();
       assertNotNull(rec2);
 
-      artifact1 =
-         query.fromBranch(COMMON_ID).andUuid(
-            art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
+      artifact1 = query.fromBranch(COMMON_ID).andUuid(
+         art1.getUuid()).includeDeletedArtifacts().getResults().getAtMostOneOrNull();
       assertNotNull(artifact1);
       artifact2 = query.fromBranch(COMMON_ID).andUuid(art2.getUuid()).getResults().getAtMostOneOrNull();
       assertNotNull(artifact2);

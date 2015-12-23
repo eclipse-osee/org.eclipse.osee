@@ -227,7 +227,7 @@ public class FailoverConnectionNode implements ConnectionNode, Runnable {
             if (other.statusCallback != null) {
                return false;
             }
-         } 
+         }
          return true;
       }
 

@@ -33,8 +33,9 @@ public final class OrcsIntegrationRule extends OsgiRule {
    }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new OseeDatabase("orcs.jdbc.service", "account.jdbc.service", "oauth.jdbc.service")).around(
-         new OsgiRule(new CheckServices(), testObject));
+      return RuleChain.outerRule(
+         new OseeDatabase("orcs.jdbc.service", "account.jdbc.service", "oauth.jdbc.service")).around(
+            new OsgiRule(new CheckServices(), testObject));
    }
 
    public static class CheckServices {

@@ -4,9 +4,9 @@
 package org.eclipse.osee.orcs.script.dsl.typesystem;
 
 import static org.eclipse.xtext.util.Strings.equal;
+import com.google.inject.Singleton;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import com.google.inject.Singleton;
 
 /**
  * Based on XBase number literals
@@ -119,7 +119,7 @@ public class NumberConverter {
 
    public Class<? extends Number> getJavaType(String literal) {
       Class<? extends Number> explicitType = getExplicitJavaType(literal);
-      return (explicitType == null) ? (isFloatingPoint(literal)) ? Double.TYPE : Integer.TYPE : explicitType;
+      return explicitType == null ? isFloatingPoint(literal) ? Double.TYPE : Integer.TYPE : explicitType;
    }
 
    public Number numberValue(String literal, Class<?> numberType) {

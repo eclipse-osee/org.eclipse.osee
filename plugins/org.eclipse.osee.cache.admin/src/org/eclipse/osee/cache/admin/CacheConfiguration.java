@@ -30,7 +30,7 @@ public class CacheConfiguration {
    private Pair<Long, TimeUnit> refreshAfterWrite = UNSET_EXPIRATION;
 
    private CacheConfiguration() {
-      // 
+      //
    }
 
    public static CacheConfiguration newConfiguration() {

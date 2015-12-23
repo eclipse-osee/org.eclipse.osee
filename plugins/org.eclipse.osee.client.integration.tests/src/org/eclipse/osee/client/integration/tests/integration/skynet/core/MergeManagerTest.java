@@ -124,8 +124,7 @@ public class MergeManagerTest {
       BranchManager.persist(workingBranch);
 
       // Now we can commit
-      committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
+      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch should have been comitted", committed);
 
       // make sure we can't rebase now since we've done a commit
@@ -204,13 +203,11 @@ public class MergeManagerTest {
       assertTrue("Branch is not in Rebaselined", workingBranch.getBranchState().isRebaselined());
 
       // Shouldn't be allowed to commit original working branch
-      committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
+      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch Committed after in Rebaseline was finished", !committed);
 
       // Should be allowed to commit to new working branch
-      committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, branchForUpdate), false, true);
+      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, branchForUpdate), false, true);
       assertTrue("Branch was not committed into new, rebaselined working branch", committed);
 
       // Clean up this test
@@ -263,8 +260,8 @@ public class MergeManagerTest {
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Abandon
-      MergeInProgressHandler.handleCommitInProgressPostPrompt(
-         new ConflictManagerExternal(SAW_Bld_1, workingBranch), DELETE_MERGE, true);
+      MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(SAW_Bld_1, workingBranch),
+         DELETE_MERGE, true);
       assertTrue("Merge Branch still present", !BranchManager.hasMergeBranches(workingBranch));
 
       // Now we should be to do an update
@@ -313,13 +310,12 @@ public class MergeManagerTest {
          !workingBranch.getBranchState().isRebaselineInProgress() && !workingBranch.getBranchState().isRebaselineInProgress());
 
       // Commit into another branch other than SAW_BLD_1 so there are no conflicts
-      committed =
-         CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
+      committed = CommitHandler.commitBranch(new ConflictManagerExternal(SAW_Bld_2, workingBranch), false, true);
       assertTrue("Branch was not committed", committed);
 
       // Even if I abandon first Merge, still shouldn't be able to rebase since I already completed on Commit
-      MergeInProgressHandler.handleCommitInProgressPostPrompt(
-         new ConflictManagerExternal(SAW_Bld_1, workingBranch), DELETE_MERGE, true);
+      MergeInProgressHandler.handleCommitInProgressPostPrompt(new ConflictManagerExternal(SAW_Bld_1, workingBranch),
+         DELETE_MERGE, true);
 
       update = new UpdateBranchOperation(workingBranch, resolverOperation);
       Operations.executeWorkAndCheckStatus(update);

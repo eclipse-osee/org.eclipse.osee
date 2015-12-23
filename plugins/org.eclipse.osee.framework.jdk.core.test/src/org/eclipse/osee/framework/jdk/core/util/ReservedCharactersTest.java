@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
 import org.junit.Assert;
 import org.junit.Test;
 

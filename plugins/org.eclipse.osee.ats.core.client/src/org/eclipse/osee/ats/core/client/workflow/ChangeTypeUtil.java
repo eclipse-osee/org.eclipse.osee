@@ -30,8 +30,8 @@ public class ChangeTypeUtil {
    }
 
    public static ChangeType getChangeType(IAtsObject atsObject) throws OseeCoreException {
-      return ChangeType.getChangeType(AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(
-         AtsAttributeTypes.ChangeType, ""));
+      return ChangeType.getChangeType(
+         AtsClientService.get().getArtifact(atsObject).getSoleAttributeValue(AtsAttributeTypes.ChangeType, ""));
    }
 
    public static void setChangeType(IAtsObject atsObject, ChangeType changeType) throws OseeCoreException {

@@ -44,8 +44,8 @@ public class AtsUserNavigateItems implements IUserNavigateItem {
          try {
             new SearchNavigateItem(parentItem, new UserRelatedToAtsObjectSearch("Admin - Show User Related Objects",
                null, false, LoadView.WorldEditor));
-            new SearchNavigateItem(parentItem, new UserRelatedToAtsObjectSearch("Show Active User Related Objects",
-               null, true, LoadView.WorldEditor));
+            new SearchNavigateItem(parentItem,
+               new UserRelatedToAtsObjectSearch("Show Active User Related Objects", null, true, LoadView.WorldEditor));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

@@ -35,7 +35,7 @@ public abstract class CommandHandler extends AbstractHandler {
    public boolean isEnabled() {
       boolean result = false;
       IWorkbench workbench = PlatformUI.getWorkbench();
-      if (PlatformUI.isWorkbenchRunning() && (!workbench.isStarting() && !workbench.isClosing())) {
+      if (PlatformUI.isWorkbenchRunning() && !workbench.isStarting() && !workbench.isClosing()) {
          try {
             IStructuredSelection selection = getCurrentSelection();
             if (selection != null) {

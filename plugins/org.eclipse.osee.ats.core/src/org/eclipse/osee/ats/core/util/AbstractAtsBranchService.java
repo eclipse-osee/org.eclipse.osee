@@ -93,8 +93,8 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
    public IOseeBranch getWorkingBranch(IAtsTeamWorkflow teamWf, boolean force) {
       long now = new Date().getTime();
       boolean notSet = idToWorkingBranchCacheUpdated.get(teamWf.getAtsId()) == null;
-      if (AtsUtilCore.isInTest() || notSet || force || (now - idToWorkingBranchCacheUpdated.get(
-         teamWf.getAtsId()) > 1000)) {
+      if (AtsUtilCore.isInTest() || notSet || force || now - idToWorkingBranchCacheUpdated.get(
+         teamWf.getAtsId()) > 1000) {
          IOseeBranch branch = null;
          try {
             branch = getWorkingBranchExcludeStates(teamWf, BranchState.REBASELINED, BranchState.DELETED,
@@ -343,7 +343,7 @@ public abstract class AbstractAtsBranchService implements IAtsBranchService {
             branch = getBranchByUuid(version.getBaselineBranchUuid());
          }
       }
-      if (branch == null && (configObject instanceof IAtsTeamDefinition)) {
+      if (branch == null && configObject instanceof IAtsTeamDefinition) {
          IAtsTeamDefinition teamDef = (IAtsTeamDefinition) configObject;
          if (teamDef.getBaselineBranchUuid() > 0) {
             branch = getBranchByUuid(teamDef.getBaselineBranchUuid());

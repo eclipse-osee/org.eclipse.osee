@@ -237,9 +237,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       //100
       loadReqTaskMap(monitor);
 
-      List<Artifact> allSwReqs =
-         ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.AbstractSoftwareRequirement,
-            reportBranch, DeletionFlag.EXCLUDE_DELETED);
+      List<Artifact> allSwReqs = ArtifactQuery.getArtifactListFromTypeWithInheritence(
+         CoreArtifactTypes.AbstractSoftwareRequirement, reportBranch, DeletionFlag.EXCLUDE_DELETED);
 
       //100
       writeStatusSheet(allSwReqs, monitor);
@@ -348,8 +347,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       excelWriter.writeRow("Category", "Test POCs", CoreAttributeTypes.Partition.getName(),
          CoreAttributeTypes.Subsystem.getName(), "Requirement Name", CoreAttributeTypes.QualificationMethod.getName(),
          "Requirement POCs", "SW Enhancement", CoreArtifactTypes.TestProcedure.getName(),
-         CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points", "Failed Test Points",
-         "Hours Remaining", "RPCR", "Hours", "Resolution by Partition");
+         CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points", "Failed Test Points", "Hours Remaining",
+         "RPCR", "Hours", "Resolution by Partition");
 
       double increment = 100.0 / requirements.size();
       double progress = 0;
@@ -616,9 +615,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             String requirementName = taskNameMatcher.group(2);
             RequirementStatus requirementStatus = reqTaskMap.get(requirementName, legacyId);
             if (requirementStatus == null) {
-               requirementStatus =
-                  new RequirementStatus(requirementName, legacyId, workflow.getSoleAttributeValueAsString(
-                     AtsAttributeTypes.SwEnhancement, ""));
+               requirementStatus = new RequirementStatus(requirementName, legacyId,
+                  workflow.getSoleAttributeValueAsString(AtsAttributeTypes.SwEnhancement, ""));
                reqTaskMap.put(requirementName, legacyId, requirementStatus);
             }
 
@@ -646,8 +644,10 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
       sb.append("</xWidgets>");
       return sb.toString();
    }

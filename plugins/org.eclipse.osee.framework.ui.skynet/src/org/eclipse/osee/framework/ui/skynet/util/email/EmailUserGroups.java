@@ -52,8 +52,8 @@ public class EmailUserGroups extends XNavigateItemAction {
 
    public static Set<Artifact> getEmailGroupsAndUserGroups(User user) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<>();
-      for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup,
-         COMMON, DeletionFlag.EXCLUDE_DELETED)) {
+      for (Artifact art : ArtifactQuery.getArtifactListFromTypeWithInheritence(CoreArtifactTypes.UserGroup, COMMON,
+         DeletionFlag.EXCLUDE_DELETED)) {
          // Only add group if have read permissions
          if (!art.getName().equals("Root Artifact") && AccessControlManager.hasPermission(art, PermissionEnum.READ)) {
             artifacts.add(art);

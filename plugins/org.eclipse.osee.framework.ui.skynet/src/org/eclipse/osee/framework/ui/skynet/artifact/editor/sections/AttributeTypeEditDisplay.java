@@ -44,9 +44,8 @@ public final class AttributeTypeEditDisplay implements AttributeTypeEditPresente
    }
 
    private CheckedTreeSelectionDialog createDialog(String title, String message, KeyedImage keyedImage) {
-      CheckedTreeSelectionDialog dialog =
-         new CheckedTreeSelectionDialog(AWorkbench.getActiveShell(), new LabelProvider(),
-            new ArrayTreeContentProvider());
+      CheckedTreeSelectionDialog dialog = new CheckedTreeSelectionDialog(AWorkbench.getActiveShell(),
+         new LabelProvider(), new ArrayTreeContentProvider());
       dialog.setTitle(title);
       Image image = ImageManager.getImage(keyedImage);
       dialog.setImage(image);

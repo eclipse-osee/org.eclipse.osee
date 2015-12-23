@@ -105,9 +105,8 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
       Set<IAtsUser> results = new HashSet<>();
       try {
          for (Artifact userArt : artifact.getRelatedArtifacts(relation)) {
-            IAtsUser lead =
-               getAtsClient().getUserService().getUserById(
-                  (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
+            IAtsUser lead = getAtsClient().getUserService().getUserById(
+               (String) userArt.getSoleAttributeValue(CoreAttributeTypes.UserId));
             results.add(lead);
          }
       } catch (OseeCoreException ex) {
@@ -123,7 +122,7 @@ public abstract class AtsConfigObject extends AtsObject implements IAtsConfigObj
 
    @Override
    public ArtifactId getStoreObject() {
-      return (artifact != null ? artifact : super.getStoreObject());
+      return artifact != null ? artifact : super.getStoreObject();
    }
 
    @Override

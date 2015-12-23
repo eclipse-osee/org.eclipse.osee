@@ -180,9 +180,9 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       boolean isActive = false;
       boolean isStopping = false;
       if (state == Bundle.ACTIVE //
-         || state == Bundle.STARTING //
-         || state == Bundle.INSTALLED //
-         || state == Bundle.RESOLVED) {
+      || state == Bundle.STARTING //
+      || state == Bundle.INSTALLED //
+      || state == Bundle.RESOLVED) {
          isActive = true;
       } else if (state == Bundle.STOPPING) {
          isStopping = true;
@@ -348,7 +348,7 @@ public class TemplateRegistryImpl implements TemplateRegistry, IResourceRegistry
       public int hashCode() {
          final int prime = 31;
          int result = super.hashCode();
-         result = prime * result + ((url == null) ? 0 : url.hashCode());
+         result = prime * result + (url == null ? 0 : url.hashCode());
          return result;
       }
 

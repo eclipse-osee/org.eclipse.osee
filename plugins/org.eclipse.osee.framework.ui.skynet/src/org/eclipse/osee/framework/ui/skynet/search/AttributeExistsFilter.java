@@ -53,10 +53,7 @@ public class AttributeExistsFilter extends SearchFilter {
 
    @Override
    public String getSearchDescription() {
-      return "Using multiple attribute types in the same filter will return artifacts where at least one does exist."
-         + "\nUsing separate attribute type filters will only return artifacts where all the attribute types do exist.";
+      return "Using multiple attribute types in the same filter will return artifacts where at least one does exist." + "\nUsing separate attribute type filters will only return artifacts where all the attribute types do exist.";
    }
 
 }
-
-   

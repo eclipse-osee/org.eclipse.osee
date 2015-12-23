@@ -112,7 +112,8 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       // these properties are fired when Shapes are added into or removed from
       // the ShapeDiagram instance and must cause a call of refreshChildren()
       // to update the diagram's contents.
-      if (WorkDefinitionDiagram.CHILD_ADDED_PROP.equals(prop) || WorkDefinitionDiagram.CHILD_REMOVED_PROP.equals(prop)) {
+      if (WorkDefinitionDiagram.CHILD_ADDED_PROP.equals(prop) || WorkDefinitionDiagram.CHILD_REMOVED_PROP.equals(
+         prop)) {
          refreshChildren();
       }
    }
@@ -143,7 +144,7 @@ public class DiagramEditPart extends AbstractGraphicalEditPart implements Proper
       @Override
       protected Command getCreateCommand(CreateRequest request) {
          Object childClass = request.getNewObjectType();
-         if (StateDefShape.class.isAssignableFrom(((Class<?>) childClass))) {
+         if (StateDefShape.class.isAssignableFrom((Class<?>) childClass)) {
             // return a command that can add a Shape to a WorkflowDiagram
             return new ShapeCreateCommand((Shape) request.getNewObject(), (WorkDefinitionDiagram) getHost().getModel(),
                (Rectangle) getConstraintFor(request));

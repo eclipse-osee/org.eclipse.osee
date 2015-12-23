@@ -114,9 +114,11 @@ public class EventColumn extends XViewerValueColumn {
          } else if (!was.getName().equals(is.getName())) {
             return "Transition from [" + was.getName() + "] to [" + is.getName() + "]";
          }
-         if (was.getName().equals(is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !getHoursSpentStr(
-            was).equals(getHoursSpentStr(is)))) {
-            return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(is) + " hrs";
+         if (was.getName().equals(
+            is.getName()) && (was.getPercentComplete() != is.getPercentComplete() || !getHoursSpentStr(was).equals(
+               getHoursSpentStr(is)))) {
+            return "Statused [" + is.getName() + "] to: " + is.getPercentComplete() + "% and " + getHoursSpent(
+               is) + " hrs";
          }
          Collection<? extends IAtsUser> wasAssignees = was.getAssignees();
          Collection<? extends IAtsUser> isAssignees = is.getAssignees();

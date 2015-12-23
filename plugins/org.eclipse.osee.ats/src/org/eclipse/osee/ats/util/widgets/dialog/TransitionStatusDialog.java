@@ -52,9 +52,8 @@ public class TransitionStatusDialog extends MessageDialog {
    private final TransitionStatusData data;
 
    public TransitionStatusDialog(String dialogTitle, String dialogMessage, TransitionStatusData data) {
-      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE, new String[] {
-         "OK",
-         "Cancel"}, 0);
+      super(Displays.getActiveShell(), dialogTitle, null, dialogMessage, MessageDialog.NONE,
+         new String[] {"OK", "Cancel"}, 0);
       this.data = data;
    }
 
@@ -71,7 +70,8 @@ public class TransitionStatusDialog extends MessageDialog {
 
       if (data.getWorkItems().size() > 1) {
          Label label = new Label(parent, SWT.NONE);
-         label.setText("Mulitple objects being statused.  All objects will be set to percent\ncomplete and hours spent will be split or added into each item.");
+         label.setText(
+            "Mulitple objects being statused.  All objects will be set to percent\ncomplete and hours spent will be split or added into each item.");
       }
 
       createPreCustomArea(parent);
@@ -168,7 +168,8 @@ public class TransitionStatusDialog extends MessageDialog {
 
          splitRadio.createWidgets(comp, 2);
          splitRadio.setSelected(data.isSplitHoursBetweenItems());
-         splitRadio.setToolTip("Hours Spent will be divided equaly by the number of objects " + "and added to the existing hours spent for the object.");
+         splitRadio.setToolTip(
+            "Hours Spent will be divided equaly by the number of objects " + "and added to the existing hours spent for the object.");
          splitRadio.addSelectionListener(new SelectionAdapter() {
 
             @Override

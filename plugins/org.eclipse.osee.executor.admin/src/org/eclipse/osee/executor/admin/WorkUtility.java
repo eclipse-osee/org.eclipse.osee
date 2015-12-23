@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.executor.admin;
 
+import com.google.common.collect.Iterables;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.internal.ExecutorAdminImpl;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -50,7 +50,7 @@ public final class WorkUtility {
          while (iterator.hasNext()) {
             subList.add(iterator.next());
 
-            if (index != 0 && partitionSize != 0 && (index % partitionSize == 0)) {
+            if (index != 0 && partitionSize != 0 && index % partitionSize == 0) {
                Callable<Collection<OUTPUT>> worker = factory.createWorker(subList);
                callables.add(worker);
                subList = new LinkedList<>();

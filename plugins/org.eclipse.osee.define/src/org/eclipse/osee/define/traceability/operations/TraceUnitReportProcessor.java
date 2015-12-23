@@ -41,11 +41,8 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
    @Override
    public void initialize(IProgressMonitor monitor) {
       resultData.addRaw(AHTML.beginMultiColumnTable(95, 1));
-      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
-         "Test Unit Type",
-         "Test Unit Name",
-         "Trace Type",
-         "Trace Mark"}));
+      resultData.addRaw(AHTML.addHeaderRowMultiColumnTable(
+         new String[] {"Test Unit Type", "Test Unit Name", "Trace Type", "Trace Mark"}));
    }
 
    @Override
@@ -56,8 +53,8 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
                if (monitor.isCanceled()) {
                   break;
                }
-               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType().getName(),
-                  testUnit.getName(), traceMark.getTraceType(), traceMark.getRawTraceMark()));
+               resultData.addRaw(AHTML.addRowMultiColumnTable(testUnit.getTraceUnitType().getName(), testUnit.getName(),
+                  traceMark.getTraceType(), traceMark.getRawTraceMark()));
             }
          }
       }
@@ -68,6 +65,6 @@ public final class TraceUnitReportProcessor implements ITraceUnitProcessor {
       resultData.addRaw(AHTML.endMultiColumnTable());
       System.out.println(String.format("Completed in: %s", Lib.getElapseString(startTime)));
       System.out.println(String.format("Memory Leaked: %s", Runtime.getRuntime().totalMemory() - startMemory));
-      XResultDataUI.report(resultData,"Report");
+      XResultDataUI.report(resultData, "Report");
    }
 }

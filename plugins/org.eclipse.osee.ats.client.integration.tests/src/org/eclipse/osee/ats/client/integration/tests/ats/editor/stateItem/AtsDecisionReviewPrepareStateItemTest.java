@@ -48,9 +48,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
 
       if (decRevArt == null) {
          // setup fake review artifact with decision options set
-         decRevArt =
-            (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-               AtsUtilCore.getAtsBranch());
+         decRevArt = (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
+            AtsUtilCore.getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
          decRevArt.persist(getClass().getSimpleName());
       }
@@ -78,7 +77,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       // make call to state item that should set options based on artifact's attribute value
       AtsDecisionReviewPrepareStateItem stateItem = new AtsDecisionReviewPrepareStateItem();
       TransitionResults results = new TransitionResults();
-      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
+      stateItem.transitioning(results, decRevArt, fromState, toState,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
 
       // verify no errors
       Assert.assertTrue(results.toString(), results.isEmpty());
@@ -87,7 +87,8 @@ public class AtsDecisionReviewPrepareStateItemTest {
       decisionOptionStr = decisionOptionStr.replaceFirst("Completed", "NoState");
       decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions, decisionOptionStr);
       decRevArt.persist(getClass().getSimpleName());
-      stateItem.transitioning(results, decRevArt, fromState, toState, Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
+      stateItem.transitioning(results, decRevArt, fromState, toState,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()));
       Assert.assertTrue(results.contains("Invalid Decision Option"));
 
    }

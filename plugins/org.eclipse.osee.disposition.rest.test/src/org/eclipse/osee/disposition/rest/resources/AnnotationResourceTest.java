@@ -131,15 +131,15 @@ public class AnnotationResourceTest {
       newAnnotation.setLocationRefs("2-11");
       DispoAnnotationData annotationToEdit = new DispoAnnotationData();
       annotationToEdit.setId(mockId);
-      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation, "name")).thenReturn(
-         true);
+      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation,
+         "name")).thenReturn(true);
       when(dispositionApi.getDispoItemById(program, "itemId")).thenReturn(dispoItem);
       when(dispoItem.getStatus()).thenReturn(DispoStrings.Item_Complete);
       Response response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
       assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
 
-      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation, "name")).thenReturn(
-         false);
+      when(dispositionApi.editDispoAnnotation(program, "itemId", annotationToEdit.getId(), newAnnotation,
+         "name")).thenReturn(false);
       response = resource.putDispoAnnotation(annotationToEdit.getId(), newAnnotation, "name");
       assertEquals(Response.Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
    }

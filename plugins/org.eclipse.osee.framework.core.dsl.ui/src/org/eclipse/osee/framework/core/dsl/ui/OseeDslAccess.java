@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.dsl.ui;
 
-import org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator;
 import com.google.inject.Injector;
+import org.eclipse.osee.framework.core.dsl.ui.internal.OseeDslActivator;
 
 /**
  * @author Roberto E. Escobar

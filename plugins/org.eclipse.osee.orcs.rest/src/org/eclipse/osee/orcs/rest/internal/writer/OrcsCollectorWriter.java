@@ -160,8 +160,8 @@ public class OrcsCollectorWriter {
                      throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
                         owAttribute, ex);
                   }
-               } else if ((currValue == null && newValue != null) || (currValue != null && !currValue.equals(
-                  newValue))) {
+               } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(
+                  newValue)) {
                   logChange(artifact, attrType, currValue, newValue);
                   getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
                }

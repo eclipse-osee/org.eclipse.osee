@@ -118,9 +118,9 @@ public class OAuth2Transport {
          builder = clientBuilder.build().target(uri).request().header(HttpHeaders.COOKIE, sessionCookie);
       } else {
          builder = clientBuilder//
-         .username(credentials.getUsername())//
-         .password(credentials.getPassword())//
-         .build().target(uri).request();
+            .username(credentials.getUsername())//
+            .password(credentials.getPassword())//
+            .build().target(uri).request();
       }
       return builder;
    }

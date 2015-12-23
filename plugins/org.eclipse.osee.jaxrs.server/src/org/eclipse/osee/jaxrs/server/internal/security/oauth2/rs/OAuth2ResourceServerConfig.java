@@ -69,7 +69,8 @@ public class OAuth2ResourceServerConfig {
    }
 
    public boolean isAudienceIsEndpointAddress() {
-      return getBoolean(props, OAUTH2_RS__AUDIENCE_IS_ENDPOINT_ADDRESS, DEFAULT_OAUTH2_RS__AUDIENCE_IS_ENDPOINT_ADDRESS);
+      return getBoolean(props, OAUTH2_RS__AUDIENCE_IS_ENDPOINT_ADDRESS,
+         DEFAULT_OAUTH2_RS__AUDIENCE_IS_ENDPOINT_ADDRESS);
    }
 
    public boolean isFilterChecksFormDataForToken() {

@@ -68,9 +68,8 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
          }
       }
 
-      String optionsLabel =
-         String.format(" - Options:[%s]",
-            org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", optionsList));
+      String optionsLabel = String.format(" - Options:[%s]",
+         org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ", optionsList));
       return String.format("%s%s", searchRequest.getRawSearch(), optionsList.size() > 0 ? optionsLabel : "");
    }
 
@@ -201,7 +200,7 @@ public final class RemoteArtifactSearch extends AbstractArtifactSearchQuery {
             if (ch == '\n') {
                lineNumber++;
             }
-            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch) || (ch == '\n')) {
+            if (charCount >= HALF_LINE_CHAR_COUNT && Character.isWhitespace(ch) || ch == '\n') {
                if (markLineStart) {
                   newLineStart = i + 1;
                   markLineStart = false;

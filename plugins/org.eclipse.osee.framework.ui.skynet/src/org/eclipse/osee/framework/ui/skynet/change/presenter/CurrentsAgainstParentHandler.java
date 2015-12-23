@@ -67,16 +67,14 @@ public final class CurrentsAgainstParentHandler implements IChangeReportUiHandle
       TransactionDelta txDelta = changeUiData.getTxDelta();
       String data;
       if (changeUiData.isMergeBranchValid()) {
-         data =
-            String.format(
-               "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to%s branch [<b>%s</b>].",
-               AXml.textToXml(txDelta.getStartTx().getBranch().getName()), " its parent",
-               AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+         data = String.format(
+            "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to%s branch [<b>%s</b>].",
+            AXml.textToXml(txDelta.getStartTx().getBranch().getName()), " its parent",
+            AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       } else {
-         data =
-            String.format("Shows all changes made to [<b>%s</b>] compared to%s branch [<b>%s</b>].",
-               AXml.textToXml(txDelta.getStartTx().getBranch().getName()), " its parent",
-               AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+         data = String.format("Shows all changes made to [<b>%s</b>] compared to%s branch [<b>%s</b>].",
+            AXml.textToXml(txDelta.getStartTx().getBranch().getName()), " its parent",
+            AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
       }
       return data;
    }

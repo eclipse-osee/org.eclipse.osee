@@ -56,7 +56,7 @@ public class RelationTypeValidityTest {
    // @formatter:off
    @Mock private RelationTypes relTypes;
    @Mock private RelationNode node;
-   @Mock private IArtifactType artifactType;   
+   @Mock private IArtifactType artifactType;
    @Mock private IArtifactType artifactType2;
    
    @Mock private IRelationType relationType1;
@@ -237,7 +237,8 @@ public class RelationTypeValidityTest {
       when(node.getExceptionString()).thenReturn("node message");
 
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("Relation validity error for [node message] - ArtifactType [artType1] does not belong on side [SIDE_B] of relation [TYPE_1] - only items of type [artType2] are allowed");
+      thrown.expectMessage(
+         "Relation validity error for [node message] - ArtifactType [artType1] does not belong on side [SIDE_B] of relation [TYPE_1] - only items of type [artType2] are allowed");
       validity.checkRelationTypeValid(TYPE_1, node, SIDE_B);
    }
 

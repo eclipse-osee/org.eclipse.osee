@@ -87,7 +87,7 @@ public class ArtifactEditorInput implements IEditorInput {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((artifact == null) ? 0 : artifact.hashCode());
+      result = prime * result + (artifact == null ? 0 : artifact.hashCode());
       return result;
    }
 

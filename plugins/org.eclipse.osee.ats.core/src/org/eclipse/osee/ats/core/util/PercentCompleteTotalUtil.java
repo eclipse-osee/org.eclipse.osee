@@ -103,7 +103,7 @@ public class PercentCompleteTotalUtil {
             }
          }
          if (workItem instanceof IAtsTeamWorkflow) {
-            for (IAtsTask taskArt : services.getTaskService().getTasks(((IAtsTeamWorkflow) workItem))) {
+            for (IAtsTask taskArt : services.getTaskService().getTasks((IAtsTeamWorkflow) workItem)) {
                percent += getPercentCompleteTotal(taskArt, services);
                numObjects++;
             }

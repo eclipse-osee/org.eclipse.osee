@@ -61,8 +61,8 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
       Collection<AttributeType> attrTypes = variableMap.getAttributeTypes("Include Attribute Values in Results");
       HashCollection<Artifact, String> artifactToMatch = new HashCollection<>(100);
       for (String keywords : keywordgroups.split(System.getProperty("line.separator"))) {
-         for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(branch, keywords, true,
-            EXCLUDE_DELETED, false)) {
+         for (Artifact art : ArtifactQuery.getArtifactListFromAttributeKeywords(branch, keywords, true, EXCLUDE_DELETED,
+            false)) {
             if (ofArtifactType == null || art.isOfType(ofArtifactType)) {
                artifactToMatch.put(art, keywords);
             }

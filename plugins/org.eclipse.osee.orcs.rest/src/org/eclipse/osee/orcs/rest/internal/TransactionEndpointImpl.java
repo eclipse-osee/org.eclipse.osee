@@ -38,6 +38,7 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
    protected void setUriInfo(UriInfo uriInfo) {
       this.uriInfo = uriInfo;
    }
+
    @Override
    public List<Transaction> getAllTxs() {
       return OrcsRestUtil.asTransactions(orcsApi.getTransactionFactory().getAllTxs());
@@ -66,8 +67,8 @@ public class TransactionEndpointImpl implements TransactionEndpoint {
 
    @Override
    public Response replaceWithBaselineTxVersion(String userId, Long branchId, int txId, int artId, String comment) {
-      return OrcsRestUtil.asResponse(orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId,
-         txId, artId, comment));
+      return OrcsRestUtil.asResponse(
+         orcsApi.getTransactionFactory().replaceWithBaselineTxVersion(userId, branchId, txId, artId, comment));
    }
 
 }

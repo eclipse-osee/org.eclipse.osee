@@ -69,6 +69,7 @@ public class FilteredTreeArtifactDialog extends FilteredTreeDialog {
       this.selectable = selectable;
    }
 
+   @Override
    public void setSorter(ViewerSorter sorter) {
       getTreeViewer().getViewer().setSorter(sorter);
    }

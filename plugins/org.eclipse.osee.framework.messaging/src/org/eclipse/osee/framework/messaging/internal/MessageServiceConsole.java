@@ -33,42 +33,42 @@ public class MessageServiceConsole implements CommandProvider {
          ci.println(node.getSummary());
       }
    }
-   
+
    public void _msgPrintSend(CommandInterpreter ci) throws Exception {
-	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
-	   if(support != null){
-		   support.setPrintSends(!support.getPrintSends());
-		   ci.println("printSends " + support.getPrintSends());
-	   } else {
-		   ci.println("ConsoleDebugSupport service not found, unable to show sends.");
-	   }
+      ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+      if (support != null) {
+         support.setPrintSends(!support.getPrintSends());
+         ci.println("printSends " + support.getPrintSends());
+      } else {
+         ci.println("ConsoleDebugSupport service not found, unable to show sends.");
+      }
    }
-   
+
    public void _msgPrintReceive(CommandInterpreter ci) throws Exception {
-	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
-	   if(support != null){
-		   support.setPrintReceives(!support.getPrintReceives());
-		   ci.println("printReceives " + support.getPrintReceives());
-	   } else {
-		   ci.println("ConsoleDebugSupport service not found, unable to show receives.");
-	   }
+      ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+      if (support != null) {
+         support.setPrintReceives(!support.getPrintReceives());
+         ci.println("printReceives " + support.getPrintReceives());
+      } else {
+         ci.println("ConsoleDebugSupport service not found, unable to show receives.");
+      }
    }
-   
+
    public void _msgPrintStats(CommandInterpreter ci) throws Exception {
-	   ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
-	   if(support != null){
-		   String arg = ci.nextArgument();
-		   if(arg == null){
-			   support.printAllStats(ci);
-		   } else if (arg.equals("tx")){
-			   support.printTxStats(ci);
-		   } else if (arg.equals("rx")){
-			   support.printRxStats(ci);
-		   }
-	   } else {
-		   ci.println("ConsoleDebugSupport service not found, unable to show receives.");
-	   }
-	   
+      ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+      if (support != null) {
+         String arg = ci.nextArgument();
+         if (arg == null) {
+            support.printAllStats(ci);
+         } else if (arg.equals("tx")) {
+            support.printTxStats(ci);
+         } else if (arg.equals("rx")) {
+            support.printRxStats(ci);
+         }
+      } else {
+         ci.println("ConsoleDebugSupport service not found, unable to show receives.");
+      }
+
    }
 
    @Override

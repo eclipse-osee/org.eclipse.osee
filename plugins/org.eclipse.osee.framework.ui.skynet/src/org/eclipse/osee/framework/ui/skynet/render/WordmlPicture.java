@@ -44,7 +44,8 @@ public class WordmlPicture {
    }
 
    private void findBinaryData(String document) throws OseeCoreException {
-      if (pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line ")) {
+      if (pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains(
+         "<v:rect ") || pictureDefinition.contains("<v:line ")) {
          //ignore this case
       } else if (pictureDefinition.contains("<w:binData")) {
          int index = pictureDefinition.indexOf(">", pictureDefinition.indexOf("<w:binData")) + 1;
@@ -61,11 +62,12 @@ public class WordmlPicture {
                "This document is missing Image Data.  The Image can not be checked for modifications. Artifact with id [%s]",
                getArtifactGuid());
          }
-         binaryData =
-            document.substring(document.indexOf(">", dataIndex) + 1,
-               document.indexOf("<", document.indexOf(">", dataIndex) + 1));
+         binaryData = document.substring(document.indexOf(">", dataIndex) + 1,
+            document.indexOf("<", document.indexOf(">", dataIndex) + 1));
       } else {
-         if (!(pictureDefinition.contains("<v:formulas>") || pictureDefinition.contains("<v:path ") || pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains("<v:rect ") || pictureDefinition.contains("<v:line "))) {
+         if (!(pictureDefinition.contains("<v:formulas>") || pictureDefinition.contains(
+            "<v:path ") || pictureDefinition.contains("<v:textbox ") || pictureDefinition.contains(
+               "<v:rect ") || pictureDefinition.contains("<v:line "))) {
             if (DEBUG) {
                System.out.println(pictureDefinition);
             }

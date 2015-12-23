@@ -24,8 +24,8 @@ import org.junit.Assert;
  */
 public class AssertLib {
 
-   private static final Collection<String> DEFAULT_IGNORE_LOGS = Arrays.asList("No image was defined for art type",
-      "Unable to load the image for [SAVED]");
+   private static final Collection<String> DEFAULT_IGNORE_LOGS =
+      Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
 
    private AssertLib() {
       // Utility class

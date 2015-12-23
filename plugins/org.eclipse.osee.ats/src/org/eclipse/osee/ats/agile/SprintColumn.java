@@ -54,8 +54,8 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    private SprintColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".sprint", "Sprint", 100, SWT.LEFT, false, SortDataType.String,
-         true, "Sprint");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".sprint", "Sprint", 100, SWT.LEFT, false, SortDataType.String, true,
+         "Sprint");
    }
 
    /**
@@ -74,7 +74,7 @@ public class SprintColumn extends XViewerAtsColumn implements IXViewerValueColum
       try {
          if (treeItem.getData() instanceof Artifact) {
             Artifact useArt = (Artifact) treeItem.getData();
-            if (!(useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
+            if (!useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                return false;
             }
 

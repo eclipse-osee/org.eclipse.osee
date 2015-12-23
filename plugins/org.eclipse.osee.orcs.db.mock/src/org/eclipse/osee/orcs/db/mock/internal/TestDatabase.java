@@ -161,7 +161,7 @@ public class TestDatabase {
          Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
-               if ((tempFolder != null) && tempFolder.exists()) {
+               if (tempFolder != null && tempFolder.exists()) {
                   Lib.deleteDir(tempFolder);
                }
             }

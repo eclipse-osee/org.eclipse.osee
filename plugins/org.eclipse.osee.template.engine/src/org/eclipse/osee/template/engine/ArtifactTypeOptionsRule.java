@@ -21,20 +21,21 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Marc Potter
  */
+
 /**
  * This class creates the HTML required to handle a selection of artifact types. The selection is done using two <select>
  * boxes. The first is a single selection box listing all the possible types that can be selected. The second lists the
- * types that are selected. The selected types can be added to by selecting from the list of possible types. 
+ * types that are selected. The selected types can be added to by selecting from the list of possible types.
  * 
  */
 //@formatter:off
 /**************************************************
  * The rule within the template or substitution file is of the format
  * <?rule name="artifactTypeSelect" id="[ID]" types="[TYPES]" preselect="[PRESEL]" ?>
- * Where: 
- *      [ID] (required) is the identifier of the select box and OSEEParam 
+ * Where:
+ *      [ID] (required) is the identifier of the select box and OSEEParam
  *      [TYPES] (required) is a comma separated list of the names of the artifact types to be made available
- *      [PRESEL] (optional) is a comma separated list of the names of the artifact types that will show as selected 
+ *      [PRESEL] (optional) is a comma separated list of the names of the artifact types that will show as selected
  *                       when the page is first displayed
  */
 //@formatter:on

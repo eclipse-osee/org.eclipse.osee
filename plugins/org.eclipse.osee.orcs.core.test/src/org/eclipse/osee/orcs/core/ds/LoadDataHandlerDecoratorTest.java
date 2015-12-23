@@ -32,7 +32,7 @@ public class LoadDataHandlerDecoratorTest {
    @Mock private AttributeData attrData;
    @Mock private RelationData relData;
    @Mock private LoadDescription description;
-   @Mock private MatchLocation match;   
+   @Mock private MatchLocation match;
     
    // @formatter:on
 

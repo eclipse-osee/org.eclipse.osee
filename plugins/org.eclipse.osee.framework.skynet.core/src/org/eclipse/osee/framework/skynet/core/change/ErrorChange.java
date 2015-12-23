@@ -25,9 +25,8 @@ public final class ErrorChange extends Change {
    public ErrorChange(IOseeBranch branch, int artId, String exception) {
       super(branch, 0, artId, null, null, false, null, null);
       this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
-      this.name =
-         String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),
-            (branch == null ? null : branch.getUuid()), exception);
+      this.name = String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),
+         branch == null ? null : branch.getUuid(), exception);
    }
 
    @Override

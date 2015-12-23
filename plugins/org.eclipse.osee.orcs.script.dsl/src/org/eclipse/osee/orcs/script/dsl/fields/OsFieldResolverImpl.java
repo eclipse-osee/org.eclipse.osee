@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.fields;
 
+import com.google.common.collect.Sets;
+import com.google.inject.Singleton;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
@@ -32,8 +34,6 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsObjectQuery;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsQuery;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsTxQueryStatement;
 import org.eclipse.xtext.EcoreUtil2;
-import com.google.common.collect.Sets;
-import com.google.inject.Singleton;
 
 /**
  * @author Roberto E. Escobar
@@ -45,26 +45,26 @@ public class OsFieldResolverImpl implements IFieldResolver {
     * Could be considered a scope provider function?
     * 
     * <pre>
-    * 1. Determine what fields are allowed based on collect 
+    * 1. Determine what fields are allowed based on collect
     *    clause position in the query expression
-    *    
-    * 2. Create a field description object that contains - field scope to 
+    * 
+    * 2. Create a field description object that contains - field scope to
     *    distinguish between field section
-    *    
+    * 
     * 3. Provide fields being used in a query - for instance
     *    if a collect clause has * after a tx query section should return
     *    all tx fields
     * 
-    * 4. Provide fields for map variables when queries are assigned to 
+    * 4. Provide fields for map variables when queries are assigned to
     *    variables and then used in other queries. dot notation content assist
     * 
-    * uses - 
-    *    content assist, 
-    *    validation, 
+    * uses -
+    *    content assist,
+    *    validation,
     *    field to column mapping
-    *    available and allowed sort by fields section 
+    *    available and allowed sort by fields section
     *       a. can use alias or field name
-    *       b. can use fields that are not being collected as long as 
+    *       b. can use fields that are not being collected as long as
     *          they are in scope
     * </pre>
     */

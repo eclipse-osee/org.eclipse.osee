@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import com.google.common.collect.Lists;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
-import com.google.common.collect.Lists;
 
 /**
  * Test: @link: TestPlanComplianceReportTest
@@ -144,8 +144,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
          List<List<String>> errorPartitions = allPartitions.get(allPartitions.size() - 1);
          if (errorPartitions.size() > i) {
             excelWriter.setCellStyle(ExcelXmlWriter.STYLE.ERROR, 6);
-            excelWriter.writeCell(org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n",
-               errorPartitions.get(i)));
+            excelWriter.writeCell(
+               org.eclipse.osee.framework.jdk.core.util.Collections.toString("\n", errorPartitions.get(i)));
          } else {
             excelWriter.writeCell(BLANK_SPACE);
          }
@@ -188,7 +188,8 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
             for (Artifact testResult : testResults) {
                String extension = testResult.getSoleAttributeValueAsString(CoreAttributeTypes.Extension, "");
-               testResultNames.add(testResult.getName() + (extension.equals("") ? extension : "." + extension.toLowerCase()));
+               testResultNames.add(
+                  testResult.getName() + (extension.equals("") ? extension : "." + extension.toLowerCase()));
             }
          }
 
@@ -259,15 +260,14 @@ public final class TestPlanComplianceReport extends AbstractBlam {
 
    private void initReport() throws IOException {
       excelWriter = new ExcelXmlWriter(defaultWriter, null, ExcelXmlWriter.defaultEmptyString, fontSize);
-      String[] columnHeaders =
-         {
-            "Test Plan & Paragraph",
-            "Perf Spec Requirement(s)",
-            "PIDS",
-            "Test Procedure",
-            "Test Status",
-            "Test Result File",
-            "Errors"};
+      String[] columnHeaders = {
+         "Test Plan & Paragraph",
+         "Perf Spec Requirement(s)",
+         "PIDS",
+         "Test Procedure",
+         "Test Status",
+         "Test Result File",
+         "Errors"};
 
       ExcelColumn[] columns = new ExcelColumn[columnHeaders.length];
       for (int i = 0; i < columnHeaders.length; i++) {

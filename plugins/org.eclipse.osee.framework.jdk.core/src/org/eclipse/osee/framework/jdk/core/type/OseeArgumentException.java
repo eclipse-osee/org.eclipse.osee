@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
-
 /**
  * @author Donald G. Dunne
  */

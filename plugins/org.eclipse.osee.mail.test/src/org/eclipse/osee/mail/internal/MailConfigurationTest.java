@@ -33,7 +33,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.mail.internal.MailConfiguration;
 import org.eclipse.osee.mail.internal.MailConfiguration.MailConfigurationBuilder;
 import org.junit.Before;
 import org.junit.Test;

@@ -65,8 +65,8 @@ import org.mockito.stubbing.Answer;
 public class TxSqlBuilderTest {
 
    private static final List<ModificationType> MODS_ITEMS_ROW = Arrays.asList(NEW, MODIFIED, MERGED, UNDELETED);
-   private static final List<ModificationType> MODS_REUSE_ROW = Arrays.asList(ARTIFACT_DELETED, DELETED, INTRODUCED,
-      REPLACED_WITH_VERSION);
+   private static final List<ModificationType> MODS_REUSE_ROW =
+      Arrays.asList(ARTIFACT_DELETED, DELETED, INTRODUCED, REPLACED_WITH_VERSION);
 
    private static final int EXPECTED_TX_ID = 10000;
    private static final int LOADED_TX_ID = 567;

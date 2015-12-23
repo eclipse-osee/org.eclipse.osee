@@ -108,9 +108,9 @@ public class MergeXViewer extends XViewer {
 
    private boolean hasInteractiveIcon(TreeColumn treeColumn) {
       return isXViewerColumn(treeColumn, MergeXViewerFactory.Source) //
-         || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
-         || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
-         || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
+      || isXViewerColumn(treeColumn, MergeXViewerFactory.Destination) //
+      || isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved) //
+      || isXViewerColumn(treeColumn, MergeXViewerFactory.Merged);
    }
 
    private boolean isXViewerColumn(TreeColumn treeColumn, XViewerColumn expected) {
@@ -148,8 +148,8 @@ public class MergeXViewer extends XViewer {
          MergeUtility.setToDest(conflict, shell, true);
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Conflict_Resolved)) {
          conflict.handleResolvedSelection();
-         OseeEventManager.kickBranchEvent(CreateBranchHttpRequestOperation.class, new BranchEvent(
-            BranchEventType.MergeConflictResolved, conflict.getMergeBranch().getGuid()));
+         OseeEventManager.kickBranchEvent(CreateBranchHttpRequestOperation.class,
+            new BranchEvent(BranchEventType.MergeConflictResolved, conflict.getMergeBranch().getGuid()));
       } else if (isXViewerColumn(treeColumn, MergeXViewerFactory.Merged)) {
          if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
             AttributeConflict attributeConflict = (AttributeConflict) conflict;
@@ -192,13 +192,9 @@ public class MergeXViewer extends XViewer {
    }
 
    private static void nativeContentAlert(Shell shell) {
-      MessageDialog dialog =
-         new MessageDialog(
-            shell,
-            "Artifact type not supported",
-            null,
-            "Native artifact types are not currently supported for the merge wizard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by right-clicking \"Edit Merge Artifact.\"",
-            2, new String[] {"OK"}, 1);
+      MessageDialog dialog = new MessageDialog(shell, "Artifact type not supported", null,
+         "Native artifact types are not currently supported for the merge wizard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by right-clicking \"Edit Merge Artifact.\"",
+         2, new String[] {"OK"}, 1);
       dialog.open();
    }
 

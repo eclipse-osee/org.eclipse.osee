@@ -30,8 +30,9 @@ public class UserRoleManager {
 
    private final static String ROLE_ITEM_TAG = "Role";
 
-   private final Matcher roleMatcher = java.util.regex.Pattern.compile(
-      "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private final Matcher roleMatcher =
+      java.util.regex.Pattern.compile("<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">",
+         Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private List<UserRole> roles;
    private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;

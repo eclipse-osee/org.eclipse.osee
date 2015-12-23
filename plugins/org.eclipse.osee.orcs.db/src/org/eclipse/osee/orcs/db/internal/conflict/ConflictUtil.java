@@ -38,9 +38,8 @@ public final class ConflictUtil {
       if (object1 == null && object2 == null) {
          result = true;
       } else if (object1 != null && object2 != null) {
-         result =
-            object1.getSourceGammaId().equals(object2.getSourceGammaId()) && object1.getDestinationGammaId().equals(
-               object2.getDestinationGammaId());
+         result = object1.getSourceGammaId().equals(
+            object2.getSourceGammaId()) && object1.getDestinationGammaId().equals(object2.getDestinationGammaId());
       }
       return result;
    }

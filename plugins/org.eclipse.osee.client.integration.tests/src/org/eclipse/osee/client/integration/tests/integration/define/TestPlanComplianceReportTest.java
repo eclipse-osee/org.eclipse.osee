@@ -127,9 +127,8 @@ public final class TestPlanComplianceReportTest {
       dummyArtifactList.add(testPlan);
 
       for (int i = 0; i < amountOfTestProcedures; i++) {
-         Artifact testProcedure =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, SAW_Bld_1,
-               "Sample Test Procedure" + "_" + i);
+         Artifact testProcedure = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, SAW_Bld_1,
+            "Sample Test Procedure" + "_" + i);
 
          testProcedure.setSoleAttributeValue(CoreAttributeTypes.TestProcedureStatus, testProcedureStatus.testStatus);
 

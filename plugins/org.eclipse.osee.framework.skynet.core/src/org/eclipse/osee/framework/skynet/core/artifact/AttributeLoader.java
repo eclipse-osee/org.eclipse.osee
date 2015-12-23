@@ -153,13 +153,11 @@ public class AttributeLoader {
       // Do not warn about skipping on historical loading, because the most recent
       // transaction is used first due to sorting on the query
       if (!historical) {
-         OseeLog.logf(
-            ArtifactLoader.class,
-            Level.WARNING,
+         OseeLog.logf(ArtifactLoader.class, Level.WARNING,
 
-            "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
-            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId,
-            previous.modType, current.modType);
+         "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+            current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId, previous.modType,
+            current.modType);
       }
    }
 

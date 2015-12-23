@@ -50,7 +50,7 @@ public class SMATargetedVersionHeader extends Composite {
       editor.getToolkit().adapt(this);
 
       try {
-         if (editor.isPrivilegedEditModeEnabled() || (!sma.isCancelled() && !sma.isCompleted())) {
+         if (editor.isPrivilegedEditModeEnabled() || !sma.isCancelled() && !sma.isCompleted()) {
             link = editor.getToolkit().createHyperlink(this, TARGET_VERSION, SWT.NONE);
             link.addHyperlinkListener(new IHyperlinkListener() {
 

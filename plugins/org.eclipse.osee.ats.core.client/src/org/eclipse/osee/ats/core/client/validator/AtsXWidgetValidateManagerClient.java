@@ -50,9 +50,8 @@ public class AtsXWidgetValidateManagerClient implements AtsXWidgetValidatorProvi
          atsValidators.add(new AtsOperationalImpactValidator());
          atsValidators.add(new AtsOperationalImpactWithWorkaroundValidator());
 
-         ExtensionDefinedObjects<IAtsXWidgetValidator> validators =
-            new ExtensionDefinedObjects<IAtsXWidgetValidator>(EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE,
-               true);
+         ExtensionDefinedObjects<IAtsXWidgetValidator> validators = new ExtensionDefinedObjects<IAtsXWidgetValidator>(
+            EXTENSION_ID, EXTENSION_ELEMENT, CLASS_NAME_ATTRIBUTE, true);
          for (IAtsXWidgetValidator validator : validators.getObjects()) {
             atsValidators.add(validator);
          }

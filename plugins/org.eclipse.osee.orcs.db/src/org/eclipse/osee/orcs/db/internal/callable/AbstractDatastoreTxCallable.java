@@ -41,11 +41,11 @@ public abstract class AbstractDatastoreTxCallable<T> extends AbstractDatastoreCa
    }
 
    protected void onExecutionStart() {
-      // 
+      //
    }
 
    protected void onExecutionComplete() {
-      // 
+      //
    }
 
    protected abstract T handleTxWork(JdbcConnection connection) throws OseeCoreException;

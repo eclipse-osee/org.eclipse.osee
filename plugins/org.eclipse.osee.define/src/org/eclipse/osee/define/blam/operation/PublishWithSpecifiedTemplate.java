@@ -70,7 +70,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       boolean useArtifactNameInLinks = variableMap.getBoolean(USE_ARTIFACT_NAMES);
       boolean useParagraphNumbersInLinks = variableMap.getBoolean(USE_PARAGRAPH_NUMBERS);
-      boolean includeArtifactUUIDs = variableMap.getBoolean(INCLUDE_ARTIFACT_UUIDS);
+      variableMap.getBoolean(INCLUDE_ARTIFACT_UUIDS);
 
       if (!useParagraphNumbersInLinks && !useArtifactNameInLinks) {
          throw new OseeArgumentException("Please select at least one Document Link Format");
@@ -112,38 +112,37 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(branch, "BLAM: Publish with specified template");
 
-      Object[] options =
-         new Object[] {
-            "Branch",
-            branch,
-            "compareBranch",
-            variableMap.getBranch(WAS_BRANCH),
-            "Publish As Diff",
-            variableMap.getValue(PUBLISH_AS_DIFF),
-            "INCLUDE UUIDS",
-            variableMap.getValue(INCLUDE_ARTIFACT_UUIDS),
-            "linkType",
-            linkType,
-            WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-            variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS),
+      Object[] options = new Object[] {
+         "Branch",
+         branch,
+         "compareBranch",
+         variableMap.getBranch(WAS_BRANCH),
+         "Publish As Diff",
+         variableMap.getValue(PUBLISH_AS_DIFF),
+         "INCLUDE UUIDS",
+         variableMap.getValue(INCLUDE_ARTIFACT_UUIDS),
+         "linkType",
+         linkType,
+         WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+         variableMap.getBoolean(UPDATE_PARAGRAPH_NUMBERS),
          "EXCLUDE ARTIFACT TYPES",
          variableMap.getArtifactTypes(EXCLUDE_ARTIFACT_TYPES),
-            ITemplateRenderer.TRANSACTION_OPTION,
-            transaction,
-            IRenderer.SKIP_ERRORS,
-            true,
-            "Exclude Folders",
-            true,
-            "Recurse On Load",
-            true,
-            "Maintain Order",
-            true,
-            "Progress Monitor",
-            monitor,
-            ITemplateRenderer.USE_TEMPLATE_ONCE,
-            true,
-            WordTemplateRenderer.FIRST_TIME,
-            true};
+         ITemplateRenderer.TRANSACTION_OPTION,
+         transaction,
+         IRenderer.SKIP_ERRORS,
+         true,
+         "Exclude Folders",
+         true,
+         "Recurse On Load",
+         true,
+         "Maintain Order",
+         true,
+         "Progress Monitor",
+         monitor,
+         ITemplateRenderer.USE_TEMPLATE_ONCE,
+         true,
+         WordTemplateRenderer.FIRST_TIME,
+         true};
 
       renderer.publish(master, slave, artifacts, options);
 
@@ -210,8 +209,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
          PUBLISH_AS_DIFF));
       builder.append(String.format("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"%s\"/>", WAS_BRANCH));
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"If a WAS branch is NOT selected, diffs will be between selected IS artifacts and baseline version on IS branch\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"Note: If a WAS branch is selected, diffs will be between selected IS artifacts and current version on WAS branch\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"If a WAS branch is NOT selected, diffs will be between selected IS artifacts and baseline version on IS branch\"/>");
       builder.append("</xWidgets>");
 
       return builder.toString();

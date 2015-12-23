@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.HashMap;
-import org.eclipse.osee.framework.jdk.core.type.Quad;
 import org.junit.Assert;
 
 /**
@@ -22,15 +21,11 @@ public class QuadTest {
    private final Integer b = 233;
    private final Integer c = 433;
    private final Integer d = 555;
-   private final Quad<Integer, Integer, Integer, Integer> mapToPi = new Quad<>(a, b,
-      c, d);
-   private final Quad<Integer, Integer, Integer, Integer> mapToE = new Quad<>(b, c,
-      d, a);
+   private final Quad<Integer, Integer, Integer, Integer> mapToPi = new Quad<>(a, b, c, d);
+   private final Quad<Integer, Integer, Integer, Integer> mapToE = new Quad<>(b, c, d, a);
 
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<>(a,
-      b, c, d);
-   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<>(b,
-      c, d, a);
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToPi = new Quad<>(a, b, c, d);
+   private final Quad<Integer, Integer, Integer, Integer> alsoMapToE = new Quad<>(b, c, d, a);
 
    private final Quad<Integer, Integer, Integer, Integer> firstEntryNull =
       new Quad<Integer, Integer, Integer, Integer>(null, 222, 333, 444);
@@ -40,8 +35,7 @@ public class QuadTest {
       new Quad<Integer, Integer, Integer, Integer>(111, 222, null, 444);
    private final Quad<Integer, Integer, Integer, Integer> fourthEntryNull =
       new Quad<Integer, Integer, Integer, Integer>(111, 222, 333, null);
-   private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<>(111,
-      222, 333, 444);
+   private final Quad<Integer, Integer, Integer, Integer> nonNull = new Quad<>(111, 222, 333, 444);
 
    @org.junit.Test
    public void testConstructor() {

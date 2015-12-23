@@ -86,7 +86,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsCountry getCountry(IAtsProgram atsProgram) {
       IAtsCountry country = null;
-      ArtifactReadable artifact = ((ArtifactReadable) atsProgram.getStoreObject());
+      ArtifactReadable artifact = (ArtifactReadable) atsProgram.getStoreObject();
       if (artifact != null) {
          ArtifactReadable countryArt =
             artifact.getRelated(AtsRelationTypes.CountryToProgram_Country).getAtMostOneOrNull();
@@ -100,7 +100,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public List<IAtsProgram> getPrograms(IAtsCountry atsCountry) {
       List<IAtsProgram> programs = new LinkedList<>();
-      ArtifactReadable artifact = ((ArtifactReadable) atsCountry.getStoreObject());
+      ArtifactReadable artifact = (ArtifactReadable) atsCountry.getStoreObject();
       if (artifact != null) {
          for (ArtifactReadable related : artifact.getRelated(AtsRelationTypes.CountryToProgram_Program)) {
             programs.add(atsServer.getConfigItemFactory().getProgram(related));

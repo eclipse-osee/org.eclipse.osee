@@ -72,9 +72,8 @@ public class EditAction extends Action {
                }
             }
             if (Strings.isValid(artifactName)) {
-               Artifact artifact =
-                  ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, artifactName,
-                     AtsUtilCore.getAtsBranch());
+               Artifact artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition,
+                  artifactName, AtsUtilCore.getAtsBranch());
                if (artifact != null) {
                   RendererManager.open(artifact, PresentationType.DEFAULT_OPEN);
                   return;

@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchProvider extends OrcsLazyObject<Branch, OrcsData> implements ValueProvider<Branch, OrcsData> {
+public class BranchProvider extends OrcsLazyObject<Branch, OrcsData>implements ValueProvider<Branch, OrcsData> {
 
    private final BranchCache branchCache;
 

@@ -63,11 +63,10 @@ public abstract class CommitHandler extends CommandHandler {
                Displays.pendInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
-                     dialogResult.setValue(MessageDialog.openConfirm(
-                        PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                        "Commit Branch",
-                        String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
-                           conflictManager.getSourceBranch(), conflictManager.getDestinationBranch())));
+                     dialogResult.setValue(
+                        MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+                           "Commit Branch", String.format("Commit branch\n\n\"[%s]\" onto destination\n\n\"[%s]\"",
+                              conflictManager.getSourceBranch(), conflictManager.getDestinationBranch())));
                   }
                });
             } else {
@@ -120,7 +119,8 @@ public abstract class CommitHandler extends CommandHandler {
    }
 
    protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
-      return !branch.equals(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(branch) && !branch.getArchiveState().isArchived();
+      return !branch.equals(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(
+         branch) && !branch.getArchiveState().isArchived();
    }
    protected class CommitJob extends Job {
       private final Branch sourceBranch;

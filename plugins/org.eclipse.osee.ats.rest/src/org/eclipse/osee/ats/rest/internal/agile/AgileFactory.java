@@ -59,13 +59,11 @@ public class AgileFactory {
       ArtifactReadable agileTeamArt = atsServer.getArtifact(newTeam.getUuid());
       if (agileTeamArt == null) {
 
-         TransactionBuilder transaction =
-            atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
-               "Create new Agile Team");
+         TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+            AtsUtilCore.getAtsBranch(), userArt, "Create new Agile Team");
 
-         agileTeamArt =
-            (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(), GUID.create(),
-               newTeam.getUuid());
+         agileTeamArt = (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileTeam, newTeam.getName(),
+            GUID.create(), newTeam.getUuid());
          transaction.setSoleAttributeValue(agileTeamArt, AtsAttributeTypes.Active, true);
          ArtifactReadable topAgileFolder = AgileFolders.getOrCreateTopAgileFolder(atsServer, transaction, userArt);
          if (!topAgileFolder.equals(agileTeamArt.getParent())) {
@@ -84,9 +82,8 @@ public class AgileFactory {
    public static IAgileTeam updateAgileTeam(Log logger, IAtsServer atsServer, JaxAgileTeam team) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
 
-      TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
-            "Update new Agile Team");
+      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+         AtsUtilCore.getAtsBranch(), userArt, "Update new Agile Team");
 
       ArtifactReadable agileTeamArt = atsServer.getArtifact(team.getUuid());
       if (agileTeamArt == null) {
@@ -136,9 +133,8 @@ public class AgileFactory {
 
    public static IAgileFeatureGroup createAgileFeatureGroup(Log logger, IAtsServer atsServer, JaxAgileFeatureGroup newFeatureGroup) {
       ArtifactReadable userArt = atsServer.getArtifact(atsServer.getUserService().getCurrentUser());
-      TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), userArt,
-            "Create new Agile Feature Group");
+      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+         AtsUtilCore.getAtsBranch(), userArt, "Create new Agile Feature Group");
       ArtifactReadable featureGroupArt =
          (ArtifactReadable) transaction.createArtifact(AtsArtifactTypes.AgileFeatureGroup, newFeatureGroup.getName(),
             GUID.create(), newFeatureGroup.getUuid());
@@ -161,9 +157,8 @@ public class AgileFactory {
 
    public static IAgileSprint createAgileSprint(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
-            AtsCoreUsers.SYSTEM_USER);
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Sprint",
+         AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable sprintArt =
          (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.AgileSprint, name, guid, uuid);
@@ -193,9 +188,8 @@ public class AgileFactory {
 
    public static IAgileBacklog createAgileBacklog(Log logger, IAtsServer atsServer, long teamUuid, String name, String guid, Long uuid) {
 
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
-            AtsCoreUsers.SYSTEM_USER);
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Agile Backlog",
+         AtsCoreUsers.SYSTEM_USER);
 
       ArtifactReadable backlogArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Goal, name, guid, uuid);
       IAgileBacklog sprint = atsServer.getWorkItemFactory().getAgileBacklog(backlogArt);

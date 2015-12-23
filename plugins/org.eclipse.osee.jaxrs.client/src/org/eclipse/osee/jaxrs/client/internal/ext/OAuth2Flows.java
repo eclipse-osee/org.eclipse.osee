@@ -211,9 +211,9 @@ public class OAuth2Flows {
 
    private static void assertTokenEquals(ClientAccessToken expected, AccessTokenValidation actual) {
       if (!(//
-      equals(expected.getTokenKey(), actual.getTokenKey()) // 
-         && equals(expected.getTokenType(), actual.getTokenType()) //
-         && equals(expected.getExpiresIn(), actual.getTokenLifetime()) //
+      equals(expected.getTokenKey(), actual.getTokenKey()) //
+      && equals(expected.getTokenType(), actual.getTokenType()) //
+      && equals(expected.getExpiresIn(), actual.getTokenLifetime()) //
       && equals(expected.getIssuedAt(), actual.getTokenIssuedAt()) //
       )) {
          throw newException("Token validation failed");
@@ -252,8 +252,7 @@ public class OAuth2Flows {
             form.param(name, OAuthConstants.AUTHORIZATION_DECISION_ALLOW);
          }
       }
-      form.param(
-         OAuthConstants.AUTHORIZATION_DECISION_KEY,
+      form.param(OAuthConstants.AUTHORIZATION_DECISION_KEY,
          ownerResponse.isGranted() ? OAuthConstants.AUTHORIZATION_DECISION_ALLOW : OAuthConstants.AUTHORIZATION_DECISION_DENY);
       return form;
    }

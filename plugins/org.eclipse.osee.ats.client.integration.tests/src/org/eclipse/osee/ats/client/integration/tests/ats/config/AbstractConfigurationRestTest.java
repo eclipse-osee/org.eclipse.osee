@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import java.net.URI;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
@@ -20,10 +24,6 @@ import org.eclipse.osee.framework.core.client.server.HttpRequest.HttpMethod;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.junit.Assert;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 /**
  * @author Donald G. Dunne

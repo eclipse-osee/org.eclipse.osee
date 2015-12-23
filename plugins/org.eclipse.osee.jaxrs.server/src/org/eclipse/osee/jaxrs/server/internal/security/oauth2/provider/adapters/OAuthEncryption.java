@@ -194,6 +194,11 @@ public class OAuthEncryption {
       final ServerAccessToken newToken =
          new ServerAccessToken(provider.getClient(parts[4]), parts[1], newTokenKey == null ? parts[0] : newTokenKey,
             Long.valueOf(parts[2]), Long.valueOf(parts[3])) {
+
+            /**
+             * 
+             */
+            private static final long serialVersionUID = 7381031812625396582L;
             //
          };
 

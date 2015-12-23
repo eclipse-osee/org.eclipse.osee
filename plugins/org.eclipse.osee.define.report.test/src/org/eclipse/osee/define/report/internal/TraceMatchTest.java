@@ -40,7 +40,7 @@ public class TraceMatchTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testConstructionNull() {
-      TraceMatch tm = new TraceMatch(null, null);
+      new TraceMatch(null, null);
    }
 
    @Test

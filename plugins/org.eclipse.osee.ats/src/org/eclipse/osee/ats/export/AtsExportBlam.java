@@ -100,10 +100,12 @@ public class AtsExportBlam extends AbstractBlam {
       }
 
       Collection<ExportOption> exportOtions = getExportOptions(variableMap);
-      if (!exportOtions.contains(ExportOption.AS_HTML_TO_FILE) && !exportOtions.contains(ExportOption.AS_HTML_TO_RESULT_EDITOR) && !exportOtions.contains(ExportOption.AS_PDF)) {
+      if (!exportOtions.contains(ExportOption.AS_HTML_TO_FILE) && !exportOtions.contains(
+         ExportOption.AS_HTML_TO_RESULT_EDITOR) && !exportOtions.contains(ExportOption.AS_PDF)) {
          return new Result(MUST_SELECT_AT_LEAST_ONE_EXPORT_AS_OPTION);
       }
-      if (!exportOtions.contains(ExportOption.MERGE_INTO_SINGLE_FILE) && !exportOtions.contains(ExportOption.SAVE_INTO_SEPARATE_FILES)) {
+      if (!exportOtions.contains(ExportOption.MERGE_INTO_SINGLE_FILE) && !exportOtions.contains(
+         ExportOption.SAVE_INTO_SEPARATE_FILES)) {
          return new Result(MUST_SELECT_MERGE_INTO_SINGLE_FILE_OR_SAVE_INTO_SEPARATE_FILES);
       }
       if (exportOtions.contains(ExportOption.AS_HTML_TO_FILE) || exportOtions.contains(ExportOption.AS_PDF)) {

@@ -55,12 +55,12 @@ public class WorkflowRuleRunner {
 
                try {
                   // check team definition
-                  if ((workItem.getParentTeamWorkflow() != null) && (workItem.getParentTeamWorkflow().getTeamDefinition() != null)) {
+                  if (workItem.getParentTeamWorkflow() != null && workItem.getParentTeamWorkflow().getTeamDefinition() != null) {
                      for (String teamDefRule : workItem.getParentTeamWorkflow().getTeamDefinition().getRules()) {
                         IAtsRuleDefinition ruleDefinition = atsServer.getWorkDefAdmin().getRuleDefinition(teamDefRule);
 
-                        if ((ruleDefinition != null) && (ruleDefinition.getRuleEvents().contains(
-                           eventType) && ruleDefinition instanceof IExecutableRule)) {
+                        if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
+                           eventType) && ruleDefinition instanceof IExecutableRule) {
                            ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,
                               ruleResults);
                         }
@@ -72,13 +72,13 @@ public class WorkflowRuleRunner {
 
                try {
                   // check actionable items
-                  if ((workItem.getParentTeamWorkflow() != null) && (workItem.getParentTeamWorkflow().getTeamDefinition() != null)) {
+                  if (workItem.getParentTeamWorkflow() != null && workItem.getParentTeamWorkflow().getTeamDefinition() != null) {
                      for (IAtsActionableItem ai : workItem.getParentTeamWorkflow().getActionableItems()) {
                         for (String aiRule : ai.getRules()) {
                            IAtsRuleDefinition ruleDefinition = atsServer.getWorkDefAdmin().getRuleDefinition(aiRule);
 
-                           if ((ruleDefinition != null) && (ruleDefinition.getRuleEvents().contains(
-                              eventType) && ruleDefinition instanceof IExecutableRule)) {
+                           if (ruleDefinition != null && ruleDefinition.getRuleEvents().contains(
+                              eventType) && ruleDefinition instanceof IExecutableRule) {
                               ((IExecutableRule) ruleDefinition).execute(workItem, atsServer.getServices(), changes,
                                  ruleResults);
                            }

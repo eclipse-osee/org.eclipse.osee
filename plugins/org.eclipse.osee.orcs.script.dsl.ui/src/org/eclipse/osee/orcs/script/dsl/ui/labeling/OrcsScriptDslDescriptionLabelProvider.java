@@ -16,8 +16,8 @@ public class OrcsScriptDslDescriptionLabelProvider extends org.eclipse.xtext.ui.
    //	override text(IEObjectDescription ele) {
    //		ele.name.toString
    //	}
-   //	 
+   //
    //	override image(IEObjectDescription ele) {
    //		ele.EClass.name + '.gif'
-   //	}	 
+   //	}
 }

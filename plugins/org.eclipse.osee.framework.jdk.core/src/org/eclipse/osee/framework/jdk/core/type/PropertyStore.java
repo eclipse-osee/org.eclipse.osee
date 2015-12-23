@@ -282,7 +282,8 @@ public class PropertyStore implements IPropertyStore, Serializable {
    public boolean equals(Object obj) {
       if (obj instanceof PropertyStore) {
          PropertyStore castObj = (PropertyStore) obj;
-         return castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && areStorageArraysEqual(castObj);
+         return castObj.storeId.equals(storeId) && castObj.storageData.equals(storageData) && areStorageArraysEqual(
+            castObj);
       }
       return false;
    }

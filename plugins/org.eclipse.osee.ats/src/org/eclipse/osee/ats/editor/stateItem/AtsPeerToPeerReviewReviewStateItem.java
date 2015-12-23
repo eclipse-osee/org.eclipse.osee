@@ -42,7 +42,8 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem implements 
 
    @Override
    public void transitioned(IAtsWorkItem workItem, IStateToken fromState, IStateToken toState, Collection<? extends IAtsUser> toAssignees, IAtsChangeSet changes) throws OseeCoreException {
-      if ((workItem instanceof IAtsPeerToPeerReview) && toState.getName().equals(PeerToPeerReviewState.Review.getName())) {
+      if (workItem instanceof IAtsPeerToPeerReview && toState.getName().equals(
+         PeerToPeerReviewState.Review.getName())) {
          // Set Assignees to all user roles users
          Set<IAtsUser> assignees = new HashSet<>();
          PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) workItem;

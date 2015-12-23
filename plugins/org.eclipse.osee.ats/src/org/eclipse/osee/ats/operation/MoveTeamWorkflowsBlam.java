@@ -45,9 +45,8 @@ public class MoveTeamWorkflowsBlam extends AbstractBlam {
          public void run() {
             try {
                TeamWorkFlowArtifact destTeamArt = (TeamWorkFlowArtifact) variableMap.getArtifact(DEST_TEAM_WORKFLOW);
-               List<TeamWorkFlowArtifact> sourceTeamArts =
-                  org.eclipse.osee.framework.jdk.core.util.Collections.castAll(TeamWorkFlowArtifact.class,
-                     variableMap.getArtifacts(SOURCE_TEAM_WORKFLOWS));
+               List<TeamWorkFlowArtifact> sourceTeamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                  TeamWorkFlowArtifact.class, variableMap.getArtifacts(SOURCE_TEAM_WORKFLOWS));
 
                if (sourceTeamArts.isEmpty()) {
                   AWorkbench.popup("ERROR", "Must drag in Source Team Workflow(s).");

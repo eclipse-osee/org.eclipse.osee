@@ -207,7 +207,8 @@ public class ChangeArtifactType {
    private void deleteInvalidRelations(Artifact artifact, IArtifactType artifactType) throws OseeCoreException {
 
       for (RelationLink link : artifact.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType, link.getSide(artifact)) == 0) {
+         if (RelationTypeManager.getRelationSideMax(link.getRelationType(), artifactType,
+            link.getSide(artifact)) == 0) {
             link.delete(false);
             relationTypes.add(link.getRelationType());
          }

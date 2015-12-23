@@ -56,10 +56,10 @@ public class OrcsScriptResource {
    @GET
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
    public Response getScriptResult(@Context HttpHeaders httpHeaders, //
-      @DefaultValue("") @QueryParam("script") String script, // 
-      @DefaultValue("") @QueryParam("parameters") String parameters, //
-      @DefaultValue("") @QueryParam("filename") String filename, //
-      @DefaultValue("false") @QueryParam("debug") boolean debug) {
+   @DefaultValue("") @QueryParam("script") String script, //
+   @DefaultValue("") @QueryParam("parameters") String parameters, //
+   @DefaultValue("") @QueryParam("filename") String filename, //
+   @DefaultValue("false") @QueryParam("debug") boolean debug) {
       return evaluateScript(httpHeaders, script, parameters, filename, debug);
    }
 
@@ -67,10 +67,10 @@ public class OrcsScriptResource {
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML, MediaType.TEXT_PLAIN})
    public Response postScript(@Context HttpHeaders httpHeaders, //
-      @DefaultValue("") @FormParam("script") String script, // 
-      @DefaultValue("") @FormParam("parameters") String parameters, //
-      @DefaultValue("") @FormParam("filename") String filename, //
-      @DefaultValue("false") @FormParam("debug") boolean debug) {
+   @DefaultValue("") @FormParam("script") String script, //
+   @DefaultValue("") @FormParam("parameters") String parameters, //
+   @DefaultValue("") @FormParam("filename") String filename, //
+   @DefaultValue("false") @FormParam("debug") boolean debug) {
       return evaluateScript(httpHeaders, script, parameters, filename, debug);
    }
 

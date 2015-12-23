@@ -12,9 +12,7 @@ package org.eclipse.osee.account.rest.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.servlet.http.HttpServletRequest;
-
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountLoginRequest;
@@ -95,12 +93,12 @@ public class AccountOps {
    public AccountInfoData createAccount(String username, AccountInput input) {
       CreateAccountRequestBuilder builder = CreateAccountRequestBuilder.newBuilder();
       CreateAccountRequest request = builder//
-      .userName(username)//
-      .displayName(input.getName())//
-      .email(input.getEmail())//
-      .active(input.isActive()) //
-      .prefs(input.getPreferences()) //
-      .build();
+         .userName(username)//
+         .displayName(input.getName())//
+         .email(input.getEmail())//
+         .active(input.isActive()) //
+         .prefs(input.getPreferences()) //
+         .build();
 
       Identifiable<String> id = accountAdmin.createAccount(request);
       ResultSet<Account> result = accountAdmin.getAccountByGuid(id.getGuid());
@@ -132,7 +130,7 @@ public class AccountOps {
    }
 
    public AccountDetailsData getAccountDetailsData(String accountId) {
-	  System.out.println("**********LOOKING FOR: " + accountId);
+      System.out.println("**********LOOKING FOR: " + accountId);
       ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
       Account account = result.getExactlyOne();
       return AccountDataUtil.asAccountDetailsData(account);

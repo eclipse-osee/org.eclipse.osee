@@ -57,7 +57,7 @@ public class ArtifactExplorerLinkNode {
       int result = 1;
       result = prime * result + artifactId;
       result = prime * result + (parentIsOnSideA ? 1231 : 1237);
-      result = prime * result + ((relationTypeName == null) ? 0 : relationTypeName.hashCode());
+      result = prime * result + (relationTypeName == null ? 0 : relationTypeName.hashCode());
       return result;
    }
 

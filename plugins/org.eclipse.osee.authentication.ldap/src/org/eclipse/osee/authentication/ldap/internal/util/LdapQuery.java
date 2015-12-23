@@ -106,11 +106,9 @@ public final class LdapQuery {
       long startTime = System.currentTimeMillis();
       long endTime = startTime;
       boolean traceEnabled = logger.isTraceEnabled();
-      String queryParams =
-         String.format(
-            "scope[%s] searchPath[%s] filterExp[%s] filterArgs%s attributesToReturn%s", //
-            searchScope, searchPath, expressionFilter, filterArgs != null ? Arrays.deepToString(filterArgs) : "[]",
-            attributesToReturn != null ? Arrays.deepToString(attributesToReturn) : "[]");
+      String queryParams = String.format("scope[%s] searchPath[%s] filterExp[%s] filterArgs%s attributesToReturn%s", //
+         searchScope, searchPath, expressionFilter, filterArgs != null ? Arrays.deepToString(filterArgs) : "[]",
+         attributesToReturn != null ? Arrays.deepToString(attributesToReturn) : "[]");
 
       if (traceEnabled) {
          logger.trace("[%s] started - %s", getClass().getSimpleName(), queryParams);
@@ -138,7 +136,8 @@ public final class LdapQuery {
       } finally {
          if (traceEnabled) {
             endTime = System.currentTimeMillis() - startTime;
-            logger.trace("[%s] completed [%s] - %s", getClass().getSimpleName(), Lib.asTimeString(endTime), queryParams);
+            logger.trace("[%s] completed [%s] - %s", getClass().getSimpleName(), Lib.asTimeString(endTime),
+               queryParams);
          }
       }
    }

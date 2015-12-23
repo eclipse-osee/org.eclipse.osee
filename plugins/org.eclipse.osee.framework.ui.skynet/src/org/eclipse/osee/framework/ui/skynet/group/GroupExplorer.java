@@ -261,9 +261,8 @@ public class GroupExplorer extends GenericViewPart implements IArtifactEventList
          AWorkbench.popup("Must select branch first");
          return;
       }
-      EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New Group", null, "Enter Group Name",
+         MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             SkynetTransaction transaction =

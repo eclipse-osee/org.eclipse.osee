@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.tests;
 
+import com.google.common.collect.Lists;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,7 +25,6 @@ import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.IParseResult;
 import org.eclipse.xtext.parser.IParser;
 import org.junit.Assert;
-import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar

@@ -85,7 +85,7 @@ public class JdbcConnectionImpl implements JdbcConnection {
       try {
          conn.close();
       } catch (SQLException ex) {
-         // Do Nothing - 
+         // Do Nothing -
       }
    }
 

@@ -63,9 +63,8 @@ public class AXml {
    public static String[] getNameValue(String xmlRoot, String xmlStr) {
       String[] strs = new String[] {"", ""};
       Matcher m;
-      m =
-         Pattern.compile("<" + xmlRoot + " name=\"(.*?)\" value=\"(.*?)\" />", Pattern.MULTILINE | Pattern.DOTALL).matcher(
-            xmlStr);
+      m = Pattern.compile("<" + xmlRoot + " name=\"(.*?)\" value=\"(.*?)\" />",
+         Pattern.MULTILINE | Pattern.DOTALL).matcher(xmlStr);
       if (m.find()) {
          strs[0] = m.group(1);
          strs[1] = m.group(2);
@@ -80,8 +79,8 @@ public class AXml {
    public static String[] getTagDataArray(String xmlStr, String xmlRoot) {
       Vector<String> v = new Vector<>();
       Matcher m;
-      m =
-         Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xmlStr);
+      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+         xmlStr);
       while (m.find()) {
          v.add(xmlToText(m.group(1)));
       }
@@ -91,8 +90,8 @@ public class AXml {
    public static List<Integer> getTagIntegerDataArray(String xmlStr, String xmlRoot, String separator) {
       List<Integer> results = new ArrayList<>();
       Matcher m;
-      m =
-         Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(xmlStr);
+      m = Pattern.compile("<" + xmlRoot + ">(.*?)</" + xmlRoot + ">", Pattern.MULTILINE | Pattern.DOTALL).matcher(
+         xmlStr);
       while (m.find()) {
          for (String str : m.group(1).split(separator)) {
             results.add(new Integer(xmlToText(str)));

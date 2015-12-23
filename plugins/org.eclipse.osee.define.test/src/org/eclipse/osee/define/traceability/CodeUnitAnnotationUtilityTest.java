@@ -66,10 +66,10 @@ public class CodeUnitAnnotationUtilityTest {
    @Test
    public void testRemoveTraceAnnotation() {
       CodeUnitTagger util = CodeUnitTagger.getInstance();
-      // Check that removeSourceTag doesn't add in ObjectId("TEST") if it wasnt there to begin with 
+      // Check that removeSourceTag doesn't add in ObjectId("TEST") if it wasnt there to begin with
       String result = util.removeSourceTag(getClassNoAnnotation()).toString();
       Assert.assertFalse(result.contains("-- ObjectId(\"TEST\")"));
-      // Check that removeSourceTag returns ObjectId("TEST") is no longer there 
+      // Check that removeSourceTag returns ObjectId("TEST") is no longer there
       result = util.removeSourceTag(getClassWithAnnotation()).toString();
       Assert.assertFalse(result.contains("-- ObjectId(\"TEST\")"));
    }

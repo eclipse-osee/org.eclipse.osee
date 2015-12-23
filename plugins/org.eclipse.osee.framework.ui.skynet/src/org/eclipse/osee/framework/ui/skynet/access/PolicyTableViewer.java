@@ -77,9 +77,8 @@ public class PolicyTableViewer {
       gd.heightHint = 150;
       gd.widthHint = 500;
 
-      tableXViewer =
-         new PolicyTableXviewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI, new PolicyTableXViewerFactory(),
-            true, true);
+      tableXViewer = new PolicyTableXviewer(parent, SWT.BORDER | SWT.FULL_SELECTION | SWT.MULTI,
+         new PolicyTableXViewerFactory(), true, true);
       tableXViewer.setUseHashlookup(true);
       tableXViewer.setColumnProperties(PolicyTableColumns.getNames());
       tableXViewer.getTree().setLayoutData(gd);
@@ -131,8 +130,8 @@ public class PolicyTableViewer {
    }
 
    public void modifyPermissionLevel(AccessControlData data, PermissionEnum permission) {
-      boolean canModify = (data.getPermission().getRank() <= maxModificationLevel.getRank());
-      canModify = canModify && (permission.getRank() <= maxModificationLevel.getRank());
+      boolean canModify = data.getPermission().getRank() <= maxModificationLevel.getRank();
+      canModify = canModify && permission.getRank() <= maxModificationLevel.getRank();
       canModify = canModify || permission.equals(PermissionEnum.DENY);
       if (canModify) {
          data.setPermission(permission);

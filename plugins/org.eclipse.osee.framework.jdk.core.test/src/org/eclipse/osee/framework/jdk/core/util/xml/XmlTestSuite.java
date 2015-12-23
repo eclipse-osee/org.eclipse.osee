@@ -19,7 +19,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
 //@formatter:off
-   JAXPTest.class, 
+   JAXPTest.class,
 //@formatter:on
 })
 public class XmlTestSuite {

@@ -21,5 +21,5 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({NoneLoadingCacheTest.class, LoadingCacheTest.class})
 public class CacheAdminTestSuite {
-   // Test Suite 
+   // Test Suite
 }

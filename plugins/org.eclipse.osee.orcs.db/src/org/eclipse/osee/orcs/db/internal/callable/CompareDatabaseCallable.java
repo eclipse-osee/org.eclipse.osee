@@ -54,9 +54,8 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          callable =
             new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getJdbcClient(), joinFactory, txDelta);
       } else {
-         Long mergeBranchId =
-            getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID, sourceTx.getBranchId(),
-               destinationTx.getBranchId());
+         Long mergeBranchId = getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID,
+            sourceTx.getBranchId(), destinationTx.getBranchId());
 
          Integer mergeTxId = null;
          if (mergeBranchId > 0) {
@@ -64,13 +63,13 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          } else {
             mergeBranchId = null;
          }
-         callable =
-            new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory,
-               sourceTx.getBranchId(), destinationTx.getBranchId(), destinationTx.getGuid(), mergeBranchId, mergeTxId);
+         callable = new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory,
+            sourceTx.getBranchId(), destinationTx.getBranchId(), destinationTx.getGuid(), mergeBranchId, mergeTxId);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 
-      changes.addAll(missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx));
+      changes.addAll(
+         missingChangeItemFactory.createMissingChanges(this, getSession(), changes, sourceTx, destinationTx));
       Callable<List<ChangeItem>> computeChanges = new ComputeNetChangeCallable(changes);
       changes = callAndCheckForCancel(computeChanges);
 

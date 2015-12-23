@@ -148,9 +148,8 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
 
    public void recomputeBranchTransactions(boolean isReloadAllowed) {
       OperationBuilder builder = Operations.createBuilder("Load Branch Transactions");
-      branchTransactionData =
-         new BranchTransactionUiData(BranchManager.getBranch(getEditorInput().getBranch()),
-            (XBranchContentProvider) xBranchWidget.getXViewer().getContentProvider());
+      branchTransactionData = new BranchTransactionUiData(BranchManager.getBranch(getEditorInput().getBranch()),
+         (XBranchContentProvider) xBranchWidget.getXViewer().getContentProvider());
       builder.addOp(new LoadBranchTransactionsOperation(branchTransactionData));
       builder.addOp(new LoadAssociatedArtifactOperation(getEditor().getChanges()));
       Operations.executeAsJob(builder.build(), true, Job.LONG, new ReloadJobChangeAdapter());

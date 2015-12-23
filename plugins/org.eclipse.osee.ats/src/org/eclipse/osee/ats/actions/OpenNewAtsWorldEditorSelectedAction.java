@@ -46,9 +46,9 @@ public class OpenNewAtsWorldEditorSelectedAction extends AbstractAtsAction {
          AWorkbench.popup("ERROR", "Select items to open");
          return;
       }
-      WorldEditor.open(new WorldEditorSimpleProvider("ATS World",
-         openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
-         openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy()));
+      WorldEditor.open(
+         new WorldEditorSimpleProvider("ATS World", openNewAtsWorldEditorSelectedHandler.getSelectedArtifacts(),
+            openNewAtsWorldEditorSelectedHandler.getCustomizeDataCopy()));
    }
 
 }

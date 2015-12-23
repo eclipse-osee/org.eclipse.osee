@@ -50,9 +50,8 @@ public class CommitBranchCallable extends AbstractBranchCallable<TransactionRead
       Conditions.checkNotNull(sourceBranch, "sourceBranch");
       Conditions.checkNotNull(destinationBranch, "destinationBranch");
 
-      Callable<Integer> commitBranchCallable =
-         getBranchStore().commitBranch(getSession(), committer, sourceBranch, sourceHead, destinationBranch,
-            destinationHead);
+      Callable<Integer> commitBranchCallable = getBranchStore().commitBranch(getSession(), committer, sourceBranch,
+         sourceHead, destinationBranch, destinationHead);
       Integer newTx = callAndCheckForCancel(commitBranchCallable);
       return queryFactory.transactionQuery().andTxId(newTx).getResults().getExactlyOne();
    }

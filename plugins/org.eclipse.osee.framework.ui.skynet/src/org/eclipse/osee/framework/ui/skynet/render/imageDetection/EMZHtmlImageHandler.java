@@ -43,7 +43,7 @@ public class EMZHtmlImageHandler {
             if (numberOfBytes == EMZ_HEADER.length) {
                toReturn = true;
                for (int index = 0; index < EMZ_HEADER.length; index++) {
-                  toReturn &= (header[index] == EMZ_HEADER[index]);
+                  toReturn &= header[index] == EMZ_HEADER[index];
                }
             }
          } catch (Exception ex) {

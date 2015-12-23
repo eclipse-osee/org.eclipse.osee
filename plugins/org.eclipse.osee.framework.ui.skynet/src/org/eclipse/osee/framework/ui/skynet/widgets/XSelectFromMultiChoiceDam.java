@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeD
 /**
  * @author Roberto E. Escobar
  */
-public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> implements IAttributeWidget {
+public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String>implements IAttributeWidget {
 
    private Artifact artifact;
    private IAttributeType attributeType;
@@ -63,9 +63,8 @@ public class XSelectFromMultiChoiceDam extends XSelectFromDialog<String> impleme
 
    @Override
    public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
-            new LabelProvider(), new ArtifactNameSorter());
+      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below",
+         new ArrayTreeContentProvider(), new LabelProvider(), new ArtifactNameSorter());
       return dialog;
    }
 

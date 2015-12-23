@@ -60,22 +60,22 @@ public class ReleaseVersionItem extends XNavigateItemAction {
          return;
       }
       try {
-         VersionListDialog dialog =
-            new VersionListDialog("Select Version", "Select Version to Release", teamDefHoldingVersions.getVersions(
-               VersionReleaseType.UnReleased, VersionLockedType.Both));
+         VersionListDialog dialog = new VersionListDialog("Select Version", "Select Version to Release",
+            teamDefHoldingVersions.getVersions(VersionReleaseType.UnReleased, VersionLockedType.Both));
          int result = dialog.open();
          if (result == 0) {
             IAtsVersion verArt = dialog.getSelectedFirst();
 
             // Validate team lead status
-            if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(verArt).getLeads().contains(
-               AtsClientService.get().getUserService().getCurrentUser())) {
+            if (!AtsUtilClient.isAtsAdmin() && !AtsClientService.get().getVersionService().getTeamDefinition(
+               verArt).getLeads().contains(AtsClientService.get().getUserService().getCurrentUser())) {
                AWorkbench.popup("ERROR", "Only lead can release version.");
                return;
             }
             // Validate that all Team Workflows are Completed or Cancelled
             String errorStr = null;
-            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(verArt)) {
+            for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+               verArt)) {
                if (!team.getStateMgr().getStateType().isCancelled() && !team.getStateMgr().getStateType().isCompleted()) {
                   errorStr =
                      "All Team Workflows must be either Completed or " + "Cancelled before releasing a version.\n\n" + team.getAtsId() + " - is in the\"" + team.getStateMgr().getCurrentStateName() + "\" state.";
@@ -100,9 +100,8 @@ public class ReleaseVersionItem extends XNavigateItemAction {
 
             if (MessageDialog.openQuestion(Displays.getActiveShell(), "Select NEW Next Release Version",
                "Release Complete.\n\nSelect NEW Next Release Version?")) {
-               dialog =
-                  new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
-                     teamDefHoldingVersions.getVersions());
+               dialog = new VersionListDialog("Select Next Release Version", "Select New Next Release Version",
+                  teamDefHoldingVersions.getVersions());
                result = dialog.open();
                if (result == 0) {
                   verArt = dialog.getSelectedFirst();

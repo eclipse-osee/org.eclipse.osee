@@ -84,9 +84,9 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
          Collection<String> sourceColumns = sourceMeta.getColumnNames();
          for (String destinationColumn : destinationMeta.getColumnNames()) {
             if (!sourceColumns.contains(destinationColumn)) {
-               errorMessage.append(String.format(
-                  "Target column not found in source database.\nTable:[%s] - [%s not in (%s)]\n", tableName,
-                  destinationColumn, sourceColumns));
+               errorMessage.append(
+                  String.format("Target column not found in source database.\nTable:[%s] - [%s not in (%s)]\n",
+                     tableName, destinationColumn, sourceColumns));
             }
          }
       }

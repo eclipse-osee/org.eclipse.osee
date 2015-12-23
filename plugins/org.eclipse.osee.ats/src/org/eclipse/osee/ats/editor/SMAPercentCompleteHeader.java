@@ -69,9 +69,8 @@ public class SMAPercentCompleteHeader extends Composite {
                      if (editor.isDirty()) {
                         editor.doSave(null);
                      }
-                     IntegerDialog dialog =
-                        new IntegerDialog("Enter Percent Complete",
-                           "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);
+                     IntegerDialog dialog = new IntegerDialog("Enter Percent Complete",
+                        "Enter Percent Complete (0 to 99)\n\n(use Transition to mark complete.)", 0, 99);
                      dialog.setNumberFormat(NumberFormat.getIntegerInstance());
                      int percent = 0;
                      if (sma.getStateMgr().getPercentCompleteValue() != null) {

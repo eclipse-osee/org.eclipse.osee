@@ -34,8 +34,8 @@ public class AtsVersionCacheTest {
    // @formatter:off
    @Mock private CacheProvider<AtsArtifactConfigCache> cacheProvider;
    @Mock private IAtsTeamWorkflow teamWf;
-   @Mock private IAtsVersion atsVersion;   
-   @Mock private IAtsConfigObject atsConfig;   
+   @Mock private IAtsVersion atsVersion;
+   @Mock private IAtsConfigObject atsConfig;
    // @formatter:on
 
    private AtsVersionCache atsVersionCache;

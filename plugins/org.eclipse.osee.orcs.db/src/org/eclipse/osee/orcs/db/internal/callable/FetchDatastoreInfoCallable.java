@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import com.google.common.base.Supplier;
 import java.net.URL;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
@@ -30,7 +31,6 @@ import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.DataStoreInfo;
 import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.internal.util.DataStoreInfoImpl;
-import com.google.common.base.Supplier;
 
 /**
  * @author Roberto E. Escobar

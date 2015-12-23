@@ -29,8 +29,8 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
  */
 public interface QueryBuilder {
 
-   public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
-      "Any Attribute Type");
+   public static IAttributeType ANY_ATTRIBUTE_TYPE =
+      TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
 
    QueryBuilder includeDeleted();
 
@@ -117,7 +117,7 @@ public interface QueryBuilder {
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
    QueryBuilder andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
-   
+
    /**
     * Search criteria that follows the relation link ending on the given side
     * 

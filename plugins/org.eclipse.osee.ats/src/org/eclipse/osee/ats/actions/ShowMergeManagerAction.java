@@ -37,8 +37,8 @@ public class ShowMergeManagerAction extends Action {
       setText("Show Merge Manager");
       setToolTipText(getText());
       try {
-         setEnabled(AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt) || AtsClientService.get().getBranchService().isCommittedBranchExists(
-            teamArt));
+         setEnabled(AtsClientService.get().getBranchService().isWorkingBranchInWork(
+            teamArt) || AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

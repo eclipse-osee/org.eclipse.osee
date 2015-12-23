@@ -201,7 +201,8 @@ public class OAuth2FlowsTest {
       when(authData.getState()).thenReturn("other state");
 
       thrown.expect(ProcessingException.class);
-      thrown.expectMessage("OAuth Authorization Flow - Expected state [" + STATE + "] did not match response state [other state]");
+      thrown.expectMessage(
+         "OAuth Authorization Flow - Expected state [" + STATE + "] did not match response state [other state]");
       flows.requestAuthorizationGrant(STATE, SCOPES, REDIRECT_URI);
    }
 
@@ -260,8 +261,9 @@ public class OAuth2FlowsTest {
       when(authData.getReplyTo()).thenReturn(CONFIRM_URI);
       when(handler.onConfirmAccess(any(ConfirmAccessRequest.class))).thenReturn(confirmResponse);
 
-      when(transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
-         response2);
+      when(
+         transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
+            response2);
       when(response2.getStatusInfo()).thenReturn(Status.FORBIDDEN);
 
       thrown.expect(ProcessingException.class);
@@ -273,8 +275,9 @@ public class OAuth2FlowsTest {
    public void testConfirmAccessResponse() {
       when(handler.onConfirmAccess(any(ConfirmAccessRequest.class))).thenReturn(confirmResponse);
 
-      when(transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
-         response2);
+      when(
+         transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
+            response2);
       when(response2.getStatusInfo()).thenReturn(Status.OK);
       when(response2.getMetadata()).thenReturn(headers);
       when(headers.getFirst("Set-Cookie")).thenReturn(SESSION_COOKIE);
@@ -316,15 +319,15 @@ public class OAuth2FlowsTest {
    public void testConfirmAccessResponseRedirection() throws URISyntaxException {
       when(handler.onConfirmAccess(any(ConfirmAccessRequest.class))).thenReturn(confirmResponse);
 
-      when(transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
-         response2);
+      when(
+         transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
+            response2);
       when(response2.getStatusInfo()).thenReturn(Status.SEE_OTHER);
       when(response2.getMetadata()).thenReturn(headers);
       when(headers.getFirst("Set-Cookie")).thenReturn(SESSION_COOKIE);
 
-      String location =
-         String.format("http://www.hello.com?%s=%s&%s=%s", OAuthConstants.AUTHORIZATION_CODE_VALUE, AUTH_CODE,
-            OAuthConstants.STATE, STATE);
+      String location = String.format("http://www.hello.com?%s=%s&%s=%s", OAuthConstants.AUTHORIZATION_CODE_VALUE,
+         AUTH_CODE, OAuthConstants.STATE, STATE);
 
       URI locationUri = new URI(location);
       when(response2.getLocation()).thenReturn(locationUri);
@@ -383,9 +386,8 @@ public class OAuth2FlowsTest {
 
    @Test
    public void testExchangeCodeForToken() {
-      when(
-         transport.sendAuthorizationCodeGrant(eq(owner), eq(client), eq(SESSION_COOKIE), eq(TOKEN_URI), eq(AUTH_CODE),
-            eq(REDIRECT_URI), anyMapOf(String.class, String.class))).thenReturn(token);
+      when(transport.sendAuthorizationCodeGrant(eq(owner), eq(client), eq(SESSION_COOKIE), eq(TOKEN_URI), eq(AUTH_CODE),
+         eq(REDIRECT_URI), anyMapOf(String.class, String.class))).thenReturn(token);
 
       ClientAccessToken actual = flows.exchangeCodeForToken(SESSION_COOKIE, AUTH_CODE, STATE, SCOPES, REDIRECT_URI);
 
@@ -401,9 +403,8 @@ public class OAuth2FlowsTest {
 
    @Test
    public void testValidateToken() {
-      when(
-         transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
-            any(Form.class))).thenReturn(tokenValidation);
+      when(transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
+         any(Form.class))).thenReturn(tokenValidation);
 
       long issuedAt = System.currentTimeMillis();
       long expiresIn = 10000L;
@@ -423,9 +424,8 @@ public class OAuth2FlowsTest {
 
    @Test
    public void testValidateTokenFails() {
-      when(
-         transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
-            any(Form.class))).thenReturn(tokenValidation);
+      when(transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
+         any(Form.class))).thenReturn(tokenValidation);
 
       long issuedAt = System.currentTimeMillis();
       long expiresIn = 10000L;
@@ -449,14 +449,13 @@ public class OAuth2FlowsTest {
    public void testAuthorizationFlow() {
       when(transport.sendAuthorizationCodeRequest(eq(owner), any(URI.class))).thenReturn(response1);
       when(handler.onConfirmAccess(any(ConfirmAccessRequest.class))).thenReturn(confirmResponse);
-      when(transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
-         response2);
       when(
-         transport.sendAuthorizationCodeGrant(eq(owner), eq(client), eq(SESSION_COOKIE), eq(TOKEN_URI), eq(AUTH_CODE),
-            eq(REDIRECT_URI), anyMapOf(String.class, String.class))).thenReturn(token);
-      when(
-         transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
-            any(Form.class))).thenReturn(tokenValidation);
+         transport.sendAccessConfirmation(eq(owner), eq(SESSION_COOKIE), eq(CONFIRM_URI), any(Form.class))).thenReturn(
+            response2);
+      when(transport.sendAuthorizationCodeGrant(eq(owner), eq(client), eq(SESSION_COOKIE), eq(TOKEN_URI), eq(AUTH_CODE),
+         eq(REDIRECT_URI), anyMapOf(String.class, String.class))).thenReturn(token);
+      when(transport.sendTokenValidationRequest(eq(owner), eq(client), eq(SESSION_COOKIE), eq(VALIDATION_URI),
+         any(Form.class))).thenReturn(tokenValidation);
 
       long issuedAt = System.currentTimeMillis();
       long expiresIn = 10000L;

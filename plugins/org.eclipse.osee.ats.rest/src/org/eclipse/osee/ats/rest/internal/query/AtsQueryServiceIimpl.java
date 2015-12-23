@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.query;
 
-import java.util.Collection;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.query.IAtsQuery;

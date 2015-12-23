@@ -62,17 +62,15 @@ public class ArtifactRendererTest {
    public void setUp() throws OseeCoreException {
 
       startTx = TransactionManager.getHeadTransaction(CoreBranches.COMMON);
-      artifact1 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, CoreBranches.COMMON, NAME1, GUID.create(),
-            Lib.generateArtifactIdAsInt());
+      artifact1 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, CoreBranches.COMMON, NAME1, GUID.create(),
+         Lib.generateArtifactIdAsInt());
       String comment1 = getClass().getSimpleName() + "_1";
       artifact1.persist(comment1);
       endTx1 = TransactionManager.getTransaction(comment1).iterator().next();
       endTx1.setCommit(artifact1.getArtId());
 
-      artifact2 =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, CoreBranches.COMMON, NAME2, GUID.create(),
-            Lib.generateArtifactIdAsInt());
+      artifact2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Artifact, CoreBranches.COMMON, NAME2, GUID.create(),
+         Lib.generateArtifactIdAsInt());
       String comment2 = getClass().getSimpleName() + "_2";
       artifact2.persist(comment2);
       endTx2 = TransactionManager.getTransaction(comment2).iterator().next();
@@ -84,9 +82,8 @@ public class ArtifactRendererTest {
 
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx1);
       ArtifactDelta delta = new ArtifactDelta(null, artifact2, artifact1);
-      Change change =
-         new ArtifactChange(CoreBranches.COMMON, artifact1.getGammaId(), artifact1.getArtId(), deltaTx,
-            ModificationType.MODIFIED, false, artifact1, delta);
+      Change change = new ArtifactChange(CoreBranches.COMMON, artifact1.getGammaId(), artifact1.getArtId(), deltaTx,
+         ModificationType.MODIFIED, false, artifact1, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);
@@ -96,9 +93,8 @@ public class ArtifactRendererTest {
    public void testAssociatedArtifact_notAllowedSingleQuotes() throws Exception {
       TransactionDelta deltaTx = new TransactionDelta(startTx, endTx2);
       ArtifactDelta delta = new ArtifactDelta(null, artifact1, artifact2);
-      Change change =
-         new ArtifactChange(CoreBranches.COMMON, artifact2.getGammaId(), artifact2.getArtId(), deltaTx,
-            ModificationType.MODIFIED, false, artifact2, delta);
+      Change change = new ArtifactChange(CoreBranches.COMMON, artifact2.getGammaId(), artifact2.getArtId(), deltaTx,
+         ModificationType.MODIFIED, false, artifact2, delta);
 
       String name = RenderingUtil.getAssociatedArtifactName(Arrays.asList(change));
       Assert.assertEquals(EXPECTED_NAME, name);

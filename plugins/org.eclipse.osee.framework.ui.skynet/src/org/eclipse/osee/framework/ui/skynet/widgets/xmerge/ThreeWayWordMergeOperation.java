@@ -45,24 +45,24 @@ import org.eclipse.osee.framework.ui.skynet.render.compare.CompareDataCollector;
  * @author Ryan D. Brooks
  */
 public class ThreeWayWordMergeOperation extends AbstractOperation {
-   private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern rsidRootPattern = Pattern.compile("\\</wsp:rsids\\>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsids = Pattern.compile("wsp:rsidR=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRPR = Pattern.compile("wsp:rsidRPr=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidP = Pattern.compile("wsp:rsidP=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRDefault = Pattern.compile("wsp:rsidRDefault=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern annotationTag = Pattern.compile(
-      "(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern authorPattern =
+      Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern rsidRootPattern =
+      Pattern.compile("\\</wsp:rsids\\>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsids =
+      Pattern.compile("wsp:rsidR=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRPR =
+      Pattern.compile("wsp:rsidRPr=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidP =
+      Pattern.compile("wsp:rsidP=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRDefault =
+      Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern annotationTag =
+      Pattern.compile("(<aml:annotation[^\\>]*?[^/]\\>)|(</aml:annotation\\>)",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
-   private static final Pattern rsidPattern = Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern rsidPattern =
+      Pattern.compile("wsp:rsid(RPr|P|R)=\"(.*?)\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    private final AttributeConflict attributeConflict;
 
@@ -102,9 +102,8 @@ public class ThreeWayWordMergeOperation extends AbstractOperation {
             monitor.worked(40);
             attributeConflict.markStatusToReflectEdit();
 
-            IOperation op =
-               new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact),
-                  mergeArtifact.getBranch(), true);
+            IOperation op = new UpdateArtifactOperation(mergedFile, Collections.singletonList(mergeArtifact),
+               mergeArtifact.getBranch(), true);
             Operations.executeWorkAndCheckStatus(op, monitor);
 
             monitor.done();

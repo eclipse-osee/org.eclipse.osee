@@ -54,7 +54,8 @@ public class UserRoleLabelProvider extends XViewerLabelProvider {
          } else if (dCol.equals(UserRoleXViewerFactory.Hours_Spent_Col)) {
             return ImageManager.getImage(FrameworkImage.CLOCK);
          } else if (dCol.equals(UserRoleXViewerFactory.Completed_Col)) {
-            return ImageManager.getImage(roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
+            return ImageManager.getImage(
+               roleItem.isCompleted() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
          } else if (dCol.equals(UserRoleXViewerFactory.Num_Major_Col)) {
             return DefectSeverityToImage.getImage(Severity.Major);
          } else if (dCol.equals(UserRoleXViewerFactory.Num_Minor_Col)) {

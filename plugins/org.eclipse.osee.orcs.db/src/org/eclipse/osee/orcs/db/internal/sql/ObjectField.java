@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import org.eclipse.osee.jdbc.SQL3DataType;
 import com.google.common.base.Supplier;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimaps;
 import com.google.common.collect.SetMultimap;
 import com.google.common.collect.Sets;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.osee.jdbc.SQL3DataType;
 
 /**
  * @author Roberto E. Escobar

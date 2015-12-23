@@ -43,7 +43,7 @@ public class ChangeReportHandler extends CommandHandler {
          } else if (selection.size() == 2) {
             Object[] items = selection.toArray();
             if (items[0] instanceof TransactionRecord && items[1] instanceof TransactionRecord) {
-               if (((TransactionRecord) items[0]).isOnSameBranch((((TransactionRecord) items[1])))) {
+               if (((TransactionRecord) items[0]).isOnSameBranch((TransactionRecord) items[1])) {
                   enabled = true;
                }
             }

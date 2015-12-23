@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.workdef;
 
-
-
 /**
  * @author Donald G. Dunne
  */

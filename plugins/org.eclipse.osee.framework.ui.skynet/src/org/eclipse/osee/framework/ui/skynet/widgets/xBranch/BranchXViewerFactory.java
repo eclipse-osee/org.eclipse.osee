@@ -24,36 +24,35 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public final static XViewerColumn branchName = new XViewerColumn("framework.branch.branchName", "Branch Name", 250,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public final static XViewerColumn branchType = new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT,
-      true, SortDataType.String, true, null);
-   public final static XViewerColumn branchState = new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT,
-      true, SortDataType.String, true, null);
-   public final static XViewerColumn timeStamp = new XViewerColumn("framework.branch.itemType", "Time Stamp", 150,
-      SWT.LEFT, true, SortDataType.Date, false, null);
-   public final static XViewerColumn author = new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT,
-      true, SortDataType.String, false, null);
-   public final static XViewerColumn comment = new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT,
-      true, SortDataType.String, false, null);
+   public final static XViewerColumn branchType =
+      new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, true, SortDataType.String, true, null);
+   public final static XViewerColumn branchState =
+      new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, true, SortDataType.String, true, null);
+   public final static XViewerColumn timeStamp =
+      new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.Date, false, null);
+   public final static XViewerColumn author =
+      new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
+   public final static XViewerColumn comment =
+      new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT, true, SortDataType.String, false, null);
    public final static XViewerColumn associatedArtifact = new XViewerColumn("framework.branch.assocArt",
       "Associated Artifact", 100, SWT.LEFT, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchUuid = new XViewerColumn("framework.branch.uuid", "Branch UUID", 200,
-      SWT.LEFT, false, SortDataType.String, false, null);
+   public final static XViewerColumn branchUuid =
+      new XViewerColumn("framework.branch.uuid", "Branch UUID", 200, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
       100, SWT.LEFT, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
       100, SWT.LEFT, false, SortDataType.String, true, null);
-   public final static XViewerColumn inheritAccessControl = new XViewerColumn(
-      "framework.branch.inherit.access.control", "Inherit Access Control", 100, SWT.LEFT, false, SortDataType.Boolean,
-      false, null);
-   public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction",
-      100, SWT.LEFT, true, SortDataType.Integer, false, null);
+   public final static XViewerColumn inheritAccessControl = new XViewerColumn("framework.branch.inherit.access.control",
+      "Inherit Access Control", 100, SWT.LEFT, false, SortDataType.Boolean, false, null);
+   public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction", 100,
+      SWT.LEFT, true, SortDataType.Integer, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact,
-         parentBranch, branchUuid, branchUuid, archivedState, inheritAccessControl);
+      registerColumns(branchName, branchType, branchState, timeStamp, author, comment, associatedArtifact, parentBranch,
+         branchUuid, branchUuid, archivedState, inheritAccessControl);
    }
 
    @Override

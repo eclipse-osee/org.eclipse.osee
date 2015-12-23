@@ -37,7 +37,7 @@ public class NameComparator implements Comparator<Named> {
       String name2 = getName(o2);
 
       if (areNumbers(name1, name2)) {
-         if ((name1.length() < NUMBER_STRING_LIMIT) && (name2.length() < NUMBER_STRING_LIMIT)) {
+         if (name1.length() < NUMBER_STRING_LIMIT && name2.length() < NUMBER_STRING_LIMIT) {
             if (orderType.isAscending()) {
                return Long.valueOf(name1).compareTo(Long.valueOf(name2));
             } else {

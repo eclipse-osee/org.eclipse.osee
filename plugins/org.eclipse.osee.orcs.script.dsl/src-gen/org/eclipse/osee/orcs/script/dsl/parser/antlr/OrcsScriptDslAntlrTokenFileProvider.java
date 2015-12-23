@@ -7,9 +7,11 @@ import java.io.InputStream;
 import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 
 public class OrcsScriptDslAntlrTokenFileProvider implements IAntlrTokenFileProvider {
-	
-	public InputStream getAntlrTokenFile() {
-		ClassLoader classLoader = getClass().getClassLoader();
-    	return classLoader.getResourceAsStream("org/eclipse/osee/orcs/script/dsl/parser/antlr/internal/InternalOrcsScriptDsl.tokens");
-	}
+
+   @Override
+   public InputStream getAntlrTokenFile() {
+      ClassLoader classLoader = getClass().getClassLoader();
+      return classLoader.getResourceAsStream(
+         "org/eclipse/osee/orcs/script/dsl/parser/antlr/internal/InternalOrcsScriptDsl.tokens");
+   }
 }

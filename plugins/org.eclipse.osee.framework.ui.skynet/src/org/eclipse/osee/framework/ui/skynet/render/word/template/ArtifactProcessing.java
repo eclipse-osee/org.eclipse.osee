@@ -36,11 +36,11 @@ public class ArtifactProcessing implements ITemplateTask {
 
    private static final Matcher outlineElementsMatcher = Pattern.compile("<((\\w+:)?(Outline))>(.*?)</\\1>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher internalOutlineElementsMatcher = Pattern.compile(
-      "<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
-      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher internalOutlineElementsMatcher =
+      Pattern.compile("<((\\w+:)?(HeadingAttribute|RecurseChildren|Number))>(.*?)</\\1>",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher setNameMatcher =
+      Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    public ArtifactProcessing(List<ITemplateTask> innerTasks, String artifactSection, String elementType) {
       this.innerTasks = innerTasks;

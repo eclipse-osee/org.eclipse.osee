@@ -62,7 +62,7 @@ public class OrcsScriptDslScopeProvider extends org.eclipse.xtext.scoping.impl.A
       //      //                  default: IScope::NULLSCOPE
       //      //              }
       //      //          }
-      //      //           
+      //      //
       //      return result;
       //   }
       //   public IScope scope_OsMetaTypeId_ref(OsMetaTypeId context, EReference reference) {

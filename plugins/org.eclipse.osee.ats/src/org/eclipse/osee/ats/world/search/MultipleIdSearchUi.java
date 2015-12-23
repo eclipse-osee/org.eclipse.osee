@@ -56,10 +56,9 @@ public class MultipleIdSearchUi {
             ed =
                new EntryCheckDialog(data.getName(), "Enter Legacy ID, Guid or ID (comma separated)", "Include ArtIds");
          } else {
-            ed =
-               new EntryDialog(Displays.getActiveShell(), data.getName(), null,
-                  "Enter Legacy ID, Guid or ID (comma separated)", MessageDialog.QUESTION,
-                  new String[] {"OK", "Cancel"}, 0);
+            ed = new EntryDialog(Displays.getActiveShell(), data.getName(), null,
+               "Enter Legacy ID, Guid or ID (comma separated)", MessageDialog.QUESTION, new String[] {"OK", "Cancel"},
+               0);
          }
          if (multiLine) {
             ed.setFillVertically(true);

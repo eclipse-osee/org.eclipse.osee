@@ -121,7 +121,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
          while (it.hasNext()) {
             Object element = it.next();
             if (element instanceof IAdaptable) {
-               IResource toAdd = (IResource) ((IAdaptable) element).getAdapter(IResource.class);
+               IResource toAdd = ((IAdaptable) element).getAdapter(IResource.class);
                if (toAdd != null) {
                   currentResourceSelection.add(toAdd);
                }
@@ -363,7 +363,8 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    }
 
    public boolean isFileContainingMultiplePaths() {
-      return isWidgetAccessible(directoryFileSelector) ? !directoryFileSelector.isDirectorySelected() && isFileContainingMultiplePaths.getValue() : isFileContainingMultiplePaths.getValue();
+      return isWidgetAccessible(
+         directoryFileSelector) ? !directoryFileSelector.isDirectorySelected() && isFileContainingMultiplePaths.getValue() : isFileContainingMultiplePaths.getValue();
    }
 
    public boolean isAddGuidToSourceFileAllowed() {

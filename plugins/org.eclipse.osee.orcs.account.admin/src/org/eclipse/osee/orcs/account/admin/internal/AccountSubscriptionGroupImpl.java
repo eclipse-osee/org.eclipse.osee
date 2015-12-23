@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountSubscriptionGroupImpl extends BaseIdentity<String> implements SubscriptionGroup {
+public class AccountSubscriptionGroupImpl extends BaseIdentity<String>implements SubscriptionGroup {
 
    private static final String NOT_AVAILABLE = "N/A";
    private final ArtifactReadable artifact;

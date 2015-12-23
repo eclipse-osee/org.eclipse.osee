@@ -189,8 +189,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.InsertionActivity)) {
             insertionActivity = new InsertionActivity(logger, atsServer.getServices(), artRead);
-            ArtifactReadable insertionArt =
-               ((ArtifactReadable) artifact).getRelated(AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
+            ArtifactReadable insertionArt = ((ArtifactReadable) artifact).getRelated(
+               AtsRelationTypes.InsertionToInsertionActivity_Insertion).getOneOrNull();
             if (insertionArt != null) {
                insertionActivity.setInsertionUuid(insertionArt.getUuid());
             }
@@ -208,12 +208,10 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (uuid == null || uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
-            atsServer.getUserService().getCurrentUser());
-      ArtifactReadable insertionArt =
-         (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion, newInsertion.getName(), GUID.create(),
-            uuid);
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Create new Insertion",
+         atsServer.getUserService().getCurrentUser());
+      ArtifactReadable insertionArt = (ArtifactReadable) changes.createArtifact(AtsArtifactTypes.Insertion,
+         newInsertion.getName(), GUID.create(), uuid);
 
       changes.relate(programArtifact, AtsRelationTypes.ProgramToInsertion_Insertion, insertionArt);
       changes.execute();
@@ -222,9 +220,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
-            atsServer.getUserService().getCurrentUser());
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
+         atsServer.getUserService().getCurrentUser());
       changes.setSoleAttributeValue(atsServer.getConfig().getSoleByUuid(updatedInsertion.getUuid()),
          CoreAttributeTypes.Name, updatedInsertion.getName());
       changes.execute();
@@ -256,9 +253,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertionActivity updateInsertionActivity(JaxInsertionActivity updatedActivity) {
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
-            atsServer.getUserService().getCurrentUser());
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
+         atsServer.getUserService().getCurrentUser());
       ArtifactReadable insertionActivityArt =
          atsServer.getQuery().andUuid(updatedActivity.getUuid()).getResults().getExactlyOne();
 
@@ -284,8 +280,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       if (!toDelete.getArtifactType().equals(type)) {
          throw new OseeCoreException("Artifact type does not match for %s", comment);
       }
-      TransactionBuilder transaction =
-         atsServer.getOrcsApi().getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), toDelete, comment);
+      TransactionBuilder transaction = atsServer.getOrcsApi().getTransactionFactory().createTransaction(
+         AtsUtilCore.getAtsBranch(), toDelete, comment);
       transaction.deleteArtifact(toDelete);
       transaction.commit();
    }

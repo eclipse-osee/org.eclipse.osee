@@ -96,7 +96,8 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
 
          if (subsystemRequirement.isOfType(CoreArtifactTypes.SubsystemRequirementMSWord)) {
             boolean loopNeverRan = true;
-            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelationTypes.Design__Design)) {
+            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(
+               CoreRelationTypes.Design__Design)) {
                if (subsystemDesign.isOfType(CoreArtifactTypes.SubsystemDesign)) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""),

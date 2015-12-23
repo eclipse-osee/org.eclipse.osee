@@ -146,9 +146,8 @@ public final class BranchCommand implements ConsoleCommand {
          });
          int count = 0;
          for (BranchReadable aBranch : branches) {
-            console.writeln(
-               "[%s] - id[%s] guid[%s] sTx[%s] bTx[%s] parent[%s] type[%s] state[%s] archive[%s] name[%s]", ++count,
-               aBranch.getUuid(), aBranch.getUuid(), aBranch.getName(), aBranch.getBranchType(),
+            console.writeln("[%s] - id[%s] guid[%s] sTx[%s] bTx[%s] parent[%s] type[%s] state[%s] archive[%s] name[%s]",
+               ++count, aBranch.getUuid(), aBranch.getUuid(), aBranch.getName(), aBranch.getBranchType(),
                aBranch.getBranchState(), aBranch.getArchiveState(), aBranch.getSourceTransaction(),
                aBranch.getBaseTransaction(), aBranch.getParentBranch());
          }

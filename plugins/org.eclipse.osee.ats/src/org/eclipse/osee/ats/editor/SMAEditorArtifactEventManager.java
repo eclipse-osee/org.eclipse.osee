@@ -178,8 +178,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             // list of actionable items when a sibling changes
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(awa.getParentActionArtifact())) {
                ActionArtifact parentAction = teamWf.getParentActionArtifact();
-               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(
-                  teamWf) && (parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)))) {
+               if (!awa.equals(teamWf) && artifactEvent.isHasEvent(
+                  teamWf) && parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override

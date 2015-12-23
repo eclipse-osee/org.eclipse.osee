@@ -72,7 +72,7 @@ public final class CxfJaxRsFactory implements JaxRsFactory {
    public void start(Map<String, Object> props) {
       logger.debug("Starting [%s]...", getClass().getSimpleName());
 
-      // Ensure CXF JAX-RS implementation is loaded 
+      // Ensure CXF JAX-RS implementation is loaded
       RuntimeDelegate runtimeDelegate = new org.apache.cxf.jaxrs.impl.RuntimeDelegateImpl();
       RuntimeDelegate.setInstance(runtimeDelegate);
 

@@ -72,11 +72,11 @@ public class WordTemplateRendererTest {
    private static final String endLinkInsert = ")<w:r><w:t>";
    private static final String tabString = "wx:wTabBefore=\"540\" wx:wTabAfter=\"90\"";
    private static final Pattern findSetRsidR = Pattern.compile("wsp:rsidR=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
-   private static final Pattern findSetRsidRDefault = Pattern.compile("wsp:rsidRDefault=\".*?\"",
-      Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findSetRsidRDefault =
+      Pattern.compile("wsp:rsidRDefault=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern findBlankPage = Pattern.compile("This page is intentionally left blank");
-   private static final Pattern findHlinks = Pattern.compile("<w:hlink w:dest=\".*?\"",
-      Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern findHlinks =
+      Pattern.compile("<w:hlink w:dest=\".*?\"", Pattern.DOTALL | Pattern.MULTILINE);
 
    private static String RECURSE_TEMPLATE_STRING;
    private static String SINGLE_TEMPLATE_STRING;
@@ -117,36 +117,35 @@ public class WordTemplateRendererTest {
    @Before
    public void setUp() throws OseeCoreException {
       // Establish default option settings
-      options =
-         new Object[] {
-            "Branch",
-            null,
-            "compareBranch",
-            null,
-            "Publish As Diff",
-            true,
-            "linkType",
-            LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
-            WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
-            false,
-            ITemplateRenderer.TRANSACTION_OPTION,
-            null,
-            IRenderer.SKIP_ERRORS,
-            true,
-            "Exclude Folders",
-            true,
+      options = new Object[] {
+         "Branch",
+         null,
+         "compareBranch",
+         null,
+         "Publish As Diff",
+         true,
+         "linkType",
+         LinkType.INTERNAL_DOC_REFERENCE_USE_NAME,
+         WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION,
+         false,
+         ITemplateRenderer.TRANSACTION_OPTION,
+         null,
+         IRenderer.SKIP_ERRORS,
+         true,
+         "Exclude Folders",
+         true,
          "EXCLUDE ARTIFACT TYPES",
          new ArrayList<IArtifactType>(),
-            "Recurse On Load",
-            true,
-            "Maintain Order",
-            true,
-            ITemplateRenderer.USE_TEMPLATE_ONCE,
-            true,
-            WordTemplateRenderer.FIRST_TIME,
-            true,
-            IRenderer.NO_DISPLAY,
-            true};
+         "Recurse On Load",
+         true,
+         "Maintain Order",
+         true,
+         ITemplateRenderer.USE_TEMPLATE_ONCE,
+         true,
+         WordTemplateRenderer.FIRST_TIME,
+         true,
+         IRenderer.NO_DISPLAY,
+         true};
 
       String branchName = method.getQualifiedTestName();
       rootBranch = BranchManager.createTopLevelBranch(branchName);
@@ -222,13 +221,11 @@ public class WordTemplateRendererTest {
          String altString = "  \"";
          String period = ".";
 
-         Assert.assertTrue(
-            String.format("%s, Expected 1. Volume 4", testName),
-            document.contains("<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4</w:t></w:r>"));
+         Assert.assertTrue(String.format("%s, Expected 1. Volume 4", testName), document.contains(
+            "<wx:t wx:val=\"1" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Volume 4</w:t></w:r>"));
 
-         Assert.assertTrue(
-            String.format("%s, Expected 2.", testName),
-            document.contains("<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r>"));
+         Assert.assertTrue(String.format("%s, Expected 2.", testName), document.contains(
+            "<wx:t wx:val=\"2" + period + altString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r>"));
 
          // This is a separate check due to the wordMl.resetListValue(); function injecting extra wordML that resets the list numbering
          Assert.assertTrue(String.format("%s, Expected Intro", testName), document.contains("<w:t>Intro</w:t></w:r>"));
@@ -380,12 +377,10 @@ public class WordTemplateRendererTest {
             String rev = m.group();
             contents = contents.replace(rev, "wsp:rsidRDefault=\"TESTING\"");
          }
-         Assert.assertTrue(
-            "Original Paragram Numbering for Notes is incorrect",
-            contents.contains("<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3</w:t></w:r>"));
-         Assert.assertTrue(
-            "Original Paragram Numbering for More Notes is incorrect",
-            contents.contains("<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3.1</w:t></w:r>"));
+         Assert.assertTrue("Original Paragram Numbering for Notes is incorrect", contents.contains(
+            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3</w:t></w:r>"));
+         Assert.assertTrue("Original Paragram Numbering for More Notes is incorrect", contents.contains(
+            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3.1</w:t></w:r>"));
          m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
@@ -420,12 +415,10 @@ public class WordTemplateRendererTest {
          Assert.assertTrue("Paragraph Number & Name Link not found",
             contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>2.1 Hardware</w:t></w:r>"));
          basicDocumentCheck(contents, tabString, false, false);
-         Assert.assertTrue(
-            "Paragraph Number 2 is not updated",
-            contents.contains("<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
-         Assert.assertTrue(
-            "Paragraph Number 2.1 is not updated",
-            contents.contains("<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
+         Assert.assertTrue("Paragraph Number 2 is not updated", contents.contains(
+            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2</w:t></w:r>"));
+         Assert.assertTrue("Paragraph Number 2.1 is not updated", contents.contains(
+            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p><w:r><w:t> Paragraph Number: </w:t></w:r><w:r><w:t>2.1</w:t></w:r>"));
          Matcher m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
@@ -460,7 +453,7 @@ public class WordTemplateRendererTest {
          while (m.find()) {
             counter++;
          }
-         Assert.assertTrue("Number of blank pages not found", (counter >= 10));
+         Assert.assertTrue("Number of blank pages not found", counter >= 10);
 
       } catch (IOException ex) {
          // Do nothing - test failed
@@ -487,12 +480,12 @@ public class WordTemplateRendererTest {
          String justPath = resultPath.substring(0, indx + 1);
          while (m.find()) {
             String hfile = m.group();
-            hfile = hfile.substring(17, (hfile.length() - 1));
+            hfile = hfile.substring(17, hfile.length() - 1);
             File testFile = new File(justPath + hfile);
             Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
             counter++;
          }
-         Assert.assertTrue("Did not find links to 3 files.", (counter == 3));
+         Assert.assertTrue("Did not find links to 3 files.", counter == 3);
 
       } catch (IOException ex) {
          // Do nothing - test failed
@@ -519,12 +512,12 @@ public class WordTemplateRendererTest {
          String justPath = resultPath.substring(0, indx + 1);
          while (m.find()) {
             String hfile = m.group();
-            hfile = hfile.substring(17, (hfile.length() - 1));
+            hfile = hfile.substring(17, hfile.length() - 1);
             File testFile = new File(justPath + hfile);
             Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
             counter++;
          }
-         Assert.assertTrue("Did not find links to 3 files.", (counter == 3));
+         Assert.assertTrue("Did not find links to 3 files.", counter == 3);
 
       } catch (IOException ex) {
          // Do nothing - test failed
@@ -551,12 +544,12 @@ public class WordTemplateRendererTest {
          String justPath = resultPath.substring(0, indx + 1);
          while (m.find()) {
             String hfile = m.group();
-            hfile = hfile.substring(17, (hfile.length() - 1));
+            hfile = hfile.substring(17, hfile.length() - 1);
             File testFile = new File(justPath + hfile);
             Assert.assertTrue(String.format("File does not exist %s", testFile), testFile.exists());
             counter++;
          }
-         Assert.assertTrue("Did not find links to 3 files.", (counter == 3));
+         Assert.assertTrue("Did not find links to 3 files.", counter == 3);
 
       } catch (IOException ex) {
          // Do nothing - test failed
@@ -579,12 +572,10 @@ public class WordTemplateRendererTest {
       try {
          String contents = getFileAsString(resultPath);
          basicDocumentCheck(contents, "", false, true);
-         Assert.assertTrue(
-            "Field Code Diff not as expected",
-            contents.contains("<w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware</w:t></w:r><aml:annotation aml:id=\"8\" w:type=\"Word.Insertion\""));
-         Assert.assertTrue(
-            "Field Code Diff not as expected",
-            contents.contains("<aml:content><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t> Functions</w:t></w:r></aml:content></aml:annotation>"));
+         Assert.assertTrue("Field Code Diff not as expected", contents.contains(
+            "<w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware</w:t></w:r><aml:annotation aml:id=\"8\" w:type=\"Word.Insertion\""));
+         Assert.assertTrue("Field Code Diff not as expected", contents.contains(
+            "<aml:content><w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t> Functions</w:t></w:r></aml:content></aml:annotation>"));
       } catch (IOException ex) {
          // Do nothing - test failed
       }
@@ -607,9 +598,8 @@ public class WordTemplateRendererTest {
       try {
          String contents = getFileAsString(resultPath);
          basicDocumentCheck(contents, "", false, true);
-         Assert.assertTrue(
-            "Appears to have Field Code Diff",
-            contents.contains("<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware Functions</w:t></w:r></w:hlink>"));
+         Assert.assertTrue("Appears to have Field Code Diff", contents.contains(
+            "<w:r><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>Hardware Functions</w:t></w:r></w:hlink>"));
       } catch (IOException ex) {
          // Do nothing - test failed
       } finally {
@@ -671,15 +661,12 @@ public class WordTemplateRendererTest {
    private void setUpSWReq(Artifact swReqFolder, IOseeBranch branch) throws OseeCoreException {
       Artifact crewReq =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Crew Station Requirements");
-      Artifact commReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-            "Communication Subsystem Crew Interface");
-      Artifact navReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
-            "Navigation Subsystem Crew Interface");
-      Artifact airReq =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch,
-            "Aircraft Systems Management Subsystem Crew Interface");
+      Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
+         "Communication Subsystem Crew Interface");
+      Artifact navReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
+         "Navigation Subsystem Crew Interface");
+      Artifact airReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch,
+         "Aircraft Systems Management Subsystem Crew Interface");
       Artifact airDrawReq =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Aircraft Drawing");
       Artifact ventReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, "Ventilation");
@@ -709,7 +696,7 @@ public class WordTemplateRendererTest {
     |----Introduction
          |---- Background
          |---- Scope
-         |  
+         |
          Subsystem
          |---- Hardware
          |     |---- Hardware Functions
@@ -770,8 +757,7 @@ public class WordTemplateRendererTest {
       softwareFunc.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Hello World, is basic software." + endWordString);
       softwareFunc.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "2.2.1");
-      notes.setSoleAttributeValue(
-         CoreAttributeTypes.WordTemplateContent,
+      notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + hardware.getGuid() + endLinkInsert + " too." + endWordString);
       notes.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "3");
       morenotes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
@@ -828,8 +814,7 @@ public class WordTemplateRendererTest {
          docFolder.getDescendant("Subsystem").getDescendant("Hardware").getDescendant("Hardware Functions").getGuid();
       String notesGuid = docFolder.getDescendant("Notes").getGuid();
       Artifact notes = ArtifactQuery.getArtifactFromId(notesGuid, updateBranch);
-      notes.setSoleAttributeValue(
-         CoreAttributeTypes.WordTemplateContent,
+      notes.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "Notes are great for small topics, and the link" + beginLinkInsert + hdwrGuid + endLinkInsert + " too." + endWordString);
 
       notes.persist(onChildTx);
@@ -867,39 +852,29 @@ public class WordTemplateRendererTest {
          altString = "  \"";
          period = ".";
       }
-      Assert.assertTrue(
-         String.format("%s, Expected 1. Introduction", testName),
-         document.contains("<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 1. Introduction", testName), document.contains(
+         "<wx:t wx:val=\"1" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Introduction</w:t></w:r>"));
       if (!merge) {
-         Assert.assertTrue(
-            String.format("%s, Expected 1.1 Background", testName),
-            document.contains("<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>"));
+         Assert.assertTrue(String.format("%s, Expected 1.1 Background", testName), document.contains(
+            "<wx:t wx:val=\"1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Background</w:t></w:r>"));
       }
-      Assert.assertTrue(
-         String.format("%s, Expected 1.2 Scope", testName),
-         document.contains("<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 2. Notes", testName),
-         document.contains("<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 2.1 More Notes", testName),
-         document.contains("<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 3. Subsystem", testName),
-         document.contains("<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 1.2 Scope", testName), document.contains(
+         "<wx:t wx:val=\"1.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Scope</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 2. Notes", testName), document.contains(
+         "<wx:t wx:val=\"2" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Notes</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 2.1 More Notes", testName), document.contains(
+         "<wx:t wx:val=\"2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>More Notes</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 3. Subsystem", testName), document.contains(
+         "<wx:t wx:val=\"3" + period + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Subsystem</w:t></w:r>"));
       if (!fieldcode) {
-         Assert.assertTrue(
-            String.format("%s, Expected 3.1 Hardware", testName),
-            document.contains("<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>"));
+         Assert.assertTrue(String.format("%s, Expected 3.1 Hardware", testName), document.contains(
+            "<wx:t wx:val=\"3.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware</w:t></w:r>"));
       }
-      Assert.assertTrue(
-         String.format("%s, Expected 3.1.1 Hardware Functions", testName),
-         document.contains("<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 3.2 Software", testName),
-         document.contains("<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>"));
-      Assert.assertTrue(
-         String.format("%s, Expected 3.2.1 Software Functions", testName),
-         document.contains("<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 3.1.1 Hardware Functions", testName), document.contains(
+         "<wx:t wx:val=\"3.1.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Hardware Functions</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 3.2 Software", testName), document.contains(
+         "<wx:t wx:val=\"3.2" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software</w:t></w:r>"));
+      Assert.assertTrue(String.format("%s, Expected 3.2.1 Software Functions", testName), document.contains(
+         "<wx:t wx:val=\"3.2.1" + altString + pubString + "/><wx:font wx:val=\"Times New Roman\"/></w:listPr></w:pPr><w:r><w:t>Software Functions</w:t></w:r>"));
    }
 }

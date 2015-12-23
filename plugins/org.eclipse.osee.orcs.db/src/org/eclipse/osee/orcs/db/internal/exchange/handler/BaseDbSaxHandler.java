@@ -40,8 +40,8 @@ public abstract class BaseDbSaxHandler extends BaseExportImportSaxHandler {
    protected BaseDbSaxHandler(Log logger, JdbcClient service, boolean isCacheAll, int cacheLimit) {
       super();
       if (cacheLimit < 0) {
-         throw new IllegalArgumentException(String.format("Cache limit cannot be less than zero - cacheLimit=[%d]",
-            cacheLimit));
+         throw new IllegalArgumentException(
+            String.format("Cache limit cannot be less than zero - cacheLimit=[%d]", cacheLimit));
       }
       this.logger = logger;
       this.service = service;

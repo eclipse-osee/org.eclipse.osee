@@ -32,9 +32,8 @@ public class ArtifactNameConflictHandler {
          @Override
          public void run() {
             String startingName = beforeAfterNames.getFirst();
-            InputDialog dialog =
-               new InputDialog(Displays.getActiveShell(), "Name Artifact", "Enter artifact name", startingName,
-                  new NonBlankAndNotSameAsStartingValidator(startingName));
+            InputDialog dialog = new InputDialog(Displays.getActiveShell(), "Name Artifact", "Enter artifact name",
+               startingName, new NonBlankAndNotSameAsStartingValidator(startingName));
             int result = dialog.open();
             if (result == Window.OK) {
                beforeAfterNames.setSecond(dialog.getValue());

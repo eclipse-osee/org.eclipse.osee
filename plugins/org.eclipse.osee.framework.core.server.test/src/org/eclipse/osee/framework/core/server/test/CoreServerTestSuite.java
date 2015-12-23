@@ -16,7 +16,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-CoreServerInternalTestSuite.class, //
+   CoreServerInternalTestSuite.class, //
 })
 /**
  * @author Roberto E. Escobar

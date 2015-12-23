@@ -73,7 +73,8 @@ public class PurgeRelationTypeCommand implements ConsoleCommand {
             if (forcePurge && found) {
                orcsTypes.purgeRelationsByRelationType(types).call();
             }
-            console.writeln((found && !forcePurge) ? "To >DELETE Relation DATA!< add --force to confirm." : "Operation finished.");
+            console.writeln(
+               found && !forcePurge ? "To >DELETE Relation DATA!< add --force to confirm." : "Operation finished.");
             return null;
          }
 

@@ -53,9 +53,9 @@ public class EarnedValueReportOperation extends AbstractOperation {
    public static final IColumn Work_Package_Guid = new ColumnAdapter("ats.work.package.guid", "Related Work Package Guid", ColumnType.String, "");
    // @formatter:on
 
-   public static List<IColumn> columns = Arrays.asList(Work_Package_Id, Work_Package_Name, Work_Package_Percent,
-      Related_Action_Percent, Related_Action_Id, Related_Action_Name, Related_Action_Type, Related_Action_Guid,
-      Work_Package_Guid);
+   public static List<IColumn> columns =
+      Arrays.asList(Work_Package_Id, Work_Package_Name, Work_Package_Percent, Related_Action_Percent, Related_Action_Id,
+         Related_Action_Name, Related_Action_Type, Related_Action_Guid, Work_Package_Guid);
 
    public EarnedValueReportOperation(String operationName, Collection<IAtsWorkPackage> workPackages) {
       super(operationName, Activator.PLUGIN_ID);
@@ -83,8 +83,9 @@ public class EarnedValueReportOperation extends AbstractOperation {
             result.setValue(Related_Action_Id, getActionId(art));
             result.setValue(Related_Action_Name, art.getName());
             result.setValue(Related_Action_Type, awa.getParentTeamWorkflow().getTeamDefinition().getName());
-            result.setValue(Related_Action_Percent, String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal(
-               (IAtsWorkItem) art, AtsClientService.get().getServices())));
+            result.setValue(Related_Action_Percent,
+               String.valueOf(PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) art,
+                  AtsClientService.get().getServices())));
             result.setValue(Related_Action_Guid, art.getGuid());
          }
       }

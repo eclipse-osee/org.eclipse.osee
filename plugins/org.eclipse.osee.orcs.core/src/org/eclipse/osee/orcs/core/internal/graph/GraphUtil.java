@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
+import com.google.common.base.Objects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.OrcsSession;
-import com.google.common.base.Objects;
 
 /**
  * @author Roberto E. Escobar

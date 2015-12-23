@@ -626,7 +626,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
       if (teamWf != null) {
          boolean released = services.getVersionService().isReleased(teamWf);
-         if ((releasedOption == ReleasedOption.Released && released) || (releasedOption == ReleasedOption.UnReleased && !released)) {
+         if (releasedOption == ReleasedOption.Released && released || releasedOption == ReleasedOption.UnReleased && !released) {
             match = true;
          }
       }

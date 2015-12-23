@@ -163,7 +163,9 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
          for (XWidgetRendererItem layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
             if (!layoutData.getXWidget().isValid().isOK()) {
                // Check to see if widget is part of a completed OR or XOR group
-               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStoreName())) {
+               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(
+                  layoutData.getStoreName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(
+                     layoutData.getStoreName())) {
                   return new Pair<IStatus, XWidget>(layoutData.getXWidget().isValid(), layoutData.getXWidget());
                }
             }
@@ -201,12 +203,12 @@ public class StateXWidgetPage implements IDynamicWidgetLayoutListener, IStateTok
 
    @Override
    public String toString() {
-      StringBuffer sb =
-         new StringBuffer(
-            stateDefinition.getName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
+      StringBuffer sb = new StringBuffer(
+         stateDefinition.getName() + (stateDefinition.getName() != null ? " (" + stateDefinition.getName() + ") " : "") + "\n");
       try {
          for (IAtsStateDefinition page : stateDefinition.getToStates()) {
-            sb.append("-> " + page.getName() + (stateDefinition.getOverrideAttributeValidationStates().contains(page) ? " (return)" : "") + "\n");
+            sb.append("-> " + page.getName() + (stateDefinition.getOverrideAttributeValidationStates().contains(
+               page) ? " (return)" : "") + "\n");
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

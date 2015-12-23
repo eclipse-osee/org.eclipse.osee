@@ -113,14 +113,17 @@ public class ExcelAtsActionArtifactExtractor {
                   if (aias.isEmpty()) {
                      rd.error("Row " + rowNum + ": Couldn't find actionable item for \"" + actionableItemName + "\"");
                   } else if (aias.size() > 1) {
-                     rd.error("Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
+                     rd.error(
+                        "Row " + rowNum + ": Duplicate actionable items found with name \"" + actionableItemName + "\"");
                   } else {
                      IAtsActionableItem aia = aias.iterator().next();
                      teamDefs.addAll(ActionableItems.getImpactedTeamDefs(Arrays.asList(aia)));
                      if (teamDefs.isEmpty()) {
-                        rd.error("Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
+                        rd.error(
+                           "Row " + rowNum + ": No related Team Definition for Actionable Item\"" + actionableItemName + "\"");
                      } else if (teamDefs.size() > 1) {
-                        rd.error("Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
+                        rd.error(
+                           "Row " + rowNum + ": Duplicate Team Definitions found for Actionable Item\"" + actionableItemName + "\"");
                      }
                   }
 
@@ -134,12 +137,10 @@ public class ExcelAtsActionArtifactExtractor {
             try {
                for (IAtsTeamDefinition teamDef : teamDefs) {
                   if (teamDef.getTeamDefinitionHoldingVersions() == null) {
-                     rd.errorf("No Team Definitions Holding Versions found for Team Definition [%s]",
-                        teamDef);
+                     rd.errorf("No Team Definitions Holding Versions found for Team Definition [%s]", teamDef);
                   }
                   if (teamDef.getTeamDefinitionHoldingVersions().getVersion(aData.version) == null) {
-                     rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version,
-                        teamDef);
+                     rd.errorf("No version [%s] configured for Team Definition [%s]", aData.version, teamDef);
                   }
                }
             } catch (Exception ex) {
@@ -179,11 +180,10 @@ public class ExcelAtsActionArtifactExtractor {
             Artifact actionArt = actionNameToAction.get(aData.title);
             Collection<TeamWorkFlowArtifact> newTeamArts = new HashSet<>();
             if (actionArt == null) {
-               actionArt =
-                  ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                     aData.priorityStr, false, null,
-                     ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig()),
-                     createdDate, createdBy, null, changes);
+               actionArt = ActionManager.createAction(null, aData.title, aData.desc,
+                  ChangeType.getChangeType(aData.changeType), aData.priorityStr, false, null,
+                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig()),
+                  createdDate, createdBy, null, changes);
                newTeamArts = ActionManager.getTeams(actionArt);
                addToGoal(newTeamArts, changes);
                actionNameToAction.put(aData.title, actionArt);
@@ -287,13 +287,13 @@ public class ExcelAtsActionArtifactExtractor {
             xmlReader.parse(new InputSource(new InputStreamReader(source.toURL().openStream(), "UTF-8")));
          } catch (SAXException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
-            rd.error("Exception in parsing import (see log for details) " + (Strings.isValid(ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
+            rd.error("Exception in parsing import (see log for details) " + (Strings.isValid(
+               ex.getLocalizedMessage()) ? ex.getLocalizedMessage() : ""));
          }
          if (!rd.isEmpty()) {
             XResultDataUI.report(rd, "Action Import Validation Errors");
-            dataIsValid =
-               MessageDialog.openConfirm(AWorkbench.getDisplay().getActiveShell(), "Validation Results",
-                  "Validation Issues Reported, Continue Anyway?");
+            dataIsValid = MessageDialog.openConfirm(AWorkbench.getDisplay().getActiveShell(), "Validation Results",
+               "Validation Issues Reported, Continue Anyway?");
          }
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);

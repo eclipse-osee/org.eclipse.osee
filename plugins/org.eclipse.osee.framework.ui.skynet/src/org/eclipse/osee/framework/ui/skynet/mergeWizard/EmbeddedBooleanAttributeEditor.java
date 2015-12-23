@@ -80,8 +80,8 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
                if (object instanceof Boolean) {
                   editor.setEntry(((Boolean) object).booleanValue());
                } else {
-                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, new Exception(
-                     "Boolean editor did not receive a boolean value"));
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP,
+                     new Exception("Boolean editor did not receive a boolean value"));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

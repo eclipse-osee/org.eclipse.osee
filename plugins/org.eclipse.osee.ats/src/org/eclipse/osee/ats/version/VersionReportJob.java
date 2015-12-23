@@ -171,12 +171,13 @@ public class VersionReportJob extends Job {
                      PriorityUtil.getPriorityStr(team),
                      ChangeTypeUtil.getChangeTypeStr(team),
                      team.getName(),
-                     team.getAtsId()}, null, (x % 2 == 0 ? null : "#cccccc")));
+                     team.getAtsId()},
+                  null, x % 2 == 0 ? null : "#cccccc"));
 
                for (TaskArtifact taskArt : team.getTaskArtifacts()) {
                   sb.append(AHTML.addRowMultiColumnTable(
                      new String[] {"Task", "", "", "", taskArt.getName(), taskArt.getAtsId()}, null,
-                     (x % 2 == 0 ? null : "#cccccc")));
+                     x % 2 == 0 ? null : "#cccccc"));
                }
             }
          }

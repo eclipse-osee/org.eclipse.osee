@@ -96,9 +96,8 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
                   Date lastAccessedOn = chStmt.getTimestamp("last_accessed_on");
                   String accessedFrom = chStmt.getString("accessed_from");
                   String accessDetails = chStmt.getString("access_details");
-                  AccountSession session =
-                     factory.newAccountSession(accountId, sessionToken, createdOn, lastAccessedOn, accessedFrom,
-                        accessDetails);
+                  AccountSession session = factory.newAccountSession(accountId, sessionToken, createdOn, lastAccessedOn,
+                     accessedFrom, accessDetails);
                   list.add(session);
                }
             } finally {

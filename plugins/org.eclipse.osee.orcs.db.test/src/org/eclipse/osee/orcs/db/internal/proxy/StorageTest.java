@@ -112,7 +112,7 @@ public class StorageTest extends DataResourceTest {
       Assert.assertEquals(store, loader.getResource());
       Assert.assertTrue(store.isInitialized());
 
-      // Second Acquire not allowed 
+      // Second Acquire not allowed
       loader.setContent(DATA_SET_2);
       Assert.assertEquals(DATA_SET_1, store.getContent());
 

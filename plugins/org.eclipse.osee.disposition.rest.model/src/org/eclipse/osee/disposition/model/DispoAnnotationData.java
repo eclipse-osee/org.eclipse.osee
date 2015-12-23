@@ -13,7 +13,6 @@ package org.eclipse.osee.disposition.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.json.JSONArray;
 
 /**
@@ -142,7 +141,8 @@ public class DispoAnnotationData implements Identifiable<String> {
    }
 
    public boolean isResolutionTypeValid() {
-      return resolutionType != null && !resolutionType.equalsIgnoreCase("None") && !resolutionType.equalsIgnoreCase("null");
+      return resolutionType != null && !resolutionType.equalsIgnoreCase("None") && !resolutionType.equalsIgnoreCase(
+         "null");
    }
 
    public void disconnect() {
@@ -150,4 +150,4 @@ public class DispoAnnotationData implements Identifiable<String> {
       this.idsOfCoveredDiscrepancies = new JSONArray();
    }
 
-   }
+}

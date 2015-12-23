@@ -83,9 +83,9 @@ public class SorterProviderTest {
    @Test
    public void testGetDefaultSorterIdTypeNotfound() throws OseeCoreException {
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(String.format(
-         "defaultOrderTypeGuid cannot be null - Invalid default order type uuid for [%s]",
-         CoreRelationTypes.Allocation__Component));
+      thrown.expectMessage(
+         String.format("defaultOrderTypeGuid cannot be null - Invalid default order type uuid for [%s]",
+            CoreRelationTypes.Allocation__Component));
 
       provider.getDefaultSorterId(CoreRelationTypes.Allocation__Component);
    }
@@ -136,8 +136,8 @@ public class SorterProviderTest {
       String idName = "TestSorterId";
       IRelationSorterId sorterId = TokenFactory.createSorterId(randomGuid, "TestSorterId");
       thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage(String.format("sorter cannot be null - Unable to locate sorter with sorterId [%s:%s]",
-         idName, randomGuid));
+      thrown.expectMessage(
+         String.format("sorter cannot be null - Unable to locate sorter with sorterId [%s:%s]", idName, randomGuid));
       provider.getSorter(sorterId);
    }
 }

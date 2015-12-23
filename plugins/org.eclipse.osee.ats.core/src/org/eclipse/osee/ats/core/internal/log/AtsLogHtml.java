@@ -58,7 +58,7 @@ public class AtsLogHtml {
       builder.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Event", "State", "Message", "User", "Date")));
       for (IAtsLogItem item : logItems) {
          builder.append(AHTML.addRowMultiColumnTable(String.valueOf(item.getType()),
-            (item.getState().equals("") ? "." : item.getState()), (item.getMsg().equals("") ? "." : item.getMsg()),
+            item.getState().equals("") ? "." : item.getState(), item.getMsg().equals("") ? "." : item.getMsg(),
             getUserName(item.getUserId()), item.getDate(DateUtil.MMDDYYHHMM)));
       }
       builder.append(AHTML.endMultiColumnTable());

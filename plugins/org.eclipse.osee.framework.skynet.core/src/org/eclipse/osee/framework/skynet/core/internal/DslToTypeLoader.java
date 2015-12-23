@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import com.google.common.io.InputSupplier;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,7 +70,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.ClientCachingServiceProxy.TypesLoader;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar

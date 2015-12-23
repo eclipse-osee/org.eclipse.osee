@@ -46,9 +46,8 @@ public class AttributeValueQuickSearch {
       List<Artifact> results = new ArrayList<>();
       if (values != null && values.size() > 0) {
          for (String value : values) {
-            List<Artifact> searchResult =
-               ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), value, false,
-                  EXCLUDE_DELETED, false, attributeType);
+            List<Artifact> searchResult = ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(),
+               value, false, EXCLUDE_DELETED, false, attributeType);
             // Since quick search is tokenized, re-validate if exactMatch is desired
             if (exactMatch) {
                for (Artifact artifact : searchResult) {

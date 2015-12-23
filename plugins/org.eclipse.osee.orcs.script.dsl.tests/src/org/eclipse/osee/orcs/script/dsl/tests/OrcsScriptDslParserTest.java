@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.script.dsl.tests;
 
 import static org.junit.Assert.assertEquals;
+import com.google.inject.Inject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Date;
@@ -34,7 +35,6 @@ import org.eclipse.xtext.parser.IParser;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.google.inject.Inject;
 
 /**
  * Test Case for {@link OrcsScriptDslSyntaxErrorMessageProvider} and general grammar syntax
@@ -206,7 +206,8 @@ public class OrcsScriptDslParserTest {
       verify.ruleError(OsArtifactQueryStatement.class, "artifacts where attribute type = 570 not-exists");
 
       verify.rule(OsArtifactQueryStatement.class, "artifacts where attribute type = 570 contains 'Hello'");
-      verify.rule(OsArtifactQueryStatement.class, "artifacts where attribute type = [570,324] contains ['hello','bye']");
+      verify.rule(OsArtifactQueryStatement.class,
+         "artifacts where attribute type = [570,324] contains ['hello','bye']");
       verify.rule(OsArtifactQueryStatement.class,
          "artifacts where attribute type = 570 [match-case, any-order] ['two','one']");
 
@@ -225,7 +226,8 @@ public class OrcsScriptDslParserTest {
       verify.rule(OsArtifactQueryStatement.class, "artifacts where relation type = 570 not-exists on side-B");
 
       verify.rule(OsArtifactQueryStatement.class, "artifacts where relation type = 570 on side-A id = 321");
-      verify.rule(OsArtifactQueryStatement.class, "artifacts where relation type = 345 on side-B id = [321, 2314, 123]");
+      verify.rule(OsArtifactQueryStatement.class,
+         "artifacts where relation type = 345 on side-B id = [321, 2314, 123]");
    }
 
    @Test
@@ -271,7 +273,7 @@ public class OrcsScriptDslParserTest {
 
       verify.rule(OsCollectClause.class, "collect artifacts as 'alias-2' { * } limit 34");
 
-      String allFollowOptions = // 
+      String allFollowOptions = //
          "collect artifacts as 'alias-2' { id as 'value1', type as 'type2', attributes { * } } limit 34";
       verify.rule(OsCollectClause.class, allFollowOptions);
 
@@ -312,8 +314,8 @@ public class OrcsScriptDslParserTest {
 
    @Test
    public void testScriptModel() throws Exception {
-      OrcsScript model =
-         parserHelper.parse("script-version 0.12.0; start from tx * find artifacts * start from branch * find artifacts *;");
+      OrcsScript model = parserHelper.parse(
+         "script-version 0.12.0; start from tx * find artifacts * start from branch * find artifacts *;");
 
       String version = model.getVersion().getVersion();
       assertEquals("0.12.0", version);

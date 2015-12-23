@@ -144,7 +144,8 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
    private StyledString getLineElementLabel(AttributeLineElement lineElement) {
       String lineNumberString;
       Attribute<?> attribute = lineElement.getParent().getAttributeById(lineElement.getAttribute(), false);
-      if (attribute.isOfType(CoreAttributeTypes.WholeWordContent) || attribute.isOfType(CoreAttributeTypes.WordTemplateContent)) {
+      if (attribute.isOfType(CoreAttributeTypes.WholeWordContent) || attribute.isOfType(
+         CoreAttributeTypes.WordTemplateContent)) {
          lineNumberString = "";
       } else {
          lineNumberString = String.format("%s, %s ", lineElement.getLine(), lineElement.getOffset());
@@ -173,9 +174,8 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
             }
          }
          // append match
-         int end =
-            Math.min(match.getOriginalOffset() + match.getOriginalLength() - lineElement.getOffset(),
-               lineElement.getLength());
+         int end = Math.min(match.getOriginalOffset() + match.getOriginalLength() - lineElement.getOffset(),
+            lineElement.getLength());
          str.append(content.substring(start, end), HIGHLIGHT_STYLE);
          pos = end;
       }

@@ -495,13 +495,13 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          return;
       }
       if (branch.getUuid() == branchEvent.getBranchUuid()) {
-         if ((branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed)) {
+         if (branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) {
             SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
          } else {
             refreshBranchWarning();
          }
       } else if (branch.getUuid() == branchEvent.getDestinationBranchUuid()) {
-         if ((branchEvent.getEventType() == BranchEventType.Committed)) {
+         if (branchEvent.getEventType() == BranchEventType.Committed) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

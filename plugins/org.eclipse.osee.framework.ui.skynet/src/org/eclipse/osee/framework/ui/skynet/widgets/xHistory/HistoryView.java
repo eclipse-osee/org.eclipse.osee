@@ -182,10 +182,10 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
       createReplaceAttributeWithVersionMenuItem(popupMenu);
 
       IAction action = new CompareArtifactAction("Compare two Artifacts", xHistoryWidget.getXViewer());
-      (new ActionContributionItem(action)).fill(popupMenu, 3);
+      new ActionContributionItem(action).fill(popupMenu, 3);
 
-      (new ActionContributionItem(new EditTransactionComment(this))).fill(popupMenu, 3);
-      (new ActionContributionItem(new WasIsCompareEditorAction())).fill(popupMenu, 3);
+      new ActionContributionItem(new EditTransactionComment(this)).fill(popupMenu, 3);
+      new ActionContributionItem(new WasIsCompareEditorAction()).fill(popupMenu, 3);
 
       XViewerCustomMenu xMenu = new XViewerCustomMenu(xHistoryWidget.getXViewer());
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -232,7 +232,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            replaceWithMenu.setEnabled(selections.size() == 1 && selections.iterator().next() instanceof AttributeChange);
+            replaceWithMenu.setEnabled(
+               selections.size() == 1 && selections.iterator().next() instanceof AttributeChange);
          }
 
       });
@@ -278,7 +279,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            changeReportMenuItem.setEnabled(selections.size() == 1 && ((Change) selections.iterator().next()).getTxDelta().getStartTx().getTxType() != TransactionDetailsType.Baselined);
+            changeReportMenuItem.setEnabled(
+               selections.size() == 1 && ((Change) selections.iterator().next()).getTxDelta().getStartTx().getTxType() != TransactionDetailsType.Baselined);
          }
 
       });
@@ -384,7 +386,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
 
    @Override
    public List<? extends IEventFilter> getEventFilters() {
-      return artifact != null ? OseeEventManager.getEventFiltersForBranch(artifact.getBranch()) : Collections.<IEventFilter> emptyList();
+      return artifact != null ? OseeEventManager.getEventFiltersForBranch(
+         artifact.getBranch()) : Collections.<IEventFilter> emptyList();
    }
 
    @Override
@@ -423,9 +426,8 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          public IStatus runInUIThread(IProgressMonitor monitor) {
             try {
                IWorkbenchPage page = AWorkbench.getActivePage();
-               HistoryView historyView =
-                  (HistoryView) page.showView(VIEW_ID, artifact.getGuid() + artifact.getBranch().getGuid(),
-                     IWorkbenchPage.VIEW_ACTIVATE);
+               HistoryView historyView = (HistoryView) page.showView(VIEW_ID,
+                  artifact.getGuid() + artifact.getBranch().getGuid(), IWorkbenchPage.VIEW_ACTIVATE);
 
                historyView.explore(artifact, loadHistory);
             } catch (Exception ex) {

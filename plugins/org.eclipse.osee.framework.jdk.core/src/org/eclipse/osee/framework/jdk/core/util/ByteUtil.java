@@ -71,14 +71,14 @@ public class ByteUtil {
     */
    public static String toBinaryString(byte b) {
       StringBuffer sb = new StringBuffer();
-      sb.append((b >> 7 & 0x01));
-      sb.append((b >> 6 & 0x01));
-      sb.append((b >> 5 & 0x01));
-      sb.append((b >> 4 & 0x01));
-      sb.append((b >> 3 & 0x01));
-      sb.append((b >> 2 & 0x01));
-      sb.append((b >> 1 & 0x01));
-      sb.append((b & 0x01));
+      sb.append(b >> 7 & 0x01);
+      sb.append(b >> 6 & 0x01);
+      sb.append(b >> 5 & 0x01);
+      sb.append(b >> 4 & 0x01);
+      sb.append(b >> 3 & 0x01);
+      sb.append(b >> 2 & 0x01);
+      sb.append(b >> 1 & 0x01);
+      sb.append(b & 0x01);
       return sb.toString();
    }
 

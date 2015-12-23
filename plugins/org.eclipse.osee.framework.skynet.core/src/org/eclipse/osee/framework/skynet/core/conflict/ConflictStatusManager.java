@@ -57,7 +57,8 @@ public class ConflictStatusManager {
          if (chStmt.next()) {
             //There was an entry so lets check it and update it.
             int intStatus = chStmt.getInt("status");
-            if ((chStmt.getInt("source_gamma_id") != sourceGamma || chStmt.getInt("dest_gamma_id") != destGamma) && intStatus != ConflictStatus.COMMITTED.getValue()) {
+            if ((chStmt.getInt("source_gamma_id") != sourceGamma || chStmt.getInt(
+               "dest_gamma_id") != destGamma) && intStatus != ConflictStatus.COMMITTED.getValue()) {
                if (intStatus == ConflictStatus.RESOLVED.getValue() || intStatus == ConflictStatus.PREVIOUS_MERGE_APPLIED_SUCCESS.getValue()) {
                   intStatus = ConflictStatus.OUT_OF_DATE_RESOLVED.getValue();
                }

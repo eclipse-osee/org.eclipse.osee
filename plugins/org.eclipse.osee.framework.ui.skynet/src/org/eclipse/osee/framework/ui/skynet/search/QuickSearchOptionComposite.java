@@ -418,9 +418,8 @@ public class QuickSearchOptionComposite extends Composite {
       public void configure() {
          try {
             Collection<IAttributeType> taggableItems = AttributeTypeManager.getTaggableTypes();
-            FilteredCheckboxAttributeTypeDialog dialog =
-               new FilteredCheckboxAttributeTypeDialog("Attribute Type Filter Selection",
-                  "Select attribute types to search in.");
+            FilteredCheckboxAttributeTypeDialog dialog = new FilteredCheckboxAttributeTypeDialog(
+               "Attribute Type Filter Selection", "Select attribute types to search in.");
             dialog.setSelectable(taggableItems);
             dialog.setShowSelectButtons(true);
 
@@ -522,9 +521,8 @@ public class QuickSearchOptionComposite extends Composite {
       public void configure() {
          try {
             Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
-            FilteredCheckboxArtifactTypeDialog dialog =
-               new FilteredCheckboxArtifactTypeDialog("Artifact Type Filter Selection",
-                  "Select artifact types to search in.");
+            FilteredCheckboxArtifactTypeDialog dialog = new FilteredCheckboxArtifactTypeDialog(
+               "Artifact Type Filter Selection", "Select artifact types to search in.");
             dialog.setShowSelectButtons(true);
             dialog.setInput(artifactTypes);
 

@@ -109,10 +109,11 @@ public class RelationOrderingTest {
 
       checkUserDefined();
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
       Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RelationOrder);
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
-         (attribute == null || attribute.isDeleted()));
+         attribute == null || attribute.isDeleted());
 
       checkDesc();
 
@@ -144,17 +145,19 @@ public class RelationOrderingTest {
 
       parent.setRelationOrder(CoreRelationTypes.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
       transaction.execute();
 
       attribute = parent.getSoleAttribute(CoreAttributeTypes.RelationOrder);
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
-         (attribute != null));
+         attribute != null);
 
    }
 
    private void checkAsc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
+         RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "a_child");

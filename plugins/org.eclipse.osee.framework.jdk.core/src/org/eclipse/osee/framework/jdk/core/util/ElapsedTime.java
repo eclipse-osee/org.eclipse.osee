@@ -56,7 +56,7 @@ public class ElapsedTime {
       endDate = new Date();
       long diff = endDate.getTime() - startDate.getTime();
       String str = String.format("%s - elapsed %d %s - start %s - end %s", name,
-         (units == Units.SEC ? (diff / 1000) : diff), units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
+         units == Units.SEC ? diff / 1000 : diff, units.name(), DateUtil.getDateStr(startDate, DateUtil.HHMMSSSS),
          DateUtil.getDateStr(endDate, DateUtil.HHMMSSSS));
       System.err.println(str + (logStart ? "" : "\n"));
       return str;

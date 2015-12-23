@@ -81,41 +81,41 @@ public class OseeFieldMainTest {
       Collection<Object[]> data = new ArrayList<>();
 
       data.add(new Object[] {//
-      new OseeFieldTestData<Object>(new OseeField<Object>(), //
-         null, false, //
-         new FieldGetSetTestData<Object>(true, "one test", "one test", true), //
-         new FieldGetSetTestData<Object>(false, "two test", "two test", true), //
-         new FieldGetSetTestData<Object>(true, "three test", "three test", true)//
-      )});//
+         new OseeFieldTestData<Object>(new OseeField<Object>(), //
+            null, false, //
+            new FieldGetSetTestData<Object>(true, "one test", "one test", true), //
+            new FieldGetSetTestData<Object>(false, "two test", "two test", true), //
+            new FieldGetSetTestData<Object>(true, "three test", "three test", true)//
+         )});//
 
       data.add(new Object[] { //
-      new OseeFieldTestData<Integer>(new OseeField<Integer>(), //
-         null, false, //
-         new FieldGetSetTestData<Integer>(true, 1, 1, true), //
-         new FieldGetSetTestData<Integer>(false, 5, 5, true), //
-         new FieldGetSetTestData<Integer>(true, Integer.MIN_VALUE, Integer.MIN_VALUE, true)//
-      )});
+         new OseeFieldTestData<Integer>(new OseeField<Integer>(), //
+            null, false, //
+            new FieldGetSetTestData<Integer>(true, 1, 1, true), //
+            new FieldGetSetTestData<Integer>(false, 5, 5, true), //
+            new FieldGetSetTestData<Integer>(true, Integer.MIN_VALUE, Integer.MIN_VALUE, true)//
+         )});
 
       data.add(new Object[] { //
-      new OseeFieldTestData<Boolean>(new OseeField<Boolean>(), //
-         null, false, //
-         new FieldGetSetTestData<Boolean>(true, true, true, true), //
-         new FieldGetSetTestData<Boolean>(false, true, true, true), //
-         new FieldGetSetTestData<Boolean>(true, false, false, true),//
-         new FieldGetSetTestData<Boolean>(false, false, false, true)//
-      )});
+         new OseeFieldTestData<Boolean>(new OseeField<Boolean>(), //
+            null, false, //
+            new FieldGetSetTestData<Boolean>(true, true, true, true), //
+            new FieldGetSetTestData<Boolean>(false, true, true, true), //
+            new FieldGetSetTestData<Boolean>(true, false, false, true), //
+            new FieldGetSetTestData<Boolean>(false, false, false, true)//
+         )});
 
       data.add(new Object[] {new OseeFieldTestData<Object>(new OseeField<Object>("string1"), "string1", true)});
-      data.add(new Object[] {new OseeFieldTestData<Integer>(new OseeField<Integer>(Integer.MIN_VALUE),
-         Integer.MIN_VALUE, true)});
+      data.add(new Object[] {
+         new OseeFieldTestData<Integer>(new OseeField<Integer>(Integer.MIN_VALUE), Integer.MIN_VALUE, true)});
       data.add(new Object[] {new OseeFieldTestData<Boolean>(new OseeField<Boolean>(true), true, true)});
       data.add(new Object[] {new OseeFieldTestData<Boolean>(new OseeField<Boolean>(false), false, true)});
 
       data.add(new Object[] {//
-      new OseeFieldTestData<String>(new OseeField<String>("string2"), "string2", true, //
-         new FieldGetSetTestData<String>(false, "another", "another", true), //
-         new FieldGetSetTestData<String>(true, "something", "something", true)//
-      )});
+         new OseeFieldTestData<String>(new OseeField<String>("string2"), "string2", true, //
+            new FieldGetSetTestData<String>(false, "another", "another", true), //
+            new FieldGetSetTestData<String>(true, "something", "something", true)//
+         )});
       return data;
    }
 }

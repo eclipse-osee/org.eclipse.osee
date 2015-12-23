@@ -99,7 +99,8 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
          try {
             switch (diffToShow) {
                case 1:
-                  if (attributeConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(attributeConflict) != null) {
+                  if (attributeConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(
+                     attributeConflict) != null) {
                      artifacts.add(attributeConflict.getSourceArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
                   } else {
@@ -107,7 +108,8 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   }
                   break;
                case 2:
-                  if (attributeConflict.getDestArtifact() != null && MergeUtility.getStartArtifact(attributeConflict) != null) {
+                  if (attributeConflict.getDestArtifact() != null && MergeUtility.getStartArtifact(
+                     attributeConflict) != null) {
                      artifacts.add(attributeConflict.getDestArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
                   } else {
@@ -149,7 +151,8 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
          try {
             switch (diffToShow) {
                case 1:
-                  if (artifactConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(artifactConflict) != null) {
+                  if (artifactConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(
+                     artifactConflict) != null) {
                      artifacts.add(artifactConflict.getSourceArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
                   } else {
@@ -157,7 +160,8 @@ class DiffHandler extends AbstractSelectionEnabledHandler {
                   }
                   break;
                case 2:
-                  if (artifactConflict.getDestArtifact() != null && conflicts.get(0).getStatus().isInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
+                  if (artifactConflict.getDestArtifact() != null && conflicts.get(
+                     0).getStatus().isInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
                      artifacts.add(artifactConflict.getDestArtifact());
                      artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
                   } else {

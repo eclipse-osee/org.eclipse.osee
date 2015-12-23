@@ -12,8 +12,6 @@ package org.eclipse.osee.ats.core.workdef;
 
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionFloatMinMaxConstraint;
 
-
-
 /**
  * @author Donald G. Dunne
  */

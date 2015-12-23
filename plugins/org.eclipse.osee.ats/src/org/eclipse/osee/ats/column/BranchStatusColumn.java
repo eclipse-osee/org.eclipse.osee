@@ -73,8 +73,8 @@ public class BranchStatusColumn extends XViewerAtsColumn implements IXViewerValu
                if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
                   return "Working";
                } else if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-                  if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(teamArt) || !AtsClientService.get().getBranchService().isBranchesAllCommitted(
-                     teamArt)) {
+                  if (!AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
+                     teamArt) || !AtsClientService.get().getBranchService().isBranchesAllCommitted(teamArt)) {
                      return "Needs Commit";
                   }
                   return "Committed";

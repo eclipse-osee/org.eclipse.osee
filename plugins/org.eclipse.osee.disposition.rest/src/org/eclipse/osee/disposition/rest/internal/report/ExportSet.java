@@ -201,38 +201,38 @@ public class ExportSet {
 
    private static String[] getHeadersDetailed() {
       String[] toReturn = {//
-         "Script Name",//
-            "Category",//
-            "Status",//
-            "Total Test Points",//
-            "Failures",//
-            "Failed Points",//
-            "Remaining Count",//
-            "Remaining Points",//
-            "Assignee",//
-            "Item Notes",//
-            "Needs Rerun",//
-            "Aborted",//
-            "Station",//
-            "Elapsed Time",//
-            "Creation Date",//
-            "Last Updated",//
-            "Version",//
-            "Dispositions"//
-         };
+         "Script Name", //
+         "Category", //
+         "Status", //
+         "Total Test Points", //
+         "Failures", //
+         "Failed Points", //
+         "Remaining Count", //
+         "Remaining Points", //
+         "Assignee", //
+         "Item Notes", //
+         "Needs Rerun", //
+         "Aborted", //
+         "Station", //
+         "Elapsed Time", //
+         "Creation Date", //
+         "Last Updated", //
+         "Version", //
+         "Dispositions"//
+      };
       return toReturn;
    }
 
    private static String[] getHeadersCoverage() {
       String[] toReturn = {//
-         "Namespace",//
-         "Parent Coverage Unit",//
-         "Unit",//
-         "Method Number",//
-         "Execution Line Number",//
-         "Coverage Method",//
-         "Coverage Rationale",//
-      "Text"};
+         "Namespace", //
+         "Parent Coverage Unit", //
+         "Unit", //
+         "Method Number", //
+         "Execution Line Number", //
+         "Coverage Method", //
+         "Coverage Rationale", //
+         "Text"};
       return toReturn;
    }
 }

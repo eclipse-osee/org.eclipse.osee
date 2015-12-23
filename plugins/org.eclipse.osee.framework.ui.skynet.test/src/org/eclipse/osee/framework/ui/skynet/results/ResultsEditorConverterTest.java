@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.results;
 
+import com.lowagie.text.pdf.PdfReader;
 import java.io.ByteArrayOutputStream;
 import java.io.StringWriter;
 import java.io.Writer;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.util.TableWriterAdaptor;
 import org.eclipse.swt.widgets.Composite;
 import org.junit.Assert;
 import org.junit.Test;
-import com.lowagie.text.pdf.PdfReader;
 
 /**
  * @see Test Case for {@link ResultsEditorConverter}
@@ -125,14 +125,15 @@ public class ResultsEditorConverterTest {
       builder.append("<title>Report</title>\n");
       builder.append("<meta name=\"subject\" content=\"This report is automatically generated.\" />");
       builder.append("<meta name=\"keywords\" content=\"Metadata, iText\" />");
-      builder.append("</head>\n<body leftmargin=\"36.0\" rightmargin=\"36.0\" topmargin=\"36.0\" bottommargin=\"36.0\">\n");
+      builder.append(
+         "</head>\n<body leftmargin=\"36.0\" rightmargin=\"36.0\" topmargin=\"36.0\" bottommargin=\"36.0\">\n");
 
       //split into 2 to avoid % format exception
       String beginTable =
          "<table width=\"80.0%\" align=\"Center\" cellpadding=\"1.0\" cellspacing=\"1.0\" border=\"1.0\" bordercolor=\"#000000\">";
       String tabTable = "<tr>%s</tr><tr>%s</tr><tr>%s</tr></table>";
       String th =
-         "<th border=\"0.5\" bgcolor=\"#d9d9d9\" align=\"Center\" width=\"0\"><div align=\"Center\" style=\"font-family: unknown; font-size: 9.0pt; color: #000000; font-weight: bold; \">%s</div></th>"; //1-3 
+         "<th border=\"0.5\" bgcolor=\"#d9d9d9\" align=\"Center\" width=\"0\"><div align=\"Center\" style=\"font-family: unknown; font-size: 9.0pt; color: #000000; font-weight: bold; \">%s</div></th>"; //1-3
       String td =
          "<td border=\"0.5\" width=\"0\"><div style=\"font-family: unknown; font-size: 9.0pt; color: #000000; \">%s</div></td>";
 
@@ -180,11 +181,14 @@ public class ResultsEditorConverterTest {
 
    private String getExpected_Collapsing_HTMLReport(MockResultsProvider provider) {
       StringBuilder builder = new StringBuilder();
-      builder.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n");
+      builder.append(
+         "<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n");
       builder.append("<title>Report</title>\n");
       builder.append("<style type=\"text/css\">\n");
-      builder.append(" .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n");
-      builder.append(" .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n");
+      builder.append(
+         " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n");
+      builder.append(
+         " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n");
       builder.append("</style>\n");
       builder.append("<script type=\"text/javascript\">\n");
       builder.append("function opendiv(id){\n");

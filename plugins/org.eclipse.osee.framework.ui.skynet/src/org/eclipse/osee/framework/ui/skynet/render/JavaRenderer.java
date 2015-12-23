@@ -195,7 +195,7 @@ public class JavaRenderer extends FileSystemRenderer {
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Java Editor",
-         FrameworkImage.JAVA_COMPILATION_UNIT));
+      commands.add(
+         new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Java Editor", FrameworkImage.JAVA_COMPILATION_UNIT));
    }
 }

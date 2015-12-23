@@ -202,10 +202,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
             //typically during a merge of a branch, see RelationIntegrityCheckTest.java
             if (relLink.commitTrans > 0 && relLink.modType == 1) {
-               commitOfNewRelationOnDeletedArtifactCases.add(new Object[] {
-                  relLink.gammaId,
-                  relLink.relTransId,
-                  relLink.branchUuid});
+               commitOfNewRelationOnDeletedArtifactCases.add(
+                  new Object[] {relLink.gammaId, relLink.relTransId, relLink.branchUuid});
                newRelationOnDeletedArtifact.add(relLink);
             } else {
                unExpectedCases.add(relLink);
@@ -215,10 +213,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             updateCurrentAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
          } else {
             updatePreviousAddressing.add(new Object[] {relLink.gammaId, relLink.relTransId});
-            insertArtifactDeleted.add(new Object[] {
-               relLink.gammaId,
-               relLink.transIdForArtifactDeletion,
-               relLink.branchUuid});
+            insertArtifactDeleted.add(
+               new Object[] {relLink.gammaId, relLink.transIdForArtifactDeletion, relLink.branchUuid});
          }
       }
 
@@ -326,8 +322,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
             int modType =              forDelete ? -1 : chStmt.getInt("creating_trans_mod_type");
             //@formatter:on
 
-            if (!map.containsKey(gamma_id, transactionId) && (forDelete || !deleteMap.containsKey(gamma_id,
-               transactionId))) {
+            if (!map.containsKey(gamma_id,
+               transactionId) && (forDelete || !deleteMap.containsKey(gamma_id, transactionId))) {
                map.put(gamma_id, transactionId, new LocalRelationLink(relationId, gamma_id, transactionId, branchUuid,
                   a_sideArtifactId, b_sideArtifactId, deletedTransaction, commitTransId, modType));
             }
@@ -341,7 +337,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
 
    @SuppressWarnings("unused")
    private void displayUnexpectedRelLinks(LocalRelationLink relationLink) {
-      log("gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
+      log(
+         "gam_id \t transaction_id \t rel_link_id \t branch_d \t a_art_id \t b_art_id \t deleted_tran \t commit trans \t commit trans mod type");
       log(relationLink.toString());
    }
 

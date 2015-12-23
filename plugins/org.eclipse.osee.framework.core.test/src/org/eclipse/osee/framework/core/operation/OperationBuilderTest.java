@@ -38,7 +38,7 @@ import org.mockito.MockitoAnnotations;
 public class OperationBuilderTest {
 
    private static final double MONITOR_SCALE = 1000.0;
-   private static final int ONE_THIRD_MONITOR = toTicks((1.0 / 3.0));
+   private static final int ONE_THIRD_MONITOR = toTicks(1.0 / 3.0);
    private static final int QUARTER_MONITOR = toTicks(0.25);
 
    private static final String OPERATION1 = "Operation1";

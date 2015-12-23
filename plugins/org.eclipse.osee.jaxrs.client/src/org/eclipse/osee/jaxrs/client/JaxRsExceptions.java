@@ -107,9 +107,8 @@ public final class JaxRsExceptions {
                message = String.format("%s [%s]", getResponseString(response), entity);
             }
          } catch (Throwable th) {
-            message =
-               String.format("Error processing reponse error - %s [%s]", getResponseString(response),
-                  th.getLocalizedMessage());
+            message = String.format("Error processing reponse error - %s [%s]", getResponseString(response),
+               th.getLocalizedMessage());
          }
       } else {
          message = getResponseString(response);

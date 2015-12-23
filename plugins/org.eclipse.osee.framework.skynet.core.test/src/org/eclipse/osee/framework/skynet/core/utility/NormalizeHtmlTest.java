@@ -6,7 +6,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Boeing - initial API and implementation 
+ *     Boeing - initial API and implementation
  *******************************************************************************/
 
 package org.eclipse.osee.framework.skynet.core.utility;
@@ -67,7 +67,7 @@ public class NormalizeHtmlTest {
    private static String bodyOnly(String input) {
       int iBodyStart = input.indexOf("<body");
       int iBodyEnd = input.indexOf("</body");
-      if ((iBodyStart == -1) || (iBodyEnd == -1)) {
+      if (iBodyStart == -1 || iBodyEnd == -1) {
          return input;
       }
       iBodyStart = iBodyStart + 1 + input.substring(iBodyStart).indexOf('>');

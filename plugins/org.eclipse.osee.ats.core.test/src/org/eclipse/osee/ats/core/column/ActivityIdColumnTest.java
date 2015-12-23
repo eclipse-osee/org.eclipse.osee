@@ -14,7 +14,6 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import org.junit.Assert;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
@@ -23,6 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.column.ev.ActivityIdUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -100,7 +100,9 @@ public class ActivityIdColumnTest {
 
       Assert.assertEquals("ActId 1 - ActId 1 Name", col.getColumnText(teamWf1));
       String workPackageStr = col.getColumnText(action);
-      Assert.assertTrue(workPackageStr.equals("ActId 1 - ActId 1 Name, ActId 2 - ActId 2 Name") || workPackageStr.equals("ActId 2 - ActId 2 Name, ActId 1 - ActId 1 Name"));
+      Assert.assertTrue(
+         workPackageStr.equals("ActId 1 - ActId 1 Name, ActId 2 - ActId 2 Name") || workPackageStr.equals(
+            "ActId 2 - ActId 2 Name, ActId 1 - ActId 1 Name"));
 
       Assert.assertEquals("", col.getColumnText(teamWf3));
    }

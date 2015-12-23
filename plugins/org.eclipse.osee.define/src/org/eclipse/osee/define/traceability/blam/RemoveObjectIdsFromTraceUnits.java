@@ -55,11 +55,14 @@ public class RemoveObjectIdsFromTraceUnits extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select File Or Folder (file can have a list of folders separated by newlines)\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"Select File Or Folder (file can have a list of folders separated by newlines)\"/>");
       builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select File\" />");
       builder.append("<XWidget xwidgetType=\"XDirectorySelectionDialog\" displayName=\"Select Folder\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Sub-Folders\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"File With Embedded Paths\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Sub-Folders\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"File With Embedded Paths\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }

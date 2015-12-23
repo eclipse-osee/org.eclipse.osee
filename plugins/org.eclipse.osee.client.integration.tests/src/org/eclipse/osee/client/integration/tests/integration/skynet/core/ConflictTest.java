@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcStatement;
-import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.FixMethodOrder;
@@ -117,7 +116,7 @@ public class ConflictTest {
       int actualNumber = conflicts.size();
       assertTrue(
          "(Intermittent failures - needs re-write) - Number of conflicts found is not equal to the number of conflicts expected",
-         (expectedNumber <= actualNumber) && (actualNumber <= (expectedNumber + 1)));
+         expectedNumber <= actualNumber && actualNumber <= expectedNumber + 1);
       assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
          monitorLog.getSevereLogs().isEmpty());
    }
@@ -140,7 +139,7 @@ public class ConflictTest {
          int actualNumber = artifacts.size();
          assertTrue(
             "(Intermittent failures - needs re-write) - The merge Branch does not contain the expected number of artifacts: ",
-            (expectedNumber <= actualNumber) && (actualNumber <= (expectedNumber + 1)));
+            expectedNumber <= actualNumber && actualNumber <= expectedNumber + 1);
       } catch (Exception ex) {
          fail(ex.getMessage());
       }

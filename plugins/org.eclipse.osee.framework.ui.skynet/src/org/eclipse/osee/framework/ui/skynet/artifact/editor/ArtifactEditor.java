@@ -193,7 +193,8 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       new ToolItem(toolBar, SWT.SEPARATOR);
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
-      artifactInfoLabel.setText("Type: \"" + getEditorInput().getArtifact().getArtifactTypeName() + "\"   GUID: " + getEditorInput().getArtifact().getGuid());
+      artifactInfoLabel.setText(
+         "Type: \"" + getEditorInput().getArtifact().getArtifactTypeName() + "\"   GUID: " + getEditorInput().getArtifact().getGuid());
       artifactInfoLabel.setToolTipText("The database id for this artifact");
 
       return toolBar;

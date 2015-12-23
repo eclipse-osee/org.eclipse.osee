@@ -40,7 +40,7 @@ public class ArtifactDataImpl extends OrcsVersionedObjectImpl implements Artifac
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      result = prime * result + (guid == null ? 0 : guid.hashCode());
       return result;
    }
 

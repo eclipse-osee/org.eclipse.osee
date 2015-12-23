@@ -9,7 +9,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * Use this class to register components to be used within the IDE.
  */
 public class AtsDslUiModule extends org.eclipse.osee.ats.dsl.ui.AbstractAtsDslUiModule {
-	public AtsDslUiModule(AbstractUIPlugin plugin) {
-		super(plugin);
-	}
+   public AtsDslUiModule(AbstractUIPlugin plugin) {
+      super(plugin);
+   }
 }

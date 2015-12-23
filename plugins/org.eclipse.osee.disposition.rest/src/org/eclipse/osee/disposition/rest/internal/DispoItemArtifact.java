@@ -15,7 +15,6 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -23,7 +22,7 @@ import org.json.JSONObject;
 /**
  * @author Angel Avila
  */
-public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem {
+public class DispoItemArtifact extends BaseIdentity<String>implements DispoItem {
 
    private final ArtifactReadable artifact;
 

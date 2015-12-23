@@ -16,5 +16,5 @@ import java.util.List;
  * @author Roberto E. Escobar
  */
 public interface DistributedList<E> extends List<E>, DistributedCollection {
-   // 
+   //
 }

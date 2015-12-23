@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords> implements HasTagProcessor {
+public class AttributeTokenSqlHandler extends SqlHandler<CriteriaAttributeKeywords>implements HasTagProcessor {
 
    private static final AliasEntry GAMMA_WITH = SqlUtil.newAlias("gamma", "gamma");
    private static final AliasEntry ATTRIBUTE_WITH = SqlUtil.newAlias("attribute", "att");

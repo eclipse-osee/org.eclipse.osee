@@ -81,9 +81,8 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
       }
       try {
          setEditable(isCurrentState && !sma.isReadOnly());
-         StringBuffer sb =
-            new StringBuffer(String.format("        State Percent: %d",
-               sma.getStateMgr().getPercentComplete(page.getName())));
+         StringBuffer sb = new StringBuffer(
+            String.format("        State Percent: %d", sma.getStateMgr().getPercentComplete(page.getName())));
          boolean breakoutNeeded = false;
          if (sma instanceof AbstractTaskableArtifact && ((AbstractTaskableArtifact) sma).hasTaskArtifacts()) {
             sb.append(String.format("\n        Task  Percent: %d",

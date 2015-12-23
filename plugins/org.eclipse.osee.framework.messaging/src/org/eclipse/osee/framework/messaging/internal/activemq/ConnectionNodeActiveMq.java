@@ -86,9 +86,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
       }
       try {
          String uri = nodeInfo.getUri().toASCIIString();
-         ActiveMQConnectionFactory factory =
-            new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,
-               ActiveMQConnectionFactory.DEFAULT_PASSWORD, uri);
+         ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,
+            ActiveMQConnectionFactory.DEFAULT_PASSWORD, uri);
          connection = factory.createConnection();
          connection.setExceptionListener(exceptionListener);
          session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
@@ -201,8 +200,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          if (isConnectedThrow()) {
             destination = getOrCreateTopic(messageId);
             MessageConsumer consumer = session.createConsumer(destination);
-            consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session,
-               listener));
+            consumer.setMessageListener(
+               new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
             regularListeners.put(messageId.getId(), consumer, listener);
             statusCallback.success();
          } else {
@@ -222,8 +221,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
          if (isConnectedThrow()) {
             destination = getOrCreateTopic(messageId);
             MessageConsumer consumer = session.createConsumer(destination, selector);
-            consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session,
-               listener));
+            consumer.setMessageListener(
+               new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
             regularListeners.put(messageId.getId(), consumer, listener);
             statusCallback.success();
          } else {
@@ -402,7 +401,8 @@ class ConnectionNodeActiveMq implements ConnectionNodeFailoverSupport, MessageLi
             MessageListener listener = entry.getSecond().getMessageListener();
             if (listener instanceof ActiveMqMessageListenerWrapper) {
                sb.append("\tConsumer Listeners:\n");
-               sb.append(String.format("\t\t%s\n", ((ActiveMqMessageListenerWrapper) listener).getListener().toString()));
+               sb.append(
+                  String.format("\t\t%s\n", ((ActiveMqMessageListenerWrapper) listener).getListener().toString()));
             }
          } catch (JMSException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

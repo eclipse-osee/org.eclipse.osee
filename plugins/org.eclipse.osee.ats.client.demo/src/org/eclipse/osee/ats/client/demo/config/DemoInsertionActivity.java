@@ -19,28 +19,28 @@ import org.eclipse.osee.ats.api.insertion.JaxInsertionActivity;
  */
 public class DemoInsertionActivity extends JaxInsertionActivity {
 
-   public static DemoInsertionActivity commPage = new DemoInsertionActivity(DemoInsertion.sawComm, "COMM Page",
-      23477781L, "description");
-   public static DemoInsertionActivity commButton = new DemoInsertionActivity(DemoInsertion.sawComm, "COMM Button",
-      23477782L, "description");
+   public static DemoInsertionActivity commPage =
+      new DemoInsertionActivity(DemoInsertion.sawComm, "COMM Page", 23477781L, "description");
+   public static DemoInsertionActivity commButton =
+      new DemoInsertionActivity(DemoInsertion.sawComm, "COMM Button", 23477782L, "description");
 
-   public static DemoInsertionActivity cisAsdf = new DemoInsertionActivity(DemoInsertion.cisAsdf, "cisAsdf Activity",
-      23477783L, "description");
-   public static DemoInsertionActivity cisTechApproach = new DemoInsertionActivity(DemoInsertion.cisTechApproach,
-      "cisAsdf TA Activity", 2347778L, "description");
+   public static DemoInsertionActivity cisAsdf =
+      new DemoInsertionActivity(DemoInsertion.cisAsdf, "cisAsdf Activity", 23477783L, "description");
+   public static DemoInsertionActivity cisTechApproach =
+      new DemoInsertionActivity(DemoInsertion.cisTechApproach, "cisAsdf TA Activity", 2347778L, "description");
 
-   public static DemoInsertionActivity ver1TechApproachActivity = new DemoInsertionActivity(
-      DemoInsertion.ver1TechApproach, 23477784L);
-   public static DemoInsertionActivity ver1WetrPhase1 = new DemoInsertionActivity(DemoInsertion.ver1WetrPhase1,
-      23477785L);
-   public static DemoInsertionActivity ver2TechApproach = new DemoInsertionActivity(DemoInsertion.ver2TechApproach,
-      23477786L);
-   public static DemoInsertionActivity ver2WetrPhase1 = new DemoInsertionActivity(DemoInsertion.ver2WetrPhase1,
-      23477787L);
-   public static DemoInsertionActivity ver3TechApproach = new DemoInsertionActivity(DemoInsertion.ver3TechApproach,
-      23477788L);
-   public static DemoInsertionActivity ver3WetrPhase1 = new DemoInsertionActivity(DemoInsertion.ver3WetrPhase1,
-      23477789L);
+   public static DemoInsertionActivity ver1TechApproachActivity =
+      new DemoInsertionActivity(DemoInsertion.ver1TechApproach, 23477784L);
+   public static DemoInsertionActivity ver1WetrPhase1 =
+      new DemoInsertionActivity(DemoInsertion.ver1WetrPhase1, 23477785L);
+   public static DemoInsertionActivity ver2TechApproach =
+      new DemoInsertionActivity(DemoInsertion.ver2TechApproach, 23477786L);
+   public static DemoInsertionActivity ver2WetrPhase1 =
+      new DemoInsertionActivity(DemoInsertion.ver2WetrPhase1, 23477787L);
+   public static DemoInsertionActivity ver3TechApproach =
+      new DemoInsertionActivity(DemoInsertion.ver3TechApproach, 23477788L);
+   public static DemoInsertionActivity ver3WetrPhase1 =
+      new DemoInsertionActivity(DemoInsertion.ver3WetrPhase1, 23477789L);
    private static List<DemoInsertionActivity> activities;
 
    DemoInsertion insertion;

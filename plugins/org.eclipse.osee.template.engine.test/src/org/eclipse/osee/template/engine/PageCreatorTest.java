@@ -124,9 +124,8 @@ public class PageCreatorTest {
    @Test
    public void realizePage__KeyValues() {
       String expected = "headerA\n\nvalue1\n\nvalue2\n";
-      String results =
-         PageFactory.realizePage(registry, RealizePage_MainPageHtml, "header", "headerA", "key1", "value1", "key2",
-            "value2");
+      String results = PageFactory.realizePage(registry, RealizePage_MainPageHtml, "header", "headerA", "key1",
+         "value1", "key2", "value2");
       Assert.assertEquals(expected, results);
    }
 
@@ -153,17 +152,15 @@ public class PageCreatorTest {
    @Test
    public void testListItemRule() {
       PageCreator page = new PageCreator(registry);
-      page.addSubstitution(new ListItemRule<Pair<CharSequence, CharSequence>>("key1", (new HyperLinkRule(
-         "ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse"))));
+      page.addSubstitution(new ListItemRule<Pair<CharSequence, CharSequence>>("key1",
+         new HyperLinkRule("ruleNameDoesntMatter", "http://www.eclipse.org", "Eclipse")));
       CompositeRule<Pair<CharSequence, CharSequence>> listItemsComposite =
          new CompositeRule<Pair<CharSequence, CharSequence>>("key2");
 
-      ListItemRule<Pair<CharSequence, CharSequence>> li1 =
-         new ListItemRule<Pair<CharSequence, CharSequence>>("keyDoesntMatter", (new HyperLinkRule("keyDoesntMatter",
-            "http://www.stackoverflow.com", "Stack Overflow")));
-      ListItemRule<Pair<CharSequence, CharSequence>> li2 =
-         new ListItemRule<Pair<CharSequence, CharSequence>>("keyDoesntMatter", (new HyperLinkRule("keyDoesntMatter",
-            "http://www.google.com", "Google!")));
+      ListItemRule<Pair<CharSequence, CharSequence>> li1 = new ListItemRule<Pair<CharSequence, CharSequence>>(
+         "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.stackoverflow.com", "Stack Overflow"));
+      ListItemRule<Pair<CharSequence, CharSequence>> li2 = new ListItemRule<Pair<CharSequence, CharSequence>>(
+         "keyDoesntMatter", new HyperLinkRule("keyDoesntMatter", "http://www.google.com", "Google!"));
 
       listItemsComposite.addRule(li1);
       listItemsComposite.addRule(li2);

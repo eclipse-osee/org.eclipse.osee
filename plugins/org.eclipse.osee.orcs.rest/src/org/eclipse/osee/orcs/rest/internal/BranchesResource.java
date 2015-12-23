@@ -30,7 +30,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 @Path("branch")
 public class BranchesResource {
 
-   // Allows to insert contextual objects into the class, 
+   // Allows to insert contextual objects into the class,
    // e.g. ServletContext, Request, Response, UriInfo
    @Context
    UriInfo uriInfo;

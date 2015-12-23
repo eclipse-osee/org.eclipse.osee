@@ -130,12 +130,10 @@ public class AccessDataTest {
    public void testAccessDetailMerge() throws OseeCoreException {
       AccessData data = new AccessData();
 
-      AccessDetail<?> detail1 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
-            new Scope().add("same_scope"));
-      AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            new Scope().add("same_scope"));
+      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+         new Scope().add("same_scope"));
+      AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", new Scope().add("same_scope"));
       data.add(artifactToCheck, detail1);
       data.add(artifactToCheck, detail2);
 
@@ -152,12 +150,10 @@ public class AccessDataTest {
 
    @Test
    public void testAccessDetailMultipleKeys() throws OseeCoreException {
-      AccessDetail<?> detail1 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
-            new Scope().add("same_scope"));
-      AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            new Scope().add("same_scope"));
+      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+         new Scope().add("same_scope"));
+      AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", new Scope().add("same_scope"));
 
       AccessData data = new AccessData();
       data.add(branchToCheck1, detail1);
@@ -182,12 +178,10 @@ public class AccessDataTest {
 
    @Test
    public void testAccessDetailMultipleScopeLevels() throws OseeCoreException {
-      AccessDetail<?> detail1 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
-            new Scope().add("more").add("specific").add("scope"));
-      AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            new Scope().add("less").add("specific"));
+      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+         new Scope().add("more").add("specific").add("scope"));
+      AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", new Scope().add("less").add("specific"));
 
       AccessData data = new AccessData();
       data.add(branchToCheck1, detail1);
@@ -202,15 +196,12 @@ public class AccessDataTest {
 
    @Test
    public void testAccessDetailLegacyScope() throws OseeCoreException {
-      AccessDetail<?> specificDetail =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
-            new Scope().add("more").add("specific").add("scope"));
-      AccessDetail<?> lessSpecificDetail =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            new Scope().add("less").add("specific"));
-      AccessDetail<?> legacyDetail =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            Scope.createLegacyScope());
+      AccessDetail<?> specificDetail = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY,
+         "item 1 - deny", new Scope().add("more").add("specific").add("scope"));
+      AccessDetail<?> lessSpecificDetail = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", new Scope().add("less").add("specific"));
+      AccessDetail<?> legacyDetail = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", Scope.createLegacyScope());
 
       AccessData data = new AccessData();
       data.add(branchToCheck1, specificDetail);
@@ -227,12 +218,10 @@ public class AccessDataTest {
 
    @Test
    public void testToString() throws OseeCoreException {
-      AccessDetail<?> detail1 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
-            new Scope().add("scope 1"));
-      AccessDetail<?> detail2 =
-         MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE, "item 2 - write",
-            new Scope().add("scope 2"));
+      AccessDetail<?> detail1 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.DENY, "item 1 - deny",
+         new Scope().add("scope 1"));
+      AccessDetail<?> detail2 = MockDataFactory.createAccessDetails(relTypeSide1, PermissionEnum.WRITE,
+         "item 2 - write", new Scope().add("scope 2"));
 
       AccessData data = new AccessData();
       Assert.assertEquals("accessData []", data.toString());

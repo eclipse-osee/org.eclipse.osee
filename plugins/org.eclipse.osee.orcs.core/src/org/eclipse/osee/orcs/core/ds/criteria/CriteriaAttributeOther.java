@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,17 +23,16 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.search.QueryBuilder;
-import com.google.common.collect.Lists;
+import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 
 /**
  * @author Roberto E. Escobar
  */
 public class CriteriaAttributeOther extends Criteria {
 
-   public static final List<QueryOption> VALID_OPTIONS = Arrays.asList(QueryOption.TOKEN_COUNT__MATCH,
-      QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
-      QueryOption.CASE__MATCH);
+   public static final List<QueryOption> VALID_OPTIONS =
+      Arrays.asList(QueryOption.TOKEN_COUNT__MATCH, QueryOption.TOKEN_DELIMITER__EXACT,
+         QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE, QueryOption.CASE__MATCH);
 
    private final Collection<IAttributeType> attributeTypes;
    private final Collection<String> values;
@@ -60,13 +60,13 @@ public class CriteriaAttributeOther extends Criteria {
    @Override
    public void checkValid(Options options) throws OseeCoreException {
       Conditions.checkNotNullOrEmptyOrContainNull(getAttributeTypes(), "attributeType");
-      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(QueryBuilder.ANY_ATTRIBUTE_TYPE),
+      Conditions.checkExpressionFailOnTrue(getAttributeTypes().equals(ArtifactQueryBuilder.ANY_ATTRIBUTE_TYPE),
          "Any attribute type is not allowed");
 
       List<QueryOption> unsupportedOptions = getUnsupportedOptions();
       if (unsupportedOptions.size() != 0) {
-         throw new OseeArgumentException("Invalid QueryOptions present: [%s]", Collections.toString(",",
-            unsupportedOptions));
+         throw new OseeArgumentException("Invalid QueryOptions present: [%s]",
+            Collections.toString(",", unsupportedOptions));
       }
    }
 
@@ -78,8 +78,8 @@ public class CriteriaAttributeOther extends Criteria {
 
    @Override
    public String toString() {
-      return "CriteriaAttributeOther [attributeTypes=" + Collections.toString(",", attributeTypes) + ", values=" + values + ", options=" + Collections.toString(
-         ",", options) + "]";
+      return "CriteriaAttributeOther [attributeTypes=" + Collections.toString(",",
+         attributeTypes) + ", values=" + values + ", options=" + Collections.toString(",", options) + "]";
    }
 
 }

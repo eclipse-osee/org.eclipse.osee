@@ -25,8 +25,8 @@ public class BranchEventModificationType {
    public static BranchEventModificationType New = new BranchEventModificationType("AbMBZMtQ304V3L3zdlgA");
    public static BranchEventModificationType Committed = new BranchEventModificationType("AbMBZDMIWATP9NaK0bAA");
    public static BranchEventModificationType Deleted = new BranchEventModificationType("AbMBZE3UESatk0iX0RgA");
-   public static BranchEventModificationType MergeBranchConflictResolved = new BranchEventModificationType(
-      "AbMBZGShRVVx8IaAI3QA");
+   public static BranchEventModificationType MergeBranchConflictResolved =
+      new BranchEventModificationType("AbMBZGShRVVx8IaAI3QA");
    public static BranchEventModificationType Purged = new BranchEventModificationType("AbMBZIfAPkGsNG26uZAA");
    public static BranchEventModificationType Renamed = new BranchEventModificationType("AbMBZKjRORW0CB45LVgA");
 

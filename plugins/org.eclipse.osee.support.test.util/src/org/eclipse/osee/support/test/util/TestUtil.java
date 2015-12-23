@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
  */
 public class TestUtil {
    private static final String DEMO_DB_TYPE = "demo";
-   public static final Collection<String> ignoreLogging = Arrays.asList("No image was defined for art type",
-      "Unable to load the image for [SAVED]");
+   public static final Collection<String> ignoreLogging =
+      Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
 
    public static boolean isInTest() {
       return Boolean.valueOf(System.getProperty("osee.isInTest"));

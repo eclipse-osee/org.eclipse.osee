@@ -16,6 +16,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.io.CharStreams;
 import java.io.IOException;
 import java.io.Reader;
 import javax.script.Bindings;
@@ -33,7 +34,6 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import com.google.common.io.CharStreams;
 
 /**
  * Test Case for {@link ScriptEngines} {@link OrcsScriptEngine}

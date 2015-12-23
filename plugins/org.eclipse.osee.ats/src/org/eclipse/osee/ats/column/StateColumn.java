@@ -77,7 +77,8 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public Color getForeground(Object element, XViewerColumn xCol, int columnIndex) {
       if (element instanceof AbstractWorkflowArtifact) {
-         return Displays.getSystemColor(StateColorToSwtColor.convert(((AbstractWorkflowArtifact) element).getStateDefinition().getColor()));
+         return Displays.getSystemColor(
+            StateColorToSwtColor.convert(((AbstractWorkflowArtifact) element).getStateDefinition().getColor()));
       }
       return null;
    }

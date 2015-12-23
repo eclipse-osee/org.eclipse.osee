@@ -38,19 +38,18 @@ public class UIOutlineResolutionHandler implements IStatusHandler {
          Runnable runnable = new Runnable() {
             @Override
             public void run() {
-               String message =
-                  String.format(
-                     "Previous valid outline number was \"%s\", is \"%s\" the next outline number? If not, I will treat it as content.",
-                     list.get(0), list.get(1));
-               mutableBoolean.setValue(MessageDialog.openQuestion(AWorkbench.getActiveShell(), "Help me decide...",
-                  message));
+               String message = String.format(
+                  "Previous valid outline number was \"%s\", is \"%s\" the next outline number? If not, I will treat it as content.",
+                  list.get(0), list.get(1));
+               mutableBoolean.setValue(
+                  MessageDialog.openQuestion(AWorkbench.getActiveShell(), "Help me decide...", message));
             }
          };
          Displays.ensureInDisplayThread(runnable, true);
          return mutableBoolean.booleanValue() ? ContentType.OUTLINE_TITLE : ContentType.CONTENT;
       }
 
-      throw new CoreException(new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-         "Invalid source object in UIOutlineResolutionHandler"));
+      throw new CoreException(
+         new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Invalid source object in UIOutlineResolutionHandler"));
    }
 }

@@ -332,7 +332,7 @@ public class EmailWizardPage extends WizardPage {
          if (obj instanceof User) {
             emails.add(((User) obj).getEmail());
          } else if (obj instanceof String) {
-            emails.add(((String) obj));
+            emails.add((String) obj);
          } else if (obj instanceof EmailGroup) {
             emails.addAll(((EmailGroup) obj).getEmails());
          }

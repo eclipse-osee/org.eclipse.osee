@@ -35,7 +35,7 @@ public class ShowFavoriteBranchesFirstHandler extends AbstractHandler implements
    private boolean itemChk;
 
    public ShowFavoriteBranchesFirstHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.service = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override

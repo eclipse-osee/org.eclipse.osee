@@ -29,7 +29,7 @@ public class JiniLookupGroupConfig {
       try {
          Bundle bundle = Platform.getBundle("org.eclipse.osee.framework.jini");
          serviceGroups = new String[1];
-         serviceGroups[0] = (String) bundle.getHeaders().get("Bundle-Version");
+         serviceGroups[0] = bundle.getHeaders().get("Bundle-Version");
       } catch (Exception ex) {
          OseeLog.log(JiniLookupGroupConfig.class, Level.INFO, "Error getting bundle org.eclipse.osee.framework.jini");
       }

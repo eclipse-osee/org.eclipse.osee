@@ -33,7 +33,7 @@ public class ProgramColumn {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          Pair<IAtsProgram, Boolean> program = util.getProgram(services, workItem);
          if (program.getFirst() != null) {
-            result = String.format("%s%s", program.getFirst().getName(), (program.getSecond() ? " (I)" : ""));
+            result = String.format("%s%s", program.getFirst().getName(), program.getSecond() ? " (I)" : "");
          }
       }
       return result;

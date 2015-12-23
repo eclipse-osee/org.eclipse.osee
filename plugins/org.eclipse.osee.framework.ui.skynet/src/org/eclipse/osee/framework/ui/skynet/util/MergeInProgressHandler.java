@@ -121,9 +121,8 @@ public class MergeInProgressHandler {
       Displays.pendInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            MessageDialog dialog =
-               new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), TITLE, null,
-                  Messages, MessageDialog.QUESTION, Choices, CANCEL);
+            MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               TITLE, null, Messages, MessageDialog.QUESTION, Choices, CANCEL);
             result.setValue(dialog.open());
          }
       });
@@ -145,15 +144,16 @@ public class MergeInProgressHandler {
       } else {
          message.append("Couldn't commit branch because of unresolved conflicts");
       }
-      message.append(String.format("\n\n\"[%s]\"\n\n onto destination branch \n\n\"[%s]\"\n\n", sourceBranch,
-         destinationBranch));
+      message.append(
+         String.format("\n\n\"[%s]\"\n\n onto destination branch \n\n\"[%s]\"\n\n", sourceBranch, destinationBranch));
 
       int numOriginalConflicts = conflictManager.getOriginalConflicts().size();
       if (allConflictsResolved) {
-         message.append(String.format("with all (%d) conflicts resolved\n\nWould you like to Commit?",
-            numOriginalConflicts));
+         message.append(
+            String.format("with all (%d) conflicts resolved\n\nWould you like to Commit?", numOriginalConflicts));
       } else {
-         message.append("with " + conflictManager.getRemainingConflicts().size() + " / " + numOriginalConflicts + " conflicts still unresolved\n");
+         message.append(
+            "with " + conflictManager.getRemainingConflicts().size() + " / " + numOriginalConflicts + " conflicts still unresolved\n");
       }
 
       return message.toString();

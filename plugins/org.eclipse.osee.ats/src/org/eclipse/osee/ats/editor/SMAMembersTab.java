@@ -529,7 +529,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
       private boolean isSortedByCollectorsOrder() throws OseeCoreException {
          List<String> sortingIds = getSortingIds();
-         return (sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName()));
+         return sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName());
       }
 
       private boolean isFiltered() throws OseeCoreException {

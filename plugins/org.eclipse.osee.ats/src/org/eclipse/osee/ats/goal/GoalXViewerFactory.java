@@ -42,11 +42,10 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
    private GoalArtifact soleGoalArtifact;
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
-      List<XViewerColumn> columns =
-         Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(), TitleColumn.getInstance(),
-            TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
-            ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
-            CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
+      List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
+         TitleColumn.getInstance(), TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
+         ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
+         CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
       return columns;
    }
    private final Integer[] widths = new Integer[] {

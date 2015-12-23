@@ -101,7 +101,7 @@ public class ChangeData {
                Artifact artifact = change.getChangeArtifact();
 
                ModificationType modType = change.getModificationType();
-               if ((artifactTypesToIgnore != null) && (!artifactTypesToIgnore.isEmpty())) {
+               if (artifactTypesToIgnore != null && !artifactTypesToIgnore.isEmpty()) {
                   try {
                      if (change instanceof AttributeChange) {
                         Integer id = artifact.getArtId();
@@ -133,7 +133,8 @@ public class ChangeData {
                 * of type Modified while attribute is of type merged. Only check attribute change for this case.
                 */
 
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && isAttributeChangeMergeType(change)) {
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && isAttributeChangeMergeType(
+                  change)) {
                   if (modTypes.contains(modType)) {
                      artifacts.add(artifact);
                   }
@@ -149,7 +150,7 @@ public class ChangeData {
                   }
                }
             }
-            if ((artifactTypesToIgnore != null) && (!artifactTypesToIgnore.isEmpty())) {
+            if (artifactTypesToIgnore != null && !artifactTypesToIgnore.isEmpty()) {
                Set<Artifact> excludeList = new HashSet<>();
                for (Artifact artifactToCheck : artifacts) {
                   Integer id = artifactToCheck.getArtId();

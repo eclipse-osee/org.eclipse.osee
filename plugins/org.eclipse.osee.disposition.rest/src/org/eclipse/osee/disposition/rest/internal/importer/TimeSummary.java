@@ -17,15 +17,14 @@ import org.xml.sax.Attributes;
  */
 public class TimeSummary extends ElementHandlers {
 
-	public TimeSummary() {
-		super("TimeSummary");
-	}
+   public TimeSummary() {
+      super("TimeSummary");
+   }
 
-	@Override
-	public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-		TimeSummaryData data =
-					new TimeSummaryData(attributes.getValue("elapsed"), attributes.getValue("endDate"),
-								attributes.getValue("milliseconds"), attributes.getValue("startDate"));
-		return data;
-	}
+   @Override
+   public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
+      TimeSummaryData data = new TimeSummaryData(attributes.getValue("elapsed"), attributes.getValue("endDate"),
+         attributes.getValue("milliseconds"), attributes.getValue("startDate"));
+      return data;
+   }
 }

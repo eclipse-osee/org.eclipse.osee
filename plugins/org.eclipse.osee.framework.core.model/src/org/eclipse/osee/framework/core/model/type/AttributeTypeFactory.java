@@ -35,9 +35,9 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       Conditions.checkExpressionFailOnTrue(maxOccurrences < minOccurrences,
          "maxOccurences can not be less than minOccurences");
 
-      return new AttributeType(guid, name, Strings.intern(baseAttributeTypeId),
-         Strings.intern(attributeProviderNameId), Strings.intern(fileTypeExtension), defaultValue, minOccurrences,
-         maxOccurrences, tipText, Strings.intern(taggerId), Strings.intern(mediaType));
+      return new AttributeType(guid, name, Strings.intern(baseAttributeTypeId), Strings.intern(attributeProviderNameId),
+         Strings.intern(fileTypeExtension), defaultValue, minOccurrences, maxOccurrences, tipText,
+         Strings.intern(taggerId), Strings.intern(mediaType));
 
    }
 
@@ -46,9 +46,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       AttributeType attributeType = cache.getByGuid(guid);
 
       if (attributeType == null) {
-         attributeType =
-            create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
-               minOccurrences, maxOccurrences, description, taggerId, mediaType);
+         attributeType = create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
+            defaultValue, minOccurrences, maxOccurrences, description, taggerId, mediaType);
          attributeType.setId(guid);
          attributeType.setOseeEnumType(oseeEnumType);
          cache.cache(attributeType);
@@ -63,9 +62,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(cache, "AttributeTypeCache");
       AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
-         attributeType =
-            create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
-               minOccurrences, maxOccurrences, description, taggerId, mediaType);
+         attributeType = create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
+            defaultValue, minOccurrences, maxOccurrences, description, taggerId, mediaType);
          attributeType.setOseeEnumType(oseeEnumType);
          attributeType.setId(uniqueId);
          attributeType.setStorageState(storageState);

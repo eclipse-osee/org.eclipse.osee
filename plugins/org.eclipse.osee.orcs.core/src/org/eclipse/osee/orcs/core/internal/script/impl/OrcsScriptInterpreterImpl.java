@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
+import com.google.common.collect.Iterables;
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
@@ -102,7 +103,6 @@ import org.eclipse.osee.orcs.search.ArtifactQueryBuilder;
 import org.eclipse.osee.orcs.search.BranchQueryBuilder;
 import org.eclipse.osee.orcs.search.Operator;
 import org.eclipse.osee.orcs.search.TxQueryBuilder;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
@@ -245,7 +245,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
                String literal = objectType;
 
                if ("txs".equals(objectType)) {
-                  // determine whether its art_txs, attr_txs, or rel_txs 
+                  // determine whether its art_txs, attr_txs, or rel_txs
                   if (!(objectExpr.eContainer() instanceof OsCollectClause)) {
                      String value = parent.getGuid();
                      OsFieldEnum field = null;

@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCacheQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -107,9 +106,8 @@ public abstract class AbstractImageManagerTest {
 
    @org.junit.Test
    public void testGetImageByArtifact() throws Exception {
-      Artifact folder =
-         ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder, CoreAttributeTypes.StaticId,
-            "user.groups", CoreBranches.COMMON);
+      Artifact folder = ArtifactCacheQuery.getOrCreateSingletonArtifactByText(CoreArtifactTypes.Folder,
+         CoreAttributeTypes.StaticId, "user.groups", CoreBranches.COMMON);
       assertTrue("Image returned not a folder image.",
          ArtifactImageManager.getImage(folder).equals(ImageManager.getImage(PluginUiImage.FOLDER)));
       ArtifactCache.deCache(folder);

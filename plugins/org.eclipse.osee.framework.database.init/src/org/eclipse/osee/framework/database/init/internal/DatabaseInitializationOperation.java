@@ -81,15 +81,15 @@ public class DatabaseInitializationOperation extends AbstractOperation {
       String userName = ClientSessionManager.getDataStoreLoginName();
       String dbDriverName = ClientSessionManager.getDataStoreDriver();
       if (ClientSessionManager.isProductionDataStore()) {
-         System.err.println(String.format(
-            "You are not allowed to run config client against production: [%s].\nExiting.", dbName));
+         System.err.println(
+            String.format("You are not allowed to run config client against production: [%s].\nExiting.", dbName));
          return;
       }
 
       String line = null;
       if (isPromptEnabled) {
-         System.out.println(String.format("\nAre you sure you want to configure: [%s:%s] - [%s]", dbName, userName,
-            dbDriverName));
+         System.out.println(
+            String.format("\nAre you sure you want to configure: [%s:%s] - [%s]", dbName, userName, dbDriverName));
          line = waitForUserResponse();
       } else {
          line = "Y";

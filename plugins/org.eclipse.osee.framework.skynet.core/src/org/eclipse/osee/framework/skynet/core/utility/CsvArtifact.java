@@ -74,9 +74,8 @@ public class CsvArtifact {
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, IOseeBranch branch, boolean create) throws OseeCoreException {
-      Artifact art =
-         ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument, CoreAttributeTypes.StaticId,
-            staticId, branch, true);
+      Artifact art = ArtifactCacheQuery.getSingletonArtifactByText(CoreArtifactTypes.GeneralDocument,
+         CoreAttributeTypes.StaticId, staticId, branch, true);
       if (art != null) {
          return new CsvArtifact(art);
       }
@@ -90,7 +89,7 @@ public class CsvArtifact {
 
       int rowIndex = 0;
       for (String csvLine : csvLines) {
-         if ((ignoreHeaderRow && rowIndex > 0) || !ignoreHeaderRow) {
+         if (ignoreHeaderRow && rowIndex > 0 || !ignoreHeaderRow) {
             String[] values = csvLine.split(",");
             List<String> row = new ArrayList<>();
             for (String value : values) {

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.tests;
 
+import com.google.inject.Inject;
 import java.io.ByteArrayInputStream;
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,6 @@ import org.eclipse.xtext.junit4.XtextRunner;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import com.google.inject.Inject;
 
 /**
  * Test Case for {@link OrcsScriptDslFormatter}

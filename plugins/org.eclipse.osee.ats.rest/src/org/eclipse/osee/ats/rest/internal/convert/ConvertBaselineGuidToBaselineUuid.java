@@ -34,8 +34,8 @@ import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid {
 
    // Leave this attribute definition and conversion for other OSEE sites to convert
-   private static final IAttributeType BaselineBranchGuid = TokenFactory.createAttributeType(0x10000000000000A9L,
-      "ats.Baseline Branch Guid");
+   private static final IAttributeType BaselineBranchGuid =
+      TokenFactory.createAttributeType(0x10000000000000A9L, "ats.Baseline Branch Guid");
 
    public ConvertBaselineGuidToBaselineUuid(Log logger, JdbcClient jdbcClient, OrcsApi orcsApi, IAtsServer atsServer) {
       super(logger, jdbcClient, orcsApi, atsServer);
@@ -70,13 +70,11 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
                   String uuid = art.getSoleAttributeAsString(AtsAttributeTypes.BaselineBranchUuid, null);
                   if (!Strings.isValid(uuid) || isUuidDifferent(uuid, branchUuid)) {
                      if (!Strings.isValid(uuid)) {
-                        data.logf(
-                           "Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
-                           art.getArtifactType(), art.getName(), art.getGuid());
+                        data.logf("Adding uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n",
+                           branchUuid, art.getArtifactType(), art.getName(), art.getGuid());
                      } else if (isUuidDifferent(uuid, branchUuid)) {
-                        data.logf(
-                           "Updating uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n", branchUuid,
-                           art.getArtifactType(), art.getName(), art.getGuid());
+                        data.logf("Updating uuid attribute of value %d to artifact type [%s] name [%s] id [%s]\n",
+                           branchUuid, art.getArtifactType(), art.getName(), art.getGuid());
                      }
                      numChanges++;
                      if (!reportOnly) {
@@ -102,9 +100,11 @@ public class ConvertBaselineGuidToBaselineUuid extends AbstractConvertGuidToUuid
       data.append("Necessary for upgrading from OSEE 0.16.2 to 0.17.0");
       data.append("- Verify that ats.BaselineBranchUuid is a valid attribute type\n");
       data.append("- Verify Add uuid attribute for every ats.BaselineBranchGuid attribute on Version artifacts\n");
-      data.append("- Verify Add uuid attribute for every ats.BaselineBranchGuid attribute on Team Definition artifacts\n\n");
+      data.append(
+         "- Verify Add uuid attribute for every ats.BaselineBranchGuid attribute on Team Definition artifacts\n\n");
       data.append("NOTE: This operation can be run multiple times\n");
-      data.append("Manual Cleanup (optional): Use Purge Attribute Type BLAM to remove the ats.BaselineBranchGuid attributes.");
+      data.append(
+         "Manual Cleanup (optional): Use Purge Attribute Type BLAM to remove the ats.BaselineBranchGuid attributes.");
       return data.toString();
    }
 

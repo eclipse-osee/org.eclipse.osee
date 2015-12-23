@@ -76,14 +76,12 @@ public class BlamOverviewPage extends FormPage {
          managedForm.addPart(new BlamUsageSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
             managedForm.getToolkit(), sectionStyle));
       }
-      inputSection =
-         new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-            managedForm.getToolkit(), sectionStyle);
+      inputSection = new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+         managedForm.getToolkit(), sectionStyle);
       managedForm.addPart(inputSection);
       if (getEditorInput().getBlamOperation().showExecuteSection()) {
-         outputSection =
-            new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
-               managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
+         outputSection = new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+            managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
          managedForm.addPart(outputSection);
       }
 

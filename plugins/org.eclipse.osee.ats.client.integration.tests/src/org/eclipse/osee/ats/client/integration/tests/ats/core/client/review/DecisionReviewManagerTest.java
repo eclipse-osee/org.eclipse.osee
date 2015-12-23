@@ -66,11 +66,10 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       // create and transition decision review
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
-      DecisionReviewArtifact decRev =
-         DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",
-            AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+      DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf,
+         reviewTitle, "my description", AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), new Date(),
+         AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(decRev);
@@ -95,11 +94,10 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       // create and transition decision review
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
       String reviewTitle = "Test Review - " + teamWf.getName();
-      DecisionReviewArtifact decRev =
-         DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf, reviewTitle, "my description",
-            AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
-            Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned)),
-            new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
+      DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReviewAndTransitionToDecision(teamWf,
+         reviewTitle, "my description", AtsTestUtil.getAnalyzeStateDef().getName(), ReviewBlockType.Transition, options,
+         Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(SystemUser.UnAssigned)),
+         new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(decRev);
@@ -130,7 +128,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       Assert.assertEquals(reviewTitle, decRev.getName());
       Assert.assertEquals(DecisionReviewState.Prepare.getName(), decRev.getCurrentStateName());
       Assert.assertEquals("Alex Kay", decRev.getStateMgr().getAssigneesStr());
-      Assert.assertEquals(TeamState.Implement.getName(), decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
+      Assert.assertEquals(TeamState.Implement.getName(),
+         decRev.getSoleAttributeValue(AtsAttributeTypes.RelatedToState));
       Assert.assertEquals(ReviewBlockType.Commit.name(), decRev.getSoleAttributeValue(AtsAttributeTypes.ReviewBlocks));
    }
 
@@ -159,9 +158,8 @@ public class DecisionReviewManagerTest extends DecisionReviewManager {
       TeamWorkFlowArtifact teamWf = AtsTestUtil.getTeamWf();
 
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-      DecisionReviewArtifact decRev =
-         DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit, true, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), changes);
+      DecisionReviewArtifact decRev = DecisionReviewManager.createNewDecisionReview(teamWf, ReviewBlockType.Commit,
+         true, new Date(), AtsClientService.get().getUserService().getCurrentUser(), changes);
       changes.execute();
 
       Assert.assertNotNull(decRev);

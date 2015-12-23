@@ -62,9 +62,8 @@ public class PasteHandler extends AbstractHandler {
 
                if (selectionObject instanceof Artifact) {
                   ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
-                  Operations.executeAsJob(
-                     new ArtifactPasteOperation(config, (Artifact) selectionObject, clipboard.getCopiedContents(),
-                        new ArtifactNameConflictHandler()), true);
+                  Operations.executeAsJob(new ArtifactPasteOperation(config, (Artifact) selectionObject,
+                     clipboard.getCopiedContents(), new ArtifactNameConflictHandler()), true);
                }
             }
 

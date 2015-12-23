@@ -77,12 +77,11 @@ public class AtsWorkDefinitionImporter {
       if (atsDsl.getWorkDef() != null) {
          // Use original xml to store in artifact so no conversion happens
          String workDefXml = AtsDslUtil.getString(sheet);
-         Artifact artifact =
-            importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), sheet.getToken(), resultData,
-               changes);
+         Artifact artifact = importWorkDefinitionToDb(workDefXml, sheet.getName(), sheet.getName(), sheet.getToken(),
+            resultData, changes);
          if (resultData.getNumErrors() > 0) {
-            throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]",
-               sheet.getName(), resultData.toString());
+            throw new OseeStateException("Error importing WorkDefinitionSheet [%s] into database [%s]", sheet.getName(),
+               resultData.toString());
          }
          for (WorkDef workDef : atsDsl.getWorkDef()) {
             for (StateDef state : workDef.getStates()) {
@@ -100,9 +99,8 @@ public class AtsWorkDefinitionImporter {
          if (token != null) {
             artifact = ArtifactQuery.getArtifactFromToken(token, AtsUtilCore.getAtsBranch());
          } else {
-            artifact =
-               ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
-                  AtsUtilCore.getAtsBranch());
+            artifact = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheetName,
+               AtsUtilCore.getAtsBranch());
          }
       } catch (ArtifactDoesNotExist ex) {
          // do nothing; this is what we want

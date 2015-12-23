@@ -55,12 +55,12 @@ public final class JdbcUtil {
 
    public static boolean isValidExtraParam(String key) {
       return Strings.isValid(key) //
-         && !key.startsWith(JdbcConstants.NAMESPACE) //
-         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__ID) //
-         && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__OSGI_BINDING) //
-         && !key.equalsIgnoreCase("objectClass") //
-         && !key.equalsIgnoreCase("component.id") //
-         && !key.equalsIgnoreCase("component.name");
+      && !key.startsWith(JdbcConstants.NAMESPACE) //
+      && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__ID) //
+      && !key.equalsIgnoreCase(JdbcConstants.JDBC_SERVICE__OSGI_BINDING) //
+      && !key.equalsIgnoreCase("objectClass") //
+      && !key.equalsIgnoreCase("component.id") //
+      && !key.equalsIgnoreCase("component.name");
    }
 
    public static <O extends Object> void setInputParameterForStatement(PreparedStatement statement, O dataValue, int preparedIndex) throws JdbcException {
@@ -70,7 +70,8 @@ public final class JdbcUtil {
          }
 
          if (dataValue == null) {
-            throw newJdbcException("instead of passing null for an input parameter, pass the corresponding SQL3DataType");
+            throw newJdbcException(
+               "instead of passing null for an input parameter, pass the corresponding SQL3DataType");
          } else if (dataValue instanceof SQL3DataType) {
             int dataTypeNumber = ((SQL3DataType) dataValue).getSQLTypeNumber();
             if (dataTypeNumber == java.sql.Types.BLOB) {

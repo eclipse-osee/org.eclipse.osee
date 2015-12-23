@@ -30,9 +30,8 @@ public final class ReviewProviders {
    public synchronized static List<IReviewProvider> getAtsReviewProviders() {
       if (reviewProvider == null) {
 
-         ExtensionDefinedObjects<IReviewProvider> objects =
-            new ExtensionDefinedObjects<IReviewProvider>("org.eclipse.osee.ats.core.client.AtsReviewProvider",
-               "AtsReviewProvider", "classname", true);
+         ExtensionDefinedObjects<IReviewProvider> objects = new ExtensionDefinedObjects<IReviewProvider>(
+            "org.eclipse.osee.ats.core.client.AtsReviewProvider", "AtsReviewProvider", "classname", true);
          reviewProvider = objects.getObjects();
 
       }

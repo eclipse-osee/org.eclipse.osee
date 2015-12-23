@@ -128,7 +128,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       for (ArtifactReadable userArt : orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsOfType(
          CoreArtifactTypes.User).getResults()) {
          Boolean activeFlag = userArt.getSoleAttributeValue(CoreAttributeTypes.Active, true);
-         if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
+         if (active == Active.Both || active == Active.Active && activeFlag || active == Active.InActive && !activeFlag) {
             users.add(new AtsUser(userArt));
          }
       }

@@ -10,13 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 import com.google.common.base.Supplier;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Maps;
@@ -24,6 +17,13 @@ import com.google.common.collect.Multimaps;
 import com.google.common.collect.Sets;
 import com.google.common.collect.SortedSetMultimap;
 import com.google.common.collect.Table;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 
 /**
  * @author Roberto E. Escobar
@@ -269,7 +269,7 @@ public enum OsFieldEnum implements OsField {
       public int hashCode() {
          final int prime = 31;
          int result = 1;
-         result = prime * result + ((fieldName == null) ? 0 : fieldName.hashCode());
+         result = prime * result + (fieldName == null ? 0 : fieldName.hashCode());
          return result;
       }
 

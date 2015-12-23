@@ -41,9 +41,8 @@ public class TeamDistributionEntry {
     * @throws OseeCoreException :
     */
    public void computeTeamSplit() throws OseeCoreException {
-      Collection<TeamWorkFlowArtifact> teamWorkflows =
-         this.versionArtifact.getRelatedArtifactsOfType(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow,
-            TeamWorkFlowArtifact.class);
+      Collection<TeamWorkFlowArtifact> teamWorkflows = this.versionArtifact.getRelatedArtifactsOfType(
+         AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
       for (TeamWorkFlowArtifact workflow : teamWorkflows) {
          double work = 0;
          String teamName = workflow.getTeamName();

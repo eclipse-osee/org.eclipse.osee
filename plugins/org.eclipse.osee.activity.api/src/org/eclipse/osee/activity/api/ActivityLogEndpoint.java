@@ -61,11 +61,11 @@ public interface ActivityLogEndpoint {
 
    /**
     * Create a new activity entry
+    * 
     * @param typeId activity type id
     * @param parentId of the parent activity
     * @param status of the activity
     * @param message to log for the activity
-    *
     * @return entryId
     */
    @POST

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -70,8 +69,6 @@ public class AtsLogWorkPage extends StateXWidgetPage {
       public String getGuid() {
          return null;
       }
-
-      
 
    }
 

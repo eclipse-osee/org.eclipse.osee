@@ -115,7 +115,8 @@ public class BurndownSelectionDialog extends SelectionDialog {
 
                   selectedTeamDef = (Artifact) teamCombo.getSelected();
 
-                  for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+                  for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(
+                     AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                      objs1.add(versionArtifact);
                   }
                   versionCombo.setInput(objs1);
@@ -157,7 +158,8 @@ public class BurndownSelectionDialog extends SelectionDialog {
       if (teamDef != null) {
          objs = new ArrayList<>();
          try {
-            for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+            for (Artifact versionArtifact : selectedTeamDef.getRelatedArtifacts(
+               AtsRelationTypes.TeamDefinitionToVersion_Version)) {
                IAtsVersion version =
                   AtsClientService.get().getConfig().getSoleByUuid(versionArtifact.getUuid(), IAtsVersion.class);
                Artifact verArt = AtsClientService.get().getConfigArtifact(version);

@@ -12,7 +12,6 @@ package org.eclipse.osee.disposition.rest;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;

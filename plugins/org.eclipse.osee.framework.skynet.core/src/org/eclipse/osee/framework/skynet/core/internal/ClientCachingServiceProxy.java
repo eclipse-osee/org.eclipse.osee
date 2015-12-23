@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import com.google.common.io.InputSupplier;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -38,7 +39,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.TypesEndpoint;
-import com.google.common.io.InputSupplier;
 
 /**
  * @author Roberto E. Escobar
@@ -75,7 +75,8 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       txCache = new TransactionCache();
       branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache, new BranchFactory()), txCache);
-      txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, branchCache, new TransactionRecordFactory()));
+      txCache.setAccessor(
+         new DatabaseTransactionRecordAccessor(jdbcClient, branchCache, new TransactionRecordFactory()));
 
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();

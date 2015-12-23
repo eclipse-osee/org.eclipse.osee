@@ -45,9 +45,8 @@ public class ArtifactTypeEventFilterTest {
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getGuid())).thenReturn(
          CoreArtifactTypes.Requirement);
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
-      EventBasicGuidArtifact guidArt =
-         new EventBasicGuidArtifact(EventModType.Added, branchUuid, CoreArtifactTypes.Requirement.getGuid(),
-            GUID.create());
+      EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Added, branchUuid,
+         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
       List<EventBasicGuidArtifact> guidArts = Arrays.asList(guidArt);
       Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatchArtifacts(guidArts));
 
@@ -75,17 +74,14 @@ public class ArtifactTypeEventFilterTest {
 
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getGuid())).thenReturn(
          CoreArtifactTypes.Requirement);
-      EventBasicGuidArtifact guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), CoreArtifactTypes.Requirement.getGuid(),
-            GUID.create());
-      EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
-            CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
-      EventBasicGuidRelation relation =
-         new EventBasicGuidRelation(RelationEventType.Added, Lib.generateUuid(),
-            CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
+      EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, Lib.generateUuid(),
+         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // guidArt in relation matches

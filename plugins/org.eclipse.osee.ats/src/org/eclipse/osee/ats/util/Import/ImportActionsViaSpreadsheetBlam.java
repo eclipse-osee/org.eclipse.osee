@@ -56,10 +56,14 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XButtonPush\" displayName=\"Open Excel Import Example Spreadsheet\" displayLabel=\"false\"/>");
-      builder.append("<XWidget xwidgetType=\"XFileTextWithSelectionDialog\" displayName=\"Excel Spreadsheet saved as xml\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Email POCs\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append("<XWidget xwidgetType=\"XGoalCombo\" displayName=\"Add to Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XButtonPush\" displayName=\"Open Excel Import Example Spreadsheet\" displayLabel=\"false\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XFileTextWithSelectionDialog\" displayName=\"Excel Spreadsheet saved as xml\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Email POCs\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XGoalCombo\" displayName=\"Add to Goal\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -79,7 +83,7 @@ public class ImportActionsViaSpreadsheetBlam extends AbstractBlam {
 
          try {
             importActions(file, toGoal, ImportOption.POPUP_ERROR_REPORT,
-               (emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE));
+               emailPocs ? ImportOption.EMAIL_POCS : ImportOption.NONE);
          } catch (Exception ex) {
             log(ex);
          }

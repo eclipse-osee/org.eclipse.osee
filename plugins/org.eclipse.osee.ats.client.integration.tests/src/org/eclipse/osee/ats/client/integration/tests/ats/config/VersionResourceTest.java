@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.junit.Assert;
 import org.junit.Test;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 
 /**
  * Unit Test for {@link VersionResource}
@@ -63,7 +63,8 @@ public class VersionResourceTest extends AbstractConfigurationRestTest {
    }
 
    private Artifact getSawBld1() {
-      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "SAW_Bld_1", AtsUtilCore.getAtsBranch());
+      return ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Version, "SAW_Bld_1",
+         AtsUtilCore.getAtsBranch());
    }
 
 }

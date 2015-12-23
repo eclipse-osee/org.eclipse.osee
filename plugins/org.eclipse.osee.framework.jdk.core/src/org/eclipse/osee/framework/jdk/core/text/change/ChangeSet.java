@@ -209,7 +209,8 @@ public class ChangeSet {
    private void overlapping(int a, int b) {
       if (a > b) {
          throw new IllegalArgumentException(
-            "Overlapping changes are not currently allowed " + a + " > " + b + " " + new String(sourceChars, b - 4, 20));
+            "Overlapping changes are not currently allowed " + a + " > " + b + " " + new String(sourceChars, b - 4,
+               20));
       }
    }
 

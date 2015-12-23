@@ -36,17 +36,13 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
-      EntryDialog ed =
-         new EntryDialog(
-            "Set Associated Artifact",
-            "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
+      EntryDialog ed = new EntryDialog("Set Associated Artifact",
+         "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
       ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
       if (ed.open() == 0) {
          String artId = ed.getEntry();
          Artifact associatedArtifact = ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), COMMON);
-         if (MessageDialog.openConfirm(
-            Displays.getActiveShell(),
-            "Set Associated Artifact",
+         if (MessageDialog.openConfirm(Displays.getActiveShell(), "Set Associated Artifact",
             "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
             selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
             BranchManager.persist(selectedBranch);

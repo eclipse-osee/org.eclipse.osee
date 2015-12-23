@@ -34,7 +34,7 @@ public class InsertionActivityColumn {
          Pair<IAtsInsertionActivity, Boolean> insertionActivity = util.getInsertionActivity(services, workItem);
          if (insertionActivity.getFirst() != null) {
             result = String.format("%s%s", insertionActivity.getFirst().getName(),
-               (insertionActivity.getSecond() ? " (I)" : ""));
+               insertionActivity.getSecond() ? " (I)" : "");
          }
       }
       return result;

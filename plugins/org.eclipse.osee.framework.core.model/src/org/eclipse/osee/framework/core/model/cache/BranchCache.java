@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -44,7 +43,8 @@ public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
       for (Branch branch : getAll()) {
          if (branch instanceof MergeBranch) {
             MergeBranch mergeBranch = (MergeBranch) branch;
-            if (sourceBranch.equals(mergeBranch.getSourceBranch()) && destinationBranch.equals(mergeBranch.getDestinationBranch())) {
+            if (sourceBranch.equals(mergeBranch.getSourceBranch()) && destinationBranch.equals(
+               mergeBranch.getDestinationBranch())) {
                toReturn = mergeBranch;
                break;
             }

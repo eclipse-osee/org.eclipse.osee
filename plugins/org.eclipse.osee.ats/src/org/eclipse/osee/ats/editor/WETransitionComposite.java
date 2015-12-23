@@ -93,7 +93,7 @@ public class WETransitionComposite extends Composite {
 
       awa = workflowSection.getSma();
       setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      setLayout(new GridLayout((editor.getWorkFlowTab().isShowTargetedVersion() ? 7 : 5), false));
+      setLayout(new GridLayout(editor.getWorkFlowTab().isShowTargetedVersion() ? 7 : 5, false));
       setBackground(AtsUtil.ACTIVE_COLOR);
 
       transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);

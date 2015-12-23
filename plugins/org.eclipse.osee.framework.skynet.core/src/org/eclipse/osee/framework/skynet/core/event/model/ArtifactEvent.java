@@ -112,7 +112,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    private boolean isHasEvent(IBasicGuidArtifact guidArt) {
-      return isModified(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(guidArt) || isRelAdded(guidArt);
+      return isModified(guidArt) || isDeletedPurged(guidArt) || isRelChange(guidArt) || isRelDeletedPurged(
+         guidArt) || isRelAdded(guidArt);
    }
 
    public boolean isDeletedPurged(Artifact artifact) {

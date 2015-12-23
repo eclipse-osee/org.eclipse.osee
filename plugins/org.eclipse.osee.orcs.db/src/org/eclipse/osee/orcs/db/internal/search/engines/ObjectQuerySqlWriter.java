@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getColumnInfo;
 import static org.eclipse.osee.orcs.db.internal.sql.SqlFieldResolver.getObjectField;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -46,8 +48,6 @@ import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerComparator;
 import org.eclipse.osee.orcs.db.internal.sql.TableEnum;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar

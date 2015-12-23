@@ -51,10 +51,10 @@ public class TraceabilityResultsEditor extends AbstractOperation {
             artRows.add(new ResultsXViewerRow(new String[] {req.getName(), ""}, req));
          }
       }
-      List<XViewerColumn> artColumns =
-         Arrays.asList(new XViewerColumn("Requirement", "Requirement", 500, SWT.LEFT, true, SortDataType.String, false,
-            "Requirement Artifact"), new XViewerColumn("Relation", "Relation", 75, SWT.LEFT, true, SortDataType.String,
-            false, "Relation Type"));
+      List<XViewerColumn> artColumns = Arrays.asList(
+         new XViewerColumn("Requirement", "Requirement", 500, SWT.LEFT, true, SortDataType.String, false,
+            "Requirement Artifact"),
+         new XViewerColumn("Relation", "Relation", 75, SWT.LEFT, true, SortDataType.String, false, "Relation Type"));
 
       final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {
@@ -65,8 +65,8 @@ public class TraceabilityResultsEditor extends AbstractOperation {
          }
 
       };
-      toReturn.add(new ResultsEditorTableTab("Traceability", artColumns, artRows, new TraceabilityContentProvider(),
-         provider));
+      toReturn.add(
+         new ResultsEditorTableTab("Traceability", artColumns, artRows, new TraceabilityContentProvider(), provider));
 
       Displays.ensureInDisplayThread(new Runnable() {
 

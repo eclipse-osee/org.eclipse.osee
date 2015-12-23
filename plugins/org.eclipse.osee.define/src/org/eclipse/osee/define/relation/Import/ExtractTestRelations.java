@@ -123,7 +123,8 @@ public class ExtractTestRelations {
 
    private Artifact getTestArtifact(IFile testArtifactFile, IOseeBranch branch) throws OseeCoreException {
       try {
-         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestCase, testArtifactFile.getName(), branch);
+         return ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestCase, testArtifactFile.getName(),
+            branch);
       } catch (MultipleArtifactsExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return null;

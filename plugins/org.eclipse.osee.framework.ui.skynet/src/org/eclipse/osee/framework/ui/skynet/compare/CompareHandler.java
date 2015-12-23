@@ -27,8 +27,8 @@ public class CompareHandler {
     * The left string is the 'Was' content and the right is the 'Is" content
     */
    public CompareHandler(String left, String right) {
-      this(null, new CompareItem("Was", left, System.currentTimeMillis()), new CompareItem("Is", right,
-         System.currentTimeMillis()), null);
+      this(null, new CompareItem("Was", left, System.currentTimeMillis()),
+         new CompareItem("Is", right, System.currentTimeMillis()), null);
    }
 
    public CompareHandler(String title, CompareItem leftCompareItem, CompareItem rightCompareItem, CompareItem parentCompareItem) {
@@ -43,7 +43,8 @@ public class CompareHandler {
       compareConfiguration.setLeftEditable(leftCompareItem.isEditable());
       compareConfiguration.setRightEditable(rightCompareItem.isEditable());
 
-      CompareUI.openCompareEditorOnPage(new CompareInput(title, compareConfiguration, leftCompareItem,
-         rightCompareItem, parentCompareItem), AWorkbench.getActivePage());
+      CompareUI.openCompareEditorOnPage(
+         new CompareInput(title, compareConfiguration, leftCompareItem, rightCompareItem, parentCompareItem),
+         AWorkbench.getActivePage());
    }
 }

@@ -104,7 +104,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       Conditions.checkNotNull(changes, "changes");
       IAtsStateDefinition startState = getWorkDefinition().getStartState();
       StateManagerUtility.initializeStateMachine(getStateMgr(), startState, assignees,
-         (createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy), changes);
+         createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy, changes);
       IAtsUser user = createdBy == null ? AtsClientService.get().getUserService().getCurrentUser() : createdBy;
       setCreatedBy(user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(this, startState, createdDate, user);

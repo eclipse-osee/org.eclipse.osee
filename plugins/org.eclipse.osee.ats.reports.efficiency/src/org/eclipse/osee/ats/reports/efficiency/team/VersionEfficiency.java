@@ -49,7 +49,8 @@ public class VersionEfficiency {
       final Map<String, List<TeamWorkFlowArtifact>> teams = new HashMap<>();
 
       // 1. For each team, collect the list of artifacts.
-      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(this.version)) {
+      for (IAtsTeamWorkflow team : AtsClientService.get().getVersionService().getTargetedForTeamWorkflows(
+         this.version)) {
          TeamWorkFlowArtifact teamWorkflow = (TeamWorkFlowArtifact) team.getStoreObject();
          if (teams.containsKey(teamWorkflow.getTeamName())) {
             teams.get(teamWorkflow.getTeamName()).add(teamWorkflow);

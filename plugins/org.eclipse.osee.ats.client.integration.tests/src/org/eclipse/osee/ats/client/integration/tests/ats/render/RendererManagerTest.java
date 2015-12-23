@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.render.DefaultArtifactRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.JavaRenderer;
@@ -98,10 +97,9 @@ public class RendererManagerTest {
       if (clazz == null) {
          try {
             IRenderer renderer = computeRenderer(artifact);
-            String message =
-               String.format(
-                  "Expected an OseeStateException to be thrown since no render should be applicable in this case.\nRenderer: [%s]",
-                  renderer);
+            String message = String.format(
+               "Expected an OseeStateException to be thrown since no render should be applicable in this case.\nRenderer: [%s]",
+               renderer);
             Assert.fail(message);
          } catch (OseeStateException ex) {
             Assert.assertEquals(String.format("No renderer configured for %s of %s", presentationType, artifact),

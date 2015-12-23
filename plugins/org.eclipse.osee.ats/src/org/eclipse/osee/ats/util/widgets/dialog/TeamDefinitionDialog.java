@@ -29,7 +29,8 @@ public class TeamDefinitionDialog extends FilteredTreeDialog {
    }
 
    public TeamDefinitionDialog(String title, String message) {
-      super(title, message, new ArrayTreeContentProvider(), new TeamDefinitionLabelProvider(), new ArtifactNameSorter());
+      super(title, message, new ArrayTreeContentProvider(), new TeamDefinitionLabelProvider(),
+         new ArtifactNameSorter());
    }
 
    public static class TeamDefinitionLabelProvider extends LabelProvider {

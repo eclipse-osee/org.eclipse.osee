@@ -175,7 +175,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
          if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
             ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
             final Artifact[] artifactsToBeRelated = artData.getArtifacts();
-            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].isOnSameBranch(parentArtifact)) {
+            if (artifactsToBeRelated != null && artifactsToBeRelated.length > 0 && !artifactsToBeRelated[0].isOnSameBranch(
+               parentArtifact)) {
                InterArtifactExplorerDropHandlerOperation interDropHandler =
                   new InterArtifactExplorerDropHandlerOperation(parentArtifact, artifactsToBeRelated, true);
                Operations.executeAsJob(interDropHandler, true);

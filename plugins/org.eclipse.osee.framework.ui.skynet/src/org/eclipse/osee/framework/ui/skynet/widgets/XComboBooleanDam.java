@@ -64,7 +64,7 @@ public class XComboBooleanDam extends XCombo implements IAttributeWidget {
             artifact.deleteSoleAttribute(attributeType);
          } else {
             String enteredValue = get();
-            artifact.setSoleAttributeValue(attributeType, (enteredValue != null && enteredValue.equals("true")));
+            artifact.setSoleAttributeValue(attributeType, enteredValue != null && enteredValue.equals("true"));
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

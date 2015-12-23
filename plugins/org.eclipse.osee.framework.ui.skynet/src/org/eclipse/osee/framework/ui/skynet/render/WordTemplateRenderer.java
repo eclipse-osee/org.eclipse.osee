@@ -231,7 +231,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       boolean secondTime = getBooleanOption(SECOND_TIME);
       Object option = getOption(TEMPLATE_OPTION);
 
-      if ((option instanceof Artifact) && (!useTemplateOnce || (useTemplateOnce && (firstTime || secondTime)))) {
+      if (option instanceof Artifact && (!useTemplateOnce || useTemplateOnce && (firstTime || secondTime))) {
          Artifact template = (Artifact) option;
          if (useTemplateOnce) {
             if (secondTime) {
@@ -243,7 +243,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             }
          }
          return template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-      } else if ((option == null || option instanceof String) || (useTemplateOnce && !firstTime)) {
+      } else if (option == null || option instanceof String || useTemplateOnce && !firstTime) {
          if (useTemplateOnce && !firstTime && !secondTime) {
             option = null;
          }
@@ -268,7 +268,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       ImageDescriptor imageDescriptor = ImageManager.getProgramImageDescriptor("doc");
       commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "MS Word Edit", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children",
-         imageDescriptor, TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE));
+      commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "MS Word Preview with children", imageDescriptor,
+         TEMPLATE_OPTION, PREVIEW_WITH_RECURSE_VALUE));
    }
 }

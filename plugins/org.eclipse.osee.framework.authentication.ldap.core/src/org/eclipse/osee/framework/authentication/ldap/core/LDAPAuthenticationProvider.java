@@ -151,12 +151,12 @@ public class LDAPAuthenticationProvider extends AbstractAuthenticationProvider {
 
             String bundleName = e.getContributor().getName();
 
-            if ((className != null) && (bundleName != null)) {
+            if (className != null && bundleName != null) {
 
                Bundle bundle = Platform.getBundle(bundleName);
                Object obj1 = bundle.loadClass(className).newInstance();
 
-               if ((obj1 != null) && (obj1 instanceof ILDAPService)) {
+               if (obj1 != null && obj1 instanceof ILDAPService) {
 
                   return (ILDAPService) obj1;
 

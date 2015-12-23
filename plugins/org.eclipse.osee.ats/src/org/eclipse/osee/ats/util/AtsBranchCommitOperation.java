@@ -118,9 +118,8 @@ public class AtsBranchCommitOperation extends AbstractOperation {
          if (branchCommitted) {
             // Create reviews as necessary
             AtsChangeSet changes = new AtsChangeSet("Create Reviews upon Commit");
-            boolean added =
-               AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt, new Date(),
-                  AtsCoreUsers.SYSTEM_USER, changes);
+            boolean added = AtsBranchUtil.createNecessaryBranchEventReviews(StateEventType.CommitBranch, teamArt,
+               new Date(), AtsCoreUsers.SYSTEM_USER, changes);
             if (added) {
                changes.execute();
             }

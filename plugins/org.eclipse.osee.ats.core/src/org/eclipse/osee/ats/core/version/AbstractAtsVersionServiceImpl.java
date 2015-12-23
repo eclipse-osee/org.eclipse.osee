@@ -58,7 +58,7 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       if (team == null) {
          throw new OseeArgumentException("Team Workflow can not be null %s", team);
       }
-      Collection<ArtifactId> versions = services.getRelationResolver().getRelated((team.getStoreObject()),
+      Collection<ArtifactId> versions = services.getRelationResolver().getRelated(team.getStoreObject(),
          AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       IAtsVersion version = null;
       if (!versions.isEmpty()) {

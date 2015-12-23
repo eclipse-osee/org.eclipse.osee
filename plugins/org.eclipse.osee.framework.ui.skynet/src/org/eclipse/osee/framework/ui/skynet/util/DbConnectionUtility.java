@@ -34,10 +34,9 @@ public class DbConnectionUtility {
    public static Result areOSEEServicesAvailable() {
       Result toReturn = Result.FalseResult;
       if (!isVersionSupported()) {
-         toReturn =
-            new Result(
-               "This OSEE client version [%s] is not supported by the current application server(s).\n\nDatabase capability disabled.",
-               OseeCodeVersion.getVersion());
+         toReturn = new Result(
+            "This OSEE client version [%s] is not supported by the current application server(s).\n\nDatabase capability disabled.",
+            OseeCodeVersion.getVersion());
       } else {
          toReturn = OseeUiActivator.areOSEEServicesAvailable();
       }

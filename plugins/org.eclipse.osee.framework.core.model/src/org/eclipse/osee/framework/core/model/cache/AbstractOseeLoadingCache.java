@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeLoadingCache<K, T extends AbstractOseeType<K>> extends AbstractOseeCache<K, T> implements IOseeLoadingCache<K, T> {
+public abstract class AbstractOseeLoadingCache<K, T extends AbstractOseeType<K>> extends AbstractOseeCache<K, T>implements IOseeLoadingCache<K, T> {
    private final IOseeDataAccessor<K, T> dataAccessor;
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;

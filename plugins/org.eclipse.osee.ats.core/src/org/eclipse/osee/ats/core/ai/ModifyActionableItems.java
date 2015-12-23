@@ -75,8 +75,7 @@ public class ModifyActionableItems {
       // determine AIs that already have a team workflow associated
       for (IAtsActionableItem checkAi : newAIs) {
          if (!checkAi.isActionable()) {
-            results.errorf("Actionable Item [%s] is not actionable; select item lower in hierarchy",
-               checkAi);
+            results.errorf("Actionable Item [%s] is not actionable; select item lower in hierarchy", checkAi);
          } else if (!checkAi.isAllowUserActionCreation()) {
             results.errorf("Actionable Item [%s] is not actionable by users; select another item", checkAi);
          } else {
@@ -95,8 +94,8 @@ public class ModifyActionableItems {
             createTeamData.getActionableItems().add(ai);
          } else {
             CreateTeamData createTeamData =
-               new CreateTeamData(teamDef, Arrays.asList(ai), new LinkedList<IAtsUser>(teamDef.getLeads()),
-                  createdDate, modifiedBy, CreateTeamOption.Duplicate_If_Exists);
+               new CreateTeamData(teamDef, Arrays.asList(ai), new LinkedList<IAtsUser>(teamDef.getLeads()), createdDate,
+                  modifiedBy, CreateTeamOption.Duplicate_If_Exists);
             teamDatas.add(createTeamData);
             teamDefToTeamDataMap.put(teamDef, createTeamData);
          }

@@ -287,7 +287,7 @@ public class WordUpdateArtifact {
 
    private boolean checkIfSafetyRelated(ArtifactReadable artifact) {
       String dal = artifact.getSoleAttributeAsString(CoreAttributeTypes.DevelopmentAssuranceLevel, "");
-      return ("A".equals(dal) || "B".equals(dal) || "C".equals(dal));
+      return "A".equals(dal) || "B".equals(dal) || "C".equals(dal);
    }
 
 }

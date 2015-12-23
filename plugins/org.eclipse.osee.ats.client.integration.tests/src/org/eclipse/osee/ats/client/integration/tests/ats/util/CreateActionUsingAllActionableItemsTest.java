@@ -37,9 +37,8 @@ public class CreateActionUsingAllActionableItemsTest {
    @AfterClass
    public static void cleanup() throws OseeCoreException {
       AtsBulkLoad.reloadConfig(true);
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            CreateActionUsingAllActionableItemsTest.class.getSimpleName());
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+         CreateActionUsingAllActionableItemsTest.class.getSimpleName());
       for (Artifact art : ArtifactQuery.getArtifactListFromName("Big Action Test - Delete Me",
          AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED)) {
          art.deleteAndPersist(transaction);

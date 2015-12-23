@@ -120,9 +120,6 @@ public class ConflictManagerInternal {
    }
 
    public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
-      @SuppressWarnings("unused")
-      // This is for bulk loading so we do not lose our references
-      Collection<Artifact> bulkLoadedArtifacts;
       List<ConflictBuilder> conflictBuilders = new ArrayList<>();
       List<Conflict> conflicts = new ArrayList<>();
       Set<Integer> artIdSet = new HashSet<>();
@@ -177,7 +174,7 @@ public class ConflictManagerInternal {
       }
       monitor.worked(15);
 
-      bulkLoadedArtifacts = preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
+      preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
       // Don't create the conflicts for attributes on an artifact that is
       // deleted etc.

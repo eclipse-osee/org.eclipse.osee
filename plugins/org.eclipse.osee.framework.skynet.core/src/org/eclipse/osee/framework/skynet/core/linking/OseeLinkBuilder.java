@@ -86,16 +86,16 @@ public class OseeLinkBuilder {
       "<w:r><w:pict>" +
       "<v:shapetype id=\"_x0000_t75\" coordsize=\"21600,21600\" o:spt=\"75\" o:preferrelative=\"t\""+
       " path=\"m@4@5l@4@11@9@11@9@5xe\" filled=\"f\" stroked=\"f\">" +
-      "<v:stroke joinstyle=\"miter\"/>" + 
+      "<v:stroke joinstyle=\"miter\"/>" +
       "<v:formulas><v:f eqn=\"if lineDrawn pixelLineWidth 0\"/><v:f eqn=\"sum @0 1 0\"/>" +
       "<v:f eqn=\"sum 0 0 @1\"/><v:f eqn=\"prod @2 1 2\"/><v:f eqn=\"prod @3 21600 pixelWidth\"/>" +
       "<v:f eqn=\"prod @3 21600 pixelHeight\"/><v:f eqn=\"sum @0 0 1\"/><v:f eqn=\"prod @6 1 2\"/>" +
-      "<v:f eqn=\"prod @7 21600 pixelWidth\"/><v:f eqn=\"sum @8 21600 0\"/>" + 
+      "<v:f eqn=\"prod @7 21600 pixelWidth\"/><v:f eqn=\"sum @8 21600 0\"/>" +
       "<v:f eqn=\"prod @7 21600 pixelHeight\"/><v:f eqn=\"sum @10 21600 0\"/></v:formulas>" +
       "<v:path o:extrusionok=\"f\" gradientshapeok=\"t\" o:connecttype=\"rect\"/>"+
       "<o:lock v:ext=\"edit\" aspectratio=\"t\"/></v:shapetype>" +
       "<w:binData w:name=\"wordml://%s\">%s</w:binData>" +
-      "<v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\">" + 
+      "<v:shape id=\"_x0000_i1025\" type=\"#_x0000_t75\" style=\"width:53.25pt;height:15pt\">" +
       "<v:imagedata src=\"wordml://%s\" o:title=\"%s\"/></v:shape></w:pict></w:r>";
    // @formatter:on
 
@@ -112,12 +112,13 @@ public class OseeLinkBuilder {
 
    public String getUnknownArtifactLink(String guid, Branch branch) {
       String processType = "unknown";
-      return getArtifactLinkWithMessage(processType, guid, branch,
-         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch.getUuid()));
+      return getArtifactLinkWithMessage(processType, guid, branch, String.format(
+         "Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch.getUuid()));
    }
 
    private String getArtifactLinkWithMessage(String processType, String guid, Branch branch, String message) {
-      String internalLink = String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
+      String internalLink =
+         String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch.getUuid());
       return String.format(WORDML_LINK_FORMAT, internalLink, message);
    }
 
@@ -138,7 +139,7 @@ public class OseeLinkBuilder {
    }
 
    private String getEditImage(boolean isStart, String guid) {
-      String imageId = String.format("%s_%s", guid, (isStart ? "START.jpg" : "END.jpg"));
+      String imageId = String.format("%s_%s", guid, isStart ? "START.jpg" : "END.jpg");
       String imageData = isStart ? START_BIN_DATA : END_BIN_DATA;
       return String.format(PIC_TAG_DATA, imageId, imageData, imageId, guid);
    }

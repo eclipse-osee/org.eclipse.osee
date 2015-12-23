@@ -69,7 +69,7 @@ public class GoalMemberProvider extends AbstractMemberProvider {
 
    @Override
    public GoalArtifact getArtifact() {
-      return ((GoalArtifact) goal.getStoreObject());
+      return (GoalArtifact) goal.getStoreObject();
    }
 
    @Override

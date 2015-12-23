@@ -62,8 +62,8 @@ public class RequirementData extends BaseTraceDataCache {
       List<Artifact> allSwRequirements = new ArrayList<>();
       for (IArtifactType type : types) {
          if (withInheritance) {
-            allSwRequirements.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(type, getBranch(),
-               EXCLUDE_DELETED));
+            allSwRequirements.addAll(
+               ArtifactQuery.getArtifactListFromTypeWithInheritence(type, getBranch(), EXCLUDE_DELETED));
          } else {
             allSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(type, getBranch(), EXCLUDE_DELETED));
          }

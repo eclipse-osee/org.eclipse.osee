@@ -25,11 +25,9 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.OseeExceptions;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
@@ -86,9 +84,8 @@ public class AddRequirementData implements IDbInitializationTask {
 
          sleep(5000);
          // need to update the branch type;
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {
-            BranchType.BASELINE.getValue(),
-            childBranch.getUuid()});
+         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE,
+            new Object[] {BranchType.BASELINE.getValue(), childBranch.getUuid()});
          BranchManager.refreshBranches();
       } catch (Exception ex) {
          OseeExceptions.wrapAndThrow(ex);
@@ -145,9 +142,10 @@ public class AddRequirementData implements IDbInitializationTask {
 
       Collection<Artifact> subSystemArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Robot", branch);
-      subSystemArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
-      subSystemArts.addAll(getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Interface",
-         branch));
+      subSystemArts.addAll(
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Video", branch));
+      subSystemArts.addAll(
+         getArtTypeRequirements(DEBUG, CoreArtifactTypes.SubsystemRequirementMSWord, "Interface", branch));
 
       Collection<Artifact> softArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, "Robot", branch);
@@ -185,9 +183,8 @@ public class AddRequirementData implements IDbInitializationTask {
          throw new IllegalStateException("Could not find Verification Tests header");
       }
       for (String str : new String[] {"A", "B", "C"}) {
-         Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, verificationHeader.getBranch(),
-               "Verification Test " + str);
+         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, verificationHeader.getBranch(),
+            "Verification Test " + str);
          verificationTests.add(newArt);
          verificationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
          newArt.persist(transaction);
@@ -202,9 +199,8 @@ public class AddRequirementData implements IDbInitializationTask {
          throw new IllegalStateException("Could not find Validation Tests header");
       }
       for (String str : new String[] {"1", "2", "3"}) {
-         Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, validationHeader.getBranch(),
-               "Validation Test " + str);
+         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
+            validationHeader.getBranch(), "Validation Test " + str);
          validationTests.add(newArt);
          validationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
          newArt.persist(transaction);
@@ -219,9 +215,8 @@ public class AddRequirementData implements IDbInitializationTask {
          throw new IllegalStateException("Could not find integration Tests header");
       }
       for (String str : new String[] {"X", "Y", "Z"}) {
-         Artifact newArt =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure, integrationHeader.getBranch(),
-               "integration Test " + str);
+         Artifact newArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestProcedure,
+            integrationHeader.getBranch(), "integration Test " + str);
 
          integrationTests.add(newArt);
          integrationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
@@ -252,9 +247,8 @@ public class AddRequirementData implements IDbInitializationTask {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
             artifactNameStr, branch.getName());
       }
-      Collection<Artifact> arts =
-         ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
-            QueryOption.CONTAINS_MATCH_OPTIONS);
+      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
+         QueryOption.CONTAINS_MATCH_OPTIONS);
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Found [%s] Artifacts", arts.size());
       }

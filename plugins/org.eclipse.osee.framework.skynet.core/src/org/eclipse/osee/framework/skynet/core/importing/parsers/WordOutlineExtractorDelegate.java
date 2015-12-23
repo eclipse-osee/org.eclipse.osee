@@ -37,8 +37,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
    // This assumes that the user uses a generated Table of Contents from Word and does not come up with
    // his/hers own version of a style can call it "TOC\d+"
-   private static final Pattern TOC_HYPERLINK_PATTERN = Pattern.compile(".*<w:pStyle w:val=\"TOC\\d+?\"/>.*",
-      Pattern.DOTALL);
+   private static final Pattern TOC_HYPERLINK_PATTERN =
+      Pattern.compile(".*<w:pStyle w:val=\"TOC\\d+?\"/>.*", Pattern.DOTALL);
    private boolean possibleTableOfContents;
 
    private static String detectedTableOfContentsReportError =
@@ -221,8 +221,8 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
 
          paragraphStyle = Strings.isValid(paragraphStyle) ? paragraphStyle : Strings.EMPTY_STRING;
 
-         boolean invalid =
-            outlineResolution.isInvalidOutlineNumber(number, previousNamedArtifact.getSectionNumber().getNumberString());
+         boolean invalid = outlineResolution.isInvalidOutlineNumber(number,
+            previousNamedArtifact.getSectionNumber().getNumberString());
          result = !invalid && RoughArtifactMetaData.matches(metaData, paragraphStyle);
       } else {
          result = true; //accept since there is no previous

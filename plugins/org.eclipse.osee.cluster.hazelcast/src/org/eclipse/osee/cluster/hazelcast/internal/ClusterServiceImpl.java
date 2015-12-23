@@ -10,6 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.cluster.hazelcast.internal;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.UrlXmlConfig;
+import com.hazelcast.config.XmlConfigBuilder;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.core.IList;
+import com.hazelcast.core.ILock;
+import com.hazelcast.core.IMap;
+import com.hazelcast.core.IQueue;
+import com.hazelcast.core.ISet;
+import com.hazelcast.core.IdGenerator;
+import com.hazelcast.core.Instance;
+import com.hazelcast.core.InstanceEvent;
+import com.hazelcast.core.InstanceListener;
+import com.hazelcast.core.LifecycleService;
+import com.hazelcast.core.MultiMap;
+import com.hazelcast.impl.GroupProperties;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.List;
@@ -34,23 +51,6 @@ import org.eclipse.osee.distributed.DistributedObject;
 import org.eclipse.osee.distributed.InstanceManager;
 import org.eclipse.osee.event.EventService;
 import org.eclipse.osee.logger.Log;
-import com.hazelcast.config.Config;
-import com.hazelcast.config.UrlXmlConfig;
-import com.hazelcast.config.XmlConfigBuilder;
-import com.hazelcast.core.Hazelcast;
-import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IList;
-import com.hazelcast.core.ILock;
-import com.hazelcast.core.IMap;
-import com.hazelcast.core.IQueue;
-import com.hazelcast.core.ISet;
-import com.hazelcast.core.IdGenerator;
-import com.hazelcast.core.Instance;
-import com.hazelcast.core.InstanceEvent;
-import com.hazelcast.core.InstanceListener;
-import com.hazelcast.core.LifecycleService;
-import com.hazelcast.core.MultiMap;
-import com.hazelcast.impl.GroupProperties;
 
 /**
  * @author Roberto E. Escobar
@@ -112,7 +112,7 @@ public class ClusterServiceImpl implements ClusterService, InstanceManager {
       try {
          //         URL configURL = new URL(configPath);
          //         stream = new BufferedInputStream(configURL.openStream());
-         //         
+         //
          //         XmlConfigBuilder builder = new XmlConfigBuilder(stream);
          return new UrlXmlConfig(configPath);
       } catch (IOException ex) {
@@ -122,7 +122,7 @@ public class ClusterServiceImpl implements ClusterService, InstanceManager {
          //            try {
          //               stream.close();
          //            } catch (IOException ex) {
-         //               // Do Nothing 
+         //               // Do Nothing
          //            }
          //         }
       }

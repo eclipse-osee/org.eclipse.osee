@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.LazyObject;
  * 
  * @author Donald G. Dunne
  */
-public class AtsConfigCacheProvider extends LazyObject<AtsArtifactConfigCache> implements CacheProvider<AtsArtifactConfigCache> {
+public class AtsConfigCacheProvider extends LazyObject<AtsArtifactConfigCache>implements CacheProvider<AtsArtifactConfigCache> {
 
    private final IAtsArtifactStore artifactStore;
 

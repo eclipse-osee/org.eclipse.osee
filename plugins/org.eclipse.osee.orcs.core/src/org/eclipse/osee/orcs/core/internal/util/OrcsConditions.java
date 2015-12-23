@@ -30,8 +30,8 @@ public final class OrcsConditions {
       for (RelationNode node : nodes) {
          checkNotNull(node, "node");
          GraphData graph2 = node.getGraph();
-         checkExpressionFailOnTrue(!graph.equals(graph2),
-            "Error - Node[%s] is on graph[%s] but should be on graph[%s]", node, graph2, graph);
+         checkExpressionFailOnTrue(!graph.equals(graph2), "Error - Node[%s] is on graph[%s] but should be on graph[%s]",
+            node, graph2, graph);
       }
    }
 

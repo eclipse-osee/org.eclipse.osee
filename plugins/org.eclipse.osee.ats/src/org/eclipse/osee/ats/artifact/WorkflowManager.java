@@ -60,26 +60,25 @@ public class WorkflowManager {
 
       (WorkflowManagerCore.isEditable(AtsClientService.get().getUserService().getCurrentUser(), awa,
          awa.getStateDefinition(), privilegedEditEnabled, AtsClientService.get().getUserService()) || //
-         // page is define to allow anyone to edit
-         awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
-         // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
-         isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
+      // page is define to allow anyone to edit
+      awa.getStateDefinition().hasRule(RuleDefinitionOption.AllowAssigneeToAll.name()) ||
+      // awa is child of TeamWorkflow that has AllowAssigneeToAll rule
+      isParentTeamWorklfowCurrentStateAllowAssigneeToAll(awa) ||
       // team definition has allowed anyone to edit
       awa.teamDefHasRule(RuleDefinitionOption.AllowAssigneeToAll));
    }
 
    private static boolean isParentTeamWorklfowCurrentStateAllowAssigneeToAll(AbstractWorkflowArtifact awa) throws OseeCoreException {
       TeamWorkFlowArtifact parentTeamArt = awa.getParentTeamWorkflow();
-      return (parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
-         RuleDefinitionOption.AllowAssigneeToAll.name()));
+      return parentTeamArt != null && parentTeamArt.getStateDefinition().hasRule(
+         RuleDefinitionOption.AllowAssigneeToAll.name());
    }
 
    public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
       List<TeamWorkFlowArtifact> result = new ArrayList<>();
       for (IArtifactType artType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
-         List<TeamWorkFlowArtifact> teamArts =
-            org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(artType,
-               AtsUtilCore.getAtsBranch()));
+         List<TeamWorkFlowArtifact> teamArts = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+            ArtifactQuery.getArtifactListFromType(artType, AtsUtilCore.getAtsBranch()));
          result.addAll(teamArts);
       }
       return result;

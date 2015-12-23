@@ -224,7 +224,8 @@ public class JdbcComponentFactoryTest {
    @Test
    public void testStartConfigErrorBindingCollision() {
       thrown.expect(JdbcException.class);
-      thrown.expectMessage("Jdbc Service configuration error - binding [binding1] should not be referenced multiple times betweeen [jdbc.service] configurations. Ensure [osgi.binding] contains unique bindings.");
+      thrown.expectMessage(
+         "Jdbc Service configuration error - binding [binding1] should not be referenced multiple times betweeen [jdbc.service] configurations. Ensure [osgi.binding] contains unique bindings.");
       factory.start(asConfig(CONFIG_1, CONFIG_BINDING_COLLISION));
    }
 
@@ -236,7 +237,8 @@ public class JdbcComponentFactoryTest {
       assertEquals(1, services.size());
 
       thrown.expect(JdbcException.class);
-      thrown.expectMessage("Jdbc Service configuration error - binding [binding1] should not be referenced multiple times betweeen [jdbc.service] configurations. Ensure [osgi.binding] contains unique bindings.");
+      thrown.expectMessage(
+         "Jdbc Service configuration error - binding [binding1] should not be referenced multiple times betweeen [jdbc.service] configurations. Ensure [osgi.binding] contains unique bindings.");
       factory.update(asConfig(CONFIG_1, CONFIG_BINDING_COLLISION));
    }
 

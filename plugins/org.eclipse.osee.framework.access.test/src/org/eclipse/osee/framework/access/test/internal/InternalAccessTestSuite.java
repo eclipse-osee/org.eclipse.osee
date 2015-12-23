@@ -18,7 +18,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({ //
-CmAccessTestSuite.class, //
+   CmAccessTestSuite.class, //
 })
 public class InternalAccessTestSuite {
    @BeforeClass

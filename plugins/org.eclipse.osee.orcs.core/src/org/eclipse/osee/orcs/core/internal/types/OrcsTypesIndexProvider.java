@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types;
 
-
 /**
  * @author Roberto E. Escobar
  */

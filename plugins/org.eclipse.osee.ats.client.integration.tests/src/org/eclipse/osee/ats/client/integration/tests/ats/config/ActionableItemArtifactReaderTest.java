@@ -28,9 +28,8 @@ public class ActionableItemArtifactReaderTest {
 
    @Test
    public void testLoad() {
-      IAtsActionableItem sawTestAi =
-         AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
-            IAtsActionableItem.class);
+      IAtsActionableItem sawTestAi = AtsClientService.get().getConfig().getSoleByUuid(
+         DemoArtifactToken.SAW_Test_AI.getUuid(), IAtsActionableItem.class);
       Assert.assertTrue(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(1, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 
@@ -39,9 +38,8 @@ public class ActionableItemArtifactReaderTest {
       AtsClientService.get().storeConfigObject(sawTestAi, changes);
       changes.execute();
 
-      sawTestAi =
-         AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
-            IAtsActionableItem.class);
+      sawTestAi = AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
+         IAtsActionableItem.class);
       Assert.assertFalse(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(0, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 
@@ -50,9 +48,8 @@ public class ActionableItemArtifactReaderTest {
       AtsClientService.get().storeConfigObject(sawTestAi, changes);
       changes.execute();
 
-      sawTestAi =
-         AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
-            IAtsActionableItem.class);
+      sawTestAi = AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_Test_AI.getUuid(),
+         IAtsActionableItem.class);
       Assert.assertTrue(sawTestAi.isAllowUserActionCreation());
       Assert.assertEquals(1, ActionableItems.getUserEditableActionableItems(Arrays.asList(sawTestAi)).size());
 

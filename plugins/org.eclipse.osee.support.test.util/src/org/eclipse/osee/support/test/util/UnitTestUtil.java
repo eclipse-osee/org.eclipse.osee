@@ -30,19 +30,19 @@ public class UnitTestUtil {
    }
 
    public static boolean isUnitTest(String fileContents) {
-      return (fileContents.contains("@Test") || fileContents.contains("@org.junit.Test"));
+      return fileContents.contains("@Test") || fileContents.contains("@org.junit.Test");
    }
 
    public static boolean isSuite(File file) {
-      return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Suite"));
+      return file.getAbsolutePath().endsWith(".java") && file.getName().contains("Suite");
    }
 
    public static boolean isTestUtil(File file) {
-      return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Util"));
+      return file.getAbsolutePath().endsWith(".java") && file.getName().contains("Util");
    }
 
    public static boolean isMock(File file) {
-      return (file.getAbsolutePath().endsWith(".java") && file.getName().contains("Mock"));
+      return file.getAbsolutePath().endsWith(".java") && file.getName().contains("Mock");
    }
 
    public static Set<String> getAuthors(File file) throws IOException {

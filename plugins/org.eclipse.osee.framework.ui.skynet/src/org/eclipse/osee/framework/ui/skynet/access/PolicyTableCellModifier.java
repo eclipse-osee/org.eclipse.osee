@@ -29,8 +29,8 @@ public class PolicyTableCellModifier implements ICellModifier {
 
    @Override
    public boolean canModify(Object element, String property) {
-      boolean toReturn =
-         property.equals(PolicyTableColumns.delete.toString()) || property.equals(PolicyTableColumns.totalAccess.toString());
+      boolean toReturn = property.equals(PolicyTableColumns.delete.toString()) || property.equals(
+         PolicyTableColumns.totalAccess.toString());
       return toReturn;
    }
 
@@ -38,7 +38,8 @@ public class PolicyTableCellModifier implements ICellModifier {
    public Object getValue(Object element, String property) {
       if (property.equals(PolicyTableColumns.delete.toString())) {
          return new Boolean(false);
-      } else if (property.equals(PolicyTableColumns.artifact.toString()) || property.equals(PolicyTableColumns.totalAccess.toString()) || property.equals(PolicyTableColumns.branchAccess.toString())) {
+      } else if (property.equals(PolicyTableColumns.artifact.toString()) || property.equals(
+         PolicyTableColumns.totalAccess.toString()) || property.equals(PolicyTableColumns.branchAccess.toString())) {
          return ((AccessControlData) element).getPermission().ordinal();
       }
       return "";

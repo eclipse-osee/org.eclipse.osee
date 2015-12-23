@@ -34,7 +34,8 @@ public final class HiddenFormFields {
 
    private void write(StringBuilder writer, String name, String value) {
       if (Strings.isValid(value)) {
-         writer.append(String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\">\n", name, asTemplateValue(value)));
+         writer.append(
+            String.format("<input type=\"hidden\" name=\"%s\" value=\"%s\">\n", name, asTemplateValue(value)));
       }
    }
 

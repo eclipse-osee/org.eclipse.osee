@@ -63,7 +63,7 @@ public abstract class AbstractArtifactEditor extends FormEditor implements IDirt
    }
 
    public Artifact getArtifactFromEditorInput() {
-      return (Artifact) getEditorInput().getAdapter(Artifact.class);
+      return getEditorInput().getAdapter(Artifact.class);
    }
 
    @Override

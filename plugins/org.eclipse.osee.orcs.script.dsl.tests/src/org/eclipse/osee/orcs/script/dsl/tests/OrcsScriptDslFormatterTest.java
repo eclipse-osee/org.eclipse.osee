@@ -37,7 +37,7 @@ public class OrcsScriptDslFormatterTest {
    private static final String LN = System.getProperty("line.separator");
 
    private static final String INPUT_1 = //
-      "script-version 0.12.0   ; // a comment" + // 
+      "script-version 0.12.0   ; // a comment" + //
       LN + //
       "start from tx where date in  ( '12/24/2014 12:12:12 AM' .. '12/24/2014 12:12:12 AM' )" + //
       "find artifacts where art-type instance-of [23]" + //
@@ -47,7 +47,7 @@ public class OrcsScriptDslFormatterTest {
       " */ start    from     branch    570      " + //
       "follow relation type =    324 to    side-B" + //
       "           find artifacts where art-type = 1231" + //
-      " collect artifacts as 'alias-2' {   id as 'id-1'   ,   guid as 'id-2'  ,  attributes { uri, txs {*} }, type }" + // 
+      " collect artifacts as 'alias-2' {   id as 'id-1'   ,   guid as 'id-2'  ,  attributes { uri, txs {*} }, type }" + //
       "       limit    34;" + //
       "             start from branch  570 " + //
       "follow relation type = 324    to side-B ;" + //

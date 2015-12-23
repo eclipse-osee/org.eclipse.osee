@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.script.impl;
 
 import static org.eclipse.osee.orcs.core.internal.script.OrcsScriptException.newException;
+import com.google.common.io.CharStreams;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,7 +38,6 @@ import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptDslResource;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OrcsScript;
-import com.google.common.io.CharStreams;
 
 /**
  * @author Roberto E. Escobar

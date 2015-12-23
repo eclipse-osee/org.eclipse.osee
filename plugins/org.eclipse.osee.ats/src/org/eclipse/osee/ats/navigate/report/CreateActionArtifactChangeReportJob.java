@@ -82,9 +82,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
                   AWorkbench.popup(result);
                   return;
                }
-               AWorkbench.popup(
-                  title,
-                  "Completed " + title + "\n\nFile saved to " + System.getProperty("user.home") + File.separator + "table.csv");
+               AWorkbench.popup(title, "Completed " + title + "\n\nFile saved to " + System.getProperty(
+                  "user.home") + File.separator + "table.csv");
             }
          });
          monitor.done();
@@ -103,18 +102,12 @@ public class CreateActionArtifactChangeReportJob extends Job {
 
       int x = 1;
       rd.addRaw(AHTML.beginMultiColumnTable(95));
-      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
-         "ID",
-         "Bulld",
-         "UI",
-         attributeType.getName(),
-         "RPCR",
-         "Change"}));
+      rd.addRaw(AHTML.addHeaderRowMultiColumnTable(
+         new String[] {"ID", "Bulld", "UI", attributeType.getName(), "RPCR", "Change"}));
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-         String result =
-            String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
-               teamArt.getTeamDefinition().getName());
+         String result = String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
+            teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);
          for (ICommitConfigItem commitConfigArt : AtsClientService.get().getBranchService().getConfigArtifactsConfiguredToCommitTo(
@@ -134,19 +127,15 @@ public class CreateActionArtifactChangeReportJob extends Job {
    private static void processTeam(TeamWorkFlowArtifact teamArt, String buildId, IAttributeType attributeType, ICommitConfigItem commitConfigArt, XResultData rd) throws OseeCoreException {
       String rpcrNum = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
       ChangeData changeData = AtsBranchManager.getChangeData(teamArt, commitConfigArt);
-      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW, ModificationType.MODIFIED)) {
+      for (Artifact modArt : changeData.getArtifacts(KindType.Artifact, ModificationType.NEW,
+         ModificationType.MODIFIED)) {
          List<String> attrStrs = modArt.getAttributesToStringList(attributeType);
          if (attrStrs.isEmpty()) {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getAtsId(),
-               buildId,
-               modArt.getName(),
-               attrStr,
-               rpcrNum,
-               "Content"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(
+               new String[] {teamArt.getAtsId(), buildId, modArt.getName(), attrStr, rpcrNum, "Content"}));
          }
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.Artifact, ModificationType.DELETED)) {
@@ -155,13 +144,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getAtsId(),
-               buildId,
-               artChg.getName(),
-               attrStr,
-               rpcrNum,
-               "Deleted"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(
+               new String[] {teamArt.getAtsId(), buildId, artChg.getName(), attrStr, rpcrNum, "Deleted"}));
          }
       }
       for (Artifact artChg : changeData.getArtifacts(KindType.RelationOnly, ModificationType.NEW,
@@ -171,13 +155,8 @@ public class CreateActionArtifactChangeReportJob extends Job {
             attrStrs.add(EnumeratedAttribute.UNSPECIFIED_VALUE);
          }
          for (String attrStr : attrStrs) {
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-               teamArt.getAtsId(),
-               buildId,
-               artChg.getName(),
-               attrStr,
-               rpcrNum,
-               "Relation"}));
+            rd.addRaw(AHTML.addRowMultiColumnTable(
+               new String[] {teamArt.getAtsId(), buildId, artChg.getName(), attrStr, rpcrNum, "Relation"}));
          }
       }
    }

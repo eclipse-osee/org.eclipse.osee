@@ -371,7 +371,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                            selectedTypes.clear();
                            for (Object object : dialog.getResult()) {
                               if (object instanceof IAttributeType) {
-                                 selectedTypes.add(((IAttributeType) object));
+                                 selectedTypes.add((IAttributeType) object);
                               }
                            }
                            refreshView();

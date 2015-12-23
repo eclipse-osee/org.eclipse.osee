@@ -110,7 +110,8 @@ public class IndexerCommand implements ConsoleCommand {
          String[] uuids = params.getArray("branchUuids");
          if (uuids != null & uuids.length > 0) {
             for (String uuid : uuids) {
-               branches.add(getOrcsApi().getQueryFactory().branchQuery().andUuids(Long.valueOf(uuid)).getResults().getExactlyOne());
+               branches.add(getOrcsApi().getQueryFactory().branchQuery().andUuids(
+                  Long.valueOf(uuid)).getResults().getExactlyOne());
             }
          }
 

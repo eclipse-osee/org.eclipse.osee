@@ -16,7 +16,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.osee.framework.skynet.core.importing.ReqNumbering;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -119,13 +118,13 @@ public class ReqNumberingTest {
 
    @Test
    public void testCompare() {
-      List<ReqNumbering> referenceList =
-         Arrays.asList(new ReqNumbering("1"), new ReqNumbering("1.0-1"), new ReqNumbering("1.3"), new ReqNumbering(
-            "1.3.1.1.1.1.1.1"), new ReqNumbering("2.4"), new ReqNumbering("2.4.0.1"), new ReqNumbering("3"));
+      List<ReqNumbering> referenceList = Arrays.asList(new ReqNumbering("1"), new ReqNumbering("1.0-1"),
+         new ReqNumbering("1.3"), new ReqNumbering("1.3.1.1.1.1.1.1"), new ReqNumbering("2.4"),
+         new ReqNumbering("2.4.0.1"), new ReqNumbering("3"));
 
-      List<ReqNumbering> sampleList =
-         Arrays.asList(new ReqNumbering("3"), new ReqNumbering("1.0-1"), new ReqNumbering("2.4.0-1"), new ReqNumbering(
-            "2.4"), new ReqNumbering("1.3.1.1.1.1.1.1"), new ReqNumbering("1.3"), new ReqNumbering("1"));
+      List<ReqNumbering> sampleList = Arrays.asList(new ReqNumbering("3"), new ReqNumbering("1.0-1"),
+         new ReqNumbering("2.4.0-1"), new ReqNumbering("2.4"), new ReqNumbering("1.3.1.1.1.1.1.1"),
+         new ReqNumbering("1.3"), new ReqNumbering("1"));
 
       Collections.sort(sampleList);
 

@@ -98,7 +98,7 @@ public class VbaWordDiffGeneratorTest {
       if (iTrailerEnd > -1) {
          theReturn = theReturn.substring(0, iTrailerEnd + 13);
       }
-      return (theReturn);
+      return theReturn;
    }
 
    private String getContent(String resourceName) throws IOException {

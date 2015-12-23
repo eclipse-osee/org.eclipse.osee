@@ -154,8 +154,8 @@ public class PropertyStoreTest {
       store1.put("key6.5", "");
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      PropertyStore nested =
-         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
+      PropertyStore nested = PropertyStoreTestUtil.createPropertyStore(
+         PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties()));
       store1.put("key9", nested);
 
       Set<String> set1 = new TreeSet<>(store1.keySet());
@@ -211,9 +211,8 @@ public class PropertyStoreTest {
       store1.put("key6", 543L);
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      store1.put(
-         "key9",
-         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
+      store1.put("key9", PropertyStoreTestUtil.createPropertyStore(
+         PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
 
       store1.save(outputStream);
 
@@ -236,9 +235,8 @@ public class PropertyStoreTest {
       store1.put("key6", 543L);
       store1.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store1.put("key8", new String[] {"entry4", "entry5", "entry6"});
-      store1.put(
-         "key9",
-         PropertyStoreTestUtil.createPropertyStore(PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
+      store1.put("key9", PropertyStoreTestUtil.createPropertyStore(
+         PropertyStoreTestUtil.convertPropertiesToMap(System.getProperties())));
 
       store1.save(writer);
 

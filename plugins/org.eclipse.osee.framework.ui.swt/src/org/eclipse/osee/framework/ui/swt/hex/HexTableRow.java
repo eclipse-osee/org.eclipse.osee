@@ -20,6 +20,7 @@ public class HexTableRow {
    private final boolean[] displayAsAscii;
 
    private static final String[] hexTbl = new String[256];
+
    static {
       for (int i = 0; i < 256; i++) {
          hexTbl[i] = String.format("%02X", i);

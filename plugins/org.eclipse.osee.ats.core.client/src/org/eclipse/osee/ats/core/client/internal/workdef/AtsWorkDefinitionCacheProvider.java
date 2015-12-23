@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.LazyObject;
  * 
  * @author Donald G. Dunne
  */
-public class AtsWorkDefinitionCacheProvider extends LazyObject<AtsWorkDefinitionCache> implements CacheProvider<AtsWorkDefinitionCache> {
+public class AtsWorkDefinitionCacheProvider extends LazyObject<AtsWorkDefinitionCache>implements CacheProvider<AtsWorkDefinitionCache> {
 
    private final IAtsWorkDefinitionService workDefinitionService;
 

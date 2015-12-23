@@ -41,7 +41,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    private final MessageProducer producer;
    private final Session session;
    private final ActiveMqUtil activeMqUtil;
-   private ExecutorService executor;
+   private final ExecutorService executor;
 
    ActiveMqMessageListenerWrapper(ActiveMqUtil activeMqUtil, MessageProducer producer, Session session, OseeMessagingListener listener) {
       this.producer = producer;
@@ -54,16 +54,16 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
    @Override
    public void onMessage(javax.jms.Message jmsMessage) {
       try {
-    	 ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
-    	 if(support != null){
-    		 if(support.getPrintReceives()){
-    			 System.out.println(new Date() + " : " + jmsMessage.getJMSMessageID());
-    			 System.out.println("MESSAGE:");
-    			 System.out.println(jmsMessage.toString());
-    			 System.out.println("-----------------------------------------------------------------------------");
-    		 }
-    		 support.addReceive(jmsMessage);
-    	 } 
+         ConsoleDebugSupport support = ServiceUtility.getConsoleDebugSupport();
+         if (support != null) {
+            if (support.getPrintReceives()) {
+               System.out.println(new Date() + " : " + jmsMessage.getJMSMessageID());
+               System.out.println("MESSAGE:");
+               System.out.println(jmsMessage.toString());
+               System.out.println("-----------------------------------------------------------------------------");
+            }
+            support.addReceive(jmsMessage);
+         }
          Destination destReply = jmsMessage.getJMSReplyTo();
          if (destReply != null) {
             ActiveMQDestination dest = (ActiveMQDestination) jmsMessage.getJMSDestination();
@@ -89,26 +89,22 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
       executor.submit(new ListenerProcessRunnable(message, replyConnection));
    }
 
-
    class ListenerProcessRunnable implements Runnable {
 
-      private javax.jms.Message message;
-      private ReplyConnection replyConnection;
-
+      private final javax.jms.Message message;
+      private final ReplyConnection replyConnection;
 
       public ListenerProcessRunnable(Message message, ReplyConnection replyConnection) {
          this.message = message;
          this.replyConnection = replyConnection;
       }
 
-
       @Override
       public void run() {
          try {
             Map<String, Object> headers = new HashMap<>();
             Enumeration<?> propertyNames = message.getPropertyNames();
-            while( propertyNames.hasMoreElements() )
-            {
+            while (propertyNames.hasMoreElements()) {
                String name = (String) propertyNames.nextElement();
                Object element = message.getObjectProperty(name);
                headers.put(name, element);
@@ -116,8 +112,7 @@ class ActiveMqMessageListenerWrapper implements MessageListener {
             listener.process(activeMqUtil.translateMessage(message, listener.getClazz()), headers, replyConnection);
             OseeLog.log(Activator.class, Level.FINE,
                String.format("recieved message %s - %s", message.getJMSDestination().toString(), message.toString()));
-         }
-         catch (Exception ex) {
+         } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Exception ", ex);
          }
       }

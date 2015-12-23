@@ -52,15 +52,13 @@ public abstract class AbstractAuthenticationProvider implements IAuthenticationP
       IUserToken toReturn = null;
       try {
          QueryFactory queryFactory = orcsApi.getQueryFactory();
-         QueryBuilder query =
-            queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
-               CoreAttributeTypes.UserId, userId);
+         QueryBuilder query = queryFactory.fromBranch(CoreBranches.COMMON).andIsOfType(CoreArtifactTypes.User).and(
+            CoreAttributeTypes.UserId, userId);
 
          ArtifactReadable artifact = query.getResults().getOneOrNull();
          if (artifact != null) {
-            toReturn =
-               TokenFactory.createUserToken(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
-                  artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
+            toReturn = TokenFactory.createUserToken(artifact.getUuid(), artifact.getGuid(), artifact.getName(),
+               artifact.getSoleAttributeAsString(CoreAttributeTypes.Email, ""), userId, true, false, false);
          } else {
             getLogger().info("Unable to find userId:[%s] on [%s]", userId, CoreBranches.COMMON);
          }

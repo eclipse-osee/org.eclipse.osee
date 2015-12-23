@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.typesystem;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.COVERSION_ERROR__BAD_FORMAT_TEMPLATE__MSG;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.COVERSION_ERROR__DEFAULT_LOCALE_FORMAT__MSG;
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.TIMESTAMP_FORMAT;
+import com.google.inject.Singleton;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -23,7 +24,6 @@ import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.nodemodel.ICompositeNode;
 import org.eclipse.xtext.nodemodel.INode;
 import org.eclipse.xtext.nodemodel.util.NodeModelUtils;
-import com.google.inject.Singleton;
 
 /**
  * @author Roberto E. Escobar

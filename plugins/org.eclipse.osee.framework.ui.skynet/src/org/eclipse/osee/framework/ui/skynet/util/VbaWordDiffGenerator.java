@@ -49,7 +49,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
    private static final String Skip_Errors = "On error resume next\n ";
 
    private final static String comparisonCommand =
-   // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values (wdFieldCodeChanges), Comments 
+      // The true/false flags define what to compare: Formats, Case, Whitespace, Tables, Headers, Footers, TextBox, Field values (wdFieldCodeChanges), Comments
       "    set newDoc = oWord.CompareDocuments (baseDoc, compareDoc, wdCompareTargetSelectedDiff, wdGranularityWordLevel, true, true, true, true, true, true, true, wdFieldCodeChanges, true, true, authorName) \n    compareDoc.close \n    newDoc.Activate\n    set compareDoc = oWord.ActiveDocument\n\n";
    private final static String comparisonCommandFirst =
       "    set mainDoc = compareDoc\n    baseDoc.close\n    set baseDoc = Nothing\n";

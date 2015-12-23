@@ -190,17 +190,21 @@ public class SourceCounter {
          return "Skywalker";
       } else if (packageName.contains("tte")) {
          return "TTE";
-      } else if (packageName.contains("widget") || packageName.contains("skynet.widgets") || packageName.contains("swt")) {
+      } else if (packageName.contains("widget") || packageName.contains("skynet.widgets") || packageName.contains(
+         "swt")) {
          return "XWidgets";
       } else if (packageName.contains("event") || packageName.contains("messaging")) {
          return "Event System";
       } else if (packageName.contains("define")) {
          return "Define";
-      } else if (packageName.contains("artifact") || packageName.contains("attribute") || packageName.contains("relation")) {
+      } else if (packageName.contains("artifact") || packageName.contains("attribute") || packageName.contains(
+         "relation")) {
          return "Persistence";
       } else if (packageName.contains("test")) {
          return "Testing";
-      } else if (packageName.contains("framework") || packageName.contains("client.integration") || packageName.contains("cluster") || packageName.contains("executor") || packageName.contains("database")) {
+      } else if (packageName.contains("framework") || packageName.contains(
+         "client.integration") || packageName.contains("cluster") || packageName.contains(
+            "executor") || packageName.contains("database")) {
          return "Framework";
       }
       return "Unknown";
@@ -220,7 +224,8 @@ public class SourceCounter {
          if (file.getAbsolutePath().contains("src-gen")) {
             System.out.println("Ignoring SRC-GEN file [%s]" + file.getAbsolutePath());
          } else if (file.getName().contains("UnitTestCounter") || file.getName().contains("UnitTestUtil")) {
-            System.out.println("Ignoring Counter and Util file cause author search string in [%s]" + file.getAbsolutePath());
+            System.out.println(
+               "Ignoring Counter and Util file cause author search string in [%s]" + file.getAbsolutePath());
          } else {
             sourceFileCounter++;
             Set<String> authors = UnitTestUtil.getAuthors(text);

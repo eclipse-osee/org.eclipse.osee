@@ -63,8 +63,8 @@ public class MergeManagerHandler extends CommandHandler {
                   selectedBranch.getUuid()).isEmpty()) {
                   enabled = true;
                } else {
-                  enabled =
-                     selectedBranch != null && !(ServiceUtil.getOseeCmService().isPcrArtifact(BranchManager.getAssociatedArtifact(selectedBranch)));
+                  enabled = selectedBranch != null && !ServiceUtil.getOseeCmService().isPcrArtifact(
+                     BranchManager.getAssociatedArtifact(selectedBranch));
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

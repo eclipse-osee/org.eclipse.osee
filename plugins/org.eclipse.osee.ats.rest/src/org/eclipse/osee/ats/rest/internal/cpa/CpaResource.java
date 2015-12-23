@@ -138,9 +138,8 @@ public final class CpaResource implements AtsCpaEndpointApi {
       if (rd.isErrors()) {
          return Response.status(Status.NOT_ACCEPTABLE).entity(rd.toString()).build();
       }
-      CpaDecision decision =
-         DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(
-            java.util.Collections.singleton(duplicate.getCpaUuid())).load().iterator().next();
+      CpaDecision decision = DecisionLoader.createLoader(cpaRegistry, atsServer).andCpaIds(
+         java.util.Collections.singleton(duplicate.getCpaUuid())).load().iterator().next();
       return Response.ok().entity(decision).build();
    }
 

@@ -40,24 +40,18 @@ public final class ExchangeDb {
 
    private static final String[] BRANCH_ID_NEG_ONE_ALIASES = new String[] {"parent_branch_id"};
 
-   private static final String[] BRANCH_ID_REG_ALIASES = new String[] {
-      "mapped_branch_id",
-      "source_branch_id",
-      "merge_branch_id",
-      "dest_branch_id"};
+   private static final String[] BRANCH_ID_REG_ALIASES =
+      new String[] {"mapped_branch_id", "source_branch_id", "merge_branch_id", "dest_branch_id"};
 
-   private static final String[] ARTIFACT_ID_NEG_ONE_ALIASES = new String[] {
-      "commit_art_id",
-      "associated_art_id",
-      "author"};
+   private static final String[] ARTIFACT_ID_NEG_ONE_ALIASES =
+      new String[] {"commit_art_id", "associated_art_id", "author"};
 
    private static final String[] ARTIFACT_ID_REG_ALIASES = new String[] {"a_art_id", "b_art_id", "privilege_entity_id"};
 
    private static final String[] GAMMA_ID_REG_ALIASES = new String[] {"source_gamma_id", "dest_gamma_id"};
 
-   private static final String[] TRANSACTION_ID_REG_ALIASES = new String[] {
-      "baseline_transaction_id",
-      "parent_transaction_id"};
+   private static final String[] TRANSACTION_ID_REG_ALIASES =
+      new String[] {"baseline_transaction_id", "parent_transaction_id"};
 
    private static final String[] TRANSACTION_ID_NEG_ONE_ALIASES = new String[] {"commit_transaction_id"};
 
@@ -65,6 +59,7 @@ public final class ExchangeDb {
    private static final String[] BRANCH_ID_ALIASES;
    private static final String[] GAMMA_ID_ALIASES;
    private static final String[] TRANSACTION_ID_ALIASES;
+
    static {
       Set<String> artIdAliases = new HashSet<>();
       artIdAliases.add(ARTIFACT_ID);
@@ -100,8 +95,8 @@ public final class ExchangeDb {
          ARTIFACT_ID_NEG_ONE_ALIASES));
       items.add(new IndexCollector(ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_ID));
       items.add(new IndexCollector(ExportItem.OSEE_RELATION_LINK_DATA, RELATION_ID));
-      items.add(new IndexCollector(ExportItem.OSEE_BRANCH_DATA, BRANCH_ID, BRANCH_ID_REG_ALIASES,
-         BRANCH_ID_NEG_ONE_ALIASES));
+      items.add(
+         new IndexCollector(ExportItem.OSEE_BRANCH_DATA, BRANCH_ID, BRANCH_ID_REG_ALIASES, BRANCH_ID_NEG_ONE_ALIASES));
       return items;
    }
 

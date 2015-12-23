@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.utility;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -20,10 +24,6 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 public class RestUtil {
 
@@ -99,8 +99,8 @@ public class RestUtil {
          if (art.isAttributeTypeValid(attrType)) {
             ResultSet<? extends AttributeReadable<Object>> attributeVals = art.getAttributes();
             if (!attributeVals.isEmpty()) {
-               if (art.isAttributeTypeValid(attrType) && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(
-                  attrType) > 1) {
+               if (art.isAttributeTypeValid(
+                  attrType) && orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attrType) > 1) {
                   List<String> attributeValues = new ArrayList<>();
                   for (AttributeReadable<?> attrRead : attributeVals) {
                      String valueStr = String.valueOf(attrRead.getValue());

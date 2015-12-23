@@ -84,9 +84,8 @@ public class DeleteTasksAction extends AbstractAtsAction {
          builder.append("\n\nNote: Workflow will be saved.");
 
       }
-      boolean delete =
-         MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Task",
-            builder.toString());
+      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+         "Delete Task", builder.toString());
       if (delete) {
          try {
             SkynetTransaction transaction =

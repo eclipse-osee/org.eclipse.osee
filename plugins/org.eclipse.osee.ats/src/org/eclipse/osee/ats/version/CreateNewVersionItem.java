@@ -57,8 +57,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public CreateNewVersionItem(XNavigateItem parent, IAtsTeamDefinition teamDefHoldingVersions) {
-      super(parent,
-         "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s)",
+      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version(s)",
          FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
@@ -74,9 +73,8 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       if (teamDefHoldingVersions == null) {
          return;
       }
-      EntryDialog ed =
-         new EntryDialog(Displays.getActiveShell(), "Create New Version", null, "Enter Version name(s) one per line",
-            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+      EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create New Version", null,
+         "Enter Version name(s) one per line", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       ed.setFillVertically(true);
       if (ed.open() == 0) {
          Set<String> newVersionNames = new HashSet<>();
@@ -88,9 +86,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          Collection<IAtsVersion> newVersions =
             createVersions(resultData, changes, teamDefHoldingVersions, newVersionNames);
          if (resultData.isErrors()) {
-            resultData.log(String.format(
-               "\nErrors found while creating version(s) for [%s].\nPlease resolve and try again.",
-               teamDefHoldingVersions));
+            resultData.log(
+               String.format("\nErrors found while creating version(s) for [%s].\nPlease resolve and try again.",
+                  teamDefHoldingVersions));
             XResultDataUI.report(resultData, "Create New Version Error");
             return;
          }
@@ -124,9 +122,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
                IAtsVersion version = AtsClientService.get().getVersionService().createVersion(newVer);
                versions.add(version);
                changes.add(version);
-               changes.add(new AtsRelationChange(teamDefHoldingVersions,
-                  AtsRelationTypes.TeamDefinitionToVersion_Version, Collections.singleton(version),
-                  RelationOperation.Add));
+               changes.add(
+                  new AtsRelationChange(teamDefHoldingVersions, AtsRelationTypes.TeamDefinitionToVersion_Version,
+                     Collections.singleton(version), RelationOperation.Add));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

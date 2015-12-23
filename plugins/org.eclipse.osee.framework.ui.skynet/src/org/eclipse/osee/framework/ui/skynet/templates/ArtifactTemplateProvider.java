@@ -57,11 +57,9 @@ public class ArtifactTemplateProvider implements ITemplateProvider {
                   if (value < 0) {
                      templateMap.put(matchCriteria, art);
                   }
-                  OseeLog.logf(
-                     Activator.class,
-                     Level.SEVERE,
+                  OseeLog.logf(Activator.class, Level.SEVERE,
 
-                     "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
+                  "ArtifactTemplateProvider has detected a conflict with 'Template Match Criteria' [%s].  Artifact [%s] will supply the template for all requests with this match criteria.",
                      matchCriteria, templateMap.get(matchCriteria).getName());
 
                }

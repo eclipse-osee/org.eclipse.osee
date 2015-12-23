@@ -115,9 +115,8 @@ public final class JaxRsExceptions {
       @Override
       protected String getMessage(NotFoundException ex) {
          String baseMessage = super.getMessage(ex);
-         String message =
-            String.format("%sUnable to find resource at [%s]", Strings.isValid(baseMessage) ? baseMessage + " - " : "",
-               getUriInfo().getRequestUri().toASCIIString());
+         String message = String.format("%sUnable to find resource at [%s]",
+            Strings.isValid(baseMessage) ? baseMessage + " - " : "", getUriInfo().getRequestUri().toASCIIString());
          return message;
       }
    }
@@ -149,10 +148,10 @@ public final class JaxRsExceptions {
          OseeWebApplicationException exception;
          if (throwable instanceof OseeWebApplicationException) {
             logMessage = OSEE_APPLICATION_EXCEPTION_TYPE;
-            exception = ((OseeWebApplicationException) throwable);
+            exception = (OseeWebApplicationException) throwable;
          } else if (throwable instanceof WebApplicationException) {
             logMessage = APPLICATION_EXCEPTION_TYPE;
-            WebApplicationException webAppException = ((WebApplicationException) throwable);
+            WebApplicationException webAppException = (WebApplicationException) throwable;
             Response response = webAppException.getResponse();
             int statusCode = response.getStatus();
             String message = webAppException.getMessage();

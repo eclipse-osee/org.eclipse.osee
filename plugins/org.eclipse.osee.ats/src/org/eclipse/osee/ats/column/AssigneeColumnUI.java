@@ -122,10 +122,9 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
             return false;
          }
       }
-      UserCheckTreeDialog uld =
-         new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
-            AtsClientService.get().getUserServiceClient().getOseeUsers(
-               AtsClientService.get().getUserService().getUsers(Active.Active)));
+      UserCheckTreeDialog uld = new UserCheckTreeDialog("Select Assigness", "Select to assign.\nDeSelect to un-assign.",
+         AtsClientService.get().getUserServiceClient().getOseeUsers(
+            AtsClientService.get().getUserService().getUsers(Active.Active)));
       if (awas.iterator().next().getParentTeamWorkflow() != null) {
          uld.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(
             awas.iterator().next().getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));

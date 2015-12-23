@@ -68,28 +68,27 @@ import org.junit.runners.Parameterized.Parameters;
  *     Attribute  |  4           5            6
  *     Relation   |  7           8                     9*                        **
  *                 -------------------------------------------------------------------------
- *        
- *                 
- *    Legend:                 
- *    * -   artifact will be left with a DELETED attribute change and a SYNTHETIC 
+ * 
+ * 
+ *    Legend:
+ *    * -   artifact will be left with a DELETED attribute change and a SYNTHETIC
  *          modified artifact change. CASE_10_EXPECTED. i.e.:
- *          
- *          A           C-          
+ * 
+ *          A           C-
  *          `- B   ->   `- B        B is moved to C
  *                                  C gets a new user defined order attribute
- *                                  
+ * 
  *                                  Revert on B causes A to have a new relation order attribute because
- *                                  B was the only child of A and when the link was deleted the relation order 
- *                                  attribute was also deleted. (link.deleteEmptyRelationOrder()) After the B 
+ *                                  B was the only child of A and when the link was deleted the relation order
+ *                                  attribute was also deleted. (link.deleteEmptyRelationOrder()) After the B
  *                                  link is added back from the revert of B. A will get a new relation order attribute.
- *                                  
+ * 
  *    ** - creates a parent artifact A on the baseline branch and adds 5 children. On the working branch
  *                                  the same artifact A gets additional 5 children. The revert is called A.
  *                                  Which will set the parent (A) back to the baseline state but leaves
  *                                  the new artifacts orphaned on the working branch.
  * 
  *    Case 10 is a collection of 1-9, all cases.
- * 
  * </pre>
  */
 @RunWith(Parameterized.class)
@@ -147,7 +146,7 @@ public final class ReplaceWithBaselineTest {
             Assert.assertTrue(changes.size() == CASE_0_EXPECTED);
             break;
          case CASE_0_EXPECTED + CASE_10_EXPECTED:
-            Assert.assertTrue(changes.size() == (CASE_0_EXPECTED + CASE_10_EXPECTED));
+            Assert.assertTrue(changes.size() == CASE_0_EXPECTED + CASE_10_EXPECTED);
             break;
          default:
             Assert.assertTrue(changes.isEmpty());
@@ -284,8 +283,8 @@ public final class ReplaceWithBaselineTest {
          }
       }
 
-      workingBranch =
-         BranchManager.createWorkingBranch(baselineBranch, "working branch", UserManager.getUser(SystemUser.OseeSystem));
+      workingBranch = BranchManager.createWorkingBranch(baselineBranch, "working branch",
+         UserManager.getUser(SystemUser.OseeSystem));
 
       SkynetTransaction workingBranchTransaction = TransactionManager.createTransaction(workingBranch, testName);
 
@@ -309,9 +308,8 @@ public final class ReplaceWithBaselineTest {
                      testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()).getArtId());
                      break;
                   case INTRODUCED:
-                     IOseeBranch anotherBranch =
-                        BranchManager.createWorkingBranch(workingBranch, "another working branch",
-                           UserManager.getUser(SystemUser.OseeSystem));
+                     IOseeBranch anotherBranch = BranchManager.createWorkingBranch(workingBranch,
+                        "another working branch", UserManager.getUser(SystemUser.OseeSystem));
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
 

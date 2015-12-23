@@ -92,12 +92,12 @@ public class LoadSqlWriter extends AbstractSqlWriter {
    }
 
    private void writeTxFilter(String txsAlias, String artJoinAlias, StringBuilder sb, boolean areDeletedIncluded) {
-      //@formatter:off 
+      //@formatter:off
       /*********************************************************************
-       * The clause handling the inclusion of deleted items changes based on case 
+       * The clause handling the inclusion of deleted items changes based on case
        *   note this applies to the 3 tables ARTIFACT_TABLE, ATTRIBUTE_TABLE, RELATION_TABLE
-       * case 1: No items allow deleted 
-       * case 2: One table in query  
+       * case 1: No items allow deleted
+       * case 2: One table in query
        * case 3: All tables that are in the query allow deleted
        * case 4: More than one table with differing deletion flags
        */
@@ -126,7 +126,7 @@ public class LoadSqlWriter extends AbstractSqlWriter {
             boolean allowDeletedAttributes = OptionsUtil.areDeletedAttributesIncluded(getOptions());
             boolean allowDeletedRelations = OptionsUtil.areDeletedRelationsIncluded(getOptions());
             areDeletedSame =
-               !((hasTable[0] && !allowDeletedAtrifacts) || (hasTable[1] && !allowDeletedAttributes) || (hasTable[2] && !allowDeletedRelations));
+               !(hasTable[0] && !allowDeletedAtrifacts || hasTable[1] && !allowDeletedAttributes || hasTable[2] && !allowDeletedRelations);
          }
       }
       if (OptionsUtil.isHistorical(getOptions())) {

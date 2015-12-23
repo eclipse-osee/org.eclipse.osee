@@ -10,12 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.cluster.hazelcast.internal;
 
-import java.util.Map;
-import org.eclipse.osee.cluster.ClusterConstants;
-import org.eclipse.osee.cluster.ClusterServiceUtils;
-import org.eclipse.osee.cluster.Member;
-import org.eclipse.osee.cluster.ClusterConstants.ClusterInstanceState;
-import org.eclipse.osee.event.EventService;
 import com.hazelcast.core.Instance;
 import com.hazelcast.core.Instance.InstanceType;
 import com.hazelcast.core.InstanceEvent;
@@ -25,6 +19,12 @@ import com.hazelcast.core.LifecycleEvent.LifecycleState;
 import com.hazelcast.core.LifecycleListener;
 import com.hazelcast.core.MembershipEvent;
 import com.hazelcast.core.MembershipListener;
+import java.util.Map;
+import org.eclipse.osee.cluster.ClusterConstants;
+import org.eclipse.osee.cluster.ClusterConstants.ClusterInstanceState;
+import org.eclipse.osee.cluster.ClusterServiceUtils;
+import org.eclipse.osee.cluster.Member;
+import org.eclipse.osee.event.EventService;
 
 /**
  * @author Roberto E. Escobar

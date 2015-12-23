@@ -49,8 +49,7 @@ public class SubscribeUtilityTest {
          alexUserArt.getRelatedArtifactsCount(CoreRelationTypes.Users_Artifact));
 
       // Subscribe to 2 team definitions
-      Artifact cisCodeTeam =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Code, AtsUtilCore.getAtsBranch());
+      Artifact cisCodeTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Code, AtsUtilCore.getAtsBranch());
       Artifact cisSwTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_SW, AtsUtilCore.getAtsBranch());
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
@@ -61,8 +60,7 @@ public class SubscribeUtilityTest {
       Assert.assertFalse("User artifact changes should be persisted", alexUserArt.isDirty());
 
       // Remove one, add another
-      Artifact cisTestTeam =
-         ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Test, AtsUtilCore.getAtsBranch());
+      Artifact cisTestTeam = ArtifactQuery.getArtifactFromToken(DemoArtifactToken.CIS_Test, AtsUtilCore.getAtsBranch());
 
       SubscribeUtility.setSubcriptionsAndPersist(alexUserArt, CoreRelationTypes.Users_Artifact,
          Arrays.asList(cisCodeTeam, cisTestTeam), AtsArtifactTypes.TeamDefinition, getClass().getSimpleName());

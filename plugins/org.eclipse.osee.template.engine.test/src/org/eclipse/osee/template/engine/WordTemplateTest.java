@@ -38,9 +38,8 @@ public class WordTemplateTest {
       String document_properties =
          "<o:Title>SRS</o:Title><o:Author>Easy Company</o:Author><o:LastAuthor>Easy Company</o:LastAuthor><o:Revision>37</o:Revision><o:TotalTime>1332</o:TotalTime><o:LastPrinted>2008-09-25T21:40:00Z</o:LastPrinted><o:Created>2007-04-21T15:49:00Z</o:Created><o:LastSaved>2012-08-04T17:22:00Z</o:LastSaved><o:Pages>1</o:Pages><o:Words>4</o:Words><o:Characters>28</o:Characters><o:Company>The 502nd</o:Company><o:Lines>1</o:Lines><o:Paragraphs>1</o:Paragraphs><o:CharactersWithSpaces>31</o:CharactersWithSpaces><o:Version>12</o:Version>";
 
-      String realizePage =
-         PageFactory.realizePage(registry, OseeTemplateTokens.WordXml, "properties", document_properties, "content",
-            document_content);
+      String realizePage = PageFactory.realizePage(registry, OseeTemplateTokens.WordXml, "properties",
+         document_properties, "content", document_content);
       Assert.assertNotNull(realizePage);
 
       String expected = Lib.fileToString(getClass(), "xml/testWord.xml");

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.attribute;
 
+import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -37,13 +39,11 @@ import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.HasOrcsData;
 import org.eclipse.osee.orcs.core.internal.util.MultiplicityState;
 import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
-import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AttributeManagerImpl extends BaseIdentity<String> implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
+public abstract class AttributeManagerImpl extends BaseIdentity<String>implements HasOrcsData<ArtifactData>, AttributeManager, AttributeExceptionFactory {
 
    private final AttributeCollection attributes;
    private boolean isLoaded;
@@ -527,15 +527,13 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    public MultipleAttributesExist createManyExistException(IAttributeType type, int count) {
       MultipleAttributesExist toReturn;
       if (type != null) {
-         toReturn =
-            new MultipleAttributesExist(
-               "The attribute type [%s] has [%s] instances on [%s], but only [1] instance is allowed", type.getName(),
-               count, getExceptionString());
+         toReturn = new MultipleAttributesExist(
+            "The attribute type [%s] has [%s] instances on [%s], but only [1] instance is allowed", type.getName(),
+            count, getExceptionString());
       } else {
-         toReturn =
-            new MultipleAttributesExist(
-               "Multiple items found - total instances [%s] on [%s], but only [1] instance is allowed", count,
-               getExceptionString());
+         toReturn = new MultipleAttributesExist(
+            "Multiple items found - total instances [%s] on [%s], but only [1] instance is allowed", count,
+            getExceptionString());
       }
       return toReturn;
    }
@@ -544,9 +542,8 @@ public abstract class AttributeManagerImpl extends BaseIdentity<String> implemen
    public AttributeDoesNotExist createDoesNotExistException(IAttributeType type) {
       AttributeDoesNotExist toReturn;
       if (type != null) {
-         toReturn =
-            new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", type.getName(),
-               getExceptionString());
+         toReturn = new AttributeDoesNotExist("Attribute of type [%s] could not be found on [%s]", type.getName(),
+            getExceptionString());
       } else {
          toReturn = new AttributeDoesNotExist("Attribute not be found on [%s]", getExceptionString());
       }

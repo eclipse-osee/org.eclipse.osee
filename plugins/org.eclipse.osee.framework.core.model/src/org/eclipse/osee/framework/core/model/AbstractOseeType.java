@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY> implements IOseeStorable {
+public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY>implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";

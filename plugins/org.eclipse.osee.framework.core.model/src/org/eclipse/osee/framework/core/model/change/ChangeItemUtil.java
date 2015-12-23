@@ -225,7 +225,7 @@ public final class ChangeItemUtil {
 
    public static boolean isResurrected(ChangeItem changeItem) {
       // There's a change corresponding to a Deleted Item, item MUST have been resurrected
-      return (changeItem.getBaselineVersion().isValid() && isDeleted(changeItem.getBaselineVersion()));
+      return changeItem.getBaselineVersion().isValid() && isDeleted(changeItem.getBaselineVersion());
    }
 
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {

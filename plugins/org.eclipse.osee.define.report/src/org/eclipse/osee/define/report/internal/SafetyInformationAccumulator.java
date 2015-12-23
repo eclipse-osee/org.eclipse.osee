@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
+import com.google.common.base.Predicate;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,11 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import com.google.common.base.Predicate;
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 
 /**
  * @author David W. Miller
@@ -43,8 +43,8 @@ public final class SafetyInformationAccumulator {
    private final SafetyReportGenerator safetyReport;
    private String functionalCategory;
    private List<ArtifactReadable> subsystemFunctions;
-   private final Map<String, String> safetyCriticalityMap = ImmutableMap.of("I", "A", "II", "B", "III", "C", "IV", "D",
-      "V", "E");
+   private final Map<String, String> safetyCriticalityMap =
+      ImmutableMap.of("I", "A", "II", "B", "III", "C", "IV", "D", "V", "E");
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> subsystemRequirements = Maps.newHashMap();
    private final HashMap<ArtifactReadable, List<ArtifactReadable>> softwareRequirements = Maps.newHashMap();
    private static final Predicate<ArtifactReadable> notAbstractSoftwareRequirement = new Predicate<ArtifactReadable>() {
@@ -170,9 +170,8 @@ public final class SafetyInformationAccumulator {
       writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber, ""));
       writer.writeCell(subsystemRequirement.getName());
 
-      String currentCriticality =
-         writeCriticalityWithDesignCheck(subsystemRequirement, criticality, CoreRelationTypes.Design__Design,
-            CoreAttributeTypes.SafetyCriticality);
+      String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
+         CoreRelationTypes.Design__Design, CoreAttributeTypes.SafetyCriticality);
 
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality);
@@ -230,16 +229,15 @@ public final class SafetyInformationAccumulator {
 
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String criticality) throws IOException {
       writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
-      String softwareRequirementDAL =
-         writeCriticalityWithDesignCheck(softwareRequirement, criticality,
-            CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.DevelopmentAssuranceLevel);
+      String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, criticality,
+         CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.DevelopmentAssuranceLevel);
 
       writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
          softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));
       writer.writeCell(functionalCategory);
 
-      writer.writeCell(Collections.toString(",",
-         getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)));
+      writer.writeCell(
+         Collections.toString(",", getAttributesToStringList(softwareRequirement, CoreAttributeTypes.Partition)));
 
       writer.writeCell(safetyReport.getComponentUtil().getQualifiedComponentNames(softwareRequirement));
       Collection<String> codeUnits = safetyReport.getRequirementToCodeUnitsValues(softwareRequirement);

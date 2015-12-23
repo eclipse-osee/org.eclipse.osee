@@ -48,8 +48,8 @@ public class AuthenticationComposite extends Composite {
    private static final String LABEL_KEY = "label";
    private static final String WARNING_MESSAGE =
       "Saved passwords are stored in your computer in a file that is difficult, but not impossible, for an intruder to read.";
-   private static final Image errorImage = PlatformUI.getWorkbench().getSharedImages().getImage(
-      ISharedImages.IMG_OBJS_ERROR_TSK);
+   private static final Image errorImage =
+      PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
 
    private enum LabelEnum {
       UserId("Enter user name"),
@@ -205,7 +205,7 @@ public class AuthenticationComposite extends Composite {
 
             int style = SWT.BORDER | SWT.SINGLE;
             Control control = null;
-            Text field = new Text(composite, (labelEnum.isHidden() ? style |= SWT.PASSWORD : style));
+            Text field = new Text(composite, labelEnum.isHidden() ? style |= SWT.PASSWORD : style);
             field.setData(LABEL_KEY, labelEnum);
             control = field;
             dataMap.put(labelEnum, field.getText());

@@ -47,10 +47,9 @@ public class StateManagerTest {
          AtsClientService.get().getUserService().getCurrentUser());
       AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
 
-      ITransitionHelper helper =
-         new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
-            AtsTestUtil.getImplementStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
+      ITransitionHelper helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
+         AtsTestUtil.getImplementStateDef().getName(),
+         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
       IAtsTransitionManager manager = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = manager.handleAllAndPersist();
       Assert.assertTrue(results.isEmpty());
@@ -58,10 +57,9 @@ public class StateManagerTest {
       changes.clear();
       teamWf.getStateMgr().updateMetrics(AtsTestUtil.getImplementStateDef(), 2.2, 1, false,
          AtsClientService.get().getUserService().getCurrentUser());
-      helper =
-         new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
-            AtsTestUtil.getCompletedStateDef().getName(),
-            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
+      helper = new MockTransitionHelper("dodad", Collections.singletonList(teamWf),
+         AtsTestUtil.getCompletedStateDef().getName(),
+         Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes);
       manager = TransitionFactory.getTransitionManager(helper);
       results = manager.handleAllAndPersist();
 

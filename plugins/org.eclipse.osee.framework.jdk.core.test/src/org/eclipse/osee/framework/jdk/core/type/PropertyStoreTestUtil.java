@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.TreeMap;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Assert;
 
 /**

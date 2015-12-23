@@ -131,12 +131,12 @@ public class EmailActionsBlam extends AbstractBlam {
          return;
       }
 
-      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-         AtsClientService.get().getUserService().getCurrentUser(), recipients, getIdString(awa),
-         data.getEmailRecipient().name(), String.format(
-            "You are the %s of [%s] in state [%s] titled [%s] created on [%s]", data.getEmailRecipient().name(),
-            awa.getArtifactTypeName(), awa.getStateMgr().getCurrentStateName(), awa.getName(),
-            DateUtil.get(awa.getCreatedDate(), DateUtil.MMDDYYHHMM))));
+      notifications.addNotificationEvent(
+         AtsNotificationEventFactory.getNotificationEvent(AtsClientService.get().getUserService().getCurrentUser(),
+            recipients, getIdString(awa), data.getEmailRecipient().name(),
+            String.format("You are the %s of [%s] in state [%s] titled [%s] created on [%s]",
+               data.getEmailRecipient().name(), awa.getArtifactTypeName(), awa.getStateMgr().getCurrentStateName(),
+               awa.getName(), DateUtil.get(awa.getCreatedDate(), DateUtil.MMDDYYHHMM))));
 
    }
 
@@ -193,7 +193,7 @@ public class EmailActionsBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       // @formatter:off
       return "<xWidgets>" +
-            "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" + 
+            "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + ATS_WORKFLOWS + "\" />" +
             "<XWidget xwidgetType=\"XText\" displayName=\"Subject\" />" +
             "<XWidget xwidgetType=\"XCombo("+EmailRecipient.Assignees.toString()+","+EmailRecipient.Originator.toString()+")\" defaultValue=\""+EmailRecipient.Assignees.toString()+"\" displayName=\"Recipient\" />" +
       		"<XWidget xwidgetType=\"XText\" displayName=\"Body\" fill=\"Vertically\" />" +
@@ -204,8 +204,8 @@ public class EmailActionsBlam extends AbstractBlam {
    @Override
    public String getDescriptionUsage() {
       return "Loop through all dropped ATS Workflows and email to assignee(s) with message.  " //
-         + "Note: User will get one email containing all items they are assigned/originated.  " //
-         + "Note: Body is plain text and will be shown as is.";
+      + "Note: User will get one email containing all items they are assigned/originated.  " //
+      + "Note: Body is plain text and will be shown as is.";
    }
 
    @Override

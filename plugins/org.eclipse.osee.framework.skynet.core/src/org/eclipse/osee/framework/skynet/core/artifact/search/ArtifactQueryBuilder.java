@@ -189,7 +189,8 @@ public class ArtifactQueryBuilder {
    }
 
    private boolean useServerSearch() {
-      return (Conditions.hasValues(artifactTypes) || guid != null || Conditions.hasValues(guids) || criteria.length > 0 || (artifactId == 0 && !Conditions.hasValues(artifactIds)));
+      return Conditions.hasValues(artifactTypes) || guid != null || Conditions.hasValues(
+         guids) || criteria.length > 0 || artifactId == 0 && !Conditions.hasValues(artifactIds);
    }
 
    private QueryBuilder getQueryBuilder() throws OseeCoreException {
@@ -426,9 +427,8 @@ public class ArtifactQueryBuilder {
          } else {
             tx = TransactionManager.getTransactionId(txId);
          }
-         List<Artifact> results =
-            ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA, LoadType.INCLUDE_CACHE,
-               allowDeleted, tx);
+         List<Artifact> results = ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA,
+            LoadType.INCLUDE_CACHE, allowDeleted, tx);
          return results.size();
       }
 

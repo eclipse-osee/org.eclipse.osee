@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
 
    private static final Collection<IAttributeType> XFLAT_ATTRIBUTE_TYPES = new ArrayList<>();
+
    static {
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkTransition);
       XFLAT_ATTRIBUTE_TYPES.add(CoreAttributeTypes.WorkData);
@@ -48,7 +49,8 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XTextFlatDam");
-      } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName()) || attributeType.equals(AtsAttributeTypes.TestToSourceLocator)) {
+      } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName()) || attributeType.equals(
+         AtsAttributeTypes.TestToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);

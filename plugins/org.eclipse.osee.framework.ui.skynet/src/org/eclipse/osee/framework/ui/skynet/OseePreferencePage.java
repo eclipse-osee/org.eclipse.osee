@@ -129,7 +129,8 @@ public class OseePreferencePage extends PreferencePage implements IWorkbenchPref
 
       connectedUrlCheckBox = new Button(group, SWT.RADIO);
       try {
-         connectedUrlCheckBox.setText("Temporary Server Link: " + HttpUrlBuilderClient.getInstance().getApplicationServerPrefix());
+         connectedUrlCheckBox.setText(
+            "Temporary Server Link: " + HttpUrlBuilderClient.getInstance().getApplicationServerPrefix());
       } catch (OseeCoreException ex) {
          connectedUrlCheckBox.setText("Temporary Server Link");
       }

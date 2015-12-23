@@ -40,7 +40,7 @@ public class StateDefShape extends RectangleShape {
    protected void initializePropertyDescriptors(List<IPropertyDescriptor> descriptorList) {
       super.initializePropertyDescriptors(descriptorList);
       descriptorList.add(new TextPropertyDescriptor(NAME, stateDef.getName()));
-      descriptorList.add(new TextPropertyDescriptor(START_PAGE, (isStartState() ? "Yes" : "No")));
+      descriptorList.add(new TextPropertyDescriptor(START_PAGE, isStartState() ? "Yes" : "No"));
    }
 
    @Override

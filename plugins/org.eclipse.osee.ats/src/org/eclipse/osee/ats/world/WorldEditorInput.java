@@ -107,7 +107,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
    }
 
    public Collection<Integer> getGuids() {
-      if (editor.isReloadTabShown() && (iWorldEditorProvider instanceof WorldEditorReloadProvider)) {
+      if (editor.isReloadTabShown() && iWorldEditorProvider instanceof WorldEditorReloadProvider) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
          return provider.getValidArtUuids();
       } else {
@@ -134,7 +134,7 @@ public class WorldEditorInput implements IEditorInput, IPersistableElement {
 
    public long getBranchUuid() {
       long branchUuid = 0;
-      if (editor.isReloadTabShown() && (iWorldEditorProvider instanceof WorldEditorReloadProvider)) {
+      if (editor.isReloadTabShown() && iWorldEditorProvider instanceof WorldEditorReloadProvider) {
          WorldEditorReloadProvider provider = (WorldEditorReloadProvider) iWorldEditorProvider;
          branchUuid = provider.getBranchUuid();
       } else {

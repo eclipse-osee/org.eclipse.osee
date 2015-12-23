@@ -42,7 +42,7 @@ public class CountryColumn {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          Pair<IAtsCountry, Boolean> country = util.getCountry(services, workItem);
          if (country.getFirst() != null) {
-            result = String.format("%s%s", country.getFirst().getName(), (country.getSecond() ? " (I)" : ""));
+            result = String.format("%s%s", country.getFirst().getName(), country.getSecond() ? " (I)" : "");
          }
       }
       return result;

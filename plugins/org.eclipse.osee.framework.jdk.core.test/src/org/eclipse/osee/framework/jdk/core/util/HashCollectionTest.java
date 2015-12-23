@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.jdk.core.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**

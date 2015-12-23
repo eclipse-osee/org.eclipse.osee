@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class AddTraceMarksToTraceUnits extends AbstractBlam {
 
-   private static final Pattern commentPattern = Pattern.compile("/\\*\\s*\\*\\s*SCRIPT TRACEABILITY.*?\\*/",
-      Pattern.DOTALL);
+   private static final Pattern commentPattern =
+      Pattern.compile("/\\*\\s*\\*\\s*SCRIPT TRACEABILITY.*?\\*/", Pattern.DOTALL);
 
    @Override
    public String getName() {
@@ -62,12 +62,15 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select File Or Folder (file can have a list of folders separated by newlines)\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"Select File Or Folder (file can have a list of folders separated by newlines)\"/>");
       builder.append("<XWidget xwidgetType=\"XFileSelectionDialog\" displayName=\"Select File\" />");
       builder.append("<XWidget xwidgetType=\"XDirectorySelectionDialog\" displayName=\"Select Folder\" />");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Trace Types:\"/>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Sub-Folders\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Sub-Folders\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }

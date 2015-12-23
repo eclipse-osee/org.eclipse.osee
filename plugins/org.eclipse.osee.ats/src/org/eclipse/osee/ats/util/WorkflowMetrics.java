@@ -61,10 +61,9 @@ public class WorkflowMetrics {
    Set<IAtsUser> assignees = new HashSet<>();
    Set<IAtsUser> assigneesAssignedOrCompleted = new HashSet<>();
 
-   private final HashCollection<IAtsUser, Artifact> userToAssignedSmas = new HashCollection<>(true,
-      HashSet.class, 100);
-   private final HashCollection<IAtsUser, Artifact> userToCompletedSmas = new HashCollection<>(true,
-      HashSet.class, 100);
+   private final HashCollection<IAtsUser, Artifact> userToAssignedSmas = new HashCollection<>(true, HashSet.class, 100);
+   private final HashCollection<IAtsUser, Artifact> userToCompletedSmas =
+      new HashCollection<>(true, HashSet.class, 100);
    private final double manHoursPerDay;
 
    public WorkflowMetrics(Collection<? extends Artifact> artifacts, IAtsVersion version, double manHoursPerDay, Date estimatedReleaseDate) throws OseeCoreException {
@@ -134,19 +133,11 @@ public class WorkflowMetrics {
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
          daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
       }
-      str =
-         String.format(
-            "TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
-            getNumTeamWfs(),
-            getNumTasks(),
-            estHours,
-            "%",
-            percentCompleteByWorkflowPercents,
-            hrsRemainFromEstimates,
-            hrsSpent,
-            (manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : ""),
-            (version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
-               (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)), daysTillRel) : ""));
+      str = String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
+         getNumTeamWfs(), getNumTasks(), estHours, "%", percentCompleteByWorkflowPercents, hrsRemainFromEstimates,
+         hrsSpent, manDaysNeeded > 0 ? String.format("ManDaysNeeded: %5.2f ", manDaysNeeded) : "",
+         version != null ? String.format("Version: %s  EstRelDate: %s DaysLeft: %d ", version.getName(),
+            estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }
 
    public HashCollection<IAtsUser, Artifact> getUserToCompletedSmas() {
@@ -270,15 +261,10 @@ public class WorkflowMetrics {
    public String toStringLong() {
       return String.format(
          "%s\nEstimated Hours: %5.2f  Percent Complete: %5.2f  Remaining Hours: %5.2f  ManDaysNeeded: %5.2f \nHours Spent: %5.2f  %s",
-         toStringObjectBreakout(),
-         estHours,
-         percentCompleteByWorkflowPercents,
-         hrsRemainFromEstimates,
-         manDaysNeeded,
+         toStringObjectBreakout(), estHours, percentCompleteByWorkflowPercents, hrsRemainFromEstimates, manDaysNeeded,
          hrsSpent,
-         (version != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ",
-            version.getName(), (estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate)),
-            daysTillRel) : ""));
+         version != null ? String.format("\nVersion: %s  Estimated Release Date: %s Days Left: %d ", version.getName(),
+            estimatedReleaseDate == null ? "Not Set" : DateUtil.getMMDDYY(estimatedReleaseDate), daysTillRel) : "");
    }
 
    public Date getEstRelDate() {

@@ -51,13 +51,12 @@ public class BranchCreationHandler extends CommandHandler {
       } else if (backingData instanceof TransactionRecord) {
          parentTransactionId = (TransactionRecord) backingData;
       } else {
-         throw new OseeStateException("Backing data for the jobbed node in the branchview was not of the expected type");
+         throw new OseeStateException(
+            "Backing data for the jobbed node in the branchview was not of the expected type");
       }
-      final EntryCheckDialog dialog =
-         new EntryCheckDialog(Displays.getActiveShell(), "Branch", null, "Enter the name of the new branch:",
-            "Include a copy of the chosen transaction on the new branch", MessageDialog.INFORMATION, new String[] {
-               "OK",
-               "Cancel"}, 0);
+      final EntryCheckDialog dialog = new EntryCheckDialog(Displays.getActiveShell(), "Branch", null,
+         "Enter the name of the new branch:", "Include a copy of the chosen transaction on the new branch",
+         MessageDialog.INFORMATION, new String[] {"OK", "Cancel"}, 0);
       int result = dialog.open();
 
       if (result == 0 && dialog.getEntry() != null) {

@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.cluster.hazelcast.internal;
 
+import com.hazelcast.core.DistributedTask;
+import com.hazelcast.core.ExecutionCallback;
+import com.hazelcast.core.HazelcastInstance;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -23,9 +26,6 @@ import java.util.concurrent.TimeoutException;
 import org.eclipse.osee.cluster.Callback;
 import org.eclipse.osee.cluster.DistributedExecutorService;
 import org.eclipse.osee.cluster.Member;
-import com.hazelcast.core.DistributedTask;
-import com.hazelcast.core.ExecutionCallback;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * @author Roberto E. Escobar

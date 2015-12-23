@@ -46,8 +46,8 @@ public class EarnedValueReportOperationTest {
       IAtsTeamDefinition teamDef =
          (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByUuid(DemoArtifactToken.SAW_SW.getUuid());
       teamDefs.add(teamDef);
-      SearchWorkPackageOperation srch =
-         new SearchWorkPackageOperation("srch", teamDefs, true, new ArrayList<IAtsActionableItem>(), false, Active.Both);
+      SearchWorkPackageOperation srch = new SearchWorkPackageOperation("srch", teamDefs, true,
+         new ArrayList<IAtsActionableItem>(), false, Active.Both);
       Operations.executeWorkAndCheckStatus(srch);
       Set<IAtsWorkPackage> workPackages = srch.getResults();
       Assert.assertEquals(3, workPackages.size());

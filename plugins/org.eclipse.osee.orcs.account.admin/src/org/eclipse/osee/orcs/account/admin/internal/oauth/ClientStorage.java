@@ -20,6 +20,9 @@ import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUT
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_PROPERTIES;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_WEBSITE_URI;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES_ARTIFACT;
+import com.google.common.io.InputSupplier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
@@ -41,9 +44,6 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.eclipse.osee.orcs.utility.OrcsUtil;
-import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * @author Roberto E. Escobar

@@ -91,8 +91,8 @@ public class DatabaseJoinAccessor implements IJoinAccessor {
 
    @Override
    public void store(JdbcConnection connection, JoinItem joinItem, int queryId, List<Object[]> dataList, Long issuedAt, Long expiresIn) throws OseeCoreException {
-      jdbcClient.runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP, queryId, joinItem.getJoinTableName(),
-         issuedAt, expiresIn);
+      jdbcClient.runPreparedUpdate(connection, INSERT_INTO_JOIN_CLEANUP, queryId, joinItem.getJoinTableName(), issuedAt,
+         expiresIn);
       jdbcClient.runBatchUpdate(connection, joinItem.getInsertSql(), dataList);
    }
 

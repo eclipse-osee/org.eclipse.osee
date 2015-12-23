@@ -95,8 +95,8 @@ public class UnitTestCounter {
             recurseAndFind(childFile, results, errors);
          }
       }
-      if (file.getAbsolutePath().endsWith(".java") && !file.getName().contains("UnitTestCounter") && !file.getName().contains(
-         "UnitTestUtil")) {
+      if (file.getAbsolutePath().endsWith(
+         ".java") && !file.getName().contains("UnitTestCounter") && !file.getName().contains("UnitTestUtil")) {
          String text = Lib.fileToString(file);
          if (UnitTestUtil.isUnitTest(text) || file.getAbsolutePath().endsWith("Test.java")) {
             results.append(file.getName() + ", ");

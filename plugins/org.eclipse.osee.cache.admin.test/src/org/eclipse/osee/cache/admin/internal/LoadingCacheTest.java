@@ -19,6 +19,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.collect.Iterables;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,7 +38,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link CacheFactory, CacheProxy}

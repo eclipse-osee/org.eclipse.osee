@@ -43,9 +43,8 @@ public class AtsNotifierServiceImpl implements IAtsNotifierServer {
     */
    @Override
    public void sendNotifications(String fromUserEmail, String testingUserEmail, String subject, String body, Collection<? extends AtsNotificationEvent> notificationEvents) {
-      SendNotificationEvents job =
-         new SendNotificationEvents(logger, mailService, fromUserEmail, testingUserEmail, subject, body,
-            notificationEvents, userService);
+      SendNotificationEvents job = new SendNotificationEvents(logger, mailService, fromUserEmail, testingUserEmail,
+         subject, body, notificationEvents, userService);
       job.run();
    }
 

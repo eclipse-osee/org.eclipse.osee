@@ -56,9 +56,8 @@ public class OseeTypesSetup {
    private final ExtensionDefinedObjects<IOseeTypesHandler> extensionObjects;
 
    public OseeTypesSetup() {
-      extensionObjects =
-         new ExtensionDefinedObjects<IOseeTypesHandler>(OSEE_TYPES_HANDLER_EXTENSION_ID, OSEE_TYPES_HANDLER,
-            "classname");
+      extensionObjects = new ExtensionDefinedObjects<IOseeTypesHandler>(OSEE_TYPES_HANDLER_EXTENSION_ID,
+         OSEE_TYPES_HANDLER, "classname");
    }
 
    public void execute(Collection<String> uniqueIdsToImport) throws OseeCoreException {
@@ -117,7 +116,8 @@ public class OseeTypesSetup {
       for (String idsToImport : uniqueIdsToImport) {
          URL urlEntry = extensions.get(idsToImport);
          if (urlEntry == null) {
-            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "ExtensionUniqueId [%s] was not found", idsToImport);
+            OseeLog.logf(DatabaseInitActivator.class, Level.SEVERE, "ExtensionUniqueId [%s] was not found",
+               idsToImport);
          } else {
             items.put(idsToImport, urlEntry);
          }

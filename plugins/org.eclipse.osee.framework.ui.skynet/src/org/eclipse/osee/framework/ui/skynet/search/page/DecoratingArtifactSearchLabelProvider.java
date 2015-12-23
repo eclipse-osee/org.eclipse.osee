@@ -88,7 +88,9 @@ public class DecoratingArtifactSearchLabelProvider extends DecoratingStyledCellL
    @Override
    public void propertyChange(PropertyChangeEvent event) {
       String property = event.getProperty();
-      if (property.equals(JFacePreferences.QUALIFIER_COLOR) || property.equals(JFacePreferences.COUNTER_COLOR) || property.equals(JFacePreferences.DECORATIONS_COLOR) || property.equals(HIGHLIGHT_BG_COLOR_NAME) || property.equals(IWorkbenchPreferenceConstants.USE_COLORED_LABELS)) {
+      if (property.equals(JFacePreferences.QUALIFIER_COLOR) || property.equals(
+         JFacePreferences.COUNTER_COLOR) || property.equals(JFacePreferences.DECORATIONS_COLOR) || property.equals(
+            HIGHLIGHT_BG_COLOR_NAME) || property.equals(IWorkbenchPreferenceConstants.USE_COLORED_LABELS)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

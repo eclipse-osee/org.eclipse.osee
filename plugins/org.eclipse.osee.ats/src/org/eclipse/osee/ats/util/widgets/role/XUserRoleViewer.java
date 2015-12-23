@@ -293,9 +293,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
          builder.append("\"" + userRole.toString() + "\"\n");
       }
 
-      boolean delete =
-         MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Roles",
-            "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
+      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+         "Delete Roles", "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
             AtsChangeSet changes = new AtsChangeSet("Delete Review Roles");
@@ -399,7 +398,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
             return new Status(IStatus.ERROR, getClass().getSimpleName(), "At least one role entry is required");
          }
          if (!error.isOK()) {
-            extraInfoLabel.setText(error.getError() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
+            extraInfoLabel.setText(
+               error.getError() + " - Select \"New Role\" to add.  Select icon in cell to update value.");
             extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
             return new Status(IStatus.ERROR, getClass().getSimpleName(), error.getError());
          }
@@ -425,13 +425,8 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          html.append(AHTML.startBorderTable(100, normalColor, ""));
-         html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
-            "Role",
-            "User",
-            "Hours",
-            "Major",
-            "Minor",
-            "Issues"}));
+         html.append(
+            AHTML.addHeaderRowMultiColumnTable(new String[] {"Role", "User", "Hours", "Major", "Minor", "Issues"}));
          ReviewDefectManager defectMgr = new ReviewDefectManager(reviewArt);
          for (UserRole item : roleMgr.getUserRoles()) {
             IAtsUser atsUser = UserRoleManager.getUser(item);

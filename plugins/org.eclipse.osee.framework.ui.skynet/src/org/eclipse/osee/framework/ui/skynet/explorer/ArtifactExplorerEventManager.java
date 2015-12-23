@@ -98,7 +98,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
       EventUtil.eventLog("ArtifacExplorer: handleArtifactEvent called [" + artifactEvent + "] - sender " + sender + "");
       final Collection<Artifact> modifiedArts =
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
-      final Collection<Artifact> relModifiedArts = artifactEvent.getRelCacheArtifacts();
+      artifactEvent.getRelCacheArtifacts();
       final Collection<EventBasicGuidArtifact> deletedPurgedArts =
          artifactEvent.get(EventModType.Deleted, EventModType.Purged);
       final Collection<DefaultBasicGuidArtifact> relOrderChangedArtifacts = artifactEvent.getRelOrderChangedArtifacts();
@@ -145,8 +145,8 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
                      }
                   }
                } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE,
-                     "Error processing event handler for modified - " + handler, ex);
+                  OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler for modified - " + handler,
+                     ex);
                }
             }
          }

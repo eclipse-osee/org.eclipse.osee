@@ -132,8 +132,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
       try {
          if (teamArt.isWorkingBranchCreationInProgress()) {
             labelWidget.setText(getLabel() + ": Branch Creation in Progress");
-         } else if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt) && !AtsClientService.get().getBranchService().isCommittedBranchExists(
-            teamArt)) {
+         } else if (!AtsClientService.get().getBranchService().isWorkingBranchInWork(
+            teamArt) && !AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
             labelWidget.setText(getLabel() + ": No Working Branch or Committed changes available.");
          } else {
 
@@ -168,9 +168,8 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            Arrays.sort(branchUuids.toArray(new Integer[branchUuids.size()]));
                            for (Long branchUuid : branchUuids) {
                               Branch destinationBranch = branchUuidToBranchMap.get(branchUuid);
-                              IOperation operation =
-                                 AtsBranchManager.commitWorkingBranch(teamArt, false, true, destinationBranch,
-                                    branchUuid == branchUuids.get(branchUuids.size() - 1));
+                              IOperation operation = AtsBranchManager.commitWorkingBranch(teamArt, false, true,
+                                 destinationBranch, branchUuid == branchUuids.get(branchUuids.size() - 1));
                               Operations.executeWorkAndCheckStatus(operation);
                            }
                         } catch (Exception ex) {
@@ -318,9 +317,9 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          public void run() {
             if (Widgets.isAccessible(extraInfoLabel)) {
                String currentString = extraInfoLabel.getText();
-               if ((infoStr == null && currentString != null) || //
-               (infoStr != null && currentString == null) || //
-               (infoStr != null && currentString != null && !infoStr.equals(currentString))) {
+               if (infoStr == null && currentString != null || //
+               infoStr != null && currentString == null || //
+               infoStr != null && currentString != null && !infoStr.equals(currentString)) {
                   extraInfoLabel.setText("Double-click item to perform Action");
                }
                extraInfoLabel.setForeground(Displays.getSystemColor(color));
@@ -337,12 +336,12 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
          String infoStr = "Double-click item to perform Action";
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt() != null) {
             boolean workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);
-            if (workingBranchInWork && !AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(xCommitManager.getXCommitViewer().getTeamArt())) {
+            if (workingBranchInWork && !AtsClientService.get().getBranchService().isAllObjectsToCommitToConfigured(
+               xCommitManager.getXCommitViewer().getTeamArt())) {
                infoStr = "All branches must be configured - Double-click item to perform Action";
                backgroundColor = SWT.COLOR_RED;
-               returnStatus =
-                  new Status(IStatus.ERROR, getClass().getSimpleName(),
-                     "All branches must be configured and committed.");
+               returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(),
+                  "All branches must be configured and committed.");
             }
          }
          updateExtraInfoLabel(backgroundColor, infoStr);
@@ -372,7 +371,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
 
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
-      if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+      if (!artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
          throw new OseeStateException("Must be TeamWorkflowArtifact, set was a [%s]", artifact.getArtifactTypeName());
       }
       this.teamArt = TeamWorkFlowManager.cast(artifact);

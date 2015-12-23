@@ -87,9 +87,8 @@ public class BranchStateTest {
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(BranchManager.isEditable(workingBranch));
 
-         Artifact change =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
-               "Test Object on Working Branch");
+         Artifact change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+            "Test Object on Working Branch");
          change.persist(getClass().getSimpleName());
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
@@ -196,7 +195,8 @@ public class BranchStateTest {
 
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
-                  assertFalse("This code should not be executed since there shouldn't be any conflicts.", wasExecuted());
+                  assertFalse("This code should not be executed since there shouldn't be any conflicts.",
+                     wasExecuted());
                }
             };
 
@@ -224,16 +224,16 @@ public class BranchStateTest {
       Branch workingBranch = null;
       Artifact change = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
+         baseArtifact =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
          // Add a new artifact on the working branch
-         change =
-            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
-               "Test Object on Working Branch");
+         change = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, workingBranch,
+            "Test Object on Working Branch");
          change.persist(getClass().getSimpleName());
 
          // Make a change on the parent
@@ -246,7 +246,8 @@ public class BranchStateTest {
 
                @Override
                protected void doWork(IProgressMonitor monitor) throws Exception {
-                  assertFalse("This code should not be executed since there shouldn't be any conflicts.", wasExecuted());
+                  assertFalse("This code should not be executed since there shouldn't be any conflicts.",
+                     wasExecuted());
                }
             };
 
@@ -256,7 +257,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals((long)BranchManager.getAssociatedArtifactId(workingBranch), SystemUser.OseeSystem.getUuid());
+         assertEquals((long) BranchManager.getAssociatedArtifactId(workingBranch), SystemUser.OseeSystem.getUuid());
 
          Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -278,7 +279,8 @@ public class BranchStateTest {
       Branch mergeBranch = null;
       Artifact sameArtifact = null;
       try {
-         baseArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
+         baseArtifact =
+            ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "Test Object");
          baseArtifact.setSoleAttributeFromString(CoreAttributeTypes.Annotation, "This is the base annotation");
          baseArtifact.persist(getClass().getSimpleName());
 
@@ -315,7 +317,8 @@ public class BranchStateTest {
          assertTrue("Branch state was set to rebaselined before complete",
             !workingBranch.getBranchState().isRebaselined());
 
-         assertEquals("Branch name was changed before update was complete", originalBranchName, workingBranch.getName());
+         assertEquals("Branch name was changed before update was complete", originalBranchName,
+            workingBranch.getName());
 
          // Check that a new destination branch exists
          Branch destinationBranch = resolverOperation.getConflictManager().getDestinationBranch();

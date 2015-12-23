@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.jdk.core.type;
  */
 public interface Named extends Comparable<Named> {
    String getName();
-   
+
    @Override
    default int compareTo(Named other) {
       if (other != null && other.getName() != null && getName() != null) {

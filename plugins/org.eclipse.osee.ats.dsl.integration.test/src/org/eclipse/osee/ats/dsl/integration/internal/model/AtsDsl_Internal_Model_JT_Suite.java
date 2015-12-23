@@ -30,7 +30,6 @@ import org.junit.runners.Suite;
    WidgetOptionTest.class,
    WidgetDefinitionTest.class})
 /**
- *
  * @author Donald G. Dunne
  */
 public class AtsDsl_Internal_Model_JT_Suite {

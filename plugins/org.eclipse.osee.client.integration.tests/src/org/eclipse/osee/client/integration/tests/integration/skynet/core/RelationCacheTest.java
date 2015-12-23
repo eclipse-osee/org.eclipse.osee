@@ -232,7 +232,7 @@ public class RelationCacheTest {
 
       RelationLink actual = null;
 
-      // Find Relation Link Id 1 - 
+      // Find Relation Link Id 1 -
       actual = relCache.getByRelIdOnArtifact(1, artfact1.getArtId(), 0, artfact1.getBranch());
       Assert.assertNull(actual);
 
@@ -250,7 +250,7 @@ public class RelationCacheTest {
       Assert.assertEquals(link21, actual);
       Assert.assertFalse(link22.equals(actual));
 
-      // Find Relation Link Id 0 - 
+      // Find Relation Link Id 0 -
       actual = relCache.getByRelIdOnArtifact(0, 0, artfact2.getArtId(), artfact2.getBranch());
       Assert.assertNull(actual);
 
@@ -367,12 +367,10 @@ public class RelationCacheTest {
       IArtifact artifactA = createArtifact(54, testBranch);
       IArtifact artifactB = createArtifact(55, testBranch);
 
-      RelationType type =
-         new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(), CoreArtifactTypes.Artifact,
-            CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
-      RelationLink link =
-         new RelationLink(new MockLinker("linker"), artifactA.getArtId(), artifactB.getArtId(), testBranch, type, 77,
-            88, "", ModificationType.MODIFIED);
+      RelationType type = new RelationType(0x00L, "type name", artifactA.getName(), artifactB.getName(),
+         CoreArtifactTypes.Artifact, CoreArtifactTypes.Artifact, RelationTypeMultiplicity.MANY_TO_MANY, "");
+      RelationLink link = new RelationLink(new MockLinker("linker"), artifactA.getArtId(), artifactB.getArtId(),
+         testBranch, type, 77, 88, "", ModificationType.MODIFIED);
       relCache.cache(artifactA, link);
       relCache.cache(artifactB, link);
 

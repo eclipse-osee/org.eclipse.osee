@@ -34,8 +34,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
-   private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true,
-      CopyOnWriteArrayList.class);
+   private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true, CopyOnWriteArrayList.class);
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<>();
 

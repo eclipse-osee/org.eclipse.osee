@@ -266,7 +266,8 @@ public class Collections {
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<>(objects.size());
       for (Object object : objects) {
-         if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(object.getClass())) {
+         if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(
+            object.getClass())) {
             results.add((A) object);
          }
       }

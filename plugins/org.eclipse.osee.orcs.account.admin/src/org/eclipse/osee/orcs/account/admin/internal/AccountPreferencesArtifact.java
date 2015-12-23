@@ -26,7 +26,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Roberto E. Escobar
  */
-public class AccountPreferencesArtifact extends BaseIdentity<String> implements AccountPreferences {
+public class AccountPreferencesArtifact extends BaseIdentity<String>implements AccountPreferences {
 
    private final ArtifactReadable artifact;
 

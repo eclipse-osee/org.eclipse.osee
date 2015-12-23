@@ -134,9 +134,8 @@ public class AttributesComposite extends Composite {
    }
 
    private void createTable(Composite parent) {
-      table =
-         new Table(parent,
-            SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
+      table = new Table(parent,
+         SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.HIDE_SELECTION);
       table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       table.setLinesVisible(true);
       table.setHeaderVisible(true);
@@ -170,9 +169,7 @@ public class AttributesComposite extends Composite {
    private void createTableViewer(Composite parent) {
       tableViewer = new TableViewer(table);
 
-      TableViewerEditor.create(
-         tableViewer,
-         new ColumnViewerEditorActivationStrategy(tableViewer),
+      TableViewerEditor.create(tableViewer, new ColumnViewerEditorActivationStrategy(tableViewer),
          ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
       tableViewer.setUseHashlookup(true);
       tableViewer.setColumnProperties(columnNames);
@@ -253,9 +250,8 @@ public class AttributesComposite extends Composite {
                      selectableTypes.add(attrType);
                   }
                }
-               FilteredCheckboxAttributeTypeDialog dialog =
-                  new FilteredCheckboxAttributeTypeDialog("Select Attribute Types",
-                     "Select attribute types to display.");
+               FilteredCheckboxAttributeTypeDialog dialog = new FilteredCheckboxAttributeTypeDialog(
+                  "Select Attribute Types", "Select attribute types to display.");
                dialog.setSelectable(selectableTypes);
                if (dialog.open() == 0) {
                   for (Object obj : dialog.getResult()) {

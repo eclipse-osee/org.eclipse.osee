@@ -50,11 +50,12 @@ public class DefectLabelProvider extends XViewerLabelProvider {
       } else if (dCol.equals(DefectXViewerFactory.Disposition_Col)) {
          return DefectDispositionToImage.getImage(defectItem.getDisposition());
       } else if (dCol.equals(DefectXViewerFactory.Closed_Col)) {
-         return ImageManager.getImage(defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
+         return ImageManager.getImage(
+            defectItem.isClosed() ? PluginUiImage.CHECKBOX_ENABLED : PluginUiImage.CHECKBOX_DISABLED);
       } else if (dCol.equals(DefectXViewerFactory.User_Col)) {
          try {
-            return ArtifactImageManager.getImage(AtsClientService.get().getUserServiceClient().getOseeUser(
-               defectItem.getUser()));
+            return ArtifactImageManager.getImage(
+               AtsClientService.get().getUserServiceClient().getOseeUser(defectItem.getUser()));
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

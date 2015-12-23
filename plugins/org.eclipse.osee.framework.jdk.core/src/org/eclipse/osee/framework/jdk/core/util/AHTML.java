@@ -176,7 +176,8 @@ public class AHTML {
    }
 
    public static String heading(int heading, String str, String id) {
-      return "<h" + heading + (Strings.isValid(id) ? " id=\"" + id + "\"" : "") + ">" + textToHtml(str) + "</h" + heading + ">";
+      return "<h" + heading + (Strings.isValid(id) ? " id=\"" + id + "\"" : "") + ">" + textToHtml(
+         str) + "</h" + heading + ">";
    }
 
    public static String heading(int heading, String str) {

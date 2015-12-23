@@ -40,8 +40,8 @@ public class AgileBacklogWriter {
    }
 
    public IAgileBacklog write() {
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Agile Backlog", AtsCoreUsers.SYSTEM_USER);
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Agile Backlog",
+         AtsCoreUsers.SYSTEM_USER);
 
       // Validate backlog exists
       IAgileBacklog currentBacklog = agileService.getAgileBacklog(updatedBacklog.getUuid());
@@ -59,7 +59,7 @@ public class AgileBacklogWriter {
             }
          }
 
-         // Else validate and relate new team 
+         // Else validate and relate new team
          else {
             ArtifactReadable updateBacklogArt = atsServer.getArtifact(updatedBacklog.getUuid());
             IAgileTeam updatedTeam = agileService.getAgileTeam(updatedBacklog.getTeamUuid());

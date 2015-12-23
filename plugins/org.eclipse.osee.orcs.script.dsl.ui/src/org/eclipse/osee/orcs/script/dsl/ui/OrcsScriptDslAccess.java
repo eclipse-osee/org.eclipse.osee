@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui;
 
-import org.eclipse.osee.orcs.script.dsl.ui.internal.OrcsScriptDslActivator;
 import com.google.inject.Injector;
+import org.eclipse.osee.orcs.script.dsl.ui.internal.OrcsScriptDslActivator;
 
 /**
  * @author Roberto E. Escobar

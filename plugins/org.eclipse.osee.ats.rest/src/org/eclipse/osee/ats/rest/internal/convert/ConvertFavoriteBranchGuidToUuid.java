@@ -128,8 +128,7 @@ public class ConvertFavoriteBranchGuidToUuid extends AbstractConvertGuidToUuid {
             tx.deleteByAttributeId(art, attr);
          }
       } catch (OseeCoreException ex) {
-         data.errorf("Error building transaction to remove guid [%s] for branch that no longer exists\n",
-            value);
+         data.errorf("Error building transaction to remove guid [%s] for branch that no longer exists\n", value);
       }
    }
 

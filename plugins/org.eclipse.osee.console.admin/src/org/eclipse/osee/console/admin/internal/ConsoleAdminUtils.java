@@ -76,7 +76,8 @@ public final class ConsoleAdminUtils {
       String toReturn = value;
       int stringLength = toReturn.length();
       if (stringLength > 1) {
-         if ((toReturn.startsWith("\"") && toReturn.endsWith("\"")) || (toReturn.startsWith("'") && toReturn.endsWith("'"))) {
+         if (toReturn.startsWith("\"") && toReturn.endsWith("\"") || toReturn.startsWith("'") && toReturn.endsWith(
+            "'")) {
             toReturn = toReturn.substring(1, stringLength - 1);
          }
       }

@@ -56,9 +56,8 @@ public class OseeEmailTest {
    @org.junit.Test
    public void testHtmlEmail() throws Exception {
       final String TEST_NAME = "Email Test 2/3 - Html Body";
-      OseeEmail emailMessage =
-         new OseeEmail(emailAddress, TEST_NAME,
-            AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
+      OseeEmail emailMessage = new OseeEmail(emailAddress, TEST_NAME,
+         AHTML.simplePage(AHTML.bold("Hello World - this should be bold" + infoStr)), BodyType.Html);
       emailMessage.send();
       System.out.println(TEST_NAME + " sent to \"" + emailAddress + "\"");
    }

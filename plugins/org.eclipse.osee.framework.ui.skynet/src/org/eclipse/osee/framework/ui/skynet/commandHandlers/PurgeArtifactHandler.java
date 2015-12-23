@@ -39,8 +39,7 @@ public class PurgeArtifactHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      if (MessageDialog.openConfirm(
-         PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+      if (MessageDialog.openConfirm(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
          "Confirm Artifact Purge ",
          " Are you sure you want to purge this artifact, all of " + "its children and all history associated with these artifacts from the database ?")) {
          Job job = new Job("Purge artifact") {

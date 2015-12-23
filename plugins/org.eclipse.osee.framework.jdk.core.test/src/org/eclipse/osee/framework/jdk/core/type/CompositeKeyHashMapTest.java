@@ -11,8 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 

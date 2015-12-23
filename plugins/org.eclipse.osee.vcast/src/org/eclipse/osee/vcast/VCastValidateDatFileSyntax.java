@@ -34,15 +34,13 @@ public class VCastValidateDatFileSyntax {
       StringTokenizer st = new StringTokenizer(line);
 
       if (st.countTokens() > 3) {
-         return new Result(
-            false,
+         return new Result(false,
             "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has to many parameters: [" + line + "]");
       }
 
       Matcher threeNumbersMatcher = threeNumbersPattern.matcher(line);
       if (threeNumbersMatcher.groupCount() != 3) {
-         return new Result(
-            false,
+         return new Result(false,
             "VCastVerifyDatFileSyntax.validateDatFileSyntax() - WARNING: DAT file line has 1 or more parameters that are not numeric: [" + line + "]");
       }
       return Result.TrueResult;

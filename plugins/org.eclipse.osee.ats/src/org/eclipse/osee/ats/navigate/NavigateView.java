@@ -127,9 +127,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
                      if (Widgets.isAccessible(parent)) {
 
-                        xNavComp =
-                           new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE,
-                              savedFilterStr);
+                        xNavComp = new AtsNavigateComposite(AtsNavigateViewItems.getInstance(), parent, SWT.NONE,
+                           savedFilterStr);
 
                         XNavigateEventManager.register(navView);
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
@@ -187,7 +186,8 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
    @Override
    public void refresh(XNavigateItem item) {
-      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(
+         xNavComp.getFilteredTree().getViewer().getTree())) {
          xNavComp.getFilteredTree().getViewer().refresh(item);
       }
    }

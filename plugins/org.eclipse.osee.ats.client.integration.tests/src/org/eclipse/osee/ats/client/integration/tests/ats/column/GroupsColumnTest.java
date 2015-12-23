@@ -31,7 +31,8 @@ public class GroupsColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("Test Group", GroupsColumn.getInstance().getColumnText(reqArt, GroupsColumn.getInstance(), 0));
+      Assert.assertEquals("Test Group",
+         GroupsColumn.getInstance().getColumnText(reqArt, GroupsColumn.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals("Test Group",

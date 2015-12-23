@@ -55,6 +55,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * <pre>
  *    OSEE_LINK([artifact_guid])
  * </pre>
+ * 
  * <li><b>Legacy style links:</b>
  *
  * <pre>
@@ -76,8 +77,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class WordMlLinkHandler {
 
    private static final Matcher OSEE_LINK_PATTERN = Pattern.compile("OSEE_LINK\\((.*?)\\)", Pattern.DOTALL).matcher("");
-   private static final Matcher WORDML_LINK = Pattern.compile(
-      "<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
+   private static final Matcher WORDML_LINK =
+      Pattern.compile("<w:hlink\\s+w:dest=\"(.*?)\"[^>]*?(/>|>.*?</w:hlink\\s*>)", Pattern.DOTALL).matcher("");
    private static final Matcher HYPERLINK_PATTERN = Pattern.compile(
       "<w:r[^>]*><w:instrText>\\s*HYPERLINK\\s+\"(.+?)\"\\s*</w:instrText></w:r>(.*?</w:t>.+?</w:fldChar></w:r>)?",
       Pattern.DOTALL).matcher("");

@@ -82,6 +82,8 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import com.google.common.base.Charsets;
+import com.google.common.collect.Iterables;
 import java.io.ByteArrayInputStream;
 import java.util.Arrays;
 import java.util.Collections;
@@ -120,8 +122,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import com.google.common.base.Charsets;
-import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link OrcsScriptInterpreterImpl} {@link OrcsScriptAssemblerImpl}
@@ -199,17 +199,17 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, data.hasChildren());
 
       checkNamesAndLevels(data.getChildren(), 0, //
-         branch_archive_state,//
-         branch_associated_art_id,//
-         branch_baseline_tx_id,//
+         branch_archive_state, //
+         branch_associated_art_id, //
+         branch_baseline_tx_id, //
          branch_id, //
          branch_inherit_access_cntrl, //
          branch_name, //
          branch_parent_id, //
          branch_parent_tx_id, //
-         branch_state,//
+         branch_state, //
          branch_type //
-         );
+      );
    }
 
    @Test
@@ -243,7 +243,7 @@ public class OrcsScriptInterpreterTest {
          tx_date, //
          tx_id, //
          tx_type //
-         );
+      );
    }
 
    @Test
@@ -282,8 +282,8 @@ public class OrcsScriptInterpreterTest {
 
    @Test
    public void testArtifactQuery2() {
-      OrcsScript model =
-         newModel("start from branch 570 find artifacts where art-id = 34 collect artifacts {id, txs{*}, attributes {*}, relations {*} };");
+      OrcsScript model = newModel(
+         "start from branch 570 find artifacts where art-id = 34 collect artifacts {id, txs{*}, attributes {*}, relations {*} };");
       interpreter.interpret(model, assembler);
       verify(output, times(0)).onError(Matchers.any(Throwable.class));
 
@@ -322,7 +322,7 @@ public class OrcsScriptInterpreterTest {
          art_tx_date, //
          art_tx_id, //
          art_tx_type //
-         );
+      );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -353,8 +353,8 @@ public class OrcsScriptInterpreterTest {
 
    @Test
    public void testArtifactQuery3() {
-      OrcsScript model =
-         newModel("start from branch 570 find artifacts where art-id = 34 collect artifacts {id, txs{*}, attributes {id, txs{*} }, relations {id, txs{*} } };");
+      OrcsScript model = newModel(
+         "start from branch 570 find artifacts where art-id = 34 collect artifacts {id, txs{*}, attributes {id, txs{*} }, relations {id, txs{*} } };");
       interpreter.interpret(model, assembler);
       verify(output, times(0)).onError(Matchers.any(Throwable.class));
 
@@ -393,7 +393,7 @@ public class OrcsScriptInterpreterTest {
          art_tx_date, //
          art_tx_id, //
          art_tx_type //
-         );
+      );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -414,7 +414,7 @@ public class OrcsScriptInterpreterTest {
          attr_tx_date, //
          attr_tx_id, //
          attr_tx_type //
-         );
+      );
 
       DynamicObject rels = asObject(Iterables.get(data.getChildren(), 3, null));
       assertEquals(true, rels.hasParent());
@@ -435,13 +435,13 @@ public class OrcsScriptInterpreterTest {
          rel_tx_date, //
          rel_tx_id, //
          rel_tx_type //
-         );
+      );
    }
 
    @Test
    public void testFollowQuery() {
-      OrcsScript model =
-         newModel("start from branch 570 find artifacts where art-id = 34 follow relation type = 'Default Hierarchical' to side-B collect artifacts {id, txs{ id }, attributes {id, txs{id} }, relations {id, txs{id} } }; ");
+      OrcsScript model = newModel(
+         "start from branch 570 find artifacts where art-id = 34 follow relation type = 'Default Hierarchical' to side-B collect artifacts {id, txs{ id }, attributes {id, txs{id} }, relations {id, txs{id} } }; ");
       interpreter.interpret(model, assembler);
       verify(output, times(0)).onError(Matchers.any(Throwable.class));
 
@@ -480,7 +480,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, artTxs.hasChildren());
       checkNamesAndLevels(artTxs.getChildren(), 1, //
          art_tx_id //
-         );
+      );
 
       DynamicObject attrs = asObject(Iterables.get(data.getChildren(), 2, null));
       assertEquals(true, attrs.hasParent());
@@ -494,7 +494,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, attrTxs.hasChildren());
       checkNamesAndLevels(attrTxs.getChildren(), 1, //
          attr_tx_id //
-         );
+      );
 
       DynamicObject rels = asObject(Iterables.get(data.getChildren(), 3, null));
       assertEquals(true, rels.hasParent());
@@ -508,7 +508,7 @@ public class OrcsScriptInterpreterTest {
       assertEquals(true, relTxs.hasChildren());
       checkNamesAndLevels(relTxs.getChildren(), 1, //
          rel_tx_id //
-         );
+      );
    }
 
    private Integer intVal(int integer) {

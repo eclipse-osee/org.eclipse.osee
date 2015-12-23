@@ -13,7 +13,6 @@ package org.eclipse.osee.disposition.rest.internal;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
@@ -22,7 +21,7 @@ import org.json.JSONException;
 /**
  * @author Angel Avila
  */
-public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
+public class DispoSetArtifact extends BaseIdentity<String>implements DispoSet {
 
    private final ArtifactReadable artifact;
 

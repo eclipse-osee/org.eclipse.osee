@@ -99,9 +99,8 @@ public class PermissionEnumTest {
       for (PermissionTestData testData : getTestData()) {
          PermissionEnum actualNet =
             PermissionEnum.getMostRestrictive(testData.permissionEnum1, testData.permissionEnum2);
-         String message =
-            String.format("Test[%s] [%s:%s] expected:[%s] actual:[%s]", test, testData.permissionEnum1,
-               testData.permissionEnum2, testData.expectedMostRestrictive, actualNet);
+         String message = String.format("Test[%s] [%s:%s] expected:[%s] actual:[%s]", test, testData.permissionEnum1,
+            testData.permissionEnum2, testData.expectedMostRestrictive, actualNet);
          Assert.assertEquals(message, testData.expectedMostRestrictive, actualNet);
          test++;
       }
@@ -112,9 +111,8 @@ public class PermissionEnumTest {
       int test = 0;
       for (PermissionTestData testData : getTestData()) {
          boolean actualMatch = testData.permissionEnum1.matches(testData.permissionEnum2);
-         String message =
-            String.format("Test[%s] [%s matches %s] expected:[%s] actual:[%s]", test, testData.permissionEnum1,
-               testData.permissionEnum2, testData.expectedMatches, actualMatch);
+         String message = String.format("Test[%s] [%s matches %s] expected:[%s] actual:[%s]", test,
+            testData.permissionEnum1, testData.permissionEnum2, testData.expectedMatches, actualMatch);
          Assert.assertEquals(message, testData.expectedMatches, actualMatch);
          test++;
       }

@@ -28,9 +28,8 @@ public final class DefaultSessionCollector implements ISessionCollector {
 
    @Override
    public void collect(String guid, String userId, Date creationDate, String clientVersion, String clientMachineName, String clientAddress, int clientPort) {
-      Session session =
-         factory.createLoadedSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
-            clientPort);
+      Session session = factory.createLoadedSession(guid, userId, creationDate, clientVersion, clientMachineName,
+         clientAddress, clientPort);
       sessions.add(session);
    }
 }

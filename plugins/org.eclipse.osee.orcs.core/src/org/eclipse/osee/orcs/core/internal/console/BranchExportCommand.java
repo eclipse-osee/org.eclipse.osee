@@ -116,9 +116,8 @@ public final class BranchExportCommand implements ConsoleCommand {
             } else {
                branchQuery.excludeArchived();
             }
-            branchReadables =
-               branchQuery.andIsOfType(BranchType.WORKING, BranchType.BASELINE, BranchType.MERGE, BranchType.PORT,
-                  BranchType.SYSTEM_ROOT).getResults();
+            branchReadables = branchQuery.andIsOfType(BranchType.WORKING, BranchType.BASELINE, BranchType.MERGE,
+               BranchType.PORT, BranchType.SYSTEM_ROOT).getResults();
 
             for (BranchReadable branch : branchReadables) {
                branches.add(branch);

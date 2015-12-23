@@ -44,7 +44,7 @@ import org.osgi.framework.BundleListener;
  * 
  * Example:
  *    <b>Osee-JaxRs-Resource:</b> <i>/web/js/*<i><b>;path=</b><i>/lib</i>
- *    
+ * 
  *    Make all files in <b>/web/js/</b> available through <b>/lib/</b>.
  *    Therefore, if we have a file - /web/js/script.js it will be available at /lib/script.js
  * </pre>
@@ -204,9 +204,9 @@ public final class JaxRsResourceManager implements BundleListener {
       boolean isActive = false;
       boolean isStopping = false;
       if (state == Bundle.ACTIVE //
-         || state == Bundle.STARTING //
-         || state == Bundle.INSTALLED //
-         || state == Bundle.RESOLVED) {
+      || state == Bundle.STARTING //
+      || state == Bundle.INSTALLED //
+      || state == Bundle.RESOLVED) {
          isActive = true;
       } else if (state == Bundle.STOPPING) {
          isStopping = true;

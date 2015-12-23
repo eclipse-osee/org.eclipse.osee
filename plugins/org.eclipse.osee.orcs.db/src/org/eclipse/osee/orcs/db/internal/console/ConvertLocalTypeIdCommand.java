@@ -77,9 +77,8 @@ public class ConvertLocalTypeIdCommand extends AbstractDatastoreConsoleCommand {
             String column = columns[i];
             String idCol1 = runConversion ? "remote_id" : "local_id";
             String idCol2 = runConversion ? "local_id" : "remote_id";
-            String sql =
-               String.format("update %s set %s = (select %s from osee_type_id_map where %s = %s)", table, column,
-                  idCol1, idCol2, column);
+            String sql = String.format("update %s set %s = (select %s from osee_type_id_map where %s = %s)", table,
+               column, idCol1, idCol2, column);
             int rowsUpdated = jdbcClient.runPreparedUpdate(connection, sql);
             console.writeln("[%s] had %d rows updated.", table, rowsUpdated);
          }

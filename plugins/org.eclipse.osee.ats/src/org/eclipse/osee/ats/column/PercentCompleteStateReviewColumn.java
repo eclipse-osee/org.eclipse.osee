@@ -38,14 +38,8 @@ public class PercentCompleteStateReviewColumn extends XViewerAtsColumn implement
    }
 
    private PercentCompleteStateReviewColumn() {
-      super(
-         WorldXViewerFactory.COLUMN_NAMESPACE + ".stateReviewPercentComplete",
-         "State Review Percent Complete",
-         40,
-         SWT.CENTER,
-         false,
-         SortDataType.Percent,
-         false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateReviewPercentComplete", "State Review Percent Complete", 40,
+         SWT.CENTER, false, SortDataType.Percent, false,
          "Percent Complete for the reviews related to the current state.\n\nCalculation: total percent of all reviews related to state / number of reviews related to state");
    }
 

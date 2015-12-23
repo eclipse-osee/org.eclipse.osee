@@ -97,7 +97,7 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
    private void registerCommandHandlers(XViewer xviewer) {
       MenuManager menuManager = xViewer.getMenuManager();
-      IHandlerService handlerService = (IHandlerService) getSite().getService(IHandlerService.class);
+      IHandlerService handlerService = getSite().getService(IHandlerService.class);
 
       createEditArtifactMenuItem(menuManager, handlerService);
       createMergeMenuItem(menuManager, handlerService);
@@ -154,122 +154,109 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private String addDiffItems(MenuManager subMenuManager, String command, IHandler handler) {
-      CommandContributionItem diffCommand =
-         Commands.getLocalCommandContribution(getSite(), subMenuManager.getId() + command, command, null, null, null,
-            null, null, null);
+      CommandContributionItem diffCommand = Commands.getLocalCommandContribution(getSite(),
+         subMenuManager.getId() + command, command, null, null, null, null, null, null);
       setCommandHandler(diffCommand, handler);
       subMenuManager.add(diffCommand);
       return diffCommand.getId();
    }
 
    private String addEditArtifactMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem editArtifactCommand =
-         Commands.getLocalCommandContribution(getSite(), "editArtifactCommand", "Edit Merge Artifact", null, null,
-            null, "E", null, "edit_Merge_Artifact");
+      CommandContributionItem editArtifactCommand = Commands.getLocalCommandContribution(getSite(),
+         "editArtifactCommand", "Edit Merge Artifact", null, null, null, "E", null, "edit_Merge_Artifact");
       setCommandHandler(editArtifactCommand, handler);
       menuManager.add(editArtifactCommand);
       return editArtifactCommand.getId();
    }
 
    private String addSourceResourceHistoryMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem sourecResourceCommand =
-         Commands.getLocalCommandContribution(getSite(), "sourceResourceHistory",
-            "Show Source Artifact Resource History", null, null,
-            ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "source_Resource_History");
+      CommandContributionItem sourecResourceCommand = Commands.getLocalCommandContribution(getSite(),
+         "sourceResourceHistory", "Show Source Artifact Resource History", null, null,
+         ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "source_Resource_History");
       setCommandHandler(sourecResourceCommand, handler);
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
 
    private String addDestResourceHistoryMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem sourecResourceCommand =
-         Commands.getLocalCommandContribution(getSite(), "destResourceHistory", "Show Dest Artifact Resource History",
-            null, null, ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null,
-            "dest_Resource_History");
+      CommandContributionItem sourecResourceCommand = Commands.getLocalCommandContribution(getSite(),
+         "destResourceHistory", "Show Dest Artifact Resource History", null, null,
+         ImageManager.getImageDescriptor(FrameworkImage.DB_ICON_BLUE_EDIT), null, null, "dest_Resource_History");
       setCommandHandler(sourecResourceCommand, handler);
       menuManager.add(sourecResourceCommand);
       return sourecResourceCommand.getId();
    }
 
    private String addSourceRevealMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem sourceReveal =
-         Commands.getLocalCommandContribution(getSite(), "sourceRevealArtifactExplorer",
-            "Reveal Source Artifact in Artifact Explorer", null, null,
-            ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "source_Reveal");
+      CommandContributionItem sourceReveal = Commands.getLocalCommandContribution(getSite(),
+         "sourceRevealArtifactExplorer", "Reveal Source Artifact in Artifact Explorer", null, null,
+         ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "source_Reveal");
       setCommandHandler(sourceReveal, handler);
       menuManager.add(sourceReveal);
       return sourceReveal.getId();
    }
 
    private String addDestRevealMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem destReveal =
-         Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
-            "Reveal Dest Artifact in Artifact Explorer", null, null,
-            ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "dest_Reveal");
+      CommandContributionItem destReveal = Commands.getLocalCommandContribution(getSite(), "destRevealArtifactExplorer",
+         "Reveal Dest Artifact in Artifact Explorer", null, null,
+         ImageManager.getImageDescriptor(FrameworkImage.MAGNIFY), null, null, "dest_Reveal");
       setCommandHandler(destReveal, handler);
       menuManager.add(destReveal);
       return destReveal.getId();
    }
 
    private String addRevertUnresolvableConflictsMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem revertSelected =
-         Commands.getLocalCommandContribution(getSite(), "revertSelected",
-            "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
+      CommandContributionItem revertSelected = Commands.getLocalCommandContribution(getSite(), "revertSelected",
+         "Revert Source Artifacts for Unresolvable Conflicts", null, null, null, null, null, null);
       setCommandHandler(revertSelected, handler);
       menuManager.add(revertSelected);
       return revertSelected.getId();
    }
 
    private String addMarkAsResolvedMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem markAsResolvedSelected =
-         Commands.getLocalCommandContribution(getSite(), "markAsResolvedSelected", "Mark as Resolved", null, null,
-            null, null, null, null);
+      CommandContributionItem markAsResolvedSelected = Commands.getLocalCommandContribution(getSite(),
+         "markAsResolvedSelected", "Mark as Resolved", null, null, null, null, null, null);
       setCommandHandler(markAsResolvedSelected, handler);
       menuManager.add(markAsResolvedSelected);
       return markAsResolvedSelected.getId();
    }
 
    private String addMarkAsUnResolvedMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem markAsUnResolvedSelected =
-         Commands.getLocalCommandContribution(getSite(), "markAsUnResolvedSelected", "Mark as Unresolved", null, null,
-            null, null, null, null);
+      CommandContributionItem markAsUnResolvedSelected = Commands.getLocalCommandContribution(getSite(),
+         "markAsUnResolvedSelected", "Mark as Unresolved", null, null, null, null, null, null);
       setCommandHandler(markAsUnResolvedSelected, handler);
       menuManager.add(markAsUnResolvedSelected);
       return markAsUnResolvedSelected.getId();
    }
 
    private String addSourceAsMergeValueMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem mergeValueSourcePickerSelected =
-         Commands.getLocalCommandContribution(getSite(), "mergeValueSourcePickerSelected",
-            "Resolve using Source Value", null, null, null, null, null, null);
+      CommandContributionItem mergeValueSourcePickerSelected = Commands.getLocalCommandContribution(getSite(),
+         "mergeValueSourcePickerSelected", "Resolve using Source Value", null, null, null, null, null, null);
       setCommandHandler(mergeValueSourcePickerSelected, handler);
       menuManager.add(mergeValueSourcePickerSelected);
       return mergeValueSourcePickerSelected.getId();
    }
 
    private String addDestinationAsMergeValueMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem mergeValueDestinationPickerSelected =
-         Commands.getLocalCommandContribution(getSite(), "mergeValueDestinationPickerSelected",
-            "Resolve using Destination Value", null, null, null, null, null, null);
+      CommandContributionItem mergeValueDestinationPickerSelected = Commands.getLocalCommandContribution(getSite(),
+         "mergeValueDestinationPickerSelected", "Resolve using Destination Value", null, null, null, null, null, null);
       setCommandHandler(mergeValueDestinationPickerSelected, handler);
       menuManager.add(mergeValueDestinationPickerSelected);
       return mergeValueDestinationPickerSelected.getId();
    }
 
    private String addResetConflictMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem resetConflictMenuItem =
-         Commands.getLocalCommandContribution(getSite(), "resetConflictMenuItem", "Reset Conflict", null, null, null,
-            null, null, null);
+      CommandContributionItem resetConflictMenuItem = Commands.getLocalCommandContribution(getSite(),
+         "resetConflictMenuItem", "Reset Conflict", null, null, null, null, null, null);
       setCommandHandler(resetConflictMenuItem, handler);
       menuManager.add(resetConflictMenuItem);
       return resetConflictMenuItem.getId();
    }
 
    private String addMergeMenuItem(MenuManager menuManager, IHandler handler) {
-      CommandContributionItem mergeArtifactCommand =
-         Commands.getLocalCommandContribution(getSite(), "mergeArtifactCommand",
-            "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
-            "Merge_Source_Destination_Artifact");
+      CommandContributionItem mergeArtifactCommand = Commands.getLocalCommandContribution(getSite(),
+         "mergeArtifactCommand", "Generate Three Way Merge (Developmental)", null, null, null, "E", null,
+         "Merge_Source_Destination_Artifact");
       setCommandHandler(mergeArtifactCommand, handler);
       menuManager.add(mergeArtifactCommand);
       return mergeArtifactCommand.getId();
@@ -373,45 +360,40 @@ public class MergeCustomMenu extends XViewerCustomMenu {
    }
 
    private void createMarkResolvedMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      IHandler handler =
-         new MergeManagerConflictHandler(menuManager,
-            "Are you sure you want to Mark the selected [%s] conflict(s) as Resolved?",
-            ConflictOperationEnum.MARK_RESOLVED);
+      IHandler handler = new MergeManagerConflictHandler(menuManager,
+         "Are you sure you want to Mark the selected [%s] conflict(s) as Resolved?",
+         ConflictOperationEnum.MARK_RESOLVED);
       String commandId = addMarkAsResolvedMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createMarkUnResolvedMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      IHandler handler =
-         new MergeManagerConflictHandler(menuManager,
-            "Are you sure you want to Mark the selected [%s] conflict(s) as UnResolved?",
-            ConflictOperationEnum.MARK_UNRESOLVED);
+      IHandler handler = new MergeManagerConflictHandler(menuManager,
+         "Are you sure you want to Mark the selected [%s] conflict(s) as UnResolved?",
+         ConflictOperationEnum.MARK_UNRESOLVED);
       String commandId = addMarkAsUnResolvedMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createSourceAsMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      IHandler handler =
-         new MergeManagerConflictHandler(menuManager,
-            "Are you sure you want to set the Merge value to the Source value for the selected [%s] conflict(s)?",
-            ConflictOperationEnum.SET_SRC_AND_RESOLVE);
+      IHandler handler = new MergeManagerConflictHandler(menuManager,
+         "Are you sure you want to set the Merge value to the Source value for the selected [%s] conflict(s)?",
+         ConflictOperationEnum.SET_SRC_AND_RESOLVE);
       String commandId = addSourceAsMergeValueMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createDestinationAsMergeMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      IHandler handler =
-         new MergeManagerConflictHandler(menuManager,
-            "Are you sure you want to set the Merge value to the Destination value for the selected [%s] conflict(s)?",
-            ConflictOperationEnum.SET_DST_AND_RESOLVE);
+      IHandler handler = new MergeManagerConflictHandler(menuManager,
+         "Are you sure you want to set the Merge value to the Destination value for the selected [%s] conflict(s)?",
+         ConflictOperationEnum.SET_DST_AND_RESOLVE);
       String commandId = addDestinationAsMergeValueMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
 
    private void createResetConflictMenuItem(MenuManager menuManager, IHandlerService handlerService) {
-      IHandler handler =
-         new MergeManagerConflictHandler(menuManager, "Are you sure you want to reset %s conflict(s)?",
-            ConflictOperationEnum.RESET);
+      IHandler handler = new MergeManagerConflictHandler(menuManager, "Are you sure you want to reset %s conflict(s)?",
+         ConflictOperationEnum.RESET);
       String commandId = addResetConflictMenuItem(menuManager, handler);
       handlerService.activateHandler(commandId, handler);
    }
@@ -425,7 +407,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
          @Override
          public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-            return super.isEnabledWithException(structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
+            return super.isEnabledWithException(
+               structuredSelection) && getConflictFromSelection(structuredSelection).isWordAttribute();
          }
       };
       handlerService.activateHandler(addMergeMenuItem(menuManager, handler), handler);
@@ -444,9 +427,8 @@ public class MergeCustomMenu extends XViewerCustomMenu {
 
       @Override
       public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-         boolean confirm =
-            MessageDialog.openConfirm(Displays.getActiveShell().getShell(), "Confirm",
-               String.format(dialogString, conflicts.size()));
+         boolean confirm = MessageDialog.openConfirm(Displays.getActiveShell().getShell(), "Confirm",
+            String.format(dialogString, conflicts.size()));
          if (confirm) {
             IOperation operation = new ConflictHandlingOperation(kindOfOperation, conflicts);
             Operations.executeAsJob(operation, true, Job.SHORT, new JobChangeAdapter() {

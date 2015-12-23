@@ -45,9 +45,8 @@ public class CompareInput extends CompareEditorInput {
       initTitle();
 
       Differencer differencer = new Differencer();
-      differences =
-         differencer.findDifferences(parentCompareItem != null, pm, null, parentCompareItem, leftCompareItem,
-            rightCompareItem);
+      differences = differencer.findDifferences(parentCompareItem != null, pm, null, parentCompareItem, leftCompareItem,
+         rightCompareItem);
       return differences;
    }
 

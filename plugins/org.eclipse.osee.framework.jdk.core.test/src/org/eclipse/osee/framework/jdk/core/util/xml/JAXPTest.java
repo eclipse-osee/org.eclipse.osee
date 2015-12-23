@@ -78,15 +78,15 @@ public class JAXPTest {
 
    // @formatter:off
    private static final String LEGACY_DOC =
-   "<A name='george' type='level1'>\n" + 
-   "  <B type='level2'>I'm at level 2</B>\n" + 
-   "  <B type='level2'>I'm also at level 2</B>\n" + 
-   "  <C type='level2'>\n" + 
-   "      <D>likes to be C's child</D>\n" + 
-   "C has some more text here\n" + 
+   "<A name='george' type='level1'>\n" +
+   "  <B type='level2'>I'm at level 2</B>\n" +
+   "  <B type='level2'>I'm also at level 2</B>\n" +
+   "  <C type='level2'>\n" +
+   "      <D>likes to be C's child</D>\n" +
+   "C has some more text here\n" +
    "      <D>2nd round</D>\n" +
-   "END of C\n" + 
-   "  </C>\n" + 
+   "END of C\n" +
+   "  </C>\n" +
    "</A>";
    // @formatter:on
 
@@ -185,8 +185,8 @@ public class JAXPTest {
 
    @Test
    public void testReadWriteNamespaceAware() throws ParserConfigurationException, SAXException, IOException, XMLStreamException {
-      Document document =
-         Jaxp.readXmlDocumentNamespaceAware(NAMESPACE_DEFINITIONS_PREFIX + SIMPLE_TRAILING_SPACES_DOC + NAMESPACE_DEFINITIONS_POSTFIX);
+      Document document = Jaxp.readXmlDocumentNamespaceAware(
+         NAMESPACE_DEFINITIONS_PREFIX + SIMPLE_TRAILING_SPACES_DOC + NAMESPACE_DEFINITIONS_POSTFIX);
 
       Element startElement = document.getDocumentElement();
 

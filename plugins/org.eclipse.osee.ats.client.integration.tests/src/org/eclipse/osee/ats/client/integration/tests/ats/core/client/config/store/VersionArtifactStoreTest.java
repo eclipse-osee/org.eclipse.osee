@@ -40,9 +40,8 @@ public class VersionArtifactStoreTest {
    @BeforeClass
    @AfterClass
    public static void cleanup() throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
-            VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
+      SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
+         VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
 
       IAtsConfig config = AtsClientService.get().getConfig();
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
@@ -106,8 +105,8 @@ public class VersionArtifactStoreTest {
       Artifact verArt = ArtifactTypeManager.addArtifact(AtsArtifactTypes.Version, AtsUtilCore.getAtsBranch());
       verArt.setName("VersionArtifactStoreTest - version 2");
 
-      Artifact teamDef =
-         ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW SW", AtsUtilCore.getAtsBranch());
+      Artifact teamDef = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamDefinition, "SAW SW",
+         AtsUtilCore.getAtsBranch());
       verArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, teamDef);
       verArt.persist(getClass().getSimpleName());
 

@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> implements TransactionQuery {
+public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery>implements TransactionQuery {
 
    private final TransactionCallableQueryFactory queryFactory;
    private final OrcsSession session;

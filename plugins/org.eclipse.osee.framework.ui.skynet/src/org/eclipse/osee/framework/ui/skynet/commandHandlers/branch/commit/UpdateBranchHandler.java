@@ -44,7 +44,8 @@ public class UpdateBranchHandler extends CommandHandler {
 
    protected boolean isValid(Branch branch) throws OseeCoreException {
       boolean result = !BranchManager.isParentSystemRoot(branch);
-      result &= BranchManager.isEditable(branch) && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
+      result &=
+         BranchManager.isEditable(branch) && branch.getBranchType().isOfType(BranchType.WORKING, BranchType.BASELINE);
       result &= branch.getChildBranches().isEmpty();
       return result;
    }
@@ -78,17 +79,15 @@ public class UpdateBranchHandler extends CommandHandler {
             if (branchToUpdate.getBranchState().isRebaselineInProgress()) {
                RebaselineInProgressHandler.handleRebaselineInProgress(branchToUpdate);
             } else {
-               boolean isUserSure =
-                  MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
-                     "Update Branch",
-                     String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
+               boolean isUserSure = MessageDialog.openQuestion(
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Update Branch",
+                  String.format("Are you sure you want to update [%s] branch", branchToUpdate.getName()));
                if (isUserSure) {
                   BranchManager.updateBranch(branchToUpdate, new UserConflictResolver());
                }
             }
          } else {
-            MessageDialog.openWarning(
-               PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+            MessageDialog.openWarning(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                "Can't Update Branch",
                String.format(
                   "Couldn't update [%s] because it currently has merge branches from commits.  To perform an update please delete all the merge branches for this branch",
@@ -117,10 +116,9 @@ public class UpdateBranchHandler extends CommandHandler {
                IStatus status = Status.OK_STATUS;
                try {
                   IWorkbenchPage page = AWorkbench.getActivePage();
-                  IViewPart viewPart =
-                     page.showView(MergeView.VIEW_ID,
-                        String.valueOf(sourceBranch.getUuid() * 100000 + destinationBranch.getUuid()),
-                        IWorkbenchPage.VIEW_ACTIVATE);
+                  IViewPart viewPart = page.showView(MergeView.VIEW_ID,
+                     String.valueOf(sourceBranch.getUuid() * 100000 + destinationBranch.getUuid()),
+                     IWorkbenchPage.VIEW_ACTIVATE);
                   if (viewPart instanceof MergeView) {
                      MergeView mergeView = (MergeView) viewPart;
                      mergeView.explore(sourceBranch, destinationBranch, null, null, true);

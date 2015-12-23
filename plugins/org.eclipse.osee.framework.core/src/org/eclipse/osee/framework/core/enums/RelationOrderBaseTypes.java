@@ -29,11 +29,8 @@ public class RelationOrderBaseTypes {
    public static final IRelationSorterId PREEXISTING = TokenFactory.createSorterId("AE2ypryqoVzNl6EjpgAA", "Preexisting");
    //@formatter:on
 
-   private static final IRelationSorterId[] values = new IRelationSorterId[] {
-      USER_DEFINED,
-      LEXICOGRAPHICAL_ASC,
-      LEXICOGRAPHICAL_DESC,
-      UNORDERED};
+   private static final IRelationSorterId[] values =
+      new IRelationSorterId[] {USER_DEFINED, LEXICOGRAPHICAL_ASC, LEXICOGRAPHICAL_DESC, UNORDERED};
 
    private RelationOrderBaseTypes() {
       // Constants

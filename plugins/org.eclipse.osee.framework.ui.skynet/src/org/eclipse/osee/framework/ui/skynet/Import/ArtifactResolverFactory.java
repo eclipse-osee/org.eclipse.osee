@@ -40,7 +40,8 @@ public final class ArtifactResolverFactory {
 
    public static IArtifactImportResolver createAlwaysNewArtifacts(IArtifactType primaryArtifactType) {
       IArtifactType secondaryArtifactType = CoreArtifactTypes.HeadingMSWord;
-      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(CoreArtifactTypes.SystemRequirementHTML)) {
+      if (primaryArtifactType.equals(CoreArtifactTypes.SubsystemRequirementHTML) || primaryArtifactType.equals(
+         CoreArtifactTypes.SystemRequirementHTML)) {
          secondaryArtifactType = CoreArtifactTypes.HeadingHTML;
       }
       return createAlwaysNewArtifacts(primaryArtifactType, secondaryArtifactType);
@@ -55,19 +56,16 @@ public final class ArtifactResolverFactory {
       IArtifactImportResolver toReturn;
       switch (strategy) {
          case CREATE_ON_DIFFERENT_ATTRIBUTES:
-            toReturn =
-               new AttributeBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-                  CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
+            toReturn = new AttributeBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
+               CoreArtifactTypes.HeadingMSWord, nonChangingAttributes, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_NEW_ART_GUID:
-            toReturn =
-               new GuidBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-                  CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
+            toReturn = new GuidBasedArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
+               CoreArtifactTypes.HeadingMSWord, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_ON_DOORS_BEST_FIT:
-            toReturn =
-               new DoorsBestFitArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
-                  CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
+            toReturn = new DoorsBestFitArtifactResolver(new RoughArtifactTranslatorImpl(), primaryArtifactType,
+               CoreArtifactTypes.HeadingHTML, createNewIfNotExist, deleteUnmatchedArtifacts);
             break;
          case CREATE_NEW_ALWAYS:
          default:

@@ -69,7 +69,8 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
             ArtifactReadable artRead = (ArtifactReadable) artifact;
             if (artRead.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                workItem = getTeamWf(artifact);
-            } else if (artRead.isOfType(AtsArtifactTypes.PeerToPeerReview) || artRead.isOfType(AtsArtifactTypes.DecisionReview)) {
+            } else if (artRead.isOfType(AtsArtifactTypes.PeerToPeerReview) || artRead.isOfType(
+               AtsArtifactTypes.DecisionReview)) {
                workItem = getReview(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.Task)) {
                workItem = getTask(artRead);
@@ -115,8 +116,8 @@ public class WorkItemFactory implements IAtsWorkItemFactory {
       if (artifact instanceof ArtifactReadable) {
          ArtifactReadable artRead = (ArtifactReadable) artifact;
          if (artRead.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
-            item =
-               new org.eclipse.osee.ats.rest.internal.agile.model.AgileItem(logger, atsServer, (ArtifactReadable) artifact);
+            item = new org.eclipse.osee.ats.rest.internal.agile.model.AgileItem(logger, atsServer,
+               (ArtifactReadable) artifact);
          }
       }
       return item;

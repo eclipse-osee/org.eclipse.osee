@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.cluster.hazelcast.internal;
 
+import com.hazelcast.core.HazelcastInstance;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.cluster.Cluster;
 import org.eclipse.osee.cluster.Member;
-import com.hazelcast.core.HazelcastInstance;
 
 /**
  * @author Roberto E. Escobar

@@ -37,7 +37,7 @@ public class ArtifactTypeSqlHandler extends SqlHandler<CriteriaArtifactType> {
 
    private List<String> artAliases;
    private List<String> txsAliases;
-   
+
    private boolean artAliasCreated;
    private boolean txsAliasCreated;
 

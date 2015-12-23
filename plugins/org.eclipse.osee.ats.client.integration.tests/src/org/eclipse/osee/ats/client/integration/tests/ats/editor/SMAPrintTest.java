@@ -73,9 +73,8 @@ public class SMAPrintTest {
       // Make sure it's a reasonable length
       Assert.assertTrue(XResultDataUI.getReport(resultData, "report").getManipulatedHtml().length() > 2600);
 
-      teamArt =
-         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
-            "Button S doesn't work on help", AtsUtilCore.getAtsBranch());
+      teamArt = (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+         "Button S doesn't work on help", AtsUtilCore.getAtsBranch());
       Assert.assertNotNull(teamArt);
       DecisionReviewArtifact decArt = (DecisionReviewArtifact) ReviewManager.getReviews(teamArt).iterator().next();
       smaPrint = new SMAPrint(decArt);

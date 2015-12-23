@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.statistics;
 
-
 /**
  * @author Roberto E. Escobar
  */

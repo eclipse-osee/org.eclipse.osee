@@ -77,10 +77,12 @@ public final class SearchCCombo extends Composite {
     * 
     * @param parent a widget which will be the parent of the new instance (cannot be null)
     * @param style the style of widget to construct
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the parent is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the parent</li>
     * </ul>
     * @see SWT#BORDER
@@ -171,10 +173,12 @@ public final class SearchCCombo extends Composite {
     * Adds the argument to the end of the receiver's list.
     * 
     * @param string the new item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -197,11 +201,13 @@ public final class SearchCCombo extends Composite {
     * 
     * @param string the new item
     * @param index the index for the item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list (inclusive)</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -220,10 +226,12 @@ public final class SearchCCombo extends Composite {
     * sending it one of the messages defined in the <code>ModifyListener</code> interface.
     * 
     * @param listener the listener which should be notified
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -248,10 +256,12 @@ public final class SearchCCombo extends Composite {
     * </p>
     * 
     * @param listener the listener which should be notified
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -289,7 +299,8 @@ public final class SearchCCombo extends Composite {
     * Note: To clear the selected items in the receiver's list, use <code>deselectAll()</code>.
     * </p>
     * 
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -395,7 +406,8 @@ public final class SearchCCombo extends Composite {
     * deselected, it remains deselected. Indices that are out of range are ignored.
     * 
     * @param index the index of the item to deselect
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -411,7 +423,8 @@ public final class SearchCCombo extends Composite {
     * Note: To clear the selection in the receiver's text field, use <code>clearSelection()</code>.
     * </p>
     * 
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -505,7 +518,8 @@ public final class SearchCCombo extends Composite {
     * Gets the editable state.
     * 
     * @return whether or not the reciever is editable
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -522,11 +536,13 @@ public final class SearchCCombo extends Composite {
     * 
     * @param index the index of the item to return
     * @return the item at the given index
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)
     * </li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -540,7 +556,8 @@ public final class SearchCCombo extends Composite {
     * Returns the number of items contained in the receiver's list.
     * 
     * @return the number of items
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -554,7 +571,8 @@ public final class SearchCCombo extends Composite {
     * Returns the height of the area which would be used to display <em>one</em> of the items in the receiver's list.
     * 
     * @return the height of one item
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -572,7 +590,8 @@ public final class SearchCCombo extends Composite {
     * </p>
     * 
     * @return the items in the receiver's list
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -606,7 +625,8 @@ public final class SearchCCombo extends Composite {
     * indicated by the the x and y coordinates having the same value.
     * 
     * @return a point representing the selection start and end
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -621,7 +641,8 @@ public final class SearchCCombo extends Composite {
     * is selected.
     * 
     * @return the index of the selected item
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -645,7 +666,8 @@ public final class SearchCCombo extends Composite {
     * Returns a string containing a copy of the contents of the receiver's text field.
     * 
     * @return the receiver's text
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -659,7 +681,8 @@ public final class SearchCCombo extends Composite {
     * Returns the height of the receivers's text field.
     * 
     * @return the text height
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -674,7 +697,8 @@ public final class SearchCCombo extends Composite {
     * been changed by <code>setTextLimit()</code>, it will be the constant <code>Combo.LIMIT</code>.
     * 
     * @return the text limit
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -688,7 +712,8 @@ public final class SearchCCombo extends Composite {
     * Gets the number of items that are visible in the drop down portion of the receiver's list.
     * 
     * @return the number of items that are visible
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -748,10 +773,12 @@ public final class SearchCCombo extends Composite {
     * 
     * @param string the search item
     * @return the index of the item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -772,10 +799,12 @@ public final class SearchCCombo extends Composite {
     * @param string the search item
     * @param start the zero-relative index at which to begin the search
     * @return the index of the item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1067,11 +1096,13 @@ public final class SearchCCombo extends Composite {
     * Removes the item from the receiver's list at the given zero-relative index.
     * 
     * @param index the index for the item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)
     * </li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1087,11 +1118,13 @@ public final class SearchCCombo extends Composite {
     * 
     * @param start the start of the range
     * @param end the end of the range
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_INVALID_RANGE - if either the start or end are not between 0 and the number of elements in the list
     * minus 1 (inclusive)</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1106,11 +1139,13 @@ public final class SearchCCombo extends Composite {
     * removes that item from the list.
     * 
     * @param string the item to remove
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * <li>ERROR_INVALID_ARGUMENT - if the string is not found in the list</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1127,9 +1162,10 @@ public final class SearchCCombo extends Composite {
     * Removes all of the items from the receiver's list and clear the contents of receiver's text field.
     * <p>
     * 
-    * @exception SWTException <ul>
-    * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li> <li>ERROR_THREAD_INVALID_ACCESS - if not called
-    * from the thread that created the receiver</li>
+    * @exception SWTException
+    * <ul>
+    * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
+    * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
     */
    public void removeAll() {
@@ -1142,10 +1178,12 @@ public final class SearchCCombo extends Composite {
     * Removes the listener from the collection of listeners who will be notified when the receiver's text is modified.
     * 
     * @param listener the listener which should no longer be notified
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1164,10 +1202,12 @@ public final class SearchCCombo extends Composite {
     * Removes the listener from the collection of listeners who will be notified when the receiver's selection changes.
     * 
     * @param listener the listener which should no longer be notified
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the listener is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1188,7 +1228,8 @@ public final class SearchCCombo extends Composite {
     * selected, it remains selected. Indices that are out of range are ignored.
     * 
     * @param index the index of the item to select
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1229,7 +1270,8 @@ public final class SearchCCombo extends Composite {
     * Sets the editable state.
     * 
     * @param editable the new editable state
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1291,12 +1333,14 @@ public final class SearchCCombo extends Composite {
     * 
     * @param index the index for the item
     * @param string the new text for the item
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_INVALID_RANGE - if the index is not between 0 and the number of elements in the list minus 1 (inclusive)
     * </li>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1310,11 +1354,13 @@ public final class SearchCCombo extends Composite {
     * Sets the receiver's list to be the given array of items.
     * 
     * @param items the array of items
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the items array is null</li>
     * <li>ERROR_INVALID_ARGUMENT - if an item in the items array is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1334,7 +1380,8 @@ public final class SearchCCombo extends Composite {
     * </p>
     * 
     * @param layout the receiver's new layout or null
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1348,10 +1395,12 @@ public final class SearchCCombo extends Composite {
     * start of the selection and whose y coordinate is the end of the selection.
     * 
     * @param selection a point representing the new selection start and end
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the point is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1373,10 +1422,12 @@ public final class SearchCCombo extends Composite {
     * </p>
     * 
     * @param string the new text
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_NULL_ARGUMENT - if the string is null</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1402,10 +1453,12 @@ public final class SearchCCombo extends Composite {
     * Sets the maximum number of characters that the receiver's text field is capable of holding to be the argument.
     * 
     * @param limit new text limit
-    * @exception IllegalArgumentException <ul>
+    * @exception IllegalArgumentException
+    * <ul>
     * <li>ERROR_CANNOT_BE_ZERO - if the limit is zero</li>
     * </ul>
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>
@@ -1435,7 +1488,8 @@ public final class SearchCCombo extends Composite {
     * Sets the number of items that are visible in the drop down portion of the receiver's list.
     * 
     * @param count the new number of items to be visible
-    * @exception SWTException <ul>
+    * @exception SWTException
+    * <ul>
     * <li>ERROR_WIDGET_DISPOSED - if the receiver has been disposed</li>
     * <li>ERROR_THREAD_INVALID_ACCESS - if not called from the thread that created the receiver</li>
     * </ul>

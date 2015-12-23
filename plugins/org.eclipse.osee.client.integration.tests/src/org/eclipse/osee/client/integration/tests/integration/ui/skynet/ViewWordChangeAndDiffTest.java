@@ -88,8 +88,8 @@ public final class ViewWordChangeAndDiffTest {
          }
       };
 
-      RendererManager.diff(collector, new ArtifactDelta(txDelta, baseArtifact, newerArtifact), "",
-         IRenderer.NO_DISPLAY, true);
+      RendererManager.diff(collector, new ArtifactDelta(txDelta, baseArtifact, newerArtifact), "", IRenderer.NO_DISPLAY,
+         true);
 
       sleep(2000);
 

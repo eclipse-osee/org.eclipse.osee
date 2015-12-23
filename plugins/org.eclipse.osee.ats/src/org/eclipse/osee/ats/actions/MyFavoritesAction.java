@@ -32,8 +32,9 @@ public class MyFavoritesAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      WorldEditor.open(new WorldEditorUISearchItemProvider(new MyFavoritesSearchItem("My Favorites",
-         AtsClientService.get().getUserService().getCurrentUser()), null, TableLoadOption.None));
+      WorldEditor.open(new WorldEditorUISearchItemProvider(
+         new MyFavoritesSearchItem("My Favorites", AtsClientService.get().getUserService().getCurrentUser()), null,
+         TableLoadOption.None));
    }
 
    @Override

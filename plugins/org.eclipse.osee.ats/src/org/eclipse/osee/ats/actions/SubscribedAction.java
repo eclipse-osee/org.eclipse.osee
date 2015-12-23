@@ -45,8 +45,8 @@ public class SubscribedAction extends AbstractAtsAction {
       try {
          setEnabled(getSelectedSubscribableArts().size() > 0);
          if (getSelectedSubscribableArts().size() == 1) {
-            title =
-               SubscribeManager.amISubscribed(getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";
+            title = SubscribeManager.amISubscribed(
+               getSelectedSubscribableArts().iterator().next()) ? "Remove Subscribed" : "Add as Subscribed";
          } else {
             title = "Toggle Subscribed";
          }

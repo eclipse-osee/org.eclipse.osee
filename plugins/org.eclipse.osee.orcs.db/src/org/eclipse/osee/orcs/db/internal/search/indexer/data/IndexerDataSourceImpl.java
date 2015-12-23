@@ -110,7 +110,7 @@ public class IndexerDataSourceImpl implements IndexedResource {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + (int) (gammaId ^ (gammaId >>> 32));
+      result = prime * result + (int) (gammaId ^ gammaId >>> 32);
       return result;
    }
 

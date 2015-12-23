@@ -84,15 +84,14 @@ public final class ArtifactImportOperationFactory {
       SkynetTransaction transaction = governingTransaction;
       if (transaction == null) {
          executeTransaction = true;
-         transaction =
-            TransactionManager.createTransaction(destinationArtifact.getBranch(),
-               "ArtifactImportOperationFactory: Artifact Import Wizard transaction");
+         transaction = TransactionManager.createTransaction(destinationArtifact.getBranch(),
+            "ArtifactImportOperationFactory: Artifact Import Wizard transaction");
       }
 
       OperationBuilder builder = Operations.createBuilder("Artifact Import");
       builder.addOp(new SourceToRoughArtifactOperation(logger, extractor, sourceFile, collector));
-      builder.addOp(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false,
-         extractor));
+      builder.addOp(
+         new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver, false, extractor));
       builder.addOp(new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), stopOnError));
       if (executeTransaction) {
          builder.addOp(new CompleteArtifactImportOperation(transaction, destinationArtifact));
@@ -147,9 +146,8 @@ public final class ArtifactImportOperationFactory {
     * @see ArtifactImportWizard
     */
    public static IOperation createRoughToRealOperation(String opName, final Artifact destinationArtifact, IArtifactImportResolver resolver, boolean stopOnError, RoughArtifactCollector collector, boolean deleteUnmatchedArtifacts, IArtifactExtractor extractor) throws OseeCoreException {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(destinationArtifact.getBranch(),
-            "Artifact Import Wizard transaction " + opName);
+      SkynetTransaction transaction = TransactionManager.createTransaction(destinationArtifact.getBranch(),
+         "Artifact Import Wizard transaction " + opName);
 
       OperationBuilder builder = Operations.createBuilder(opName);
       builder.addOp(new RoughToRealArtifactOperation(transaction, destinationArtifact, collector, resolver,

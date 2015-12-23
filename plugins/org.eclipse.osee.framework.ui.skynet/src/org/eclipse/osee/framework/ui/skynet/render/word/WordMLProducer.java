@@ -151,12 +151,11 @@ public class WordMLProducer extends Producer {
          String[] numbers = outlineNumber.split("\\.");
 
          for (String number : numbers) {
-            Matcher matcher =
-               Pattern.compile(String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher(
-                  "");
+            Matcher matcher = Pattern.compile(
+               String.format("<w:start w:val=\"(\\d*?)\"/><w:pStyle w:val=\"Heading%d\"/>", index)).matcher("");
             matcher.reset(template);
-            template =
-               matcher.replaceAll(String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number, index));
+            template = matcher.replaceAll(
+               String.format("<w:start w:val=\"%s\"/><w:pStyle w:val=\"Heading%d\"/>", number, index));
             index++;
          }
       }
@@ -167,10 +166,9 @@ public class WordMLProducer extends Producer {
    }
 
    public String setAppendixStartLetter(char chr, String template) {
-      template =
-         template.replace(
-            "<w:start w:val=\"1\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>",
-            "<w:start w:val=\"" + (Character.toLowerCase(chr) - 'a' + 1) + "\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>");
+      template = template.replace("<w:start w:val=\"1\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>",
+         "<w:start w:val=\"" + (Character.toLowerCase(
+            chr) - 'a' + 1) + "\"/><w:nfc w:val=\"3\"/><w:pStyle w:val=\"APPENDIX1\"/>");
       return template;
    }
 

@@ -45,21 +45,18 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), CoreArtifactTypes.Requirement.getGuid(),
-            GUID.create());
-      EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
-            CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
       List<IBasicGuidArtifact> arts = new ArrayList<>();
       arts.add(guidArtB);
       arts.add(guidArtA);
 
       Assert.assertFalse(branchFilter.isMatchArtifacts(arts));
 
-      guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
-            CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      guidArtA = new EventBasicGuidArtifact(EventModType.Added, COMMON_ID, CoreArtifactTypes.Requirement.getGuid(),
+         GUID.create());
       arts.clear();
       arts.add(guidArtB);
       arts.add(guidArtA);
@@ -71,33 +68,27 @@ public class BranchUuidEventFilterTest {
    public void testIsMatchRelationArtifacts() {
       BranchUuidEventFilter branchFilter = new BranchUuidEventFilter(COMMON);
 
-      EventBasicGuidArtifact guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(), CoreArtifactTypes.Requirement.getGuid(),
-            GUID.create());
-      EventBasicGuidArtifact guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
-            CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
-      EventBasicGuidRelation relation =
-         new EventBasicGuidRelation(RelationEventType.Added, Lib.generateUuid(),
-            CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
+      EventBasicGuidRelation relation = new EventBasicGuidRelation(RelationEventType.Added, Lib.generateUuid(),
+         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // neither in relation matches common branch
       Assert.assertFalse(branchFilter.isMatchRelationArtifacts(relations));
 
-      guidArtA =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
-            CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      guidArtB =
-         new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
-            CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
+      guidArtA = new EventBasicGuidArtifact(EventModType.Added, COMMON_ID, CoreArtifactTypes.Requirement.getGuid(),
+         GUID.create());
+      guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON_ID,
+         CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       relations.clear();
-      relation =
-         new EventBasicGuidRelation(RelationEventType.Added, COMMON_ID,
-            CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
+      relation = new EventBasicGuidRelation(RelationEventType.Added, COMMON_ID,
+         CoreRelationTypes.SupportingInfo_SupportedBy.getGuid(), 234, 123, 55, guidArtA, 66, guidArtB);
       relations.add(relation);
 
       // branch match

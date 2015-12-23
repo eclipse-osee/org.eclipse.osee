@@ -51,9 +51,8 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
 
       if (peerRevArt == null) {
          // setup fake review artifact with decision options set
-         peerRevArt =
-            (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
-               AtsUtilCore.getAtsBranch());
+         peerRevArt = (PeerToPeerReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.PeerToPeerReview,
+            AtsUtilCore.getAtsBranch());
          peerRevArt.setName(getClass().getSimpleName());
          // Setup actionable item so don't get error that there is no parent team workflow
          peerRevArt.getActionableItemsDam().addActionableItem(
@@ -89,7 +88,7 @@ public class AtsPeerToPeerReviewPrepareStateItemTest {
       IAtsStateDefinition reviewStateDef =
          peerRevArt.getWorkDefinition().getStateByName(PeerToPeerReviewState.Prepare.getName());
 
-      // make call to state item that should 
+      // make call to state item that should
       AtsPeerToPeerReviewPrepareStateItem stateItem = new AtsPeerToPeerReviewPrepareStateItem();
       stateItem.xWidgetCreated(decisionComboDam, null, reviewStateDef, peerRevArt, true);
 

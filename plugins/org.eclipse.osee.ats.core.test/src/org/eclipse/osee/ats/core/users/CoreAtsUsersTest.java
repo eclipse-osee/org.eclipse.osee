@@ -153,8 +153,8 @@ public class CoreAtsUsersTest {
 
    private class TestUser extends AbstractAtsUser {
 
-      private String name = "Test User";
-      
+      private final String name = "Test User";
+
       public TestUser() {
          super("999994");
       }

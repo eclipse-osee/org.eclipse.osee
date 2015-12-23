@@ -82,9 +82,11 @@ public class ArtifactGraphLabelProvider implements ILabelProvider {
                   } else if (options.getLinkName() == LinkName.Other_Side_Name) {
                      if (link.getArtifactA().equals(source)) {
 
-                        linkNames.add(source + " (" + link.getSideNameFor(source) + ")" + " <--> " + dest + " (" + link.getSideNameFor(dest) + ")");
+                        linkNames.add(source + " (" + link.getSideNameFor(
+                           source) + ")" + " <--> " + dest + " (" + link.getSideNameFor(dest) + ")");
                      } else {
-                        linkNames.add(dest + " (" + link.getSideNameFor(dest) + ")" + " <--> " + source + " (" + link.getSideNameFor(source) + ")");
+                        linkNames.add(dest + " (" + link.getSideNameFor(
+                           dest) + ")" + " <--> " + source + " (" + link.getSideNameFor(source) + ")");
                      }
                   } else {
                      linkNames.add("");

@@ -13,7 +13,6 @@ package org.eclipse.osee.disposition.model;
 
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -208,4 +207,4 @@ public class DispoItemData implements DispoItem {
       this.methodNumber = methodNumber;
    }
 
-   }
+}

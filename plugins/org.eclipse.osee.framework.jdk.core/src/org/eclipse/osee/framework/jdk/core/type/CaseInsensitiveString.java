@@ -42,7 +42,7 @@ public class CaseInsensitiveString implements CharSequence, Comparable<CaseInsen
             return upperCaseString.equals(other.upperCaseString);
          }
       } else if (obj instanceof String) {
-         return upperCaseString.equalsIgnoreCase(((String) obj));
+         return upperCaseString.equalsIgnoreCase((String) obj);
       }
       return false;
    }

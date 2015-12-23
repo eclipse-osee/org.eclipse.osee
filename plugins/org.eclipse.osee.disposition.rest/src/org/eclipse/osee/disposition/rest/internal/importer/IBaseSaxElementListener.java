@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
-
 /**
  * @author Andrew M. Finkbeiner
  */

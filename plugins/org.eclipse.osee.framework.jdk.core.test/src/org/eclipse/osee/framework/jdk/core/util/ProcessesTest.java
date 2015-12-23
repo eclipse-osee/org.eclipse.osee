@@ -34,9 +34,8 @@ public class ProcessesTest {
 
    @Test
    public void testProcessCancel() throws IOException, InterruptedException, ExecutionException {
-      ProcessBuilder builder =
-         new ProcessBuilder("java", "-cp", ".\\bin", "org.eclipse.osee.framework.jdk.core.util.ProcessesTest",
-            argument, "bye");
+      ProcessBuilder builder = new ProcessBuilder("java", "-cp", ".\\bin",
+         "org.eclipse.osee.framework.jdk.core.util.ProcessesTest", argument, "bye");
       builder.redirectErrorStream(true);
       Process process = builder.start();
 

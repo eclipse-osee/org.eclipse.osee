@@ -133,7 +133,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             public void run() {
                for (Artifact art : addedArts) {
                   if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-                     AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) art));
+                     AtsBranchManager.showChangeReport((TeamWorkFlowArtifact) art);
                   }
                }
             }
@@ -155,7 +155,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                      return;
                   }
                   for (Object obj : dialog.getResult()) {
-                     AtsBranchManager.showChangeReport(((TeamWorkFlowArtifact) obj));
+                     AtsBranchManager.showChangeReport((TeamWorkFlowArtifact) obj);
                   }
                }
             }

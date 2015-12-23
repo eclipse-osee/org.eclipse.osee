@@ -96,8 +96,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    private void loadChangesAtEndTx(TransactionJoinQuery txJoin) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_CHANGES_BETWEEN_TRANSACTIONS,
-            getBranchId(), getStartTx().getGuid(), getEndTx().getGuid());
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(),
+            getStartTx().getGuid(), getEndTx().getGuid());
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
@@ -133,8 +133,8 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          String query = "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
+         + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
+         " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranchId(),
             transactionLimit.getGuid());

@@ -38,8 +38,8 @@ public class OpenInAtsWorldAction extends AbstractAtsAction {
    public void runWithException() throws OseeCoreException {
       ActionArtifact actionArt = sma.getParentActionArtifact();
       if (actionArt != null) {
-         WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(), Arrays.asList(actionArt),
-            null, sma));
+         WorldEditor.open(
+            new WorldEditorSimpleProvider("Action " + actionArt.getAtsId(), Arrays.asList(actionArt), null, sma));
       } else {
          WorldEditor.open(new WorldEditorSimpleProvider(sma.getArtifactTypeName() + " " + sma.getAtsId(),
             Arrays.asList(sma), null, sma));

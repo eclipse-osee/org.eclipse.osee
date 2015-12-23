@@ -161,9 +161,8 @@ public class ExistenceTypePredicateHandlerTest {
    @Test(expected = OseeCoreException.class)
    public void testBadValuesThrowException() throws OseeCoreException {
       ExistenceTypePredicateHandler handler = new ExistenceTypePredicateHandler();
-      Predicate testPredicate =
-         new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"),
-            Collections.singletonList("A12A4G"), QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, Collections.singletonList("relType"),
+         Collections.singletonList("A12A4G"), QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
    }
 }

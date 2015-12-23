@@ -292,7 +292,7 @@ public class DiscrepancyParser {
          dispoItem.setTotalPoints(totalPoints.getValue());
          dispoItem.setDiscrepanciesList(discrepancies);
 
-         if (version.getValue() == null) { // version can be empty if not version control 
+         if (version.getValue() == null) { // version can be empty if not version control
             version.setValue("No version control");
          }
          dispoItem.setVersion(version.getValue());

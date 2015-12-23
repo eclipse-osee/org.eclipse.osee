@@ -193,7 +193,7 @@ public class HourBurndownLog {
             if (item.getType() == LogType.Metrics) {
                double itemWork = ReportUtil.getWork(item);
                Date itemDate = item.getDate();
-               if ((itemDate.getDate() == currentDate.getDate()) && (itemDate.getMonth() == currentDate.getMonth()) && (itemDate.getYear() == currentDate.getYear())) {
+               if (itemDate.getDate() == currentDate.getDate() && itemDate.getMonth() == currentDate.getMonth() && itemDate.getYear() == currentDate.getYear()) {
                   work += itemWork - previousWork;
                }
                previousWork = itemWork;

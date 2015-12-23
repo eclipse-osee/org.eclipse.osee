@@ -50,7 +50,7 @@ public class ArtifactNameColumn extends XViewerValueColumn {
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) throws XViewerException {
       if (element instanceof Artifact) {
-         Artifact artifact = ((Artifact) element);
+         Artifact artifact = (Artifact) element;
          String format = "%s";
          if (addDeletedLabel && artifact.isDeleted()) {
             format = "<Deleted> %s";

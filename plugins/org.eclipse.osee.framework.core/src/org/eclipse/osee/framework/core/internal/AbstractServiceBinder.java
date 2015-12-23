@@ -89,8 +89,8 @@ public abstract class AbstractServiceBinder {
       Collection<Object> associatedServices = serviceMap.get(classKey);
       boolean wasRemoved = associatedServices.remove(service);
       if (!wasRemoved) {
-         throw new IllegalStateException(String.format("Attempting to remove none managed service reference: [%s]",
-            service.getClass().getName()));
+         throw new IllegalStateException(
+            String.format("Attempting to remove none managed service reference: [%s]", service.getClass().getName()));
       }
       getHandler().onServiceRemoved(getBundleContext(), classKey, service);
       if (associatedServices.isEmpty()) {

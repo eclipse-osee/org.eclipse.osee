@@ -66,13 +66,12 @@ public class AgileFolders {
 
    @SuppressWarnings("unchecked")
    public static ArtifactReadable getOrCreateTopAgileFolder(IAtsServer atsServer, TransactionBuilder tx, ArtifactReadable userArt) {
-      ArtifactId agileFolder =
-         atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
-            AtsArtifactToken.TopAgileFolder).getResults().getAtMostOneOrNull();
+      ArtifactId agileFolder = atsServer.getOrcsApi().getQueryFactory().fromBranch(CoreBranches.COMMON).andIds(
+         AtsArtifactToken.TopAgileFolder).getResults().getAtMostOneOrNull();
       if (agileFolder == null) {
          agileFolder = tx.createArtifact(AtsArtifactToken.TopAgileFolder);
-         ArtifactReadable rootArtifact =
-            atsServer.getOrcsApi().getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
+         ArtifactReadable rootArtifact = atsServer.getOrcsApi().getQueryFactory().fromBranch(
+            AtsUtilCore.getAtsBranch()).andIsHeirarchicalRootArtifact().getResults().getExactlyOne();
          tx.addChildren(rootArtifact, agileFolder);
       }
       return (ArtifactReadable) agileFolder;

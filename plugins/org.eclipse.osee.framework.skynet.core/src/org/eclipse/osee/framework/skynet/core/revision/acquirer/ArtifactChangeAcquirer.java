@@ -78,10 +78,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             int artId = chStmt.getInt("art_id");
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
-            ArtifactChangeBuilder artifactChangeBuilder =
-               new ArtifactChangeBuilder(getSourceBranch(),
-                  ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")), chStmt.getInt("gamma_id"), artId,
-                  txDelta, modificationType, !hasBranch);
+            ArtifactChangeBuilder artifactChangeBuilder = new ArtifactChangeBuilder(getSourceBranch(),
+               ArtifactTypeManager.getTypeByGuid(chStmt.getLong("art_type_id")), chStmt.getInt("gamma_id"), artId,
+               txDelta, modificationType, !hasBranch);
 
             getArtIds().add(artId);
             getChangeBuilders().add(artifactChangeBuilder);

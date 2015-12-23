@@ -53,9 +53,7 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
                IOseeBranch parentBranch =
                   AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(getTeamArt());
                // Retrieve parent branch to create working branch from
-               if (!MessageDialog.openConfirm(
-                  Displays.getActiveShell(),
-                  "Create Working Branch",
+               if (!MessageDialog.openConfirm(Displays.getActiveShell(), "Create Working Branch",
                   "Create a working branch from parent branch\n\n\"" + parentBranch.getName() + "\"?\n\n" + "NOTE: Working branches are necessary when OSEE Artifact changes " + "are made during implementation.")) {
                   disableAll = false;
                   refreshEnablement(button);
@@ -73,7 +71,8 @@ public class XWorkingBranchButtonCreate extends XWorkingBranchButtonAbstract {
 
    @Override
    protected void refreshEnablement(Button button) {
-      button.setEnabled(!disableAll && !isWorkingBranchCreationInProgress() && !isWorkingBranchCommitInProgress() && !isWorkingBranchInWork() && !isCommittedBranchExists());
+      button.setEnabled(
+         !disableAll && !isWorkingBranchCreationInProgress() && !isWorkingBranchCommitInProgress() && !isWorkingBranchInWork() && !isCommittedBranchExists());
    }
 
 }

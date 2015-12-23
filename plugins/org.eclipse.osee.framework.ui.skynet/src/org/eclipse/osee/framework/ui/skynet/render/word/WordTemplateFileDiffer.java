@@ -80,7 +80,7 @@ public final class WordTemplateFileDiffer {
       TransactionDelta txDelta;
 
       boolean maintainOrder = renderer.getBooleanOption("Maintain Order");
-      if ((startTransaction.getId() < endTransaction.getId()) || maintainOrder) {
+      if (startTransaction.getId() < endTransaction.getId() || maintainOrder) {
          if (compareBranch == endBranch) {
             txDelta = new TransactionDelta(startTransaction, endTransaction);
          } else {
@@ -92,7 +92,7 @@ public final class WordTemplateFileDiffer {
 
       boolean recurseOnLoad = renderer.getBooleanOption(WordTemplateProcessor.RECURSE_ON_LOAD);
       Collection<Artifact> toProcess =
-         (recurseChildren || recurseOnLoad) ? getAllArtifacts(endArtifacts) : endArtifacts;
+         recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
       List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
       IProgressMonitor monitor = (IProgressMonitor) renderer.getOption("Progress Monitor");
@@ -133,11 +133,12 @@ public final class WordTemplateFileDiffer {
          if (changeIds.contains(artId)) {
             // If there is a change on the IS branch
             Change newChange = findChange(artId, changes);
-            if (newChange != null && !newChange.getChangeItem().getChangeType().isRelationChange() && !addedIds.contains(artId)) {
+            if (newChange != null && !newChange.getChangeItem().getChangeType().isRelationChange() && !addedIds.contains(
+               artId)) {
                artifactDeltas.add(newChange.getDelta());
                addedIds.add(artId);
             }
-            // If artifact on the old branch didn't exist then return the entire artifact as a diff 
+            // If artifact on the old branch didn't exist then return the entire artifact as a diff
          } else if (ArtifactQuery.checkArtifactFromId(artId, endBranch, DeletionFlag.EXCLUDE_DELETED) == null) {
             // Return the current artifact as being new
             artifactDeltas.add(new ArtifactDelta(txDelta, null, art));

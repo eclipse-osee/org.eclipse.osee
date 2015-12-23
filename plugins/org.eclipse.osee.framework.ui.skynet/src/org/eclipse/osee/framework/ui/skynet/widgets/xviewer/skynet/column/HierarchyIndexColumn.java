@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -25,8 +27,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.swt.SWT;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -78,8 +78,8 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
       }
    }
 
-   private final Cache<Artifact, String> artToIndexStr = CacheBuilder.newBuilder().expireAfterAccess(2,
-      TimeUnit.MINUTES).build();
+   private final Cache<Artifact, String> artToIndexStr =
+      CacheBuilder.newBuilder().expireAfterAccess(2, TimeUnit.MINUTES).build();
 
    private String computeHierarchyIndex(final Artifact artifact) throws OseeCoreException {
       String indexStr = "";

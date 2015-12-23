@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> implements OrcsData {
+public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer>implements OrcsData {
 
    private long typeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
    private long baseTypeUuid = RelationalConstants.DEFAULT_TYPE_UUID;
@@ -99,9 +99,9 @@ public abstract class OrcsVersionedObjectImpl extends OrcsObjectImpl<Integer> im
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((baseModType == null) ? 0 : baseModType.hashCode());
-      result = prime * result + (int) (baseTypeUuid ^ (baseTypeUuid >>> 32));
-      result = prime * result + ((version == null) ? 0 : version.hashCode());
+      result = prime * result + (baseModType == null ? 0 : baseModType.hashCode());
+      result = prime * result + (int) (baseTypeUuid ^ baseTypeUuid >>> 32);
+      result = prime * result + (version == null ? 0 : version.hashCode());
       return result;
    }
 

@@ -139,9 +139,8 @@ public class FrameworkAccessControlProxy implements CmAccessControl, HasAccessMo
             if (artifact != null) {
                eventFilters = Arrays.asList(new ArtifactEventFilter(artifact));
             } else {
-               eventFilters =
-                  Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
-                     new BranchUuidEventFilter(CoreBranches.COMMON));
+               eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
+                  new BranchUuidEventFilter(CoreBranches.COMMON));
             }
          }
          return eventFilters;

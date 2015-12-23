@@ -284,7 +284,7 @@ public class RelationLink implements HasBranch {
       String artAName = artifactLinker.getLazyArtifactName(getAArtifactId(), getBranch());
       String artBName = artifactLinker.getLazyArtifactName(getBArtifactId(), getBranch());
       return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
-         relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
+         relationType.getName(), relationId, getModificationType(), isDirty() ? "dirty" : "not dirty", artAName,
          aArtifactId, artBName, bArtifactId);
    }
 
@@ -392,7 +392,7 @@ public class RelationLink implements HasBranch {
       IRelationSorterId rightSorter =
          RelationOrderBaseTypes.getFromGuid(rightData.getCurrentSorterGuid(getRelationType(), getSide(bArtifact)));
 
-      return (rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED));
+      return rightSorter.equals(USER_DEFINED) && leftSorter.equals(USER_DEFINED);
    }
 
    public void introduce(int sourceGamma, ModificationType sourceModificationType) {

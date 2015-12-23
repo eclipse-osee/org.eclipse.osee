@@ -104,7 +104,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                   return;
                }
                Artifact artifact = artifacts.iterator().next();
-               if (!(artifact.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+               if (!artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   AWorkbench.popup("ERROR", "Artifact MUST be Team Workflow");
                   return;
                }
@@ -144,10 +144,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
             assignees.add(user);
          }
 
-         TeamWorkFlowArtifact newTeamArt =
-            ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamDef,
-               teamArt.getActionableItemsDam().getActionableItems(), assignees, changes, createdDate, createdBy, null,
-               CreateTeamOption.Duplicate_If_Exists);
+         TeamWorkFlowArtifact newTeamArt = ActionManager.createTeamWorkflow(teamArt.getParentActionArtifact(), teamDef,
+            teamArt.getActionableItemsDam().getActionableItems(), assignees, changes, createdDate, createdBy, null,
+            CreateTeamOption.Duplicate_If_Exists);
 
          if (Strings.isValid(title)) {
             newTeamArt.setName(title);
@@ -167,8 +166,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
       for (TeamWorkFlowArtifact teamArt : teamArts) {
-         TeamWorkFlowArtifact dupArt =
-            (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtilCore.getAtsBranch(), Arrays.asList(AtsAttributeTypes.AtsId));
+         TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtilCore.getAtsBranch(),
+            Arrays.asList(AtsAttributeTypes.AtsId));
          if (Strings.isValid(title)) {
             dupArt.setName(title);
          }
@@ -248,14 +247,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
-         //
-         "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
-         //
-         "</xWidgets>";
+      //
+      "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
+      //
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
+      //
+      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
+      //
+      "</xWidgets>";
    }
 
    /**

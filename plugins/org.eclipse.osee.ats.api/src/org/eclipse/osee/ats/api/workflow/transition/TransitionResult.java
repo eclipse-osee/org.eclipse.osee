@@ -43,6 +43,7 @@ public class TransitionResult implements ITransitionResult {
       new TransitionResult("All Reviews must be cancelled before Cancelling Workflow.");
    public static TransitionResult TASKS_NOT_COMPLETED =
       new TransitionResult("Tasks Must be Completed/Cancelled to Transition");
+
    public static TransitionResult WORKITEM_DELETED =
       new TransitionResult("Work Item has been deleted.  Transition is invalid.");
 

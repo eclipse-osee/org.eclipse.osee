@@ -52,7 +52,15 @@ public class VCastFunctionTable implements VCastTableData<VCastFunction> {
       Integer totalLines = data.getTotalLines();
       Integer complexity = data.getComplexity();
       Integer numPairsOrPaths = data.getNumPairsOrPaths();
-      return new Object[] {id, instrumentedFileId, findex, name, canonicalName, totalLines, complexity, numPairsOrPaths};
+      return new Object[] {
+         id,
+         instrumentedFileId,
+         findex,
+         name,
+         canonicalName,
+         totalLines,
+         complexity,
+         numPairsOrPaths};
    }
 
 }

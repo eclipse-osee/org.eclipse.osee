@@ -38,9 +38,8 @@ public class ComponentUtil {
 
    private synchronized void load() {
       wasLoaded = true;
-      mpCsci =
-         orcsApi.getQueryFactory().fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
-            "MP CSCI").getResults().getExactlyOne();
+      mpCsci = orcsApi.getQueryFactory().fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
+         "MP CSCI").getResults().getExactlyOne();
       mpComponents = mpCsci.getDescendants();
    }
 
@@ -70,7 +69,7 @@ public class ComponentUtil {
             strB.append(", ");
          }
       }
-      return (strB.length() == 0) ? null : strB.substring(0, strB.length() - 2);
+      return strB.length() == 0 ? null : strB.substring(0, strB.length() - 2);
    }
 
    public Collection<ArtifactReadable> getComponents() {

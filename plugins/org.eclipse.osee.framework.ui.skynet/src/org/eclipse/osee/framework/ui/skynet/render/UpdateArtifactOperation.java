@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.render;
 
+import com.google.common.collect.Lists;
 import java.io.File;
 import java.util.Collection;
 import java.util.LinkedList;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModifiedBasicGuid
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
-import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -88,9 +88,8 @@ public class UpdateArtifactOperation extends AbstractOperation {
             artifact.reloadAttributesAndRelations();
             Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
             if (!attrChanges.isEmpty()) {
-               EventModifiedBasicGuidArtifact guidArt =
-                  new EventModifiedBasicGuidArtifact(artifact.getBranchId(),
-                     artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
+               EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranchId(),
+                  artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
                artifactEvent.getArtifacts().add(guidArt);
             }
          }

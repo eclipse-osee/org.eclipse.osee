@@ -57,7 +57,7 @@ public class DispositionIntegrationTest {
       DispositionInitializer initializer = new DispositionInitializer(orcsApi, dispoApi);
       initializer.initialize();
 
-      // Get the sample TMO file into a file in a temp folder   
+      // Get the sample TMO file into a file in a temp folder
       File newFile = folder.newFile("sampleTmo.tmo");
 
       URL resource = getClass().getResource("../../../../../../../support/sampleTmo.tmo");

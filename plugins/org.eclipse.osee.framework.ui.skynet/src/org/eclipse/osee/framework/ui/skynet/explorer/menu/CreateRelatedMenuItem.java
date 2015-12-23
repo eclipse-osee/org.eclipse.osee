@@ -78,14 +78,12 @@ public class CreateRelatedMenuItem implements SelectionListener {
             RelationSide relationSide = null;
             if (linkNode.isParentIsOnSideA()) {
                relationSide = RelationSide.SIDE_B;
-               relationTypeSide =
-                  TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, relationType.getId(),
-                     relationType.getSideBName());
+               relationTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, relationType.getId(),
+                  relationType.getSideBName());
             } else {
                relationSide = RelationSide.SIDE_A;
-               relationTypeSide =
-                  TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, relationType.getId(),
-                     relationType.getSideAName());
+               relationTypeSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, relationType.getId(),
+                  relationType.getSideAName());
             }
 
             AccessPolicy service = ServiceUtil.getAccessPolicy();
@@ -96,9 +94,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
             if (status.matched()) {
                handleCreateRelated(existingArtifact, relationType, relationTypeSide, relationSide);
             } else {
-               MessageDialog.openError(
-                  AWorkbench.getActiveShell(),
-                  "New Child Error",
+               MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
                   "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
             }
          }
@@ -113,7 +109,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
       List<IArtifactType> artifactTypes = new ArrayList<>();
       Branch branch = artifactExplorer.getBranch();
       for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
-         if (relationType.isArtifactTypeAllowed(relationSide, artifactType) && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
+         if (relationType.isArtifactTypeAllowed(relationSide,
+            artifactType) && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
             artifactTypes.add(artifactType);
          }
       }
@@ -143,9 +140,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
    }
 
    private void createRelatedArtifact(Artifact existingArtifact, IRelationTypeSide relationTypeSide, Branch branch, IArtifactType type, String name) {
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(branch,
-            String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
+      SkynetTransaction transaction = TransactionManager.createTransaction(branch,
+         String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
       Artifact newArtifact = ArtifactTypeManager.addArtifact(type, branch, name);
       existingArtifact.addRelation(relationTypeSide, newArtifact);
       existingArtifact.persist(transaction);
@@ -157,9 +153,8 @@ public class CreateRelatedMenuItem implements SelectionListener {
    }
 
    private FilteredTreeArtifactTypeEntryDialog getDialog(List<IArtifactType> artifactTypes) throws OseeCoreException {
-      FilteredTreeArtifactTypeEntryDialog dialog =
-         new FilteredTreeArtifactTypeEntryDialog("New Related", "Enter name and select Artifact type to create",
-            "Artifact Name", artifactTypes);
+      FilteredTreeArtifactTypeEntryDialog dialog = new FilteredTreeArtifactTypeEntryDialog("New Related",
+         "Enter name and select Artifact type to create", "Artifact Name", artifactTypes);
       return dialog;
    }
 
@@ -170,13 +165,11 @@ public class CreateRelatedMenuItem implements SelectionListener {
          RelationType relationType = linkNode.getRelationType();
          IRelationTypeSide relationSide = null;
          if (linkNode.isParentIsOnSideA()) {
-            relationSide =
-               TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, relationType.getId(),
-                  relationType.getSideBName());
+            relationSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_B, relationType.getId(),
+               relationType.getSideBName());
          } else {
-            relationSide =
-               TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, relationType.getId(),
-                  relationType.getSideAName());
+            relationSide = TokenFactory.createRelationTypeSide(RelationSide.SIDE_A, relationType.getId(),
+               relationType.getSideAName());
          }
 
          GlobalMenuPermissions permiss = new GlobalMenuPermissions(artifact);

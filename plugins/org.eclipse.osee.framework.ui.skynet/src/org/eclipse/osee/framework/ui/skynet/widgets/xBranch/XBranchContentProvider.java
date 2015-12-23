@@ -25,7 +25,6 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -84,10 +83,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
             Collection<Branch> childBrances =
                showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
 
-               items.addAll(childBrances);
-               items.addAll(getTransactions(branch));
+            items.addAll(childBrances);
+            items.addAll(getTransactions(branch));
 
-               return items.toArray();
+            return items.toArray();
          } else {
             return getTransactions(branch).toArray();
          }
@@ -135,8 +134,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
                }
             }
          } else {
-            branchesToReturn.addAll(BranchManager.getBranches(branchState,
-               branchTypes.toArray(new BranchType[branchTypes.size()])));
+            branchesToReturn.addAll(
+               BranchManager.getBranches(branchState, branchTypes.toArray(new BranchType[branchTypes.size()])));
          }
          return branchesToReturn.toArray();
       } catch (OseeCoreException ex) {
@@ -162,8 +161,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
          }
       });
       if (transactions != null) {
-         return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(new ArrayList<Object>(
-            transactions), maxPerList);
+         return org.eclipse.osee.framework.jdk.core.util.Collections.getAggregateTree(
+            new ArrayList<Object>(transactions), maxPerList);
       } else {
          return Collections.emptyList();
       }
@@ -179,8 +178,8 @@ public class XBranchContentProvider implements ITreeContentProvider {
          try {
             if (!showTransactions) {
                if (!showChildBranchesAtMainLevel) {
-                  hasChildren =
-                     showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                  hasChildren = showArchivedBranches ? !((Branch) element).getChildBranches(
+                     true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
                } else {
                   hasChildren = false;
                }

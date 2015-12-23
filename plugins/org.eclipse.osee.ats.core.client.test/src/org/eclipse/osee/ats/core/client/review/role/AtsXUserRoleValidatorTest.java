@@ -44,26 +44,23 @@ public class AtsXUserRoleValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
-      WidgetResult result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XUserRoleViewer");
 
       // Not valid to have no roles
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid to have no roles
-      result =
-         validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-            atsServices);
+      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
+         atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
    }

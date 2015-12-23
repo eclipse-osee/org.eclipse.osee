@@ -62,12 +62,12 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    XResultData resultData;
-   IArtifactToken Version_2_5_6 = TokenFactory.createArtifactToken(212596, "A8Yqcqy9Ewu1LTNllrAA", "2.5.6",
-      AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_7 = TokenFactory.createArtifactToken(443308, "A8YqcqzY91Im4M9XsKQA", "2.5.7",
-      AtsArtifactTypes.Version);
-   IArtifactToken Version_2_5_8 = TokenFactory.createArtifactToken(666319, "A8YqcqzzHG5BUQ4PJqwA", "2.5.8",
-      AtsArtifactTypes.Version);
+   IArtifactToken Version_2_5_6 =
+      TokenFactory.createArtifactToken(212596, "A8Yqcqy9Ewu1LTNllrAA", "2.5.6", AtsArtifactTypes.Version);
+   IArtifactToken Version_2_5_7 =
+      TokenFactory.createArtifactToken(443308, "A8YqcqzY91Im4M9XsKQA", "2.5.7", AtsArtifactTypes.Version);
+   IArtifactToken Version_2_5_8 =
+      TokenFactory.createArtifactToken(666319, "A8YqcqzzHG5BUQ4PJqwA", "2.5.8", AtsArtifactTypes.Version);
    IArtifactToken atsActionableItem = TokenFactory.createArtifactToken(126809, "AAABER+4zV8A8O7WAtxxaA",
       "Action Tracking System", AtsArtifactTypes.ActionableItem);
 
@@ -81,13 +81,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
          AWorkbench.popup("ERROR", "This should not to be run on production DB");
          return;
       }
-      MessageDialog dialog =
-         new MessageDialog(Displays.getActiveShell(), getName(), null,
-            getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION, new String[] {
-               "Source Client",
-               "Destination Client - Start",
-               "Destination Client - End",
-               "Cancel"}, 2);
+      MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), getName(), null,
+         getName() + "\n\nSelect Source or Destination Client", MessageDialog.QUESTION,
+         new String[] {"Source Client", "Destination Client - Start", "Destination Client - End", "Cancel"}, 2);
       int result = dialog.open();
       resultData = new XResultData();
       if (result == 0) {
@@ -122,9 +118,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       String title = getName() + " - Destination Client Test";
       resultData.log("Running " + title);
       NewActionJob job = null;
-      job =
-         new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
-            getActionableItemsByToken(Arrays.asList(atsActionableItem)), null, null);
+      job = new NewActionJob("tt", "description", ChangeType.Improvement, "1", null, false,
+         getActionableItemsByToken(Arrays.asList(atsActionableItem)), null, null);
       job.setUser(true);
       job.setPriority(Job.LONG);
       job.schedule();
@@ -147,10 +142,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       validateActionAtStart(actionArt);
 
       // Wait for destination client to start
-      if (!MessageDialog.openConfirm(
-         Displays.getActiveShell(),
-         getName(),
-         "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
+         "Launch \"Destination Client - Start\" test, enter \"" + actionArt.getName().replaceFirst("tt ",
+            "") + "\" and press Ok")) {
          return;
       }
 
@@ -173,10 +167,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       validateActionAtEnd(actionArt);
 
       // Wait for destination client to end
-      if (!MessageDialog.openConfirm(
-         Displays.getActiveShell(),
-         getName(),
-         "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ", "") + "\" and press Ok")) {
+      if (!MessageDialog.openConfirm(Displays.getActiveShell(), getName(),
+         "Launch \"Destination Client - End\" test, enter \"" + actionArt.getName().replaceFirst("tt ",
+            "") + "\" and press Ok")) {
          return;
       }
 
@@ -195,10 +188,9 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
    private void makeChanges7(TeamWorkFlowArtifact teamArt) throws OseeCoreException {
       AtsChangeSet changes = new AtsChangeSet("Remote Event Test");
-      TransitionHelper helper =
-         new TransitionHelper("Remote Event Test", Arrays.asList(teamArt), TeamState.Analyze.getName(),
-            Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
-            AtsClientService.get().getServices(), TransitionOption.None);
+      TransitionHelper helper = new TransitionHelper("Remote Event Test", Arrays.asList(teamArt),
+         TeamState.Analyze.getName(), Collections.singleton(AtsClientService.get().getUserService().getCurrentUser()),
+         null, changes, AtsClientService.get().getServices(), TransitionOption.None);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAllAndPersist();
       if (!results.isEmpty()) {

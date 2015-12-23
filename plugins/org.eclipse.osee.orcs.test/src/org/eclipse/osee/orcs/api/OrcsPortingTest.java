@@ -149,7 +149,7 @@ public class OrcsPortingTest {
 
    private void setupAssociatedArtifact(String associatedArtifactGuid) throws Exception {
       TransactionBuilder tx = txFactory.createTransaction(CoreBranches.COMMON, author, "setup associated artifact");
-      // normally the associated artifact would be a work flow, 
+      // normally the associated artifact would be a work flow,
       // but since that is an ATS construct, we are just using a requirement
       tx.createArtifact(CoreArtifactTypes.Requirement, "AssociatedArtifact", associatedArtifactGuid);
       tx.commit();

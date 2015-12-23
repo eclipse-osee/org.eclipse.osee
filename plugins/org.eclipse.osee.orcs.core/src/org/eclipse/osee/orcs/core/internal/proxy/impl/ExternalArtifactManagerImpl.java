@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.proxy.impl;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Iterables;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -20,8 +22,6 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationManager;
 import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
-import com.google.common.base.Function;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Megumi Telles

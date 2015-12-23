@@ -80,7 +80,7 @@ public class AtsObjectLabelProvider extends LabelProvider {
    }
 
    private String getActiveTag(Object element, String result) {
-      if (showActive && (element instanceof IAtsConfigObject)) {
+      if (showActive && element instanceof IAtsConfigObject) {
          IAtsConfigObject iAtsObject = (IAtsConfigObject) element;
          result = String.format("%s (%s)", result, iAtsObject.isActive() ? "Active" : "InActive");
       }

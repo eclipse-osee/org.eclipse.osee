@@ -307,7 +307,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       for (IAtsVersion version : getVersions()) {
          if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if ((!version.isVersionLocked() && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
+         } else if (!version.isVersionLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }
@@ -320,7 +320,7 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
       for (IAtsVersion version : getVersions()) {
          if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if ((!version.isReleased() && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
+         } else if (!version.isReleased() && releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
             versions.add(version);
          }
       }

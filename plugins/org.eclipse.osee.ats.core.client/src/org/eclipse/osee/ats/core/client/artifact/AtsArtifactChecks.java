@@ -53,9 +53,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
       if (deletionChecksEnabled) {
          boolean isAtsAdmin = AtsGroup.AtsAdmin.isCurrentUserMember();
          if (!isAtsAdmin && Admin_Only_Relation_Type_Ids.contains(relationType.getGuid())) {
-            return createStatus(String.format(
-               "Deletion of relation type [%s] off artifact [%s] is only permitted by ATS Admin", relationType,
-               artifact));
+            return createStatus(
+               String.format("Deletion of relation type [%s] off artifact [%s] is only permitted by ATS Admin",
+                  relationType, artifact));
          }
       }
       return Status.OK_STATUS;
@@ -95,15 +95,15 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private IStatus checkActions(boolean isAtsAdmin, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (!isAtsAdmin && isWorkflowOrAction(art) && !isTask(art)) {
-            return createStatus(String.format("Deletion of [%s] is only permitted by ATS Admin",
-               art.getArtifactTypeName()));
+            return createStatus(
+               String.format("Deletion of [%s] is only permitted by ATS Admin", art.getArtifactTypeName()));
          }
       }
       return Status.OK_STATUS;
    }
 
    private boolean isWorkflowOrAction(Artifact art) {
-      return (art instanceof AbstractWorkflowArtifact) || (art instanceof IAtsAction);
+      return art instanceof AbstractWorkflowArtifact || art instanceof IAtsAction;
    }
 
    private boolean isTask(Artifact art) {
@@ -117,9 +117,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private IStatus checkActionableItems(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
       Set<String> aiaGuids = getActionableItemGuidsWithRecurse(new HashSet<String>(), artifacts);
       if (!aiaGuids.isEmpty()) {
-         List<Artifact> teamWfsRelatedToAis =
-            ArtifactQuery.getArtifactListFromTypeAndAttribute(AtsArtifactTypes.TeamWorkflow,
-               AtsAttributeTypes.ActionableItem, aiaGuids, AtsUtilCore.getAtsBranch(), 10);
+         List<Artifact> teamWfsRelatedToAis = ArtifactQuery.getArtifactListFromTypeAndAttribute(
+            AtsArtifactTypes.TeamWorkflow, AtsAttributeTypes.ActionableItem, aiaGuids, AtsUtilCore.getAtsBranch(), 10);
          if (!teamWfsRelatedToAis.isEmpty()) {
             return createStatus(String.format(
                "Actionable Items (or children AIs) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -157,9 +156,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
          }
       }
       if (!guids.isEmpty()) {
-         List<Artifact> artifactListFromIds =
-            ArtifactQuery.getArtifactListFromAttributeValues(AtsAttributeTypes.TeamDefinition, guids,
-               AtsUtilCore.getAtsBranch(), 5);
+         List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
+            AtsAttributeTypes.TeamDefinition, guids, AtsUtilCore.getAtsBranch(), 5);
          if (artifactListFromIds.size() > 0) {
             return createStatus(String.format(
                "Team Definition (or children Team Definitions) [%s] selected to delete have related Team Workflows; Delete or re-assign Team Workflows first.",
@@ -199,9 +197,8 @@ public class AtsArtifactChecks extends ArtifactCheck {
          }
       }
       for (User user : users) {
-         UserRelatedToAtsObjectSearch srch =
-            new UserRelatedToAtsObjectSearch(AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user),
-               false);
+         UserRelatedToAtsObjectSearch srch = new UserRelatedToAtsObjectSearch(
+            AtsClientService.get().getUserServiceClient().getUserFromOseeUser(user), false);
          if (srch.getResults().size() > 0) {
             return createStatus(String.format(
                "User name: \"%s\" userId: \"%s\" selected to delete has related ATS Objects; Un-relate to ATS first before deleting.",

@@ -26,10 +26,9 @@ public enum PermissionEnum {
    // keeping this in sync with the number of permissions will ensure optimal memory usage
    private static final int COUNT = 4;
 
-   private static final Map<Integer, PermissionEnum> rankToPermissionHash = new HashMap<>(
-      (int) (COUNT / .75) + 1, .75f);
-   private static final Map<String, PermissionEnum> NameToPermissionHash = new HashMap<>(
-      (int) (COUNT / .75) + 1, .75f);
+   private static final Map<Integer, PermissionEnum> rankToPermissionHash =
+      new HashMap<>((int) (COUNT / .75) + 1, .75f);
+   private static final Map<String, PermissionEnum> NameToPermissionHash = new HashMap<>((int) (COUNT / .75) + 1, .75f);
    private static final String[] NAME_ARRAY;
 
    static {

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class HttpRequestHandler implements Runnable {
 
    private static Map<HttpMethod, IHttpMethod> httpMethodHandlers;
+
    static {
       httpMethodHandlers = new HashMap<>();
       httpMethodHandlers.put(HttpMethod.RESOURCE_GET, HttpResourceRequest.getInstance());

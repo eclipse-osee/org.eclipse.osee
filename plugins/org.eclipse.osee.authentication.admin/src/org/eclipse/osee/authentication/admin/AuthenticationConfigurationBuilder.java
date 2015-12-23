@@ -98,8 +98,8 @@ public class AuthenticationConfigurationBuilder {
       public void loadProperties(Map<String, Object> props) {
          if (props != null && !props.isEmpty()) {
             addSchemes(getSet(props, AUTHENTICATION_SCHEME_ALLOWED, DEFAULT_AUTHENTICATION_SCHEME));
-            setDefaultScheme(get(props, AUTHENTICATION_SCHEME_ALLOWED_DEFAULT,
-               DEFAULT_AUTHENTICATION_SCHEME_ALLOWED_DEFAULT));
+            setDefaultScheme(
+               get(props, AUTHENTICATION_SCHEME_ALLOWED_DEFAULT, DEFAULT_AUTHENTICATION_SCHEME_ALLOWED_DEFAULT));
          }
       }
 

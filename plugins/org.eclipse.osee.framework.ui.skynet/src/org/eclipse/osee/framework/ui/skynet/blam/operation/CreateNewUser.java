@@ -120,14 +120,14 @@ public class CreateNewUser extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       String widgetXml = "<xWidgets>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"Name (Last, First)\" required=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"UserId (unique)\" required=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XText\" displayName=\"Email\" required=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Active\" required=\"true\" defaultValue=\"true\"/>";
+      //
+      "<XWidget xwidgetType=\"XText\" displayName=\"Name (Last, First)\" required=\"true\"/>" +
+      //
+      "<XWidget xwidgetType=\"XText\" displayName=\"UserId (unique)\" required=\"true\"/>" +
+      //
+      "<XWidget xwidgetType=\"XText\" displayName=\"Email\" required=\"true\"/>" +
+      //
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Active\" required=\"true\" defaultValue=\"true\"/>";
 
       // Add all rest of attributes to fill
       for (IAttributeType attributeType : attributeTypes) {

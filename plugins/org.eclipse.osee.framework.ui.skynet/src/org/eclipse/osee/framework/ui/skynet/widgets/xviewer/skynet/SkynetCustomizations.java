@@ -84,8 +84,9 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
       boolean found = false;
       Collection<Attribute<String>> attributes = saveArt.getAttributes(CoreAttributeTypes.XViewerCustomization);
       for (Attribute<String> attribute : attributes) {
-         if (attribute.getDisplayableString().contains("namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
-            "name=\"" + custData.getName() + "\"")) {
+         if (attribute.getDisplayableString().contains(
+            "namespace=\"" + custData.getNameSpace() + "\"") && attribute.getDisplayableString().contains(
+               "name=\"" + custData.getName() + "\"")) {
             attribute.setValue(custData.getXml(true));
             found = true;
             break;
@@ -249,7 +250,8 @@ public class SkynetCustomizations implements IXViewerCustomizations, IArtifactEv
          artifactEvent.getCacheArtifacts(EventModType.Modified, EventModType.Reloaded);
       try {
          if (!modifiedArts.isEmpty()) {
-            if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(UserManager.getUser())) {
+            if (modifiedArts.contains(getGlobalCustomizationsArtifact()) || modifiedArts.contains(
+               UserManager.getUser())) {
                ensurePopulated(true);
             }
          }

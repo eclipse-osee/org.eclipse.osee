@@ -69,7 +69,7 @@ public class AutoAddActionToGoalTest {
       ArtifactCache.deCache(goalArt);
    }
 
-   // Create a goal with a relation to an AI and add an Action.  The 
+   // Create a goal with a relation to an AI and add an Action.  The
    // Team Workflow should be added to the Goal
    @org.junit.Test
    public void testAutoAddActionToGoal_AI() throws OseeCoreException {
@@ -106,7 +106,7 @@ public class AutoAddActionToGoalTest {
       ArtifactCache.deCache(goalArt);
    }
 
-   // Create a goal with a relation to a Team Definition and add an Action.  The 
+   // Create a goal with a relation to a Team Definition and add an Action.  The
    // Team Workflow should be added to the Goal
    @org.junit.Test
    public void testAutoAddActionToGoal_TeamWF() throws OseeCoreException {

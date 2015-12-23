@@ -7,9 +7,11 @@ import java.io.InputStream;
 import org.eclipse.xtext.parser.antlr.IAntlrTokenFileProvider;
 
 public class OseeDslAntlrTokenFileProvider implements IAntlrTokenFileProvider {
-	
-	public InputStream getAntlrTokenFile() {
-		ClassLoader classLoader = getClass().getClassLoader();
-    	return classLoader.getResourceAsStream("org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.tokens");
-	}
+
+   @Override
+   public InputStream getAntlrTokenFile() {
+      ClassLoader classLoader = getClass().getClassLoader();
+      return classLoader.getResourceAsStream(
+         "org/eclipse/osee/framework/core/dsl/parser/antlr/internal/InternalOseeDsl.tokens");
+   }
 }

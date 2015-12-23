@@ -97,20 +97,17 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
          List<Object[]> txsToDelete = new ArrayList<>();
 
-         long txBranchId =
-            getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
-               SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
+         long txBranchId = getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
+            SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
 
          Conditions.checkExpressionFailOnTrue(RelationalConstants.BRANCH_SENTINEL == txBranchId,
             "Cannot find branch for transaction record [%s]", txIdToDelete);
          txsToDelete.add(new Object[] {txBranchId, txIdToDelete});
 
-         int previousTransactionId =
-            getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
-               GET_PRIOR_TRANSACTION, txBranchId, txIdToDelete);
+         int previousTransactionId = getJdbcClient().runPreparedQueryFetchObject(
+            RelationalConstants.TRANSACTION_SENTINEL, GET_PRIOR_TRANSACTION, txBranchId, txIdToDelete);
 
-         Conditions.checkExpressionFailOnTrue(
-            RelationalConstants.TRANSACTION_SENTINEL == previousTransactionId,
+         Conditions.checkExpressionFailOnTrue(RelationalConstants.TRANSACTION_SENTINEL == previousTransactionId,
             "You are trying to delete transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",
             txIdToDelete);
 
@@ -147,7 +144,8 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          try {
             JdbcStatement statement = getJdbcClient().getStatement(connection);
             try {
-               statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, joinQuery.getQueryId(), branchUuid);
+               statement.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, joinQuery.getQueryId(),
+                  branchUuid);
                int previousItem = -1;
                while (statement.next()) {
                   int currentItem = statement.getInt("item_id");

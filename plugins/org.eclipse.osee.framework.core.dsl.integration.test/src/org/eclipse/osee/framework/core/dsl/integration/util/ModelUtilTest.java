@@ -69,9 +69,8 @@ public class ModelUtilTest {
       DslAsserts.assertEquals(type2.next(), "Annotation", "0x1000000000000076", "CompressedContentAttribute",
          "UriAttributeDataProvider", "0", "unlimited", "DefaultAttributeTaggerProvider", //
          "the version \'1.0\' is this \"1.2.0\"", null, null);
-      DslAsserts.assertEquals(type2.next(), "WordML", "0x100000000000007A", "WordAttribute",
-         "UriAttributeDataProvider", "0", "1", "XmlAttributeTaggerProvider",
-         "value must comply with WordML xml schema",
+      DslAsserts.assertEquals(type2.next(), "WordML", "0x100000000000007A", "WordAttribute", "UriAttributeDataProvider",
+         "0", "1", "XmlAttributeTaggerProvider", "value must comply with WordML xml schema",
          "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>", "xml");
 
       Assert.assertEquals(1, model1.getRelationTypes().size());
@@ -131,7 +130,7 @@ public class ModelUtilTest {
       DslAsserts.assertEquals(context1, "System Context", "AAMFEcWy0xc4e3tcem11", new String[0]);
       List<ObjectRestriction> restrictions1 = context1.getAccessRules();
       Assert.assertEquals(1, restrictions1.size());
-      DslAsserts.assertEquals(((ArtifactTypeRestriction) restrictions1.iterator().next()), AccessPermissionEnum.DENY,
+      DslAsserts.assertEquals((ArtifactTypeRestriction) restrictions1.iterator().next(), AccessPermissionEnum.DENY,
          "Artifact");
 
       List<HierarchyRestriction> hierarchy1 = context1.getHierarchyRestrictions();
@@ -149,10 +148,10 @@ public class ModelUtilTest {
       Assert.assertEquals(4, restrictions2.size());
       Iterator<ObjectRestriction> restIt = restrictions2.iterator();
       // @formatter:off
-      DslAsserts.assertEquals(((AttributeTypeRestriction) restIt.next()), AccessPermissionEnum.DENY, "Qualification Method", "Software Requirement");
-      DslAsserts.assertEquals(((AttributeTypeRestriction) restIt.next()), AccessPermissionEnum.ALLOW, "Qualification Method", "Software Requirement");
-      DslAsserts.assertEquals(((AttributeTypeRestriction) restIt.next()), AccessPermissionEnum.ALLOW, "Qualification Method", "Software Requirement");
-      DslAsserts.assertEquals(((RelationTypeRestriction) restIt.next()), AccessPermissionEnum.DENY, "Requirement Relation", XRelationSideEnum.SIDE_A);
+      DslAsserts.assertEquals((AttributeTypeRestriction) restIt.next(), AccessPermissionEnum.DENY, "Qualification Method", "Software Requirement");
+      DslAsserts.assertEquals((AttributeTypeRestriction) restIt.next(), AccessPermissionEnum.ALLOW, "Qualification Method", "Software Requirement");
+      DslAsserts.assertEquals((AttributeTypeRestriction) restIt.next(), AccessPermissionEnum.ALLOW, "Qualification Method", "Software Requirement");
+      DslAsserts.assertEquals((RelationTypeRestriction) restIt.next(), AccessPermissionEnum.DENY, "Requirement Relation", XRelationSideEnum.SIDE_A);
 
       // @formatter:on
 

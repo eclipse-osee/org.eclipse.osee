@@ -73,8 +73,8 @@ public class SMAPrint extends Action {
    public XResultData getResultData() throws OseeCoreException {
       XResultData resultData = new XResultData();
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
-      resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ",
-         sma.getName())}));
+      resultData.addRaw(AHTML.addRowMultiColumnTable(
+         new String[] {AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Title: ", sma.getName())}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       resultData.addRaw(AHTML.beginMultiColumnTable(100));
       resultData.addRaw(AHTML.addRowMultiColumnTable(new String[] {
@@ -104,7 +104,7 @@ public class SMAPrint extends Action {
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Workflow: ", sma.getArtifactTypeName()),
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "ID: ", sma.getAtsId()),
-         (pcrId == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", pcrId))}));
+         pcrId == null ? "" : AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Id: ", pcrId)}));
       resultData.addRaw(AHTML.endMultiColumnTable());
       for (NoteItem note : sma.getNotes().getNoteItems()) {
          if (note.getState().equals("")) {
@@ -122,8 +122,8 @@ public class SMAPrint extends Action {
 
       XResultData rd = new XResultData();
       rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
-      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {XResultDataUI.getReport(resultData, "").getManipulatedHtml(
-         Arrays.asList(Manipulations.NONE))}));
+      rd.addRaw(AHTML.addRowMultiColumnTable(
+         new String[] {XResultDataUI.getReport(resultData, "").getManipulatedHtml(Arrays.asList(Manipulations.NONE))}));
       rd.addRaw(AHTML.endMultiColumnTable());
 
       return rd;
@@ -136,14 +136,8 @@ public class SMAPrint extends Action {
       try {
          rd.addRaw(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "Tasks"));
          rd.addRaw(AHTML.startBorderTable(100, Overview.normalColor, ""));
-         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {
-            "Title",
-            "State",
-            "POC",
-            "%",
-            "Hrs",
-            "Resolution",
-            "ID"}));
+         rd.addRaw(
+            AHTML.addHeaderRowMultiColumnTable(new String[] {"Title", "State", "POC", "%", "Hrs", "Resolution", "ID"}));
          for (TaskArtifact art : ((AbstractTaskableArtifact) sma).getTaskArtifacts()) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
                art.getName(),

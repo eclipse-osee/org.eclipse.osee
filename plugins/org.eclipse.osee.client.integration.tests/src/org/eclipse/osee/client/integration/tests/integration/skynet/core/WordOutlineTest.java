@@ -44,8 +44,8 @@ public final class WordOutlineTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final Pattern PARAGRAPH_REGEX = Pattern.compile("<w:p[ >].*?</w:p>",
-      Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern PARAGRAPH_REGEX =
+      Pattern.compile("<w:p[ >].*?</w:p>", Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern OUTLINE_NUMBER_PATTERN = Pattern.compile("((?>\\d+\\.)+\\d*)\\s*");
 
    private static final String OUTLINE_WITH_NUMBER = "wordoutlineNameWithNumber.xml";
@@ -112,11 +112,10 @@ public final class WordOutlineTest {
       for (int index = 0; index < expectedData.length; index++) {
          DelegateData expected = expectedData[index];
          DelegateData actual = actualData.get(index);
-         Assert.assertEquals(
-            String.format(
-               "\nChecking %s of %s,\nEXPECTED: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\nACTUAL: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\n",
-               index, dataFileName, expected.getHeaderNumber(), expected.getHeaderName(), expected.getContent(),
-               actual.getHeaderNumber(), actual.getHeaderName(), actual.getContent()), expected, actual);
+         Assert.assertEquals(String.format(
+            "\nChecking %s of %s,\nEXPECTED: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\nACTUAL: \n\t Number:\"%s\" \n\t Title:\"%s\" \n\t Content:\"%s\"\n",
+            index, dataFileName, expected.getHeaderNumber(), expected.getHeaderName(), expected.getContent(),
+            actual.getHeaderNumber(), actual.getHeaderName(), actual.getContent()), expected, actual);
          if (Strings.isValid(expected.getHeaderNumber())) {
             Assert.assertTrue("WordOutlineTester doesn't look like a outline number...",
                OUTLINE_NUMBER_PATTERN.matcher(actual.getHeaderNumber()).matches());

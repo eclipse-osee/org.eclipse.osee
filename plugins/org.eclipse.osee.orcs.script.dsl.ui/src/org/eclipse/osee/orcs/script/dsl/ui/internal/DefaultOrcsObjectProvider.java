@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui.internal;
 
+import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar

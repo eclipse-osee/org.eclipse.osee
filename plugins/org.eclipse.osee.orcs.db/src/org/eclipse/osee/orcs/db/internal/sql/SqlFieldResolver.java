@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.sql;
 
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
+import com.google.common.collect.Sets.SetView;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -26,10 +30,6 @@ import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.core.ds.SelectSet;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectField.Family;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.common.collect.Sets.SetView;
 
 /**
  * @author Roberto E. Escobar

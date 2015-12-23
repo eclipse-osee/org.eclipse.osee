@@ -82,7 +82,8 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
 
    @Override
    public void refresh(XNavigateItem item) {
-      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(xNavComp.getFilteredTree().getViewer().getTree())) {
+      if (xNavComp != null && Widgets.isAccessible(xNavComp.getFilteredTree()) && Widgets.isAccessible(
+         xNavComp.getFilteredTree().getViewer().getTree())) {
          xNavComp.getFilteredTree().getViewer().refresh(item);
       }
    }
@@ -117,9 +118,8 @@ public class ReviewNavigateView extends ViewPart implements IXNavigateEventListe
                   if (DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
 
                      if (Widgets.isAccessible(parent)) {
-                        xNavComp =
-                           new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE,
-                              savedFilterStr);
+                        xNavComp = new AtsNavigateComposite(ReviewNavigateViewItems.getInstance(), parent, SWT.NONE,
+                           savedFilterStr);
 
                         HelpUtil.setHelp(xNavComp, AtsHelpContext.NAVIGATOR);
                         createToolBar();

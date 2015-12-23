@@ -54,7 +54,7 @@ public class AttributeDataImpl extends OrcsVersionedObjectImpl implements Attrib
       final int prime = 31;
       int result = super.hashCode();
       result = prime * result + artifactId;
-      result = prime * result + ((proxy == null) ? 0 : proxy.hashCode());
+      result = prime * result + (proxy == null ? 0 : proxy.hashCode());
       return result;
    }
 

@@ -59,8 +59,8 @@ public class AssigneeColumn {
          }
          Collections.sort(pocs);
          Collections.sort(implementers);
-         return AtsObjects.toString("; ", pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ",
-            implementers) + ")");
+         return AtsObjects.toString("; ",
+            pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ", implementers) + ")");
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
          if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {

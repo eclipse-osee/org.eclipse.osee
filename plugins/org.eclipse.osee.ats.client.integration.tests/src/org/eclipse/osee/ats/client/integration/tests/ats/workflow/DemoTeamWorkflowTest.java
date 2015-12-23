@@ -56,27 +56,24 @@ public class DemoTeamWorkflowTest {
 
       AtsChangeSet changes = new AtsChangeSet("Create SAW Test Action title: " + title);
 
-      ActionArtifact actionArt =
-         ActionManager.createAction(null, title, title, ChangeType.Improvement, "1", false, null, aias, new Date(),
-            AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+      ActionArtifact actionArt = ActionManager.createAction(null, title, title, ChangeType.Improvement, "1", false,
+         null, aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamWf = actionArt.getFirstTeam();
 
       //*** Transition Action to Analyze
-      TransitionHelper helper =
-         new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf), TeamState.Analyze.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
-            AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("Transition to Analyze", Arrays.asList(teamWf),
+         TeamState.Analyze.getName(), Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null,
+         changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());
 
       //*** Transition Action to Implement
-      helper =
-         new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
-            Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
-            AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck,
-            TransitionOption.OverrideTransitionValidityCheck);
+      helper = new TransitionHelper("Transition to Implement", Arrays.asList(teamWf), TeamState.Implement.getName(),
+         Arrays.asList(AtsClientService.get().getUserService().getCurrentUser()), null, changes,
+         AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck,
+         TransitionOption.OverrideTransitionValidityCheck);
       transitionMgr = TransitionFactory.getTransitionManager(helper);
       results = transitionMgr.handleAllAndPersist();
       assertTrue("Transition Error - " + results.toString(), results.isEmpty());

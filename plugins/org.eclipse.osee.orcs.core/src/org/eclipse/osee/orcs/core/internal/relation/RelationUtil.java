@@ -24,8 +24,8 @@ import org.eclipse.osee.orcs.core.internal.artifact.Artifact;
  */
 public final class RelationUtil {
 
-   public static final IRelationType DEFAULT_HIERARCHY = TokenFactory.createRelationType(
-      Default_Hierarchical__Parent.getGuid(), Default_Hierarchical__Parent.getName());
+   public static final IRelationType DEFAULT_HIERARCHY =
+      TokenFactory.createRelationType(Default_Hierarchical__Parent.getGuid(), Default_Hierarchical__Parent.getName());
    public static final RelationSide IS_PARENT = RelationSide.SIDE_A;
    public static final RelationSide IS_CHILD = RelationSide.SIDE_B;
 

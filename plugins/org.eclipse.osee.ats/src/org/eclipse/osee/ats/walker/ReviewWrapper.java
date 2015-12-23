@@ -47,7 +47,7 @@ public class ReviewWrapper implements IActionWalkerItem {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((teamArt == null) ? 0 : teamArt.hashCode());
+      result = prime * result + (teamArt == null ? 0 : teamArt.hashCode());
       return result;
    }
 
@@ -86,7 +86,8 @@ public class ReviewWrapper implements IActionWalkerItem {
    @Override
    public void handleDoubleClick() {
       try {
-         AtsUtil.openInAtsWorldEditor("Reviews", Collections.castAll(Artifact.class, ReviewManager.getReviews(teamArt)));
+         AtsUtil.openInAtsWorldEditor("Reviews",
+            Collections.castAll(Artifact.class, ReviewManager.getReviews(teamArt)));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

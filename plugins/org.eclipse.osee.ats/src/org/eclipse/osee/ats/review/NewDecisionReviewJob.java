@@ -59,9 +59,8 @@ public class NewDecisionReviewJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          AtsChangeSet changes = new AtsChangeSet(getClass().getSimpleName());
-         DecisionReviewArtifact decArt =
-            DecisionReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
-               description, options, assignees, createdDate, createdBy, changes);
+         DecisionReviewArtifact decArt = DecisionReviewManager.createNewDecisionReview(teamParent, reviewBlockType,
+            reviewTitle, againstState, description, options, assignees, createdDate, createdBy, changes);
          changes.execute();
          AtsUtil.openATSAction(decArt, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {

@@ -287,7 +287,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       if (!((XViewerColumn) treeColumn.getData()).isMultiColumnEditable()) {
          return false;
       }
-      if (((XViewerColumn) treeColumn.getData()) instanceof IMultiColumnEditProvider) {
+      if ((XViewerColumn) treeColumn.getData() instanceof IMultiColumnEditProvider) {
          return true;
       }
       IAttributeType attributeType = null;

@@ -620,18 +620,19 @@ public class AccountAdminImplTest {
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
-         .userName(userName)//
-         .password(password)//
-         .scheme(scheme)//
-         .remoteAddress(remoteAddress)//
-         .accessedBy(accessDetails)//
-         .build();
+      .userName(userName)//
+      .password(password)//
+      .scheme(scheme)//
+      .remoteAddress(remoteAddress)//
+      .accessedBy(accessDetails)//
+      .build();
 
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
       when(authenticatedUser.getName()).thenReturn(EMAIL);
 
       thrown.expect(AccountLoginException.class);
-      thrown.expectMessage("Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
+      thrown.expectMessage(
+         "Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
       accountAdmin.login(request);
 
       verify(storage, times(0)).createAccountSession(anyString(), any(Account.class), anyString(), anyString());
@@ -660,12 +661,12 @@ public class AccountAdminImplTest {
       when(authenticatedUser.getName()).thenReturn(EMAIL);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
-         .userName(userName)//
-         .password(password)//
-         .scheme(scheme)//
-         .remoteAddress(remoteAddress)//
-         .accessedBy(accessDetails)//
-         .build();
+      .userName(userName)//
+      .password(password)//
+      .scheme(scheme)//
+      .remoteAddress(remoteAddress)//
+      .accessedBy(accessDetails)//
+      .build();
 
       AccountSession actual = accountAdmin.login(request);
       assertEquals(session, actual);

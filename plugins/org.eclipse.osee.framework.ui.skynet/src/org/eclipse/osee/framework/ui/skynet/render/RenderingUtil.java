@@ -122,11 +122,13 @@ public final class RenderingUtil {
    }
 
    public static String getRenderPath(IRenderer renderer, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String extension) throws OseeCoreException {
-      return getRenderFile(renderer, artifacts, branch, presentationType, pathPrefix, extension).getLocation().toOSString();
+      return getRenderFile(renderer, artifacts, branch, presentationType, pathPrefix,
+         extension).getLocation().toOSString();
    }
 
    public static String getRenderPath(IRenderer renderer, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) throws OseeCoreException {
-      return getRenderFile(renderer, branch, presentationType, pathPrefix, mainName, extension).getLocation().toOSString();
+      return getRenderFile(renderer, branch, presentationType, pathPrefix, mainName,
+         extension).getLocation().toOSString();
    }
 
    public static IFile getRenderFile(IRenderer renderer, IOseeBranch branch, PresentationType presentationType, String pathPrefix, String mainName, String extension) throws OseeCoreException {

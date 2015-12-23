@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.validation;
 
+import com.google.inject.Inject;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -30,7 +31,6 @@ import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsTxTimestampOpClause;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsTxTimestampRangeClause;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsVariable;
 import org.eclipse.xtext.validation.Check;
-import com.google.inject.Inject;
 
 /**
  * Custom validation rules. see http://www.eclipse.org/Xtext/documentation.html#validation

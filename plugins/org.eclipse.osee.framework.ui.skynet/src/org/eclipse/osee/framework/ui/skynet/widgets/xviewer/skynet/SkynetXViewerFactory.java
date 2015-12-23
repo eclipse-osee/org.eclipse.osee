@@ -65,7 +65,8 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public void registerAllAttributeColumns() {
       try {
-         registerColumns(getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
+         registerColumns(
+            getAllAttributeColumns().toArray(new XViewerColumn[AttributeTypeManager.getAllTypes().size()]));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

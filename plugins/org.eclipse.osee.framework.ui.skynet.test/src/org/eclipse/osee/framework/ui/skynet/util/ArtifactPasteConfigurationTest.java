@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.junit.Assert;
 import org.junit.Test;
 

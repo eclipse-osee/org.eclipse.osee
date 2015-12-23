@@ -48,7 +48,7 @@ public class ReportAttributeTypesUsageBlam extends AbstractBlam {
          xResultData.addRaw(AHTML.addRowMultiColumnTable(attributeType.getName(), String.valueOf(arts.size())));
       }
       xResultData.addRaw(AHTML.endMultiColumnTable());
-      XResultDataUI.report(xResultData,getName() + " " + branch.getName());
+      XResultDataUI.report(xResultData, getName() + " " + branch.getName());
    }
 
    @Override

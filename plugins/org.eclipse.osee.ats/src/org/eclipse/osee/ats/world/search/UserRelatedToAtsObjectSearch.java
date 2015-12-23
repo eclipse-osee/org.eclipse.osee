@@ -60,9 +60,9 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
          arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), user.getUserId(),
             false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState));
       } else {
-         arts.addAll(ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), user.getUserId(),
-            false, EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State,
-            AtsAttributeTypes.Log));
+         arts.addAll(
+            ArtifactQuery.getArtifactListFromAttributeKeywords(AtsUtilCore.getAtsBranch(), user.getUserId(), false,
+               EXCLUDE_DELETED, false, AtsAttributeTypes.CurrentState, AtsAttributeTypes.State, AtsAttributeTypes.Log));
       }
       User user = AtsClientService.get().getUserServiceClient().getOseeUser(atsUser);
       arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));

@@ -46,9 +46,8 @@ public class ImageChecker {
 
       InputStream inputStream = null;
       try {
-         inputStream =
-            new BufferedInputStream(new FileInputStream(
-               "C:\\Documents and Settings\\b1565043\\Desktop\\_MPD_VAM_CONTROL__1177719__20110414_093657-41.xml"));
+         inputStream = new BufferedInputStream(new FileInputStream(
+            "C:\\Documents and Settings\\b1565043\\Desktop\\_MPD_VAM_CONTROL__1177719__20110414_093657-41.xml"));
          ImageChecker checker = new ImageChecker(basePath);
          checker.extractImages(inputStream);
       } finally {

@@ -51,7 +51,8 @@ public class ArtifactClipboard {
       // Remove Artifact that do not have write permission.
       while (artIterator.hasNext()) {
          Artifact cur = artIterator.next();
-         if (!accessService.hasArtifactPermission(java.util.Collections.singleton(cur), permission, Level.WARNING).matched()) {
+         if (!accessService.hasArtifactPermission(java.util.Collections.singleton(cur), permission,
+            Level.WARNING).matched()) {
             artIterator.remove();
          }
       }
@@ -96,9 +97,7 @@ public class ArtifactClipboard {
       }
       if (authFailedList.size() > 0) {
          String failed = Collections.toString(", ", authFailedList) + ".";
-         MessageDialog.openError(
-            Displays.getActiveShell(),
-            "Copy Error",
+         MessageDialog.openError(Displays.getActiveShell(), "Copy Error",
             "Access control has restricted this action. The following artifacts were not copied to the clipboard: " + failed);
       }
 

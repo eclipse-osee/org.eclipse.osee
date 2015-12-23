@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.resource;
 
-import org.junit.Assert;
-import org.junit.Test;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Test unit for {@link UserResource}

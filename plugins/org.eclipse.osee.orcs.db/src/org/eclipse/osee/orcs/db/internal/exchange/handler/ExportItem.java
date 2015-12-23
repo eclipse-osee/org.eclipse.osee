@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.exchange.handler;
 
-
 /**
  * @author Ryan D. Brooks
  */

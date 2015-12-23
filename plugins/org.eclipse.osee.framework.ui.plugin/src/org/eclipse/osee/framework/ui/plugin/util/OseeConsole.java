@@ -50,7 +50,7 @@ public class OseeConsole {
 
    private final Thread thread;
 
-   private boolean newline;
+   private final boolean newline;
 
    public OseeConsole(String title) {
       this(title, true, true);
@@ -172,7 +172,7 @@ public class OseeConsole {
          } else {
             sendToStreams(type, str);
          }
-         if(newline ){
+         if (newline) {
             sendToStreams(type, "\n");
          }
          if (popup) {

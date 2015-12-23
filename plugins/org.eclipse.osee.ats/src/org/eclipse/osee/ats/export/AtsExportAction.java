@@ -131,8 +131,8 @@ public class AtsExportAction extends Action {
       if (selected == null) {
          AtsExportBlam.openAtsExportBlam(new ArrayList<AbstractWorkflowArtifact>());
       } else {
-         AtsExportBlam.openAtsExportBlam(Collections.castAll(AbstractWorkflowArtifact.class,
-            selected.getSelectedSMAArtifacts()));
+         AtsExportBlam.openAtsExportBlam(
+            Collections.castAll(AbstractWorkflowArtifact.class, selected.getSelectedSMAArtifacts()));
       }
    }
 

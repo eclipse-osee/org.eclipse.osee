@@ -147,11 +147,15 @@ public class Overview {
       if (awa.isOfType(AtsArtifactTypes.Task)) {
          AbstractWorkflowArtifact parentArt = ((TaskArtifact) awa).getParentAWA();
          if (parentArt != null) {
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
-            this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Parent State: ") + ((TaskArtifact) awa).getStateMgr().getCurrentStateName()}));
+            this.html.append(AHTML.multiColumnTable(
+               new String[] {AHTML.getLabelStr(labelFont, "Parent Workflow: ") + parentArt.getName()}));
+            this.html.append(AHTML.multiColumnTable(new String[] {
+               AHTML.getLabelStr(labelFont,
+                  "Parent State: ") + ((TaskArtifact) awa).getStateMgr().getCurrentStateName()}));
          }
-         this.html.append(AHTML.multiColumnTable(new String[] {AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString(
-            "; ", awa.getStateMgr().getAssignees())}));
+         this.html.append(AHTML.multiColumnTable(new String[] {
+            AHTML.getLabelStr(labelFont, "Task Owner: ") + AtsObjects.toString("; ",
+               awa.getStateMgr().getAssignees())}));
       }
       endBorderTable();
    }
@@ -189,7 +193,8 @@ public class Overview {
       StringBuilder builder = new StringBuilder();
       builder.append(AHTML.addSpace(1) + Overview.getLabel(name));
       if (arts.size() > 0) {
-         builder.append("<TABLE BORDER=\"1\" align=\"center\" cellspacing=\"1\" cellpadding=\"3%\" width=\"" + width + "%\"><THEAD><TR><TH>Type</TH>" + "<TH>Name</TH></THEAD></TR>");
+         builder.append(
+            "<TABLE BORDER=\"1\" align=\"center\" cellspacing=\"1\" cellpadding=\"3%\" width=\"" + width + "%\"><THEAD><TR><TH>Type</TH>" + "<TH>Name</TH></THEAD></TR>");
          for (Artifact art : arts) {
             builder.append("<TR>");
             builder.append("<TD>" + art.getArtifactTypeName() + "</TD>");
@@ -247,17 +252,15 @@ public class Overview {
    }
 
    public static String getOpenHyperlinkHtml(String name, Artifact art) {
-      return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()),
+         name);
    }
 
    public void addLog(AbstractWorkflowArtifact artifact) throws OseeCoreException {
       IAtsLog artifactLog = artifact.getLog();
       if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
-         AtsLogUtility.getTable(
-            artifactLog,
-            AtsClientService.get().getLogFactory().getLogProvider(artifact,
-               AtsClientService.get().getAttributeResolver()), AtsClientService.get().getUserService());
+         AtsLogUtility.getTable(artifactLog, AtsClientService.get().getLogFactory().getLogProvider(artifact,
+            AtsClientService.get().getAttributeResolver()), AtsClientService.get().getUserService());
       }
    }
 

@@ -51,8 +51,8 @@ public class ExportItemFactory {
 
    private static final String ATTRIBUTE_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_attribute");
 
-   private static final String RELATION_LINK_TABLE_QUERY = ARTIFACT_TABLE_QUERY.replace("osee_artifact",
-      "osee_relation_link");
+   private static final String RELATION_LINK_TABLE_QUERY =
+      ARTIFACT_TABLE_QUERY.replace("osee_artifact", "osee_relation_link");
 
    private static final String MERGE_TABLE_QUERY =
       "SELECT om.* FROM osee_join_export_import jex, osee_merge om WHERE jex.query_id=? AND jex.id1=om.merge_branch_id ORDER BY om.merge_branch_id";
@@ -139,13 +139,13 @@ public class ExportItemFactory {
    private int createGammaJoin(JdbcClient jdbcClient, int exportJoinId, PropertyStore options) throws OseeCoreException {
       List<Object> bindList = new ArrayList<>();
       int gammaJoinId = new Random().nextInt();
-      StringBuilder sql =
-         new StringBuilder(
-            "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
+      StringBuilder sql = new StringBuilder(
+         "INSERT INTO osee_join_id (id, query_id) SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
       bindList.add(exportJoinId);
       addMaxMinFilter(sql, bindList, options);
 
-      sql.append(" UNION SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
+      sql.append(
+         " UNION SELECT DISTINCT(gamma_id), %s FROM osee_join_export_import jex, osee_txs_archived txs WHERE jex.query_id=? AND jex.id1 = txs.branch_id");
       bindList.add(exportJoinId);
       addMaxMinFilter(sql, bindList, options);
 

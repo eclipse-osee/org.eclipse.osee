@@ -34,8 +34,8 @@ public class FrameworkRelayMessagingListener<T extends RemoteEvent> extends Osee
    @Override
    public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
       if (isVerbose) {
-         System.err.println(String.format(getClass().getSimpleName() + " - received [%s]",
-            message.getClass().getSimpleName()));
+         System.err.println(
+            String.format(getClass().getSimpleName() + " - received [%s]", message.getClass().getSimpleName()));
       }
       try {
          T remoteEvent = asCastedMessage(message);

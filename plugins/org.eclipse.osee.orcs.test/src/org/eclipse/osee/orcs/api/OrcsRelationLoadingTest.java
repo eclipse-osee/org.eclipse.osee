@@ -65,8 +65,8 @@ public class OrcsRelationLoadingTest {
 
       //art 6 has no relations
       assertEquals(0, art6.getExistingRelationTypes().size());
-      //art 7 has 3 
-      //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID  
+      //art 7 has 3
+      //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
       //      1  219   7  8     53
       //      3  219   7  15    54
       //      2  219   1  7     52
@@ -74,7 +74,7 @@ public class OrcsRelationLoadingTest {
       assertEquals(2, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Child).size());
       assertEquals(1, art7.getRelated(CoreRelationTypes.Default_Hierarchical__Parent).size());
 
-      //art8 has 
+      //art8 has
       //      REL_LINK_ID    REL_LINK_TYPE_ID     A_ART_ID    B_ART_ID    RATIONALE   GAMMA_ID    TX_CURRENT     MOD_TYPE    BRANCH_ID   TRANSACTION_ID    GAMMA_ID
       //      7  233   8  20    62
       //      8  233   8  21    63

@@ -106,8 +106,10 @@ public class TraceReportBlam extends AbstractBlam {
          builder.append(getOperationsCheckBoxes(traceType.asLabel()));
       }
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select Report Output:\"/>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Result Editor\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Result Editor\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
       builder.append("</xWidgets>");
       return builder.toString();
    }

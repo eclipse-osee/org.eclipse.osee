@@ -25,7 +25,6 @@ import org.xml.sax.helpers.DefaultHandler;
  * xmlReader.setContentHandler(this);
  * xmlReader.setProperty(&quot;http://xml.org/sax/properties/lexical-handler&quot;, this); //This is the important part
  * </pre>
- * 
  * </p>
  * 
  * @author Ryan D. Brooks

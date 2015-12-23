@@ -17,7 +17,7 @@ import org.eclipse.osee.orcs.data.EnumEntry;
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumEntryImpl extends FullyNamedIdentity<String> implements EnumEntry {
+public final class EnumEntryImpl extends FullyNamedIdentity<String>implements EnumEntry {
 
    private final int ordinal;
 

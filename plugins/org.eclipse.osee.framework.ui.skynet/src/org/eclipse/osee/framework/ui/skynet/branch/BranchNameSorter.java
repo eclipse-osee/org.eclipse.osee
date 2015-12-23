@@ -29,7 +29,7 @@ public class BranchNameSorter extends ViewerSorter {
    @Override
    @SuppressWarnings("unchecked")
    public int compare(Viewer viewer, Object o1, Object o2) {
-      if ((o1 instanceof IOseeBranch) && (o2 instanceof IOseeBranch)) {
+      if (o1 instanceof IOseeBranch && o2 instanceof IOseeBranch) {
          return getComparator().compare(((IOseeBranch) o1).getName(), ((IOseeBranch) o2).getName());
       }
       return super.compare(viewer, o1, o2);

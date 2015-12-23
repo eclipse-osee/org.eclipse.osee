@@ -103,8 +103,7 @@ public class OrcsScriptTest {
          "  } ]\n" + //
          "}");
 
-      add(
-         data,
+      add(data,
          "start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };", //
          "{\n" + //
          "  'script' : 'start from branch 570 find artifacts where art-type = 'Folder' collect artifacts {id, attributes { value } };',\n" + //
@@ -127,8 +126,7 @@ public class OrcsScriptTest {
          "  } ]\n" + //
          "}");
 
-      add(
-         data,
+      add(data,
          "start from branch 'SAW_Bld_1' find artifacts where attribute type = 'Name' match-order 'Read-only Robots' collect artifacts as 'Requirement' { id, attributes { value } };", //
          "{\n" + //
          "  'script' : 'start from branch 'SAW_Bld_1' find artifacts where attribute type = 'Name' match-order 'Read-only Robots' collect artifacts as 'Requirement' { id, attributes { value } };',\n" + //

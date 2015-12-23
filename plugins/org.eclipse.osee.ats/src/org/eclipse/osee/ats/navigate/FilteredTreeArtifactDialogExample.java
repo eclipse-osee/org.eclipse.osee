@@ -37,9 +37,8 @@ public class FilteredTreeArtifactDialogExample extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtilCore.getAtsBranch());
       List<Artifact> children = rootArtifact.getChildren();
-      FilteredTreeArtifactDialog dialog =
-         new FilteredTreeArtifactDialog("My Title", "Message", children, new ArtifactTreeContentProvider(),
-            new ArtifactLabelProvider());
+      FilteredTreeArtifactDialog dialog = new FilteredTreeArtifactDialog("My Title", "Message", children,
+         new ArtifactTreeContentProvider(), new ArtifactLabelProvider());
       FilteredDialogExampleUtil.openAndReport(dialog, getName());
    }
 

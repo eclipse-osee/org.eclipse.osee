@@ -221,7 +221,7 @@ public final class PageCreator {
             page.append(token);
             page.append("?>");
          } else if (token.startsWith("rule")) {
-            // get rule name 
+            // get rule name
             String ruleName = getRuleNamefromToken(token);
             if (!Strings.isValid(ruleName)) {
                throw new OseeArgumentException("no rule name specified in token %s", token);

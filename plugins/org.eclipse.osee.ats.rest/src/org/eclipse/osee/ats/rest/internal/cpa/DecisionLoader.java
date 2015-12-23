@@ -70,9 +70,8 @@ public class DecisionLoader {
 
    public List<CpaDecision> load() {
       List<CpaDecision> decisions = new ArrayList<>();
-      QueryBuilder queryBuilder =
-         atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(AtsAttributeTypes.ApplicabilityWorkflow,
-            "true");
+      QueryBuilder queryBuilder = atsServer.getQuery().andTypeEquals(AtsArtifactTypes.TeamWorkflow).and(
+         AtsAttributeTypes.ApplicabilityWorkflow, "true");
       if (Strings.isValid(programUuid)) {
          queryBuilder.and(AtsAttributeTypes.ProgramUuid, programUuid);
       }
@@ -81,7 +80,7 @@ public class DecisionLoader {
       }
       if (open != null) {
          queryBuilder.and(AtsAttributeTypes.CurrentStateType,
-            (open ? StateType.Working.name() : StateType.Completed.name()));
+            open ? StateType.Working.name() : StateType.Completed.name());
       }
       HashCollection<String, CpaDecision> origPcrIdToDecision = new HashCollection<>();
       String pcrToolId = null;
@@ -120,8 +119,8 @@ public class DecisionLoader {
          // set location of duplicated pcr (if any)
          String duplicatedPcrId = art.getSoleAttributeValue(AtsAttributeTypes.DuplicatedPcrId, null);
          if (Strings.isValid(duplicatedPcrId)) {
-            String duplicatedLocation =
-               CpaUtil.getCpaPath(atsServer).path(duplicatedPcrId).queryParam("pcrSystem", decision.getPcrSystem()).build().toString();
+            String duplicatedLocation = CpaUtil.getCpaPath(atsServer).path(duplicatedPcrId).queryParam("pcrSystem",
+               decision.getPcrSystem()).build().toString();
             decision.setDuplicatedPcrLocation(duplicatedLocation);
             decision.setDuplicatedPcrId(duplicatedPcrId);
          }

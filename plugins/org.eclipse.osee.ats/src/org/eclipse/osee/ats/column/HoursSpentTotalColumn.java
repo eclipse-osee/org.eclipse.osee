@@ -53,8 +53,8 @@ public class HoursSpentTotalColumn extends XViewerAtsColumn implements IXViewerV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsWorkItem) {
-            return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element,
-               AtsClientService.get().getServices()));
+            return AtsUtilCore.doubleToI18nString(
+               HoursSpentUtil.getHoursSpentTotal((IAtsWorkItem) element, AtsClientService.get().getServices()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

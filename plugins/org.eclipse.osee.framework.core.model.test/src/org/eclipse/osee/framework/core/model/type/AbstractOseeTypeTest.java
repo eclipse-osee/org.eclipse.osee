@@ -52,8 +52,8 @@ public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
    @Test
    public void testSetGetName() throws Exception {
       String newName = GUID.create();
-      ModelAsserts.assertTypeSetGet(getType(), AbstractOseeType.NAME_FIELD_KEY, "getName", "setName",
-         getExpectedName(), newName);
+      ModelAsserts.assertTypeSetGet(getType(), AbstractOseeType.NAME_FIELD_KEY, "getName", "setName", getExpectedName(),
+         newName);
    }
 
    @Test

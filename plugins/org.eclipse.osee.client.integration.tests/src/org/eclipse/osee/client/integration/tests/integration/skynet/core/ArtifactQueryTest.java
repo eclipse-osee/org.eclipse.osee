@@ -72,19 +72,15 @@ public class ArtifactQueryTest {
 
    @Test
    public void testGetArtifactFromGUIDDeleted() throws OseeCoreException {
-      Artifact newArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
+      Artifact newArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.GeneralData, COMMON);
       newArtifact.persist(getClass().getSimpleName());
 
       // Should exist
-      Artifact searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), COMMON);
+      Artifact searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getUuid(), COMMON);
       Assert.assertNotNull(searchedArtifact);
 
       // Should exist with allowDeleted
-      searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON,
-            DeletionFlag.INCLUDE_DELETED);
+      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
       newArtifact.deleteAndPersist();
@@ -105,9 +101,7 @@ public class ArtifactQueryTest {
       }
 
       // Should still exist with allowDeleted
-      searchedArtifact =
-         ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON,
-            DeletionFlag.INCLUDE_DELETED);
+      searchedArtifact = ArtifactQuery.getArtifactFromId(newArtifact.getGuid(), COMMON, DeletionFlag.INCLUDE_DELETED);
       Assert.assertNotNull(searchedArtifact);
 
    }
@@ -118,9 +112,8 @@ public class ArtifactQueryTest {
       Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
       List<Branch> branches = BranchManager.getBranches(new BranchFilter(BranchType.BASELINE));
       for (IOseeBranch branch : branches) {
-         List<Artifact> results =
-            ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
-               DeletionFlag.INCLUDE_DELETED);
+         List<Artifact> results = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
+            DeletionFlag.INCLUDE_DELETED);
          searchedArtifacts.addAll(results);
       }
       // make sure at least one artifact exists
@@ -146,7 +139,8 @@ public class ArtifactQueryTest {
    public void testNotTaggableGetArtifactListFromAttributeType() {
       List<ArtifactSearchCriteria> criteria = new ArrayList<>();
 
-      criteria.add(new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common", QueryOption.TOKEN_DELIMITER__ANY));
+      criteria.add(
+         new AttributeCriteria(CoreAttributeTypes.FavoriteBranch, "Common", QueryOption.TOKEN_DELIMITER__ANY));
       // test against a couple of attributes types that are not taggable; expect exception
       try {
          ArtifactQuery.getArtifactListFromCriteria(COMMON, 1000, criteria);
@@ -164,8 +158,8 @@ public class ArtifactQueryTest {
       }
       // test against a couple attributes types that are taggable; do not expect exception
       criteria.clear();
-      criteria.add(new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com",
-         QueryOption.TOKEN_DELIMITER__ANY));
+      criteria.add(
+         new AttributeCriteria(CoreAttributeTypes.Email, "john.doe@somewhere.com", QueryOption.TOKEN_DELIMITER__ANY));
       try {
          ArtifactQuery.getArtifactListFromCriteria(COMMON, 1000, criteria);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
@@ -174,8 +168,8 @@ public class ArtifactQueryTest {
       }
 
       try {
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes,
-            "My Notes", COMMON, QueryOption.TOKEN_DELIMITER__ANY);
+         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.User, CoreAttributeTypes.Notes, "My Notes",
+            COMMON, QueryOption.TOKEN_DELIMITER__ANY);
          Assert.assertTrue("This attribute type is taggable", Boolean.TRUE);
       } catch (OseeCoreException e) {
          Assert.fail(e.getMessage());
@@ -203,9 +197,8 @@ public class ArtifactQueryTest {
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist(testInfo.getTestName());
       Thread.sleep(1000);
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromName("Wikipedia", branch, DeletionFlag.EXCLUDE_DELETED,
-            QueryOption.CONTAINS_MATCH_OPTIONS);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromName("Wikipedia", branch,
+         DeletionFlag.EXCLUDE_DELETED, QueryOption.CONTAINS_MATCH_OPTIONS);
       Job job = BranchManager.deleteBranch(branch);
       job.join();
       Assert.assertEquals(1, artifacts.size());

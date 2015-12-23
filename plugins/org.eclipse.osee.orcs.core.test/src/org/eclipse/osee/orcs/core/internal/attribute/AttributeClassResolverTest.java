@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import org.junit.Assert;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.AttributeClassProvider;
@@ -29,6 +28,7 @@ import org.eclipse.osee.orcs.core.internal.attribute.primitives.JavaObjectAttrib
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.PrimitiveAttributeClassProvider;
 import org.eclipse.osee.orcs.core.internal.attribute.primitives.StringAttribute;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

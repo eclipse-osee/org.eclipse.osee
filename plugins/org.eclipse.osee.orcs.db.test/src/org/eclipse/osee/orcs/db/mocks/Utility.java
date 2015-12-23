@@ -38,7 +38,7 @@ public final class Utility {
       char[] data = new char[size];
       for (int index = 0; index < size; index++) {
          int rnd = (int) (Math.random() * 52);
-         char base = (rnd < 26) ? 'A' : 'a';
+         char base = rnd < 26 ? 'A' : 'a';
          data[index] = (char) (base + rnd % 26);
       }
       return new String(data);

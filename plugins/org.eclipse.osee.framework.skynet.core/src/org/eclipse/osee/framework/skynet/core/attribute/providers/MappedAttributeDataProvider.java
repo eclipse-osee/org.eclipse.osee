@@ -105,10 +105,9 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
 
                String resourceName = String.format("%s.zip", getAttribute().getArtifact().getGuid());
                try {
-                  Response response =
-                     endpoint.saveResource(new ByteArrayInputStream(compressed),
-                        BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
-                        compressOnSave);
+                  Response response = endpoint.saveResource(new ByteArrayInputStream(compressed),
+                     BinaryContentUtils.ATTRIBUTE_RESOURCE_PROTOCOL, resourceId, resourceName, overwriteAllowed,
+                     compressOnSave);
                   String location = BinaryContentUtils.getAttributeLocation(response);
                   if (location != null) {
                      this.remoteUri = location;

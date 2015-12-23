@@ -139,7 +139,8 @@ public class DispoConnector {
                }
             }
          } else {
-            if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, singleLocationRef.getStart(), workingIdsOfCovered)) {
+            if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, singleLocationRef.getStart(),
+               workingIdsOfCovered)) {
                isAllLocRefValid = false;
                break;
             }

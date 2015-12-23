@@ -58,7 +58,7 @@ public class WorkDefinitionMatch implements IWorkDefinitionMatch {
 
    @Override
    public void addTrace(String traceStr) {
-      if (trace.isEmpty() || (!trace.get(trace.size() - 1).equals(traceStr))) {
+      if (trace.isEmpty() || !trace.get(trace.size() - 1).equals(traceStr)) {
          trace.add(traceStr);
       }
    }

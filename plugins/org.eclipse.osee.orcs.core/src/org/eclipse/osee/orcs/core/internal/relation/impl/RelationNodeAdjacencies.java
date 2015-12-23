@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.relation.impl;
 import static com.google.common.base.Predicates.and;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFlagEquals;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.nodeIdOnSideEquals;
+import com.google.common.base.Predicate;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.HasLocalId;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -27,12 +28,11 @@ import org.eclipse.osee.orcs.core.internal.relation.RelationNode;
 import org.eclipse.osee.orcs.core.internal.relation.RelationVisitor;
 import org.eclipse.osee.orcs.core.internal.util.AbstractTypeCollection;
 import org.eclipse.osee.orcs.core.internal.util.OrcsPredicates;
-import com.google.common.base.Predicate;
 
 /**
  * @author Roberto E. Escobar
  */
-public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, Long, Relation> implements GraphAdjacencies {
+public class RelationNodeAdjacencies extends AbstractTypeCollection<IRelationType, Relation, Long, Relation>implements GraphAdjacencies {
 
    @Override
    protected ResultSet<Relation> createResultSet(List<Relation> values) {

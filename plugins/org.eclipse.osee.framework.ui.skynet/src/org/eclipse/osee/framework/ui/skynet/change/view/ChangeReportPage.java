@@ -100,8 +100,8 @@ public class ChangeReportPage extends FormPage {
 
       int sectionStyle = ExpandableComposite.TITLE_BAR | ExpandableComposite.EXPANDED | ExpandableComposite.TWISTIE;
 
-      managedForm.addPart(new EditorSection(infoPresenter, "Info", form.getBody(), managedForm.getToolkit(),
-         sectionStyle, false));
+      managedForm.addPart(
+         new EditorSection(infoPresenter, "Info", form.getBody(), managedForm.getToolkit(), sectionStyle, false));
       // Can not place table in section or double scroll-bars and maintaining correct table size becomes an issue
       changeReportTable.onCreate(getManagedForm(), form.getBody());
 
@@ -126,7 +126,8 @@ public class ChangeReportPage extends FormPage {
       Menu menu = manager.createContextMenu(control);
       control.setMenu(menu);
 
-      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView", manager, xviewer);
+      getSite().registerContextMenu("org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView", manager,
+         xviewer);
       getSite().setSelectionProvider(changeReportTable.getXViewer());
    }
 

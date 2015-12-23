@@ -76,7 +76,7 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    @Override
    public boolean isDispatchToLocalAllowed(Sender sender) {
       boolean normalOperation = !isLoopbackEnabled();
-      return normalOperation || (isLoopbackEnabled() && sender.isRemote());
+      return normalOperation || isLoopbackEnabled() && sender.isRemote();
    }
 
    private boolean areEventsAllowed() {
@@ -85,7 +85,8 @@ public class EventTransport implements Transport, IFrameworkEventListener {
 
    private Sender createSender(Object sourceObject, Object event) throws OseeAuthenticationRequiredException {
       Sender sender = null;
-      if (RemoteEventServiceEventType.Rem_Connected.equals(event) || RemoteEventServiceEventType.Rem_DisConnected.equals(event)) {
+      if (RemoteEventServiceEventType.Rem_Connected.equals(
+         event) || RemoteEventServiceEventType.Rem_DisConnected.equals(event)) {
          sender = Sender.createSender(sourceObject);
       } else {
          // Sender came from Remote Event Manager if source == sender
@@ -119,7 +120,8 @@ public class EventTransport implements Transport, IFrameworkEventListener {
          Conditions.checkNotNull(event, "event");
 
          final EventHandlerLocal<? extends IEventListener, E> handler = handlers.getLocalHandler(event);
-         Conditions.checkNotNull(handler, "eventHandler", "No event handler found for [%s]", event.getClass().getName());
+         Conditions.checkNotNull(handler, "eventHandler", "No event handler found for [%s]",
+            event.getClass().getName());
 
          Runnable runnable = new Runnable() {
             @Override
@@ -175,20 +177,19 @@ public class EventTransport implements Transport, IFrameworkEventListener {
    public void sendRemote(final RemoteEvent remoteEvent) {
       if (isConnected()) {
          EventUtil.eventLog(String.format("IEM: kick - [%s]", remoteEvent));
-         Job job =
-            new Job(String.format("[%s] - sending [%s]", getClass().getSimpleName(),
-               remoteEvent.getClass().getSimpleName())) {
-               @Override
-               protected IStatus run(IProgressMonitor monitor) {
-                  try {
-                     messagingService.sendRemoteEvent(remoteEvent);
-                  } catch (Exception ex) {
-                     EventUtil.eventLog("IEM: kick", ex);
-                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
-                  }
-                  return Status.OK_STATUS;
+         Job job = new Job(
+            String.format("[%s] - sending [%s]", getClass().getSimpleName(), remoteEvent.getClass().getSimpleName())) {
+            @Override
+            protected IStatus run(IProgressMonitor monitor) {
+               try {
+                  messagingService.sendRemoteEvent(remoteEvent);
+               } catch (Exception ex) {
+                  EventUtil.eventLog("IEM: kick", ex);
+                  return new Status(IStatus.ERROR, Activator.PLUGIN_ID, -1, ex.getLocalizedMessage(), ex);
                }
-            };
+               return Status.OK_STATUS;
+            }
+         };
 
          job.schedule();
       }

@@ -103,9 +103,8 @@ public class OperationBuilderImpl implements OperationBuilder {
 
    @Override
    public synchronized IOperation build() {
-      IOperation operation =
-         new WeightedCompositeOperation(getName(), pluginId, getExecutionBehavior(), getLogger(), runningTotal,
-            itemsWithHints, operations);
+      IOperation operation = new WeightedCompositeOperation(getName(), pluginId, getExecutionBehavior(), getLogger(),
+         runningTotal, itemsWithHints, operations);
       reset();
       return operation;
    }

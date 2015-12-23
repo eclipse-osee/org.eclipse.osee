@@ -64,14 +64,16 @@ public final class AttributeSetRule extends AbstractValidationRule {
          for (String attributeValue : attributeValues) {
             AbstractOperation.checkForCancelledStatus(monitor);
             if (attributeValue.equals(invalidValue)) {
-               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " has invalid " + invalidValue + " \"" + attributeType + "\" attribute");
+               errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
+                  artToValidate) + " has invalid " + invalidValue + " \"" + attributeType + "\" attribute");
                validationPassed = false;
             } else {
                validValueFound++;
             }
          }
          if (validValueFound < minimumValues) {
-            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(artToValidate) + " has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"");
+            errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
+               artToValidate) + " has less than minimum " + minimumValues + " values set for attribute \"" + attributeType + "\"");
             validationPassed = false;
          }
       }

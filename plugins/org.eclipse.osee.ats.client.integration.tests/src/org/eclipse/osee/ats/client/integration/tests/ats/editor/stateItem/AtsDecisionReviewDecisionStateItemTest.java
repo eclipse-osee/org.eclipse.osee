@@ -51,13 +51,12 @@ public class AtsDecisionReviewDecisionStateItemTest {
 
       if (decRevArt == null) {
          // setup fake review artifact with decision options set
-         decRevArt =
-            (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
-               AtsUtilCore.getAtsBranch());
+         decRevArt = (DecisionReviewArtifact) ArtifactTypeManager.addArtifact(AtsArtifactTypes.DecisionReview,
+            AtsUtilCore.getAtsBranch());
          decRevArt.setName(getClass().getSimpleName());
-         decRevArt.setSoleAttributeValue(
-            AtsAttributeTypes.DecisionReviewOptions,
-            DecisionReviewManager.getDecisionReviewOptionsString(DecisionReviewManager.getDefaultDecisionReviewOptions()));
+         decRevArt.setSoleAttributeValue(AtsAttributeTypes.DecisionReviewOptions,
+            DecisionReviewManager.getDecisionReviewOptionsString(
+               DecisionReviewManager.getDefaultDecisionReviewOptions()));
          decRevArt.persist(getClass().getSimpleName());
       }
    }

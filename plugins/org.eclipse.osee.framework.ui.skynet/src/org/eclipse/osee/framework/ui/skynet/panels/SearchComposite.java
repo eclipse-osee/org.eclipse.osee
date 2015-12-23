@@ -286,7 +286,8 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    public void setHelpContext(HelpContext helpContext) {
-      if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
+      if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(
+         this.clear)) {
          HelpUtil.setHelp(searchArea, helpContext);
          HelpUtil.setHelp(executeSearch, helpContext);
          HelpUtil.setHelp(clear, helpContext);
@@ -295,7 +296,8 @@ public class SearchComposite extends Composite implements Listener {
 
    public List<Control> getSearchChildren() {
       List<Control> children = new ArrayList<>();
-      if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
+      if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(
+         this.clear)) {
          children = Arrays.asList(this, searchArea, executeSearch, clear);
       }
       return children;

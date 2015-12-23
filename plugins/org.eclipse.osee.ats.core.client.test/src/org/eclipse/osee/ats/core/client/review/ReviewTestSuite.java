@@ -24,7 +24,6 @@ import org.junit.runners.Suite;
    AtsXUserRoleValidatorTest.class,
    UserRoleTest.class})
 /**
- *
  * @author Donald G. Dunne
  */
 public class ReviewTestSuite {

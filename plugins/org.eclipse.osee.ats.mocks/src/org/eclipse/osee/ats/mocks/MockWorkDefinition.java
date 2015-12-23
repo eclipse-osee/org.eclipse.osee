@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Donald G. Dunne
@@ -49,7 +48,7 @@ public class MockWorkDefinition implements IAtsWorkDefinition {
    public int hashCode() {
       final int prime = 31;
       int result = 1;
-      result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+      result = prime * result + (getId() == null ? 0 : getId().hashCode());
       return result;
    }
 

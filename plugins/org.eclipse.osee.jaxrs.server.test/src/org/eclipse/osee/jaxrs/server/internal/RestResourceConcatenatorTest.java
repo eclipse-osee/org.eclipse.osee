@@ -11,6 +11,7 @@
 package org.eclipse.osee.jaxrs.server.internal;
 
 import static org.junit.Assert.fail;
+import com.google.common.io.InputSupplier;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -22,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import com.google.common.io.InputSupplier;
 
 /**
  * Unit Test for {@link RestResourceConcatenator}
@@ -37,13 +37,13 @@ public class RestResourceConcatenatorTest {
       + "<commentText><![CDATA[]]></commentText>" //
       + "<methodDocs><methodDoc><methodName>handle</methodName>" //
       + "<commentText><![CDATA[]]></commentText>" //
-      + "<responseDoc/></methodDoc></methodDocs></classDoc>" // 
+      + "<responseDoc/></methodDoc></methodDocs></classDoc>" //
       + "</resourceDoc>";
 
    private static final String INVALID_RESOURCE = //
       "<some stuff = this is not a well formated \n" //
-         + "> . other characters that do not matter\n" //
-         + "</stuff>\n\n\n";
+      + "> . other characters that do not matter\n" //
+      + "</stuff>\n\n\n";
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -209,8 +209,10 @@ public class RestResourceConcatenatorTest {
       toReturn.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
       toReturn.append("<resourceDoc>\n");
       for (int i = 0; i < count; ++i) {
-         toReturn.append("<classDocs><classDoc><className>org.eclipse.osee.something</className><commentText><![CDATA[]]></commentText>\n");
-         toReturn.append("<methodDocs><methodDoc><methodName>handle</methodName><commentText><![CDATA[]]></commentText><responseDoc/></methodDoc></methodDocs></classDoc>\n");
+         toReturn.append(
+            "<classDocs><classDoc><className>org.eclipse.osee.something</className><commentText><![CDATA[]]></commentText>\n");
+         toReturn.append(
+            "<methodDocs><methodDoc><methodName>handle</methodName><commentText><![CDATA[]]></commentText><responseDoc/></methodDoc></methodDocs></classDoc>\n");
       }
       toReturn.append("</resourceDoc>");
       return toReturn.toString();

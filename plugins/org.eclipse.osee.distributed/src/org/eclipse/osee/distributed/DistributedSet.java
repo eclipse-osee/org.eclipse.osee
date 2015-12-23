@@ -16,5 +16,5 @@ import java.util.Set;
  * @author Roberto E. Escobar
  */
 public interface DistributedSet<E> extends Set<E>, DistributedCollection {
-   // 
+   //
 }

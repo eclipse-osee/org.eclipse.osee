@@ -33,9 +33,8 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
  * @author Roberto E. Escobar
  */
 public final class OseeDslRenderer extends AbstractDslRenderer {
-   private static final IArtifactType[] MATCHING_ARTIFACT_TYPES = {
-      CoreArtifactTypes.AccessControlModel,
-      CoreArtifactTypes.OseeTypeDefinition};
+   private static final IArtifactType[] MATCHING_ARTIFACT_TYPES =
+      {CoreArtifactTypes.AccessControlModel, CoreArtifactTypes.OseeTypeDefinition};
 
    private static final OseeDslSegmentParser parser = new OseeDslSegmentParser();
 
@@ -86,9 +85,8 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
       Artifact artifact = artifacts.iterator().next();
       if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {
          OseeTypeModifier modifier = new OseeTypeModifier();
-         op =
-            new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.UriGeneralStringData,
-               modifier);
+         op = new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.UriGeneralStringData,
+            modifier);
       } else {
          op = new OseeDslArtifactUpdateOperation(parser, file);
       }

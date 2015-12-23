@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -125,7 +124,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       int index = 0;
       for (BranchData branchData : branchesToStore) {
          if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) //
-            && SYSTEM_ROOT_ID.equals(branchData.getId())) {
+         && SYSTEM_ROOT_ID.equals(branchData.getId())) {
             continue;
          }
 
@@ -217,10 +216,8 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
 
    @Override
    public void clearDataTable() throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(
-         getConnection(),
-         String.format("DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(),
-            getMetaData().getTableName()));
+      getDatabaseService().runPreparedUpdate(getConnection(), String.format(
+         "DELETE FROM %s where NOT branch_type = " + BranchType.SYSTEM_ROOT.getValue(), getMetaData().getTableName()));
    }
 
    public void setConnection(JdbcConnection connection) {

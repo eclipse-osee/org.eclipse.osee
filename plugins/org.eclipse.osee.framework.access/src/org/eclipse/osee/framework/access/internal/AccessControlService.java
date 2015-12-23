@@ -11,6 +11,8 @@
 
 package org.eclipse.osee.framework.access.internal;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collection;
@@ -81,8 +83,6 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Jeff C. Phillips
@@ -125,8 +125,8 @@ public class AccessControlService implements IAccessControlService {
    private final HashCollection<Integer, PermissionEnum> subjectToPermissionCache =
       new HashCollection<Integer, PermissionEnum>(true);
 
-   private final Cache<Collection<String>, AccessData> accessDataCache = CacheBuilder.newBuilder().expireAfterAccess(1,
-      TimeUnit.HOURS).build();
+   private final Cache<Collection<String>, AccessData> accessDataCache =
+      CacheBuilder.newBuilder().expireAfterAccess(1, TimeUnit.HOURS).build();
 
    private final IOseeCachingService cachingService;
    private final JdbcClient jdbcClient;
@@ -334,9 +334,8 @@ public class AccessControlService implements IAccessControlService {
       for (Object obj : objectsToCheck) {
          Artifact subject = getSubjectFromLockedObject(obj);
          if (subject != null && !subject.equals(userArtifact)) {
-            accessData.add(
-               obj,
-               new AccessDetail<IBasicArtifact<?>>((Artifact) obj, PermissionEnum.LOCK, Scope.createArtifactLockScope()));
+            accessData.add(obj, new AccessDetail<IBasicArtifact<?>>((Artifact) obj, PermissionEnum.LOCK,
+               Scope.createArtifactLockScope()));
          }
       }
    }
@@ -510,9 +509,8 @@ public class AccessControlService implements IAccessControlService {
                }
 
                if (recurse) {
-                  Artifact artifact =
-                     ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                        BranchManager.getBranch(artifactAccessObject.getId()));
+                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
+                     BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -783,9 +781,8 @@ public class AccessControlService implements IAccessControlService {
       private final List<? extends IEventFilter> eventFilters;
 
       public AccessControlUpdateListener() {
-         eventFilters =
-            Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel), new BranchUuidEventFilter(
-               CoreBranches.COMMON));
+         eventFilters = Arrays.asList(new ArtifactTypeEventFilter(CoreArtifactTypes.AccessControlModel),
+            new BranchUuidEventFilter(CoreBranches.COMMON));
       }
 
       public AccessControlUpdateListener(Artifact artifact) {

@@ -12,6 +12,7 @@ package org.eclipse.osee.jaxrs.client.internal.ext;
 
 import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.getOAuthJSONProvider;
 import static org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Util.newException;
+import com.google.common.base.Charsets;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Map;
@@ -22,7 +23,6 @@ import org.apache.cxf.rs.security.oauth2.provider.OAuthJSONProvider;
 import org.apache.cxf.rs.security.oauth2.utils.crypto.CryptoUtils;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import com.google.common.base.Charsets;
 
 /**
  * @author Roberto E. Escobar

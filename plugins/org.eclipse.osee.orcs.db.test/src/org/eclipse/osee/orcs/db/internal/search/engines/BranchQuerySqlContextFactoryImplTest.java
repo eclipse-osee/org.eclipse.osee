@@ -116,7 +116,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT/*+ ordered */ count(br1.branch_id)\n" + // 
+      String expected = "SELECT/*+ ordered */ count(br1.branch_id)\n" + //
       " FROM \n" + //
       "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
       " WHERE \n" + //
@@ -144,7 +144,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryUuidIdsTypes() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_join_id jid1, osee_branch br1, osee_join_id jid2\n" + //
       " WHERE \n" + //
@@ -173,7 +173,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAllBranches() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " ORDER BY br1.branch_id";
@@ -192,7 +192,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryUuidIdsTypesSingles() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " WHERE \n" + //
@@ -219,7 +219,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryName() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " WHERE \n" + //
@@ -243,7 +243,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryNamePattern() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " WHERE \n" + //
@@ -269,7 +269,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryStateArchive() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_join_id jid1, osee_branch br1\n" + //
       " WHERE \n" + //
@@ -297,7 +297,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQuerySingleStateArchive() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " WHERE \n" + //
@@ -324,19 +324,18 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryChildOf() throws OseeCoreException {
-      String expected =
-         "WITH chof1 (child_id, branch_level) AS ( \n" + //
-         "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
-         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
-         "  UNION ALL \n" + //
-         "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
-         " )\n" + //
-         "SELECT br1.*\n" + //
-         " FROM \n" + //
-         "osee_branch br1, chof1\n" + //
-         " WHERE \n" + //
-         "br1.branch_id = chof1.child_id\n" + //
-         " ORDER BY br1.branch_id";
+      String expected = "WITH chof1 (child_id, branch_level) AS ( \n" + //
+      "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
+      "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
+      "  UNION ALL \n" + //
+      "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
+      " )\n" + //
+      "SELECT br1.*\n" + //
+      " FROM \n" + //
+      "osee_branch br1, chof1\n" + //
+      " WHERE \n" + //
+      "br1.branch_id = chof1.child_id\n" + //
+      " ORDER BY br1.branch_id";
 
       queryData.addCriteria(childOf(COMMON));
 
@@ -355,19 +354,18 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryAncestorOf() throws OseeCoreException {
-      String expected =
-         "WITH anstrof1 (parent_id, branch_level) AS ( \n" + //
-         "  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
-         "   WHERE anch_br1.branch_id = ?\n" + //
-         "  UNION ALL \n" + //
-         "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
-         " )\n" + //
-         "SELECT br1.*\n" + //
-         " FROM \n" + //
-         "osee_branch br1, anstrof1\n" + //
-         " WHERE \n" + //
-         "br1.branch_id = anstrof1.parent_id\n" + //
-         " ORDER BY br1.branch_id";
+      String expected = "WITH anstrof1 (parent_id, branch_level) AS ( \n" + //
+      "  SELECT anch_br1.parent_branch_id, 0 as branch_level FROM osee_branch anch_br1\n" + //
+      "   WHERE anch_br1.branch_id = ?\n" + //
+      "  UNION ALL \n" + //
+      "  SELECT parent_branch_id, branch_level - 1 FROM anstrof1 recurse, osee_branch br WHERE br.branch_id = recurse.parent_id\n" + //
+      " )\n" + //
+      "SELECT br1.*\n" + //
+      " FROM \n" + //
+      "osee_branch br1, anstrof1\n" + //
+      " WHERE \n" + //
+      "br1.branch_id = anstrof1.parent_id\n" + //
+      " ORDER BY br1.branch_id";
 
       queryData.addCriteria(ancestorOf(COMMON));
 
@@ -386,27 +384,26 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testMultiples() throws OseeCoreException {
-      String expected =
-         "WITH chof1 (child_id, branch_level) AS ( \n" + //
-         "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
-         "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
-         "  UNION ALL \n" + //
-         "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
-         " )\n" + //
-         "SELECT br1.*\n" + //
-         " FROM \n" + //
-         "osee_branch br1, osee_join_id jid1, chof1\n" + //
-         " WHERE \n" + //
-         "br1.branch_id = chof1.child_id\n" + //
-         " AND \n" + //
-         "br1.branch_type = ?\n" + //
-         " AND \n" + //
-         "br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
-         " AND \n" + //
-         "br1.archived = ?\n" + //
-         " AND \n" + //
-         "REGEXP_MATCHES (br1.branch_name, ?)\n" + //
-         " ORDER BY br1.branch_id";
+      String expected = "WITH chof1 (child_id, branch_level) AS ( \n" + //
+      "  SELECT anch_br1.branch_id, 0 as branch_level FROM osee_branch anch_br1, osee_branch anch_br2\n" + //
+      "   WHERE anch_br1.parent_branch_id = anch_br2.branch_id AND anch_br2.branch_id = ?\n" + //
+      "  UNION ALL \n" + //
+      "  SELECT branch_id, branch_level + 1 FROM chof1 recurse, osee_branch br WHERE recurse.child_id = br.parent_branch_id\n" + //
+      " )\n" + //
+      "SELECT br1.*\n" + //
+      " FROM \n" + //
+      "osee_branch br1, osee_join_id jid1, chof1\n" + //
+      " WHERE \n" + //
+      "br1.branch_id = chof1.child_id\n" + //
+      " AND \n" + //
+      "br1.branch_type = ?\n" + //
+      " AND \n" + //
+      "br1.branch_state = jid1.id AND jid1.query_id = ?\n" + //
+      " AND \n" + //
+      "br1.archived = ?\n" + //
+      " AND \n" + //
+      "REGEXP_MATCHES (br1.branch_name, ?)\n" + //
+      " ORDER BY br1.branch_id";
 
       queryData.addCriteria(STATE, IS_ARCHIVED, type(WORKING), childOf(COMMON), NAME_PATTERN);
 
@@ -433,7 +430,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testMergeBranchFor() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_merge mbr1, osee_branch br1\n" + //
       " WHERE \n" + //
@@ -462,7 +459,7 @@ public class BranchQuerySqlContextFactoryImplTest {
 
    @Test
    public void testAssociatedArtId() throws Exception {
-      String expected = "SELECT/*+ ordered */ br1.*\n" + // 
+      String expected = "SELECT/*+ ordered */ br1.*\n" + //
       " FROM \n" + //
       "osee_branch br1\n" + //
       " WHERE \n" + //

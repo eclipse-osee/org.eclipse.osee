@@ -59,8 +59,9 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @POST
    @Override
    public Response get(long taskUuid) {
-      IAtsWorkItem task = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
-         taskUuid).getResults().getOneOrNull();
+      IAtsWorkItem task =
+         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
+            taskUuid).getResults().getOneOrNull();
       if (task == null) {
          throw new OseeArgumentException("No Task found with id %d", taskUuid);
       }
@@ -71,8 +72,9 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    @DELETE
    @Override
    public void delete(long taskUuid) {
-      IAtsWorkItem task = atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
-         taskUuid).getResults().getOneOrNull();
+      IAtsWorkItem task =
+         atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
+            taskUuid).getResults().getOneOrNull();
       if (task != null) {
          IAtsChangeSet changes =
             atsServer.getStoreService().createAtsChangeSet("Delete Task", AtsCoreUsers.SYSTEM_USER);

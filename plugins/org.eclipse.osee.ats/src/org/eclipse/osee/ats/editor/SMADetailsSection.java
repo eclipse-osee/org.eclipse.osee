@@ -130,7 +130,7 @@ public class SMADetailsSection extends SectionPart {
       } else {
          details.put("Action Id", parentAction.getAtsId());
       }
-      if (!(workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) && workflow.getParentTeamWorkflow() != null) {
+      if (!workflow.isOfType(AtsArtifactTypes.TeamWorkflow) && workflow.getParentTeamWorkflow() != null) {
          details.put("Parent Team Workflow Id", workflow.getParentTeamWorkflow().getAtsId());
       }
       if (workflow.isOfType(AtsArtifactTypes.TeamWorkflow)) {
@@ -162,10 +162,8 @@ public class SMADetailsSection extends SectionPart {
             }
          } else {
             try {
-               ids =
-                  accessControl.getContextId(
-                     AtsClientService.get().getUserServiceClient().getOseeUser(
-                        AtsClientService.get().getUserService().getCurrentUser()), workingBranch);
+               ids = accessControl.getContextId(AtsClientService.get().getUserServiceClient().getOseeUser(
+                  AtsClientService.get().getUserService().getCurrentUser()), workingBranch);
                message = ids.toString();
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

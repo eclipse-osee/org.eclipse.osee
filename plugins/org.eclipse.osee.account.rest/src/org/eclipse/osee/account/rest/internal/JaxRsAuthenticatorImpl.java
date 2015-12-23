@@ -69,9 +69,8 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
    }
 
    public void update(Map<String, Object> props) {
-      automaticAccountCreationAllowed =
-         getBoolean(props, JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION,
-            DEFAULT_JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION);
+      automaticAccountCreationAllowed = getBoolean(props, JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION,
+         DEFAULT_JAXRS_AUTH__ALLOW_AUTOMATIC_ACCOUNT_CREATION);
    }
 
    @Override
@@ -163,7 +162,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       return toReturn;
    }
 
-   private static final class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
+   private static final class OseePrincipalImpl extends BaseIdentity<Long>implements OseePrincipal {
       private final String login;
       private final Account data;
       private final boolean authenticated;

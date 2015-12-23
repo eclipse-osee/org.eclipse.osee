@@ -32,9 +32,8 @@ public class UserRoleValidator {
          if (artifact.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
             PeerToPeerReviewArtifact peerToPeerReviewArtifact = (PeerToPeerReviewArtifact) artifact;
             UserRoleManager roleMgr = new UserRoleManager(peerToPeerReviewArtifact);
-            UserRoleError result =
-               isValid(roleMgr, peerToPeerReviewArtifact.getStateDefinition(),
-                  peerToPeerReviewArtifact.getStateDefinition().getDefaultToState());
+            UserRoleError result = isValid(roleMgr, peerToPeerReviewArtifact.getStateDefinition(),
+               peerToPeerReviewArtifact.getStateDefinition().getDefaultToState());
             if (!result.isOK()) {
                return result;
             }
@@ -57,7 +56,8 @@ public class UserRoleValidator {
          return UserRoleError.MustHaveAtLeastOneReviewer;
       }
       // If in review state, all roles must have hours spent entered
-      if ((fromStateDef.getName().equals(PeerToPeerReviewState.Review.getName())) || (fromStateDef.getName().equals(PeerToPeerReviewState.Meeting.getName()))) {
+      if (fromStateDef.getName().equals(PeerToPeerReviewState.Review.getName()) || fromStateDef.getName().equals(
+         PeerToPeerReviewState.Meeting.getName())) {
          for (UserRole uRole : roleMgr.getUserRoles()) {
             if (uRole.getHoursSpent() == null) {
                return UserRoleError.HoursSpentMustBeEnteredForEachRole;

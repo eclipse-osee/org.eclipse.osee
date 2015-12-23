@@ -49,7 +49,8 @@ public class AccessProviderVisitor extends AbstractLifecycleVisitor<IAccessProvi
       try {
          accessProvider.computeAccess(userArtifact, artsToCheck, mainAccessData);
       } catch (OseeCoreException ex) {
-         status = new Status(IStatus.ERROR, AccessControlHelper.PLUGIN_ID, "Error during access control computation", ex);
+         status =
+            new Status(IStatus.ERROR, AccessControlHelper.PLUGIN_ID, "Error during access control computation", ex);
       }
       return status;
    }

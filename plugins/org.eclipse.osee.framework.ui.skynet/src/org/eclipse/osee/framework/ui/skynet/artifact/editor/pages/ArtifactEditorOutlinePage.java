@@ -121,12 +121,14 @@ public class ArtifactEditorOutlinePage extends ContentOutlinePage {
          } else if (element instanceof AttributeTypeContainer) {
             AttributeTypeContainer container = (AttributeTypeContainer) element;
             containers.add(container);
-            return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(FrameworkImage.ADD_GREEN);
+            return container.isEditable() ? ImageManager.getImage(FrameworkImage.EDIT_ARTIFACT) : ImageManager.getImage(
+               FrameworkImage.ADD_GREEN);
          } else if (element instanceof IAttributeType) {
             IAttributeType type = (IAttributeType) element;
             for (AttributeTypeContainer container : containers) {
                if (container.contains(type)) {
-                  return container.isEditable() ? ImageManager.getImage(FrameworkImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(FrameworkImage.ATTRIBUTE_DISABLED);
+                  return container.isEditable() ? ImageManager.getImage(
+                     FrameworkImage.ATTRIBUTE_SUB_A) : ImageManager.getImage(FrameworkImage.ATTRIBUTE_DISABLED);
                }
             }
          }

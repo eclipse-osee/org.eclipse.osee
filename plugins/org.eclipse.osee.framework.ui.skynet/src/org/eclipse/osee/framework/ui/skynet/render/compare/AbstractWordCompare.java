@@ -46,8 +46,8 @@ public abstract class AbstractWordCompare implements IComparator {
    private final FileSystemRenderer renderer;
    private final ArtifactDeltaToFileConverter converter;
    private final List<IAttributeType> wordAttributeType = new ArrayList<>();
-   private static final Pattern authorPattern = Pattern.compile("aml:author=\".*?\"",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+   private static final Pattern authorPattern =
+      Pattern.compile("aml:author=\".*?\"", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    public AbstractWordCompare(FileSystemRenderer renderer, IAttributeType... wordAttributeType) {
       this.renderer = renderer;
@@ -65,9 +65,8 @@ public abstract class AbstractWordCompare implements IComparator {
       boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
       boolean diffFieldCodes = !UserManager.getBooleanSetting(MsWordPreferencePage.IGNORE_FIELD_CODE_CHANGES);
 
-      IVbaDiffGenerator diffGenerator =
-         WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE, show,
-            presentationType == PresentationType.MERGE, executeVbScript, skipErrors, diffFieldCodes);
+      IVbaDiffGenerator diffGenerator = WordUiUtil.createScriptGenerator(presentationType == PresentationType.MERGE,
+         show, presentationType == PresentationType.MERGE, executeVbScript, skipErrors, diffFieldCodes);
       return diffGenerator;
    }
 
@@ -131,7 +130,8 @@ public abstract class AbstractWordCompare implements IComparator {
       if (!UserManager.getBooleanSetting(MsWordPreferencePage.IDENTFY_IMAGE_CHANGES)) {
          originalValue = WordImageChecker.checkForImageDiffs(baseContent, newerContent);
       }
-      monitor.setTaskName("Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
+      monitor.setTaskName(
+         "Preparing comparison for: " + (newerArtifact == null ? baseArtifact.getName() : newerArtifact.getName()));
 
       Pair<IFile, IFile> compareFiles;
       if (artifactDelta.getStartArtifact() == artifactDelta.getBaseArtifact()) {
@@ -139,7 +139,8 @@ public abstract class AbstractWordCompare implements IComparator {
       } else {
          // The artifactDelta is a 3 Way Merge
          List<IFile> outputFiles = new ArrayList<>();
-         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getStartArtifact());
+         converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(),
+            artifactDelta.getStartArtifact());
          converter.convertToFileForMerge(outputFiles, artifactDelta.getBaseArtifact(), artifactDelta.getEndArtifact());
          // this is where we are getting the exception that the length of outputFiles is 1
          // This happens because the artifact did not exist on the previous branch or was removed on the current branch

@@ -271,7 +271,7 @@ public class ActionFactory implements IAtsActionFactory {
       IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
       workItem.setStateManager(stateManager);
       StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,
-         (createdBy == null ? userService.getCurrentUser() : createdBy), changes);
+         createdBy == null ? userService.getCurrentUser() : createdBy, changes);
       IAtsUser user = createdBy == null ? userService.getCurrentUser() : createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);

@@ -56,9 +56,8 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
          }
          Artifact workDefArt = null;
          try {
-            workDefArt =
-               ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
-                  AtsUtilCore.getAtsBranch());
+            workDefArt = ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.WorkDefinition, sheet.getName(),
+               AtsUtilCore.getAtsBranch());
          } catch (ArtifactDoesNotExist ex) {
             // do nothing;
          }
@@ -73,9 +72,9 @@ public class ValidateWorkspaceToDatabaseWorkDefinitions extends XNavigateItemAct
          if (!sheetText.equals(artText)) {
             resultData.error(" Different (see opened diff editor)");
             CompareHandler compareHandler =
-               new CompareHandler("Compare [" + sheet.getName() + "] Work Definition file/artifact", new CompareItem(
-                  "File contents", sheetText, System.currentTimeMillis()), new CompareItem("Artifact contents",
-                  artText, System.currentTimeMillis()), null);
+               new CompareHandler("Compare [" + sheet.getName() + "] Work Definition file/artifact",
+                  new CompareItem("File contents", sheetText, System.currentTimeMillis()),
+                  new CompareItem("Artifact contents", artText, System.currentTimeMillis()), null);
             compareHandler.compare();
          } else {
             resultData.log(" - OK");

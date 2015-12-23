@@ -49,12 +49,10 @@ public class AtsDslProposalProvider extends AbstractAtsDslProposalProvider {
    @Override
    public void completeStateDef_Rules(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
-         List<String> rules =
-            Arrays.asList("RequireStateHourSpentPrompt", "AddDecisionValidateBlockingReview",
-               "AddDecisionValidateNonBlockingReview", "AllowTransitionWithWorkingBranch", "ForceAssigneesToTeamLeads",
-               "RequireTargetedVersion", "AllowPrivilegedEditToTeamMember",
-               "AllowPrivilegedEditToTeamMemberAndOriginator", "AllowPrivilegedEditToAll", "AllowEditToAll",
-               "AllowAssigneeToAll");
+         List<String> rules = Arrays.asList("RequireStateHourSpentPrompt", "AddDecisionValidateBlockingReview",
+            "AddDecisionValidateNonBlockingReview", "AllowTransitionWithWorkingBranch", "ForceAssigneesToTeamLeads",
+            "RequireTargetedVersion", "AllowPrivilegedEditToTeamMember", "AllowPrivilegedEditToTeamMemberAndOriginator",
+            "AllowPrivilegedEditToAll", "AllowEditToAll", "AllowAssigneeToAll");
          Collections.sort(rules);
          for (String stateName : rules) {
             String displayProposalAs = stateName;
@@ -71,13 +69,12 @@ public class AtsDslProposalProvider extends AbstractAtsDslProposalProvider {
 
    private void provideWidgetOptions(ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
-         List<String> rules =
-            Arrays.asList("REQUIRED_FOR_TRANSITION", "NOT_REQUIRED_FOR_TRANSITION", "REQUIRED_FOR_COMPLETION",
-               "NOT_REQUIRED_FOR_COMPLETION", "ENABLED", "NOT_ENABLED", "EDITABLE", "NOT_EDITABLE", "MULTI_SELECT",
-               "HORIZONTAL_LABEL", "VERTICAL_LABEL", "LABEL_AFTER", "LABEL_BEFORE", "NO_LABEL", "SORTED",
-               "ADD_DEFAULT_VALUE", "NO_DEFAULT_VALUE", "BEGIN_COMPOSITE_4", "BEGIN_COMPOSITE_6", "BEGIN_COMPOSITE_8",
-               "BEGIN_COMPOSITE_10", "END_COMPOSITE", "FILL_NONE", "FILL_HORIZONTALLY", "FILL_VERTICALLY",
-               "ALIGN_LEFT", "ALIGN_RIGHT", "ALIGN_CENTER");
+         List<String> rules = Arrays.asList("REQUIRED_FOR_TRANSITION", "NOT_REQUIRED_FOR_TRANSITION",
+            "REQUIRED_FOR_COMPLETION", "NOT_REQUIRED_FOR_COMPLETION", "ENABLED", "NOT_ENABLED", "EDITABLE",
+            "NOT_EDITABLE", "MULTI_SELECT", "HORIZONTAL_LABEL", "VERTICAL_LABEL", "LABEL_AFTER", "LABEL_BEFORE",
+            "NO_LABEL", "SORTED", "ADD_DEFAULT_VALUE", "NO_DEFAULT_VALUE", "BEGIN_COMPOSITE_4", "BEGIN_COMPOSITE_6",
+            "BEGIN_COMPOSITE_8", "BEGIN_COMPOSITE_10", "END_COMPOSITE", "FILL_NONE", "FILL_HORIZONTALLY",
+            "FILL_VERTICALLY", "ALIGN_LEFT", "ALIGN_RIGHT", "ALIGN_CENTER");
          for (String stateName : rules) {
             String displayProposalAs = stateName;
             ICompletionProposal proposal = createCompletionProposal(stateName, displayProposalAs, null, context);
@@ -89,9 +86,8 @@ public class AtsDslProposalProvider extends AbstractAtsDslProposalProvider {
    @Override
    public void completeWidgetDef_XWidgetName(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       if (acceptor.canAcceptMoreProposals()) {
-         List<String> rules =
-            Arrays.asList("XTextDam", "XComboBooleanDam", "XComboDam(option,option,option)",
-               "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", "XCheckboxDam", "XFloatDam", "XIntegerDam", "XLabel");
+         List<String> rules = Arrays.asList("XTextDam", "XComboBooleanDam", "XComboDam(option,option,option)",
+            "XComboDam(OPTIONS_FROM_ATTRIBUTE_VALIDITY)", "XCheckboxDam", "XFloatDam", "XIntegerDam", "XLabel");
          for (String stateName : rules) {
             String proposalValue = "\"" + stateName + "\"";
             String displayProposalAs = proposalValue;

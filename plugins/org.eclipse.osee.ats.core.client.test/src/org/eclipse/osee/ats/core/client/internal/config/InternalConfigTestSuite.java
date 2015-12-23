@@ -16,7 +16,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({TeamDefinitionTest.class})
 /**
- *
  * @author Donald G. Dunne
  */
 public class InternalConfigTestSuite {

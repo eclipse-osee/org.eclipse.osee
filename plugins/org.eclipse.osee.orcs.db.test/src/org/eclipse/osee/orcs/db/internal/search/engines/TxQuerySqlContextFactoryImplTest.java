@@ -62,12 +62,12 @@ public class TxQuerySqlContextFactoryImplTest {
 
    private static final Criteria IDS = id(1, 2, 3, 4, 5);
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
-   private static final Criteria TYPES = type(Arrays.asList(TransactionDetailsType.Baselined,
-      TransactionDetailsType.NonBaselined));
+   private static final Criteria TYPES =
+      type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
    private static final Criteria BRANCHIDS = branchUuids(1L, 2L, 3L, 4L, 5L);
    private static final Criteria IDS_WITH_OPERATOR = idWithOperator(Operator.LESS_THAN, 1);
-   private static final Criteria DATE_WITH_OPERATOR = dateWithOperator(Operator.LESS_THAN,
-      Timestamp.valueOf("2013-05-06 12:34:56"));
+   private static final Criteria DATE_WITH_OPERATOR =
+      dateWithOperator(Operator.LESS_THAN, Timestamp.valueOf("2013-05-06 12:34:56"));
    private static final Criteria AUTHORS = byAuthorId(Arrays.asList(new Integer(1), new Integer(2)));
    private static final Criteria COMMITS = byCommitId(Arrays.asList(new Integer(1), new Integer(2)));
 
@@ -110,7 +110,7 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testCount() throws Exception {
-      String expected = "SELECT/*+ ordered */ count(txd1.transaction_id)\n" + // 
+      String expected = "SELECT/*+ ordered */ count(txd1.transaction_id)\n" + //
       " FROM \n" + //
       "osee_join_id jid1, osee_tx_details txd1\n" + //
       " WHERE \n" + //
@@ -278,13 +278,12 @@ public class TxQuerySqlContextFactoryImplTest {
 
    @Test
    public void testQueryTxPrior() throws Exception {
-      String expected =
-         "SELECT/*+ ordered */ txd1.*\n" + //
-         " FROM \n" + //
-         "osee_tx_details txd1\n" + //
-         " WHERE \n" + //
-         "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
-         " ORDER BY txd1.transaction_id";
+      String expected = "SELECT/*+ ordered */ txd1.*\n" + //
+      " FROM \n" + //
+      "osee_tx_details txd1\n" + //
+      " WHERE \n" + //
+      "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
+      " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(prior(3));
 

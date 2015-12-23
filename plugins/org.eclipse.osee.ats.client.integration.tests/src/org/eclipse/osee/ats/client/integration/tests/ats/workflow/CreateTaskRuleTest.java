@@ -89,7 +89,7 @@ public class CreateTaskRuleTest {
       Assert.assertEquals("We should have no rules", 0, allRuleDefs.size());
 
       IAtsRuleDefinition ruleDef = atsClient.getWorkDefinitionAdmin().getRuleDefinition(TEST_CREATE_TASK_RULE);
-      Assert.assertTrue("Should be a NullRuleDefinition", (ruleDef instanceof NullRuleDefinition));
+      Assert.assertTrue("Should be a NullRuleDefinition", ruleDef instanceof NullRuleDefinition);
 
       // Retrieve Rule DSL artifact and add new rules for testing with
       Artifact ruleArtifact = atsClient.getArtifact(AtsArtifactToken.RuleDefinitions);

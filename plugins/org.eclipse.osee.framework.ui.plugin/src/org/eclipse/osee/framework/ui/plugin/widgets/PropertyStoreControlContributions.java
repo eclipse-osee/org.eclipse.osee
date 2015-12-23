@@ -33,9 +33,8 @@ public class PropertyStoreControlContributions {
 
    public static List<IPropertyStoreBasedControl> getContributions(String viewIdToMatch) {
       List<IPropertyStoreBasedControl> toReturn = new ArrayList<>();
-      List<IConfigurationElement> elements =
-         ExtensionPoints.getExtensionElements(UiPluginConstants.PLUGIN_ID + ".PropertyStoreControl",
-            "PropertyStoreControl");
+      List<IConfigurationElement> elements = ExtensionPoints.getExtensionElements(
+         UiPluginConstants.PLUGIN_ID + ".PropertyStoreControl", "PropertyStoreControl");
       for (IConfigurationElement element : elements) {
          String className = element.getAttribute("classname");
          String viewId = element.getAttribute("viewId");
@@ -55,8 +54,8 @@ public class PropertyStoreControlContributions {
                   }
                   toReturn.add((IPropertyStoreBasedControl) object);
                } catch (Exception ex) {
-                  OseeLog.logf(UiPluginConstants.class, Level.SEVERE,
-                     ex, "Unable to Load: [%s - %s]", bundleName, className);
+                  OseeLog.logf(UiPluginConstants.class, Level.SEVERE, ex, "Unable to Load: [%s - %s]", bundleName,
+                     className);
                }
             }
          }

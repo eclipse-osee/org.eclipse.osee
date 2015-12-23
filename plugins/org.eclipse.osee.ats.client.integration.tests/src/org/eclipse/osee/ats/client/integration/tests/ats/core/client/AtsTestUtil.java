@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client;
 
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -501,16 +501,16 @@ public class AtsTestUtil {
       delete(changes, actionArt3);
       delete(changes, actionArt4);
       if (verArt1 != null) {
-         delete(changes, ((Artifact) verArt1.getStoreObject()));
+         delete(changes, (Artifact) verArt1.getStoreObject());
       }
       if (verArt2 != null) {
-         delete(changes, ((Artifact) verArt2.getStoreObject()));
+         delete(changes, (Artifact) verArt2.getStoreObject());
       }
       if (verArt3 != null) {
-         delete(changes, ((Artifact) verArt3.getStoreObject()));
+         delete(changes, (Artifact) verArt3.getStoreObject());
       }
       if (verArt4 != null) {
-         delete(changes, ((Artifact) verArt4.getStoreObject()));
+         delete(changes, (Artifact) verArt4.getStoreObject());
       }
       if (!changes.isEmpty()) {
          changes.execute();

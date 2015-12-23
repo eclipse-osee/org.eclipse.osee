@@ -128,24 +128,22 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                   }
                   canRelate = ensureRelationCanBeAdded(data.getRelationType(), sideA, sideB);
                   if (!canRelate) {
-                     toolTipText +=
-                        String.format("Relation: [%s] \n\tcannot be added to [%s]\n\tof [%s]\n", i.getName(),
-                           data.getSide().name(), data.getRelationType().getName());
+                     toolTipText += String.format("Relation: [%s] \n\tcannot be added to [%s]\n\tof [%s]\n",
+                        i.getName(), data.getSide().name(), data.getRelationType().getName());
 
                   }
                }
 
                AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
 
-               boolean matched =
-                  policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts), data,
-                     Level.INFO).matched();
+               boolean matched = policyHandlerService.canRelationBeModified(artifact, Arrays.asList(selectedArtifacts),
+                  data, Level.INFO).matched();
 
                if (matched) {
                   event.detail = DND.DROP_COPY;
                   tree.setInsertMark(null, false);
                } else {
-                  toolTipText += (toolTipText.length() == 0 ? "" : " \n");
+                  toolTipText += toolTipText.length() == 0 ? "" : " \n";
                   toolTipText += "Access: Access Control has prevented this relation";
 
                }
@@ -160,7 +158,8 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
 
          } else if (fileTransfer.isSupportedType(event.currentDataType)) {
             IRelationType relationType = data.getRelationType();
-            if (relationType.equals(CoreRelationTypes.Verification__Verifier) || relationType.equals(CoreRelationTypes.Uses__TestUnit)) {
+            if (relationType.equals(CoreRelationTypes.Verification__Verifier) || relationType.equals(
+               CoreRelationTypes.Uses__TestUnit)) {
                AccessPolicy policyHandlerService = null;
                try {
                   policyHandlerService = ServiceUtil.getAccessPolicy();
@@ -194,11 +193,10 @@ public final class RelationSkynetDragAndDrop extends SkynetDragAndDrop {
                AccessPolicy policyHandlerService = ServiceUtil.getAccessPolicy();
                RelationTypeSide rts = new RelationTypeSide(dropTarget.getRelationType(), dropTarget.getRelationSide());
 
-               matched =
-                  policyHandlerService.canRelationBeModified(
-                     artifact,
-                     Arrays.asList(artifact.equals(dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
-                     rts, Level.INFO).matched();
+               matched = policyHandlerService.canRelationBeModified(artifact,
+                  Arrays.asList(artifact.equals(
+                     dropTarget.getArtifactA()) ? dropTarget.getArtifactB() : dropTarget.getArtifactA()),
+                  rts, Level.INFO).matched();
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

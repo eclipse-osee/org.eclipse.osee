@@ -144,7 +144,7 @@ public final class ArtifactGuis {
 
             while (chStmt.next()) {
                long modifiedOnBranchId = chStmt.getLong("branch_id");
-               int modType = chStmt.getInt("mod_type");
+               chStmt.getInt("mod_type");
                StringBuilder branches = new StringBuilder();
                branches.append("\n\t");
                branches.append(BranchManager.getBranch(modifiedOnBranchId).getShortName(BRANCH_NAME_LENGTH));

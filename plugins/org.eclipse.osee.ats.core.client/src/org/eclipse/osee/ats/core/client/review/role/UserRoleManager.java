@@ -51,8 +51,9 @@ public class UserRoleManager {
    private final static String ROLE_ITEM_TAG = "Role";
    private static final IAttributeType ATS_ROLE_STORAGE_TYPE = AtsAttributeTypes.Role;
 
-   private final Matcher roleMatcher = java.util.regex.Pattern.compile(
-      "<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private final Matcher roleMatcher =
+      java.util.regex.Pattern.compile("<" + ROLE_ITEM_TAG + ">(.*?)</" + ROLE_ITEM_TAG + ">",
+         Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private final IValueProvider valueProvider;
    private List<UserRole> roles;
 
@@ -229,7 +230,8 @@ public class UserRoleManager {
 
    public static String getTable(PeerToPeerReviewArtifact peerArt) throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
+      builder.append(
+         "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Role</TH>" + "<TH>User</TH><TH>Hours</TH><TH>Major</TH><TH>Minor</TH><TH>Issues</TH>");
       for (UserRole item : getUserRoles(peerArt)) {
          IAtsUser user = getUser(item);
          String name = "";

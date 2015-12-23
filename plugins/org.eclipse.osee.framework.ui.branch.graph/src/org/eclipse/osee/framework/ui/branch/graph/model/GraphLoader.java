@@ -147,10 +147,9 @@ public class GraphLoader {
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);
          while (chStmt.next()) {
             Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
-            TxData txData =
-               new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-                  chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),
-                  chStmt.getInt("transaction_id"));
+            TxData txData = new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
+               chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),
+               chStmt.getInt("transaction_id"));
             txDatas.add(txData);
          }
       } finally {

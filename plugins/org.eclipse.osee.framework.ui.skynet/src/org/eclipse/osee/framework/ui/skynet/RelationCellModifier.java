@@ -52,9 +52,8 @@ public class RelationCellModifier implements ICellModifier {
          }
          if (policyHandlerService != null) {
             try {
-               canModify =
-                  policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
-                     Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
+               canModify = policyHandlerService.canRelationBeModified(relLink.getArtifactA(),
+                  Arrays.asList(relLink.getArtifactB()), rts, Level.INFO).matched();
             } catch (OseeCoreException ex) {
                canModify = false;
             }

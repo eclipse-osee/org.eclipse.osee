@@ -43,18 +43,16 @@ public class CountArtifactsOfTypeBlam extends AbstractBlam {
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Type", "Count")));
          for (IArtifactType artType : ArtifactTypeManager.getAllTypes()) {
-            int count =
-               ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
-                  DeletionFlag.EXCLUDE_DELETED);
+            int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
+               DeletionFlag.EXCLUDE_DELETED);
             rd.addRaw(AHTML.addRowMultiColumnTable(artType.toString(), String.valueOf(count)));
          }
          rd.addRaw(AHTML.endMultiColumnTable());
-         XResultDataUI.report(rd,"Artifact Type Count");
+         XResultDataUI.report(rd, "Artifact Type Count");
       } else {
          IArtifactType artType = variableMap.getArtifactType("Artifact Type");
-         int count =
-            ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
-               DeletionFlag.EXCLUDE_DELETED);
+         int count = ArtifactQuery.getArtifactCountFromTypeWithInheritence(artType, variableMap.getBranch("Branch"),
+            DeletionFlag.EXCLUDE_DELETED);
          String str = String.format("\nAritfact Count for Type [%s] = %d\n\n", artType, count);
          logf(str);
       }

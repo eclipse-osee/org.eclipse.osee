@@ -53,6 +53,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
+
 /**
  * @author Donald G. Dunne
  */
@@ -93,11 +94,9 @@ public class ArtifactLoaderTest {
    @Test(timeout = 10000)
    public void testThreadSafeLoading() throws Exception {
       // Create some software artifacts
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
-      Collection<Artifact> artifacts =
-         TestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences, NUM_ARTIFACTS, "ArtifactLoaderTest",
-            COMMON);
+      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
+      Collection<Artifact> artifacts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.GlobalPreferences,
+         NUM_ARTIFACTS, "ArtifactLoaderTest", COMMON);
       for (Artifact artifact : artifacts) {
          artifact.setName("ArtifactLoaderTest");
          artifact.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
@@ -128,15 +127,12 @@ public class ArtifactLoaderTest {
          }
       }
       executor.shutdownNow();
-      String message =
-         String.format("Hit timeout value before threads were completed - completed[%s] cancelled[%s]", completed,
-            cancelled);
+      String message = String.format("Hit timeout value before threads were completed - completed[%s] cancelled[%s]",
+         completed, cancelled);
       Assert.assertEquals(message, TOTAL_THREADS, completed);
 
       // Load and check artifacts
-      artifacts =
-         ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON,
-            DeletionFlag.EXCLUDE_DELETED);
+      artifacts = ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON, DeletionFlag.EXCLUDE_DELETED);
       Assert.assertEquals(NUM_ARTIFACTS, artifacts.size());
       for (Artifact artifact : artifacts) {
          Assert.assertEquals(ATTRIBUTE_VALUE, artifact.getSoleAttributeValue(CoreAttributeTypes.DefaultMailServer));
@@ -147,11 +143,9 @@ public class ArtifactLoaderTest {
    @Test(timeout = 5000)
    public void testThreadSafeLoadingSameArtifact() throws Exception {
       // Create some software artifacts
-      SkynetTransaction transaction =
-         TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
+      SkynetTransaction transaction = TransactionManager.createTransaction(COMMON, "ArtifactLoaderTest");
       Artifact testArt =
-         TestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest",
-            COMMON);
+         TestUtil.createSimpleArtifact(CoreArtifactTypes.GlobalPreferences, "ArtifactLoaderTest", COMMON);
       testArt.setName("ArtifactLoaderTest");
       testArt.addAttribute(CoreAttributeTypes.DefaultMailServer, ATTRIBUTE_VALUE);
       testArt.persist(transaction);
@@ -200,9 +194,8 @@ public class ArtifactLoaderTest {
          public IStatus run(SubMonitor subMonitor) {
             List<Artifact> artifacts;
             try {
-               artifacts =
-                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL, LoadType.RELOAD_CACHE,
-                     DeletionFlag.EXCLUDE_DELETED);
+               artifacts = ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL,
+                  LoadType.RELOAD_CACHE, DeletionFlag.EXCLUDE_DELETED);
                Assert.assertTrue(artifacts.isEmpty());
             } catch (OseeCoreException ex) {
                // do nothing
@@ -228,9 +221,8 @@ public class ArtifactLoaderTest {
          public IStatus run(SubMonitor subMonitor) {
             List<Artifact> artifacts;
             try {
-               artifacts =
-                  ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL, LoadType.RELOAD_CACHE,
-                     DeletionFlag.EXCLUDE_DELETED);
+               artifacts = ArtifactLoader.loadArtifacts(artIds, CoreBranches.COMMON, LoadLevel.ALL,
+                  LoadType.RELOAD_CACHE, DeletionFlag.EXCLUDE_DELETED);
                Assert.assertTrue(artifacts.isEmpty());
             } catch (OseeCoreException ex) {
                // do nothing
@@ -271,8 +263,7 @@ public class ArtifactLoaderTest {
       @Override
       public List<Artifact> call() throws Exception {
          List<Artifact> artifacts =
-            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON,
-               DeletionFlag.EXCLUDE_DELETED);
+            ArtifactQuery.getArtifactListFromName("ArtifactLoaderTest", COMMON, DeletionFlag.EXCLUDE_DELETED);
          if (artifacts.size() != NUM_ARTIFACTS) {
             throw new OseeStateException("Should have loaded %d not %d", NUM_ARTIFACTS, artifacts.size());
          }

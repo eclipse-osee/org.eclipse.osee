@@ -62,9 +62,8 @@ public class RelationImporter implements RowProcessor {
          return;
       }
       monitor.worked(1);
-      Collection<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromTypeAndAttribute(CoreArtifactTypes.SubsystemRequirementMSWord,
-            CoreAttributeTypes.ParagraphNumber, row[1], branch);
+      Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromTypeAndAttribute(
+         CoreArtifactTypes.SubsystemRequirementMSWord, CoreAttributeTypes.ParagraphNumber, row[1], branch);
 
       Artifact rowArtifact = getSoleArtifact(artifacts);
 
@@ -106,9 +105,8 @@ public class RelationImporter implements RowProcessor {
       for (int i = 0; i < columnArtifacts.length; i++) {
          monitor.worked(1);
          try {
-            Collection<Artifact> artifacts =
-               ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.Component, row[i + leadingColumnCount],
-                  branch);
+            Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.Component,
+               row[i + leadingColumnCount], branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
             monitor.subTask(columnArtifacts[i].getName());

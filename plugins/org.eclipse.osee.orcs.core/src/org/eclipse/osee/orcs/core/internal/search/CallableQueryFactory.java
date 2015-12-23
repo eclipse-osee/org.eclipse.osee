@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import com.google.common.collect.Iterables;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
@@ -34,7 +35,6 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
-import com.google.common.collect.Iterables;
 
 /**
  * @author Roberto E. Escobar

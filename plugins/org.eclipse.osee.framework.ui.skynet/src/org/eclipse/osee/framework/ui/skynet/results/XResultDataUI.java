@@ -33,9 +33,8 @@ public class XResultDataUI {
     * Creates hyperlink using name. Default editor will open guid for branchUuid given
     */
    public static String getHyperlink(String name, String guid, long branchUuid) {
-      return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch, guid + "(" + branchUuid + ")"),
-         name);
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openArtifactBranch,
+         guid + "(" + branchUuid + ")"), name);
    }
 
    public static String getHyperlinkUrlExternal(String name, String url) {
@@ -62,8 +61,8 @@ public class XResultDataUI {
    }
 
    public static String getHyperlinkForAction(String name, Artifact art) {
-      return AHTML.getHyperlink(
-         XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
+      return AHTML.getHyperlink(XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()),
+         name);
    }
 
    /*
@@ -99,9 +98,8 @@ public class XResultDataUI {
    }
 
    public static XResultPage getReport(XResultData resultData, final String title, Manipulations... manipulations) {
-      XResultPage page =
-         new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
-            (resultData.toString().equals("") ? "Nothing Logged" : resultData.toString()), manipulations);
+      XResultPage page = new XResultPage(title + " - " + DateUtil.getMMDDYYHHMM(),
+         resultData.toString().equals("") ? "Nothing Logged" : resultData.toString(), manipulations);
       if (isErrorWarningCountFromSearch(manipulations)) {
          page.setNumErrors(resultData.getNumErrorsViaSearch());
          page.setNumWarnings(resultData.getNumWarningsViaSearch());
@@ -153,10 +151,8 @@ public class XResultDataUI {
          for (int x = 0; x < 3; x++) {
             rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
          }
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {
-            "Error / Warning in table ",
-            "Error: this is error",
-         "Warning: this is warning"}));
+         rd.addRaw(AHTML.addRowMultiColumnTable(
+            new String[] {"Error / Warning in table ", "Error: this is error", "Warning: this is warning"}));
          rd.addRaw(AHTML.endMultiColumnTable());
          report(rd, "This is my report title");
       } catch (OseeCoreException ex) {

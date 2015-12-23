@@ -84,14 +84,14 @@ public final class AtsWorkDefinitionSheetProviders {
          try {
             Artifact artifact = null;
             try {
-               artifact =
-                  ArtifactQuery.getArtifactFromToken(
-                     org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
+               artifact = ArtifactQuery.getArtifactFromToken(
+                  org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {
                // do nothing
             }
             if (artifact != null) {
-               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(",")) {
+               for (String value : artifact.getSoleAttributeValue(CoreAttributeTypes.GeneralStringData, "").split(
+                  ",")) {
                   allValidStateNames.add(value);
                }
             } else {
@@ -99,8 +99,8 @@ public final class AtsWorkDefinitionSheetProviders {
                OseeLog.logf(AtsWorkDefinitionSheetProviders.class, Level.INFO,
                   "ATS Valid State Names: Missing [%s] Artifact; Falling back to loadAddDefinitions",
                   org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names.getName());
-               allValidStateNames.addAll(AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames(
-                  resultData));
+               allValidStateNames.addAll(
+                  AtsClientService.get().getWorkDefinitionAdmin().getAllValidStateNames(resultData));
             }
             Collections.sort(allValidStateNames);
          } catch (Exception ex) {
@@ -111,9 +111,8 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    public static void updateStateNameArtifact(Set<String> stateNames, Artifact folder, SkynetTransaction trans) throws OseeCoreException {
-      Artifact stateNameArt =
-         ArtifactQuery.getArtifactFromToken(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
-            AtsUtilCore.getAtsBranch());
+      Artifact stateNameArt = ArtifactQuery.getArtifactFromToken(
+         org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
       Collection<? extends String> currentStateNames = getAllValidStateNames();
       Set<String> newStateNames = new HashSet<>();
       newStateNames.addAll(currentStateNames);
@@ -128,9 +127,8 @@ public final class AtsWorkDefinitionSheetProviders {
    }
 
    private static Artifact createStateNameArtifact(Set<String> stateNames, Artifact folder, IAtsChangeSet changes) throws OseeCoreException {
-      Artifact stateNameArt =
-         ArtifactTypeManager.addArtifact(org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names,
-            AtsUtilCore.getAtsBranch());
+      Artifact stateNameArt = ArtifactTypeManager.addArtifact(
+         org.eclipse.osee.ats.api.data.AtsArtifactToken.WorkDef_State_Names, AtsUtilCore.getAtsBranch());
       stateNameArt.addAttribute(CoreAttributeTypes.GeneralStringData,
          org.eclipse.osee.framework.jdk.core.util.Collections.toString(",", stateNames));
       changes.add(stateNameArt);
@@ -177,20 +175,20 @@ public final class AtsWorkDefinitionSheetProviders {
 
    public static List<WorkDefinitionSheet> getWorkDefinitionSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT, getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Team_Default.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default", getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Task_Default.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision", getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Review_Decision.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer", getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Review_PeerToPeer.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple", getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Team_Simple.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Goal",
-         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Sprint", getSupportFile(Activator.PLUGIN_ID,
-         "support/WorkDef_Sprint.ats")));
+      sheets.add(new WorkDefinitionSheet(WORK_DEF_TEAM_DEFAULT,
+         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Default.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Task_Default",
+         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Task_Default.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Review_Decision",
+         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_Decision.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Review_PeerToPeer",
+         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Review_PeerToPeer.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Simple",
+         getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Simple.ats")));
+      sheets.add(
+         new WorkDefinitionSheet("WorkDef_Goal", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Goal.ats")));
+      sheets.add(
+         new WorkDefinitionSheet("WorkDef_Sprint", getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Sprint.ats")));
       for (IAtsWorkDefinitionSheetProvider provider : getProviders()) {
          sheets.addAll(provider.getWorkDefinitionSheets());
       }

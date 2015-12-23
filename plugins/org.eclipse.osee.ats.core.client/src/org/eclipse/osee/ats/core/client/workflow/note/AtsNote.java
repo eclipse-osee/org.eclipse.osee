@@ -118,8 +118,8 @@ public class AtsNote {
             }
          }
          builder.append(AHTML.addRowMultiColumnTable(String.valueOf(note.getType()),
-            (note.getState().isEmpty() ? "," : note.getState()), (note.getMsg().equals("") ? "," : note.getMsg()),
-            name, dateFormat.format(note.getDate())));
+            note.getState().isEmpty() ? "," : note.getState(), note.getMsg().equals("") ? "," : note.getMsg(), name,
+            dateFormat.format(note.getDate())));
       }
       builder.append(AHTML.endMultiColumnTable());
       return builder.toString();

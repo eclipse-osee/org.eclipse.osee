@@ -111,13 +111,10 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfAuthoredTransactions =
-         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_AUTHORED_TRANSACTIONS,
-            new Object[] {fromUser.getArtId()});
-      numOfUpdatedAuthoredTransactions =
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, new Object[] {
-            toUser.getArtId(),
-            fromUser.getArtId()});
+      numOfAuthoredTransactions = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue,
+         GET_AUTHORED_TRANSACTIONS, new Object[] {fromUser.getArtId()});
+      numOfUpdatedAuthoredTransactions = ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS,
+         new Object[] {toUser.getArtId(), fromUser.getArtId()});
    }
 
    private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
@@ -126,23 +123,17 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfASideRelations =
-         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
-            new Object[] {fromUser.getArtId()});
-      numOfUpdatedASideRelations =
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, new Object[] {
-            toUser.getArtId(),
-            fromUser.getArtId()});
+      numOfASideRelations = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
+         new Object[] {fromUser.getArtId()});
+      numOfUpdatedASideRelations = ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE,
+         new Object[] {toUser.getArtId(), fromUser.getArtId()});
    }
 
    private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfBSideRelations =
-         ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
-            new Object[] {fromUser.getArtId()});
-      numOfUpdatedBSideRelations =
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, new Object[] {
-            toUser.getArtId(),
-            fromUser.getArtId()});
+      numOfBSideRelations = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
+         new Object[] {fromUser.getArtId()});
+      numOfUpdatedBSideRelations = ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE,
+         new Object[] {toUser.getArtId(), fromUser.getArtId()});
    }
 
    private void deleteArtifact(final User fromUser) throws OseeCoreException {
@@ -153,18 +144,17 @@ public class PurgeUser extends AbstractBlam {
    private void displayReport(User toUser, User fromUser) {
       XResultData rd = new XResultData();
       try {
-         String[] columnHeaders =
-            new String[] {
-               "FromUser",
-               "FromUser ArtId",
-               "ToUser",
-               "ToUser ArtId",
-               "Authored Transaction Hits",
-               "Relation ASide Hits",
-               "Relation BSide Hits",
-               "Authored Transaction Updated",
-               "Relation ASide Update",
-               "Relation BSide Updated"};
+         String[] columnHeaders = new String[] {
+            "FromUser",
+            "FromUser ArtId",
+            "ToUser",
+            "ToUser ArtId",
+            "Authored Transaction Hits",
+            "Relation ASide Hits",
+            "Relation BSide Hits",
+            "Authored Transaction Updated",
+            "Relation ASide Update",
+            "Relation BSide Updated"};
          rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
          rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {

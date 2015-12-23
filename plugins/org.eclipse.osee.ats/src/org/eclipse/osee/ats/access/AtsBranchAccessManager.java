@@ -54,7 +54,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
- * This class will return access context ids related to editing artifacts stored on a team workflow's working branch.<br>
+ * This class will return access context ids related to editing artifacts stored on a team workflow's working branch.
+ * <br>
  * <br>
  * Access control can be called frequently, thus a cache is used. Events will clear cache as necessary.<br>
  * <br>
@@ -69,8 +70,8 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    private final Map<Long, Collection<IAccessContextId>> branchUuidToContextIdCache =
       new HashMap<Long, Collection<IAccessContextId>>(50);
 
-   private static final List<Long> atsConfigArtifactTypes = Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(),
-      AtsArtifactTypes.TeamDefinition.getGuid());
+   private static final List<Long> atsConfigArtifactTypes =
+      Arrays.asList(AtsArtifactTypes.ActionableItem.getGuid(), AtsArtifactTypes.TeamDefinition.getGuid());
 
    private final RoleContextProvider roleContextProvider;
    private volatile long cacheUpdated = 0;

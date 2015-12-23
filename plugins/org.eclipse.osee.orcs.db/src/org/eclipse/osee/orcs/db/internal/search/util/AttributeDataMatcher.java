@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
-import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -77,7 +77,7 @@ public class AttributeDataMatcher {
       String value = getValue(data);
       for (String toMatch : valuesToMatch) {
          checkCancelled(cancellation);
-         if (value.equals(toMatch) || (!Strings.isValid(value) && !Strings.isValid(toMatch))) {
+         if (value.equals(toMatch) || !Strings.isValid(value) && !Strings.isValid(toMatch)) {
             MatchLocation matchLocation = new MatchLocation(1, value.length());
             handler.onData(data, matchLocation);
          }

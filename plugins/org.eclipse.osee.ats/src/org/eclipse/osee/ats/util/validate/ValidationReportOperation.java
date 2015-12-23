@@ -57,7 +57,8 @@ public class ValidationReportOperation extends AbstractOperation {
       for (AbstractValidationRule rule : rulesSorted) {
          log(rule.getRuleDescription());
       }
-      log("<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
+      log(
+         "<br><br><b>NOTE: </b>All errors are shown for artifact state on branch or at time of commit.  Select hyperlink to open most recent version of artifact.");
 
       try {
          ChangeData changeData = AtsBranchManager.getChangeDataFromEarliestTransactionId(teamArt);

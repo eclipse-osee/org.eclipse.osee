@@ -81,7 +81,8 @@ public class ReplaceAll extends Rule {
 
    public static void main(String[] args) {
       if (args.length < 3) {
-         System.out.println("Usage: java text.rules.ReplaceAll <pattern> <replace str or file> <directory> <fileName pattern>");
+         System.out.println(
+            "Usage: java text.rules.ReplaceAll <pattern> <replace str or file> <directory> <fileName pattern>");
          return;
       }
 

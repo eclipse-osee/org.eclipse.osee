@@ -51,7 +51,7 @@ public final class Commands {
    }
 
    public static CommandContributionItem createCommandContributionItem(IServiceLocator site, String id, String shortCommandId, String name, IParameter[] parameterDefs, Map<String, String> parameters, ImageDescriptor image, String mnemonic, String tooltip, String helpContextId) {
-      ICommandService commandService = (ICommandService) site.getService(ICommandService.class);
+      ICommandService commandService = site.getService(ICommandService.class);
       String commandId = id;
 
       if (shortCommandId != null) {
@@ -65,8 +65,8 @@ public final class Commands {
       }
 
       // Use the commandId as the id so calling code can get to the commandId
-      return new CommandContributionItem(new CommandContributionItemParameter(site, command.getId(), command.getId(),
-         parameters, image, null, null, name, mnemonic, tooltip, CommandContributionItem.STYLE_PUSH, helpContextId,
-         false));
+      return new CommandContributionItem(
+         new CommandContributionItemParameter(site, command.getId(), command.getId(), parameters, image, null, null,
+            name, mnemonic, tooltip, CommandContributionItem.STYLE_PUSH, helpContextId, false));
    }
 }

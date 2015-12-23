@@ -126,19 +126,17 @@ public class DispoSetCopier {
              * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
              * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
              */
-            report.addMessageForItem(
-               destItem.getName(),
+            report.addMessageForItem(destItem.getName(),
                "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
                sourceAnnotation.getLocationRefs());
          } else if (newAnnotations.toString().contains(sourceAnnotation.getGuid())) {
-            report.addMessageForItem(
-               destItem.getName(),
+            report.addMessageForItem(destItem.getName(),
                "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
                sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid());
          } else {
             // Try to copy but check if Discrepancy is the same
-            if (isSameDiscrepancies || (isCoverageCopy && isCoveredDiscrepanciesExistInDest(destItem, sourceItem,
-               sourceAnnotation, report))) {
+            if (isSameDiscrepancies || isCoverageCopy && isCoveredDiscrepanciesExistInDest(destItem, sourceItem,
+               sourceAnnotation, report)) {
                DispoAnnotationData newAnnotation = sourceAnnotation;
                if (destDefaultAnntationLocations.contains(sourceLocation)) {
                   /**

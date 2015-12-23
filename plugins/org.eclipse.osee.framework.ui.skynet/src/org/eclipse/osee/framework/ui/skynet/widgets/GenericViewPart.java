@@ -17,7 +17,8 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * This class provides &quot;general&quot; functionality to widgets having the need to override ViewPart methods and
- * providing blank functionality. Subclasses must call setFocusWidget() in their implementation for createPartControl <br/>
+ * providing blank functionality. Subclasses must call setFocusWidget() in their implementation for createPartControl
+ * <br/>
  * 
  * @author Karol M. Wilk
  */

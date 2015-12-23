@@ -37,9 +37,8 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
    }
 
    private OperationalImpactWorkaroundDesciptionColumn() {
-      super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150,
-         SWT.LEFT, false, SortDataType.String, true,
-         "What is the workaround for the operational impact to the product.");
+      super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150, SWT.LEFT,
+         false, SortDataType.String, true, "What is the workaround for the operational impact to the product.");
    }
 
    /**

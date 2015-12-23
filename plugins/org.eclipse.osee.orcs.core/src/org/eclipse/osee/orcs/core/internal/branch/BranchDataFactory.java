@@ -63,9 +63,8 @@ public class BranchDataFactory {
       TransactionReadable fromTx = txQuery.andTxId(fromTransaction.getGuid()).getResults().getExactlyOne();
       IOseeBranch parent = branchQuery.andUuids(fromTx.getBranchId()).getResults().getExactlyOne();
 
-      String creationComment =
-         String.format("Transaction %s copied from %s to create Branch %s", fromTransaction, parent.getName(),
-            branch.getName());
+      String creationComment = String.format("Transaction %s copied from %s to create Branch %s", fromTransaction,
+         parent.getName(), branch.getName());
       return createBranchData(branch, parent, BranchType.WORKING, creationComment, fromTx, author, associatedArtifact,
          true);
    }

@@ -26,9 +26,8 @@ public class DialogSelectionHelper implements Runnable {
 
    @Override
    public void run() {
-      ListSelectionDialog dlg =
-         new ListSelectionDialog(availableSelections, null, "File Selection", null, "String dialogMessage", 3,
-            new String[] {"OK", "Cancel"}, 0);
+      ListSelectionDialog dlg = new ListSelectionDialog(availableSelections, null, "File Selection", null,
+         "String dialogMessage", 3, new String[] {"OK", "Cancel"}, 0);
 
       int result = dlg.open();
       if (result == 0) {

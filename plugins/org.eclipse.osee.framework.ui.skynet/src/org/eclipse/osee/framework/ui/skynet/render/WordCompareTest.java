@@ -79,8 +79,8 @@ public class WordCompareTest {
       if (result == null) {
          // Try to find class definition as a resource
          final ClassLoader classLoader = classToFind.getClassLoader();
-         result =
-            classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(classAsResource);
+         result = classLoader != null ? classLoader.getResource(classAsResource) : ClassLoader.getSystemResource(
+            classAsResource);
       }
       return result;
    }

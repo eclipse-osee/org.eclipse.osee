@@ -23,9 +23,8 @@ public class TestPointResults extends ElementHandlers {
 
    @Override
    public Object createStartElementFoundObject(String uri, String localName, String name, Attributes attributes) {
-      TestPointResultsData data =
-         new TestPointResultsData(attributes.getValue("aborted"), attributes.getValue("fail"),
-            attributes.getValue("pass"), attributes.getValue("total"));
+      TestPointResultsData data = new TestPointResultsData(attributes.getValue("aborted"), attributes.getValue("fail"),
+         attributes.getValue("pass"), attributes.getValue("total"));
       return data;
    }
 }

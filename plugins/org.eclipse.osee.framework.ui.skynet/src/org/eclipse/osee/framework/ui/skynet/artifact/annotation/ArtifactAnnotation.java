@@ -65,8 +65,8 @@ public class ArtifactAnnotation {
    private static String CONTENT_TAG = "content";
 
    public String toXml() {
-      return AXml.addTagData(TYPE_TAG, type.name()) + AXml.addTagData(NAMESPACE_TAG, namespace) + AXml.addTagData(
-         CONTENT_TAG, content);
+      return AXml.addTagData(TYPE_TAG, type.name()) + AXml.addTagData(NAMESPACE_TAG,
+         namespace) + AXml.addTagData(CONTENT_TAG, content);
    }
 
    public void fromXml(String xml) {

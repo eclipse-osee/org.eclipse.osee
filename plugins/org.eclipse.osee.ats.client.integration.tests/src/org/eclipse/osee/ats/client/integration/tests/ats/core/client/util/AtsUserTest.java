@@ -68,8 +68,7 @@ public class AtsUserTest {
       Collection<IAtsUser> assignees = new HashSet<>();
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay));
       assignees.add(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith));
-      Assert.assertTrue(Collections.isEqual(
-         assignees,
+      Assert.assertTrue(Collections.isEqual(assignees,
          Arrays.asList(AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Alex_Kay),
             AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith))));
 

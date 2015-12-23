@@ -116,7 +116,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
       if (atsObject instanceof IAtsVersion) {
          if (!identityView) {
             writer.writeArrayFieldStart("workflow");
-            for (ArtifactReadable workArt : artifact.getRelated(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
+            for (ArtifactReadable workArt : artifact.getRelated(
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
                addArtifactIdentity(writer, workArt);
             }
             writer.writeEndArray();
@@ -126,12 +127,14 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          writer.writeBooleanField("Active", activity.isActive());
          if (!identityView) {
             writer.writeArrayFieldStart("insertion");
-            for (ArtifactReadable insertion : artifact.getRelated(AtsRelationTypes.InsertionToInsertionActivity_Insertion)) {
+            for (ArtifactReadable insertion : artifact.getRelated(
+               AtsRelationTypes.InsertionToInsertionActivity_Insertion)) {
                addArtifactIdentity(writer, insertion);
             }
             writer.writeEndArray();
             writer.writeArrayFieldStart("workpackage");
-            for (ArtifactReadable workPackage : artifact.getRelated(AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
+            for (ArtifactReadable workPackage : artifact.getRelated(
+               AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
                addArtifactIdentity(writer, workPackage);
             }
             writer.writeEndArray();
@@ -146,7 +149,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
             }
             writer.writeEndArray();
             writer.writeArrayFieldStart("insertionactivity");
-            for (ArtifactReadable activity : artifact.getRelated(AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
+            for (ArtifactReadable activity : artifact.getRelated(
+               AtsRelationTypes.InsertionToInsertionActivity_InsertionActivity)) {
                addArtifactIdentity(writer, activity);
             }
             writer.writeEndArray();
@@ -208,8 +212,8 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          ArtifactReadable teamArt = atsServer.getArtifact(team.getUuid());
          ArtifactReadable backlogArt =
             teamArt.getRelated(AtsRelationTypes.AgileTeamToBacklog_Backlog).getAtMostOneOrNull();
-         writer.writeStringField("Backlog Uuid", (backlogArt != null ? String.valueOf(backlogArt.getUuid()) : ""));
-         writer.writeStringField("Backlog", (backlogArt != null ? String.valueOf(backlogArt.getName()) : ""));
+         writer.writeStringField("Backlog Uuid", backlogArt != null ? String.valueOf(backlogArt.getUuid()) : "");
+         writer.writeStringField("Backlog", backlogArt != null ? String.valueOf(backlogArt.getName()) : "");
       }
       if (!identityView) {
          addAttributeData(writer, attributeTypes, artifact);

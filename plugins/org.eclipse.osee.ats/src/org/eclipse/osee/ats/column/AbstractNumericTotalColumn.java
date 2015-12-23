@@ -71,9 +71,9 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
          AbstractWorkflowArtifact aba = null;
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             aba = (AbstractWorkflowArtifact) treeItem.getData();
-         } else if (Artifacts.isOfType(treeItem.getData(), AtsArtifactTypes.Action) && ActionManager.getTeams(
-            treeItem.getData()).size() == 1) {
-            aba = ActionManager.getFirstTeam((treeItem.getData()));
+         } else if (Artifacts.isOfType(treeItem.getData(),
+            AtsArtifactTypes.Action) && ActionManager.getTeams(treeItem.getData()).size() == 1) {
+            aba = ActionManager.getFirstTeam(treeItem.getData());
          }
          if (aba != null) {
             AWorkbench.popup("Calculated Field", getDescription() + "\n\n" + calulationStr);

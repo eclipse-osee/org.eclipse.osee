@@ -87,9 +87,8 @@ public final class OseeLogMonitorRule implements MethodRule {
                try {
                   AssertLib.assertLogEmpty(monitorLog, logsToIgnore);
                } catch (Throwable ex) {
-                  String message =
-                     String.format("Log Error detected for [%s:%s]\n%s", target.getClass().getSimpleName(),
-                        method.getName(), ex.getLocalizedMessage());
+                  String message = String.format("Log Error detected for [%s:%s]\n%s",
+                     target.getClass().getSimpleName(), method.getName(), ex.getLocalizedMessage());
                   Assert.fail(message);
                }
             }

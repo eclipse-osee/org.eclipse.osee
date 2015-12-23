@@ -112,11 +112,10 @@ public class ResultsEditorConverter {
       private final static String HTML_HEADER =
          "<!DOCTYPE html PUBLIC \"-//W3C//DTD html 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\"><html><head><meta http-equiv=\"Content-Type\" content=\"text/html; charset=ISO-8859-1\">\n";
       private final static String PAGE_TITLE = "<title>%s</title>\n";
-      private final static String STYLE_CSS =
-         "<style type=\"text/css\">\n" + //
-         " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-         " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
-         "</style>\n";
+      private final static String STYLE_CSS = "<style type=\"text/css\">\n" + //
+      " .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+      " .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; cursor:pointer; border: solid; border-width: thin; text-align: left; vertical-align: middle; }\n" + //
+      "</style>\n";
       private final static String JAVASCRIPT = "<script type=\"text/javascript\">\n" + //
       "function opendiv(id){\n" + //
       "var divStyle = document.getElementById(id).style;\n" + //

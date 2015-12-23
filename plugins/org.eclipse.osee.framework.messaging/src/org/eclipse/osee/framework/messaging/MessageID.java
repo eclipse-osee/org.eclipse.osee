@@ -21,6 +21,6 @@ public interface MessageID {
    boolean isTopic();
 
    String getId();
-   
+
    String getName();
 }

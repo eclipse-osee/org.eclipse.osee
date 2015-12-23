@@ -160,7 +160,7 @@ public class IssueBurndownLog {
       // IncrementDate
       Calendar cal = Calendar.getInstance();
       cal.setTime(inspectDate);
-      cal.add(cal.DATE, i);
+      cal.add(Calendar.DATE, i);
       Date newDate = cal.getTime();
       return newDate;
    }
@@ -178,7 +178,7 @@ public class IssueBurndownLog {
       for (AbstractWorkflowArtifact artifact : this.artifacts) {
          if (artifact.isCompleted()) {
             Date itemDate = artifact.getCompletedDate();
-            if ((itemDate.getDate() == currentDate.getDate()) && (itemDate.getMonth() == currentDate.getMonth()) && (itemDate.getYear() == currentDate.getYear())) {
+            if (itemDate.getDate() == currentDate.getDate() && itemDate.getMonth() == currentDate.getMonth() && itemDate.getYear() == currentDate.getYear()) {
                issues++;
             }
 

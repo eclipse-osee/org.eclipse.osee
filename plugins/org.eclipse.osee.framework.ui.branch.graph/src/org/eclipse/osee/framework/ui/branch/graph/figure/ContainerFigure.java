@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.figure;
 
 import org.eclipse.draw2d.Figure;
+import org.eclipse.draw2d.OrderedLayout;
 import org.eclipse.draw2d.ToolbarLayout;
 import org.eclipse.draw2d.geometry.Dimension;
 
@@ -21,7 +22,7 @@ public class ContainerFigure extends Figure {
 
    public ContainerFigure() {
       ToolbarLayout layout = new ToolbarLayout();
-      layout.setMinorAlignment(ToolbarLayout.ALIGN_CENTER);
+      layout.setMinorAlignment(OrderedLayout.ALIGN_CENTER);
       layout.setStretchMinorAxis(false);
       layout.setSpacing(2);
       setLayoutManager(layout);

@@ -40,7 +40,8 @@ public class OseeAuthorizingFilter extends SimpleAuthorizingFilter {
       Message currentMessage = JAXRSUtils.getCurrentMessage();
       @SuppressWarnings("unchecked")
       TreeMap<String, List<String>> protocolHeaders =
-         (TreeMap<String, List<String>>) currentMessage.getContextualProperty("org.apache.cxf.message.Message.PROTOCOL_HEADERS");
+         (TreeMap<String, List<String>>) currentMessage.getContextualProperty(
+            "org.apache.cxf.message.Message.PROTOCOL_HEADERS");
       List<String> referers = protocolHeaders.get("Referer");
 
       if (resource != null && referers != null && !referers.toString().contains("coverage")) {

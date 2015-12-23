@@ -113,8 +113,8 @@ public final class FindTraceUnitFromResource {
                            }
                         }
                      } else {
-                        artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(),
-                           branch));
+                        artifacts.addAll(
+                           ArtifactQuery.getArtifactListFromTypeAndName(artifactType, resource.getName(), branch));
                      }
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);

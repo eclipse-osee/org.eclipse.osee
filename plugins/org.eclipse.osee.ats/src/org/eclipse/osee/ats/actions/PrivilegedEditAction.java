@@ -69,13 +69,9 @@ public class PrivilegedEditAction extends AbstractAtsAction {
          } else {
             buttons = new String[] {"Cancel"};
          }
-         MessageDialog dialog =
-            new MessageDialog(
-               Displays.getActiveShell(),
-               "Privileged Edit",
-               null,
-               "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + stringBuffer.toString(),
-               MessageDialog.QUESTION, buttons, 0);
+         MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Privileged Edit", null,
+            "The following users have the ability to edit this " + sma.getArtifactTypeName() + " in case of emergency.\n\n" + stringBuffer.toString(),
+            MessageDialog.QUESTION, buttons, 0);
          int result = dialog.open();
          if (iAmPrivileged && result == 0) {
             editor.setPrivilegedEditMode(true);

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Test unit for {@link
+ * 
  * @author Donald G. Dunne
  */
 public class AtsOperationalImpactValidator extends AtsXWidgetValidator {

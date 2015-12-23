@@ -49,10 +49,7 @@ public abstract class HexTable extends Composite {
          }
       };
 
-      TableViewerEditor.create(
-         v,
-         focusCellManager,
-         actSupport,
+      TableViewerEditor.create(v, focusCellManager, actSupport,
          ColumnViewerEditor.TABBING_HORIZONTAL | ColumnViewerEditor.TABBING_MOVE_TO_ROW_NEIGHBOR | ColumnViewerEditor.TABBING_VERTICAL | ColumnViewerEditor.KEYBOARD_ACTIVATION);
 
       v.setInput(array);

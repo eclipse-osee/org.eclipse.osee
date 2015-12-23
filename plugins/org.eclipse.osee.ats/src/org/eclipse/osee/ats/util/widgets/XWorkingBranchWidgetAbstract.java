@@ -136,7 +136,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    private void updateBranchState() throws OseeCoreException {
       workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt, true);
       workingBranchCreationInProgress =
-         teamArt.isWorkingBranchCreationInProgress() || (workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS);
+         teamArt.isWorkingBranchCreationInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.CREATION_IN_PROGRESS;
       workingBranchCommitInProgress =
          teamArt.isWorkingBranchCommitInProgress() || workingBranch != null && workingBranch.getBranchState() == BranchState.COMMIT_IN_PROGRESS;
       workingBranchInWork = AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt);

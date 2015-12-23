@@ -65,9 +65,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
       if (xCol.equals(CommitXManagerFactory.Status_Col)) {
          try {
-            CommitStatus commitStatus =
-               AtsClientService.get().getBranchService().getCommitStatus(
-                  commitXManager.getXCommitViewer().getTeamArt(), branch);
+            CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+               commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Branch_Not_Configured || commitStatus == CommitStatus.Branch_Commit_Disabled ||
             //
             commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Working_Branch_Not_Created) {
@@ -87,9 +86,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
          }
       } else if (xCol.equals(CommitXManagerFactory.Merge_Col)) {
          try {
-            CommitStatus commitStatus =
-               AtsClientService.get().getBranchService().getCommitStatus(
-                  commitXManager.getXCommitViewer().getTeamArt(), branch);
+            CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+               commitXManager.getXCommitViewer().getTeamArt(), branch);
             if (commitStatus == CommitStatus.Merge_In_Progress || commitStatus == CommitStatus.Committed_With_Merge) {
                return ImageManager.getImage(FrameworkImage.OUTGOING_MERGED);
             }
@@ -191,9 +189,11 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    private String handleDestBranchCreationDateColumn(Object element, Branch branch) throws OseeCoreException {
       if (element instanceof IAtsVersion) {
-         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+         return branch == null ? "Parent Branch Not Configured for Version [" + element + "]" : DateUtil.getMMDDYYHHMM(
+            branch.getBaseTransaction().getTimeStamp());
       } else if (element instanceof IAtsTeamDefinition) {
-         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
+         return branch == null ? "Parent Branch Not Configured for Team Definition [" + element + "]" : DateUtil.getMMDDYYHHMM(
+            branch.getBaseTransaction().getTimeStamp());
       } else if (element instanceof TransactionRecord) {
          return DateUtil.getMMDDYYHHMM(branch.getBaseTransaction().getTimeStamp());
       }
@@ -201,9 +201,8 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    }
 
    private String handleActionColumn(IOseeBranch branch) throws OseeCoreException {
-      CommitStatus commitStatus =
-         AtsClientService.get().getBranchService().getCommitStatus(commitXManager.getXCommitViewer().getTeamArt(),
-            branch);
+      CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
+         commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
          return "Finish Update";
       } else if (commitStatus == CommitStatus.Branch_Not_Configured) {

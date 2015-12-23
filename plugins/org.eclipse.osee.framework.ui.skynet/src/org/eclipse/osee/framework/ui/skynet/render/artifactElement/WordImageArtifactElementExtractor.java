@@ -184,7 +184,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
          } else if (isEditEndImage(descendant)) {
             removals.add(descendant);
             afterEditTag = true;
-         } else if ((beforeEditTag && keepSide == Side.right) || (afterEditTag && keepSide == Side.left)) {
+         } else if (beforeEditTag && keepSide == Side.right || afterEditTag && keepSide == Side.left) {
             removals.add(descendant);
          }
       }
@@ -244,12 +244,12 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
 
    private boolean compareBinData(Element pictElement, boolean lookingForStart) {
       boolean foundBindata = false;
-      int imageCheckSum = (getImageChecksum(lookingForStart));
+      int imageCheckSum = getImageChecksum(lookingForStart);
       Node currentBinData = getElement(pictElement, BIN_DATA);
 
       if (currentBinData != null) {
          Node bindDataValue = currentBinData.getFirstChild();
-         foundBindata = getCheckSum(bindDataValue.getNodeValue()) == (imageCheckSum);
+         foundBindata = getCheckSum(bindDataValue.getNodeValue()) == imageCheckSum;
          if (foundBindata) {
             if (lookingForStart) {
                START_IMG_ID = getImageId(pictElement);
@@ -352,7 +352,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
    }
 
    private boolean properLevelChild(Element element) {
-      return (properLevelChildWord2003(element) || properLevelChildWord2007(element));
+      return properLevelChildWord2003(element) || properLevelChildWord2007(element);
    }
 
    private void handleImages(Element element) {
@@ -402,7 +402,7 @@ public class WordImageArtifactElementExtractor implements IElementExtractor {
          grandParentName.equals(BODY_TAG) && parentName.equals(SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
       boolean subsectionChild = parentName.equals(SUB_SECTION_TAG) && !myName.equals(SUB_SECTION_TAG);
 
-      return (nonSubsectionBodyChild || sectionChild || subsectionChild);
+      return nonSubsectionBodyChild || sectionChild || subsectionChild;
    }
 
    private boolean properLevelChildWord2007(Element element) {

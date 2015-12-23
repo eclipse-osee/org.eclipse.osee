@@ -42,13 +42,14 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       resultsTab.addColumn(new XViewerColumn("1", "Issue", 220, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("2", "Branch Uuid", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("3", columnName, 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
-      resultsTab.addColumn(new XViewerColumn("4", "Transaction Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
+      resultsTab.addColumn(
+         new XViewerColumn("4", "Transaction Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("5", "Gamma Id", 80, SWT.LEFT, true, SortDataType.Integer, false, ""));
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      doSubWork(new InvalidTxCurrentsAndModTypes("TxCurrentChecks ", tableName, columnName, new ResultsTableLogger(
-         resultsTab), isFixOperationEnabled(), true), monitor, 0.3);
+      doSubWork(new InvalidTxCurrentsAndModTypes("TxCurrentChecks ", tableName, columnName,
+         new ResultsTableLogger(resultsTab), isFixOperationEnabled(), true), monitor, 0.3);
    }
 
    @Override

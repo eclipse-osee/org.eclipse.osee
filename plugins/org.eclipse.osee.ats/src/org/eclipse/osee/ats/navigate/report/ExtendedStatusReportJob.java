@@ -67,8 +67,8 @@ public class ExtendedStatusReportJob extends Job {
       try {
 
          final String html = AHTML.simplePage(getStatusReport(monitor, jobName, teamArts));
-         ResultsEditor.open(new XResultPage(jobName + " - " + DateUtil.getMMDDYYHHMM(), html,
-            Manipulations.HTML_MANIPULATIONS));
+         ResultsEditor.open(
+            new XResultPage(jobName + " - " + DateUtil.getMMDDYYHHMM(), html, Manipulations.HTML_MANIPULATIONS));
          AWorkbench.popup("Complete", jobName + " Complete...Results in ATS Results");
          monitor.done();
          return Status.OK_STATUS;
@@ -156,7 +156,7 @@ public class ExtendedStatusReportJob extends Job {
             values.add(priStr.equals("") ? "." : priStr);
          } else if (col == Columns.Change_Type) {
             ChangeType changeType = ChangeTypeUtil.getChangeType(sma);
-            values.add((changeType == ChangeType.None ? "." : changeType.name()));
+            values.add(changeType == ChangeType.None ? "." : changeType.name());
          } else if (col == Columns.Title) {
             values.add(sma.getName());
          } else if (col == Columns.Analysis) {
@@ -170,8 +170,9 @@ public class ExtendedStatusReportJob extends Job {
          } else if (col == Columns.Date_Created) {
             values.add(CreatedDateColumn.getDateStr(sma));
          } else if (col == Columns.Version) {
-            values.add((!Strings.isValid(Versions.getTargetedVersionStr(sma, AtsClientService.get().getVersionService())) ? "." : Versions.getTargetedVersionStr(
-               sma, AtsClientService.get().getVersionService())));
+            values.add(!Strings.isValid(Versions.getTargetedVersionStr(sma,
+               AtsClientService.get().getVersionService())) ? "." : Versions.getTargetedVersionStr(sma,
+                  AtsClientService.get().getVersionService()));
          }
       }
       sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));

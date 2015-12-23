@@ -144,16 +144,15 @@ public class SystemSubsystemReport extends AbstractBlam {
    private void generateMetrics(Artifact productComponent, Artifact subsysTopFolder) throws IOException, OseeCoreException {
       excelWriter.startSheet("Metrics", 8);
 
-      String[] row =
-         new String[] {
-            "Subsystem Name",
-            "# of allocated Sys Req",
-            "# of Subsys Descendants",
-            "# of Subsys Req Marked",
-            "# of Subsys Req Traceable to Sys Req",
-            "# of Subsys Req with Qual Method Defined",
-            "# of Subsys Req allocated to HW/SW Components",
-            "Req GUID not allocated"};
+      String[] row = new String[] {
+         "Subsystem Name",
+         "# of allocated Sys Req",
+         "# of Subsys Descendants",
+         "# of Subsys Req Marked",
+         "# of Subsys Req Traceable to Sys Req",
+         "# of Subsys Req with Qual Method Defined",
+         "# of Subsys Req allocated to HW/SW Components",
+         "Req GUID not allocated"};
       excelWriter.writeRow(row);
 
       CountingMap<Artifact> allocatedSysReqCounter = new CountingMap<>(sysReqs.size());
@@ -362,7 +361,8 @@ public class SystemSubsystemReport extends AbstractBlam {
       excelWriter.startSheet(getShortSheetName(subSysName, "System Trace"), 4);
 
       excelWriter.writeRow(subSysName, "System To Subsystem Trace");
-      excelWriter.writeRow(CoreArtifactTypes.SystemRequirementMSWord.getName(), null, "Traceable Subsystem Requirement", null);
+      excelWriter.writeRow(CoreArtifactTypes.SystemRequirementMSWord.getName(), null, "Traceable Subsystem Requirement",
+         null);
       excelWriter.writeRow("Paragraph #", "Paragraph Title", "Paragraph #", "Paragraph Title");
 
       String[] row = new String[4];

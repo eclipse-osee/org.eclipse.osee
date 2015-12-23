@@ -135,20 +135,20 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
 
    private void logSessionCreation(OseeCredential credential, OseeSessionGrant oseeSessionGrant) {
       try {
-         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS, String.format(
-            "IDE Client Session Created " // 
-               + "{" // 
-               + "\"version\":\"%s\", " // 
-               + "\"clientAddress\":\"%s\", " // 
-               + "\"clientMachineName\":\"%s\", " // 
-               + "\"port\":\"%s\", " // 
-               + "\"userName\":\"%s\", " // 
-               + "\"userId\":\"%s\", " // 
+         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS,
+            String.format("IDE Client Session Created " //
+               + "{" //
+               + "\"version\":\"%s\", " //
+               + "\"clientAddress\":\"%s\", " //
+               + "\"clientMachineName\":\"%s\", " //
+               + "\"port\":\"%s\", " //
+               + "\"userName\":\"%s\", " //
+               + "\"userId\":\"%s\", " //
                + "\"sessionId\":\"%s\"" //
                + "}", //
-            credential.getVersion(), credential.getClientAddress(), credential.getClientMachineName(),
-            credential.getPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
-            oseeSessionGrant.getSessionId()));
+               credential.getVersion(), credential.getClientAddress(), credential.getClientMachineName(),
+               credential.getPort(), credential.getUserName(), oseeSessionGrant.getUserToken().getUserId(),
+               oseeSessionGrant.getSessionId()));
       } catch (Exception ex) {
          // do nothing
       }
@@ -159,14 +159,14 @@ public class SessionManagementServlet extends UnsecuredOseeHttpServlet {
          ISession session = sessionManager.getSessionById(sessionId);
          String duration = getDuration(session);
          String userId = session != null ? session.getUserId() : "unknown";
-         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS, String.format(
-            "IDE Client Session Released " // 
-               + "{" // 
-               + "\"sessionId\":\"%s\", " // 
+         activityLog.createEntry(Activity.IDE.getTypeId(), ActivityLog.COMPLETE_STATUS,
+            String.format("IDE Client Session Released " //
+               + "{" //
+               + "\"sessionId\":\"%s\", " //
                + "\"duration\":\"%s\", " //
-               + "\"userId\":\"%s\"" //  
+               + "\"userId\":\"%s\"" //
                + "}", //
-            sessionId, duration, userId));
+               sessionId, duration, userId));
       } catch (Exception ex) {
          // do nothing
       }

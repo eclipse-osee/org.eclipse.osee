@@ -50,8 +50,9 @@ public final class DispoUtil {
    }
 
    public static boolean isDefaultAnntoation(DispoAnnotationData annotation) {
-      return annotation.getResolutionType().equalsIgnoreCase(DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
-         DispoStrings.Exception_Handling_Resolution);
+      return annotation.getResolutionType().equalsIgnoreCase(
+         DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
+            DispoStrings.Exception_Handling_Resolution);
    }
 
    public static JSONObject getById(JSONArray list, String id) {

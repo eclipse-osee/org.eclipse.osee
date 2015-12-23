@@ -69,7 +69,7 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
    @Override
    public boolean areRelated(ArtifactId artifact1, IRelationTypeSide relationType, ArtifactId artifact2) {
       boolean related = false;
-      if ((artifact1 instanceof ArtifactReadable) && (artifact2 instanceof ArtifactReadable)) {
+      if (artifact1 instanceof ArtifactReadable && artifact2 instanceof ArtifactReadable) {
          related = ((ArtifactReadable) artifact1).areRelated(relationType, (ArtifactReadable) artifact2);
       }
       return related;

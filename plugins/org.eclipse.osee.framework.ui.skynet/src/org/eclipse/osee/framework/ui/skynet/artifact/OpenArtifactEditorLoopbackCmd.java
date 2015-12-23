@@ -59,12 +59,11 @@ public class OpenArtifactEditorLoopbackCmd extends BaseArtifactLoopbackCmd {
                   @Override
                   public void run() {
                      try {
-                        IEditorPart part =
-                           AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact),
-                              ArtifactEditor.EDITOR_ID, true);
+                        IEditorPart part = AWorkbench.getActivePage().openEditor(new ArtifactEditorInput(artifact),
+                           ArtifactEditor.EDITOR_ID, true);
                         if (part != null) {
-                           String html =
-                              AHTML.simplePage(artifact.getName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
+                           String html = AHTML.simplePage(
+                              artifact.getName() + " has been opened in OSEE on branch " + artifact.getBranch() + "<br><br>" + "<form><input type=button onClick='window.opener=self;window.close()' value='Close'></form>");
                            httpResponse.getPrintStream().println(html);
                         } else {
                            httpResponse.outputStandardError(HttpURLConnection.HTTP_INTERNAL_ERROR,

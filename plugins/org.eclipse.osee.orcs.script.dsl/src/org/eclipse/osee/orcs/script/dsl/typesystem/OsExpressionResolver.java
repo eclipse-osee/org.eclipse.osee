@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.typesystem;
 
+import com.google.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.orcs.script.dsl.IExpressionResolver;
 import org.eclipse.osee.orcs.script.dsl.orcsScriptDsl.OsExpression;
-import com.google.inject.Inject;
 
 /**
  * @author Roberto E. Escobar

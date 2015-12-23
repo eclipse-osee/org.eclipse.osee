@@ -136,9 +136,8 @@ public class ModelAsserts {
    }
 
    public static AttributeType createAttributeType(Long guid, String name) {
-      AttributeType attributeType =
-         new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null,
-            "mediaType");
+      AttributeType attributeType = new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1,
+         "test data", null, "mediaType");
       Assert.assertNotNull(attributeType);
       return attributeType;
    }
@@ -254,9 +253,8 @@ public class ModelAsserts {
 
       Collection<IAttributeType> typesNotFound =
          org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(expectedAttributes, actualTypes);
-      Assert.assertTrue(
-         String.format("Artifact [%s] for branch [%s] did not have the following attributes [%s]",
-            artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
+      Assert.assertTrue(String.format("Artifact [%s] for branch [%s] did not have the following attributes [%s]",
+         artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
 
       typesNotFound =
          org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(actualTypes, expectedAttributes);
@@ -285,7 +283,8 @@ public class ModelAsserts {
             Assert.assertTrue(String.format("ArtifactType [%s] was not allowed", artifactType), result);
          } else {
             Assert.assertFalse(
-               String.format("ArtifactType [%s] was allowed even though it should not have been", artifactType), result);
+               String.format("ArtifactType [%s] was allowed even though it should not have been", artifactType),
+               result);
          }
       }
    }

@@ -56,9 +56,8 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> currWorkflowDesiredAIs = Arrays.asList(ai1, ai2);
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
-      ModifyActionableItems job =
-         new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-            teamDefUtil);
+      ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
+         newAIs, modifiedBy, teamDefUtil);
       job.performModification();
 
       Assert.assertEquals(1, job.getAddAis().size());
@@ -75,9 +74,8 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> currWorkflowDesiredAIs = Arrays.asList(ai1);
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
-      ModifyActionableItems job =
-         new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-            teamDefUtil);
+      ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
+         newAIs, modifiedBy, teamDefUtil);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());
@@ -94,9 +92,8 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> currWorkflowDesiredAIs = Collections.emptyList();
       List<IAtsActionableItem> newAIs = Collections.emptyList();
 
-      ModifyActionableItems job =
-         new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-            teamDefUtil);
+      ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
+         newAIs, modifiedBy, teamDefUtil);
       job.performModification();
 
       Assert.assertTrue(results.toString().contains("Error: All AIs can not be removed"));
@@ -118,9 +115,8 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> currWorkflowDesiredAIs = Arrays.asList(ai1, ai2);
       List<IAtsActionableItem> newAIs = Arrays.asList(ai3);
 
-      ModifyActionableItems job =
-         new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-            teamDefUtil);
+      ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
+         newAIs, modifiedBy, teamDefUtil);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());
@@ -148,9 +144,8 @@ public class ModifyActionableItemsTest {
       List<IAtsActionableItem> currWorkflowDesiredAIs = Arrays.asList(ai1, ai2);
       List<IAtsActionableItem> newAIs = Arrays.asList(ai2);
 
-      ModifyActionableItems job =
-         new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-            teamDefUtil);
+      ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs,
+         newAIs, modifiedBy, teamDefUtil);
       job.performModification();
 
       Assert.assertEquals(0, job.getAddAis().size());

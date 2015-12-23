@@ -10,7 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.client.test.framework;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.client.test.framework.internal.AbstractTestRule;
 import org.eclipse.osee.client.test.framework.internal.DatabaseInitializer;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -34,7 +35,8 @@ import org.junit.runners.model.FrameworkMethod;
  * 
  *    &#064;Test
  *    public void testA() {
- *       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1, &quot;Folder&quot;);
+ *       Artifact artifact =
+ *          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, DemoSawBuilds.SAW_Bld_1, &quot;Folder&quot;);
  *       artifact.persist(&quot;write to db&quot;);
  *    }
  * }

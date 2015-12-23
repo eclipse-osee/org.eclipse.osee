@@ -90,8 +90,8 @@ public class StringGuidsToArtifactListOperationTest {
 
    @Test
    public void test_doWork_nullClipboardData() throws OseeCoreException {
-      Operations.executeWorkAndCheckStatus(new StringGuidsToArtifactListOperation(new StringOperationLogger(), null,
-         testBranch, widgetMock_Equal));
+      Operations.executeWorkAndCheckStatus(
+         new StringGuidsToArtifactListOperation(new StringOperationLogger(), null, testBranch, widgetMock_Equal));
    }
 
    private String generateGarbageClipboardContent() {

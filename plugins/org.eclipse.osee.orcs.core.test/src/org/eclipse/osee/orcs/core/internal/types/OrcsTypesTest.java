@@ -15,6 +15,12 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.io.ByteStreams;
+import com.google.common.io.InputSupplier;
+import com.google.common.io.Resources;
+import com.google.common.util.concurrent.Callables;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -54,12 +60,6 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import com.google.common.io.ByteStreams;
-import com.google.common.io.InputSupplier;
-import com.google.common.io.Resources;
-import com.google.common.util.concurrent.Callables;
 
 /**
  * Test Case for {@link OrcsTypesImpl}
@@ -410,19 +410,19 @@ public class OrcsTypesTest {
       //@formatter:on
 
       //@formatter:off
-      String overrideArtTypes = 
+      String overrideArtTypes =
          "\n overrides artifactType \"Artifact\" {\n" +
          "      inheritAll \n" +
-         "      update attribute \"Annotation\" branchUuid "+BRANCH_A_UUID+"\n" + 
+         "      update attribute \"Annotation\" branchUuid "+BRANCH_A_UUID+"\n" +
          "}\n" +
          "\n overrides artifactType \"Other Artifact\" {\n" +
          "      inheritAll \n" +
-         "      add attribute \"Field 2\" \n" + 
+         "      add attribute \"Field 2\" \n" +
          "}\n" +
          "\n overrides artifactType \"SubSystem Requirement\" {\n" +
          "      inheritAll \n" +
-         "      remove attribute \"Field 1\" \n" + 
-         "}\n" 
+         "      remove attribute \"Field 1\" \n" +
+         "}\n"
          ;
       //@formatter:on
 
@@ -438,7 +438,8 @@ public class OrcsTypesTest {
       assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_D), NAME, ANNOTATION, FIELD_2);
       assertContains(artTypes.getAttributeTypes(OTHER_ARTIFACT, BRANCH_E), NAME, FIELD_2);
 
-      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT), NAME, WORDML, FIELD_2);
+      assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, CoreBranches.SYSTEM_ROOT), NAME, WORDML,
+         FIELD_2);
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_A), NAME, ANNOTATION, WORDML, FIELD_2);
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_B), NAME, WORDML, FIELD_2);
       assertContains(artTypes.getAttributeTypes(SUBSYSTEM_REQUIREMENT, BRANCH_C), NAME, WORDML, FIELD_2);

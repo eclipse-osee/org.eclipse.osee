@@ -69,9 +69,8 @@ public class PeerToPeerReviewManager {
       if (result.isFalse()) {
          return result;
       }
-      result =
-         transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, reviewArt, PeerToPeerReviewState.Review,
-            changes);
+      result = transitionToState(PeerToPeerReviewState.Review.getStateType(), popup, reviewArt,
+         PeerToPeerReviewState.Review, changes);
       if (result.isFalse()) {
          return result;
       }
@@ -84,9 +83,8 @@ public class PeerToPeerReviewManager {
          return result;
       }
 
-      result =
-         transitionToState(PeerToPeerReviewState.Completed.getStateType(), popup, reviewArt,
-            PeerToPeerReviewState.Completed, changes);
+      result = transitionToState(PeerToPeerReviewState.Completed.getStateType(), popup, reviewArt,
+         PeerToPeerReviewState.Completed, changes);
       if (result.isFalse()) {
          return result;
       }
@@ -94,10 +92,9 @@ public class PeerToPeerReviewManager {
    }
 
    private static Result transitionToState(StateType StateType, boolean popup, PeerToPeerReviewArtifact reviewArt, IStateToken toState, IAtsChangeSet changes) throws OseeCoreException {
-      TransitionHelper helper =
-         new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
-            Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null, changes,
-            AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt),
+         toState.getName(), Arrays.asList(reviewArt.getStateMgr().getAssignees().iterator().next()), null, changes,
+         AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
@@ -123,8 +120,8 @@ public class PeerToPeerReviewManager {
       }
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.Location, reviewMaterials);
       reviewArt.setSoleAttributeValue(AtsAttributeTypes.ReviewFormalType, ReviewFormalType.InFormal.name());
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsClientService.get().getUserService().getCurrentUser());
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -143,8 +140,8 @@ public class PeerToPeerReviewManager {
          }
          defectManager.saveToArtifact(reviewArt);
       }
-      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete,
-         true, AtsClientService.get().getUserService().getCurrentUser());
+      reviewArt.getStateMgr().updateMetrics(reviewArt.getStateDefinition(), stateHoursSpent, statePercentComplete, true,
+         AtsClientService.get().getUserService().getCurrentUser());
       return Result.TrueResult;
    }
 
@@ -160,17 +157,17 @@ public class PeerToPeerReviewManager {
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(TeamWorkFlowArtifact teamArt, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       return createNewPeerToPeerReview(
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(teamArt).getWorkDefinition(),
+         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreated(
+            teamArt).getWorkDefinition(),
          teamArt, teamArt.getTeamDefinition(), reviewTitle, againstState, createdDate, createdBy, changes);
    }
 
    public static PeerToPeerReviewArtifact createNewPeerToPeerReview(IAtsActionableItem actionableItem, String reviewTitle, String againstState, Date createdDate, IAtsUser createdBy, IAtsChangeSet changes) throws OseeCoreException {
       IAtsTeamDefinition teamDef = actionableItem.getTeamDefinitionInherited();
-      PeerToPeerReviewArtifact peerArt =
-         createNewPeerToPeerReview(
-            AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
-               actionableItem).getWorkDefinition(), null, teamDef, reviewTitle, againstState, createdDate, createdBy,
-            changes);
+      PeerToPeerReviewArtifact peerArt = createNewPeerToPeerReview(
+         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinitionForPeerToPeerReviewNotYetCreatedAndStandalone(
+            actionableItem).getWorkDefinition(),
+         null, teamDef, reviewTitle, againstState, createdDate, createdBy, changes);
       peerArt.getActionableItemsDam().addActionableItem(actionableItem);
       changes.add(peerArt);
       return peerArt;

@@ -118,20 +118,19 @@ public class STRSReport {
    }
 
    private static String[] getHeaders() {
-      String[] toReturn =
-         {
-            "Test Case",
-            "Dry Run Results:Test Points",
-            "Dry Run Results:Total Fails",
-            "DemoResults:Total Test Points",
-            "Demo: Code Problems",
-            "Script Problems",
-            "Requirements",
-            "Under Investigation",
-            "Other",
-            "Total Fails",
-            "Verification of RPCR",
-            "Commnets"};
+      String[] toReturn = {
+         "Test Case",
+         "Dry Run Results:Test Points",
+         "Dry Run Results:Total Fails",
+         "DemoResults:Total Test Points",
+         "Demo: Code Problems",
+         "Script Problems",
+         "Requirements",
+         "Under Investigation",
+         "Other",
+         "Total Fails",
+         "Verification of RPCR",
+         "Commnets"};
       return toReturn;
    }
 

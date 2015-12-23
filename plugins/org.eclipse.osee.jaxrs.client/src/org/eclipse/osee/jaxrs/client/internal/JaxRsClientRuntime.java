@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.client.internal;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.net.URI;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
@@ -27,8 +29,6 @@ import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Flows.OwnerCredentials;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Serializer;
 import org.eclipse.osee.jaxrs.client.internal.ext.OAuth2Transport;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Roberto E. Escobar

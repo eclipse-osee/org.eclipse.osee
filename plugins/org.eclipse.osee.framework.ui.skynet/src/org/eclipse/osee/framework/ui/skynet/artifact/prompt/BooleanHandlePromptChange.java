@@ -64,7 +64,8 @@ public class BooleanHandlePromptChange implements IHandlePromptChange {
    public boolean store() throws OseeCoreException {
       if (artifacts.size() > 0) {
          SkynetTransaction transaction =
-            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(), "Prompt change boolean");
+            !persist ? null : TransactionManager.createTransaction(artifacts.iterator().next().getBranch(),
+               "Prompt change boolean");
          for (Artifact artifact : artifacts) {
             artifact.setSoleAttributeValue(attributeType, dialog.getToggleState());
             if (persist) {

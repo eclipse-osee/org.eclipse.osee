@@ -265,9 +265,8 @@ public class TeamWorkFlowManager {
    public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems) throws OseeCoreException {
       IArtifactType teamWorkflowArtifactType = null;
       if (teamDef.getStoreObject() != null) {
-         String artifactTypeName =
-            ((Artifact) teamDef.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamWorkflowArtifactType,
-               null);
+         String artifactTypeName = ((Artifact) teamDef.getStoreObject()).getSoleAttributeValue(
+            AtsAttributeTypes.TeamWorkflowArtifactType, null);
          if (Strings.isValid(artifactTypeName)) {
             boolean found = false;
             for (IArtifactType type : ArtifactTypeManager.getAllTypes()) {

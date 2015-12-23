@@ -158,9 +158,8 @@ public class XBranchWidget extends GenericXWidget {
 
       createTaskActionBar(mainComp);
 
-      branchXViewer =
-         new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, branchXViewerFactory, this,
-            filterRealTime, searchRealTime);
+      branchXViewer = new BranchXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, branchXViewerFactory,
+         this, filterRealTime, searchRealTime);
       branchXViewer.setMenuListener(menuListener);
       branchXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 

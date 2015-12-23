@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 /**
  * @author Roberto E. Escobar
  */
-public class BootstrapAccount extends BaseIdentity<String> implements Account, AccountPreferences {
+public class BootstrapAccount extends BaseIdentity<String>implements Account, AccountPreferences {
 
    public BootstrapAccount() {
       super(SystemUser.BootStrap.getGuid());

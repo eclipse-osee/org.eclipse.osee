@@ -136,7 +136,8 @@ public class AttributeCheckOperation extends AbstractOperation {
                      logf("[%s] does not contain the value [%s] for [%s]", art, popularValue, attribute);
                      newValues.add(popularValue);
                      changesNeeded = true;
-                  } else if (!multipleValuesRequested && !attributeValues.equals(Collections.singletonList(popularValue))) {
+                  } else if (!multipleValuesRequested && !attributeValues.equals(
+                     Collections.singletonList(popularValue))) {
                      logf("[%s]'s value for [%s] is NOT equal to [%s]", art, attribute, popularValue);
                      newValues = Arrays.asList(popularValue);
                      changesNeeded = true;

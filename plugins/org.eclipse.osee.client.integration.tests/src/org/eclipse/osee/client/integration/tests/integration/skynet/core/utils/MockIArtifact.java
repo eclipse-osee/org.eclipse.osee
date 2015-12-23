@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 /**
  * @author Roberto E. Escobar
  */
-public class MockIArtifact extends NamedIdentity<String> implements IArtifact {
+public class MockIArtifact extends NamedIdentity<String>implements IArtifact {
 
    private boolean wasGetFullArtifactCalled;
    private final int uniqueId;

@@ -72,7 +72,8 @@ public abstract class GeneralBranchHandler extends CommandHandler {
          children.append(String.format("The following branches have children and cannot be %sd:\n", type.dialogType));
          for (Branch b : hasChildren) {
             List<Branch> branches = new LinkedList<>(b.getChildBranches(true));
-            children.append(String.format("Branch %s has children: %s\n", b.getName(), Strings.buildStatment(branches)));
+            children.append(
+               String.format("Branch %s has children: %s\n", b.getName(), Strings.buildStatment(branches)));
          }
          MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, children.toString());
       }

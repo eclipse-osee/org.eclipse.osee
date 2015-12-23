@@ -96,7 +96,7 @@ public class AtsUserServiceImpl extends AbstractAtsUserService implements IAtsUs
       List<IAtsUser> users = new ArrayList<>();
       for (Artifact user : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, AtsUtilCore.getAtsBranch())) {
          Boolean activeFlag = user.getSoleAttributeValue(CoreAttributeTypes.Active, true);
-         if (active == Active.Both || ((active == Active.Active) && activeFlag) || ((active == Active.InActive) && !activeFlag)) {
+         if (active == Active.Both || active == Active.Active && activeFlag || active == Active.InActive && !activeFlag) {
             users.add(new AtsUser((User) user));
          }
       }

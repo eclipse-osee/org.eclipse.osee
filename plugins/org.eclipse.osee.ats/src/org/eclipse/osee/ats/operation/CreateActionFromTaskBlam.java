@@ -94,7 +94,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
                   return;
                }
                Artifact artifact = artifacts.iterator().next();
-               if (!(artifact.isOfType(AtsArtifactTypes.Task))) {
+               if (!artifact.isOfType(AtsArtifactTypes.Task)) {
                   AWorkbench.popup("ERROR", "Artifact MUST be Task");
                   return;
                }
@@ -129,8 +129,8 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
             useTitle = task.getName();
          }
          ActionArtifact action =
-            ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null,
-               aias, new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+            ActionManager.createAction(monitor, useTitle, getDescription(task), changeType, priority, false, null, aias,
+               new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
          for (TeamWorkFlowArtifact teamArt : action.getTeams()) {
             newTeamArts.add(teamArt);
@@ -172,12 +172,14 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
       //
       "<XWidget displayName=\"" + CHANGE_TYPE + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-         AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ChangeType)) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
-      //
-      "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
-         AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.PriorityType)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
-      //
-      "</xWidgets>";
+         AttributeTypeManager.getEnumerationValues(
+            AtsAttributeTypes.ChangeType)) + ")\" required=\"true\" horizontalLabel=\"true\" toolTip=\"" + AtsAttributeTypes.ChangeType.getDescription() + "\"/>" +
+            //
+            "<XWidget displayName=\"" + PRIORITY + "\" xwidgetType=\"XCombo(" + Collections.toString(",",
+               AttributeTypeManager.getEnumerationValues(
+                  AtsAttributeTypes.PriorityType)) + ")\" required=\"true\" horizontalLabel=\"true\"/>" +
+                  //
+                  "</xWidgets>";
    }
 
    /**

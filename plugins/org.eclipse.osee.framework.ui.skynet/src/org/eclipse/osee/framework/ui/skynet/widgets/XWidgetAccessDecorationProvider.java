@@ -55,9 +55,8 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          PermissionStatus permissionStatus = new PermissionStatus();
          try {
             Artifact artifact = attributeWidget.getArtifact();
-            permissionStatus =
-               policyHandlerService.hasAttributeTypePermission(Collections.singletonList(artifact), attributeType,
-                  PermissionEnum.WRITE, Level.FINE);
+            permissionStatus = policyHandlerService.hasAttributeTypePermission(Collections.singletonList(artifact),
+               attributeType, PermissionEnum.WRITE, Level.FINE);
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

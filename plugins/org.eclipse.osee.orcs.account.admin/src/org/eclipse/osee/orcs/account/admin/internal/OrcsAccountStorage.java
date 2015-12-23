@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -36,8 +38,6 @@ import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.utility.OrcsUtil;
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 
 /**
  * @author Roberto E. Escobar

@@ -136,7 +136,7 @@ public class ChangeDataLoader extends AbstractOperation {
             endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          }
          Artifact baseTxArtifact;
-         if ((baseGamma != null) && baseGamma.equals(destGamma)) {
+         if (baseGamma != null && baseGamma.equals(destGamma)) {
             // change must be only on IS branch
             baseTxArtifact = startTxArtifact;
          } else {

@@ -48,7 +48,8 @@ public final class WordMLNewLineMakerRuleTest {
          Assert.fail("Unable to process the file, " + "WordMLNewLineMaker threw an IOException...");
       } catch (IllegalCharsetNameException illegalName) {
          System.err.println("Error: " + illegalName.getMessage());
-         Assert.fail("Illegal charset name specified, " + "WordMLNewLineMaker threw an " + "IllegalCharsetNameException...");
+         Assert.fail(
+            "Illegal charset name specified, " + "WordMLNewLineMaker threw an " + "IllegalCharsetNameException...");
       } catch (UnsupportedCharsetException unsupportedEx) {
          System.err.println("Error: " + unsupportedEx.getMessage());
          Assert.fail("Unsupported charset, " + "WordMLNewLineMaker threw an " + "UnsupportedCharsetException...");

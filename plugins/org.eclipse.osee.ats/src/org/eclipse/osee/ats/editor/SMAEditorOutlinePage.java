@@ -95,7 +95,7 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
             if (editor != null && getTreeViewer() != null && Widgets.isAccessible(getTreeViewer().getTree())) {
                getTreeViewer().setInput(editor);
                try {
-                  AbstractWorkflowArtifact awa = (editor).getAwa();
+                  AbstractWorkflowArtifact awa = editor.getAwa();
                   if (awa != null) {
                      IAtsStateDefinition stateDef = WorkflowManager.getCurrentAtsWorkPage(awa).getStateDefinition();
                      StructuredSelection newSelection = new StructuredSelection(Arrays.asList(stateDef));
@@ -369,7 +369,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
          items.add("On Event: " + ((IAtsDecisionReviewDefinition) element).getStateEventType().name());
          items.add("Related To State: " + ((IAtsDecisionReviewDefinition) element).getRelatedToState());
          items.add("Review Blocks: " + ((IAtsDecisionReviewDefinition) element).getBlockingType().name());
-         items.add("Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
+         items.add(
+            "Auto Transition to Decision: " + ((IAtsDecisionReviewDefinition) element).isAutoTransitionToDecision());
          for (String userId : ((IAtsDecisionReviewDefinition) element).getAssignees()) {
             try {
                add(items, AtsClientService.get().getUserService().getUserById(userId));
@@ -428,7 +429,8 @@ public class SMAEditorOutlinePage extends ContentOutlinePage {
                IAtsUser user = AtsClientService.get().getUserService().getUserByName(userName);
                add(items, user);
             } catch (OseeCoreException ex) {
-               items.add(String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
+               items.add(
+                  String.format("Erroring getting user by name [%s] : [%s]", userName, ex.getLocalizedMessage()));
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }

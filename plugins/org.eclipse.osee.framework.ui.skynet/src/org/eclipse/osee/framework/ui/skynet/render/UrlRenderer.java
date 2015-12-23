@@ -32,7 +32,8 @@ public class UrlRenderer extends DefaultArtifactRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
-      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED, PRODUCE_ATTRIBUTE) && aArtifact.isAttributeTypeValid(ContentUrl)) {
+      if (!presentationType.matches(GENERALIZED_EDIT, GENERAL_REQUESTED,
+         PRODUCE_ATTRIBUTE) && aArtifact.isAttributeTypeValid(ContentUrl)) {
          return SUBTYPE_TYPE_MATCH;
       }
       return NO_MATCH;

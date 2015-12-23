@@ -92,6 +92,7 @@ public class DispoSourceFileResource {
       };
       String contentDisposition =
          String.format("attachment; filename=\"%s\"; creation-date=\"%s\"", fileName, new Date());
-      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type("application/text").build();
+      return Response.ok(streamingOutput).header("Content-Disposition", contentDisposition).type(
+         "application/text").build();
    }
 }

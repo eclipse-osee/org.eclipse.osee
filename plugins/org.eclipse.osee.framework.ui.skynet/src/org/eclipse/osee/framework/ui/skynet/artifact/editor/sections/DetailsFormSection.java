@@ -106,7 +106,8 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          try {
             FontData systemFont = browser.getDisplay().getSystemFont().getFontData()[0];
             Map<String, String> detailsKeyValues = Artifacts.getDetailsKeyValues(getEditorInput().getArtifact());
-            browser.setText(Artifacts.getDetailsFormText(detailsKeyValues, systemFont.getName(), systemFont.getHeight()));
+            browser.setText(
+               Artifacts.getDetailsFormText(detailsKeyValues, systemFont.getName(), systemFont.getHeight()));
          } catch (Exception ex) {
             browser.setText(Lib.exceptionToString(ex));
          }

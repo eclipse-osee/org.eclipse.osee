@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
  */
 public final class AtsBranchAccessContextId {
 
-   public static final IAccessContextId DENY_CONTEXT = TokenFactory.createAccessContextId("ABcgU0QxFG_cQU4Ph1wA",
-      "ats.branchobject.deny");
+   public static final IAccessContextId DENY_CONTEXT =
+      TokenFactory.createAccessContextId("ABcgU0QxFG_cQU4Ph1wA", "ats.branchobject.deny");
 
    private AtsBranchAccessContextId() {
       // Branch Object Contexts;

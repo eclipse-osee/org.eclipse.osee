@@ -35,8 +35,8 @@ public class MergeXViewerFactory extends SkynetXViewerFactory {
       "Destination Value", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public final static XViewerColumn Merged = new XViewerColumn("framework.merge.mergedValue", "Merged Value", 100,
       SWT.LEFT, true, SortDataType.String, false, null);
-   public final static XViewerColumn Art_Id = new XViewerColumn("framework.merge.artId", "Artifact Id", 75, SWT.LEFT,
-      true, SortDataType.String, false, null);
+   public final static XViewerColumn Art_Id =
+      new XViewerColumn("framework.merge.artId", "Artifact Id", 75, SWT.LEFT, true, SortDataType.String, false, null);
 
    public MergeXViewerFactory() {
       super("osee.skynet.gui.MergeXViewer");

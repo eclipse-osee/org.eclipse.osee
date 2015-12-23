@@ -102,9 +102,8 @@ public class AtsExportActionTest {
       AtsExportAction exporter = new AtsExportAction();
       exporter.setPopup(false);
       TeamWorkFlowArtifact codeWf1 = DemoUtil.getSawCodeCommittedWf();
-      List<ExportOption> exportOptions =
-         Arrays.asList(ExportOption.SAVE_INTO_SEPARATE_FILES, ExportOption.AS_HTML_TO_FILE,
-            ExportOption.INCLUDE_TASKLIST);
+      List<ExportOption> exportOptions = Arrays.asList(ExportOption.SAVE_INTO_SEPARATE_FILES,
+         ExportOption.AS_HTML_TO_FILE, ExportOption.INCLUDE_TASKLIST);
       IFolder toDir = getTestFolderOrCreate();
       Result result = exporter.export(Arrays.asList(codeWf1), exportOptions, toDir.getLocation().toOSString());
       Assert.assertTrue(result.getText(), result.isTrue());

@@ -29,8 +29,7 @@ public class ProjectModuleReports implements IAtsNavigateItem {
    public List<XNavigateItem> getNavigateItems(final XNavigateItem parentItem) {
       XNavigateItem parent = new XNavigateItem(parentItem, PROJECT_REPORTS, AtsImage.REPORT);
       ExtensionDefinedObjects<AtsReport<?, ?>> atsReports =
-         new ExtensionDefinedObjects<AtsReport<?, ?>>(EXTENSION_POINT_ID, EXTENSION_POINT_NAME,
-            CLASSNAME, true);
+         new ExtensionDefinedObjects<AtsReport<?, ?>>(EXTENSION_POINT_ID, EXTENSION_POINT_NAME, CLASSNAME, true);
       for (AtsReport<?, ?> reportItem : atsReports.getObjects()) {
          createReportItem(parent, reportItem);
       }

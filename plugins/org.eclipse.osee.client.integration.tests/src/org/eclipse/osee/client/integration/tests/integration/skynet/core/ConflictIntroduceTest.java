@@ -86,9 +86,8 @@ public class ConflictIntroduceTest {
    @Test
    public void testIntroduceNoConflict() {
       // Introduce the artifact
-      InterArtifactExplorerDropHandlerOperation dropHandler =
-         new InterArtifactExplorerDropHandlerOperation(
-            OseeSystemArtifacts.getDefaultHierarchyRootArtifact(sourceBranch), new Artifact[] {artifactToDelete}, false);
+      InterArtifactExplorerDropHandlerOperation dropHandler = new InterArtifactExplorerDropHandlerOperation(
+         OseeSystemArtifacts.getDefaultHierarchyRootArtifact(sourceBranch), new Artifact[] {artifactToDelete}, false);
       Operations.executeWork(dropHandler);
       // Acquire the introduced artifact
       Artifact destArtifact = ArtifactQuery.getArtifactFromId(artifactToDelete.getArtId(), sourceBranch);
@@ -99,9 +98,8 @@ public class ConflictIntroduceTest {
       Branch sBranch = BranchManager.getBranch(sourceBranch);
       Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch, BranchManager.getBaseTransaction(sBranch),
-               new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
+            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -111,16 +109,14 @@ public class ConflictIntroduceTest {
    @Test
    public void testModifiedButDeletedConflict() {
 
-      Artifact artifactToModify =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Cognitive_Decision_Aiding",
-            destinationBranch);
+      Artifact artifactToModify = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+         "Cognitive_Decision_Aiding", destinationBranch);
       assertNotNull(artifactToModify);
       artifactToModify.setSoleAttributeFromString(CoreAttributeTypes.Name, "Cognitive_Decision_Aiding2");
       artifactToModify.persist(TESTNAME);
 
-      Artifact dArtifact =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, "Cognitive_Decision_Aiding",
-            sourceBranch);
+      Artifact dArtifact = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+         "Cognitive_Decision_Aiding", sourceBranch);
       assertNotNull(dArtifact);
       dArtifact.deleteAndPersist();
 
@@ -129,9 +125,8 @@ public class ConflictIntroduceTest {
       Branch sBranch = BranchManager.getBranch(sourceBranch);
       Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch, BranchManager.getBaseTransaction(sBranch),
-               new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
+            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }
@@ -156,9 +151,8 @@ public class ConflictIntroduceTest {
       Branch sBranch = BranchManager.getBranch(sourceBranch);
       Branch dBranch = BranchManager.getBranch(destinationBranch);
       try {
-         conflicts =
-            ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch, BranchManager.getBaseTransaction(sBranch),
-               new NullProgressMonitor());
+         conflicts = ConflictManagerInternal.getConflictsPerBranch(sBranch, dBranch,
+            BranchManager.getBaseTransaction(sBranch), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
       }

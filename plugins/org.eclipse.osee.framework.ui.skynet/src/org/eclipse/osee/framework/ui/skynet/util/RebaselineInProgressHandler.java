@@ -33,9 +33,8 @@ public class RebaselineInProgressHandler {
    private final static String[] CHOICES = new String[] {"Finish Update", "Abort Update", "Cancel"};
 
    public static void handleRebaselineInProgress(Branch branch) throws OseeCoreException {
-      MessageDialog dialog =
-         new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), TITLE, null, DIALOG,
-            MessageDialog.QUESTION, CHOICES, 0);
+      MessageDialog dialog = new MessageDialog(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), TITLE,
+         null, DIALOG, MessageDialog.QUESTION, CHOICES, 0);
       int result = dialog.open();
       if (result == 2) { // Cancel
          return;
@@ -64,9 +63,8 @@ public class RebaselineInProgressHandler {
 
    private static boolean promptUser(Branch sourceBranch) {
       final MutableBoolean isUserSure = new MutableBoolean(false);
-      final String message =
-         String.format("Are you sure you want to Abondon the Update for [%s].  Any resolved conflicts will be lost.",
-            sourceBranch);
+      final String message = String.format(
+         "Are you sure you want to Abondon the Update for [%s].  Any resolved conflicts will be lost.", sourceBranch);
 
       Displays.pendInDisplayThread(new Runnable() {
          @Override

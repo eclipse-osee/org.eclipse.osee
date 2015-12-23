@@ -194,10 +194,10 @@ public class AtsMetricsComposite extends ScrolledComposite {
       List<XBarGraphLine> lines = new ArrayList<>();
 
       lines.add(XBarGraphLine.getTextLine("Loaded", sMet.toStringObjectBreakout()));
-      lines.add(XBarGraphLine.getTextLineRedIfTrue(
-         "Workflows",
+      lines.add(XBarGraphLine.getTextLineRedIfTrue("Workflows",
          String.format("Estimates off %d workflows with %d having 0 estimates.", sMet.getNumSMAs(),
-            sMet.getNumNotEstimated()), sMet.getNumNotEstimated() > 0));
+            sMet.getNumNotEstimated()),
+         sMet.getNumNotEstimated() > 0));
 
       lines.add(XBarGraphLine.getPercentLine(
          "By Workflow Percents (" + sMet.getCummulativeWorkflowPercentComplete() + "/" + sMet.getNumSMAs() + ")",
@@ -207,26 +207,22 @@ public class AtsMetricsComposite extends ScrolledComposite {
          (int) sMet.getPercentCompleteByWorkflow()));
 
       lines.add(XBarGraphLine.getTextLine("Estimated Hours: ", String.format("%5.2f Hours", sMet.getEstHours())));
-      lines.add(XBarGraphLine.getTextLine(
-         "Remaining Hours: ",
+      lines.add(XBarGraphLine.getTextLine("Remaining Hours: ",
          String.format("%5.2f Hours = (Estimated hours %5.2f - (Estimated hours %5.2f x Percent Complete %5.2f))",
             sMet.getHrsRemainFromEstimates(), sMet.getEstHours(), sMet.getEstHours(),
             sMet.getPercentCompleteByWorkflowPercents())));
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
       lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ",
          String.format("%5.2f Hours per Day", sMet.getHoursPerManDay())));
-      lines.add(XBarGraphLine.getTextLine(
-         "Work Days Needed: ",
+      lines.add(XBarGraphLine.getTextLine("Work Days Needed: ",
          String.format("%5.2f Days = Remaining Hours %5.2f / Hours Per Day of %5.2f", sMet.getManDaysNeeded(),
             sMet.getHrsRemainFromEstimates(), sMet.getHoursPerManDay())));
 
       try {
-         lines.add(new XBarGraphLine(
-            "Targeted Version",
-            0,
+         lines.add(new XBarGraphLine("Targeted Version", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getName()));
          String estimatedReleaseDateStr =
-            (iAtsMetricsProvider.getMetricsVersion() == null || iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate() == null) ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate().toString();
+            iAtsMetricsProvider.getMetricsVersion() == null || iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate() == null ? "Not Set" : iAtsMetricsProvider.getMetricsVersion().getEstimatedReleaseDate().toString();
          lines.add(new XBarGraphLine("Targeted Version - Estimated Release Date", 0,
             iAtsMetricsProvider.getMetricsVersion() == null ? "Not Set" : estimatedReleaseDateStr));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
@@ -245,14 +241,14 @@ public class AtsMetricsComposite extends ScrolledComposite {
             lines.add(new XBarGraphLine("Release Effort Remaining", 0, "Estimated Release Date Not Set"));
          } else if (hoursRemainingFromEstimates > hoursTillRelease) {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_RED_FOREGROUND,
-               XBarGraphLine.DEFAULT_RED_BACKGROUND, 100, String.format(
-                  "%5.2f hours exceeds remaining release hours %5.2f;  Over by %5.2f hours.",
+               XBarGraphLine.DEFAULT_RED_BACKGROUND, 100,
+               String.format("%5.2f hours exceeds remaining release hours %5.2f;  Over by %5.2f hours.",
                   hoursRemainingFromEstimates, hoursTillRelease, hoursRemainingFromEstimates - hoursTillRelease)));
          } else {
             lines.add(new XBarGraphLine("Release Effort Remaining", XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
-               XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent, String.format(
-                  "%5.2f remaining work hours", hoursRemainingFromEstimates), String.format(
-                  "%5.2f release remaining hours", hoursRemainingFromEstimates)));
+               XBarGraphLine.DEFAULT_GREEN_BACKGROUND, SWT.COLOR_WHITE, SWT.COLOR_WHITE, percent,
+               String.format("%5.2f remaining work hours", hoursRemainingFromEstimates),
+               String.format("%5.2f release remaining hours", hoursRemainingFromEstimates)));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -276,9 +272,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
             if (sMet.getUserToAssignedSmas().getValues(user) != null) {
                for (Artifact awa : sMet.getUserToAssignedSmas().getValues(user)) {
                   if (!processedArts.contains(awa) && !sMet.getUserToCompletedSmas().containsValue(awa)) {
-                     cummulativePercentComplete +=
-                        PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
-                           AtsClientService.get().getServices());
+                     cummulativePercentComplete += PercentCompleteTotalUtil.getPercentCompleteTotal((IAtsWorkItem) awa,
+                        AtsClientService.get().getServices());
                      processedArts.add(awa);
                   }
                }
@@ -311,9 +306,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
             lines.add(XBarGraphLine.getTextLine(user.getName(), "Exception: " + ex.getLocalizedMessage()));
          }
       }
-      XBarGraphTable table =
-         new XBarGraphTable("Completed by Assignee per Assigned Workflow (Team, Task and Review)", "User",
-            "Percent Complete", lines);
+      XBarGraphTable table = new XBarGraphTable("Completed by Assignee per Assigned Workflow (Team, Task and Review)",
+         "User", "Percent Complete", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);
@@ -339,23 +333,23 @@ public class AtsMetricsComposite extends ScrolledComposite {
                }
             }
             if (sMet.getEstRelDate() == null) {
-               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format(
-                  "%5.2f - (Estimated release date not set)", userHoursRemain)));
+               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain,
+                  String.format("%5.2f - (Estimated release date not set)", userHoursRemain)));
             } else if (hoursRemain == null) {
-               lines.add(new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f",
-                  userHoursRemain)));
+               lines.add(
+                  new XBarGraphLine(user.getName(), (int) userHoursRemain, String.format("%5.2f", userHoursRemain)));
             } else {
                if (userHoursRemain == 0.0) {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
                      XBarGraphLine.DEFAULT_GREEN_BACKGROUND, 100, "No Estimated Hours Remain"));
                } else if (userHoursRemain > hoursRemain) {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_RED_FOREGROUND,
-                     XBarGraphLine.DEFAULT_RED_BACKGROUND, ((int) userHoursRemain > 1 ? (int) userHoursRemain : 1),
+                     XBarGraphLine.DEFAULT_RED_BACKGROUND, (int) userHoursRemain > 1 ? (int) userHoursRemain : 1,
                      String.format("%5.2f - Exceeds release remaining hours %5.2f.", userHoursRemain, hoursRemain)));
                } else {
                   lines.add(new XBarGraphLine(user.getName(), XBarGraphLine.DEFAULT_GREEN_FOREGROUND,
-                     XBarGraphLine.DEFAULT_GREEN_BACKGROUND, (int) userHoursRemain, String.format(
-                        "%5.2f - Within remaining hours %5.2f.", userHoursRemain, hoursRemain)));
+                     XBarGraphLine.DEFAULT_GREEN_BACKGROUND, (int) userHoursRemain,
+                     String.format("%5.2f - Within remaining hours %5.2f.", userHoursRemain, hoursRemain)));
                }
             }
          } catch (OseeCoreException ex) {
@@ -363,10 +357,9 @@ public class AtsMetricsComposite extends ScrolledComposite {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
-      XBarGraphTable table =
-         new XBarGraphTable(
-            "Hours Remaining by Assignee (green = within remaining hours; red = exceeds remaining hours till release)",
-            "User", "Hours Remaining", lines);
+      XBarGraphTable table = new XBarGraphTable(
+         "Hours Remaining by Assignee (green = within remaining hours; red = exceeds remaining hours till release)",
+         "User", "Hours Remaining", lines);
       table.setFillHorizontally(true);
       table.createWidgets(parent, 1);
       adapt(table);

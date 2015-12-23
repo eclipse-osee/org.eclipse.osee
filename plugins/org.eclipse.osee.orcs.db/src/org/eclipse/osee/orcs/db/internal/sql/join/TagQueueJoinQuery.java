@@ -59,7 +59,7 @@ public final class TagQueueJoinQuery extends AbstractJoinQuery {
          final int prime = 31;
          int result = 1;
          result = prime * result + getOuterType().hashCode();
-         result = prime * result + ((gammaId == null) ? 0 : gammaId.hashCode());
+         result = prime * result + (gammaId == null ? 0 : gammaId.hashCode());
          return result;
       }
 

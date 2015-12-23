@@ -97,13 +97,13 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
             return true;
          }
       }
-      StringListDialog dialog =
-         new StringListDialog("Select new access level", "Select new access level",
-            Arrays.asList(PermissionEnum.getPermissionNames()));
+      StringListDialog dialog = new StringListDialog("Select new access level", "Select new access level",
+         Arrays.asList(PermissionEnum.getPermissionNames()));
       if (dialog.open() != Window.CANCEL) {
          String newState = dialog.getSelectedState();
          PermissionEnum newStateEnum = PermissionEnum.getPermission(newState);
-         if ((newStateEnum != null) && (PermissionEnum.getMostRestrictive(newStateEnum, maxPermission).equals(newStateEnum))) {
+         if (newStateEnum != null && PermissionEnum.getMostRestrictive(newStateEnum, maxPermission).equals(
+            newStateEnum)) {
             for (AccessControlData data : userData) {
                tableViewer.modifyPermissionLevel(data, newStateEnum);
             }

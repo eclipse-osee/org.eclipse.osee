@@ -150,8 +150,8 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    /**
     * Return ONLY leads configured for this Depending on the use, like creating new actions, the assignees (or Leads)
     * are determined first from users configured as leads of individual actionable items and only if that returns no
-    * leads, THEN default to using the leads configured for the TeamDefinition. In these cases, use
-    * getLeads(Collection<IAtsActionableItem>) instead.
+    * leads, THEN default to using the leads configured for the TeamDefinition. In these cases, use getLeads(Collection
+    * <IAtsActionableItem>) instead.
     * 
     * @return users configured as leads for this IAtsTeamDefinition
     */
@@ -231,7 +231,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       for (IAtsVersion version : getVersions()) {
          if (version.isReleased() && (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both)) {
             versions.add(version);
-         } else if ((!version.isReleased() && releaseType == VersionReleaseType.UnReleased) || releaseType == VersionReleaseType.Both) {
+         } else if (!version.isReleased() && releaseType == VersionReleaseType.UnReleased || releaseType == VersionReleaseType.Both) {
             versions.add(version);
          }
       }
@@ -244,7 +244,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
       for (IAtsVersion version : getVersions()) {
          if (version.isVersionLocked() && (lockType == VersionLockedType.Locked || lockType == VersionLockedType.Both)) {
             versions.add(version);
-         } else if ((!version.isVersionLocked() && lockType == VersionLockedType.UnLocked) || lockType == VersionLockedType.Both) {
+         } else if (!version.isVersionLocked() && lockType == VersionLockedType.UnLocked || lockType == VersionLockedType.Both) {
             versions.add(version);
          }
       }

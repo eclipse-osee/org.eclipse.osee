@@ -59,13 +59,8 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    private static final String REMOVE_NOT_ADDRESSED_GAMMAS =
       "DELETE FROM osee_txs WHERE gamma_id = ? AND transaction_id = ?";
 
-   private static final String[] COLUMN_HEADER = {
-      "Gamma Id",
-      "Transaction Id",
-      "Branch Uuid",
-      "Art id",
-      "Attribute Id",
-      "Rel Link Id"};
+   private static final String[] COLUMN_HEADER =
+      {"Gamma Id", "Transaction Id", "Branch Uuid", "Art id", "Attribute Id", "Rel Link Id"};
 
    private Set<LocalValues> addressing = null;
 
@@ -78,9 +73,9 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       try {
          chStmt.runPreparedQuery(sql, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
          while (chStmt.next()) {
-            addressing.add(new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"),
-               chStmt.getLong("branch_id"), chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"),
-               chStmt.getInt("transaction_id")));
+            addressing.add(
+               new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"), chStmt.getLong("branch_id"),
+                  chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"), chStmt.getInt("transaction_id")));
          }
       } finally {
          chStmt.close();

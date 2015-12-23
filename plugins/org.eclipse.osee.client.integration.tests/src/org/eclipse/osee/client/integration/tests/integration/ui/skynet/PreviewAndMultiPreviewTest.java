@@ -60,8 +60,8 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testPreview() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1a"));
       parentArtifact.addChild(childArt);
@@ -74,8 +74,8 @@ public class PreviewAndMultiPreviewTest {
 
    @Test
    public void testPreviewUsingRendererManager() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, SAW_Bld_1, addPrefix("1b"));
       parentArtifact.addChild(childArt);
@@ -90,21 +90,22 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testPreviewWithChildren() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1c"));
       parentArtifact.addChild(childArt);
 
       parentArtifact.persist(getClass().getSimpleName());
 
-      RendererManager.open(parentArtifact, PresentationType.PREVIEW, ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
+      RendererManager.open(parentArtifact, PresentationType.PREVIEW,
+         ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR);
    }
 
    @Test
    public void testPreviewWithChildrenUsingRendererManager() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact childArt = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("1d"));
       parentArtifact.addChild(childArt);
@@ -119,8 +120,8 @@ public class PreviewAndMultiPreviewTest {
     */
    @Test
    public void testPreviewWithChildrenUsingRendererManagerFault() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact childArt = createArtifact(CoreArtifactTypes.GeneralDocument, SAW_Bld_1, addPrefix("1f"));
       parentArtifact.addChild(childArt);
@@ -149,8 +150,8 @@ public class PreviewAndMultiPreviewTest {
 
    @Test
    public void testMultiPreviewUsingRendererManager() throws Exception {
-      Artifact parentArtifact =
-         createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, PreviewAndMultiPreviewTest.class.getSimpleName());
+      Artifact parentArtifact = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1,
+         PreviewAndMultiPreviewTest.class.getSimpleName());
 
       Artifact multiArt1 = createArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, addPrefix("3o"));
       parentArtifact.addChild(multiArt1);

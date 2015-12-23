@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.cluster.hazelcast.internal;
 
+import com.hazelcast.core.MapEntry;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -18,7 +19,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import org.eclipse.osee.distributed.DistributedMap;
 import org.eclipse.osee.distributed.Predicate;
-import com.hazelcast.core.MapEntry;
 
 /**
  * @author Roberto E. Escobar

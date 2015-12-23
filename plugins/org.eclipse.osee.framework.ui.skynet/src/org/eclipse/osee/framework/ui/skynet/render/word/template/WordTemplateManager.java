@@ -33,12 +33,12 @@ public class WordTemplateManager {
    //    private static final Matcher headElementsMatcher =
    //         Pattern.compile("<((\\w+:)(Artifact|Extension_Processor))>(.*?)</\\1>",
    //               Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   //	
+   //
    //    private static final Matcher artifactMatcher = Pattern.compile(
    //          "<\\w+?:Artifact>(.*?)</\\w+?:Artifact>",
    //          Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE)
    //          .matcher("");
-   //	
+   //
    //	private static final Matcher internalMatcher = Pattern.compile(
    //			"<\\w*?(Label|Outline|Name|Format|Editable)>(.*?)</\\1>",
    //			Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE)
@@ -48,16 +48,16 @@ public class WordTemplateManager {
    //			Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE)
    //			.matcher("");
 
-   private static final Matcher setNameMatcher = Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>",
-      Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher headElementsMatcher = Pattern.compile(
-      "<((\\w+:)?(Artifact|Extension_Processor))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher setNameMatcher =
+      Pattern.compile("<(\\w+:)?Set_Name>(.*?)</(\\w+:)?Set_Name>", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher headElementsMatcher =
+      Pattern.compile("<((\\w+:)?(Artifact|Extension_Processor))>(.*?)</\\1>",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private static final Matcher attributeElementsMatcher = Pattern.compile("<((\\w+:)?(Attribute))>(.*?)</\\3>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
-   private static final Matcher internalAttributeElementsMatcher = Pattern.compile(
-      "<((\\w+:)?(Label|Outline|Name|Format|Editable|ParagraphWrap))>(.*?)</\\1>",
-      Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private static final Matcher internalAttributeElementsMatcher =
+      Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable|ParagraphWrap))>(.*?)</\\1>",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher("");
 
    enum XmlAttributeType {
       Label,
@@ -185,9 +185,8 @@ public class WordTemplateManager {
                if (artifactProcessingTask.isOutlining()) {
                   performedOutLining = true;
 
-                  String headingText =
-                     artifact.getSoleAttributeValue(
-                        AttributeTypeManager.getType(artifactProcessingTask.getHeadingAttributeName()), "");
+                  String headingText = artifact.getSoleAttributeValue(
+                     AttributeTypeManager.getType(artifactProcessingTask.getHeadingAttributeName()), "");
                   wordMl.startOutlineSubSection("Times New Roman", headingText, null);
                }
 
@@ -242,9 +241,8 @@ public class WordTemplateManager {
    }
 
    private String peekAtFirstArtifactToGetParagraphNumber(String template, List<Artifact> artifacts) throws OseeCoreException {
-      Pattern headElementsPattern =
-         Pattern.compile("<((\\w+:)?(Artifact|Extension_Processor))>(.*?)</\\1>",
-            Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
+      Pattern headElementsPattern = Pattern.compile("<((\\w+:)?(Artifact|Extension_Processor))>(.*?)</\\1>",
+         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
       String startParagraphNumber = "1";
       Matcher matcher = headElementsPattern.matcher(template);
 

@@ -59,7 +59,8 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                   TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) art;
                   if (AtsClientService.get().getBranchService().isCommittedBranchExists(teamArt)) {
-                     AWorkbench.popup("Committed branch already exists. Can not create another working branch once changes have been committed.");
+                     AWorkbench.popup(
+                        "Committed branch already exists. Can not create another working branch once changes have been committed.");
                      return;
                   }
                   AtsBranchUtil.createWorkingBranch(teamArt, parentTransactionId, true);

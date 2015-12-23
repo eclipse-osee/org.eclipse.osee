@@ -66,7 +66,7 @@ public class DoorsBestFitArtifactResolver extends NewArtifactImportResolver {
    }
 
    private boolean legacyIdsMatch(RoughArtifact roughArt, Artifact realArt) {
-      // if the roughArtifact contains all of the sys specs that the real artifact has, 
+      // if the roughArtifact contains all of the sys specs that the real artifact has,
       // even if it has more, then it matches
       boolean allContained = true;
       String legacyIds = realArt.getSoleAttributeValueAsString(CoreAttributeTypes.LegacyId, "");

@@ -122,9 +122,8 @@ public class FindInWorkspaceOperation extends AbstractOperation {
 
       final NullProgressMonitor subMonitor = new NullProgressMonitor();
 
-      SearchPattern searchPattern =
-         SearchPattern.createPattern("ObjectId", IJavaSearchConstants.ANNOTATION_TYPE,
-            IJavaSearchConstants.ANNOTATION_TYPE_REFERENCE, SearchPattern.R_PATTERN_MATCH);
+      SearchPattern searchPattern = SearchPattern.createPattern("ObjectId", IJavaSearchConstants.ANNOTATION_TYPE,
+         IJavaSearchConstants.ANNOTATION_TYPE_REFERENCE, SearchPattern.R_PATTERN_MATCH);
 
       IJavaSearchScope workspaceScope = SearchEngine.createWorkspaceScope();
       SearchRequestor requestor = new SearchRequestor() {

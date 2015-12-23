@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -32,8 +34,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
 import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * Filter used to protect resource server end-points. This filter is used when the resource server is not located in the

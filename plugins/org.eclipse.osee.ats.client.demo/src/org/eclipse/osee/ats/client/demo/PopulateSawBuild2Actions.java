@@ -104,14 +104,12 @@ public class PopulateSawBuild2Actions {
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionArtifact actionArt =
-         ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, changes);
+      ActionArtifact actionArt = ActionManager.createAction(null, title, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
-         TeamWorkFlowManager dtwm =
-            new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-               TransitionOption.OverrideTransitionValidityCheck);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
+            TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
@@ -121,7 +119,7 @@ public class PopulateSawBuild2Actions {
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
-            // Reset assignees that may have been overwritten during transition 
+            // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
@@ -133,19 +131,17 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action3_createNoBranchAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (no-branch) Even More Requirement Changes for Diagram View";
-      Collection<IAtsActionableItem> aias =
-         DemoDbUtil.getActionableItems(new String[] {
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()});
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
+         DemoDbAIs.SAW_Code.getAIName(),
+         DemoDbAIs.SAW_SW_Design.getAIName(),
+         DemoDbAIs.SAW_Requirements.getAIName(),
+         DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionArtifact actionArt =
-         ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, changes);
+      ActionArtifact actionArt = ActionManager.createAction(null, title, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -172,12 +168,12 @@ public class PopulateSawBuild2Actions {
             // transition to authorize
             result = dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
-               throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
-                  teamWf.toStringWithId(), toState.getName(), result.getText());
+               throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]", teamWf.toStringWithId(),
+                  toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 2) {
-               throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
-                  teamWf).size());
+               throw new OseeCoreException(
+                  "Error, 2 reviews should exist instead of " + ReviewManager.getReviews(teamWf).size());
             }
 
             // set reviews to non-blocking
@@ -193,7 +189,7 @@ public class PopulateSawBuild2Actions {
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
-            // Reset assignees that may have been overwritten during transition 
+            // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
@@ -205,19 +201,17 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action2_createUnCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (uncommitted) More Reqt Changes for Diagram View";
-      Collection<IAtsActionableItem> aias =
-         DemoDbUtil.getActionableItems(new String[] {
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_SW_Design.getAIName(),
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()});
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
+         DemoDbAIs.SAW_Code.getAIName(),
+         DemoDbAIs.SAW_SW_Design.getAIName(),
+         DemoDbAIs.SAW_Requirements.getAIName(),
+         DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "3";
 
-      ActionArtifact actionArt =
-         ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, changes);
+      ActionArtifact actionArt = ActionManager.createAction(null, title, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
@@ -245,12 +239,12 @@ public class PopulateSawBuild2Actions {
             // transition to authorize
             result = dtwm.transitionTo(TeamState.Authorize, teamWf.getAssignees().iterator().next(), false, changes);
             if (result.isFalse()) {
-               throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]",
-                  teamWf.toStringWithId(), toState.getName(), result.getText());
+               throw new OseeCoreException("Error transitioning [%s] to Authorize state: [%s]", teamWf.toStringWithId(),
+                  toState.getName(), result.getText());
             }
             if (ReviewManager.getReviews(teamWf).size() != 2) {
-               throw new OseeCoreException("Error, 2 reviews should exist instead of " + ReviewManager.getReviews(
-                  teamWf).size());
+               throw new OseeCoreException(
+                  "Error, 2 reviews should exist instead of " + ReviewManager.getReviews(teamWf).size());
             }
 
             // set reviews to non-blocking
@@ -267,7 +261,7 @@ public class PopulateSawBuild2Actions {
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
-            // Reset assignees that may have been overwritten during transition 
+            // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
@@ -279,41 +273,38 @@ public class PopulateSawBuild2Actions {
 
    private static ActionArtifact sawBuild2Action1_createCommittedAction(IAtsChangeSet changes) throws OseeCoreException {
       String title = "SAW (committed) Reqt Changes for Diagram View";
-      Collection<IAtsActionableItem> aias =
-         DemoDbUtil.getActionableItems(new String[] {
-            DemoDbAIs.SAW_Requirements.getAIName(),
-            DemoDbAIs.SAW_Code.getAIName(),
-            DemoDbAIs.SAW_Test.getAIName()});
+      Collection<IAtsActionableItem> aias = DemoDbUtil.getActionableItems(new String[] {
+         DemoDbAIs.SAW_Requirements.getAIName(),
+         DemoDbAIs.SAW_Code.getAIName(),
+         DemoDbAIs.SAW_Test.getAIName()});
       Date createdDate = new Date();
       IAtsUser createdBy = AtsClientService.get().getUserService().getCurrentUser();
       String priority = "1";
 
-      ActionArtifact actionArt =
-         ActionManager.createAction(null, title, "Problem with the Diagram View", ChangeType.Problem, priority, false,
-            null, aias, createdDate, createdBy, null, changes);
+      ActionArtifact actionArt = ActionManager.createAction(null, title, "Problem with the Diagram View",
+         ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
-         if (teamWf.getTeamDefinition().getName().contains("Req") && !teamWf.getWorkDefinition().getName().equals(
-            "WorkDef_Team_Demo_Req")) {
+         if (teamWf.getTeamDefinition().getName().contains(
+            "Req") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Req")) {
             throw new OseeCoreException("Req workflow expected work def [WorkDef_Team_Demo_Req] actual [%s]",
                teamWf.getWorkDefinition().getName());
-         } else if (teamWf.getTeamDefinition().getName().contains("Code") && !teamWf.getWorkDefinition().getName().equals(
-            "WorkDef_Team_Demo_Code")) {
+         } else if (teamWf.getTeamDefinition().getName().contains(
+            "Code") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Code")) {
             throw new OseeCoreException("Code workflow expected work def [WorkDef_Team_Demo_Code] actual [%s]",
                teamWf.getWorkDefinition().getName());
-         } else if (teamWf.getTeamDefinition().getName().contains("Test") && !teamWf.getWorkDefinition().getName().equals(
-            "WorkDef_Team_Demo_Test")) {
+         } else if (teamWf.getTeamDefinition().getName().contains(
+            "Test") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_Test")) {
             throw new OseeCoreException("Test workflow expected work def [WorkDef_Team_Demo_Test] actual [%s]",
                teamWf.getWorkDefinition().getName());
-         } else if (teamWf.getTeamDefinition().getName().contains("Design") && !teamWf.getWorkDefinition().getName().equals(
-            "WorkDef_Team_Demo_SwDesign")) {
+         } else if (teamWf.getTeamDefinition().getName().contains(
+            "Design") && !teamWf.getWorkDefinition().getName().equals("WorkDef_Team_Demo_SwDesign")) {
             throw new OseeCoreException("SwDesign workflow expected work def [WorkDef_Team_Demo_SwDesign] actual [%s]",
                teamWf.getWorkDefinition().getName());
          }
 
-         TeamWorkFlowManager dtwm =
-            new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-               TransitionOption.OverrideTransitionValidityCheck);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
+            TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
@@ -323,7 +314,7 @@ public class PopulateSawBuild2Actions {
          }
 
          if (!teamWf.isCompletedOrCancelled()) {
-            // Reset assignees that may have been overwritten during transition 
+            // Reset assignees that may have been overwritten during transition
             teamWf.getStateMgr().setAssignees(teamWf.getTeamDefinition().getLeads());
          }
 
@@ -362,13 +353,13 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Robot,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO,
+               new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Navigation.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Navigation.name());
-         Artifact navArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Navigation.name(),
-               reqTeam.getWorkingBranch());
+         Artifact navArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+            DemoSubsystems.Navigation.name(), reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
          art.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
@@ -376,13 +367,13 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Event,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO,
+               new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         Artifact robotArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-               reqTeam.getWorkingBranch());
+         Artifact robotArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+            DemoSubsystems.Robot_API.name(), reqTeam.getWorkingBranch());
          art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
          art.persist(PopulateSawBuild2Actions.class.getSimpleName());
       }
@@ -416,12 +407,8 @@ public class PopulateSawBuild2Actions {
          OseeLog.log(Activator.class, Level.INFO, "Committing branch");
       }
       IOperation op =
-         AtsBranchManager.commitWorkingBranch(
-            reqTeam,
-            false,
-            true,
-            AtsClientService.get().getBranchService().getBranch(
-               (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeam)), true);
+         AtsBranchManager.commitWorkingBranch(reqTeam, false, true, AtsClientService.get().getBranchService().getBranch(
+            (IAtsConfigObject) AtsClientService.get().getVersionService().getTargetedVersion(reqTeam)), true);
       Operations.executeWorkAndCheckStatus(op);
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Completing Action");
@@ -451,24 +438,21 @@ public class PopulateSawBuild2Actions {
 
       DemoDbUtil.sleep(5000);
 
-      Artifact branchArtifact =
-         DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
-            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
+      Artifact branchArtifact = DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
+         DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
             new StringBuilder("Modifying branch artifact => ").append(branchArtifact).toString());
       }
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
       branchArtifact.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-      Artifact comArt =
-         ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-            reqTeam.getWorkingBranch());
+      Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+         DemoSubsystems.Robot_API.name(), reqTeam.getWorkingBranch());
       branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
       branchArtifact.persist(PopulateSawBuild2Actions.class.getSimpleName());
 
-      Artifact parentArtifact =
-         DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
-            DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
+      Artifact parentArtifact = DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement,
+         DemoDbUtil.HAPTIC_CONSTRAINTS_REQ, reqTeam.getWorkingBranch()).iterator().next();
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
             new StringBuilder("Modifying parent artifact => ").append(parentArtifact).toString());
@@ -506,13 +490,13 @@ public class PopulateSawBuild2Actions {
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(DEBUG, SoftwareRequirementStrs.Functional,
          reqTeam.getWorkingBranch())) {
          if (DEBUG) {
-            OseeLog.log(Activator.class, Level.INFO, new StringBuilder("Modifying artifact => ").append(art).toString());
+            OseeLog.log(Activator.class, Level.INFO,
+               new StringBuilder("Modifying artifact => ").append(art).toString());
          }
          art.setSoleAttributeValue(CoreAttributeTypes.Csci, DemoCscis.Interface.name());
          art.setSoleAttributeValue(CoreAttributeTypes.Subsystem, DemoSubsystems.Communications.name());
-         Artifact comArt =
-            ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component, DemoSubsystems.Robot_API.name(),
-               reqTeam.getWorkingBranch());
+         Artifact comArt = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.Component,
+            DemoSubsystems.Robot_API.name(), reqTeam.getWorkingBranch());
 
          art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
          art.persist(PopulateSawBuild2Actions.class.getSimpleName());

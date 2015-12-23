@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.search;
 
+import com.google.common.base.Supplier;
+import com.google.common.collect.ListMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Multimaps;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -28,10 +32,6 @@ import org.eclipse.osee.orcs.core.internal.proxy.ExternalArtifactManager;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.search.Match;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ListMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Multimaps;
 
 /**
  * @author Roberto E. Escobar

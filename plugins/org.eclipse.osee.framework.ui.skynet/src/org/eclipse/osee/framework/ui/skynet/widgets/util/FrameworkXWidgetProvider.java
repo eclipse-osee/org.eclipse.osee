@@ -471,9 +471,8 @@ public final class FrameworkXWidgetProvider {
    }
 
    private static Collection<IXWidgetProvider> getXWidgetProviders() {
-      ExtensionDefinedObjects<IXWidgetProvider> contributions =
-         new ExtensionDefinedObjects<IXWidgetProvider>(Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider",
-            "classname", true);
+      ExtensionDefinedObjects<IXWidgetProvider> contributions = new ExtensionDefinedObjects<IXWidgetProvider>(
+         Activator.PLUGIN_ID + ".XWidgetProvider", "XWidgetProvider", "classname", true);
       return contributions.getObjects();
    }
 }

@@ -34,9 +34,8 @@ public class StubBranchModel extends BranchModel {
    public TxModel addTx(Long value) {
       TxModel toReturn = stubs.get(value);
       if (toReturn == null) {
-         toReturn =
-            new TxModel(new TxData(STUB_BRANCH, 0, new Timestamp(new Date().getTime()), String.format(
-               "Transaction: [%s] not found", value), 0, 0, value));
+         toReturn = new TxModel(new TxData(STUB_BRANCH, 0, new Timestamp(new Date().getTime()),
+            String.format("Transaction: [%s] not found", value), 0, 0, value));
          addTx(toReturn);
       }
       return toReturn;

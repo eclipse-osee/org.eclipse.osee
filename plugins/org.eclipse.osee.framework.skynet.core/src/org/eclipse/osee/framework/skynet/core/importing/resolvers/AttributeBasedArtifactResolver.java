@@ -79,8 +79,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
          List<Artifact> descendants = root.getDescendants();
          Collection<Artifact> candidates = new LinkedList<>();
 
-         System.out.println(String.format("Resolved using: %s",
-            !descendants.isEmpty() ? "root node." : "realParent descendants."));
+         System.out.println(
+            String.format("Resolved using: %s", !descendants.isEmpty() ? "root node." : "realParent descendants."));
 
          for (Artifact artifact : !descendants.isEmpty() ? descendants : realParent.getDescendants()) {
             if (attributeValuesMatch(roughArtifact, artifact)) {
@@ -92,9 +92,8 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
             realArtifact = candidates.iterator().next();
             getTranslator().translate(roughArtifact, realArtifact);
          } else {
-            String output =
-               String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
-                  roughArtifact.getName());
+            String output = String.format("Found %s candidates during reuse import for \"%s\"", candidates.size(),
+               roughArtifact.getName());
             OseeLog.log(Activator.class, Level.INFO, output);
             if (createNewIfNotExist) {
                realArtifact = super.resolve(roughArtifact, branch, null, root);

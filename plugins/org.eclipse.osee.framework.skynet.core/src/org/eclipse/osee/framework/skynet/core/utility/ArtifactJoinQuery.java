@@ -90,9 +90,9 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          final int prime = 31;
          int result = 1;
          result = prime * result + getOuterType().hashCode();
-         result = prime * result + ((artId == null) ? 0 : artId.hashCode());
-         result = prime * result + ((branchUuid == null) ? 0 : branchUuid.hashCode());
-         result = prime * result + ((transactionId == null) ? 0 : transactionId.hashCode());
+         result = prime * result + (artId == null ? 0 : artId.hashCode());
+         result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
+         result = prime * result + (transactionId == null ? 0 : transactionId.hashCode());
          return result;
       }
 

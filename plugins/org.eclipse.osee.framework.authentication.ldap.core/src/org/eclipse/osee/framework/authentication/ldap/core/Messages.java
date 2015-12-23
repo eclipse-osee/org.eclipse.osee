@@ -12,36 +12,36 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 
-  /**
-   * bundle name
-   */
-  private static final String BUNDLE_NAME = "org.eclipse.osee.framework.authentication.ldap.core.messages"; //$NON-NLS-1$
-  /**
-   * String to store LDAP service extension point ID
-   */
-  public static String LDAPServiceExtensionPointID;
-  /**
-   * String to store LDAP Service extension point attribute
-   */
-  public static String LDAPServiceExtensionPointAttribute;
-  /**
-   * String to store the LDAP Authentication failure
-   */
-  public static String LDAPAuthenticationFailed;
-  /**
-   * String to store the LDAP Authentication Protocol name
-   */
-  public static String LDAPAuthenticationProtocol;
+   /**
+    * bundle name
+    */
+   private static final String BUNDLE_NAME = "org.eclipse.osee.framework.authentication.ldap.core.messages"; //$NON-NLS-1$
+   /**
+    * String to store LDAP service extension point ID
+    */
+   public static String LDAPServiceExtensionPointID;
+   /**
+    * String to store LDAP Service extension point attribute
+    */
+   public static String LDAPServiceExtensionPointAttribute;
+   /**
+    * String to store the LDAP Authentication failure
+    */
+   public static String LDAPAuthenticationFailed;
+   /**
+    * String to store the LDAP Authentication Protocol name
+    */
+   public static String LDAPAuthenticationProtocol;
 
-  static {
-    // initialize resource bundle
-    NLS.initializeMessages(BUNDLE_NAME, Messages.class);
-  }
+   static {
+      // initialize resource bundle
+      NLS.initializeMessages(BUNDLE_NAME, Messages.class);
+   }
 
-  /**
-   * Constructor
-   */
-  private Messages() {
-    // Default constructor
-  }
+   /**
+    * Constructor
+    */
+   private Messages() {
+      // Default constructor
+   }
 }

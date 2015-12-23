@@ -35,8 +35,7 @@ public class OseeDatabase implements TestRule {
             Assert.assertNotNull("Osgi Binding cannot be null", osgiBindings);
             Assert.assertNotNull("Description cannot be null", description);
             Assert.assertTrue("Osgi Binding cannot be empty", osgiBindings.length > 0);
-            TestDatabase db =
-               new TestDatabase(description.getClassName(), description.getMethodName(), osgiBindings);
+            TestDatabase db = new TestDatabase(description.getClassName(), description.getMethodName(), osgiBindings);
             try {
                db.initialize();
                base.evaluate();

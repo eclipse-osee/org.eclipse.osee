@@ -116,10 +116,9 @@ public class InternalClientSessionManager {
             if (oseeSessionGrant == null) {
                return;
             }
-            oseeSession =
-               new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
-                  oseeSessionGrant.getUserToken().getUserId(), clientInfo.getClientAddress(), clientInfo.getPort(),
-                  clientInfo.getVersion(), oseeSessionGrant.getAuthenticationProtocol());
+            oseeSession = new OseeClientSession(oseeSessionGrant.getSessionId(), clientInfo.getClientMachineName(),
+               oseeSessionGrant.getUserToken().getUserId(), clientInfo.getClientAddress(), clientInfo.getPort(),
+               clientInfo.getVersion(), oseeSessionGrant.getAuthenticationProtocol());
          } catch (Exception ex) {
             OseeLog.reportStatus(new BaseStatus(STATUS_ID, Level.SEVERE, ex));
             OseeExceptions.wrapAndThrow(ex);

@@ -50,7 +50,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Roberto E. Escobar
  */
-public class XStackedDam extends XStackedWidget<String> implements IAttributeWidget {
+public class XStackedDam extends XStackedWidget<String>implements IAttributeWidget {
    private Artifact artifact;
    private IAttributeType attributeType;
    private final Map<String, XWidget> xWidgets;
@@ -207,9 +207,8 @@ public class XStackedDam extends XStackedWidget<String> implements IAttributeWid
          for (XWidget widget : xWidgets.values()) {
             status = widget.isValid();
             if (status.isOK()) {
-               status =
-                  OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
-                     widget.getData());
+               status = OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(),
+                  widget.getData());
             }
             if (!status.isOK()) {
                break;

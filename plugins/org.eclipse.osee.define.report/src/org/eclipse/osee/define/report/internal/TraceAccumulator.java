@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal;
 
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Multimaps;
+import com.google.common.collect.SetMultimap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -24,9 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.CaseInsensitiveString;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimaps;
-import com.google.common.collect.SetMultimap;
 
 /**
  * @author David W. Miller
@@ -70,7 +70,8 @@ public class TraceAccumulator {
 
    private void traceFile(File root) throws IOException {
       int prefixLength = root.getCanonicalPath().length();
-      for (File sourceFile : Lib.recursivelyListFilesAndDirectories(new ArrayList<File>(400), root, filePattern, false)) {
+      for (File sourceFile : Lib.recursivelyListFilesAndDirectories(new ArrayList<File>(400), root, filePattern,
+         false)) {
          /**
           * use prefixLength + 1 to account for trailing file separator which is not included in the root canonical path
           */

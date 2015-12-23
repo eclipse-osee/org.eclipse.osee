@@ -69,9 +69,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
 
    @Override
    public ReviewBlockType getReviewBlockType(IAtsAbstractReview review) throws OseeCoreException {
-      String blockStr =
-         artifactProvider.getArtifact(review).getSoleAttributeAsString(AtsAttributeTypes.ReviewBlocks,
-            ReviewBlockType.None.name());
+      String blockStr = artifactProvider.getArtifact(review).getSoleAttributeAsString(AtsAttributeTypes.ReviewBlocks,
+         ReviewBlockType.None.name());
       return ReviewBlockType.valueOf(blockStr);
    }
 
@@ -84,7 +83,8 @@ public class AtsReviewServiceImpl implements IAtsReviewService {
    public Collection<IAtsAbstractReview> getReviews(IAtsTeamWorkflow teamWf) {
       List<IAtsAbstractReview> reviews = new ArrayList<>();
 
-      for (ArtifactReadable reviewArt : ((ArtifactReadable) teamWf.getStoreObject()).getRelated(AtsRelationTypes.TeamWorkflowToReview_Review)) {
+      for (ArtifactReadable reviewArt : ((ArtifactReadable) teamWf.getStoreObject()).getRelated(
+         AtsRelationTypes.TeamWorkflowToReview_Review)) {
          reviews.add(atsServer.getWorkItemFactory().getReview(reviewArt));
       }
       return reviews;

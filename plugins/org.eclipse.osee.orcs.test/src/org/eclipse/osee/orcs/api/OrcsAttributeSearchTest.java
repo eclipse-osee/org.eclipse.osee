@@ -64,8 +64,8 @@ public class OrcsAttributeSearchTest {
 
    @Test
    public void testWTCAttributeEqualSearch() throws OseeCoreException {
-      QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent,
-         "commands", QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
+      QueryBuilder builder = queryFactory.fromBranch(SAW_Bld_1).and(CoreAttributeTypes.WordTemplateContent, "commands",
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_COUNT__IGNORE);
 
       assertEquals(3, builder.getCount());

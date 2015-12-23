@@ -26,9 +26,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -281,15 +279,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadAttributesWithType() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -307,15 +304,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadAttributesWithTypes() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_type_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -357,15 +353,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadAttributesWithIds() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_attribute att1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -382,15 +377,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadAttributesWithIdsAndTypes() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.attr_type_id = jid2.id AND jid2.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_attribute att1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = jid1.id AND jid1.query_id = ? AND att1.attr_type_id = jid2.id AND jid2.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -409,15 +403,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadAttributesWithIdAndType() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.attr_id = ? AND att1.attr_type_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -513,15 +506,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelations() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -537,15 +529,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsIncludeDeleted() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -562,15 +553,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithType() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -588,15 +578,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithTypes() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -607,12 +596,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(
-         EXPECTED_HEAD_TX_ID,
-         expectedLoadLevel,
-         EXCLUDE_DELETED,
-         expected,
-         data(JQID),
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
          list(data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(),
             CoreRelationTypes.Dependency__Artifact.getGuid())));
    }
@@ -621,15 +605,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithId() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -646,15 +629,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithIds() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -671,15 +653,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithIdsAndTypes() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.rel_link_type_id = jid2.id AND jid2.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_join_id jid1, osee_join_id jid2, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = jid1.id AND jid1.query_id = ? AND rel1.rel_link_type_id = jid2.id AND jid2.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -691,12 +672,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(
-         EXPECTED_HEAD_TX_ID,
-         expectedLoadLevel,
-         EXCLUDE_DELETED,
-         expected,
-         data(JQID, JQID),
+      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
          list(data(45, 55),
             data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), CoreRelationTypes.Dependency__Artifact)));
    }
@@ -705,15 +681,14 @@ public class DataLoaderFactoryImplTest {
    public void testLoadRelationsWithIdAndType() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.RELATION_DATA;
 
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current = 1 AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -756,15 +731,14 @@ public class DataLoaderFactoryImplTest {
    @Test
    public void testLoadArtifactIncludeDeletedAttributes() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -782,15 +756,14 @@ public class DataLoaderFactoryImplTest {
    @Test
    public void testLoadArtifactIncludeDeletedRelations() throws OseeCoreException {
       LoadLevel expectedLoadLevel = LoadLevel.ALL;
-      String expected =
-         "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+      String expected = "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id,\n" + //
+      " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+      " FROM \n" + //
+      "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+      " WHERE \n" + //
+      "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.rel_link_type_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+      " AND txs1.tx_current IN (1, 2, 3) AND txs1.branch_id = jart1.branch_id\n" + //
+      " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);

@@ -38,7 +38,8 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttr
    public void copy(XViewerColumn fromXCol, XViewerColumn toXCol) {
       super.copy(fromXCol, toXCol);
       if (fromXCol instanceof XViewerAtsAttributeColumn && toXCol instanceof XViewerAtsAttributeColumn) {
-         ((XViewerAtsAttributeColumn) toXCol).setAttributeType(((XViewerAtsAttributeColumn) fromXCol).getAttributeType());
+         ((XViewerAtsAttributeColumn) toXCol).setAttributeType(
+            ((XViewerAtsAttributeColumn) fromXCol).getAttributeType());
       }
    }
 
@@ -80,7 +81,7 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttr
    public int hashCode() {
       final int prime = 31;
       int result = super.hashCode();
-      result = prime * result + ((attributeType == null) ? 0 : attributeType.hashCode());
+      result = prime * result + (attributeType == null ? 0 : attributeType.hashCode());
       return result;
    }
 

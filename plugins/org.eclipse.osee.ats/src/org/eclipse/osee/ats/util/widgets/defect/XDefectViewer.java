@@ -323,9 +323,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
 
    public void handleImportDefectsViaList() {
       try {
-         EntryDialog ed =
-            new EntryDialog(Displays.getActiveShell(), "Create Defects", null, "Enter task titles, one per line.",
-               MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+         EntryDialog ed = new EntryDialog(Displays.getActiveShell(), "Create Defects", null,
+            "Enter task titles, one per line.", MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
          ed.setFillVertically(true);
          if (ed.open() == 0) {
             SkynetTransaction transaction =
@@ -356,9 +355,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          builder.append("\"" + defectItem.getDescription() + "\"\n");
       }
 
-      boolean delete =
-         MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Delete Defects",
-            "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
+      boolean delete = MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+         "Delete Defects", "Are You Sure You Wish to Delete the Defects(s):\n\n" + builder.toString());
       if (delete) {
          try {
             SkynetTransaction transaction =
@@ -459,7 +457,8 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
          if (reviewArt != null) {
             ReviewDefectError error = ReviewDefectValidator.isValid(reviewArt.getArtifact());
             if (error == ReviewDefectError.AllItemsMustBeMarkedAndClosed) {
-               extraInfoLabel.setText("All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
+               extraInfoLabel.setText(
+                  "All items must be marked for severity, disposition and closed.  Select icon in cell or right-click to update field.");
                extraInfoLabel.setForeground(Displays.getSystemColor(SWT.COLOR_RED));
                return new Status(IStatus.ERROR, getClass().getSimpleName(),
                   "Review not complete until all items are marked for severity, disposition and closed");

@@ -151,15 +151,13 @@ public class TmzImporter implements DispoImporterApi {
                String actual = testPoint.getString("actual");
                String expected = testPoint.getString("expected");
 
-               String text =
-                  String.format("Failure at Test Point %d. Check Point: %s. Expected: %s. Actual: %s. ", number, name,
-                     expected, actual);
+               String text = String.format("Failure at Test Point %d. Check Point: %s. Expected: %s. Actual: %s. ",
+                  number, name, expected, actual);
                discrepancy.setText(text);
             } else {
                JSONArray testPoints = testPoint.getJSONArray("testPoints");
-               StringBuilder text =
-                  new StringBuilder(String.format("Failure at Test Point %d. Check Group with Checkpoint Failures: ",
-                     number));
+               StringBuilder text = new StringBuilder(
+                  String.format("Failure at Test Point %d. Check Group with Checkpoint Failures: ", number));
                for (int j = 0; j < testPoints.length(); j++) {
                   JSONObject checkPoint = testPoints.getJSONObject(j);
                   String name = checkPoint.getString("testPointName");

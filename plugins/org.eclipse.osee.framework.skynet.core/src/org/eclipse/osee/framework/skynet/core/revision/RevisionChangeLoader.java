@@ -107,8 +107,8 @@ public final class RevisionChangeLoader {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL),
-            artifact.getArtId(), artifact.getArtId(), branch.getUuid(), transactionId.getId());
+         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL), artifact.getArtId(),
+            artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
@@ -136,21 +136,18 @@ public final class RevisionChangeLoader {
       for (LoadChangeType changeType : loadChangeTypes) {
          switch (changeType) {
             case artifact:
-               ArtifactChangeAcquirer artifactChangeAcquirer =
-               new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                  changeBuilders, newAndDeletedArtifactIds);
+               ArtifactChangeAcquirer artifactChangeAcquirer = new ArtifactChangeAcquirer(sourceBranch, transactionId,
+                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
                changeBuilders = artifactChangeAcquirer.acquireChanges();
                break;
             case attribute:
-               AttributeChangeAcquirer attributeChangeAcquirer =
-               new AttributeChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                  changeBuilders, newAndDeletedArtifactIds);
+               AttributeChangeAcquirer attributeChangeAcquirer = new AttributeChangeAcquirer(sourceBranch,
+                  transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
                changeBuilders = attributeChangeAcquirer.acquireChanges();
                break;
             case relation:
-               RelationChangeAcquirer relationChangeAcquirer =
-               new RelationChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds,
-                  changeBuilders, newAndDeletedArtifactIds);
+               RelationChangeAcquirer relationChangeAcquirer = new RelationChangeAcquirer(sourceBranch, transactionId,
+                  monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
 
                changeBuilders = relationChangeAcquirer.acquireChanges();
                break;
@@ -186,9 +183,8 @@ public final class RevisionChangeLoader {
       for (Entry<TransactionRecord, Collection<Integer>> entry : loadMap.entrySet()) {
          Collection<Artifact> artifacts;
          if (isHistorical) {
-            artifacts =
-               ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),
-                  DeletionFlag.INCLUDE_DELETED);
+            artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),
+               DeletionFlag.INCLUDE_DELETED);
          } else {
             artifacts = ArtifactQuery.getArtifactListFromIds(entry.getValue(), branch, DeletionFlag.INCLUDE_DELETED);
          }
@@ -211,29 +207,24 @@ public final class RevisionChangeLoader {
          if (changeArtifact != null) {
             ArtifactDelta delta = new ArtifactDelta(builder.getTxDelta(), changeArtifact, null);
             if (builder instanceof ArtifactChangeBuilder) {
-               toReturn =
-                  new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-                     builder.getModType(), isHistorical, changeArtifact, delta);
+               toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), isHistorical, changeArtifact, delta);
             } else if (builder instanceof AttributeChangeBuilder) {
                AttributeChangeBuilder attrBuilder = (AttributeChangeBuilder) builder;
-               toReturn =
-                  new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
-                     attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
-                     attrBuilder.getWasValue(), attrBuilder.getAttrId(), attrBuilder.getAttributeType(),
-                     attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
+               toReturn = new AttributeChange(branch, attrBuilder.getSourceGamma(), attrBuilder.getArtId(),
+                  attrBuilder.getTxDelta(), attrBuilder.getModType(), attrBuilder.getIsValue(),
+                  attrBuilder.getWasValue(), attrBuilder.getAttrId(), attrBuilder.getAttributeType(),
+                  attrBuilder.getArtModType(), isHistorical, changeArtifact, delta);
             } else if (builder instanceof RelationChangeBuilder) {
                RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
                Artifact bArtifact = loadedMap.get(builder.getTxDelta().getEndTx(), relBuilder.getbArtId());
-               toReturn =
-                  new RelationChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-                     builder.getModType(), relBuilder.getbArtId(), relBuilder.getRelLinkId(),
-                     relBuilder.getRationale(), relBuilder.getRelationType(), isHistorical, changeArtifact, delta,
-                     bArtifact);
+               toReturn = new RelationChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+                  builder.getModType(), relBuilder.getbArtId(), relBuilder.getRelLinkId(), relBuilder.getRationale(),
+                  relBuilder.getRelationType(), isHistorical, changeArtifact, delta, bArtifact);
             }
          } else {
-            toReturn =
-               new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
-                  builder.getModType(), isHistorical, null, null);
+            toReturn = new ArtifactChange(branch, builder.getSourceGamma(), builder.getArtId(), builder.getTxDelta(),
+               builder.getModType(), isHistorical, null, null);
          }
          changes.add(toReturn);
       }

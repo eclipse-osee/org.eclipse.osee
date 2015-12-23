@@ -16,5 +16,5 @@ import java.util.concurrent.BlockingQueue;
  * @author Roberto E. Escobar
  */
 public interface DistributedBlockingQueue<E> extends BlockingQueue<E>, DistributedCollection {
-   // 
+   //
 }

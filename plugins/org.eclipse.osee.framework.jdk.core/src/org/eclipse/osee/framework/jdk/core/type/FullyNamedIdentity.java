@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Ryan D. Brooks
  */
-public class FullyNamedIdentity<T> extends NamedIdentity<T> implements FullyNamed, HasDescription {
+public class FullyNamedIdentity<T> extends NamedIdentity<T>implements FullyNamed, HasDescription {
    private final String description;
 
    public FullyNamedIdentity(T guid, String name) {

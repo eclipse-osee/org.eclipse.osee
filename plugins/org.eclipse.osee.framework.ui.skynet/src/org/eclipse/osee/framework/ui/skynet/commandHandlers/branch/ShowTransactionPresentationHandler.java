@@ -34,7 +34,7 @@ public final class ShowTransactionPresentationHandler extends AbstractHandler im
    private boolean itemChk;
 
    public ShowTransactionPresentationHandler() {
-      this.service = (ICommandService) PlatformUI.getWorkbench().getService(ICommandService.class);
+      this.service = PlatformUI.getWorkbench().getService(ICommandService.class);
    }
 
    @Override

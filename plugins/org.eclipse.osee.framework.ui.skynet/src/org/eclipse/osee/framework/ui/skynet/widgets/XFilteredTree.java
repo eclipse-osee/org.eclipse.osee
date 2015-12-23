@@ -72,9 +72,8 @@ public class XFilteredTree extends GenericXWidget {
          GridLayout gridLayout = new GridLayout();
          gridLayout.numColumns = numColumns;
          composite.setLayout(gridLayout);
-         GridData gd =
-            new GridData(
-               GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
+         GridData gd = new GridData(
+            GridData.HORIZONTAL_ALIGN_FILL | GridData.VERTICAL_ALIGN_FILL | GridData.GRAB_HORIZONTAL | GridData.GRAB_VERTICAL);
          gd.horizontalSpan = horizontalSpan;
          composite.setLayoutData(gd);
       } else {
@@ -123,13 +122,11 @@ public class XFilteredTree extends GenericXWidget {
          int numSelected = ((StructuredSelection) filteredTree.getViewer().getSelection()).size();
          if (requiredMaxSelected != 0) {
             if (numSelected < requiredMinSelected) {
-               valid =
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                     getLabel() + " must have at least " + requiredMinSelected + " selected.");
+               valid = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  getLabel() + " must have at least " + requiredMinSelected + " selected.");
             } else if (numSelected > requiredMaxSelected) {
-               valid =
-                  new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                     getLabel() + " should only have " + requiredMaxSelected + " selected.");
+               valid = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  getLabel() + " should only have " + requiredMaxSelected + " selected.");
             } else {
                valid = new Status(IStatus.ERROR, Activator.PLUGIN_ID, getLabel());
             }

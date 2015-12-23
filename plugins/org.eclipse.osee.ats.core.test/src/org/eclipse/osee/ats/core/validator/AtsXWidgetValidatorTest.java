@@ -273,7 +273,8 @@ public class AtsXWidgetValidatorTest {
 
       MockWidgetDefinition widgetDef = new MockWidgetDefinition("test");
 
-      Assert.assertNull(validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionListMinMaxSelectedConstraint.class));
+      Assert.assertNull(
+         validator.getConstraintOfType(widgetDef, IAtsWidgetDefinitionListMinMaxSelectedConstraint.class));
       Assert.assertEquals(null, validator.getListMinSelected(widgetDef));
       Assert.assertEquals(null, validator.getListMaxSelected(widgetDef));
 

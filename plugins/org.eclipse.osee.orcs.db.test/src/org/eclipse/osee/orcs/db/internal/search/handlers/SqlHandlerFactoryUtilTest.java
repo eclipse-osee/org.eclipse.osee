@@ -74,7 +74,8 @@ public class SqlHandlerFactoryUtilTest {
       criteria.add(new CriteriaAttributeTypeExists(null));
       criteria.add(new CriteriaAttributeTypeNotExists(null));
       criteria.add(new CriteriaAttributeOther(null, null));
-      criteria.add(new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
+      criteria.add(
+         new CriteriaAttributeKeywords(false, null, null, Collections.<String> emptyList(), null, null, null));
       criteria.add(new CriteriaRelatedTo(null, null));
       criteria.add(new CriteriaAllArtifacts());
 

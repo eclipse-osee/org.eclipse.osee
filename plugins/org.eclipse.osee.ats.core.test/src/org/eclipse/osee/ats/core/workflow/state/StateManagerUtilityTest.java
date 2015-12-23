@@ -156,8 +156,8 @@ public class StateManagerUtilityTest {
       when(stateMgr.getState("Implement")).thenReturn(workState);
 
       result = StateManagerUtility.isDirtyResult(workItem, stateMgr, attrResolver, workStateFactory);
-      Assert.assertTrue(result.getText().contains(
-         "StateManager: State [Implement] modified was [Implement;;;] is [Implement;;1.3;]"));
+      Assert.assertTrue(
+         result.getText().contains("StateManager: State [Implement] modified was [Implement;;;] is [Implement;;1.3;]"));
 
    }
 

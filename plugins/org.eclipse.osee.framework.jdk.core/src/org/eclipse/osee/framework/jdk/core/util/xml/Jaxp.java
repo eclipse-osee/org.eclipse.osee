@@ -61,6 +61,7 @@ public class Jaxp {
    private static final DocumentBuilderFactory namespceUnawareFactory = DocumentBuilderFactory.newInstance();
    private static final DocumentBuilderFactory NonDeferredNamespceUnawareFactory = DocumentBuilderFactory.newInstance();
    private static final DocumentBuilderFactory namespceAwareFactory = DocumentBuilderFactory.newInstance();
+
    static {
       namespceAwareFactory.setNamespaceAware(true);
    }
@@ -662,7 +663,8 @@ public class Jaxp {
          }
          String value = attrNode.getValue();
 
-         if (Strings.isValid(name, value) || (Strings.isValid(name) && value != null && value.isEmpty() && isEmptyValueValid)) {
+         if (Strings.isValid(name,
+            value) || Strings.isValid(name) && value != null && value.isEmpty() && isEmptyValueValid) {
             if (prefix != null && namespace != null) {
                writer.writeAttribute(prefix, namespace, name, value);
             } else if (namespace != null) {

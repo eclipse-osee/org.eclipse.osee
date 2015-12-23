@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.transaction;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import com.google.common.collect.Iterables;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
@@ -23,7 +24,6 @@ import org.eclipse.osee.orcs.core.internal.relation.Relation;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import com.google.common.collect.Iterables;
 
 /**
  * Test Case for {@link ChangeSetBuilder}

@@ -48,12 +48,11 @@ public class AccessModelInterpreterProxy implements AccessModelInterpreter {
       if (isReady() && proxiedService == null) {
          ArtifactMatchInterpreter matcher = new ArtifactMatchInterpreter();
 
-         RestrictionHandler<?>[] restrictionHandlers =
-            new RestrictionHandler<?>[] {
-               new ArtifactMatchRestrictionHandler(matcher),
-               new ArtifactTypeRestrictionHandler(),
-               new AttributeTypeRestrictionHandler(),
-               new RelationTypeRestrictionHandler(matcher)};
+         RestrictionHandler<?>[] restrictionHandlers = new RestrictionHandler<?>[] {
+            new ArtifactMatchRestrictionHandler(matcher),
+            new ArtifactTypeRestrictionHandler(),
+            new AttributeTypeRestrictionHandler(),
+            new RelationTypeRestrictionHandler(matcher)};
 
          proxiedService = new AccessModelInterpreterImpl(artifactDataProvider, matcher, restrictionHandlers);
       }

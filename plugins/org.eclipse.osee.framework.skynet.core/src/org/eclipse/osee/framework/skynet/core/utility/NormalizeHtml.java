@@ -32,25 +32,12 @@ import org.jsoup.select.Elements;
  * options can be removed, but not added to the HTML
  * 
  * <pre>
- * Assumptions:
- *    The input is valid HTML
- * Items that change
- *    HTML tags may be upper case, tinyMCE are lower
- *    <FONT> is converted to <span>
- *    tinyMCE does NOT use font point only small, medium, ...
- *          6-8 point == xx-small
- *          9-11 point == small
- *          12-13 point == medium
- *          14-16 point == large
- *          18-20 point == x-large
- *          22-28 point == xx-large
- *          >28 point == 300%
- *    replace &ldquot; &rdquot; &lsquot; &rsquot; to &quot; and '
- *    replace <b> with <strong>
- *    replace <i> with
- * <em>
- *    replace <u> with <span style="text-decoration: underline;">
- *    remove bordercolor from table tag
+ * Assumptions: The input is valid HTML Items that change HTML tags may be upper case, tinyMCE are lower <FONT> is
+ * converted to <span> tinyMCE does NOT use font point only small, medium, ... 6-8 point == xx-small 9-11 point == small
+ * 12-13 point == medium 14-16 point == large 18-20 point == x-large 22-28 point == xx-large >28 point == 300% replace
+ * &ldquot; &rdquot; &lsquot; &rsquot; to &quot; and ' replace <b> with <strong> replace <i> with <em> replace <u> with
+ * <span style="text-decoration: underline;"> remove bordercolor from table tag
+ * 
  * <pre/>
  *
  * @author Marc A. Potter
@@ -200,7 +187,8 @@ public final class NormalizeHtml {
                      while (theText.indexOf(nbsp) == 0) {
                         theText = theText.substring(nbsp.length()).trim();
                      }
-                     while ((theText.lastIndexOf(nbsp) != -1) && (theText.lastIndexOf(nbsp) == theText.length() - nbsp.length())) {
+                     while (theText.lastIndexOf(nbsp) != -1 && theText.lastIndexOf(
+                        nbsp) == theText.length() - nbsp.length()) {
                         theText = theText.substring(0, theText.length() - nbsp.length()).trim();
                      }
                      if (theText.isEmpty()) {
@@ -345,7 +333,7 @@ public final class NormalizeHtml {
          Elements aTags = doc.select("a");
          for (Element a : aTags) {
             Attributes attr = a.attributes();
-            if ((attr.size() == 1) && (!attr.get("name").equals(""))) {
+            if (attr.size() == 1 && !attr.get("name").equals("")) {
                a.unwrap();
             }
          }
@@ -403,11 +391,11 @@ public final class NormalizeHtml {
 
       //@formatter:off
       /*****************************************************************************
-       * Convert the non-blocking characters to the HTML value (&nbsp;) 
-       * non-break space U+00A0 
-       * figure space U+2007 
-       * narrow no-break space U+202F 
-       * word joiner U+2060 
+       * Convert the non-blocking characters to the HTML value (&nbsp;)
+       * non-break space U+00A0
+       * figure space U+2007
+       * narrow no-break space U+202F
+       * word joiner U+2060
        * zero width no-break space U+FEFF
        * 
        */
@@ -475,7 +463,7 @@ public final class NormalizeHtml {
       if (thePointStart == -1) {
          thePointStart = 0;
       }
-      while ((inputStyle.charAt(thePointStart) == ' ') && (thePointStart < inputStyle.length())) {
+      while (inputStyle.charAt(thePointStart) == ' ' && thePointStart < inputStyle.length()) {
          thePointStart++;
       }
       if (thePointStart >= thePointEnd) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
+import com.google.common.io.InputSupplier;
+import com.google.gson.GsonBuilder;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,8 +23,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
-import com.google.common.io.InputSupplier;
-import com.google.gson.GsonBuilder;
 
 /**
  * @author Roberto E. Escobar

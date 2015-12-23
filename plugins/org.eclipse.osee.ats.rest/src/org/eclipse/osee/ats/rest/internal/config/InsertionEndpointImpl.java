@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * Donald G. Dunne
  */
-public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> implements InsertionEndpointApi {
+public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion>implements InsertionEndpointApi {
 
    private final long programUuid;
 
@@ -56,9 +56,8 @@ public class InsertionEndpointImpl extends BaseConfigEndpointImpl<JaxInsertion> 
       }
       IAtsChangeSet changes =
          atsServer.getStoreService().createAtsChangeSet("Create " + artifactType.getName(), AtsCoreUsers.SYSTEM_USER);
-      ArtifactReadable configArtifact =
-         (ArtifactReadable) changes.createArtifact(artifactType, insertion.getName(), GUID.create(),
-            insertion.getUuid());
+      ArtifactReadable configArtifact = (ArtifactReadable) changes.createArtifact(artifactType, insertion.getName(),
+         GUID.create(), insertion.getUuid());
       IAtsConfigObject configObject = atsServer.getConfigItemFactory().getConfigObject(configArtifact);
       if (!configArtifact.getName().equals(insertion.getName())) {
          changes.setSoleAttributeValue(configObject, CoreAttributeTypes.Name, insertion.getName());

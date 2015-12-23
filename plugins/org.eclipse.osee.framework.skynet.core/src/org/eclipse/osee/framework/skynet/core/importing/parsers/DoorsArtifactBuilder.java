@@ -44,9 +44,9 @@ public class DoorsArtifactBuilder {
       return toReturn;
    }
 
-   // This method takes all of the DoorsTableRows in the given queue and combines them 
-   // into one rough Artifact. The first row is immediately converted, then all of the 
-   // other rows are converted and combined. 
+   // This method takes all of the DoorsTableRows in the given queue and combines them
+   // into one rough Artifact. The first row is immediately converted, then all of the
+   // other rows are converted and combined.
    public RoughArtifact populateArtifact(Queue<DoorsTableRow> queue) {
       Conditions.checkNotNullOrEmpty(queue, "Queue");
 

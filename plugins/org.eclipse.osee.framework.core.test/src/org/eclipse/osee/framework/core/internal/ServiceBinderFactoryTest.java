@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal;
 
-import org.eclipse.osee.framework.core.internal.ServiceBinderFactoryImpl;
 import org.eclipse.osee.framework.core.mocks.MockBundleContext;
 import org.eclipse.osee.framework.core.mocks.MockServiceReference;
 import org.eclipse.osee.framework.core.mocks.MockTrackingHandler;

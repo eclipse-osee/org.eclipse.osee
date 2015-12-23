@@ -11,11 +11,11 @@
 package org.eclipse.osee.orcs.script.dsl.validation;
 
 import static org.eclipse.osee.orcs.script.dsl.OrcsScriptDslConstants.CONVERSION_ERROR__BAD_TIMESTAMP_FORMAT__CODE;
+import com.google.inject.Singleton;
 import org.eclipse.osee.orcs.script.dsl.typesystem.TimestampConverter.TimestampFormatException;
 import org.eclipse.xtext.conversion.ValueConverterException;
 import org.eclipse.xtext.nodemodel.SyntaxErrorMessage;
 import org.eclipse.xtext.parser.antlr.SyntaxErrorMessageProvider;
-import com.google.inject.Singleton;
 
 /**
  * @author Roberto E. Escobar

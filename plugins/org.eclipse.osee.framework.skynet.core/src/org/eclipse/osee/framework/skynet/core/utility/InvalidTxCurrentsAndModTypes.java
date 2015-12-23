@@ -147,7 +147,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
-            if (address.hasSameModType(previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
+            if (address.hasSameModType(
+               previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
                address.setPurge(true);
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);
@@ -189,9 +190,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
             TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-            Address address =
-               new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
-                  chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
+            Address address = new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
+               chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
 
             if (!address.isSimilar(previousAddress)) {
                if (!addresses.isEmpty()) {

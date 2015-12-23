@@ -47,9 +47,8 @@ public class SMAPromptChangeHoursSpent {
       }
 
       TransitionStatusData data = new TransitionStatusData(awas, false);
-      TransitionStatusDialog dialog =
-         new TransitionStatusDialog("Enter Hours Spent",
-            "Enter percent complete and number of hours you spent since last status.", data);
+      TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent",
+         "Enter percent complete and number of hours you spent since last status.", data);
       if (dialog.open() == 0) {
          SMAPromptChangeStatus.performChangeStatusAndPersist(awas, null, data.getAdditionalHours(), data.getPercent(),
             data.isSplitHoursBetweenItems());

@@ -80,8 +80,8 @@ public class SecondPassMatcherTest {
          QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
          false, getLocs(12, 15));
       addTest(data, matcher, "What   does   this mean", "what does", QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH,
-         QueryOption.TOKEN_COUNT__IGNORE, false, getLocs(1, 11));
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
+         false, getLocs(1, 11));
       addTest(data, matcher, "What   does   this mean", "what does", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__MATCH,
          false, getLocs());
@@ -89,14 +89,14 @@ public class SecondPassMatcherTest {
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__MATCH,
          false, getLocs(1, 13));
       addTest(data, matcher, "What->does] .this. mean", "What does   tHis", QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
-         false, getLocs(1, 17));
+         QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE, false,
+         getLocs(1, 17));
       addTest(data, matcher, "does does does", "does does", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__MATCH,
          false, getLocs());
       addTest(data, matcher, "   does does does", "does does", QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH,
-         QueryOption.TOKEN_COUNT__IGNORE, false, getLocs(4, 12));
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
+         false, getLocs(4, 12));
       addTest(data, matcher, " (Selected) -> [.SELECTED_STRING_ID]      Selected -> ", "SELECTED_STRING_ID",
          QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH,
          QueryOption.TOKEN_COUNT__IGNORE, false, getLocs(18, 35));
@@ -125,8 +125,8 @@ public class SecondPassMatcherTest {
          QueryOption.TOKEN_DELIMITER__EXACT, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
          true, getLocs(12, 15));
       addTest(data, matcher, "What   does   this mean", "what does", QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH,
-         QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 11));
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
+         true, getLocs(1, 11));
       addTest(data, matcher, "What   does   this mean", "what does", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__MATCH,
          true, getLocs());
@@ -140,8 +140,8 @@ public class SecondPassMatcherTest {
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__MATCH,
          true, getLocs());
       addTest(data, matcher, "   does does does", "does does", QueryOption.CASE__IGNORE,
-         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH,
-         QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(4, 12));
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__MATCH, QueryOption.TOKEN_COUNT__IGNORE,
+         true, getLocs(4, 12));
       addTest(data, matcher, " (Selected) -> [.SELECTED_STRING_ID]      Selected -> ", "SELECTED_STRING_ID",
          QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__MATCH,
          QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(18, 35));
@@ -162,12 +162,12 @@ public class SecondPassMatcherTest {
       addTest(data, matcher, "each token should match", "should token match each", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE,
          false, getLocs(1, 4, 6, 10, 12, 17, 19, 23));
-      addTest(data, matcher, "each token should match extra token", "should token match each",
-         QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY,
-         QueryOption.TOKEN_COUNT__IGNORE, false, getLocs(1, 4, 6, 10, 12, 17, 19, 23));
-      addTest(data, matcher, "each token should match extra token", "should token match each",
-         QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY,
-         QueryOption.TOKEN_COUNT__MATCH, false, getLocs());
+      addTest(data, matcher, "each token should match extra token", "should token match each", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE,
+         false, getLocs(1, 4, 6, 10, 12, 17, 19, 23));
+      addTest(data, matcher, "each token should match extra token", "should token match each", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__MATCH,
+         false, getLocs());
       addTest(data, matcher, "each token should match   ToKen", "should token match each", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE,
          true, getLocs(1, 4, 6, 10, 12, 17, 19, 23, 27, 31));
@@ -178,12 +178,12 @@ public class SecondPassMatcherTest {
       addTest(data, matcher, "each token should match", "should token match each", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE,
          true, getLocs(1, 4, 6, 10, 12, 17, 19, 23));
-      addTest(data, matcher, "each token should match extra token", "should token match each",
-         QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY,
-         QueryOption.TOKEN_COUNT__IGNORE, true, getLocs(1, 4, 6, 10, 12, 17, 19, 23, 31, 35));
-      addTest(data, matcher, "each token should match extra token", "should token match each",
-         QueryOption.CASE__IGNORE, QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY,
-         QueryOption.TOKEN_COUNT__MATCH, true, getLocs());
+      addTest(data, matcher, "each token should match extra token", "should token match each", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE,
+         true, getLocs(1, 4, 6, 10, 12, 17, 19, 23, 31, 35));
+      addTest(data, matcher, "each token should match extra token", "should token match each", QueryOption.CASE__IGNORE,
+         QueryOption.TOKEN_DELIMITER__WHITESPACE, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__MATCH,
+         true, getLocs());
       addTest(data, matcher, "each each should extra token", "should token match each", QueryOption.CASE__IGNORE,
          QueryOption.TOKEN_DELIMITER__ANY, QueryOption.TOKEN_MATCH_ORDER__ANY, QueryOption.TOKEN_COUNT__IGNORE, true,
          getLocs());

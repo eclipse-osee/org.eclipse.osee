@@ -93,9 +93,12 @@ public class OrcsScriptBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Debug\" beginComposite=\"6\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Filename\" endComposite=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Debug\" beginComposite=\"6\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Excel\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XText\" displayName=\"Filename\" endComposite=\"true\" horizontalLabel=\"true\" />");
       builder.append("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"Console\"  defaultValue=\"");
       builder.append(SCRIPT_DSL_ID);
       builder.append("\" fill=\"vertically\"/>");

@@ -26,7 +26,7 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
    @Override
    public Image getImage(Object arg0) {
       if (arg0 instanceof IArtifactType) {
-         return ArtifactImageManager.getImage(((IArtifactType) arg0));
+         return ArtifactImageManager.getImage((IArtifactType) arg0);
       }
       return null;
    }

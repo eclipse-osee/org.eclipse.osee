@@ -80,8 +80,8 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
 
       try {
          for (TeamWorkFlowArtifact team : teams) {
-            if (AtsClientService.get().getVersionService().isReleased(team) || AtsClientService.get().getVersionService().isVersionLocked(
-               team)) {
+            if (AtsClientService.get().getVersionService().isReleased(
+               team) || AtsClientService.get().getVersionService().isVersionLocked(team)) {
                AWorkbench.popup("ERROR",
                   "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
                return false;
@@ -135,7 +135,7 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
                   return false;
                }
             }
-            if (!(useArt.isOfType(AtsArtifactTypes.TeamWorkflow))) {
+            if (!useArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                return false;
             }
             boolean modified = promptChangeType(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());

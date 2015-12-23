@@ -66,17 +66,16 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 
    private MessageProducer replyProducer;
    private final ActiveMqUtil activeMqUtil;
-   
-   private ExecutorService execute = Executors.newSingleThreadExecutor(new ThreadFactory() {
-	   @Override
-	   public Thread newThread(Runnable r) {
-		   Thread th = new Thread(r);
-		   th.setDaemon(true);
-		   th.setName("ActiveMq Connection Node Worker");
-		   return th;
-	   }
+
+   private final ExecutorService execute = Executors.newSingleThreadExecutor(new ThreadFactory() {
+      @Override
+      public Thread newThread(Runnable r) {
+         Thread th = new Thread(r);
+         th.setDaemon(true);
+         th.setName("ActiveMq Connection Node Worker");
+         return th;
+      }
    });
-   
 
    public ConnectionNodeActiveMqNoWait(String version, String sourceId, NodeInfo nodeInfo, ExecutorService executor, ExceptionListener exceptionListener) {
       this.nodeInfo = nodeInfo;
@@ -87,38 +86,37 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
       regularListeners = new CompositeKeyHashMap<>(64, true);
       replyListeners = new ConcurrentHashMap<>();
    }
-   
+
    @Override
    public synchronized void start() throws OseeCoreException {
       execute.submit(new Start());
    }
-   
+
    private class Start implements Runnable {
 
-	   @Override
-	   public void run() {
-		   if (started) {
-			   return;
-		   }
-		   try {
-			   String uri = nodeInfo.getUri().toASCIIString();
-			   ActiveMQConnectionFactory factory =
-					   new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,
-							   ActiveMQConnectionFactory.DEFAULT_PASSWORD, uri);
-			   connection = factory.createConnection();
-			   connection.setExceptionListener(exceptionListener);
-			   session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
-			   temporaryTopic = session.createTemporaryTopic();
-			   replyToConsumer = session.createConsumer(temporaryTopic);
-			   replyToConsumer.setMessageListener(ConnectionNodeActiveMqNoWait.this);
-			   replyProducer = session.createProducer(null);
-			   connection.start();
-			   started = true;
-		   } catch (Throwable ex) {
-			   OseeLog.log(getClass(), Level.SEVERE, ex);
-		   }
+      @Override
+      public void run() {
+         if (started) {
+            return;
+         }
+         try {
+            String uri = nodeInfo.getUri().toASCIIString();
+            ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(ActiveMQConnectionFactory.DEFAULT_USER,
+               ActiveMQConnectionFactory.DEFAULT_PASSWORD, uri);
+            connection = factory.createConnection();
+            connection.setExceptionListener(exceptionListener);
+            session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
+            temporaryTopic = session.createTemporaryTopic();
+            replyToConsumer = session.createConsumer(temporaryTopic);
+            replyToConsumer.setMessageListener(ConnectionNodeActiveMqNoWait.this);
+            replyProducer = session.createProducer(null);
+            connection.start();
+            started = true;
+         } catch (Throwable ex) {
+            OseeLog.log(getClass(), Level.SEVERE, ex);
+         }
 
-	   }
+      }
 
    }
 
@@ -138,162 +136,161 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
    public synchronized void send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws OseeCoreException {
       execute.submit(new Send(messageId, message, properties, statusCallback));
    }
-   
+
    private class Send implements Runnable {
-	   private MessageID messageId;
-	   private Object message;
-	   private Properties properties;
-	   private OseeMessagingStatusCallback statusCallback;
+      private final MessageID messageId;
+      private final Object message;
+      private final Properties properties;
+      private final OseeMessagingStatusCallback statusCallback;
 
-	   Send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback){
-		   this.messageId = messageId;
-		   this.message = message;
-		   this.properties = properties;
-		   this.statusCallback = statusCallback;
-	   }
+      Send(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) {
+         this.messageId = messageId;
+         this.message = message;
+         this.properties = properties;
+         this.statusCallback = statusCallback;
+      }
 
-	   @Override
-	   public void run() {
-		   try {
-			   if (messageId.isTopic()) {
-				   try {
-					   sendInternal(messageId, message, properties, statusCallback);
-				   } catch (JMSException ex) {
-					   removeProducerFromCache(messageId);
-					   sendInternal(messageId, message, properties, statusCallback);
-				   }
-				   statusCallback.success();
-			   }
-		   } catch (Exception ex) {
-			   statusCallback.fail(ex);
-			   OseeLog.log(getClass(), Level.SEVERE, ex);
-		   }
-	   }
-	   
-	   private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
-		   Topic destination = getOrCreateTopic(messageId);
-		   MessageProducer producer = getOrCreateProducer(destination);
-		   Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
-		   if (messageId.isReplyRequired()) {
-			   msg.setJMSReplyTo(temporaryTopic);
-		   }
-		   if (properties != null) {
-			   for (Entry<Object, Object> entry : properties.entrySet()) {
-				   if (entry.getValue() instanceof Integer) {
-					   msg.setIntProperty(entry.getKey().toString(), (Integer) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Boolean) {
-					   msg.setBooleanProperty(entry.getKey().toString(), (Boolean) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Byte) {
-					   msg.setByteProperty(entry.getKey().toString(), (Byte) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Double) {
-					   msg.setDoubleProperty(entry.getKey().toString(), (Double) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Float) {
-					   msg.setFloatProperty(entry.getKey().toString(), (Float) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Long) {
-					   msg.setLongProperty(entry.getKey().toString(), (Long) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof String) {
-					   msg.setStringProperty(entry.getKey().toString(), (String) entry.getValue());
-				   }
-				   if (entry.getValue() instanceof Short) {
-					   msg.setShortProperty(entry.getKey().toString(), (Short) entry.getValue());
-				   } else {
-					   msg.setObjectProperty(entry.getKey().toString(), entry.getValue());
-				   }
-			   }
-		   }
-		   producer.send(msg);
-		   statusCallback.success();
-	   }
+      @Override
+      public void run() {
+         try {
+            if (messageId.isTopic()) {
+               try {
+                  sendInternal(messageId, message, properties, statusCallback);
+               } catch (JMSException ex) {
+                  removeProducerFromCache(messageId);
+                  sendInternal(messageId, message, properties, statusCallback);
+               }
+               statusCallback.success();
+            }
+         } catch (Exception ex) {
+            statusCallback.fail(ex);
+            OseeLog.log(getClass(), Level.SEVERE, ex);
+         }
+      }
+
+      private synchronized void sendInternal(MessageID messageId, Object message, Properties properties, OseeMessagingStatusCallback statusCallback) throws JMSException, OseeCoreException {
+         Topic destination = getOrCreateTopic(messageId);
+         MessageProducer producer = getOrCreateProducer(destination);
+         Message msg = activeMqUtil.createMessage(session, messageId.getSerializationClass(), message);
+         if (messageId.isReplyRequired()) {
+            msg.setJMSReplyTo(temporaryTopic);
+         }
+         if (properties != null) {
+            for (Entry<Object, Object> entry : properties.entrySet()) {
+               if (entry.getValue() instanceof Integer) {
+                  msg.setIntProperty(entry.getKey().toString(), (Integer) entry.getValue());
+               }
+               if (entry.getValue() instanceof Boolean) {
+                  msg.setBooleanProperty(entry.getKey().toString(), (Boolean) entry.getValue());
+               }
+               if (entry.getValue() instanceof Byte) {
+                  msg.setByteProperty(entry.getKey().toString(), (Byte) entry.getValue());
+               }
+               if (entry.getValue() instanceof Double) {
+                  msg.setDoubleProperty(entry.getKey().toString(), (Double) entry.getValue());
+               }
+               if (entry.getValue() instanceof Float) {
+                  msg.setFloatProperty(entry.getKey().toString(), (Float) entry.getValue());
+               }
+               if (entry.getValue() instanceof Long) {
+                  msg.setLongProperty(entry.getKey().toString(), (Long) entry.getValue());
+               }
+               if (entry.getValue() instanceof String) {
+                  msg.setStringProperty(entry.getKey().toString(), (String) entry.getValue());
+               }
+               if (entry.getValue() instanceof Short) {
+                  msg.setShortProperty(entry.getKey().toString(), (Short) entry.getValue());
+               } else {
+                  msg.setObjectProperty(entry.getKey().toString(), entry.getValue());
+               }
+            }
+         }
+         producer.send(msg);
+         statusCallback.success();
+      }
 
    }
 
-
-  
    @Override
    public synchronized void subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-     execute.submit(new Subscribe(messageId, listener, statusCallback));
+      execute.submit(new Subscribe(messageId, listener, statusCallback));
    }
-   
+
    private class Subscribe implements Runnable {
 
-	   private MessageID messageId;
-	   private OseeMessagingListener listener;
-	   private OseeMessagingStatusCallback statusCallback;
+      private final MessageID messageId;
+      private final OseeMessagingListener listener;
+      private final OseeMessagingStatusCallback statusCallback;
 
-	   Subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback){
-		   this.messageId = messageId;
-		   this.listener = listener;
-		   this.statusCallback = statusCallback;
-	   }
+      Subscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+         this.messageId = messageId;
+         this.listener = listener;
+         this.statusCallback = statusCallback;
+      }
 
-	   @Override
-	   public void run() {
-		   Topic destination;
-		   try {
-			   if (isConnectedThrow()) {
-				   destination = getOrCreateTopic(messageId);
-				   MessageConsumer consumer = session.createConsumer(destination);
-				   consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session,
-						   listener));
-				   regularListeners.put(messageId.getId(), consumer, listener);
-				   statusCallback.success();
-			   } else {
-				   statusCallback.fail(new OseeCoreException("This connection is not started."));
-			   }
-		   } catch (JMSException ex) {
-			   statusCallback.fail(ex);
-		   } catch (NullPointerException ex) {
-			   statusCallback.fail(ex);
-		   }
+      @Override
+      public void run() {
+         Topic destination;
+         try {
+            if (isConnectedThrow()) {
+               destination = getOrCreateTopic(messageId);
+               MessageConsumer consumer = session.createConsumer(destination);
+               consumer.setMessageListener(
+                  new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
+               regularListeners.put(messageId.getId(), consumer, listener);
+               statusCallback.success();
+            } else {
+               statusCallback.fail(new OseeCoreException("This connection is not started."));
+            }
+         } catch (JMSException ex) {
+            statusCallback.fail(ex);
+         } catch (NullPointerException ex) {
+            statusCallback.fail(ex);
+         }
 
-	   }
+      }
 
    }
 
    @Override
    public void subscribe(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
-    execute.submit(new SubscribeWithSelector(messageId, listener, selector, statusCallback));
+      execute.submit(new SubscribeWithSelector(messageId, listener, selector, statusCallback));
    }
-   
+
    private class SubscribeWithSelector implements Runnable {
-	   private MessageID messageId;
-	   private OseeMessagingListener listener;
-	   private String selector;
-	   private OseeMessagingStatusCallback statusCallback;
+      private final MessageID messageId;
+      private final OseeMessagingListener listener;
+      private final String selector;
+      private final OseeMessagingStatusCallback statusCallback;
 
-	   SubscribeWithSelector(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback){
-		   this.messageId = messageId;
-		   this.listener = listener;
-		   this.selector = selector;
-		   this.statusCallback = statusCallback;
-	   }
-	   @Override
-	   public void run() {
-		   Topic destination;
-		   try {
-			   if (isConnectedThrow()) {
-				   destination = getOrCreateTopic(messageId);
-				   MessageConsumer consumer = session.createConsumer(destination, selector);
-				   consumer.setMessageListener(new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session,
-						   listener));
-				   regularListeners.put(messageId.getId(), consumer, listener);
-				   statusCallback.success();
-			   } else {
-				   statusCallback.fail(new OseeCoreException("This connection is not started."));
-			   }
-		   } catch (JMSException ex) {
-			   statusCallback.fail(ex);
-		   } catch (NullPointerException ex) {
-			   statusCallback.fail(ex);
-		   }
+      SubscribeWithSelector(MessageID messageId, OseeMessagingListener listener, String selector, OseeMessagingStatusCallback statusCallback) {
+         this.messageId = messageId;
+         this.listener = listener;
+         this.selector = selector;
+         this.statusCallback = statusCallback;
+      }
 
-	   }
+      @Override
+      public void run() {
+         Topic destination;
+         try {
+            if (isConnectedThrow()) {
+               destination = getOrCreateTopic(messageId);
+               MessageConsumer consumer = session.createConsumer(destination, selector);
+               consumer.setMessageListener(
+                  new ActiveMqMessageListenerWrapper(activeMqUtil, replyProducer, session, listener));
+               regularListeners.put(messageId.getId(), consumer, listener);
+               statusCallback.success();
+            } else {
+               statusCallback.fail(new OseeCoreException("This connection is not started."));
+            }
+         } catch (JMSException ex) {
+            statusCallback.fail(ex);
+         } catch (NullPointerException ex) {
+            statusCallback.fail(ex);
+         }
+
+      }
 
    }
 
@@ -343,41 +340,41 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 
    @Override
    public void unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-	   execute.submit(new Unsubscribe(messageId, listener, statusCallback));
+      execute.submit(new Unsubscribe(messageId, listener, statusCallback));
    }
-   
+
    private class Unsubscribe implements Runnable {
-	   private MessageID messageId;
-	   private OseeMessagingListener listener;
-	   private OseeMessagingStatusCallback statusCallback;
+      private final MessageID messageId;
+      private final OseeMessagingListener listener;
+      private final OseeMessagingStatusCallback statusCallback;
 
-	   public Unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
-		   this.messageId = messageId;
-		   this.listener = listener;
-		   this.statusCallback = statusCallback;
-	   }
+      public Unsubscribe(MessageID messageId, OseeMessagingListener listener, OseeMessagingStatusCallback statusCallback) {
+         this.messageId = messageId;
+         this.listener = listener;
+         this.statusCallback = statusCallback;
+      }
 
-	   @Override
-	   public void run() {
-		   Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
-		   List<MessageConsumer> consumersToRemove = new ArrayList<>();
-		   if (listeners != null) {
-			   try {
-				   for (Entry<MessageConsumer, OseeMessagingListener> entry : listeners.entrySet()) {
-					   if (entry.getValue().equals(listener)) {
-						   consumersToRemove.add(entry.getKey());
-					   }
-				   }
-				   for (MessageConsumer messageConsumer : consumersToRemove) {
-					   listeners.remove(messageConsumer);
-					   messageConsumer.close();
-				   }
-			   } catch (JMSException ex) {
-				   statusCallback.fail(ex);
-			   }
-		   }
-		   statusCallback.success();
-	   }
+      @Override
+      public void run() {
+         Map<MessageConsumer, OseeMessagingListener> listeners = regularListeners.getKeyedValues(messageId.getId());
+         List<MessageConsumer> consumersToRemove = new ArrayList<>();
+         if (listeners != null) {
+            try {
+               for (Entry<MessageConsumer, OseeMessagingListener> entry : listeners.entrySet()) {
+                  if (entry.getValue().equals(listener)) {
+                     consumersToRemove.add(entry.getKey());
+                  }
+               }
+               for (MessageConsumer messageConsumer : consumersToRemove) {
+                  listeners.remove(messageConsumer);
+                  messageConsumer.close();
+               }
+            } catch (JMSException ex) {
+               statusCallback.fail(ex);
+            }
+         }
+         statusCallback.success();
+      }
    }
 
    @Override
@@ -407,36 +404,36 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
 
    @Override
    public synchronized void stop() {
-     execute.submit(new Stop());
+      execute.submit(new Stop());
    }
-   
+
    private class Stop implements Runnable {
 
-	@Override
-	public void run() {
-		topicCache.clear();
-	      messageProducerCache.clear();
-	      regularListeners.clear();
-	      started = false;
-	      try {
-	         if (session != null) {
-	            session.close();
-	            session = null;
-	         }
-	      } catch (JMSException ex) {
-	         OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.FINEST, ex);
-	      }
-	      try {
-	         if (connection != null) {
-	            connection.setExceptionListener(null);
-	            connection.close();
-	            connection = null;
-	         }
-	      } catch (JMSException ex) {
-	         OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.FINEST, ex);
-	      }
-	}
-	   
+      @Override
+      public void run() {
+         topicCache.clear();
+         messageProducerCache.clear();
+         regularListeners.clear();
+         started = false;
+         try {
+            if (session != null) {
+               session.close();
+               session = null;
+            }
+         } catch (JMSException ex) {
+            OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.FINEST, ex);
+         }
+         try {
+            if (connection != null) {
+               connection.setExceptionListener(null);
+               connection.close();
+               connection = null;
+            }
+         } catch (JMSException ex) {
+            OseeLog.log(ConnectionNodeActiveMqNoWait.class, Level.FINEST, ex);
+         }
+      }
+
    }
 
    @Override
@@ -489,7 +486,8 @@ class ConnectionNodeActiveMqNoWait implements ConnectionNodeFailoverSupport, Mes
             MessageListener listener = entry.getSecond().getMessageListener();
             if (listener instanceof ActiveMqMessageListenerWrapper) {
                sb.append("\tConsumer Listeners:\n");
-               sb.append(String.format("\t\t%s\n", ((ActiveMqMessageListenerWrapper) listener).getListener().toString()));
+               sb.append(
+                  String.format("\t\t%s\n", ((ActiveMqMessageListenerWrapper) listener).getListener().toString()));
             }
          } catch (JMSException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

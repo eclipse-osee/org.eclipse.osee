@@ -99,7 +99,8 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       List<Artifact> reqs = new ArrayList<>();
       for (IArtifactType type : types) {
          if (withInheritance) {
-            reqs.addAll(ArtifactQuery.getArtifactListFromTypeWithInheritence(type, branch, DeletionFlag.EXCLUDE_DELETED));
+            reqs.addAll(
+               ArtifactQuery.getArtifactListFromTypeWithInheritence(type, branch, DeletionFlag.EXCLUDE_DELETED));
          } else {
             reqs.addAll(ArtifactQuery.getArtifactListFromType(type, branch));
          }

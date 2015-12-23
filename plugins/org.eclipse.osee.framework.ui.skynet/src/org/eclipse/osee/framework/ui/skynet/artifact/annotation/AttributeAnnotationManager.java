@@ -118,9 +118,8 @@ public class AttributeAnnotationManager {
 
    private static void ensureLoaded() {
       if (extensionDefinedObjects == null) {
-         extensionDefinedObjects =
-            new ExtensionDefinedObjects<IArtifactAnnotation>(
-               "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation", "ArtifactAnnotation", "classname");
+         extensionDefinedObjects = new ExtensionDefinedObjects<IArtifactAnnotation>(
+            "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation", "ArtifactAnnotation", "classname");
       }
    }
 

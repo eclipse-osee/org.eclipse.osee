@@ -31,9 +31,8 @@ public class AtsObjectMultiChoiceSelect extends XSelectFromDialog<IAtsObject> {
 
    @Override
    public FilteredCheckboxTreeDialog createDialog() {
-      FilteredCheckboxTreeDialog dialog =
-         new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below", new ArrayTreeContentProvider(),
-            new LabelProvider(), new AtsObjectNameSorter());
+      FilteredCheckboxTreeDialog dialog = new FilteredCheckboxTreeDialog(getLabel(), "Select from the items below",
+         new ArrayTreeContentProvider(), new LabelProvider(), new AtsObjectNameSorter());
       return dialog;
    }
 

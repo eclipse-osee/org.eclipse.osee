@@ -484,8 +484,7 @@ public class TxDataManagerTest {
    @Test
    public void testIntroduceArtifact() throws OseeCoreException {
       ResultSet<Artifact> loaded = ResultSets.singleton(artifact1);
-      when(loader.loadArtifacts(eq(session), eq(COMMON_ID), anyCollectionOf(ArtifactId.class))).thenReturn(
-         loaded);
+      when(loader.loadArtifacts(eq(session), eq(COMMON_ID), anyCollectionOf(ArtifactId.class))).thenReturn(loaded);
       when(artifactFactory.introduceArtifact(session, artifact1, artifact1, BRANCH_ID)).thenReturn(artifact2);
       when(proxyManager.asExternalArtifact(session, artifact2)).thenReturn(readable2);
       when(artifact1.getGraph()).thenReturn(graph);

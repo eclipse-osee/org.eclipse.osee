@@ -111,9 +111,8 @@ public class SearchWorkPackageOperationTest {
          ais.add(ai);
       }
 
-      SearchWorkPackageOperation operation =
-         new SearchWorkPackageOperation("test", teamDefs, includeChildrenTeamDefs, ais, includeChildrenAIs,
-            activeOption);
+      SearchWorkPackageOperation operation = new SearchWorkPackageOperation("test", teamDefs, includeChildrenTeamDefs,
+         ais, includeChildrenAIs, activeOption);
       Operations.executeWorkAndCheckStatus(operation);
       Set<Artifact> resultArtifacts = operation.getResultArtifacts();
       Collection<Long> resultArtifactGuids = Artifacts.toUuids(resultArtifacts);

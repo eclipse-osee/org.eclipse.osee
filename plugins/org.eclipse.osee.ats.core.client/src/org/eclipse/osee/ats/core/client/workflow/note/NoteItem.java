@@ -79,7 +79,7 @@ public class NoteItem {
    }
 
    private String toStringState() {
-      return (state.isEmpty() ? "" : " for \"" + state + "\"");
+      return state.isEmpty() ? "" : " for \"" + state + "\"";
    }
 
    public IAtsUser getUser() {
@@ -120,11 +120,8 @@ public class NoteItem {
                   logItems.add(item);
                } catch (UserNotInDatabase ex) {
                   OseeLog.logf(Activator.class, Level.SEVERE, ex, "Error parsing notes for [%s]", atsId);
-                  NoteItem item =
-                     new NoteItem(element.getAttribute("type"),
-                        element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
-                        element.getAttribute("date"), AtsCoreUsers.ANONYMOUS_USER,
-                        element.getAttribute("msg"));
+                  NoteItem item = new NoteItem(element.getAttribute("type"), element.getAttribute("state"), // NOPMD by b0727536 on 9/29/10 8:52 AM
+                     element.getAttribute("date"), AtsCoreUsers.ANONYMOUS_USER, element.getAttribute("msg"));
                   logItems.add(item);
                }
             }

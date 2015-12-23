@@ -107,7 +107,7 @@ public class LDAPConnector {
                if (attribs.size() > 0) {
                   Attribute attribute = attribs.get(accountField);
                   NamingEnumeration<?> allMembers = attribute.getAll();
-                  while ((allMembers != null) && allMembers.hasMoreElements()) {
+                  while (allMembers != null && allMembers.hasMoreElements()) {
                      String accountName = (String) allMembers.next();
                      if (username.equalsIgnoreCase(accountName)) {
                         toReturn = accountName;

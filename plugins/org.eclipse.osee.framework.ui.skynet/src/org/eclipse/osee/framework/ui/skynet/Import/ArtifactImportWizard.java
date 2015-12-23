@@ -99,9 +99,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
          final String opName = String.format("Importing Artifacts onto: [%s]", destinationArtifact);
 
-         IOperation operation =
-            ArtifactImportOperationFactory.createRoughToRealOperation(opName, destinationArtifact, resolver, false,
-               roughItems, isDeleteUnmatchedSelected, mainPage.getArtifactParser());
+         IOperation operation = ArtifactImportOperationFactory.createRoughToRealOperation(opName, destinationArtifact,
+            resolver, false, roughItems, isDeleteUnmatchedSelected, mainPage.getArtifactParser());
          Operations.executeAsJob(operation, true);
          wasLaunched = true;
 

@@ -48,8 +48,8 @@ public class AnnotationComposite extends Composite {
                   continue;
                }
                if (notify.getType() == ArtifactAnnotation.Type.None) {
-                  OseeLog.log(Activator.class, Level.SEVERE, new OseeStateException(
-                     "None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
+                  OseeLog.log(Activator.class, Level.SEVERE,
+                     new OseeStateException("None is an invalid annotation type on artifact [%s]", artifact.getGuid()));
                   continue;
                }
                Label iconLabel = toolkit != null ? toolkit.createLabel(this, "") : new Label(this, SWT.NONE);

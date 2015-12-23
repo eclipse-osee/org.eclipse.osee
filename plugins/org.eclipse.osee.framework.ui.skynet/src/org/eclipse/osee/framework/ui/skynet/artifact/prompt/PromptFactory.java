@@ -37,17 +37,14 @@ public final class PromptFactory implements IPromptFactory {
       if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          promptChange = new DateHandlePromptChange(artifacts, attributeType, displayName, persist);
       } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
-         promptChange =
-            new StringHandlePromptChange(attributeType, persist, displayName, artifacts, NumberFormat.getInstance(),
-               false);
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+            NumberFormat.getInstance(), false);
       } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
-         promptChange =
-            new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-               NumberFormat.getIntegerInstance(), false);
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+            NumberFormat.getIntegerInstance(), false);
       } else if (AttributeTypeManager.isBaseTypeCompatible(LongAttribute.class, attributeType)) {
-         promptChange =
-            new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
-               NumberFormat.getNumberInstance(), false);
+         promptChange = new StringHandlePromptChange(attributeType, persist, displayName, artifacts,
+            NumberFormat.getNumberInstance(), false);
       } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          promptChange = new BooleanHandlePromptChange(artifacts, attributeType, displayName, persist, null);
       } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeType)) {

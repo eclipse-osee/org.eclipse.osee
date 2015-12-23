@@ -62,8 +62,8 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
          }
       }
       //When creating a three way merge the tags are not added as they create conflicts.  Therefore
-      //we remove template information using the listnum fldChar tag.  The following code checks for the 
-      //attribute tags and if they are not there removes all the paragraphs following the one that contains the 
+      //we remove template information using the listnum fldChar tag.  The following code checks for the
+      //attribute tags and if they are not there removes all the paragraphs following the one that contains the
       //fldChar
       if (!sectList.isEmpty()) {
          handleMultiSectTags(sectList);

@@ -23,7 +23,7 @@ import org.eclipse.osee.orcs.data.EnumType;
 /**
  * @author Roberto E. Escobar
  */
-public final class EnumTypeImpl extends FullyNamedIdentity<Long> implements EnumType {
+public final class EnumTypeImpl extends FullyNamedIdentity<Long>implements EnumType {
 
    private final List<EnumEntry> entries;
 

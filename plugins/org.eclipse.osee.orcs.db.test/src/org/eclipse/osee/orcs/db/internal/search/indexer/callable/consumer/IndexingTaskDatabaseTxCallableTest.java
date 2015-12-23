@@ -46,7 +46,7 @@ public class IndexingTaskDatabaseTxCallableTest {
    @Mock private OrcsSession session;
    @Mock private JdbcClient jdbcClient;
    @Mock private IndexerCollectorAdapter collector;
-   @Mock private AttributeTypes types; 
+   @Mock private AttributeTypes types;
    @Mock private IndexedResource resource1;
    @Mock private IndexedResource resource2;
    @Mock private TaggingEngine engine;
@@ -67,9 +67,8 @@ public class IndexingTaskDatabaseTxCallableTest {
             handler.onData(resource2);
          }
       };
-      txCallable =
-         new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, engine, collector, -1, false, 10000,
-            types);
+      txCallable = new IndexingTaskDatabaseTxCallable(logger, session, jdbcClient, loader, engine, collector, -1, false,
+         10000, types);
    }
 
    @Test

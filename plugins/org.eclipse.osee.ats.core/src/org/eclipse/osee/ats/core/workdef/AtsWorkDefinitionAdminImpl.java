@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workdef;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -46,8 +48,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
 
 /**
  * @author Donald G. Dunne
@@ -144,10 +144,9 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
                if (workDef != null) {
                   match.setWorkDefinition(workDef);
                   if (!resultData.isEmpty()) {
-                     match.addTrace(
-                        (String.format("from DSL provider loaded id [%s] [%s]", id, resultData.toString())));
+                     match.addTrace(String.format("from DSL provider loaded id [%s] [%s]", id, resultData.toString()));
                   } else {
-                     match.addTrace((String.format("from DSL provider loaded id [%s]", id)));
+                     match.addTrace(String.format("from DSL provider loaded id [%s]", id));
                   }
                }
             } catch (Exception ex) {
@@ -274,8 +273,8 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
             attributeResolver.getSoleAttributeValue(task.getStoreObject(), AtsAttributeTypes.WorkflowDefinition, null);
             if (Strings.isValid(workFlowDefId)) {
                match = getWorkDefinition(workFlowDefId);
-               match.addTrace((String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(),
-                  workFlowDefId)));
+               match.addTrace(
+                  String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId));
                break;
             }
          }

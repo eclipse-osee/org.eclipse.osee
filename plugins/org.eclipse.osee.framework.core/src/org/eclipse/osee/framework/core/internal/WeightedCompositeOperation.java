@@ -103,7 +103,7 @@ public class WeightedCompositeOperation extends AbstractOperation {
    private double computeSumOfTotalWeights(double averageWeightHint) {
       int totalItems = operations.size();
       double itemsWithoutHints = totalItems - itemsWithHints;
-      return runningTotal + (itemsWithoutHints * averageWeightHint);
+      return runningTotal + itemsWithoutHints * averageWeightHint;
    }
 
    private double getActualWeight(Double initialWeightHint, double averageWeightHint, double sumOfAllWeights) {

@@ -34,8 +34,8 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
    }
 
    private HoursSpentStateReviewColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateReviewHoursSpent", "State Review Hours Spent", 40,
-         SWT.CENTER, false, SortDataType.Float, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".stateReviewHoursSpent", "State Review Hours Spent", 40, SWT.CENTER,
+         false, SortDataType.Float, false,
          "Hours spent in performing the changes for the reveiws related to the current state.");
    }
 
@@ -54,8 +54,8 @@ public class HoursSpentStateReviewColumn extends XViewerAtsColumn implements IXV
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsWorkItem) {
-            return AtsUtilCore.doubleToI18nString(HoursSpentUtil.getHoursSpentStateReview((IAtsWorkItem) element,
-               AtsClientService.get().getServices()));
+            return AtsUtilCore.doubleToI18nString(
+               HoursSpentUtil.getHoursSpentStateReview((IAtsWorkItem) element, AtsClientService.get().getServices()));
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

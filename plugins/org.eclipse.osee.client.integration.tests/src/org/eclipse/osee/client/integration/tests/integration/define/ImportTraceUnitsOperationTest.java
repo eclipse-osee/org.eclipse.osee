@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -143,17 +142,15 @@ public final class ImportTraceUnitsOperationTest {
          tempFolder.newFolder(topLevelFolderName);
       }
       for (String folderName : folderNames) {
-         File tempFile =
-            new File(
-               tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderName);
+         File tempFile = new File(
+            tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderName);
          if (!tempFile.exists()) {
             tempFolder.newFolder(topLevelFolderName, folderName);
          }
       }
       for (int i = 0; i < fileNames.length; i++) {
-         File codeUnitFile =
-            new File(
-               tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderNames[i] + IPath.SEPARATOR + fileNames[i]);
+         File codeUnitFile = new File(
+            tempFolder.getRoot().getAbsolutePath() + IPath.SEPARATOR + topLevelFolderName + IPath.SEPARATOR + folderNames[i] + IPath.SEPARATOR + fileNames[i]);
          if (!codeUnitFile.exists()) {
             codeUnitFile.createNewFile();
             Lib.writeStringToFile("Dummy String", codeUnitFile);
@@ -180,9 +177,8 @@ public final class ImportTraceUnitsOperationTest {
       boolean fileWithMultiPaths = true;
       boolean addGuidToSourceFile = false;
 
-      IOperation op =
-         new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive, isPersistChanges,
-            fileWithMultiPaths, addGuidToSourceFile, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
+      IOperation op = new ImportTraceUnitsOperation("Import Trace Units", importToBranch, files, isRecursive,
+         isPersistChanges, fileWithMultiPaths, addGuidToSourceFile, DemoTraceability.DEMO_TRACE_UNIT_HANDLER_ID);
       Operations.executeWorkAndCheckStatus(op);
    }
 }

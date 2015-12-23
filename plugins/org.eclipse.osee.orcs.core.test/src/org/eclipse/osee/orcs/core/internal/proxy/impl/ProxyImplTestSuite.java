@@ -17,7 +17,10 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ArtifactReadOnlyImplTest.class, AttributeReadOnlyImplTest.class, ExternalArtifactManagerTest.class})
+@Suite.SuiteClasses({
+   ArtifactReadOnlyImplTest.class,
+   AttributeReadOnlyImplTest.class,
+   ExternalArtifactManagerTest.class})
 public class ProxyImplTestSuite {
    // Test Suite
 }

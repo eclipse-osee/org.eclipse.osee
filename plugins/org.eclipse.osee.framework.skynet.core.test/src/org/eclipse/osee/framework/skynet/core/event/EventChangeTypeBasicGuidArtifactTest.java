@@ -28,34 +28,29 @@ public class EventChangeTypeBasicGuidArtifactTest {
    public void testEquals() {
       EventChangeTypeBasicGuidArtifact eventArt1 =
          new EventChangeTypeBasicGuidArtifact(Lib.generateUuid(), 1234L, 546L, GUID.create());
-      EventChangeTypeBasicGuidArtifact eventArt2 =
-         new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getFromArtTypeGuid(),
-            eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      EventChangeTypeBasicGuidArtifact eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(),
+         eventArt1.getFromArtTypeGuid(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertEquals(eventArt1.hashCode(), eventArt2.hashCode());
       Assert.assertEquals(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getFromArtTypeGuid(),
-            eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getFromArtTypeGuid(),
+         eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventChangeTypeBasicGuidArtifact(Lib.generateUuid(), eventArt1.getFromArtTypeGuid(),
-            eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+      eventArt2 = new EventChangeTypeBasicGuidArtifact(Lib.generateUuid(), eventArt1.getFromArtTypeGuid(),
+         eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), 111L, eventArt1.getArtTypeGuid(),
-            eventArt1.getGuid());
+      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), 111L, eventArt1.getArtTypeGuid(),
+         eventArt1.getGuid());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 
-      eventArt2 =
-         new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getFromArtTypeGuid(),
-            eventArt1.getArtTypeGuid(), GUID.create());
+      eventArt2 = new EventChangeTypeBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getFromArtTypeGuid(),
+         eventArt1.getArtTypeGuid(), GUID.create());
 
       Assert.assertNotSame(eventArt1, eventArt2);
 

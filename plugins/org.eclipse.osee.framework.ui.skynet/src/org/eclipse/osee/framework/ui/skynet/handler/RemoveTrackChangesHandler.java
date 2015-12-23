@@ -52,7 +52,8 @@ public class RemoveTrackChangesHandler implements IStatusHandler {
                      "Confirm Removal Of Track Changes ", null, message, MessageDialog.QUESTION, new String[] {
                         IDialogConstants.YES_LABEL,
                         IDialogConstants.YES_TO_ALL_LABEL,
-                        IDialogConstants.NO_LABEL}, 0);
+                        IDialogConstants.NO_LABEL},
+                     0);
                dialog.updateStyle();
 
                boolean doesUserConfirm = dialog.open() == YES || dialog.open() == YES_TO_ALL;

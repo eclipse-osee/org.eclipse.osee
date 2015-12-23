@@ -20,12 +20,12 @@ import java.util.Map;
  *  Example:
  *    pattern = ${a}-${b}-${c}
  *    indexedPattern = {0}-{1}-{2}
- *    
- *    Parameters Map - 
+ * 
+ *    Parameters Map -
  *       "b" = dog;
  *       "a" = cat;
  *       "c" = ball;
- *       
+ * 
  *    getVariableValues = {cat, dog, ball};
  *    expandVariables = cat-dog-ball
  * </pre>

@@ -20,17 +20,17 @@ import org.eclipse.osee.ats.api.program.JaxProgram;
  */
 public class DemoProgram extends JaxProgram {
 
-   public static DemoProgram sawProgram = new DemoProgram(DemoCountry.usg, "SAW Program", 19196003L,
-      "SAW Program description");
-   public static DemoProgram cisProgram = new DemoProgram(DemoCountry.usg, "CIS Program", 8242414L,
-      "CIS Program description");
+   public static DemoProgram sawProgram =
+      new DemoProgram(DemoCountry.usg, "SAW Program", 19196003L, "SAW Program description");
+   public static DemoProgram cisProgram =
+      new DemoProgram(DemoCountry.usg, "CIS Program", 8242414L, "CIS Program description");
 
-   public static DemoProgram ver1 = new DemoProgram(DemoCountry.cntry, "Cntry V1", 888L,
-      "CNTRY Ver1 Program description");
-   public static DemoProgram ver2 = new DemoProgram(DemoCountry.cntry, "Cntry V2", 8881L,
-      "CNTRY Ver2 Program description");
-   public static DemoProgram ver3 = new DemoProgram(DemoCountry.cntry, "Cntry V3", 8882L,
-      "CNTRY Ver3 Program description");
+   public static DemoProgram ver1 =
+      new DemoProgram(DemoCountry.cntry, "Cntry V1", 888L, "CNTRY Ver1 Program description");
+   public static DemoProgram ver2 =
+      new DemoProgram(DemoCountry.cntry, "Cntry V2", 8881L, "CNTRY Ver2 Program description");
+   public static DemoProgram ver3 =
+      new DemoProgram(DemoCountry.cntry, "Cntry V3", 8882L, "CNTRY Ver3 Program description");
 
    List<DemoInsertion> insertions;
    private final DemoCountry country;

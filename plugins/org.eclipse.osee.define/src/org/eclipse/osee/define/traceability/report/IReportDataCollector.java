@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.report;
 
-
 /**
  * @author Roberto E. Escobar
  */

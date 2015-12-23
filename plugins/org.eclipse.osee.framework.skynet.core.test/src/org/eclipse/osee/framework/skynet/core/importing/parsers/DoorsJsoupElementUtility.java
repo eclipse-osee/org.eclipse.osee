@@ -107,7 +107,7 @@ public final class DoorsJsoupElementUtility {
          "";
       //@formatter:on
       // this selection doesn't distinguish the table rows inside of table rows
-      // these child rows appear at the end of the list 
+      // these child rows appear at the end of the list
 
       elements = Jsoup.parse(s).select("tr");
    }

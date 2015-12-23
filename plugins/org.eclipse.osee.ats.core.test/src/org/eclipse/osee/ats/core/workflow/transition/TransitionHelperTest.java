@@ -64,18 +64,16 @@ public class TransitionHelperTest {
       when(services.getUserService()).thenReturn(userService);
       when(services.getWorkItemService()).thenReturn(workItemService);
 
-      helper =
-         new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
-            "cancel reason", changes, services, TransitionOption.None);
+      helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
+         "cancel reason", changes, services, TransitionOption.None);
    }
 
    @Test
    public void testIsPrivilegedEditEnabled() {
       Assert.assertFalse(helper.isPrivilegedEditEnabled());
 
-      TransitionHelper helper =
-         new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
-            "cancel reason", changes, services, TransitionOption.PrivilegedEditEnabled);
+      TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
+         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.PrivilegedEditEnabled);
 
       Assert.assertTrue(helper.isPrivilegedEditEnabled());
    }
@@ -84,9 +82,8 @@ public class TransitionHelperTest {
    public void testIsOverrideTransitionValidityCheck() {
       Assert.assertFalse(helper.isOverrideTransitionValidityCheck());
 
-      TransitionHelper helper =
-         new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
-            "cancel reason", changes, services, TransitionOption.OverrideTransitionValidityCheck);
+      TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
+         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.OverrideTransitionValidityCheck);
 
       Assert.assertTrue(helper.isOverrideTransitionValidityCheck());
    }
@@ -95,9 +92,8 @@ public class TransitionHelperTest {
    public void testIsOverrideAssigneeCheck() {
       Assert.assertFalse(helper.isOverrideAssigneeCheck());
 
-      TransitionHelper helper =
-         new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay),
-            "cancel reason", changes, services, TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
+         Arrays.asList(Joe, Kay), "cancel reason", changes, services, TransitionOption.OverrideAssigneeCheck);
 
       Assert.assertTrue(helper.isOverrideAssigneeCheck());
    }
@@ -124,9 +120,8 @@ public class TransitionHelperTest {
       Assert.assertEquals("cancel reason", reason.getText());
       Assert.assertTrue(reason.isTrue());
 
-      TransitionHelper helper2 =
-         new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed", Arrays.asList(Joe, Kay), null,
-            changes, services, TransitionOption.OverrideAssigneeCheck);
+      TransitionHelper helper2 = new TransitionHelper("test", Arrays.asList(workItem, workItem2), "Completed",
+         Arrays.asList(Joe, Kay), null, changes, services, TransitionOption.OverrideAssigneeCheck);
 
       reason = helper2.getCompleteOrCancellationReason();
       Assert.assertEquals("", reason.getText());

@@ -48,7 +48,7 @@ public class UriDataProxy extends AbstractDataProxy implements CharacterDataProx
       boolean response = false;
       try {
          ByteBuffer original = getValueAsBytes();
-         if ((original != null && data == null) || (original == null && data != null) || //
+         if (original != null && data == null || original == null && data != null || //
          !original.equals(data)) {
             if (data != null) {
                ResourceNameResolver resolver = getResolver();

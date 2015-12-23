@@ -58,9 +58,8 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       ArtifactReadable group =
          newQuery().andUuid(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults().getExactlyOne();
 
-      String txComment =
-         String.format("%s user [%s] to [%s].", activate ? "Subscribe" : "Unsubscribe", account.getName(),
-            group.getName());
+      String txComment = String.format("%s user [%s] to [%s].", activate ? "Subscribe" : "Unsubscribe",
+         account.getName(), group.getName());
       TransactionBuilder tx = newTransaction(txComment);
       // relate/unrelate (Side_A Art) <- Users -> (Side_B Art)
       if (activate) {

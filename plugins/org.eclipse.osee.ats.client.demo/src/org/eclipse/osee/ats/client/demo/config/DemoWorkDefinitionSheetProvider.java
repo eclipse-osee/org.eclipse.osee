@@ -29,12 +29,12 @@ public class DemoWorkDefinitionSheetProvider implements IAtsWorkDefinitionSheetP
       sheets.add(new WorkDefinitionSheet("WorkDef_Demo_AIs_And_Team_Definitions",
          AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID,
             "support/WorkDef_Demo_AIs_And_Team_Definitions.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Code", AtsWorkDefinitionSheetProviders.getSupportFile(
-         Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Code.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Req", AtsWorkDefinitionSheetProviders.getSupportFile(
-         Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Req.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Test", AtsWorkDefinitionSheetProviders.getSupportFile(
-         Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Test.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Code",
+         AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Code.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Req",
+         AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Req.ats")));
+      sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_Test",
+         AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_Test.ats")));
       sheets.add(new WorkDefinitionSheet("WorkDef_Team_Demo_SwDesign", AtsWorkDefinitionSheetProviders.getSupportFile(
          Activator.PLUGIN_ID, "support/WorkDef_Team_Demo_SwDesign.ats")));
       return sheets;

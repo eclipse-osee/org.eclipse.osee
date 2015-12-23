@@ -100,14 +100,12 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
       String key = type.getUuid();
       OseeType duplicate = uuids.put(key, type);
       if (duplicate != null) {
-         String message =
-            String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]", type.getName(),
-               type.getUuid(), duplicate.getName(), duplicate.getUuid());
+         String message = String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]",
+            type.getName(), type.getUuid(), duplicate.getName(), duplicate.getUuid());
          error(message, type, feature, index);
 
-         message =
-            String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]", duplicate.getName(),
-               duplicate.getUuid(), type.getName(), type.getUuid());
+         message = String.format("Duplicate uuids detected:\nname:[%s] uuid:[%s]\nname:[%s] uuid:[%s]",
+            duplicate.getName(), duplicate.getUuid(), type.getName(), type.getUuid());
          error(message, duplicate, feature, index);
       }
    }
@@ -124,9 +122,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             typeNames.add(attrType.getName());
          }
          if (uuidToTypeName.containsKey(attrType.getUuid())) {
-            String message =
-               String.format("Duplicate uuid [%s] for attribute types [%s] and [%s]", attrType.getUuid(),
-                  attrType.getName(), uuidToTypeName.get(attrType.getUuid()));
+            String message = String.format("Duplicate uuid [%s] for attribute types [%s] and [%s]", attrType.getUuid(),
+               attrType.getName(), uuidToTypeName.get(attrType.getUuid()));
             error(message, attrType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XATTRIBUTE_TYPE__UUID);
          } else {
             uuidToTypeName.put(attrType.getUuid(), attrType.getName());
@@ -142,9 +139,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             typeNames.add(artType.getName());
          }
          if (uuidToTypeName.containsKey(artType.getUuid())) {
-            String message =
-               String.format("Duplicate uuid [%s] for artifact types [%s] and [%s]", artType.getUuid(),
-                  artType.getName(), uuidToTypeName.get(artType.getUuid()));
+            String message = String.format("Duplicate uuid [%s] for artifact types [%s] and [%s]", artType.getUuid(),
+               artType.getName(), uuidToTypeName.get(artType.getUuid()));
             error(message, artType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XARTIFACT_TYPE__UUID);
          } else {
             uuidToTypeName.put(artType.getUuid(), artType.getName());
@@ -160,9 +156,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
             typeNames.add(relType.getName());
          }
          if (uuidToTypeName.containsKey(relType.getUuid())) {
-            String message =
-               String.format("Duplicate uuid [%s] for relation types [%s] and [%s]", relType.getUuid(),
-                  relType.getName(), uuidToTypeName.get(relType.getUuid()));
+            String message = String.format("Duplicate uuid [%s] for relation types [%s] and [%s]", relType.getUuid(),
+               relType.getName(), uuidToTypeName.get(relType.getUuid()));
             error(message, relType, OseeDslPackage.Literals.OSEE_TYPE__UUID, OseeDslPackage.XRELATION_TYPE__UUID);
          } else {
             uuidToTypeName.put(relType.getUuid(), relType.getName());
@@ -185,9 +180,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          if (reference == null) {
             references.put(name, artifactRef);
          } else {
-            String message =
-               String.format("Duplicate hierarchy restriction [%s] in context[%s]", reference.toString(),
-                  accessContext.getName());
+            String message = String.format("Duplicate hierarchy restriction [%s] in context[%s]", reference.toString(),
+               accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS,
                OseeDslPackage.ACCESS_CONTEXT__HIERARCHY_RESTRICTIONS, NON_UNIQUE_HIERARCHY, reference.getName());
          }
@@ -221,9 +215,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          if (reference == null) {
             artInstanceRestrictions.put(name, restriction.getArtifactMatcherRef());
          } else {
-            String message =
-               String.format("Duplicate artifact instance restriction [%s] in context[%s]", reference.toString(),
-                  accessContext.getName());
+            String message = String.format("Duplicate artifact instance restriction [%s] in context[%s]",
+               reference.toString(), accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.ARTIFACT_MATCH_RESTRICTION__ARTIFACT_MATCHER_REF,
                OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ARTIFACT_INSTANCE_RESTRICTION,
                reference.getName());
@@ -238,9 +231,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          if (reference == null) {
             artifactTypeRestrictions.put(uuid, restriction.getArtifactTypeRef());
          } else {
-            String message =
-               String.format("Duplicate artifact type restriction [%s] in context[%s]", reference.toString(),
-                  accessContext.getName());
+            String message = String.format("Duplicate artifact type restriction [%s] in context[%s]",
+               reference.toString(), accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.ARTIFACT_TYPE_RESTRICTION__ARTIFACT_TYPE_REF,
                OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ARTIFACT_TYPE_RESTRICTION, reference.getUuid());
          }
@@ -264,9 +256,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
                }
 
                if (dispatchError) {
-                  String message =
-                     String.format("Duplicate attribute type restriction [%s] in context[%s]", object.toString(),
-                        accessContext.getName());
+                  String message = String.format("Duplicate attribute type restriction [%s] in context[%s]",
+                     object.toString(), accessContext.getName());
                   error(message, object, OseeDslPackage.Literals.ATTRIBUTE_TYPE_RESTRICTION__ARTIFACT_TYPE_REF,
                      OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_ATTRIBUTE_TYPE_RESTRICTION,
                      r1.getAttributeTypeRef().getUuid());
@@ -292,9 +283,8 @@ public class OseeDslJavaValidator extends AbstractOseeDslJavaValidator {
          if (reference == null) {
             relationTypeRetrictions.put(key, relationTypeRef);
          } else {
-            String message =
-               String.format("Duplicate artifact type restriction [%s] in context[%s]", reference.toString(),
-                  accessContext.getName());
+            String message = String.format("Duplicate artifact type restriction [%s] in context[%s]",
+               reference.toString(), accessContext.getName());
             error(message, restriction, OseeDslPackage.Literals.RELATION_TYPE_RESTRICTION__RELATION_TYPE_REF,
                OseeDslPackage.ACCESS_CONTEXT__ACCESS_RULES, NON_UNIQUE_RELATION_TYPE_RESTRICTION, reference.getUuid());
          }

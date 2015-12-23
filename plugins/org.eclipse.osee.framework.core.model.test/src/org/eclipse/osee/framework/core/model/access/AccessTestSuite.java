@@ -15,7 +15,7 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({//
-AccessDataTest.class, //
+   AccessDataTest.class, //
    AccessDataQueryTest.class, //
    AccessDetailTest.class, //
    PermissionStatusTest.class, //

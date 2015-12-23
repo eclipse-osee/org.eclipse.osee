@@ -39,8 +39,9 @@ public class ReviewDefectManager {
    private final static String DEFECT_ITEM_TAG = "Item";
    private static final IAttributeType REVIEW_STORAGE_TYPE = AtsAttributeTypes.ReviewDefect;
 
-   private final Matcher defectMatcher = java.util.regex.Pattern.compile(
-      "<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">", Pattern.DOTALL | Pattern.MULTILINE).matcher("");
+   private final Matcher defectMatcher =
+      java.util.regex.Pattern.compile("<" + DEFECT_ITEM_TAG + ">(.*?)</" + DEFECT_ITEM_TAG + ">",
+         Pattern.DOTALL | Pattern.MULTILINE).matcher("");
    private final IValueProvider valueProvider;
    private Set<ReviewDefectItem> defectItems = null;
 
@@ -212,7 +213,8 @@ public class ReviewDefectManager {
 
    public String getTable() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      builder.append("<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");
+      builder.append(
+         "<TABLE BORDER=\"1\" cellspacing=\"1\" cellpadding=\"3%\" width=\"100%\"><THEAD><TR><TH>Severity</TH>" + "<TH>Disposition</TH><TH>Injection</TH><TH>User</TH><TH>Date</TH><TH>Description</TH><TH>Location</TH>" + "<TH>Resolution</TH><TH>Guid</TH><TH>Completed</TH></THEAD></TR>");
       for (ReviewDefectItem item : getDefectItems()) {
          IAtsUser user = item.getUser();
          builder.append("<TR>");

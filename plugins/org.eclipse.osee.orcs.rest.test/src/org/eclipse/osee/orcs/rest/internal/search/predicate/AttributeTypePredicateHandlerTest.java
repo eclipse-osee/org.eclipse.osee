@@ -52,7 +52,8 @@ public class AttributeTypePredicateHandlerTest {
       AttributeTypePredicateHandler handler = new AttributeTypePredicateHandler();
       List<String> typeParameters = Collections.singletonList("0x0123");
       List<String> values = Collections.singletonList("value");
-      Predicate testPredicate = new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
+      Predicate testPredicate =
+         new Predicate(SearchMethod.ATTRIBUTE_TYPE, typeParameters, values, QueryOption.TOKEN_DELIMITER__ANY);
       handler.handle(builder, testPredicate);
       verify(builder).and(anyCollectionOf(IAttributeType.class), eq("value"), eq(QueryOption.TOKEN_DELIMITER__ANY));
    }

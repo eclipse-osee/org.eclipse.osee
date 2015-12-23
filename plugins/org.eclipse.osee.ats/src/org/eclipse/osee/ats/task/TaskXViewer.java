@@ -167,7 +167,9 @@ public class TaskXViewer extends WorldXViewer {
          TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
          boolean modified = false;
 
-         if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(HoursSpentStateTotalColumn.getInstance()) || xCol.equals(PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
+         if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(
+            HoursSpentStateTotalColumn.getInstance()) || xCol.equals(
+               PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
             modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
          } else {
             modified = super.handleAltLeftClick(treeColumn, treeItem);

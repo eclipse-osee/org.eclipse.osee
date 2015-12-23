@@ -27,8 +27,8 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  */
 public interface ArtifactQueryBuilder<T> {
 
-   public static IAttributeType ANY_ATTRIBUTE_TYPE = TokenFactory.createAttributeType(Long.MIN_VALUE,
-      "Any Attribute Type");
+   public static IAttributeType ANY_ATTRIBUTE_TYPE =
+      TokenFactory.createAttributeType(Long.MIN_VALUE, "Any Attribute Type");
 
    T includeDeletedArtifacts();
 
@@ -122,7 +122,7 @@ public interface ArtifactQueryBuilder<T> {
     * Search criteria that checks for the non-existence of an attribute type(s).
     */
    T andNotExists(Collection<? extends IAttributeType> attributeTypes) throws OseeCoreException;
-   
+
    /**
     * Search criteria that checks for the non-existence of an attribute type(s).
     */

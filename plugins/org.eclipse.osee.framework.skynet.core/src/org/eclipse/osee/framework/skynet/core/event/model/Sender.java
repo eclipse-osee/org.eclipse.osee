@@ -35,9 +35,8 @@ public class Sender {
    }
 
    public static Sender createSender(NetworkSender networkSender) {
-      OseeClientSession oseeSession =
-         new OseeClientSession(networkSender.sessionId, networkSender.machineName, networkSender.userId,
-            networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a");
+      OseeClientSession oseeSession = new OseeClientSession(networkSender.sessionId, networkSender.machineName,
+         networkSender.userId, networkSender.machineIp, networkSender.port, networkSender.clientVersion, "n/a");
       return createSender(networkSender.sourceObject, oseeSession);
    }
 
@@ -91,8 +90,8 @@ public class Sender {
    }
 
    public NetworkSender getNetworkSender() {
-      return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(),
-         oseeSession.getUserId(), oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
+      return new NetworkSender(sourceObject, oseeSession.getId(), oseeSession.getMachineName(), oseeSession.getUserId(),
+         oseeSession.getMachineIp(), oseeSession.getPort(), oseeSession.getVersion());
    }
 
    public RemoteNetworkSender1 getNetworkSenderRes() {

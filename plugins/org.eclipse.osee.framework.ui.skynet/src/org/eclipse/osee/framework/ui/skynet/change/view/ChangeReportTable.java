@@ -140,7 +140,7 @@ public class ChangeReportTable implements EditorSection.IWidget {
             for (Object object : selection.toArray()) {
 
                if (object instanceof IAdaptable) {
-                  Artifact artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+                  Artifact artifact = ((IAdaptable) object).getAdapter(Artifact.class);
 
                   if (artifact != null) {
                      artifacts.add(artifact);

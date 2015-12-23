@@ -51,4 +51,4 @@ public class BaseIdentity<T> implements Identity<T> {
       return String.valueOf(getGuid());
    }
 
-   }
+}

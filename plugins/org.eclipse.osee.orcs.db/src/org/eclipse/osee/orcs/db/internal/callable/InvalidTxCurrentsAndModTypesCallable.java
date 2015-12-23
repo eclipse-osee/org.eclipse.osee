@@ -128,7 +128,8 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
 
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
-            if (address.hasSameModType(previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
+            if (address.hasSameModType(
+               previousAddress) || !address.getModType().isDeleted() && previousAddress.getModType().isEdited()) {
                address.setPurge(true);
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);
@@ -167,9 +168,8 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
             ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
             TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-            Address address =
-               new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
-                  chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
+            Address address = new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
+               chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, txCurrent);
 
             if (!address.isSimilar(previousAddress)) {
                if (!addresses.isEmpty()) {
@@ -189,12 +189,12 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
    }
 
    private void logIssue(String message, Address address) {
-      getLogger().info("msg[%s] - branchId[%s] itemId[%s] txId[%s] gammaId[%s] modType[%s] txCurrent[%s]",//
+      getLogger().info("msg[%s] - branchId[%s] itemId[%s] txId[%s] gammaId[%s] modType[%s] txCurrent[%s]", //
          message, //
-         address.getBranchId(), // 
-         address.getItemId(),//
-         address.getTransactionId(),// 
-         address.getGammaId(),//
+         address.getBranchId(), //
+         address.getItemId(), //
+         address.getTransactionId(), //
+         address.getGammaId(), //
          address.getModType(), //
          address.getTxCurrent());
    }

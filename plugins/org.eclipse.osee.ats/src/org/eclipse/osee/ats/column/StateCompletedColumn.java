@@ -40,9 +40,9 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
    private final String stateName;
 
    public StateCompletedColumn(String stateName) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + "." + stateName + ".stateCompleted", String.format(
-         "State [%s] Completed", stateName), 80, SWT.LEFT, false, SortDataType.String, false, String.format(
-         "Date state [%s] was completed", stateName));
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + "." + stateName + ".stateCompleted",
+         String.format("State [%s] Completed", stateName), 80, SWT.LEFT, false, SortDataType.String, false,
+         String.format("Date state [%s] was completed", stateName));
       this.stateName = stateName;
    }
 

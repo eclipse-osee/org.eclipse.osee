@@ -26,6 +26,7 @@ public interface IAtsHealthCheck {
    /**
     * Check artifacts for problems. Log results in resultsMap indexed by test name as key (they will be organized by key
     * in report). Insert "Error: " at beginning of resultMap value if log item is an error. This will be highlighted.
+    * 
     * @param results JavaTip
     */
    public void validateAtsDatabase(Collection<Artifact> artifacts, ValidateResults results) throws OseeCoreException;

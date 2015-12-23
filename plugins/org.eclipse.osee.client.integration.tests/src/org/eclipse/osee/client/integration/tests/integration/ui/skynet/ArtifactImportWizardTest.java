@@ -85,21 +85,20 @@ public final class ArtifactImportWizardTest {
     */
    @Before
    public void setUp() throws Exception {
-      myRootArtifact =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, "ArtifactImportWizardTest_Root",
-            "ArtifatImpWizaTestGUID");
+      myRootArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1,
+         "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID");
 
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1).addChild(myRootArtifact);
 
-      Artifact artifactA =
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A", "AAAAAAAAAAAAAAAAAAAAAA");
+      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A",
+         "AAAAAAAAAAAAAAAAAAAAAA");
       myRootArtifact.addChild(artifactA);
 
       artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "C",
          "CCCCCCCCCCCCCCCCCCCCCC"));
 
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D",
-         "DDDDDDDDDDDDDDDDDDDDDD"));
+      artifactA.addChild(
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D", "DDDDDDDDDDDDDDDDDDDDDD"));
 
       myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "B",
          "BBBBBBBBBBBBBBBBBBBBBB"));
@@ -193,10 +192,9 @@ public final class ArtifactImportWizardTest {
          RoughArtifactCollector collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
          collector.reset();
 
-         IOperation operation =
-            ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
-               new ExcelArtifactExtractor(), resolver, collector,
-               Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord), true, true, false);
+         IOperation operation = ArtifactImportOperationFactory.createOperation(inputExcelFile, myRootArtifact, null,
+            new ExcelArtifactExtractor(), resolver, collector, Arrays.asList(CoreArtifactTypes.SystemRequirementMSWord),
+            true, true, false);
          Operations.executeWorkAndCheckStatus(operation);
 
          Assert.assertFalse(collector.getRoughArtifacts().isEmpty());

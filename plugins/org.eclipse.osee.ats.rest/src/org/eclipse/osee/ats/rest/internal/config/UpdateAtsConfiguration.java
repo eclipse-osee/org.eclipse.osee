@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.config;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,8 +37,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * @author Donald G. Dunne

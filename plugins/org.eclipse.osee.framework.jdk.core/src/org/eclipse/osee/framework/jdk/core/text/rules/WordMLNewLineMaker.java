@@ -92,7 +92,7 @@ public final class WordMLNewLineMaker extends Rule {
    private ChangeSet decideOnResultAndReturnIt(StringBuilder modifiedFile, CharSequence entireFile) {
       boolean insertModified = modifiedText.length() > 0;
       setRuleWasApplicable(insertModified);
-      return new ChangeSet((insertModified) ? modifiedText : entireFile);
+      return new ChangeSet(insertModified ? modifiedText : entireFile);
    }
 
    private void processWxSubSection(String wxSubSection) {

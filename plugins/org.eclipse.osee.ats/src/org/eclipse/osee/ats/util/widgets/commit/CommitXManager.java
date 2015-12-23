@@ -116,11 +116,7 @@ public class CommitXManager extends XViewer {
                "Talk to project lead as to why commit disabled for version [" + displayName + "]");
          } else if (commitStatus == CommitStatus.Commit_Needed || commitStatus == CommitStatus.Merge_In_Progress) {
             IOperation operation =
-               AtsBranchManager.commitWorkingBranch(
-                  xCommitManager.getTeamArt(),
-                  true,
-                  false,
-                  branch,
+               AtsBranchManager.commitWorkingBranch(xCommitManager.getTeamArt(), true, false, branch,
                   AtsClientService.get().getBranchService().isBranchesAllCommittedExcept(xCommitManager.getTeamArt(),
                      branch));
             Operations.executeAsJob(operation, true);
@@ -135,12 +131,9 @@ public class CommitXManager extends XViewer {
    }
 
    private void handleCommittedWithMerge(IOseeBranch branch) throws OseeCoreException {
-      MessageDialog dialog =
-         new MessageDialog(Displays.getActiveShell(), "Select Report", null,
-            "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION, new String[] {
-               "Show Change Report",
-               "Show Merge Manager",
-               "Cancel"}, 0);
+      MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Select Report", null,
+         "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
+         new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);
       int result = dialog.open();
       if (result == 2) {
          return;

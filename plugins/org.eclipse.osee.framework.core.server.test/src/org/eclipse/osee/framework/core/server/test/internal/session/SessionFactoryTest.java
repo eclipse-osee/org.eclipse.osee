@@ -67,9 +67,8 @@ public class SessionFactoryTest {
 
    @Test
    public void testCreate() {
-      Session session =
-         factory.createNewSession(guid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
-            clientPort);
+      Session session = factory.createNewSession(guid, userId, creationDate, clientVersion, clientMachineName,
+         clientAddress, clientPort);
 
       Assert.assertEquals(guid, session.getGuid());
       Assert.assertEquals(userId, session.getUserId());

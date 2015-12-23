@@ -59,20 +59,18 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       toolBarManager.add(new ZoomComboContributionItem(getPage()));
       toolBarManager.add(new Separator());
 
-      toggleFilterConnectionAction =
-         new ToggleFilterConnectionAction[] {
-            new ToggleFilterConnectionAction("None", ConnectionFilter.NO_FILTER),
-            new ToggleFilterConnectionAction("Filter All Connections", ConnectionFilter.FILTER_ALL_CONNECTIONS),
-            new ToggleFilterConnectionAction("Filter Branch Hierarchy Connections",
-               ConnectionFilter.FILTER_CHILD_BRANCH_CONNECTIONS),
-            new ToggleFilterConnectionAction("Filter Merge Connections", ConnectionFilter.FILTER_MERGE_CONNECTIONS)};
+      toggleFilterConnectionAction = new ToggleFilterConnectionAction[] {
+         new ToggleFilterConnectionAction("None", ConnectionFilter.NO_FILTER),
+         new ToggleFilterConnectionAction("Filter All Connections", ConnectionFilter.FILTER_ALL_CONNECTIONS),
+         new ToggleFilterConnectionAction("Filter Branch Hierarchy Connections",
+            ConnectionFilter.FILTER_CHILD_BRANCH_CONNECTIONS),
+         new ToggleFilterConnectionAction("Filter Merge Connections", ConnectionFilter.FILTER_MERGE_CONNECTIONS)};
 
       toolBarManager.add(new FilterConnectionAction());
 
-      toggleTxFilterAction =
-         new ToggleTxFilterAction[] {
-            new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
-            new ToggleTxFilterAction("Hide All", TxFilter.HIDE_ALL)};
+      toggleTxFilterAction = new ToggleTxFilterAction[] {
+         new ToggleTxFilterAction("Show All", TxFilter.NO_FILTER),
+         new ToggleTxFilterAction("Hide All", TxFilter.HIDE_ALL)};
       toolBarManager.add(new FilterTxAction());
    }
 
@@ -105,8 +103,8 @@ public class BranchGraphActionBarContributor extends ActionBarContributor {
       public ToggleTxFilterAction(String text, TxFilter show) {
          super(text, AS_RADIO_BUTTON);
          this.show = show;
-         setChecked(show.ordinal() == Activator.getInstance().getPreferenceStore().getInt(
-            GraphOptions.TRANSACTION_FILTER));
+         setChecked(
+            show.ordinal() == Activator.getInstance().getPreferenceStore().getInt(GraphOptions.TRANSACTION_FILTER));
       }
 
       @Override

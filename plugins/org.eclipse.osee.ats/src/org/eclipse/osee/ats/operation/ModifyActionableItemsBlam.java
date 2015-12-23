@@ -292,9 +292,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
          IAtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
 
-         ModifyActionableItems job =
-            new ModifyActionableItems(results, teamWf, currAIsForAllWfs, currWorkflowDesiredAIs, newAIs, modifiedBy,
-               new TeamDefinitionUtility());
+         ModifyActionableItems job = new ModifyActionableItems(results, teamWf, currAIsForAllWfs,
+            currWorkflowDesiredAIs, newAIs, modifiedBy, new TeamDefinitionUtility());
          job.performModification();
 
          if (!logOnly) {
@@ -354,10 +353,9 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          AtsChangeSet changes = new AtsChangeSet(getName());
          Date createdDate = new Date();
          for (CreateTeamData data : job.getTeamDatas()) {
-            TeamWorkFlowArtifact teamArt =
-               ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(), data.getTeamDef(),
-                  data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes, createdDate,
-                  data.getCreatedBy(), null, data.getCreateTeamOption());
+            TeamWorkFlowArtifact teamArt = ActionManager.createTeamWorkflow(teamWf.getParentActionArtifact(),
+               data.getTeamDef(), data.getActionableItems(), new LinkedList<IAtsUser>(data.getAssignees()), changes,
+               createdDate, data.getCreatedBy(), null, data.getCreateTeamOption());
             newTeamWfs.add(teamArt);
          }
 

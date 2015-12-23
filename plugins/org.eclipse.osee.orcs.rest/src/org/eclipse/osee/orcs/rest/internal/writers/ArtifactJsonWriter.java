@@ -66,7 +66,8 @@ public class ArtifactJsonWriter implements MessageBodyWriter<Object> {
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
       boolean result = false;
-      if (Iterable.class.isAssignableFrom(type) && genericType.getClass().isAssignableFrom(ArtifactReadable.class) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
+      if (Iterable.class.isAssignableFrom(type) && genericType.getClass().isAssignableFrom(
+         ArtifactReadable.class) && MediaType.APPLICATION_JSON_TYPE.equals(mediaType)) {
          result = true;
       }
       return result;

@@ -134,7 +134,7 @@ public class RelationManager {
       } else {
          relatedArtifacts = new ArrayList<>(selectedRelations.size());
 
-         Collection<Artifact> bulkLoadedArtifacts = ArtifactQuery.getArtifactListFromIds(
+         ArtifactQuery.getArtifactListFromIds(
             getRelatedArtifactIds(selectedRelations, relationSide, DeletionFlag.EXCLUDE_DELETED), artifact.getBranch());
 
          for (RelationLink relation : selectedRelations) {

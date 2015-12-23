@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.jdk.core.type;
 
 import java.util.HashMap;
-import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.junit.Assert;
 
 /**
@@ -27,12 +26,9 @@ public class TripletTest {
    private final Triplet<Integer, Integer, Integer> alsoMapToPi = new Triplet<>(a, b, c);
    private final Triplet<Integer, Integer, Integer> alsoMapToE = new Triplet<>(b, c, a);
 
-   private final Triplet<Integer, Integer, Integer> firstEntryNull = new Triplet<>(null, 222,
-      333);
-   private final Triplet<Integer, Integer, Integer> secondEntryNull = new Triplet<>(111, null,
-      333);
-   private final Triplet<Integer, Integer, Integer> thirdEntryNull = new Triplet<>(111, 222,
-      null);
+   private final Triplet<Integer, Integer, Integer> firstEntryNull = new Triplet<>(null, 222, 333);
+   private final Triplet<Integer, Integer, Integer> secondEntryNull = new Triplet<>(111, null, 333);
+   private final Triplet<Integer, Integer, Integer> thirdEntryNull = new Triplet<>(111, 222, null);
    private final Triplet<Integer, Integer, Integer> nonNull = new Triplet<>(111, 222, 333);
 
    @org.junit.Test

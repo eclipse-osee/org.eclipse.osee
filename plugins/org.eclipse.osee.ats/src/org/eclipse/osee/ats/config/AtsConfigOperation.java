@@ -100,8 +100,8 @@ public class AtsConfigOperation extends AbstractOperation {
          return;
       }
       if (match.isMatched()) {
-         throw new OseeArgumentException(String.format(
-            "Configuration Namespace [%s] already used, choose a unique namespace.", name));
+         throw new OseeArgumentException(
+            String.format("Configuration Namespace [%s] already used, choose a unique namespace.", name));
       }
    }
 
@@ -138,13 +138,13 @@ public class AtsConfigOperation extends AbstractOperation {
       if (teamDefToken == null) {
          teamDef = AtsClientService.get().createTeamDefinition(teamDefName);
       } else {
-         teamDef =
-            AtsClientService.get().createTeamDefinition(teamDefToken.getGuid(), teamDefToken.getName(),
-               teamDefToken.getUuid());
+         teamDef = AtsClientService.get().createTeamDefinition(teamDefToken.getGuid(), teamDefToken.getName(),
+            teamDefToken.getUuid());
       }
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
       teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
-      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(teamDef);
+      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(
+         teamDef);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       return teamDef;
    }
@@ -169,9 +169,8 @@ public class AtsConfigOperation extends AbstractOperation {
             addChildAi(topAia, childAi, changes, aias);
          }
       } else {
-         IAtsActionableItem childAi =
-            AtsClientService.get().createActionableItem(actionableItemToken.getGuid(), actionableItemToken.getName(),
-               actionableItemToken.getUuid());
+         IAtsActionableItem childAi = AtsClientService.get().createActionableItem(actionableItemToken.getGuid(),
+            actionableItemToken.getName(), actionableItemToken.getUuid());
          addChildAi(topAia, childAi, changes, aias);
       }
       AtsClientService.get().storeConfigObject(topAia, changes);
@@ -205,9 +204,8 @@ public class AtsConfigOperation extends AbstractOperation {
          workDef = generateDefaultWorkflow(name, resultData, changes, teamDef);
          try {
             String workDefXml = AtsClientService.get().getWorkDefinitionAdmin().getStorageString(workDef, resultData);
-            Artifact workDefArt =
-               AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml, workDef.getName(), name, null,
-                  resultData, changes);
+            Artifact workDefArt = AtsWorkDefinitionImporter.get().importWorkDefinitionToDb(workDefXml,
+               workDef.getName(), name, null, resultData, changes);
             Artifact folder = AtsUtilClient.getFromToken(AtsArtifactToken.WorkDefinitionsFolder);
             folder.addChild(workDefArt);
             changes.add(folder);
@@ -224,9 +222,8 @@ public class AtsConfigOperation extends AbstractOperation {
    }
 
    private IAtsWorkDefinition generateDefaultWorkflow(String name, XResultData resultData, IAtsChangeSet changes, IAtsTeamDefinition teamDef) throws OseeCoreException {
-      IAtsWorkDefinition defaultWorkDef =
-         AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(
-            AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
+      IAtsWorkDefinition defaultWorkDef = AtsClientService.get().getWorkDefinitionAdmin().getWorkDefinition(
+         AtsWorkDefinitionSheetProviders.WORK_DEF_TEAM_DEFAULT).getWorkDefinition();
 
       // Duplicate default team workflow definition w/ namespace changes
 

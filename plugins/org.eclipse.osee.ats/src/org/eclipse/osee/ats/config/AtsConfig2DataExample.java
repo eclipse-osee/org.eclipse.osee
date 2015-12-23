@@ -62,12 +62,12 @@ public class AtsConfig2DataExample extends AbstractAtsConfig2Data {
    @Override
    public Collection<WorkDefinitionSheet> getWorkDefSheets() {
       List<WorkDefinitionSheet> sheets = new ArrayList<>();
-      sheets.add(new WorkDefinitionSheet("WorkDef_Team_AtsConfig2Example",
-         AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID,
-            "support/WorkDef_Team_AtsConfig2Example.ats")));
-      sheets.add(new WorkDefinitionSheet("WorkDef_Task_AtsConfig2Example",
-         AtsWorkDefinitionSheetProviders.getSupportFile(Activator.PLUGIN_ID,
-            "support/WorkDef_Task_AtsConfig2Example.ats")));
+      sheets.add(
+         new WorkDefinitionSheet("WorkDef_Team_AtsConfig2Example", AtsWorkDefinitionSheetProviders.getSupportFile(
+            Activator.PLUGIN_ID, "support/WorkDef_Team_AtsConfig2Example.ats")));
+      sheets.add(
+         new WorkDefinitionSheet("WorkDef_Task_AtsConfig2Example", AtsWorkDefinitionSheetProviders.getSupportFile(
+            Activator.PLUGIN_ID, "support/WorkDef_Task_AtsConfig2Example.ats")));
       return sheets;
    }
 

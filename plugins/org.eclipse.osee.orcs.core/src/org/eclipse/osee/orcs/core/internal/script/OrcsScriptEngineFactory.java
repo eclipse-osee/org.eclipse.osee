@@ -34,6 +34,7 @@ public class OrcsScriptEngineFactory implements ScriptEngineFactory {
    private static List<String> extensions;
    private static List<String> mimeTypes;
    private static List<String> aliases;
+
    static {
       List<String> names = new ArrayList<>(6);
       names.add("orcs");

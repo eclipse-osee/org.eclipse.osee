@@ -123,9 +123,8 @@ public class EmailGroupsBlam extends AbstractBlam {
          logf("The email address \"%s\" for user %s is not valid.", emailAddress, user.getName());
          return;
       }
-      final OseeEmail emailMessage =
-         new OseeEmail(Arrays.asList(emailAddress), data.getFromAddress(), data.getReplyToAddress(), data.getSubject(),
-            "", BodyType.Html);
+      final OseeEmail emailMessage = new OseeEmail(Arrays.asList(emailAddress), data.getFromAddress(),
+         data.getReplyToAddress(), data.getSubject(), "", BodyType.Html);
       emailMessage.addHTMLBody(data.getHtmlResult(user));
       String description = String.format("[%s] for [%s]", emailAddress, user);
       futures.add(emailTheadPool.submit(new SendEmailCall(emailMessage, description)));
@@ -174,7 +173,7 @@ public class EmailGroupsBlam extends AbstractBlam {
          });
       }
       if (xWidget.getLabel().equals("Body")) {
-         XText xText = ((XText) xWidget);
+         XText xText = (XText) xWidget;
          GridData data1 = new GridData(SWT.FILL, SWT.FILL, true, true);
          data1.heightHint = 300;
          data1.widthHint = 300;
@@ -190,11 +189,10 @@ public class EmailGroupsBlam extends AbstractBlam {
             AWorkbench.popup(result);
             return;
          }
-         HtmlDialog dialog =
-            new HtmlDialog("Email Groups - Preview", String.format(
-               "Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
+         HtmlDialog dialog = new HtmlDialog("Email Groups - Preview",
+            String.format("Subject: %s\n\nSending message to [%d] users from groups [%s]", data.getSubject(),
                data.getUserToGroupMap().keySet().size(), Artifacts.commaArts(data.getGroups())),
-               data.getHtmlResult(UserManager.getUser()));
+            data.getHtmlResult(UserManager.getUser()));
          dialog.open();
       } catch (OseeCoreException ex) {
          log(ex);

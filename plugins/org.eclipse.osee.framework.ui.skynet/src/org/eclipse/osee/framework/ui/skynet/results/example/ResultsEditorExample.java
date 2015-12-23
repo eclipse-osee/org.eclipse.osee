@@ -78,8 +78,8 @@ public class ResultsEditorExample extends XNavigateItemAction {
       "02/08/2009", "02/22/2009", "03/08/2009", "03/22/2009", "04/05/2009", "04/19/2009");
    private final static List<Double> chartValueStrs = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0,
       165.0, 171.0, 179.0, 178.0, 177.0, 164.0, 159.0, 159.0, 157.0, 157.0);
-   private final static List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0,
-      163.0, 165.0, 171.0, 179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
+   private final static List<Double> chartValueStrsGoal = Arrays.asList(177.0, 174.0, 167.0, 161.0, 167.0, 167.0, 163.0,
+      165.0, 171.0, 179.0, 177.0, 175.0, 173.0, 171.0, 169.0, 167.0, 165.0);
 
    public ResultsEditorExample(XNavigateItem parent) {
       super(parent, TITLE, PluginUiImage.ADMIN);
@@ -122,12 +122,12 @@ public class ResultsEditorExample extends XNavigateItemAction {
             String.valueOf(chartValueStrs.get(x)),
             String.valueOf(chartValueStrsGoal.get(x))}));
       }
-      List<XViewerColumn> columns =
-         Arrays.asList(new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true,
-            SortDataType.Date, false, ""), new XViewerColumn(Columns.Priority_123_Open_Bugs.name(),
-            Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT, true, SortDataType.Integer, false, ""),
-            new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer,
-               false, ""));
+      List<XViewerColumn> columns = Arrays.asList(
+         new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true, SortDataType.Date, false, ""),
+         new XViewerColumn(Columns.Priority_123_Open_Bugs.name(), Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT,
+            true, SortDataType.Integer, false, ""),
+         new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer, false,
+            ""));
 
       return new ResultsEditorTableTab("Data", columns, rows);
 
@@ -138,10 +138,10 @@ public class ResultsEditorExample extends XNavigateItemAction {
    }
 
    private IResultsEditorTab createArtifactTab() {
-      List<XViewerColumn> artColumns =
-         Arrays.asList(new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
-            "Requirement Artifact"), new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String, false,
-            "TestScript Name"));
+      List<XViewerColumn> artColumns = Arrays.asList(
+         new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
+            "Requirement Artifact"),
+         new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String, false, "TestScript Name"));
 
       List<IResultsXViewerRow> artRows = new ArrayList<>();
       List<Artifact> userArts = null;
@@ -163,10 +163,8 @@ public class ResultsEditorExample extends XNavigateItemAction {
       StringBuilder sb = new StringBuilder();
       sb.append(AHTML.heading(3, TITLE));
       sb.append(AHTML.beginMultiColumnTable(100, 1));
-      sb.append(AHTML.addHeaderRowMultiColumnTable(new String[] {
-         Columns.Date.name(),
-         Columns.Priority_123_Open_Bugs.name(),
-         Columns.Goal.name()}));
+      sb.append(AHTML.addHeaderRowMultiColumnTable(
+         new String[] {Columns.Date.name(), Columns.Priority_123_Open_Bugs.name(), Columns.Goal.name()}));
       for (int x = 0; x < chartDateStrs.size(); x++) {
          sb.append(AHTML.addRowMultiColumnTable(chartDateStrs.get(x), "" + chartValueStrs.get(x),
             "" + chartValueStrsGoal.get(x)));
@@ -240,7 +238,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
       ls1.setSeriesIdentifier("Count");
       ls1.getLineAttributes().setColor(ColorDefinitionImpl.BLUE());
       for (int i = 0; i < ls1.getMarkers().size(); i++) {
-         (ls1.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
+         ls1.getMarkers().get(i).setType(MarkerType.TRIANGLE_LITERAL);
       }
       ls1.getLabel().setVisible(true);
 
@@ -249,7 +247,7 @@ public class ResultsEditorExample extends XNavigateItemAction {
       ls2.setSeriesIdentifier("Goal (100)");
       ls2.getLineAttributes().setColor(ColorDefinitionImpl.GREEN());
       for (int i = 0; i < ls2.getMarkers().size(); i++) {
-         (ls2.getMarkers().get(i)).setType(MarkerType.TRIANGLE_LITERAL);
+         ls2.getMarkers().get(i).setType(MarkerType.TRIANGLE_LITERAL);
       }
       ls2.getLabel().setVisible(true);
 

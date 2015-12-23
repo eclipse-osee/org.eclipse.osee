@@ -25,7 +25,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Roberto E. Escobar
  */
-public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder> implements QueryBuilder {
+public class QueryBuilderImpl extends ArtifactQueryBuilderImpl<QueryBuilder>implements QueryBuilder {
 
    private final CallableQueryFactory queryFactory;
    private final OrcsSession session;

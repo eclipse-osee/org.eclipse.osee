@@ -112,9 +112,8 @@ public class CreateBranchOperationTest {
          folder.deleteAndPersist();
       }
 
-      String errorMessage =
-         String.format("CreateBranchOperation.checkPreconditions() should throw [%s] exceptions",
-            subset.size() - allowedStates.size());
+      String errorMessage = String.format("CreateBranchOperation.checkPreconditions() should throw [%s] exceptions",
+         subset.size() - allowedStates.size());
       assertEquals(errorMessage, exceptionsCaught, subset.size());
    }
 

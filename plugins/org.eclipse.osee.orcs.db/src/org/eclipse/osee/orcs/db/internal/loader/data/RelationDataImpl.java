@@ -78,7 +78,7 @@ public class RelationDataImpl extends OrcsVersionedObjectImpl implements Relatio
       int result = super.hashCode();
       result = prime * result + artIdA;
       result = prime * result + artIdB;
-      result = prime * result + ((rationale == null) ? 0 : rationale.hashCode());
+      result = prime * result + (rationale == null ? 0 : rationale.hashCode());
       return result;
    }
 

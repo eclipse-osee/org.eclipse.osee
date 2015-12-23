@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.script.dsl.ui.contentassist;
 
+import com.google.inject.Inject;
 import java.util.Collections;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
@@ -27,7 +28,6 @@ import org.eclipse.xtext.Assignment;
 import org.eclipse.xtext.RuleCall;
 import org.eclipse.xtext.ui.editor.contentassist.ContentAssistContext;
 import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
-import com.google.inject.Inject;
 
 /**
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
@@ -53,9 +53,8 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
 
          Iterable<? extends Identifiable<Long>> entries = provider.getBranches();
          for (Identifiable<Long> entry : entries) {
-            ICompletionProposal proposal =
-               createCompletionProposal(OrcsScriptUtil.quote(entry.getName()), new StyledString(entry.getName()),
-                  image, Integer.MIN_VALUE, context.getPrefix(), context);
+            ICompletionProposal proposal = createCompletionProposal(OrcsScriptUtil.quote(entry.getName()),
+               new StyledString(entry.getName()), image, Integer.MIN_VALUE, context.getPrefix(), context);
             acceptor.accept(proposal);
          }
       }
@@ -84,9 +83,8 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
          } else if (name.contains("relation")) {
             image = imageProvider.getRelationTypeImage(entry);
          }
-         ICompletionProposal proposal =
-            createCompletionProposal(OrcsScriptUtil.quote(entry.getName()), new StyledString(entry.getName()), image,
-               Integer.MIN_VALUE, context.getPrefix(), context);
+         ICompletionProposal proposal = createCompletionProposal(OrcsScriptUtil.quote(entry.getName()),
+            new StyledString(entry.getName()), image, Integer.MIN_VALUE, context.getPrefix(), context);
          acceptor.accept(proposal);
       }
    }

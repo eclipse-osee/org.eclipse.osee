@@ -52,8 +52,8 @@ public class NativeRenderer extends FileSystemRenderer {
 
       commands.add(new MenuCmdDef(CommandGroup.PREVIEW, PREVIEW, "Preview Native Editor", imageDescriptor));
       commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "Native Editor", imageDescriptor));
-      commands.add(new MenuCmdDef(CommandGroup.EDIT,
-         "org.eclipse.osee.framework.ui.skynet.othereditor.command", imageDescriptor));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, "org.eclipse.osee.framework.ui.skynet.othereditor.command",
+         imageDescriptor));
    }
 
    @Override

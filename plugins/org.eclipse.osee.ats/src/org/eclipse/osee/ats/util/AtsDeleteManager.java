@@ -74,10 +74,9 @@ public class AtsDeleteManager {
       // Prompt for delete if specified in options
       if (deleteOptions.contains(DeleteOption.Prompt)) {
          MessageDialogWithToggle md =
-            MessageDialogWithToggle.openOkCancelConfirm(
-               Displays.getActiveShell(),
-               "Delete/Purge ATS Object",
-               "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$", "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
+            MessageDialogWithToggle.openOkCancelConfirm(Displays.getActiveShell(), "Delete/Purge ATS Object",
+               "Prepare to Delete/Purge ATS Object\n\n" + artBuilder.toString().replaceFirst("\n$",
+                  "") + "\n\nAnd ALL its ATS children.\n(Artifacts will be retrieved for confirmation)\nAre You Sure?",
                "Purge", false, null, null);
          confirmDelete = md.getReturnCode() == 0;
          if (md.getToggleState()) {
@@ -100,9 +99,8 @@ public class AtsDeleteManager {
          String results =
             (purge ? "Purge" : "Delete") + " ATS objects and related children, Are You Sure?\n" + delBuilder.toString();
          results = results.replaceAll("\n", "<br/>");
-         HtmlDialog dialog =
-            new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
-               AHTML.simplePage(results));
+         HtmlDialog dialog = new HtmlDialog((purge ? "Purge" : "Delete") + " ATS objects and related children", "",
+            AHTML.simplePage(results));
          dialog.open();
          if (dialog.getReturnCode() != 0) {
             return;
@@ -160,7 +158,8 @@ public class AtsDeleteManager {
          for (Artifact art : allDeleteArts) {
             if (art instanceof AbstractWorkflowArtifact) {
                Artifact actionArt = ((AbstractWorkflowArtifact) art).getParentActionArtifact();
-               if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(ActionManager.getTeams(actionArt))) {
+               if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(
+                  ActionManager.getTeams(actionArt))) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
                      actionArt.getArtifactTypeName(), AtsUtilClient.getAtsId(actionArt), actionArt.getName()) + "\n");

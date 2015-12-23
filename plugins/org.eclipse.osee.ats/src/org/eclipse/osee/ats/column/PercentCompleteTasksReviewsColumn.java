@@ -40,14 +40,8 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
    }
 
    private PercentCompleteTasksReviewsColumn() {
-      super(
-         WorldXViewerFactory.COLUMN_NAMESPACE + ".taskReviewPercentComplete",
-         "Task and Review Percent Complete",
-         40,
-         SWT.CENTER,
-         false,
-         SortDataType.Percent,
-         false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".taskReviewPercentComplete", "Task and Review Percent Complete", 40,
+         SWT.CENTER, false, SortDataType.Percent, false,
          "Percent Complete for the tasks and reviews related to the workflow.\n\nCalculation: total percent of all tasks and reviews / number of tasks and reviews");
    }
 

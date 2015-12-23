@@ -86,15 +86,12 @@ public class WorkItemNotificationProcessor {
                   if (!EmailUtil.isEmailValid(originator.getEmail()) && !AtsCoreUsers.isAtsCoreUser(originator)) {
                      logger.info("Email [%s] invalid for user [%s]", originator.getEmail(), originator.getName());
                   } else if (!fromUser.equals(originator)) {
-                     notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                        getFromUser(event),
-                        Arrays.asList(originator),
-                        getIdString(workItem),
-                        AtsNotifyType.Originator.name(),
-                        getUrl(workItem),
-                        String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
-                           workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
-                           workItem.getName())));
+                     notifications.addNotificationEvent(
+                        AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), Arrays.asList(originator),
+                           getIdString(workItem), AtsNotifyType.Originator.name(), getUrl(workItem),
+                           String.format("You have been set as the originator of [%s] state [%s] titled [%s]",
+                              workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
+                              workItem.getName())));
                   }
                }
             } catch (OseeCoreException ex) {
@@ -114,19 +111,16 @@ public class WorkItemNotificationProcessor {
                assignees = AtsUsersUtility.getValidEmailUsers(assignees);
                assignees = AtsUsersUtility.getActiveEmailUsers(assignees);
                if (assignees.size() > 0) {
-                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                     getFromUser(event),
-                     assignees,
-                     getIdString(workItem),
-                     AtsNotifyType.Assigned.name(),
-                     getUrl(workItem),
-                     String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
-                        workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
-                        workItem.getName())));
+                  notifications.addNotificationEvent(
+                     AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), assignees,
+                        getIdString(workItem), AtsNotifyType.Assigned.name(), getUrl(workItem),
+                        String.format("You have been set as the assignee of [%s] in state [%s] titled [%s]",
+                           workItem.getArtifactTypeName(), workItem.getStateMgr().getCurrentStateName(),
+                           workItem.getName())));
                }
             } catch (OseeCoreException ex) {
-               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]",
-                  workItem.toStringWithId(), event.toString());
+               logger.error(ex, "Error processing Assigned for workItem [%s] and event [%s]", workItem.toStringWithId(),
+                  event.toString());
             }
          }
          if (types.contains(AtsNotifyType.Subscribed)) {
@@ -136,12 +130,12 @@ public class WorkItemNotificationProcessor {
                subscribed = AtsUsersUtility.getValidEmailUsers(subscribed);
                subscribed = AtsUsersUtility.getActiveEmailUsers(subscribed);
                if (subscribed.size() > 0) {
-                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                     getFromUser(event), subscribed, getIdString(workItem), AtsNotifyType.Subscribed.name(),
-                     getUrl(workItem), String.format(
-                        "[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
-                        workItem.getArtifactTypeName(), workItem.getName(),
-                        workItem.getStateMgr().getCurrentStateName())));
+                  notifications.addNotificationEvent(
+                     AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), subscribed,
+                        getIdString(workItem), AtsNotifyType.Subscribed.name(), getUrl(workItem),
+                        String.format("[%s] titled [%s] transitioned to [%s] and you subscribed for notification.",
+                           workItem.getArtifactTypeName(), workItem.getName(),
+                           workItem.getStateMgr().getCurrentStateName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Subscribed for workItem [%s] and event [%s]",
@@ -163,15 +157,15 @@ public class WorkItemNotificationProcessor {
                      if (stateType.isCompleted()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
-                              "[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem),
+                           String.format("[%s] titled [%s] is [%s]", workItem.getArtifactTypeName(), workItem.getName(),
                               workItem.getStateMgr().getCurrentStateName())));
                      }
                      if (stateType.isCancelled()) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
                            getFromUser(event), Arrays.asList(originator), getIdString(workItem),
-                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem), String.format(
-                              "[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
+                           workItem.getStateMgr().getCurrentStateName(), getUrl(workItem),
+                           String.format("[%s] titled [%s] was [%s] from the [%s] state on [%s].<br>Reason: [%s]",
                               workItem.getArtifactTypeName(), workItem.getName(),
                               workItem.getStateMgr().getCurrentStateName(), workItem.getCancelledFromState(),
                               DateUtil.getMMDDYYHHMM(workItem.getCancelledDate()), workItem.getCancelledReason())));
@@ -195,11 +189,12 @@ public class WorkItemNotificationProcessor {
                authorModerator = AtsUsersUtility.getValidEmailUsers(authorModerator);
                authorModerator = AtsUsersUtility.getActiveEmailUsers(authorModerator);
                if (authorModerator.size() > 0) {
-                  notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                     getFromUser(event), authorModerator, getIdString(workItem),
-                     AtsNotifyType.Peer_Reviewers_Completed.name(), String.format(
-                        "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
-                        workItem.getArtifactTypeName(), workItem.getName())));
+                  notifications.addNotificationEvent(
+                     AtsNotificationEventFactory.getNotificationEvent(getFromUser(event), authorModerator,
+                        getIdString(workItem), AtsNotifyType.Peer_Reviewers_Completed.name(),
+                        String.format(
+                           "You are Author/Moderator of [%s] titled [%s] which has been reviewed by all reviewers",
+                           workItem.getArtifactTypeName(), workItem.getName())));
                }
             } catch (OseeCoreException ex) {
                logger.error(ex, "Error processing Peer_Reviewers_Completed for workItem [%s] and event [%s]",
@@ -216,10 +211,7 @@ public class WorkItemNotificationProcessor {
                   subscribedUsers.addAll(teamDef.getSubscribed());
                   if (subscribedUsers.size() > 0) {
                      notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                        AtsCoreUsers.SYSTEM_USER,
-                        subscribedUsers,
-                        getIdString(teamWf),
-                        "Workflow Creation",
+                        AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
                         getUrl(workItem),
                         "You have subscribed for email notification for Team \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
                   }
@@ -229,10 +221,7 @@ public class WorkItemNotificationProcessor {
                      subscribedUsers = aia.getSubscribed();
                      if (subscribedUsers.size() > 0) {
                         notifications.addNotificationEvent(AtsNotificationEventFactory.getNotificationEvent(
-                           AtsCoreUsers.SYSTEM_USER,
-                           subscribedUsers,
-                           getIdString(teamWf),
-                           "Workflow Creation",
+                           AtsCoreUsers.SYSTEM_USER, subscribedUsers, getIdString(teamWf), "Workflow Creation",
                            getUrl(workItem),
                            "You have subscribed for email notification for Actionable Item \"" + teamWf.getTeamDefinition().getName() + "\"; New Team Workflow created with title \"" + teamWf.getName() + "\""));
                      }

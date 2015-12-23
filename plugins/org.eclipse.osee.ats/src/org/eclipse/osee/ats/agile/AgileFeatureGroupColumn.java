@@ -200,7 +200,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
             return Collections.toString(", ", strs);
 
          } else {
-            return Collections.toString(", ", ((Artifact) ((IAtsWorkItem) element)).getRelatedArtifacts(
+            return Collections.toString(", ", ((Artifact) (IAtsWorkItem) element).getRelatedArtifacts(
                AtsRelationTypes.AgileFeatureToItem_FeatureGroup));
          }
       } catch (OseeCoreException ex) {

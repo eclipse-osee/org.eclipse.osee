@@ -49,9 +49,8 @@ public class ReplaceAttributeWithBaselineOperation extends AbstractOperation {
          Set<Artifact> artifactHistory = new HashSet<>();
 
          Change firstChange = changes.iterator().next();
-         SkynetTransaction transaction =
-            TransactionManager.createTransaction(firstChange.getBranch(),
-               ReplaceArtifactWithBaselineOperation.class.getSimpleName());
+         SkynetTransaction transaction = TransactionManager.createTransaction(firstChange.getBranch(),
+            ReplaceArtifactWithBaselineOperation.class.getSimpleName());
 
          for (Change change : changes) {
             monitor.subTask("Reverting: " + changes.toString());

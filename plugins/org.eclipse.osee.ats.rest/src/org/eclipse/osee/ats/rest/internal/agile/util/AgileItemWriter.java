@@ -39,9 +39,8 @@ public class AgileItemWriter {
    }
 
    public JaxAgileItem write() {
-      AtsChangeSet changes =
-         (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
-            AtsCoreUsers.SYSTEM_USER);
+      AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update new Agile Item",
+         AtsCoreUsers.SYSTEM_USER);
 
       if (newItem.isSetFeatures()) {
          Collection<IAgileFeatureGroup> features = agileService.getAgileFeatureGroups(newItem.getFeatures());

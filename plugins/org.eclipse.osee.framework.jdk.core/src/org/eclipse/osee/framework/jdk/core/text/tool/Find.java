@@ -76,7 +76,8 @@ public class Find {
 
    public static void main(String[] args) throws IOException {
       if (args.length < 7) {
-         System.out.println("Usage: java text.Find <pattern-list file or pattern> <search directory> <fileName pattern> <leading pad> <trailing pad> <negative: true|false> <ignoreComments: true|false>");
+         System.out.println(
+            "Usage: java text.Find <pattern-list file or pattern> <search directory> <fileName pattern> <leading pad> <trailing pad> <negative: true|false> <ignoreComments: true|false>");
          return;
       }
 

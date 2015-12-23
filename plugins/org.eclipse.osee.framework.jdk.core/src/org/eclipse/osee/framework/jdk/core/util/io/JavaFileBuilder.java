@@ -212,7 +212,8 @@ public class JavaFileBuilder {
       SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM d, yyyy");
 
       // Add the head comment for the file
-      string.append("/*\n * Created on " + dateFormat.format(new Date()) + "\n *\n * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE\n */\n\n");
+      string.append("/*\n * Created on " + dateFormat.format(
+         new Date()) + "\n *\n * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE\n */\n\n");
       string.append("package " + packageName + ";");
       string.append("\n\n");
 

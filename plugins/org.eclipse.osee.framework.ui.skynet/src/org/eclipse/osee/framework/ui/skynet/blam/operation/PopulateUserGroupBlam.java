@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+
 /**
  * @author Ryan D. Brooks
  */

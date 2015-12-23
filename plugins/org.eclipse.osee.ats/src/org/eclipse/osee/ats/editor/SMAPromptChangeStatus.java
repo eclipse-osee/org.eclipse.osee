@@ -65,16 +65,14 @@ public class SMAPromptChangeStatus {
          if (awa.isOfType(AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) awa;
             if (taskArt.isRelatedToUsed() && !taskArt.isRelatedToParentWorkflowCurrentState()) {
-               return new Result(
-                  String.format(
-                     "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
-                     //
-                     "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
-                     //
-                     "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
-                     taskArt.getName(),
-                     taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
-                     taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
+               return new Result(String.format(
+                  "Task work must be done in \"Related to State\" of parent workflow for Task titled: \"%s\".\n\n" +
+                  //
+                  "Task work configured to be done in parent's \"%s\" state.\nParent workflow is currently in \"%s\" state.\n\n" +
+                  //
+                  "Either transition parent workflow or change Task's \"Related to State\" to perform task work.",
+                  taskArt.getName(), taskArt.getSoleAttributeValueAsString(AtsAttributeTypes.RelatedToState, "unknown"),
+                  taskArt.getParentAWA().getStateMgr().getCurrentStateName()));
             }
          }
 
@@ -90,9 +88,8 @@ public class SMAPromptChangeStatus {
       }
 
       TransitionStatusData data = new TransitionStatusData(awas, true);
-      TransitionStatusDialog dialog =
-         new TransitionStatusDialog("Enter Hours Spent",
-            "Enter percent complete and number of hours you spent since last status.", data);
+      TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent",
+         "Enter percent complete and number of hours you spent since last status.", data);
       if (dialog.open() == 0) {
          performChangeStatus(awas, null, data.getAdditionalHours(), data.getPercent(), data.isSplitHoursBetweenItems(),
             changes);

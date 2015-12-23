@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.core.internal.util;
 
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.deletionFlagEquals;
 import static org.eclipse.osee.orcs.core.internal.util.OrcsPredicates.isDirty;
+import com.google.common.base.Predicate;
+import com.google.common.collect.Multimap;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,8 +21,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Multimap;
 
 /**
  * @author Roberto E. Escobar

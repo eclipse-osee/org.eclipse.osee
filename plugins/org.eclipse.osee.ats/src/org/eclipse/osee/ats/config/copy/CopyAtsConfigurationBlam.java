@@ -48,12 +48,16 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
-      builder.append("<XWidget xwidgetType=\"XTeamDefinitionCombo\" displayName=\"Top Team Definition to Copy From (most like new config)\" />");
-      builder.append("<XWidget xwidgetType=\"XActionableItemCombo\" displayName=\"Top Actionable Item to Copy From\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XTeamDefinitionCombo\" displayName=\"Top Team Definition to Copy From (most like new config)\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XActionableItemCombo\" displayName=\"Top Actionable Item to Copy From\" />");
       builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Search String\" />");
       builder.append("<XWidget xwidgetType=\"XText\" displayName=\"Name Replace String\" />");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Retain Team Leads/Members\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      builder.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"Persist Changes\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Retain Team Leads/Members\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      builder.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Persist Changes\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       builder.append("</xWidgets>");
       return builder.toString();
    }
@@ -70,7 +74,8 @@ public class CopyAtsConfigurationBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       try {
          if (ArtifactCache.getDirtyArtifacts().size() > 0) {
-            AWorkbench.popup("Dirty artifacts found in cache, save all artifacts before running this operation (may need to restart)");
+            AWorkbench.popup(
+               "Dirty artifacts found in cache, save all artifacts before running this operation (may need to restart)");
             return;
          }
          ConfigData data = new ConfigData();

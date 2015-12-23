@@ -159,9 +159,8 @@ public class AnnotationCopierTest {
       OperationReport report = new OperationReport();
 
       DispoSetCopier copier = new DispoSetCopier(connector);
-      List<DispoItem> toModify =
-         copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
-            Collections.singletonList((DispoItem) sourceItem), true, report);
+      List<DispoItem> toModify = copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
+         Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
@@ -196,7 +195,7 @@ public class AnnotationCopierTest {
       destDiscrepancies.put(discrepancy5.getId(), DispoUtil.discrepancyToJsonObj(discrepancy5));
       destItem.setDiscrepanciesList(destDiscrepancies);
 
-      // We're gonna set this annotation on the Dest Item this Annotation should not get overwritten but 
+      // We're gonna set this annotation on the Dest Item this Annotation should not get overwritten but
       DispoAnnotationData annotationD1 = new DispoAnnotationData();
       String expectedId = "DIID";
       annotationD1.setIdsOfCoveredDiscrepancies(new JSONArray());
@@ -213,9 +212,8 @@ public class AnnotationCopierTest {
 
       OperationReport report = new OperationReport();
       DispoSetCopier copier = new DispoSetCopier(connector);
-      List<DispoItem> toModify =
-         copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
-            Collections.singletonList((DispoItem) sourceItem), true, report);
+      List<DispoItem> toModify = copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
+         Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();

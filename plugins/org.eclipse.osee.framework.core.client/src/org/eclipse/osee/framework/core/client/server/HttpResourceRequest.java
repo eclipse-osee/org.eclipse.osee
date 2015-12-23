@@ -90,7 +90,8 @@ public class HttpResourceRequest implements IHttpMethod {
                      break;
                   }
                } catch (Exception ex) {
-                  throw new IllegalArgumentException(String.format("Unable to Load: [%s.%s]", bundleName, resourceName));
+                  throw new IllegalArgumentException(
+                     String.format("Unable to Load: [%s.%s]", bundleName, resourceName));
                }
             }
          }

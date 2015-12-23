@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.authorization.admin.internal;
 
-import org.eclipse.osee.authorization.admin.AuthorizationConstants;
 import org.eclipse.osee.authorization.admin.Authority;
+import org.eclipse.osee.authorization.admin.AuthorizationConstants;
 
 /**
  * @author Roberto E. Escobar

@@ -91,9 +91,8 @@ public abstract class MembersManager<T extends CollectorArtifact> {
       }
 
       List<Artifact> members = memberArt.getMembers();
-      EntryDialog ed =
-         new EntryDialog(String.format("Change %S Order", getItemName()), String.format(
-            "%s: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last.", getItemName(), memberArt,
+      EntryDialog ed = new EntryDialog(String.format("Change %S Order", getItemName()),
+         String.format("%s: %s\n\n%s\n\nEnter New Order Number from 1..%d or %d for last.", getItemName(), memberArt,
             currentOrder.toString().replaceFirst(", $", ""), members.size(), members.size() + 1));
       ed.setNumberFormat(NumberFormat.getIntegerInstance());
 

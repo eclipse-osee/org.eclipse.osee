@@ -80,7 +80,7 @@ public class GoalsColumn extends XViewerAtsColumn implements IXViewerValueColumn
                   return false;
                }
             }
-            if (!(useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact))) {
+            if (!useArt.isOfType(AtsArtifactTypes.AbstractWorkflowArtifact)) {
                return false;
             }
             boolean modified = promptChangeGoals(Arrays.asList(useArt), isPersistViewer());

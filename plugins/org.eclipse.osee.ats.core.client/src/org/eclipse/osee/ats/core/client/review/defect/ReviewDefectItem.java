@@ -183,7 +183,8 @@ public class ReviewDefectItem {
 
    @Override
    public String toString() {
-      return severity + " - " + disposition + " - " + injectionActivity + " - " + userId + " on " + DateUtil.getMMDDYYHHMM(date) + "\n";
+      return severity + " - " + disposition + " - " + injectionActivity + " - " + userId + " on " + DateUtil.getMMDDYYHHMM(
+         date) + "\n";
    }
 
    public IAtsUser getUser() throws OseeCoreException {

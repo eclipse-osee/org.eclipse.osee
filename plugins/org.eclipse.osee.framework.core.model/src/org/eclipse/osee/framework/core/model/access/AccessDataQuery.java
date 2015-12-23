@@ -101,7 +101,7 @@ public class AccessDataQuery {
       public boolean accept(AccessDetail<?> access) {
          if (access.getAccessObject() instanceof IRelationTypeSide) {
             IRelationTypeSide toCheck = (IRelationTypeSide) access.getAccessObject();
-            return (toCheck.getSide().equals(toFilter.getSide())) && (toCheck.getGuid().equals(toFilter.getGuid()));
+            return toCheck.getSide().equals(toFilter.getSide()) && toCheck.getGuid().equals(toFilter.getGuid());
          }
          return false;
       }

@@ -34,7 +34,7 @@ public class ArtifactNameComparator implements Comparator<IArtifact> {
       if (numberMatcher.matches()) {
          numberMatcher.reset(name2);
          if (numberMatcher.matches()) {
-            if ((name1.length() < NUMBER_STRING_LIMIT) && (name2.length() < NUMBER_STRING_LIMIT)) {
+            if (name1.length() < NUMBER_STRING_LIMIT && name2.length() < NUMBER_STRING_LIMIT) {
                if (descending) {
                   return Long.valueOf(name2).compareTo(Long.valueOf(name1));
                } else {

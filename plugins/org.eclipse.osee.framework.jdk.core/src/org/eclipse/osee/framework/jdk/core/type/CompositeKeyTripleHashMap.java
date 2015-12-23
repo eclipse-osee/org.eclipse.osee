@@ -75,8 +75,8 @@ public class CompositeKeyTripleHashMap<KeyOne, KeyTwo, KeyThree, Value> implemen
       if (Triplet.class.isInstance(key)) {
          return map.get(key);
       } else {
-         throw new IllegalArgumentException(String.format("Expected Type [CompositeKey], got type [%s].",
-            key.getClass().getName()));
+         throw new IllegalArgumentException(
+            String.format("Expected Type [CompositeKey], got type [%s].", key.getClass().getName()));
       }
    }
 

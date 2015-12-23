@@ -82,7 +82,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsVersion getVersion(ArtifactId artifact) {
       IAtsVersion version = null;
-      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
+      if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.Version)) {
          version = (IAtsVersion) atsClient.getConfigObject((Artifact) artifact);
       }
       return version;
@@ -91,7 +91,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsTeamDefinition getTeamDef(ArtifactId artifact) throws OseeCoreException {
       IAtsTeamDefinition teamDef = null;
-      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
+      if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.TeamDefinition)) {
          teamDef = (IAtsTeamDefinition) atsClient.getConfigObject((Artifact) artifact);
       }
       return teamDef;
@@ -100,7 +100,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsActionableItem getActionableItem(ArtifactId artifact) throws OseeCoreException {
       IAtsActionableItem ai = null;
-      if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
+      if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.ActionableItem)) {
          ai = (IAtsActionableItem) atsClient.getConfigObject((Artifact) artifact);
       }
       return ai;
@@ -111,7 +111,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsProgram program = null;
       if (object instanceof IAtsProgram) {
          program = (IAtsProgram) object;
-      } else if ((object instanceof Artifact) && ((Artifact) object).isOfType(AtsArtifactTypes.Program)) {
+      } else if (object instanceof Artifact && ((Artifact) object).isOfType(AtsArtifactTypes.Program)) {
          program = new Program(logger, atsClient.getServices(), object);
       }
       return program;
@@ -122,7 +122,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAgileTeam agileTeam = null;
       if (artifact instanceof IAgileTeam) {
          agileTeam = (IAgileTeam) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileTeam)) {
+      } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileTeam)) {
          agileTeam = new AgileTeam(atsClient, (Artifact) artifact);
       }
       return agileTeam;
@@ -133,7 +133,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAgileFeatureGroup group = null;
       if (artifact instanceof IAgileFeatureGroup) {
          group = (IAgileFeatureGroup) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
+      } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.AgileFeatureGroup)) {
          group = new AgileFeatureGroup(atsClient, (Artifact) artifact);
       }
       return group;
@@ -144,7 +144,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsInsertion result = null;
       if (artifact instanceof IAtsInsertion) {
          result = (IAtsInsertion) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Insertion)) {
+      } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.Insertion)) {
          result = new Insertion(logger, atsClient.getServices(), artifact);
       }
       return result;
@@ -155,7 +155,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsInsertionActivity result = null;
       if (artifact instanceof IAtsInsertionActivity) {
          result = (IAtsInsertionActivity) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.InsertionActivity)) {
+      } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.InsertionActivity)) {
          result = new InsertionActivity(logger, atsClient.getServices(), artifact);
       }
       return result;
@@ -201,7 +201,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
       IAtsCountry country = null;
       if (artifact instanceof IAtsCountry) {
          country = (IAtsCountry) artifact;
-      } else if ((artifact instanceof Artifact) && ((Artifact) artifact).isOfType(AtsArtifactTypes.Country)) {
+      } else if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.Country)) {
          country = new Country(logger, atsClient.getServices(), artifact);
       }
       return country;

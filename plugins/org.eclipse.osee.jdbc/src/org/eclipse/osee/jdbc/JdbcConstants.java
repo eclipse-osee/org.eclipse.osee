@@ -100,7 +100,7 @@ public final class JdbcConstants {
    public static final String DEFAULT_JDBC_POOL__CONNECTION_DRIVER = "org.apache.commons.dbcp.PoolingDriver";
    public static final String DEFAUT_JDBC_POOL__CONNECTION_ID = "jdbc:apache:commons:dbcp:";
    public static final boolean DEFAULT_JDBC_POOL__PREPARED_STATEMENTS_ALLOWED = false; // default was false
-   public static final int DEFAULT_JDBC_POOL__VALIDATION_QUERY_TIMEOUT_SECS = 10; // 3 secs 
+   public static final int DEFAULT_JDBC_POOL__VALIDATION_QUERY_TIMEOUT_SECS = 10; // 3 secs
    public static final int DEFAULT_JDBC_POOL__MAX_ACTIVE_CONNECTIONS = DEFAULT_JDBC__CONNECTION_POOL_SIZE;
    public static final int DEFAULT_JDBC_POOL__MAX_IDLE_CONNECTIONS = DEFAULT_JDBC_POOL__MAX_ACTIVE_CONNECTIONS;
    public static final int DEFAULT_JDBC_POOL__MIN_IDLE_CONNECTIONS = 0;
@@ -112,7 +112,7 @@ public final class JdbcConstants {
  
    // The default number of objects to examine per run in the idle object evictor.
    public static final int DEFAULT_JDBC_POOL__NUM_TESTS_PER_EVICTION_RUN = 1; // default was DEFAULT_MAX_ACTIVE
-   public static final long DEFAULT_JDBC_POOL__TIME_BETWEEN_EVICTION_RUNS_MILLIS = 5000L; // (5 sec) - default -1L (infinite) 
+   public static final long DEFAULT_JDBC_POOL__TIME_BETWEEN_EVICTION_RUNS_MILLIS = 5000L; // (5 sec) - default -1L (infinite)
    public static final long DEFAULT_JDBC_POOL__MIN_EVICTABLE_IDLE_TIME_MILLIS = 60000L; // (60 secs) - default - 1000L * 60L * 30L - 30 mins;
    public static final long DEFAULT_JDBC_POOL__SOFT_MIN_EVICTABLE_IDLE_TIME_MILLIS = -1;
    public static final boolean DEFAULT_JDBC_POOL__LIFO = true;

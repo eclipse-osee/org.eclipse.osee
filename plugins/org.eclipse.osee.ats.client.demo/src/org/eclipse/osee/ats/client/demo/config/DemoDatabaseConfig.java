@@ -271,7 +271,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          Requirements.HARDWARE_REQUIREMENTS,
          "Verification Tests",
          "Validation Tests",
-      "Integration Tests"}) {
+         "Integration Tests"}) {
          programRoot.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, programBranch, name));
       }
 

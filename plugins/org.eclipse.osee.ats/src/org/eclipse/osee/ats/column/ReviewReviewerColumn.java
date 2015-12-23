@@ -53,7 +53,7 @@ public class ReviewReviewerColumn extends XViewerAtsColumn implements IXViewerVa
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof PeerToPeerReviewArtifact) {
-            UserRoleManager roleMgr = new UserRoleManager(((PeerToPeerReviewArtifact) element));
+            UserRoleManager roleMgr = new UserRoleManager((PeerToPeerReviewArtifact) element);
             return AtsObjects.toString("; ", roleMgr.getRoleUsers(Role.Reviewer));
          }
       } catch (OseeCoreException ex) {

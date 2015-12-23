@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.TransactionDetailsType.Baselined;
 import static org.eclipse.osee.framework.core.enums.TransactionDetailsType.NonBaselined;
 import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
-import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
-import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.junit.Assert.assertEquals;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -145,7 +145,7 @@ public class OrcsTxQueryTest {
       assertTx(it.next(), 4,  Baselined,    "2013-05-06 14:18:05.424", "Branch Creation for Common", 570, -1, 0);
       assertTx(it.next(), 15, Baselined,    "2013-05-06 14:18:07.235", "Branch Creation for SAW_Bld_1", 3, -1, 0);
       assertTx(it.next(), 17, Baselined,    "2013-05-06 14:18:07.516", "Branch Creation for CIS_Bld_1", 4, -1, 0);
-      assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);      
+      assertTx(it.next(), 23, Baselined,    "2013-05-06 14:18:11.659", "Branch Creation for SAW_Bld_2", 5, -1, 0);
       //@formatter:on
 
       Iterator<Integer> ids = query.getResultsAsIds().iterator();
@@ -611,7 +611,7 @@ public class OrcsTxQueryTest {
       it = results.iterator();
       //@formatter:off
       assertTx(it.next(), 24, NonBaselined, "2013-05-06 14:18:18.542", "ClientUser", 570, 17, 0);
-      //@formatter:on  
+      //@formatter:on
    }
 
    @Test

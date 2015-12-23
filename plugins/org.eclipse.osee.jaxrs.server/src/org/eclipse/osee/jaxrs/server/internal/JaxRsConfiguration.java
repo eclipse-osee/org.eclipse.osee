@@ -50,7 +50,8 @@ public class JaxRsConfiguration {
       }
 
       public JaxRsConfigurationBuilder properties(Map<String, Object> props) {
-         baseContext(JaxRsUtils.get(props, JaxRsConstants.JAXRS_BASE_CONTEXT, JaxRsConstants.DEFAULT_JAXRS_BASE_CONTEXT));
+         baseContext(
+            JaxRsUtils.get(props, JaxRsConstants.JAXRS_BASE_CONTEXT, JaxRsConstants.DEFAULT_JAXRS_BASE_CONTEXT));
          return this;
       }
 

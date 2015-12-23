@@ -39,9 +39,8 @@ public class FilteredCheckboxTreeArtifactDialogExample extends XNavigateItemActi
       List<Artifact> initialSelection = new ArrayList<>();
       List<Artifact> children = rootArtifact.getChildren();
       initialSelection.add(children.iterator().next());
-      FilteredCheckboxTreeArtifactDialog dialog =
-         new FilteredCheckboxTreeArtifactDialog("My Title", "Message", children,
-            new ArtifactTreeChildrenContentProvider(Artifact.class), new ArtifactLabelProvider());
+      FilteredCheckboxTreeArtifactDialog dialog = new FilteredCheckboxTreeArtifactDialog("My Title", "Message",
+         children, new ArtifactTreeChildrenContentProvider(Artifact.class), new ArtifactLabelProvider());
       dialog.setInitialSelections(Arrays.asList(children.get(1), children.get(2)));
       dialog.setExpandChecked(true);
       FilteredDialogExampleUtil.openAndReport(dialog, getName());

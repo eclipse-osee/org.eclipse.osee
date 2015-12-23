@@ -74,6 +74,7 @@ public final class ReservedCharacters {
    private static Map<String, Character> reservedCharacters = new HashMap<>();
    private static Map<Character, String> charsToEncoding = new HashMap<>();
    private static Map<Character, String> xmlEntitiesMap = new HashMap<>();
+
    static {
       try {
          loadReservedChars();

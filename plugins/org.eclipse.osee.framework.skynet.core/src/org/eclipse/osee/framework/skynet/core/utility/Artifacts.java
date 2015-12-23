@@ -181,10 +181,10 @@ public final class Artifacts {
          details.put("Revision",
             String.valueOf(artifact.isInDb() ? String.valueOf(artifact.getTransactionNumber()) : "Not In Db"));
          details.put("Read Only", String.valueOf(artifact.isReadOnly()));
-         details.put("Last Modified", (artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db"));
+         details.put("Last Modified", artifact.isInDb() ? String.valueOf(artifact.getLastModified()) : "Not In Db");
          try {
             details.put("Last Modified By",
-               (artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db"));
+               artifact.isInDb() ? String.valueOf(artifact.getLastModifiedBy()) : "Not In Db");
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
             details.put("Last Modified By", "Exception " + ex.getLocalizedMessage());

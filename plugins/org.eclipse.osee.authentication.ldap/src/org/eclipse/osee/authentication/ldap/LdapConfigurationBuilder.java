@@ -55,7 +55,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *  ldapAuthentication = simple
  *  ldapUserName [blank if no authentication]
  *  ldapPassword [blank if no authentication]
- *  
+ * 
  * 
  *  accountScope = subtree
  *  accountBase = dc=company,dc=com
@@ -66,7 +66,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *  groupScope = subtree
  *  groupBase = ou=Groups,dc=company,dc=com
  *  groupSearchPattern = (cn=${groupname})
- *  
+ * 
  *  credentialsSource
  * </pre>
  * 

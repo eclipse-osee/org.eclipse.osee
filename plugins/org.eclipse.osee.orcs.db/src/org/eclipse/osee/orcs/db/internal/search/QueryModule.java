@@ -75,15 +75,13 @@ public class QueryModule {
    }
 
    public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
-      QueryCallableFactory factory1 =
-         newArtifactQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine, executorAdmin,
-            objectLoader, attrTypes);
+      QueryCallableFactory factory1 = newArtifactQueryEngine(logger, sqlJoinFactory, idService, sqlProvider,
+         taggingEngine, executorAdmin, objectLoader, attrTypes);
       QueryCallableFactory factory2 =
          newBranchQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
       QueryCallableFactory factory3 = newTxQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
-      QueryCallableFactory factory4 =
-         newQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine, executorAdmin, objectLoader,
-            attrTypes);
+      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine,
+         executorAdmin, objectLoader, attrTypes);
       return new QueryEngineImpl(factory1, factory2, factory3, factory4);
    }
 

@@ -38,9 +38,8 @@ public class AtsLogReader {
       if (!xml.isEmpty()) {
          Matcher m = AtsLogWriter.LOG_ITEM_PATTERN.matcher(xml);
          while (m.find()) {
-            IAtsLogItem item =
-               new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)), Strings.intern(m.group(3)),
-                  AXml.xmlToText(m.group(2)));
+            IAtsLogItem item = new LogItem(m.group(4), m.group(1), Strings.intern(m.group(5)),
+               Strings.intern(m.group(3)), AXml.xmlToText(m.group(2)));
             atsLog.addLogItem(item);
          }
       }

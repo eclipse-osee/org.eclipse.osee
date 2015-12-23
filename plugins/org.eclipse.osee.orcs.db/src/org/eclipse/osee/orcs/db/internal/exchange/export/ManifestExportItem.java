@@ -57,7 +57,8 @@ public class ManifestExportItem extends AbstractXmlExportItem {
 
       for (AbstractExportItem relationalItem : exportItems) {
          if (!relationalItem.equals(this)) {
-            addEntry(appendable, relationalItem.getFileName(), relationalItem.getPriority(), relationalItem.getSource());
+            addEntry(appendable, relationalItem.getFileName(), relationalItem.getPriority(),
+               relationalItem.getSource());
          }
       }
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.OPTIONS);
