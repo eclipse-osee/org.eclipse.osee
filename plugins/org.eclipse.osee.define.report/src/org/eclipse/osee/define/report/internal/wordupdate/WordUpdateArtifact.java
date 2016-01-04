@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -51,7 +52,6 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
-import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -77,7 +77,9 @@ public class WordUpdateArtifact {
          IElementExtractor elementExtractor;
          Document document = extractJaxpDocument(data);
          if (data.isThreeWayMerge()) {
-            elementExtractor = new MergeEditArtifactElementExtractor(document);
+            String guid = orcsApi.getQueryFactory().fromBranch(data.getBranch()).andUuid(
+               data.getArtifacts().iterator().next()).getResults().getAtMostOneOrNull().getGuid();
+            elementExtractor = new MergeEditArtifactElementExtractor(guid, document);
          } else {
             elementExtractor = new WordImageArtifactElementExtractor(document);
          }
@@ -144,9 +146,8 @@ public class WordUpdateArtifact {
                   }
                   artChange.addChangedAttrType(CoreAttributeTypes.WordOleData.getGuid());
                }
-               String content =
-                  Lib.inputStreamToString(new ByteArrayInputStream(
-                     WordUtilities.getFormattedContent(extractorData.getParentEelement())));
+               String content = Lib.inputStreamToString(
+                  new ByteArrayInputStream(WordUtilities.getFormattedContent(extractorData.getParentEelement())));
 
                /**
                 * Only update if: a. editing a single artifact or b. in multi-edit mode only update if the artifact has
@@ -215,8 +216,8 @@ public class WordUpdateArtifact {
       BranchReadable branch = queryFactory.branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
       long workflowUuid = branch.getAssociatedArtifactId();
       try {
-         toReturn =
-            atsServer.getQuery().andUuid(workflowUuid).andIsOfType(AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
+         toReturn = atsServer.getQuery().andUuid(workflowUuid).andIsOfType(
+            AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
       } catch (Exception ex) {
          throw new OseeCoreException("Exception in getAssociatedWorkflowArt", ex);
       }
@@ -242,34 +243,30 @@ public class WordUpdateArtifact {
    private IAtsTeamWorkflow createSafetyAction(TransactionReadable tx, WordUpdateChange updateChange, IAtsTeamWorkflow teamWf, ArtifactReadable userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
-         IAtsActionableItem ai =
-            atsServer.getConfig().getSoleByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(),
-               IAtsActionableItem.class);
+         IAtsActionableItem ai = atsServer.getConfig().getSoleByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(),
+            IAtsActionableItem.class);
          if (ai == null) {
             throw new OseeCoreException("Safety Actionable Item not configured");
          }
-         IAtsTeamDefinition teamDef =
-            atsServer.getConfig().getSoleByUuid(AtsArtifactToken.SafetyTeamDefinition.getUuid(),
-               IAtsTeamDefinition.class);
+         IAtsTeamDefinition teamDef = atsServer.getConfig().getSoleByUuid(
+            AtsArtifactToken.SafetyTeamDefinition.getUuid(), IAtsTeamDefinition.class);
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");
          }
          IAtsUser createdBy = AtsCoreUsers.SYSTEM_USER;
-         IAtsChangeSet changes =
-            atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
-               atsServer.getUserService().getUserById(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId)));
+         IAtsChangeSet changes = atsServer.getStoreService().createAtsChangeSet("Create System Safety Workflow",
+            atsServer.getUserService().getUserById(userArt.getSoleAttributeAsString(CoreAttributeTypes.UserId)));
          IAtsAction action = atsServer.getActionFactory().getAction(teamWf);
-         teamWorkflow =
-            atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
-               java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
+         teamWorkflow = atsServer.getActionFactory().createTeamWorkflow(action, teamDef,
+            java.util.Collections.singleton(ai), null, changes, new Date(), createdBy, new NewActionAdapter() {
 
-                  @Override
-                  public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
-                     changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
-                        "Review System Safety Changes for the associated RPCR to Complete the Workflow");
-                  }
+               @Override
+               public void teamCreated(IAtsAction action, IAtsTeamWorkflow teamWf, IAtsChangeSet changes) throws OseeCoreException {
+                  changes.setSoleAttributeValue(teamWf, AtsAttributeTypes.Description,
+                     "Review System Safety Changes for the associated RPCR to Complete the Workflow");
+               }
 
-               });
+            });
          changes.setSoleAttributeValue(teamWorkflow, CoreAttributeTypes.Name,
             "Safety Workflow for " + teamWf.getAtsId());
          changes.execute();
@@ -282,8 +279,9 @@ public class WordUpdateArtifact {
    private boolean hasChangedContent(ArtifactReadable artifact, String content) {
       String originalContent = artifact.getSoleAttributeAsString(CoreAttributeTypes.WordTemplateContent, "");
 
-      return !WordUtilities.textOnly(originalContent).equals(WordUtilities.textOnly(content)) || !WordUtilities.referencesOnly(
-         originalContent).equals(WordUtilities.referencesOnly(content));
+      return !WordUtilities.textOnly(originalContent).equals(
+         WordUtilities.textOnly(content)) || !WordUtilities.referencesOnly(originalContent).equals(
+            WordUtilities.referencesOnly(content));
    }
 
    private boolean checkIfSafetyRelated(ArtifactReadable artifact) {

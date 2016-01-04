@@ -26,9 +26,11 @@ import org.w3c.dom.NodeList;
 public class MergeEditArtifactElementExtractor implements IElementExtractor {
    private Element oleDataElement;
    private final Document document;
+   private final String guid;
 
-   public MergeEditArtifactElementExtractor(Document document) {
+   public MergeEditArtifactElementExtractor(String guid, Document document) {
       super();
+      this.guid = guid;
       this.document = document;
    }
 
@@ -55,6 +57,7 @@ public class MergeEditArtifactElementExtractor implements IElementExtractor {
          if (element.getNodeName().endsWith("body")) {
             WordExtractorData extractorData = new WordExtractorData();
             extractorData.addParent(element);
+            extractorData.setGuid(guid);
 
             artifactElements.add(extractorData);
          } else if (oleDataElement == null && element.getNodeName().endsWith("docOleData")) {

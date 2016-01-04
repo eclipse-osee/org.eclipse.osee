@@ -29,7 +29,7 @@ public class HttpWordUpdateRequest {
       try {
          change = endpoint.updateWordArtifacts(wud);
       } catch (Exception ex) {
-         throw new OseeWebApplicationException(Status.INTERNAL_SERVER_ERROR, "Exception in WordUpdateRequest", ex);
+         throw new OseeWebApplicationException(ex, Status.INTERNAL_SERVER_ERROR, "Exception in WordUpdateRequest");
       }
       return change;
    }
