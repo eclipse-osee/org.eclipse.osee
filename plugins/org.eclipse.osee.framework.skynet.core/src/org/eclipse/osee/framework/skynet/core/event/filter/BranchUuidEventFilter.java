@@ -65,6 +65,6 @@ public class BranchUuidEventFilter implements IEventFilter {
 
    @Override
    public String toString() {
-      return branchToken.toString();
+      return String.valueOf(branchToken.getId());
    }
 }

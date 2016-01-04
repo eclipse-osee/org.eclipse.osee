@@ -44,7 +44,7 @@ public final class HierarchyHandler {
 
    public void addArtifact(Artifact testUnit) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(!testUnit.isOnBranch(branch), "Artifact [%s] must be on branch [%s]",
-         testUnit.toString(), branch.toString());
+         testUnit.toString(), branch.getId());
       Artifact folder = null;
 
       if (testUnit.isOfType(CoreArtifactTypes.TestCase)) {

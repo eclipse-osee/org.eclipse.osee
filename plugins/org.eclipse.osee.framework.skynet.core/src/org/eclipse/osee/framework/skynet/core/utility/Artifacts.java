@@ -171,7 +171,7 @@ public final class Artifacts {
          details.put("UUID", String.valueOf(artifact.getArtId()));
          details.put("GUID", String.valueOf(Xml.escape(artifact.getGuid())));
          details.put("Artifact Token", String.format("[%s]-[%d]", artifact.getSafeName(), artifact.getUuid()));
-         details.put("Branch", String.valueOf(Xml.escape(artifact.getBranch().toString())));
+         details.put("Branch", String.valueOf(Xml.escape(artifact.getBranchToken().getName())));
          details.put("Branch Uuid", String.valueOf(artifact.getBranchId()));
          details.put("Artifact Type Name", String.valueOf(Xml.escape(artifact.getArtifactTypeName())));
          details.put("Artifact Type Id", String.valueOf(artifact.getArtTypeId()));

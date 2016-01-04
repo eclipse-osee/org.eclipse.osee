@@ -373,8 +373,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
                "Branch Operation Commit Branch {branchUUID: %s srcBranch: %s destBranch: %s accountId: %s serverId: %s clientId: %s}",
-               branchUuid, srcBranch.toString(), destBranch.toString(), RestUtil.getAccountId(httpHeaders),
-               RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+               branchUuid, srcBranch, destBranch, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -485,11 +485,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
       UriInfo uriInfo = getUriInfo();
       URI location = getExchangeExportUri(uriInfo, exportURI, options.isCompress());
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-            String.format(
-               "Branch Operation Export Branches {branchUUID(s): %s accountId: %s serverId: %s, clientId: %s}",
-               branches.toString(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
-               RestUtil.getClientId(httpHeaders)));
+         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
+            "Branch Operation Export Branches {branchUUID(s): %s accountId: %s serverId: %s, clientId: %s}", branches,
+            RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -530,11 +528,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       try {
-         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
-            String.format(
-               "Branch Operation Import Branches {branchUUID(s): %s accountId: %s serverId: %s clientId: %s}",
-               branches.toString(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
-               RestUtil.getClientId(httpHeaders)));
+         activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS, String.format(
+            "Branch Operation Import Branches {branchUUID(s): %s accountId: %s serverId: %s clientId: %s}", branches,
+            RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -89,7 +89,7 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private void checkEventObjects(Object branchId, Object userArt) throws OseeArgumentException {
       if (!(branchId instanceof BranchId)) {
          throw new OseeArgumentException("BranchID provided to safety workflow creation event incorrect type: %s",
-            branchId.toString());
+            branchId.getClass());
       }
       if (!(userArt instanceof ArtifactReadable)) {
          throw new OseeArgumentException("User Artifact provided to safety workflow creation event incorrect type: %s",

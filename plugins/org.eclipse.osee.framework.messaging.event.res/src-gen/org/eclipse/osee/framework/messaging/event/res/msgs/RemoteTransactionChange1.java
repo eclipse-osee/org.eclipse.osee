@@ -55,7 +55,7 @@ public class RemoteTransactionChange1 extends RemoteEvent {
    }
 
    public void setBranchGuid(Long branchId) {
-      this.branchGuid = branchId.toString();
+      this.branchGuid = String.valueOf(branchId);
    }
 
    /**
