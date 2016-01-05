@@ -45,8 +45,11 @@ public class AtsConfigAddDemoUsers implements IDbInitializationTask {
 
       SkynetTransaction transaction1 = TransactionManager.createTransaction(COMMON, "Configure OSEEAdmin");
       SystemGroup.OseeAdmin.getArtifact().persist(transaction1);
+      SystemGroup.OseeAccessAdmin.getArtifact().persist(transaction1);
+      User joeSmith = UserManager.getUser(DemoUsers.Joe_Smith);
+      SystemGroup.OseeAccessAdmin.addMember(joeSmith);
       AtsGroup.AtsAdmin.getArtifact().persist(transaction1);
-      AtsGroup.AtsTempAdmin.addMember(UserManager.getUser(DemoUsers.Joe_Smith));
+      AtsGroup.AtsTempAdmin.addMember(joeSmith);
       AtsGroup.AtsTempAdmin.getArtifact().persist(transaction1);
       transaction1.execute();
    }
