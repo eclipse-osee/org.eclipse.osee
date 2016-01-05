@@ -43,11 +43,8 @@ public class NeedProjectMenuListener implements MenuListener {
    public void menuShown(MenuEvent e) {
       boolean valid = treeViewer.getInput() != null;
       for (MenuItem item : items) {
+         // Only modify enabling if no error is associated
          if (!(item.getData() instanceof Exception)) {
-            // Only modify
-            // enabling if no
-            // error is
-            // associated
             item.setEnabled(valid);
          }
       }

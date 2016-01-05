@@ -62,7 +62,6 @@ import org.eclipse.ui.IViewPart;
  */
 public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
-   private final String viewId;
    private final IViewPart viewPart;
 
    private IOseeBranch selectedBranch;
@@ -76,7 +75,6 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       super(treeViewer.getTree(), treeViewer.getTree(), viewId);
 
       this.treeViewer = treeViewer;
-      this.viewId = viewId;
       this.viewPart = viewPart;
    }
 

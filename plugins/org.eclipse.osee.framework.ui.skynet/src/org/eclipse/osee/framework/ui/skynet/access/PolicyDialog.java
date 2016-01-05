@@ -235,6 +235,7 @@ public class PolicyDialog extends Dialog {
          }
       }
       policyTableViewer.removeDataFromDB();
+      AccessControlManager.clearCaches();
       super.okPressed();
    }
 

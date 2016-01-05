@@ -39,9 +39,6 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       this(null);
    }
 
-   /*
-    * @see ILabelProvider#getImage(Object)
-    */
    @Override
    public Image getImage(Object element) {
       if (element instanceof Artifact) {
@@ -54,9 +51,6 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
       return ImageManager.getImage(ImageManager.MISSING);
    }
 
-   /*
-    * @see ILabelProvider#getText(Object)
-    */
    @Override
    public String getText(Object element) {
       if (element instanceof Match) {

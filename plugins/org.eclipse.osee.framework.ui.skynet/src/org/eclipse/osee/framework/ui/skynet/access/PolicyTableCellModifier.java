@@ -65,8 +65,6 @@ public class PolicyTableCellModifier implements ICellModifier {
 
    /**
     * Don't disable entire viewer, just delete button
-    * 
-    * @param enabled the enabled to set
     */
    public void setDeleteEnabled(boolean enabled) {
       this.enabled = enabled;

@@ -131,8 +131,7 @@ public class ArtifactExplorerMenu {
    }
 
    public void handleMenuShown(MenuEvent e) {
-      // Use this menu listener until all menu items can be moved to
-      // GlobaMenu
+      // Use this menu listener until all menu items can be moved to GlobaMenu
       try {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Object obj = selection.getFirstElement();

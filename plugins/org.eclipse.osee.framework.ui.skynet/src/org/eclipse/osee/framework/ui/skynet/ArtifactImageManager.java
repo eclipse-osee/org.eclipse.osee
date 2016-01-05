@@ -262,6 +262,9 @@ public final class ArtifactImageManager {
          } else {
             KeyedImage imageKey = artifactTypeImageMap.get(type);
             if (imageKey != null) {
+               if (AccessControlManager.hasLock(castedArtifact)) {
+                  return getLockedImage(imageKey);
+               }
                return ImageManager.setupImage(imageKey);
             }
          }
@@ -279,9 +282,7 @@ public final class ArtifactImageManager {
          baseImageEnum = BaseImage.getBaseImageEnum(castedArtifact);
 
          if (AccessControlManager.hasLock(castedArtifact)) {
-            KeyedImage overlay = AccessControlManager.hasLockAccess(
-               castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
-            return ImageManager.setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT).getImageKey();
+            return getLockedImage(baseImageEnum);
          }
 
          AttributeAnnotationManager.get(castedArtifact);
@@ -293,6 +294,11 @@ public final class ArtifactImageManager {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return ImageManager.setupImage(baseImageEnum);
+   }
+
+   private static String getLockedImage(KeyedImage baseImageEnum) {
+      return ImageManager.setupImageWithOverlay(baseImageEnum, FrameworkImage.LOCK_UNLOCKED,
+         Location.TOP_LEFT).getImageKey();
    }
 
    public static KeyedImage getArtifactTypeImage(IArtifactType artifactType) {
