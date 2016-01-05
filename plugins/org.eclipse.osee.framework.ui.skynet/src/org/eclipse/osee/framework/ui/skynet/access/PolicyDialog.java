@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -44,7 +45,7 @@ import org.eclipse.swt.widgets.Shell;
 
 /**
  * GUI that is used to maintain an <Code>Artifact</Code> access control list.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class PolicyDialog extends Dialog {
@@ -55,8 +56,8 @@ public class PolicyDialog extends Dialog {
    private Combo cmbPermissionLevel;
    private final Object accessControlledObject;
    private Label accessLabel;
-   private Shell parentShell;
-   
+   private final Shell parentShell;
+
    public PolicyDialog(Shell parentShell, Object accessControlledObject) {
       super(parentShell);
       this.parentShell = parentShell;
@@ -130,8 +131,10 @@ public class PolicyDialog extends Dialog {
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }
-            } else { 
-               MessageDialog.openError(parentShell, "Add Error", "Please select a Person and Permission Level to add to the Access Control List");         }
+            } else {
+               MessageDialog.openError(parentShell, "Add Error",
+                  "Please select a Person and Permission Level to add to the Access Control List");
+            }
          }
       });
    }
@@ -193,7 +196,7 @@ public class PolicyDialog extends Dialog {
       boolean returnValue;
 
       try {
-         if (policyTableViewer.getAccessControlList().size() > 0) {
+         if (!SystemGroup.OseeAccessAdmin.isCurrentUserMember() && policyTableViewer.getAccessControlList().size() > 0) {
             returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.OWNER);
          } else {
             returnValue = true;
@@ -210,7 +213,7 @@ public class PolicyDialog extends Dialog {
       boolean returnValue;
 
       try {
-         if (policyTableViewer.getAccessControlList().size() > 0) {
+         if (!SystemGroup.OseeAccessAdmin.isCurrentUserMember() && policyTableViewer.getAccessControlList().size() > 0) {
             returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.FULLACCESS);
          } else {
             returnValue = true;
