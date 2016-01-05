@@ -78,7 +78,7 @@ public class IntroduceArtifactOperation {
          destinationArtifact.introduce(sourceArtifact);
          processArtifact(sourceArtifact, destinationArtifact);
       }
-
+      destinationArtifact.meetMinimumAttributeCounts(true);
       destinationArtifacts.add(destinationArtifact);
    }
 
