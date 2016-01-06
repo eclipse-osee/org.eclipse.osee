@@ -16,16 +16,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser.OseeDslSegment;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -54,7 +54,7 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
          double workPercentage = 0.80 * 1.0 / segments.size();
          int workAmount = calculateWork(workPercentage);
 
-         Map<Branch, SkynetTransaction> transactionMap = new HashMap<>();
+         Map<IOseeBranch, SkynetTransaction> transactionMap = new HashMap<>();
          for (OseeDslSegment segment : segments) {
             int startAt = segment.start();
             int endAt = segment.end();
@@ -75,8 +75,8 @@ public class OseeDslArtifactUpdateOperation extends AbstractOperation {
       return Lib.fileToString(file);
    }
 
-   protected void addChanges(Map<Branch, SkynetTransaction> transactionMap, long branchUuid, String artifactGuid, String data) throws OseeCoreException {
-      Branch branch = BranchManager.getBranchByGuid(branchUuid);
+   protected void addChanges(Map<IOseeBranch, SkynetTransaction> transactionMap, long branchId, String artifactGuid, String data) throws OseeCoreException {
+      IOseeBranch branch = TokenFactory.createBranch(branchId);
       SkynetTransaction transaction = transactionMap.get(branch);
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(branch, "OseeDslArtifactUpdate");

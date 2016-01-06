@@ -75,26 +75,16 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  *
  * @author Ryan D. Brooks
  */
-public class BranchManager {
-   private static final BranchManager instance = new BranchManager();
-
+public final class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranchUuid";
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final BranchFactory branchFactory = new BranchFactory();
    private static final String SELECT_BRANCH = "select * from osee_branch where branch_id = ?";
 
-   private IOseeBranch lastBranch;
+   private static IOseeBranch lastBranch;
 
    private BranchManager() {
       // this private empty constructor exists to prevent the default constructor from allowing public construction
-   }
-
-   /**
-    * use static methods instead
-    */
-   @Deprecated
-   public static BranchManager getInstance() {
-      return instance;
    }
 
    private static BranchCache getCache() throws OseeCoreException {
@@ -156,12 +146,10 @@ public class BranchManager {
       }
    }
 
-   private static void loadBranchToCache(Object uuid) {
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         chStmt.runPreparedQuery(1, SELECT_BRANCH, uuid);
+   private static Branch loadBranchToCache(Long branchId) {
+      try (JdbcStatement chStmt = ConnectionHandler.getStatement()) {
+         chStmt.runPreparedQuery(1, SELECT_BRANCH, branchId);
          if (chStmt.next()) {
-            long branchUuid = chStmt.getLong("branch_id");
             String branchName = chStmt.getString("branch_name");
             BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
             BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
@@ -172,26 +160,17 @@ public class BranchManager {
             int assocArtId = chStmt.getInt("associated_art_id");
             int inheritAccessControl = chStmt.getInt("inherit_access_control");
 
-            Branch created = branchFactory.createOrUpdate(getCache(), branchUuid, branchName, branchType, branchState,
+            Branch created = branchFactory.createOrUpdate(getCache(), branchId, branchName, branchType, branchState,
                archiveState.isArchived(), StorageState.LOADED, inheritAccessControl == 1);
             created.setBaseTransaction(TransactionManager.getTransactionId(baseTx));
             created.setSourceTransaction(TransactionManager.getTransactionId(sourceTx));
             created.setAssociatedArtifactId(assocArtId);
             created.setParentBranch(getBranch(parentBranchId));
+            return created;
+         } else {
+            throw new BranchDoesNotExist("Branch could not be acquired for branch uuid %d", branchId);
          }
-      } finally {
-         chStmt.close();
       }
-
-   }
-
-   public static Branch getBranchByGuid(Long uuid) throws OseeCoreException {
-      checkAndReload(uuid);
-      Branch branch = getCache().getByGuid(uuid);
-      if (branch == null) {
-         throw new BranchDoesNotExist("Branch with uuid [%s] does not exist", uuid);
-      }
-      return branch;
    }
 
    public static boolean branchExists(IOseeBranch branchToken) throws OseeCoreException {
@@ -244,15 +223,14 @@ public class BranchManager {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
-   public static Branch getBranch(Long branchUuid) throws OseeCoreException {
-      if (branchUuid == null) {
+   public static Branch getBranch(Long branchId) throws OseeCoreException {
+      if (branchId == null) {
          throw new BranchDoesNotExist("Branch Uuid is null");
       }
 
-      checkAndReload(branchUuid);
-      Branch branch = getCache().getById(branchUuid);
+      Branch branch = getCache().getById(branchId);
       if (branch == null) {
-         throw new BranchDoesNotExist("Branch could not be acquired for branch uuid %d", branchUuid);
+         branch = loadBranchToCache(branchId);
       }
       return branch;
    }
@@ -504,21 +482,7 @@ public class BranchManager {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 
-   private void initializeLastBranchValue() {
-      try {
-         Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
-         lastBranch = getBranch(branchUuid);
-      } catch (Exception ex) {
-         try {
-            lastBranch = getDefaultInitialBranch();
-            UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
-         } catch (OseeCoreException ex1) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex1);
-         }
-      }
-   }
-
-   private IOseeBranch getDefaultInitialBranch() throws OseeCoreException {
+   private static IOseeBranch getDefaultInitialBranch() throws OseeCoreException {
       ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
          new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
             "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider", "DefaultInitialBranchProvider",
@@ -540,16 +504,24 @@ public class BranchManager {
    }
 
    public static IOseeBranch getLastBranch() {
-      if (instance.lastBranch == null) {
-         instance.initializeLastBranchValue();
+      if (lastBranch == null) {
+         try {
+            Long branchUuid = Long.valueOf(UserManager.getSetting(LAST_DEFAULT_BRANCH));
+            lastBranch = getBranch(branchUuid);
+         } catch (Exception ex) {
+            try {
+               lastBranch = getDefaultInitialBranch();
+               UserManager.setSetting(LAST_DEFAULT_BRANCH, lastBranch.getUuid());
+            } catch (OseeCoreException ex1) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex1);
+            }
+         }
       }
-      return instance.lastBranch;
+      return lastBranch;
    }
 
    public static void setLastBranch(IOseeBranch branch) {
-      if (branch != null) {
-         instance.lastBranch = branch;
-      }
+      lastBranch = branch;
    }
 
    public static void persist(Branch... branches) throws OseeCoreException {
@@ -612,20 +584,20 @@ public class BranchManager {
       return CoreBranches.SYSTEM_ROOT.equals(getParentBranch(branch));
    }
 
-   public static TransactionRecord getBaseTransaction(IOseeBranch destinationBranch) {
-      return ((Branch) destinationBranch).getBaseTransaction();
+   public static TransactionRecord getBaseTransaction(IOseeBranch branch) {
+      return getBranch(branch).getBaseTransaction();
    }
 
    public static BranchState getState(IOseeBranch branch) {
-      return ((Branch) branch).getBranchState();
+      return getBranch(branch).getBranchState();
    }
 
    public static boolean hasChanges(IOseeBranch branch) {
-      return hasChanges((Branch) branch);
+      return hasChanges(getBranch(branch));
    }
 
    public static BranchType getBranchType(IOseeBranch branch) {
-      return ((Branch) branch).getBranchType();
+      return getBranch(branch).getBranchType();
    }
 
    public static boolean isEditable(IOseeBranch branch) {
