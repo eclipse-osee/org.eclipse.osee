@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -149,7 +150,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return null;
    }
 
-   private Collection<Object> getTransactions(Branch branch) throws OseeCoreException {
+   private Collection<Object> getTransactions(IOseeBranch branch) throws OseeCoreException {
       if (!showTransactions) {
          return Collections.emptyList();
       }

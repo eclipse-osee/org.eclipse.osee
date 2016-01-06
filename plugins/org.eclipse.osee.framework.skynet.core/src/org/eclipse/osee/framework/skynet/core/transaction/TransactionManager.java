@@ -20,7 +20,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -29,10 +28,8 @@ import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -72,12 +69,11 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
-   private static final TxMonitorImpl<Branch> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
+   private static final TxMonitorImpl<IOseeBranch> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
 
    public static SkynetTransaction createTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
-      Branch actualBranch = BranchManager.getBranch(branch);
-      SkynetTransaction tx = new SkynetTransaction(txMonitor, actualBranch, GUID.create(), comment);
-      txMonitor.createTx(actualBranch, tx);
+      SkynetTransaction tx = new SkynetTransaction(txMonitor, branch, comment);
+      txMonitor.createTx(branch, tx);
       return tx;
    }
 
@@ -111,7 +107,7 @@ public final class TransactionManager {
       return getCacheService().getBranchCache();
    }
 
-   public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
+   public static List<TransactionRecord> getTransactionsForBranch(IOseeBranch branch) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
 
@@ -178,12 +174,6 @@ public final class TransactionManager {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchUuid);
       }
       return getTransactionId(transactionNumber);
-   }
-
-   public static synchronized TransactionRecord createNextTransactionId(JdbcConnection connection, Branch branch, User userToBlame, String comment) throws OseeCoreException {
-      TransactionRecord transactionId = internalCreateTransactionRecord(branch, userToBlame, comment);
-      internalPersist(connection, transactionId);
-      return transactionId;
    }
 
    private static int getNextTransactionId() {

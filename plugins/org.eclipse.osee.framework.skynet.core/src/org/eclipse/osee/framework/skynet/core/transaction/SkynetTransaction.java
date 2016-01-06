@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -64,7 +63,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class SkynetTransaction extends TransactionOperation<Branch> {
+public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
    private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
    private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
 
@@ -82,8 +81,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
    private int transactionId = -1;
    private TransactionRecord transaction;
 
-   protected SkynetTransaction(TxMonitor<Branch> txMonitor, Branch branch, String uuid, String comment) {
-      super(txMonitor, branch, uuid, comment);
+   protected SkynetTransaction(TxMonitor<IOseeBranch> txMonitor, IOseeBranch branch, String comment) {
+      super(txMonitor, branch, comment);
       this.comment = comment;
    }
 
@@ -110,7 +109,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       if (UserManager.duringMainUserCreation()) {
          return;
       }
-      Branch txBranch = getBranch();
+      IOseeBranch txBranch = getBranch();
       if (!artifact.isOnBranch(txBranch)) {
          String msg = String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
             artifact.getGuid(), artifact.getBranch(), txBranch);
@@ -157,8 +156,8 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
          return;
       }
       checkBranch(link);
-      Branch txBranch = getBranch();
-      if (!link.getBranch().equals(txBranch)) {
+      IOseeBranch txBranch = getBranch();
+      if (!link.isOnBranch(txBranch)) {
          String msg = String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
             link.getId(), link.getBranch(), txBranch);
          throw new OseeStateException(msg);
@@ -200,7 +199,7 @@ public final class SkynetTransaction extends TransactionOperation<Branch> {
       alreadyProcessedArtifacts.clear();
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return getKey();
    }
 

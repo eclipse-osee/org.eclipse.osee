@@ -21,9 +21,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -57,14 +57,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<>();
 
-   private final Branch branch;
+   private final IOseeBranch branch;
    private final TransactionRecord transactionRecord;
    private final Collection<BaseTransactionData> txDatas;
    private final Collection<Artifact> artifactReferences;
 
    private boolean executedWithException;
 
-   public StoreSkynetTransactionOperation(String name, Branch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
+   public StoreSkynetTransactionOperation(String name, IOseeBranch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
       super(ConnectionHandler.getJdbcClient(), name, Activator.PLUGIN_ID);
       this.branch = branch;
       this.transactionRecord = transactionRecord;
@@ -95,9 +95,8 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       if (!txDatas.isEmpty()) {
          executeTransactionDataItems(connection);
       }
-      if (branch.getBranchState() == BranchState.CREATED) {
-         branch.setBranchState(BranchState.MODIFIED);
-         BranchManager.persist(branch);
+      if (BranchManager.getState(branch).isCreated()) {
+         BranchManager.getBranch(branch).setBranchState(BranchState.MODIFIED);
       }
    }
 
@@ -147,8 +146,7 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
          transactionData.addInsertToBatch(this);
 
          // Collect stale tx currents for batch update
-         fetchTxNotCurrent(connection, branch, transactionData, txNotCurrentData);
-
+         fetchTxNotCurrent(connection, branch.getUuid(), transactionData, txNotCurrentData);
       }
 
       // Insert into data tables - i.e. attribute, relation and artifact version tables
@@ -163,14 +161,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
       getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, txNotCurrentData);
    }
 
-   private void fetchTxNotCurrent(JdbcConnection connection, Branch branch, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
+   private void fetchTxNotCurrent(JdbcConnection connection, Long branchId, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          String query = ServiceUtil.getSql(transactionData.getSelectTxNotCurrentSql());
 
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), branch.getUuid());
+         chStmt.runPreparedQuery(query, transactionData.getItemId(), branchId);
          while (chStmt.next()) {
-            results.add(new Object[] {branch.getUuid(), chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            results.add(new Object[] {branchId, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
       } finally {
          chStmt.close();

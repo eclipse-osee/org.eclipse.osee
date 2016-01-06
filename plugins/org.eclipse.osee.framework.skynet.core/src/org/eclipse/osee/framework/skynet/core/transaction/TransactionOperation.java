@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.MonitoredTx;
 import org.eclipse.osee.framework.skynet.core.transaction.TxMonitorImpl.TxState;
@@ -28,11 +29,11 @@ public abstract class TransactionOperation<K> extends AbstractOperation implemen
    private final String uuid;
    private volatile TxState state;
 
-   protected TransactionOperation(TxMonitor<K> txMonitor, K key, String uuid, String description) {
+   protected TransactionOperation(TxMonitor<K> txMonitor, K key, String description) {
       super(description, Activator.PLUGIN_ID);
       this.txMonitor = txMonitor;
       this.key = key;
-      this.uuid = uuid;
+      this.uuid = GUID.create();
       setTxState(TxState.CREATED);
    }
 
