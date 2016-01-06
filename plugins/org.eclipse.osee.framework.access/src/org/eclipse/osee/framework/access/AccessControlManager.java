@@ -24,17 +24,22 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
  * @author Jeff C. Phillips
  */
 
-public final class AccessControlManager {
+public final class AccessControlManager implements IAccessControlEventListener {
 
    private AccessControlManager() {
       // Hide constructor
    }
 
+   @SuppressWarnings("deprecation")
    public static AccessControlService getService() {
       AccessControlService accessService = null;
       try {
@@ -76,6 +81,7 @@ public final class AccessControlManager {
       return getService().hasLockAccess(object);
    }
 
+   @SuppressWarnings("deprecation")
    public static boolean isOseeAdmin() throws OseeCoreException {
       AccessControlService service = null;
       try {
@@ -126,5 +132,19 @@ public final class AccessControlManager {
 
    public static AccessDataQuery getAccessData(Collection<?> objectsToCheck) throws OseeCoreException {
       return getService().getAccessData(UserManager.getUser(), objectsToCheck);
+   }
+
+   @Override
+   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+      try {
+         if (accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
+         //
+         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+            clearCaches();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AccessControlManager.class, Level.SEVERE, ex);
+      }
+
    }
 }
