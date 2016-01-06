@@ -32,4 +32,6 @@ public interface IArtifactEditorEventHandler {
 
    public void setMainImage(Image titleImage);
 
+   public void refresh();
+
 }

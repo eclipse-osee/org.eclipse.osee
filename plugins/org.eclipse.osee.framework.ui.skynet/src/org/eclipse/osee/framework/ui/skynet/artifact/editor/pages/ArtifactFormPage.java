@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.ReservedCharacters;
@@ -174,14 +175,22 @@ public class ArtifactFormPage extends FormPage {
       String description;
       try {
          Artifact artifact = getEditor().getEditorInput().getArtifact();
-         description = String.format("<form><p>%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
-            !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
+         description = String.format("<form><p>%s%s<b>Branch:</b> %s <b>Type:</b> %s <b>UUID:</b> %d</p></form>",
+            getLockedString(artifact), !artifact.isDeleted() ? "" : "<b>ARTIFACT DELETED - </b> ",
             ReservedCharacters.encodeXmlEntities(artifact.getFullBranch().getShortName()),
             artifact.getArtifactTypeName(), artifact.getUuid());
       } catch (Exception ex) {
          description = Lib.exceptionToString(ex);
       }
       return description;
+   }
+
+   private String getLockedString(Artifact artifact) {
+      Artifact subject = AccessControlManager.getSubjectFromLockedObject(artifact);
+      if (subject != null) {
+         return "<b>LOCKED:</b> " + subject.getName() + " ";
+      }
+      return "";
    }
 
    private void updateArtifactInfoArea(FormToolkit toolkit, ScrolledForm form, boolean add) {
@@ -207,7 +216,6 @@ public class ArtifactFormPage extends FormPage {
          infoText = toolkit.createFormText(infoArea, false);
          infoText.setText(getArtifactShortInfo(), true, false);
          infoText.setForeground(Displays.getSystemColor(SWT.COLOR_DARK_GRAY));
-         infoText.setToolTipText("The human readable id and database id for this artifact");
       } else {
          infoText.setText(getArtifactShortInfo(), true, false);
       }

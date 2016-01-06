@@ -53,8 +53,8 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
          IAttributeType attributeType = attributeWidget.getAttributeType();
 
          PermissionStatus permissionStatus = new PermissionStatus();
+         Artifact artifact = attributeWidget.getArtifact();
          try {
-            Artifact artifact = attributeWidget.getArtifact();
             permissionStatus = policyHandlerService.hasAttributeTypePermission(Collections.singletonList(artifact),
                attributeType, PermissionEnum.WRITE, Level.FINE);
          } catch (OseeCoreException ex) {
@@ -63,7 +63,7 @@ public class XWidgetAccessDecorationProvider implements XWidgetDecorator.Decorat
 
          // Get Info from AccessControlService and take in to account if widget was editable before;
          boolean isWriteable = permissionStatus.matched();
-         boolean isLocked = !isWriteable || !xWidget.isEditable();
+         boolean isLocked = !isWriteable || artifact.isReadOnly();
          String reason = permissionStatus.getReason();
 
          Control control = xWidget.getControl();

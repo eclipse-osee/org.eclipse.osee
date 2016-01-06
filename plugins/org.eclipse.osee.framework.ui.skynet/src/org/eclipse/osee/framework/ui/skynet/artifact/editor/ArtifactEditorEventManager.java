@@ -32,14 +32,13 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
-import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 
 /**
  * Common location for event handling for ArtifactExplorers in order to keep number of registrations and processing to a
  * minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, IAccessControlEventListener {
@@ -159,7 +158,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
-                           handler.setMainImage(ArtifactImageManager.getImage(handler.getArtifactFromEditorInput()));
+                           handler.refresh();
                         }
                      });
                   }

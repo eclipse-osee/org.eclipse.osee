@@ -316,4 +316,9 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       return formPage == null || formPage.getPartControl() == null || formPage.getPartControl().isDisposed();
    }
 
+   @Override
+   public void refresh() {
+      formPage.refresh();
+   }
+
 }
