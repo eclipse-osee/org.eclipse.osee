@@ -110,7 +110,7 @@ public class ArtifactQueryTest {
    public void testGetArtifactListFromType() throws OseeCoreException {
       // Should exist
       Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
-      List<Branch> branches = BranchManager.getBranches(new BranchFilter(BranchType.BASELINE));
+      List<IOseeBranch> branches = BranchManager.getBranches(new BranchFilter(BranchType.BASELINE));
       for (IOseeBranch branch : branches) {
          List<Artifact> results = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
             DeletionFlag.INCLUDE_DELETED);

@@ -91,12 +91,19 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) throws OseeCoreException {
-      return getBranches(new BranchFilter(archivedState, branchTypes));
+   public static List<IOseeBranch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
+      return getCache().getBranches(branchFilter);
    }
 
-   public static List<Branch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
-      return getCache().getBranches(branchFilter);
+   public static IOseeBranch getBranch(BranchFilter branchFilter) throws OseeCoreException {
+      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
+      if (branches.isEmpty()) {
+         return null;
+      } else if (branches.size() == 1) {
+         return branches.get(0);
+      } else {
+         throw new MultipleBranchesExist("More than 1 branch exists that matches the filter: " + branchFilter);
+      }
    }
 
    public static void refreshBranches() throws OseeCoreException {
@@ -480,6 +487,10 @@ public final class BranchManager {
 
    public static List<? extends IOseeBranch> getBaselineBranches() throws OseeCoreException {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
+   }
+
+   public static List<IOseeBranch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
+      return getCache().getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
    private static IOseeBranch getDefaultInitialBranch() throws OseeCoreException {

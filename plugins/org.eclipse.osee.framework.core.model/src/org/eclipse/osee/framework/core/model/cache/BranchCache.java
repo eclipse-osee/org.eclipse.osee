@@ -82,12 +82,12 @@ public class BranchCache extends AbstractOseeLoadingCache<Long, Branch> {
       return toReturn;
    }
 
-   public synchronized List<Branch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
+   public synchronized <T extends IOseeBranch> List<T> getBranches(BranchFilter branchFilter) {
       Collection<Branch> allBranches = getRawValues();
-      List<Branch> branches = new LinkedList<>();
+      List<T> branches = new LinkedList<>();
       for (Branch branch : allBranches) {
          if (branchFilter.matches(branch)) {
-            branches.add(branch);
+            branches.add((T) branch);
          }
       }
       return branches;

@@ -18,11 +18,11 @@ import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -41,7 +41,7 @@ import org.junit.Test;
  */
 public class WordUpdateEndpointImplTest extends AbstractRestTest {
    private Artifact artReqt = null;
-   private Branch branch = null;
+   private IOseeBranch branch = null;
 
    @Before
    public void setup() {
@@ -115,11 +115,11 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       return change;
    }
 
-   private Branch getWorkingBranch() {
-      Branch branchReturn = null;
+   private IOseeBranch getWorkingBranch() {
+      IOseeBranch branchReturn = null;
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
-      List<Branch> branches = BranchManager.getBranches(branchFilter);
-      for (Branch branch : branches) {
+      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
+      for (IOseeBranch branch : branches) {
          if (branch.getName().contains("More Reqt")) {
             branchReturn = branch;
             break;

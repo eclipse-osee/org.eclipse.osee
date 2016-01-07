@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -118,7 +119,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.WORKING);
          }
 
-         Set<Branch> branchesToReturn = new HashSet<>();
+         Set<IOseeBranch> branchesToReturn = new HashSet<>();
          if (showOnlyWorkingBranches) {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
@@ -127,8 +128,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
                branchesToReturn.add(BranchManager.getBranch(SYSTEM_ROOT));
             } else {
                branchTypes.add(BranchType.BASELINE);
-               for (Branch branch : BranchManager.getBranches(branchState,
-                  branchTypes.toArray(new BranchType[branchTypes.size()]))) {
+               BranchFilter filter =
+                  new BranchFilter(branchState, branchTypes.toArray(new BranchType[branchTypes.size()]));
+
+               for (IOseeBranch branch : BranchManager.getBranches(filter)) {
                   if (BranchManager.isParentSystemRoot(branch)) {
                      branchesToReturn.add(branch);
                   }

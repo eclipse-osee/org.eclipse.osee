@@ -152,10 +152,10 @@ public final class ChangeManager {
          new CompositeKeyHashMap<Integer, IOseeBranch, Artifact>();
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
-         // for each combination of artifact and all working branches in its
-         // hierarchy
-         for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING)) {
-            if (artifact.isOnBranch(workingBranch.getParentBranch())) {
+         // for each combination of artifact and all working branches in its hierarchy
+         for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
+            BranchType.WORKING)) {
+            if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
                joinQuery.add(artifact.getArtId(), workingBranch.getUuid());
             }
          }

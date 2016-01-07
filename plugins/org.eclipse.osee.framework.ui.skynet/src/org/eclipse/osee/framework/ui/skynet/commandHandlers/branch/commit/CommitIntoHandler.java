@@ -51,7 +51,7 @@ public class CommitIntoHandler extends CommitHandler {
          allowedTypes = new BranchType[] {BranchType.WORKING};
       }
 
-      List<Branch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, allowedTypes);
+      List<IOseeBranch> branches = BranchManager.getBranches(BranchArchivedState.UNARCHIVED, allowedTypes);
       Collections.sort(branches);
       branches.remove(sourceBranch);
 

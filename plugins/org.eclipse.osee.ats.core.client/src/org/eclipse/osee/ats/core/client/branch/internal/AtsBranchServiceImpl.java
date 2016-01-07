@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -55,17 +53,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       branchFilter.setNegatedBranchStates(negatedBranchStates);
       branchFilter.setAssociatedArtifact((Artifact) teamWf.getStoreObject());
 
-      List<Branch> branches = BranchManager.getBranches(branchFilter);
-
-      if (branches.isEmpty()) {
-         return null;
-      } else if (branches.size() > 1) {
-         throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted working branches found for workflow [%s]. Branches [%s].",
-            teamWf.getAtsId(), getBranchesStr(branches));
-      } else {
-         return branches.get(0);
-      }
+      return BranchManager.getBranch(branchFilter);
    }
 
    @Override
@@ -73,25 +61,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
       branchFilter.setBranchStates(BranchState.COMMITTED);
       branchFilter.setAssociatedArtifact((Artifact) teamWf.getStoreObject());
-      List<Branch> branches = BranchManager.getBranches(branchFilter);
-      if (branches.isEmpty()) {
-         return null;
-      } else if (branches.size() > 1) {
-         throw new MultipleBranchesExist(
-            "Unexpected multiple associated un-deleted committed working branches found for workflow [%s]. Branches [%s].",
-            teamWf.getAtsId(), getBranchesStr(branches));
-      } else {
-         return branches.get(0);
-      }
-   }
+      return BranchManager.getBranch(branchFilter);
 
-   private String getBranchesStr(List<Branch> branches) {
-      StringBuilder sb = new StringBuilder();
-      for (Branch branch : branches) {
-         sb.append(branch.toStringWithDetails());
-         sb.append(",");
-      }
-      return sb.toString();
    }
 
    @Override
