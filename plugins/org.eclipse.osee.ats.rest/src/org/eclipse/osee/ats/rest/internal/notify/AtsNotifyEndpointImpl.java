@@ -10,12 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.notify;
 
-import javax.ws.rs.GET;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.impl.IAtsServer;
-import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
  * @author Donald G. Dunne
@@ -26,11 +24,6 @@ public class AtsNotifyEndpointImpl implements AtsNotifyEndpointApi {
 
    public AtsNotifyEndpointImpl(IAtsServer atsServer) {
       this.atsServer = atsServer;
-   }
-
-   @GET
-   public String get() {
-      return AHTML.simplePage("ATS Notify Resource");
    }
 
    @Override
