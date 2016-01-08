@@ -58,7 +58,7 @@ import org.eclipse.ui.dialogs.PatternFilter;
 public class EmailWizardPage extends WizardPage {
    private Text text;
    private final List<Object> initialAddress;
-   private FilteredTree namesList;
+   private org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree namesList;
    private ListViewer toList;
    private ListViewer ccList;
    private ListViewer bccList;
@@ -111,7 +111,8 @@ public class EmailWizardPage extends WizardPage {
          names.add(ex.getLocalizedMessage());
       }
 
-      namesList = new FilteredTree(namesComp, SWT.NONE, new PatternFilter(), true);
+      namesList = new org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree(namesComp, SWT.NONE,
+         new PatternFilter(), true);
       namesList.getViewer().setContentProvider(new ArrayTreeContentProvider());
       namesList.getViewer().setLabelProvider(new NamesLabelProvider());
       gd = new GridData(GridData.FILL_BOTH);
