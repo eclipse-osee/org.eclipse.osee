@@ -16,7 +16,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLog;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.api.workflow.log.LogType;
@@ -56,21 +55,6 @@ public class AtsLog implements IAtsLog {
       List<IAtsLogItem> logItems = new ArrayList<>(getLogItems());
       Collections.reverse(logItems);
       return logItems;
-   }
-
-   /**
-    * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
-    */
-   @Override
-   public void internalResetOriginator(IAtsUser user) throws OseeCoreException {
-      List<IAtsLogItem> logItems = getLogItems();
-      for (IAtsLogItem item : logItems) {
-         if (item.getType() == LogType.Originated) {
-            item.setUserId(user.getUserId());
-            dirty = true;
-            return;
-         }
-      }
    }
 
    /**

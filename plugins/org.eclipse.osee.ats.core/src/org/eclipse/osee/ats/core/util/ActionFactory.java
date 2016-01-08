@@ -283,7 +283,6 @@ public class ActionFactory implements IAtsActionFactory {
       } else {
          workItem.getLog().addLog(LogType.Originated, "", "Changed by " + userService.getCurrentUser().getName(), date,
             user.getUserId());
-         workItem.getLog().internalResetOriginator(user);
       }
    }
 

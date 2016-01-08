@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.workflow.log;
 
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -28,15 +27,6 @@ public interface IAtsLog {
 
    /**
     * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
-    * 
-    * @param changes JavaTip
-    */
-   public abstract void internalResetOriginator(IAtsUser user) throws OseeCoreException;
-
-   /**
-    * Used to reset the original originated user. Only for internal use. Kept for backward compatibility.
-    * 
-    * @param changes JavaTip
     */
    public abstract void internalResetCreatedDate(Date date) throws OseeCoreException;
 
@@ -47,11 +37,6 @@ public interface IAtsLog {
     */
    public abstract String internalGetCompletedFromState() throws OseeCoreException;
 
-   /**
-    * @param state name of state or null
-    * @param userId JavaTip
-    * @param changes JavaTip
-    */
    public abstract IAtsLogItem addLog(LogType type, String state, String msg, String userId) throws OseeCoreException;
 
    public abstract IAtsLogItem addLogItem(IAtsLogItem item) throws OseeCoreException;

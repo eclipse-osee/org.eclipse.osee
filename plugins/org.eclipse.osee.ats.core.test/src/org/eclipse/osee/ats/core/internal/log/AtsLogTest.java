@@ -25,7 +25,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AtsLog}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsLogTest {
@@ -85,19 +85,6 @@ public class AtsLogTest {
       log.addLogItem(getAnalyzeTestLogItem(getTestDate2011(), Joe));
       log.addLogItem(getImplementTestLogItem(getTestDate2011(), Joe));
       return log;
-   }
-
-   @Test
-   public void testInternalResetOriginator() {
-      AtsLog log = new AtsLog();
-      log.internalResetOriginator(Kay);
-      log.addLog(LogType.StateCancelled, "analyze", "msg", "345");
-
-      log.addLog(LogType.Originated, "analyze", "msg", Joe.getUserId());
-      Assert.assertEquals(Joe.getUserId(), log.getStateEvent(LogType.Originated).getUserId());
-      log.internalResetOriginator(Kay);
-      Assert.assertEquals(Kay.getUserId(), log.getStateEvent(LogType.Originated).getUserId());
-      Assert.assertTrue(log.isDirty());
    }
 
    @Test
