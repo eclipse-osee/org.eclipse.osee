@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
@@ -110,15 +109,14 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    }
 
    public static boolean promptChangeOriginator(final Collection<? extends AbstractWorkflowArtifact> awas, boolean persist) throws OseeCoreException {
-      UserListDialog ld =
-         new UserListDialog(Displays.getActiveShell(), "Select New Originator",
-            AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
+      UserListDialog ld = new UserListDialog(Displays.getActiveShell(), "Select New Originator",
+         AtsClientService.get().getUserServiceClient().getOseeUsersSorted(Active.Active));
       int result = ld.open();
       if (result == 0) {
          IAtsUser selectedUser = AtsClientService.get().getUserServiceClient().getUserFromOseeUser(ld.getSelection());
          AtsChangeSet changes = new AtsChangeSet("ATS Prompt Change Originator");
          for (AbstractWorkflowArtifact awa : awas) {
-            awa.setCreatedBy(selectedUser, true, new Date(), changes);
+            awa.setCreatedBy(selectedUser, true, null, changes);
             changes.add(awa);
          }
          if (persist) {

@@ -505,20 +505,20 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    public void setCreatedBy(IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
       if (logChange) {
-         logCreatedByChange(user, date);
+         logCreatedByChange(user);
       }
       if (changes == null) {
          if (isAttributeTypeValid(AtsAttributeTypes.CreatedBy)) {
             setSoleAttributeValue(AtsAttributeTypes.CreatedBy, user.getUserId());
          }
-         if (isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
+         if (date != null && isAttributeTypeValid(AtsAttributeTypes.CreatedDate)) {
             setSoleAttributeValue(AtsAttributeTypes.CreatedDate, date);
          }
       } else {
          if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedBy)) {
             changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedBy, user.getUserId());
          }
-         if (changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
+         if (date != null && changes.isAttributeTypeValid(this, AtsAttributeTypes.CreatedDate)) {
             changes.setSoleAttributeValue(this, AtsAttributeTypes.CreatedDate, date);
          }
       }
@@ -531,12 +531,13 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   private void logCreatedByChange(IAtsUser user, Date date) throws OseeCoreException {
+   private void logCreatedByChange(IAtsUser user) throws OseeCoreException {
       if (getSoleAttributeValue(AtsAttributeTypes.CreatedBy, null) == null) {
-         getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
+         getLog().addLog(LogType.Originated, "", "", new Date(), user.getUserId());
       } else {
          getLog().addLog(LogType.Originated, "",
-            "Changed by " + AtsClientService.get().getUserService().getCurrentUser().getName(), date, user.getUserId());
+            "Changed by " + AtsClientService.get().getUserService().getCurrentUser().getName(), new Date(),
+            user.getUserId());
       }
    }
 
