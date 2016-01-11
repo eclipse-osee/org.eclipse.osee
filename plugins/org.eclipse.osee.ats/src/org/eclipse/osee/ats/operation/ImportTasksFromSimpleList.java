@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.AbstractTaskableArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -60,6 +61,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) {
+      final String commitComment = getClass().getSimpleName();
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -98,10 +100,12 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   return;
                }
                try {
+                  if (assignees.isEmpty()) {
+                     assignees.add(AtsCoreUsers.UNASSIGNED_USER);
+                  }
                   IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(artifact);
                   AtsClientService.get().getTaskService().createTasks(teamWf, titles, assignees, null,
-                     AtsClientService.get().getUserService().getCurrentUser(), null, null, null,
-                     getClass().getSimpleName());
+                     AtsClientService.get().getUserService().getCurrentUser(), null, null, null, commitComment);
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   return;
