@@ -211,10 +211,6 @@ public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IA
       return getFieldValue(BranchField.BRANCH_CHILDREN);
    }
 
-   public Branch getAccessControlBranch() {
-      return this;
-   }
-
    @Override
    public Collection<Branch> getChildBranches() throws OseeCoreException {
       return getChildBranches(false);
