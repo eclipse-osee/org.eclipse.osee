@@ -23,6 +23,7 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -32,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
+import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -141,6 +143,8 @@ public class ArtifactExplorerMenu {
             canModifyDH = service.canRelationBeModified(art, null, CoreRelationTypes.Default_Hierarchical__Child,
                Level.FINE).matched();
          }
+         boolean isBranchEditable =
+            getBranch().isEditable() && AccessControlManager.hasPermission(getBranch(), PermissionEnum.WRITE);
 
          GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
 
@@ -152,7 +156,13 @@ public class ArtifactExplorerMenu {
          lockMenuItem.setEnabled(
             isArtifact && permiss.isWritePermission() && (!permiss.isLocked() || permiss.isAccessToRemoveLock()));
 
-         createMenuItem.setEnabled(isArtifact && permiss.isWritePermission() || canModifyDH);
+         createMenuItem.setEnabled(
+            (obj == null || isBranchEditable) || (isArtifact && permiss.isWritePermission() || canModifyDH));
+         if (obj == null) {
+            createMenuItem.setText("New Parent");
+         } else if (isArtifact) {
+            createMenuItem.setText("New Child");
+         }
 
          goIntoMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
          copyMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
@@ -234,31 +244,48 @@ public class ArtifactExplorerMenu {
          @Override
          public void widgetSelected(SelectionEvent e) {
             try {
-               Artifact parent = getParent();
+               IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
 
-               AccessPolicy policy = ServiceUtil.getAccessPolicy();
+               Artifact parent = null;
+               // If artifact is selected, check permissions of artifact
+               if (selection.size() == 1) {
+                  parent = getParent();
 
-               PermissionStatus status =
-                  policy.canRelationBeModified(parent, null, CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+                  AccessPolicy policy = ServiceUtil.getAccessPolicy();
 
-               if (status.matched()) {
-                  FilteredTreeArtifactTypeEntryDialog dialog = getDialog();
-                  if (dialog.open() == Window.OK) {
-                     IArtifactType type = dialog.getSelection();
-                     String name = dialog.getEntryValue();
-
-                     SkynetTransaction transaction = TransactionManager.createTransaction(getBranch(),
-                        String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
-                     Artifact newChildArt = parent.addNewChild(RelationOrderBaseTypes.PREEXISTING, type, name);
-                     parent.persist(transaction);
-                     transaction.execute();
-                     RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);
-                     treeViewer.refresh();
-                     treeViewer.refresh(false);
+                  PermissionStatus status = policy.canRelationBeModified(parent, null,
+                     CoreRelationTypes.Default_Hierarchical__Child, Level.FINE);
+                  if (!status.matched()) {
+                     MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
+                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                     return;
                   }
-               } else {
-                  MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
-                     "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+               }
+               // check branch permissions
+               else {
+                  boolean isBranchEditable =
+                     getBranch().isEditable() && AccessControlManager.hasPermission(getBranch(), PermissionEnum.WRITE);
+                  if (!isBranchEditable) {
+                     MessageDialog.openError(AWorkbench.getActiveShell(), "New Child Error",
+                        "Access control has restricted this action. The current user does not have sufficient permission to create relations on this artifact.");
+                     return;
+                  }
+
+                  parent = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(getBranch());
+               }
+               FilteredTreeArtifactTypeEntryDialog dialog = getDialog();
+               if (dialog.open() == Window.OK) {
+                  IArtifactType type = dialog.getSelection();
+                  String name = dialog.getEntryValue();
+
+                  SkynetTransaction transaction = TransactionManager.createTransaction(getBranch(),
+                     String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
+                  Artifact newChildArt = parent.addNewChild(RelationOrderBaseTypes.PREEXISTING, type, name);
+                  parent.persist(transaction);
+                  transaction.execute();
+                  RendererManager.open(newChildArt, PresentationType.GENERALIZED_EDIT);
+                  treeViewer.refresh();
+                  treeViewer.refresh(false);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
