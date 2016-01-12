@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
@@ -128,7 +129,8 @@ public class AttributeFormPart extends AbstractFormPart {
    public static void computeXTextSize(XText xText) {
       if (Widgets.isAccessible(xText.getStyledText())) {
          int lineCount = xText.getStyledText().getLineCount();
-         int lineLimit = Integer.valueOf(OseeInfo.getCachedValue(ATTR_FORM_PART_LINE_LIMIT));
+         String formLineLimit = OseeInfo.getCachedValue(ATTR_FORM_PART_LINE_LIMIT);
+         int lineLimit = Strings.isNumeric(formLineLimit) ? Integer.valueOf(formLineLimit) : 2000;
          lineCount = lineCount > lineLimit ? lineLimit : lineCount;
          int height = lineCount * xText.getStyledText().getLineHeight();
          GridData formTextGd = new GridData(SWT.FILL, SWT.FILL, true, true);
