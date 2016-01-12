@@ -31,9 +31,14 @@ public final class WordUiUtil {
 
    public static void displayUnknownGuids(Artifact artifact, Collection<String> unknownGuids) {
       if (Conditions.hasValues(unknownGuids)) {
+         String invalidLinkMessage = "";
+         for (String unknownGuid : unknownGuids) {
+            invalidLinkMessage +=
+               "\t\nInvalid Link: artifact with guid: " + unknownGuid + " does not exist on this branch.";
+         }
          displayUnhandledArtifacts(java.util.Collections.singleton(artifact), String.format(
-            "\nThe following referenced GUIDs cannot be found:  \n\n%s",
-            org.eclipse.osee.framework.jdk.core.util.Collections.toString("\t\n", unknownGuids)));
+               "\nThe following GUIDs found in the artifact/artifact's children" + " are displayed as invalid hyperlinks within the document:  " + "\n%s",
+               invalidLinkMessage));
       }
    }
 
@@ -58,7 +63,7 @@ public final class WordUiUtil {
                }
                rd.addRaw(AHTML.endMultiColumnTable());
                if (RenderingUtil.arePopupsAllowed()) {
-                  XResultDataUI.report(rd, "Unhandled Artifacts");
+                  XResultDataUI.report(rd, "Artifact Warning");
                } else {
                   OseeLog.logf(Activator.class, Level.INFO, "Test - Skip Unhandled Artifacts Report - %s - [%s]",
                      warningString, artifacts);
