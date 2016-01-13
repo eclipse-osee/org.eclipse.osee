@@ -25,6 +25,7 @@ import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jaxrs.client.JaxRsWebTarget;
@@ -79,8 +80,10 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
       if (address == null) {
          address = System.getProperty(OSEE_APPLICATION_SERVER, "");
       }
-      baseUri = UriBuilder.fromUri(address).path("orcs").build();
-      defineUri = UriBuilder.fromUri(address).path("define").build();
+      if (Strings.isValid(address)) {
+         baseUri = UriBuilder.fromUri(address).path("orcs").build();
+         defineUri = UriBuilder.fromUri(address).path("define").build();
+      }
    }
 
    private JaxRsWebTarget newTarget(String path, Object... values) {
