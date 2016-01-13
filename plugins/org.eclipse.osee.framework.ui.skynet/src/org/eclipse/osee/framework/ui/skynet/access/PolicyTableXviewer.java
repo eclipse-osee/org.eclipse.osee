@@ -80,8 +80,8 @@ public class PolicyTableXviewer extends XViewer implements IMultiColumnEditProvi
 
    public boolean updateAccess() {
       boolean toReturn = false;
-      if (tableViewer == null || !PermissionEnum.getMostRestrictive(maxPermission, PermissionEnum.OWNER).equals(
-         PermissionEnum.OWNER)) {
+      if (tableViewer == null || !PermissionEnum.getMostRestrictive(maxPermission, PermissionEnum.LOCK).equals(
+         PermissionEnum.LOCK)) {
          // must be at least an owner to change access
          return false;
       }

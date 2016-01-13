@@ -246,16 +246,18 @@ public class AccessControlService implements IAccessControlService {
             Long subjectArtifactTypeId = chStmt.getLong("art_type_id");
             PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
 
-            if (permission.equals(PermissionEnum.LOCK)) {
-               artifactLockCache.put(branchUuid, objectId, subjectId);
-            } else {
-               AccessObject accessObject =
-                  ArtifactAccessObject.getArtifactAccessObject(objectId, BranchManager.getBranch(branchUuid));
-               cacheAccessObject(objectId, subjectId, permission, accessObject);
+            if (permission != null) {
+               if (permission.equals(PermissionEnum.LOCK)) {
+                  artifactLockCache.put(branchUuid, objectId, subjectId);
+               } else {
+                  AccessObject accessObject =
+                     ArtifactAccessObject.getArtifactAccessObject(objectId, BranchManager.getBranch(branchUuid));
+                  cacheAccessObject(objectId, subjectId, permission, accessObject);
 
-               ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
-               if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
-                  populateGroupMembers(subjectId);
+                  ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
+                  if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
+                     populateGroupMembers(subjectId);
+                  }
                }
             }
          }

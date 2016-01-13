@@ -273,7 +273,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    }
 
    private void copyAccessRules(JdbcConnection connection, int userArtId, Long parentBranch, Long branchUuid) {
-      int owner = PermissionEnum.OWNER.getPermId();
+      int lock = PermissionEnum.LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<>();
@@ -283,8 +283,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          while (chStmt.next()) {
             int permissionId = chStmt.getInt("permission_id");
             int priviledgeId = chStmt.getInt("privilege_entity_id");
-            if (priviledgeId == userArtId && permissionId < owner && permissionId != deny) {
-               permissionId = owner;
+            if (priviledgeId == userArtId && permissionId < lock && permissionId != deny) {
+               permissionId = lock;
             }
             data.add(new Object[] {permissionId, priviledgeId, branchUuid});
          }

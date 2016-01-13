@@ -197,7 +197,7 @@ public class PolicyDialog extends Dialog {
 
       try {
          if (!SystemGroup.OseeAccessAdmin.isCurrentUserMember() && policyTableViewer.getAccessControlList().size() > 0) {
-            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.OWNER);
+            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.LOCK);
          } else {
             returnValue = true;
          }

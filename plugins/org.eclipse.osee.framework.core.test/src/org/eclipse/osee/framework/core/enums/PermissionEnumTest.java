@@ -23,7 +23,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link PermissionEnum}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class PermissionEnumTest {
@@ -58,7 +58,7 @@ public class PermissionEnumTest {
 
       add(data, FULLACCESS, DENY, false, DENY);
       add(data, FULLACCESS, FULLACCESS, true, FULLACCESS);
-      add(data, FULLACCESS, LOCK, false, LOCK);
+      add(data, FULLACCESS, LOCK, true, LOCK);
       add(data, FULLACCESS, NONE, true, NONE);
       add(data, FULLACCESS, READ, true, READ);
       add(data, FULLACCESS, WRITE, true, WRITE);
@@ -129,7 +129,7 @@ public class PermissionEnumTest {
 
    @Test
    public void testGetPermissionId() {
-      int[] expectedIds = new int[] {5, 10, 20, 25, 30, 40, 65535};
+      int[] expectedIds = new int[] {5, 10, 20, 25, 30, 65535};
       PermissionEnum[] permissions = PermissionEnum.values();
       Assert.assertEquals(expectedIds.length, permissions.length);
       for (int index = 0; index < expectedIds.length; index++) {
@@ -141,7 +141,7 @@ public class PermissionEnumTest {
 
    @Test
    public void testGetPermissionNames() {
-      String[] expectedNames = new String[] {"None", "Read", "Write", "Owner", "Full Access", "Lock", "Deny"};
+      String[] expectedNames = new String[] {"None", "Read", "Write", "Lock", "Full Access", "Deny"};
       String[] actualNames = PermissionEnum.getPermissionNames();
       PermissionEnum[] enums = PermissionEnum.values();
       Assert.assertEquals(expectedNames.length, actualNames.length);

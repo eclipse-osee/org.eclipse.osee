@@ -15,13 +15,12 @@ import java.util.Map;
 
 public enum PermissionEnum {
 
-   NONE(5, "None"),
-   READ(10, "Read"),
-   WRITE(20, "Write"),
-   OWNER(25, "Owner"),
-   FULLACCESS(30, "Full Access"),
-   LOCK(40, "Lock"),
-   DENY(65535, "Deny");
+   NONE(5, "None", "Open Access for all Users"),
+   READ(10, "Read", "Read only access for specified user"),
+   WRITE(20, "Write", "Write access for specified user"),
+   LOCK(25, "Lock", "Locked for write by only the specified user"),
+   FULLACCESS(30, "Full Access", "Full Access to Read, Write and Change Permissions"),
+   DENY(65535, "Deny", "Deny all access.  Usually only if something is ");
 
    // keeping this in sync with the number of permissions will ensure optimal memory usage
    private static final int COUNT = 4;
@@ -46,7 +45,7 @@ public enum PermissionEnum {
    private String name;
    public boolean add;
 
-   PermissionEnum(int permissionId, String name) {
+   PermissionEnum(int permissionId, String name, String description) {
       this.permissionId = permissionId;
       this.name = name;
    }
@@ -60,6 +59,10 @@ public enum PermissionEnum {
    }
 
    public static PermissionEnum getPermission(int permissionId) {
+      // Retain for backward compatibility.  OWNER = 40 was removed.
+      if (permissionId == 40) {
+         return PermissionEnum.LOCK;
+      }
       return rankToPermissionHash.get(permissionId);
    }
 
