@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.client.validator;
 
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
@@ -21,7 +22,6 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
-import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 

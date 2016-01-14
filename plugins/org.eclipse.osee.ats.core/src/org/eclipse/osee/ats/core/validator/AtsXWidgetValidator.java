@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.validator;
 
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetConstraint;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;

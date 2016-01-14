@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.mocks;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.workdef.IAtsDecisionReviewDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsLayoutItem;
@@ -19,7 +20,6 @@ import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinition;
 import org.eclipse.osee.ats.api.workdef.StateColor;
 import org.eclipse.osee.ats.api.workdef.StateType;
-import org.eclipse.osee.ats.core.config.RuleManager;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +29,6 @@ public class MockStateDefinition implements IAtsStateDefinition {
    private StateType StateType;
    private int ordinal = 0;
    private final List<IAtsLayoutItem> stateItems = new ArrayList<>(5);
-   private final RuleManager ruleMgr = new RuleManager();
    private final List<IAtsStateDefinition> toStates = new ArrayList<>(5);
    private IAtsStateDefinition defaultToState;
    private final List<IAtsStateDefinition> overrideAttributeValidationStates = new ArrayList<>(5);
@@ -196,25 +195,14 @@ public class MockStateDefinition implements IAtsStateDefinition {
       return color;
    }
 
-   /**
-    * Rules
-    */
-   public void removeRule(String rule) {
-      ruleMgr.removeRule(rule);
-   }
-
    @Override
    public List<String> getRules() {
-      return ruleMgr.getRules();
-   }
-
-   public void addRule(String rule) {
-      ruleMgr.addRule(rule);
+      return Collections.emptyList();
    }
 
    @Override
    public boolean hasRule(String rule) {
-      return ruleMgr.hasRule(rule);
+      return false;
    }
 
    @Override

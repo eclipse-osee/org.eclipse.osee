@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinitionFloatMinMaxConstraint;
@@ -34,7 +35,7 @@ import org.junit.Assert;
 
 /**
  * Test unit for {@link AtsXWidgetValidator}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsXWidgetValidatorTest {

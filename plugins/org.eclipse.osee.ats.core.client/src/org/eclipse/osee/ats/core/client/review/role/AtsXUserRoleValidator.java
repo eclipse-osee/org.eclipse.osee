@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.core.client.review.role;
 
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.core.validator.AtsXWidgetValidator;
-import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**

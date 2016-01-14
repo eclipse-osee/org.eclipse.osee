@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.mocks;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import org.eclipse.osee.ats.core.validator.IValueProvider;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 
 /**
  * @author Donald G. Dunne

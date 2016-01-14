@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.validator;
+package org.eclipse.osee.ats.api.util;
 
 import java.util.Collection;
 import java.util.Date;

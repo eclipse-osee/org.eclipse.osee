@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.core.client.validator;
 
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workdef.WidgetStatus;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.validator.IAtsXWidgetValidator;
-import org.eclipse.osee.ats.core.validator.IValueProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 

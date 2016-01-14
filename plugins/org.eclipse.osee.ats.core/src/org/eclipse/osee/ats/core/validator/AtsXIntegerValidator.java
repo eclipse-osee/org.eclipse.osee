@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.validator;
 
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.util.IValueProvider;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWidgetDefinition;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
