@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.ops;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -31,6 +32,7 @@ public class RenameFilesOperation extends AbstractOperation {
    private final CharSequence parentFolderPath;
    private final CharSequence pathPattern;
    private final CharSequence replacement;
+   private final boolean recurseFiles;
 
    /**
     * All parameters of this operation are not used until the operation is run. This enables the operation to be
@@ -44,10 +46,15 @@ public class RenameFilesOperation extends AbstractOperation {
     * @param replacement the replacement value used in renaming (may be the empty string)
     */
    public RenameFilesOperation(OperationLogger logger, CharSequence parentFolderPath, CharSequence pathPattern, CharSequence replacement) {
+      this(logger, parentFolderPath, pathPattern, replacement, true);
+   }
+
+   public RenameFilesOperation(OperationLogger logger, CharSequence parentFolderPath, CharSequence pathPattern, CharSequence replacement, boolean recurseFiles) {
       super("Rename Files", Activator.PLUGIN_ID, logger);
       this.parentFolderPath = parentFolderPath;
       this.pathPattern = pathPattern;
       this.replacement = replacement;
+      this.recurseFiles = recurseFiles;
    }
 
    @Override
@@ -55,7 +62,8 @@ public class RenameFilesOperation extends AbstractOperation {
       logf("Starting %s", getClass().getSimpleName());
       Rule rule = new ReplaceAll(Pattern.compile(pathPattern.toString()), replacement.toString());
       File parentFolder = new File(parentFolderPath.toString()).getCanonicalFile();
-      List<File> files = Lib.recursivelyListFiles(parentFolder);
+      List<File> files =
+         recurseFiles ? Lib.recursivelyListFiles(parentFolder) : Arrays.asList(parentFolder.listFiles());
       int size = files.size();
       int renamedFileCount = 0;
 
