@@ -144,15 +144,16 @@ public class StoreOutfileJob extends Job {
       File oldFile = outputModel.getFile();
       if (oldFile != null && oldFile.exists() && oldFile.isFile() && oldFile.canRead()) {
          String outputExtension = "." + outputModel.getFileExtension();
+         String extensionRegex = "\\" + outputExtension + "\\b";//escape the . and should be the end of the string (word b
          int fileNum = 1;
          File destFile =
             new File(
-               oldFile.getAbsoluteFile().toString().replaceFirst(outputExtension, "." + fileNum + outputExtension));
+               oldFile.getAbsoluteFile().toString().replaceFirst(extensionRegex, "." + fileNum + outputExtension));
          if (destFile.exists()) {
             while (destFile.exists()) {
                fileNum++;
                destFile =
-                  new File(oldFile.getAbsoluteFile().toString().replaceFirst(outputExtension,
+                  new File(oldFile.getAbsoluteFile().toString().replaceFirst(extensionRegex,
                      "." + fileNum + outputExtension));
             }
          }
