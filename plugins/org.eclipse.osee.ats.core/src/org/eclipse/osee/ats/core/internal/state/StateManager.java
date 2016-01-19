@@ -84,9 +84,8 @@ public class StateManager implements IAtsStateManager {
 
    @Override
    public StateType getCurrentStateType() {
-      StateType type =
-         StateType.valueOf(services.getAttributeResolver().getSoleAttributeValue(workItem,
-            AtsAttributeTypes.CurrentStateType, "Working"));
+      StateType type = StateType.valueOf(services.getAttributeResolver().getSoleAttributeValue(workItem,
+         AtsAttributeTypes.CurrentStateType, "Working"));
       return type;
    }
 
@@ -361,7 +360,7 @@ public class StateManager implements IAtsStateManager {
       if (state != null) {
          return state.getAssignees();
       } else {
-         throw new OseeStateException("State [%s] not found", getCurrentStateName());
+         throw new OseeStateException("State [%s] not found for %s", getCurrentStateName(), workItem.toStringWithId());
       }
    }
 
@@ -402,7 +401,7 @@ public class StateManager implements IAtsStateManager {
          state.setPercentComplete(percentComplete);
          setDirty(true);
       } else {
-         throw new OseeStateException("State [%s] not found", stateName);
+         throw new OseeStateException("State [%s] not found for %s", stateName, workItem.toStringWithId());
       }
    }
 
@@ -413,7 +412,7 @@ public class StateManager implements IAtsStateManager {
          state.setHoursSpent(hoursSpent);
          setDirty(true);
       } else {
-         throw new OseeStateException("State [%s] not found", stateName);
+         throw new OseeStateException("State [%s] not found for %s", stateName, workItem.toStringWithId());
       }
    }
 
@@ -451,7 +450,7 @@ public class StateManager implements IAtsStateManager {
          state.removeAssignee(assignee);
          setDirty(true);
       } else {
-         throw new OseeStateException("State [%s] not found", stateName);
+         throw new OseeStateException("State [%s] not found for %s", stateName, workItem.toStringWithId());
       }
    }
 
@@ -575,7 +574,7 @@ public class StateManager implements IAtsStateManager {
    public void validateNoBootstrapUser() throws OseeCoreException {
       for (IAtsUser user : getAssignees()) {
          if (SystemUser.BootStrap.getUserId().equals(user.getUserId())) {
-            throw new OseeStateException("Assignee can't be bootstrap user");
+            throw new OseeStateException("Assignee can't be bootstrap user for %s", workItem.toStringWithId());
          }
       }
    }
