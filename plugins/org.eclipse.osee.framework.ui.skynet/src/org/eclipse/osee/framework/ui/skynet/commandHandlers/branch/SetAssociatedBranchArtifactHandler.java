@@ -17,7 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -34,18 +34,17 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
-
+      IOseeBranch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+      Integer artId = BranchManager.getAssociatedArtifactId(selectedBranch);
       EntryDialog ed = new EntryDialog("Set Associated Artifact",
-         "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifactId() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifactId() : "") + "\n\nEnter new Artifact Id to associate:");
-      ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
+         "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (artId != null ? "\n\nCurrently: " + artId : "") + "\n\nEnter new Artifact Id to associate:");
+      ed.setEntry(String.valueOf(artId));
       if (ed.open() == 0) {
-         String artId = ed.getEntry();
-         Artifact associatedArtifact = ArtifactQuery.getArtifactFromId(Integer.parseInt(artId), COMMON);
+         Integer newArtId = Integer.parseInt(ed.getEntry());
+         Artifact associatedArtifact = ArtifactQuery.getArtifactFromId(newArtId, COMMON);
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Set Associated Artifact",
             "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
-            selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
-            BranchManager.setAssociatedArtifactId(selectedBranch, Integer.parseInt(artId));
+            BranchManager.setAssociatedArtifactId(selectedBranch, newArtId);
          }
       }
 

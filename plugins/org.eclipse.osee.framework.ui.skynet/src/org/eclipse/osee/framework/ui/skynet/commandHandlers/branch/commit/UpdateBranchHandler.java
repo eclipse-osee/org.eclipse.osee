@@ -19,8 +19,8 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -43,16 +43,16 @@ import org.eclipse.ui.progress.UIJob;
  */
 public class UpdateBranchHandler extends CommandHandler {
 
-   protected boolean isValid(Branch branch) throws OseeCoreException {
+   protected boolean isValid(IOseeBranch branch) throws OseeCoreException {
       return !BranchManager.isParentSystemRoot(branch) && BranchManager.isEditable(
          branch) && BranchManager.getType(branch).isOfType(BranchType.WORKING,
             BranchType.BASELINE) && BranchManager.hasChildren(branch);
    }
 
-   private Branch getSelectedBranch(IStructuredSelection selection) {
-      Branch branch = null;
+   private IOseeBranch getSelectedBranch(IStructuredSelection selection) {
+      IOseeBranch branch = null;
 
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
       if (branches.size() == 1) {
          branch = branches.iterator().next();
       }
@@ -62,7 +62,7 @@ public class UpdateBranchHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
       boolean enabled = false;
-      Branch branch = getSelectedBranch(structuredSelection);
+      IOseeBranch branch = getSelectedBranch(structuredSelection);
       if (branch != null) {
          enabled = isValid(branch);
       }
@@ -71,7 +71,7 @@ public class UpdateBranchHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Branch branchToUpdate = getSelectedBranch(selection);
+      IOseeBranch branchToUpdate = getSelectedBranch(selection);
 
       if (branchToUpdate != null) {
          if (BranchManager.isUpdatable(branchToUpdate)) {

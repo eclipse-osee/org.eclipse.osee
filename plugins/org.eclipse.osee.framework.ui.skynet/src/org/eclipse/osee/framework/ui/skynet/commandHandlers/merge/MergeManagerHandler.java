@@ -15,8 +15,8 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +38,7 @@ public class MergeManagerHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       if (!selection.isEmpty()) {
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();
@@ -55,7 +55,7 @@ public class MergeManagerHandler extends CommandHandler {
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
       boolean enabled = false;
       if (!structuredSelection.isEmpty()) {
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();

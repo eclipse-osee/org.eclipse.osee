@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -118,9 +117,14 @@ public class RenameBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
-      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || BranchManager.getType(branches.get(
-         0)).isWorkingBranch() || branches.get(0).getBaseTransaction().getAuthor() == UserManager.getUser().getArtId());
+      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      if (branches.size() != 1) {
+         return false;
+      }
+      IOseeBranch branch = branches.get(0);
+      return AccessControlManager.isOseeAdmin() || BranchManager.getType(
+         branch).isWorkingBranch() || BranchManager.getBaseTransaction(
+            branch).getAuthor() == UserManager.getUser().getArtId();
    }
 
 }

@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -49,16 +49,16 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       this.type = type;
    }
 
-   public abstract void performOperation(final List<Branch> branches);
+   public abstract void performOperation(final List<IOseeBranch> branches);
 
    @Override
    public Object executeWithException(ExecutionEvent arg0, IStructuredSelection selection) throws OseeCoreException {
-      List<Branch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
+      List<IOseeBranch> selectedBranches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      Iterator<Branch> iterator = selectedBranches.iterator();
-      List<Branch> hasChildren = new LinkedList<>();
+      Iterator<IOseeBranch> iterator = selectedBranches.iterator();
+      List<BranchId> hasChildren = new LinkedList<>();
       while (iterator.hasNext()) {
-         Branch branch = iterator.next();
+         BranchId branch = iterator.next();
          if (BranchManager.hasChildren(branch)) {
             iterator.remove();
             hasChildren.add(branch);
@@ -68,10 +68,10 @@ public abstract class GeneralBranchHandler extends CommandHandler {
       if (!hasChildren.isEmpty()) {
          StringBuilder children = new StringBuilder();
          children.append(String.format("The following branches have children and cannot be %sd:\n", type.dialogType));
-         for (Branch b : hasChildren) {
-            List<BranchId> branches = new LinkedList<>(BranchManager.getChildBranches(b, true));
+         for (BranchId branch : hasChildren) {
+            List<BranchId> branches = new LinkedList<>(BranchManager.getChildBranches(branch, true));
             children.append(
-               String.format("Branch %s has children: %s\n", b.getName(), Strings.buildStatment(branches)));
+               String.format("Branch Id %s has children: %s\n", branch.getId(), Strings.buildStatment(branches)));
          }
          MessageDialog.openError(Displays.getActiveShell(), type.dialogTitle, children.toString());
       }

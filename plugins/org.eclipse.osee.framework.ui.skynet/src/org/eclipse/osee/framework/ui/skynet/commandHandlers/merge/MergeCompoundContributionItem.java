@@ -23,7 +23,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -63,7 +63,7 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
             BranchId selectedBranch = branches.iterator().next();

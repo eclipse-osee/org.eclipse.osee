@@ -21,7 +21,8 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -60,11 +61,12 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            Branch selectedBranch = branches.iterator().next();
-            if (selectedBranch != null && !BranchManager.getType(selectedBranch).isSystemRootBranch()) {
+            IOseeBranch selectedBranch = branches.iterator().next();
+
+            if (selectedBranch != null && !selectedBranch.equals(CoreBranches.SYSTEM_ROOT)) {
                try {
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent";
                   Command command = configCommandParameter(commandId);
@@ -84,7 +86,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Branch branch, String commandId) throws OseeCoreException {
+   private CommandContributionItem createCommand(IOseeBranch branch, String commandId) throws OseeCoreException {
 
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, Long.toString(branch.getUuid()));

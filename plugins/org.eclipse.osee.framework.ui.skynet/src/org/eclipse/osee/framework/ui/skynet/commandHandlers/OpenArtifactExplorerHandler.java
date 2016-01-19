@@ -15,7 +15,6 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
@@ -25,17 +24,17 @@ import org.eclipse.osee.framework.ui.skynet.explorer.ArtifactExplorer;
  */
 public class OpenArtifactExplorerHandler extends CommandHandler {
 
-   private List<Branch> getSelectedBranches(IStructuredSelection selection) {
+   private List<? extends BranchId> getSelectedBranches(IStructuredSelection selection) {
       return Handlers.getBranchesFromStructuredSelection(selection);
    }
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      List<Branch> selectedBranches = getSelectedBranches(structuredSelection);
+      List<? extends BranchId> selectedBranches = getSelectedBranches(structuredSelection);
       boolean isEnabled = !selectedBranches.isEmpty();
-      for (Branch branch : selectedBranches) {
-         if (BranchManager.getType(branch).isMergeBranch() || !BranchManager.getState(branch).matches(BranchState.CREATED,
-            BranchState.MODIFIED)) {
+      for (BranchId branch : selectedBranches) {
+         if (BranchManager.getType(branch).isMergeBranch() || !BranchManager.getState(branch).matches(
+            BranchState.CREATED, BranchState.MODIFIED)) {
             isEnabled = false;
             break;
          }

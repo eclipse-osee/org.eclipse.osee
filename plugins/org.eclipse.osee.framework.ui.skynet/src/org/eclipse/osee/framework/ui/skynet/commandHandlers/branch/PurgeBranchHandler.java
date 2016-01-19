@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -33,9 +33,9 @@ public final class PurgeBranchHandler extends GeneralBranchHandler {
    }
 
    @Override
-   public void performOperation(List<Branch> branches) {
-      List<Branch> hasChildren = new LinkedList<>();
-      for (Branch branch : branches) {
+   public void performOperation(List<IOseeBranch> branches) {
+      List<IOseeBranch> hasChildren = new LinkedList<>();
+      for (IOseeBranch branch : branches) {
          try {
             if (BranchManager.hasChildren(branch)) {
                hasChildren.add(branch);
@@ -49,7 +49,7 @@ public final class PurgeBranchHandler extends GeneralBranchHandler {
       if (!hasChildren.isEmpty()) {
          StringBuilder message = new StringBuilder();
          message.append("Can not purge branches that have children.\n");
-         for (Branch branch : hasChildren) {
+         for (IOseeBranch branch : hasChildren) {
             message.append("Branch ");
             message.append(branch.getName());
             message.append(" has child branches: ");

@@ -22,9 +22,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -87,8 +87,8 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
       try {
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-         Iterator<Branch> iterator = branches.iterator();
+         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(selection);
+         Iterator<IOseeBranch> iterator = branches.iterator();
          if (iterator.hasNext()) {
             BranchId sourceBranch = iterator.next();
 
@@ -110,16 +110,16 @@ public abstract class CommitHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
       if (branches.size() == 1) {
-         Branch branch = branches.iterator().next();
+         IOseeBranch branch = branches.iterator().next();
          return useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
       }
       return false;
    }
 
-   protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
+   protected boolean useParentBranchValid(IOseeBranch branch) throws OseeCoreException {
       return !branch.equals(CoreBranches.SYSTEM_ROOT) && useParentBranch && !BranchManager.isChangeManaged(
          branch) && !BranchManager.isArchived(branch);
    }

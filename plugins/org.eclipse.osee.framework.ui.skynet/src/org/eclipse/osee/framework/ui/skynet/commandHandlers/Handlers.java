@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -48,8 +48,8 @@ public class Handlers {
    /**
     * Populates a list of branches from a IStructuredSelection. Returns an empty list if no branches were found.
     */
-   public static List<Branch> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
-      return processSelectionObjects(Branch.class, structuredSelection);
+   public static List<IOseeBranch> getBranchesFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(IOseeBranch.class, structuredSelection);
    }
 
    /**

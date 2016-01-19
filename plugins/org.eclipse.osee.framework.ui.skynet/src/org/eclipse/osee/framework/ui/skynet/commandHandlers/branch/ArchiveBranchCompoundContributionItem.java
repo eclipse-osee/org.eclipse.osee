@@ -18,7 +18,7 @@ import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CompoundContributionProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -51,10 +51,10 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<Branch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            Branch selectedBranch = branches.iterator().next();
+            IOseeBranch selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.archiveBranch";
                Command command = commandService.getCommand(commandId);
@@ -63,7 +63,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
                String label = (archivedState ? "Unarchive" : "Archive") + " Branch(s)";
                ImageDescriptor descriptor = archivedState ? ImageManager.getImageDescriptor(
                   FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
-               contributionItem = createCommand(label, selectedBranch, commandId, descriptor);
+               contributionItem = createCommand(label, commandId, descriptor);
 
                if (command != null && command.isEnabled()) {
                   contributionItems.add(contributionItem);
@@ -74,7 +74,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionP
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(String label, Branch branch, String commandId, ImageDescriptor descriptor) {
+   private CommandContributionItem createCommand(String label, String commandId, ImageDescriptor descriptor) {
       CommandContributionItem contributionItem;
 
       contributionItem = new CommandContributionItem(

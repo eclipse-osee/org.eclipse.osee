@@ -16,7 +16,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -40,7 +39,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) throws OseeCoreException {
-      Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+      BranchId selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       Artifact associatedArtifact = BranchManager.getAssociatedArtifact(selectedBranch);
       if (associatedArtifact == null) {
