@@ -130,14 +130,14 @@ public class DispoAdminResource {
    @Path("/copy")
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
-   @Consumes(MediaType.APPLICATION_JSON)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@Encoded @QueryParam("destinationSet") String destinationSet, @Encoded @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
+   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
 
-      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
+      String reportUrl = "";
+      //      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
       DispoSetData responseSet = new DispoSetData();
       responseSet.setOperationStatus(reportUrl);
 
