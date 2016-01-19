@@ -293,7 +293,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       revealInArtifactExporerMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       revealInArtifactExporerMenuItem.setText("&Reveal in Artifact Explorer");
       revealInArtifactExporerMenuItem.setImage(ImageManager.getImage(FrameworkImage.MAGNIFY));
-      needSelectedArtifactListener.addArtifactEnabled(revealInArtifactExporerMenuItem);
+      needSelectedArtifactListener.add(revealInArtifactExporerMenuItem);
       final RelationsComposite fRelComp = this;
       revealInArtifactExporerMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -345,7 +345,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private void createOpenMenuItem(Menu parentMenu) {
       openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       openMenuItem.setText("Open");
-      needSelectedArtifactListener.addArtifactEnabled(openMenuItem);
+      needSelectedArtifactListener.add(openMenuItem);
       openMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
@@ -370,7 +370,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private void createWordPreviewMenuItem(Menu parentMenu) {
       wordPreviewItem = new MenuItem(parentMenu, SWT.PUSH);
       wordPreviewItem.setText("Open Preview");
-      needSelectedArtifactListener.addArtifactEnabled(wordPreviewItem);
+      needSelectedArtifactListener.add(wordPreviewItem);
       wordPreviewItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
