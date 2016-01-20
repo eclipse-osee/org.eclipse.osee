@@ -23,7 +23,7 @@ import org.eclipse.swt.SWT;
  */
 public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public final static XViewerColumn transaction = new XViewerColumn("framework.history.transaction", "Transaction",
-      70, SWT.LEFT, true, SortDataType.Integer, false, null);
+      90, SWT.LEFT, true, SortDataType.Integer, false, null);
    public final static XViewerColumn gamma = new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, false,
       SortDataType.Integer, false, null);
    public final static XViewerColumn itemType = new XViewerColumn("framework.history.itemType", "Item Type", 150,

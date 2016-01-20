@@ -17,6 +17,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
@@ -55,7 +56,7 @@ public class HistoryXViewer extends XViewer {
          for (TreeItem item : items) {
             Artifact artifact = null;
             if (item.getData() instanceof IAdaptable) {
-               artifact = (Artifact) ((IAdaptable) item.getData()).getAdapter(Artifact.class);
+               artifact = ((IAdaptable) item.getData()).getAdapter(Artifact.class);
 
                if (artifact != null) {
                   arts.add(artifact);
@@ -104,6 +105,14 @@ public class HistoryXViewer extends XViewer {
     */
    public XHistoryWidget getXHisotryViewer() {
       return xHistoryViewer;
+   }
+
+   public boolean isSortByTransaction() {
+      CustomizeData generateCustDataFromTable =
+         xHistoryViewer.getXViewer().getCustomizeMgr().generateCustDataFromTable();
+      return generateCustDataFromTable.getSortingData().getSortingIds().contains(
+         HistoryXViewerFactory.transaction.getId());
+
    }
 
 }

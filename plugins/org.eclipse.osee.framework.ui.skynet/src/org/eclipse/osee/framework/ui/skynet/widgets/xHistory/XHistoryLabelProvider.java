@@ -21,18 +21,22 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Jeff C. Phillips
  */
 public class XHistoryLabelProvider extends XViewerLabelProvider {
-   private final HistoryXViewer changeXViewer;
 
-   public XHistoryLabelProvider(HistoryXViewer changeXViewer) {
-      super(changeXViewer);
-      this.changeXViewer = changeXViewer;
+   private final HistoryXViewer historyXViewer;
+   private static Color lightGreyColor;
+
+   public XHistoryLabelProvider(HistoryXViewer historyXViewer) {
+      super(historyXViewer);
+      this.historyXViewer = historyXViewer;
    }
 
    @Override
@@ -116,7 +120,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    }
 
    public HistoryXViewer getTreeViewer() {
-      return changeXViewer;
+      return historyXViewer;
    }
 
    @Override
@@ -136,6 +140,25 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          // do nothing
       }
       return null;
+   }
+
+   @Override
+   public Color getBackground(Object element, int columnIndex) {
+      if (historyXViewer.isSortByTransaction()) {
+         Change change = (Change) element;
+         long transactionId = change.getTxDelta().getEndTx().getId();
+         if (historyXViewer.getXHisotryViewer().isShaded(transactionId)) {
+            return getLightGreyColor();
+         }
+      }
+      return super.getBackground(element, columnIndex);
+   }
+
+   private Color getLightGreyColor() {
+      if (lightGreyColor == null) {
+         lightGreyColor = Displays.getColor(234, 234, 234);
+      }
+      return lightGreyColor;
    }
 
 }

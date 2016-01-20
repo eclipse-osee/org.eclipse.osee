@@ -13,7 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xHistory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -73,6 +76,7 @@ public class XHistoryWidget extends GenericXWidget {
    private Artifact artifact;
    private ToolBar toolBar;
    private Composite rightComp;
+   private final Set<Long> shadedTransactions = new HashSet<>();
 
    public XHistoryWidget() {
       super("History");
@@ -186,7 +190,7 @@ public class XHistoryWidget extends GenericXWidget {
    }
 
    protected void onRefresh() {
-      // Can be overridden by clients 
+      // Can be overridden by clients
    }
 
    public void loadTable() {
@@ -284,6 +288,7 @@ public class XHistoryWidget extends GenericXWidget {
                            extraInfoLabel.setText(infoLabel);
                         }
                         if (Widgets.isAccessible(xHistoryViewer.getControl())) {
+                           calculateShading(changes);
                            xHistoryViewer.setInput(changes);
                         }
                      } else {
@@ -292,6 +297,7 @@ public class XHistoryWidget extends GenericXWidget {
                         }
                      }
                   }
+
                });
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -301,6 +307,39 @@ public class XHistoryWidget extends GenericXWidget {
       };
       Jobs.startJob(job);
    }
+
+   private void calculateShading(Collection<Change> changes) {
+      shadedTransactions.clear();
+      try {
+         Set<Long> transactionIds = new TreeSet<>();
+         for (Change change : changes) {
+            long transId = change.getTxDelta().getEndTx().getId();
+            transactionIds.add(transId);
+         }
+
+         /**
+          * Loop through sorted transactionIds and store every other one in shadedTransactions collection. This allows
+          * isShaded method to quickly return true or false for transactionId.
+          */
+         boolean shade = false;
+         for (Long transId : transactionIds) {
+            if (shade) {
+               shadedTransactions.add(transId);
+            }
+            shade = !shade;
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+   }
+
+   /**
+    * @return true if transactionId line should be shaded, false otherwise
+    */
+   public boolean isShaded(Long transactionId) {
+      return shadedTransactions.contains(transactionId);
+   }
+
    public class HistoryDragAndDrop extends SkynetDragAndDrop {
 
       public HistoryDragAndDrop(Tree tree, String viewId) {
@@ -321,7 +360,7 @@ public class XHistoryWidget extends GenericXWidget {
             for (Object object : selection.toArray()) {
 
                if (object instanceof IAdaptable) {
-                  Artifact artifact = (Artifact) ((IAdaptable) object).getAdapter(Artifact.class);
+                  Artifact artifact = ((IAdaptable) object).getAdapter(Artifact.class);
 
                   if (artifact != null) {
                      artifacts.add(artifact);
