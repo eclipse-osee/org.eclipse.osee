@@ -136,8 +136,7 @@ public class DispoAdminResource {
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
 
-      String reportUrl = "";
-      //      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
+      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
       DispoSetData responseSet = new DispoSetData();
       responseSet.setOperationStatus(reportUrl);
 

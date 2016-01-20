@@ -83,12 +83,12 @@ public class DispoSetCopier {
 
       try {
          boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
-         if (isSameDiscrepancies || isCoverageCopy) {
-            toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
-         } else {
+         if (!isSameDiscrepancies) {
             report.addMessageForItem(destItem.getName(),
-               "Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid());
+               "Tried to copy from item id: [%s] but discrepancies were not the same. No Annotations were copied over.",
+               sourceItem.getGuid());
          }
+         toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
       } catch (JSONException ex) {
          report.addOtherMessage("Item[%s] has bad JSON. Exception Message:[%s]", sourceItem.getName(), ex.getMessage());
       }
@@ -102,6 +102,7 @@ public class DispoSetCopier {
       JSONArray newAnnotations = newItem.getAnnotationsList();
       JSONArray sourceAnnotations = sourceItem.getAnnotationsList();
       Set<String> destDefaultAnntationLocations = getDefaultAnnotations(newItem);
+      Map<String, Integer> placeHolderAnnotationLocations = getPlaceHolderAnnotations(newItem);
 
       for (int i = 0; i < sourceAnnotations.length(); i++) {
          JSONObject annotationJson = sourceAnnotations.getJSONObject(i);
@@ -110,18 +111,19 @@ public class DispoSetCopier {
          String sourceLocation = sourceAnnotation.getLocationRefs();
 
          // Check for ignore cases
-         if (DispoUtil.isDefaultAnntoation(sourceAnnotation)) {
+         if (DispoUtil.isDefaultAnntoation(
+            sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
             /**
-             * This means this annotation is TEST_UNIT or Exception_Handling, so don't copy it over, only log if the
-             * destination item doesn't have this annotation as a Default i.e means something changed user should be
-             * aware.Currently only for Coverage
+             * This means this annotation is TEST_UNIT, Exception_Handling, or just place holder, so don't copy it over,
+             * only log if the destination item doesn't have this annotation as a Default i.e means something changed
+             * user should be aware.Currently only for Coverage
              */
             if (!destDefaultAnntationLocations.contains(sourceLocation)) {
                report.addMessageForItem(destItem.getName(),
                   "Did not copy annotations for location(s) [%s] because they are default annotations",
                   sourceAnnotation.getLocationRefs());
             }
-         } else if (isCoverageCopy && destDefaultAnntationLocations.contains(sourceLocation)) {
+         } else if (destDefaultAnntationLocations.contains(sourceLocation)) {
             /**
              * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
              * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
@@ -134,9 +136,9 @@ public class DispoSetCopier {
                "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
                sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid());
          } else {
-            // Try to copy but check if Discrepancy is the same
-            if (isSameDiscrepancies || isCoverageCopy && isCoveredDiscrepanciesExistInDest(destItem, sourceItem,
-               sourceAnnotation, report)) {
+            // Try to copy but check if Discrepancy is the same and present in the destination set
+            if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destItem, sourceItem, sourceAnnotation,
+               report)) {
                DispoAnnotationData newAnnotation = sourceAnnotation;
                if (destDefaultAnntationLocations.contains(sourceLocation)) {
                   /**
@@ -156,7 +158,12 @@ public class DispoSetCopier {
                connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
                isChangesMade = true;
                // Both the source and destination are dispositionable so copy the annotation
-               int nextIndex = newAnnotations.length();
+               int nextIndex;
+               if (placeHolderAnnotationLocations.containsKey(sourceLocation)) {
+                  nextIndex = placeHolderAnnotationLocations.get(sourceLocation);
+               } else {
+                  nextIndex = newAnnotations.length();
+               }
                newAnnotation.setIndex(nextIndex);
                newAnnotations.put(nextIndex, DispoUtil.annotationToJsonObj(newAnnotation));
             }
@@ -167,7 +174,7 @@ public class DispoSetCopier {
          newItem.setAnnotationsList(newAnnotations);
          String newStatus = connector.getItemStatus(newItem);
          newItem.setStatus(newStatus);
-      } else if (isCoverageCopy) {
+      } else if (!isCoverageCopy) {
          // We want to take the new import version of this item even though no changes were made, this will only occur if
          // 1. All the Annotations from the source Item were default, in which case we can ignore those and take the ones from the new import
          // 2. None of the non-default Annotations cover a Discrepancy in the new import, in which case don't copy them over: MIGHT CHANGE THIS
@@ -230,6 +237,23 @@ public class DispoSetCopier {
       }
       newItem.setName(destItem.getName());
       return newItem;
+   }
+
+   private Map<String, Integer> getPlaceHolderAnnotations(DispoItemData item) throws JSONException {
+      Map<String, Integer> placeHolderAnnotationLocations = new HashMap<>();
+      JSONArray annotations = item.getAnnotationsList();
+      if (annotations == null) {
+         annotations = new JSONArray();
+      }
+      for (int i = 0; i < annotations.length(); i++) {
+         JSONObject annotationJson = annotations.getJSONObject(i);
+         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
+         if (!Strings.isValid(annotation.getResolutionType())) {
+            placeHolderAnnotationLocations.put(annotation.getLocationRefs(), annotation.getIndex());
+         }
+      }
+
+      return placeHolderAnnotationLocations;
    }
 
    private Set<String> getDefaultAnnotations(DispoItemData item) throws JSONException {
