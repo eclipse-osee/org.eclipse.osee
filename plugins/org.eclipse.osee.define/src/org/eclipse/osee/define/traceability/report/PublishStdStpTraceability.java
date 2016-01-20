@@ -54,6 +54,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
       "<XWidget xwidgetType=\"XArtifactTypeMultiChoiceSelect\" displayName=\"Artifact Type(s) to Trace\" defaultValue=\"" + CoreArtifactTypes.SoftwareRequirement.getName() + "\"/>";
    private static final String searchInheritedTypes =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Inherited Types\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
+   private static final String useGitCodeStructure =
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Search Git Code Structure\" labelAfter=\"true\" horizontalLabel=\"true\" defaultValue=\"false\" />";
    private static final String TRACE_HANDLER_CHECKBOX =
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"%s\" labelAfter=\"true\" horizontalLabel=\"true\"/>";
    private Collection<String> availableTraceHandlers;
@@ -88,7 +90,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
       builder.append(artifactTypeChooser);
       builder.append(searchInheritedTypes);
 
-      builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"===  For traceability stored in test scripts, select the following  ===\" />");
+      builder.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"===  For traceability stored in test scripts, select the following  ===\" />");
+      builder.append(useGitCodeStructure);
       availableTraceHandlers = new LinkedList<>();
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
       Collection<String> traceHandlers = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
@@ -140,9 +144,9 @@ public class PublishStdStpTraceability extends AbstractBlam {
          if (traceHandlers.isEmpty()) {
             provider = new BranchTraceabilityOperation(requirementsBranch, types, searchInherited);
          } else {
-            provider =
-               new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
-                  traceHandlers);
+            boolean isGitBased = variableMap.getBoolean("Search Git Code Structure");
+            provider = new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, types, searchInherited,
+               traceHandlers, isGitBased);
          }
          RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(requirementsBranch, provider);
          IStatus status = traceabilityData.initialize(monitor);
@@ -153,8 +157,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
             int count = 0;
             List<IFile> files = new ArrayList<>();
             for (TraceabilityStyle style : selectedReports) {
-               monitor.subTask(String.format("Creating table: [%s] [%s of %s]", style.asLabel(), ++count,
-                  selectedReports.size()));
+               monitor.subTask(
+                  String.format("Creating table: [%s] [%s of %s]", style.asLabel(), ++count, selectedReports.size()));
 
                TraceabilityTable table = TraceabilityFactory.getTraceabilityTable(style, traceabilityData);
                if (table != null) {
@@ -163,8 +167,8 @@ public class PublishStdStpTraceability extends AbstractBlam {
                monitor.worked(1);
 
                if (table != null) {
-                  monitor.subTask(String.format("Writing table: [%s] [%s of %s]", style.asLabel(), count,
-                     selectedReports.size()));
+                  monitor.subTask(
+                     String.format("Writing table: [%s] [%s of %s]", style.asLabel(), count, selectedReports.size()));
                   String fileName = style.toString() + "." + Lib.getDateTimeString() + ".xml";
                   IFile iFile = OseeData.getIFile(fileName);
                   AIFile.writeToFile(iFile, table.toString());

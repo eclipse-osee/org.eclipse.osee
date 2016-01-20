@@ -62,37 +62,39 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
    private static final Matcher embeddedVolumeMatcher = Pattern.compile("\\{\\d+ (.*)\\}[ .]*").matcher("");
    private static final Matcher stripTrailingReqNameMatcher = Pattern.compile("(\\}|\\])(.*)").matcher("");
    private static final Matcher nonWordMatcher = Pattern.compile("[^A-Z_0-9]").matcher("");
-   private static final Matcher subsystemMatcher = Pattern.compile("\\w*\\.ss").matcher("");
-
+   private static final Matcher subsystemMatcher = Pattern.compile("(\\w*)\\.ss").matcher("");
+   private static final Matcher gitSubsystemMatcher = Pattern.compile("\\w*\\.ofp\\\\(\\w*)").matcher("");
    private final Collection<TraceHandler> traceHandlers;
    private final File file;
    private final RequirementData requirementData;
    private final ArrayList<String> noTraceabilityFiles = new ArrayList<>(200);
    private final CountingMap<Artifact> reqsTraceCounts = new CountingMap<>();
-   private final HashCollection<Artifact, String> requirementToCodeUnitsMap = new HashCollection<>(
-      false, LinkedHashSet.class);
+   private final HashCollection<Artifact, String> requirementToCodeUnitsMap =
+      new HashCollection<>(false, LinkedHashSet.class);
    private final HashSet<String> codeUnits = new HashSet<>();
    private final CharBackedInputStream charBak;
    private final ISheetWriter excelWriter;
    private int pathPrefixLength;
    private final boolean writeOutResults;
+   private final boolean isGitBased;
 
-   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<TraceHandler> traceHandlers) throws IOException {
+   private ScriptTraceabilityOperation(RequirementData requirementData, File file, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
       super("Importing Traceability", Activator.PLUGIN_ID);
       this.file = file;
       this.requirementData = requirementData;
       this.writeOutResults = writeOutResults;
       this.traceHandlers = traceHandlers;
+      this.isGitBased = isGitBased;
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers) throws IOException {
-      this(new RequirementData(branch), file, writeOutResults, traceHandlers);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
+      this(new RequirementData(branch), file, writeOutResults, traceHandlers, isGitBased);
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers) throws IOException {
-      this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlers);
+   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
+      this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlers, isGitBased);
    }
 
    @Override
@@ -221,6 +223,18 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       return canonicalReqReference;
    }
 
+   private String getSubsystem(String source, Matcher matcher) {
+      String subSystem = null;
+      matcher.reset(source);
+      if (matcher.find()) {
+         subSystem = matcher.group(1);
+         subSystem = subSystem.toUpperCase();
+      } else {
+         subSystem = "no valid subsystem found";
+      }
+      return subSystem;
+   }
+
    private void handelReqTrace(String path, TraceMark traceMark, File sourceFile) throws OseeCoreException, IOException {
       Artifact reqArtifact = null;
       String foundStr;
@@ -228,14 +242,8 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       String textContent = null;
       boolean traceMatch = false;
 
-      subsystemMatcher.reset(sourceFile.getPath());
-      if (subsystemMatcher.find()) {
-         subSystem = subsystemMatcher.group();
-         subSystem = subSystem.replace(".ss", "");
-         subSystem = subSystem.toUpperCase();
-      } else {
-         subSystem = "no valid subsystem found";
-      }
+      subSystem = (isGitBased) ? getSubsystem(sourceFile.getPath(),
+         gitSubsystemMatcher) : getSubsystem(sourceFile.getPath(), subsystemMatcher);
 
       if (traceMark.getTraceType().equals("Uses")) {
          foundStr = "invalid trace mark";
@@ -256,15 +264,16 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
                   //There is no WordTemplateContent in a button requirement so we need to verify it exists
                   //If its not there we need to render the button requirement in Word and pull out the body.
                   if (reqArtifact.getAttributeCount(CoreAttributeTypes.WordTemplateContent) > 0) {
-                     textContent =
-                        WordUtil.textOnly(reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
+                     textContent = WordUtil.textOnly(
+                        reqArtifact.getSoleAttributeValue(CoreAttributeTypes.WordTemplateContent, "")).toUpperCase();
                   } else {
                      List<Attribute<?>> attributes = reqArtifact.getAttributes();
                      for (Attribute<?> attribute : attributes) {
                         textContent = textContent + attribute.toString();
                      }
                   }
-                  if (textContent.contains(structuredRequirement.getSecond()) || textContent.contains(getCanonicalRequirementName(structuredRequirement.getSecond()))) {
+                  if (textContent.contains(structuredRequirement.getSecond()) || textContent.contains(
+                     getCanonicalRequirementName(structuredRequirement.getSecond()))) {
                      foundStr = "req body match";
                   } else {
                      foundStr = "req name match/element missing in body";

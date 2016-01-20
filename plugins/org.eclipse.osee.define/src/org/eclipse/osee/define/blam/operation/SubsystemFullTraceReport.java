@@ -68,6 +68,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    private final String SCRIPT_ROOT_DIR = "Script Root Directory";
    private final String USE_TRACE_IN_OSEE = "Use traceability from Subsystem Requirements";
+   private final String USE_GIT_CODE_STRUCTURE = "Use Git Code Structure";
    private XCheckBox useTraceInOsee;
    private XText scriptDir;
 
@@ -96,6 +97,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       init();
       String scriptDir = variableMap.getString(SCRIPT_ROOT_DIR);
       Boolean checked = variableMap.getBoolean(USE_TRACE_IN_OSEE);
+      Boolean isGitCodeStructure = variableMap.getBoolean(USE_GIT_CODE_STRUCTURE);
 
       Collection<TraceHandler> traceHandlers = new LinkedList<>();
       for (String handler : availableTraceHandlers) {
@@ -109,7 +111,7 @@ public class SubsystemFullTraceReport extends AbstractBlam {
          File dir = new File(scriptDir);
          if (dir.exists()) {
             ScriptTraceabilityOperation traceOperation =
-               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlers);
+               new ScriptTraceabilityOperation(dir.getParentFile(), branch, false, traceHandlers, isGitCodeStructure);
             Operations.executeWorkAndCheckStatus(traceOperation, monitor);
             requirementsToCodeUnits = traceOperation.getRequirementToCodeUnitsMap();
          }
@@ -153,7 +155,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
 
    private void processSubSystemRequirement(Artifact subSystemRequirement) throws IOException, OseeCoreException {
       boolean topRowForSubsystemReq = true;
-      for (Artifact systemRequirement : subSystemRequirement.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
+      for (Artifact systemRequirement : subSystemRequirement.getRelatedArtifacts(
+         CoreRelationTypes.Requirement_Trace__Higher_Level)) {
          writer.writeCell(systemRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""));
          writer.writeCell(systemRequirement.getName());
          writer.writeCell(getRequirementText(systemRequirement));
@@ -169,7 +172,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
             topRowForSubsystemReq = false;
          }
 
-         for (Artifact softwareRequirement : subSystemRequirement.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
+         for (Artifact softwareRequirement : subSystemRequirement.getRelatedArtifacts(
+            CoreRelationTypes.Requirement_Trace__Lower_Level)) {
             processSoftwareRequirement(softwareRequirement);
          }
          writer.endRow();
@@ -186,8 +190,8 @@ public class SubsystemFullTraceReport extends AbstractBlam {
       writer.writeCell(softwareRequirement.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, ""),
          SOFTWARE_REQUIREMENT_INDEX);
       writer.writeCell(softwareRequirement.getName());
-      writer.writeCell(Collections.toString(",",
-         softwareRequirement.getAttributesToStringList(CoreAttributeTypes.Partition)));
+      writer.writeCell(
+         Collections.toString(",", softwareRequirement.getAttributesToStringList(CoreAttributeTypes.Partition)));
       writer.writeCell(softwareRequirement.getAttributesToStringSorted(CoreAttributeTypes.QualificationMethod));
 
       tests.clear();
@@ -215,10 +219,15 @@ public class SubsystemFullTraceReport extends AbstractBlam {
    public String getXWidgetsXml() throws OseeCoreException {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
-      sb.append("<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_TRACE_IN_OSEE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
-      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_TRACE_IN_OSEE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + USE_GIT_CODE_STRUCTURE + "\" defaultValue=\"true\" labelAfter=\"true\" horizontalLabel=\"true\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XText\" displayName=\"" + SCRIPT_ROOT_DIR + "\" defaultValue=\"C:/UserData/workspaceScripts\" toolTip=\"Leave blank if test script traceability is not needed.\" />");
       availableTraceHandlers = new LinkedList<>();
-      sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser (if script traceability needed):\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser (if script traceability needed):\" />");
       Collection<String> traceHandlerNames = TraceUnitExtensionManager.getInstance().getAllTraceHandlerNames();
       for (String handler : traceHandlerNames) {
          sb.append(String.format(TRACE_HANDLER_CHECKBOX, handler));

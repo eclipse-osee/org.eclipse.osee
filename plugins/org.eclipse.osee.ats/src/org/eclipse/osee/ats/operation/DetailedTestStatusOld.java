@@ -244,7 +244,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
       // Load Requirements Data
       TraceabilityProviderOperation provider =
-         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers);
+         new ScriptTraceabilityOperation(scriptDir, requirementsBranch, false, traceHandlers, false);
       RequirementTraceabilityData traceabilityData = new RequirementTraceabilityData(procedureBranch, provider);
 
       IStatus status = traceabilityData.initialize(monitor);
@@ -340,8 +340,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
       excelWriter.writeRow("Category", "Test POCs", CoreAttributeTypes.Partition.getName(),
          CoreAttributeTypes.Subsystem.getName(), "Requirement Name", CoreAttributeTypes.QualificationMethod.getName(),
          "Requirement POCs", "SW Enhancement", CoreArtifactTypes.TestProcedure.getName(),
-         CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points", "Failed Test Points",
-         "Hours Remaining", "RPCR", "Hours", "Resolution by Partition");
+         CoreArtifactTypes.TestCase.getName(), "Run Date", "Total Test Points", "Failed Test Points", "Hours Remaining",
+         "RPCR", "Hours", "Resolution by Partition");
 
       for (Artifact requirement : requirements) {
          writeRequirementStatusLines(requirement);
@@ -542,9 +542,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
             String requirementName = taskNameMatcher.group(2);
             RequirementStatus requirementStatus = reqTaskMap.get(requirementName, legacyId);
             if (requirementStatus == null) {
-               requirementStatus =
-                  new RequirementStatus(requirementName, legacyId, workflow.getSoleAttributeValueAsString(
-                     AtsAttributeTypes.SwEnhancement, ""));
+               requirementStatus = new RequirementStatus(requirementName, legacyId,
+                  workflow.getSoleAttributeValueAsString(AtsAttributeTypes.SwEnhancement, ""));
                reqTaskMap.put(requirementName, legacyId, requirementStatus);
             }
 
@@ -574,7 +573,8 @@ public class DetailedTestStatusOld extends AbstractBlam {
       sb.append("<xWidgets>");
       sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
-      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XText\" displayName=\"Script Root Directory\" defaultValue=\"C:/UserData/workspaceScripts\" />");
 
       availableTraceHandlers = new LinkedList<>();
       sb.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Select appropriate script parser:\" />");
@@ -584,9 +584,12 @@ public class DetailedTestStatusOld extends AbstractBlam {
          availableTraceHandlers.add(handler);
       }
 
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
-      sb.append("<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Procedure Branch\" toolTip=\"Select a test procedures branch.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Results Branch\" toolTip=\"Select a scripts results branch.\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Test Procedure Branch\" toolTip=\"Select a test procedures branch.\" />");
       sb.append("</xWidgets>");
       return sb.toString();
    }

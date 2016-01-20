@@ -48,10 +48,12 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    public static final String PAGE_NAME = "org.eclipse.osee.define.wizardPage.importTraceabilityPage";
 
    private static final String TRACE_UNIT_HANDLER_GROUP = "Select trace unit parser";
+   private static final String GIT_CODE_STRUCTURE_GROUP = "Select to use Git codebase";
 
    private DirectoryOrFileSelector directoryFileSelector;
    private BranchSelectComposite branchSelectComposite;
    private final Map<Button, Boolean> traceUnitHandlers;
+   private boolean isGitCodeStructure = false;
 
    private IResource currentResourceSelection;
 
@@ -65,7 +67,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       if (selection != null && selection.size() == 1) {
          Object firstElement = selection.getFirstElement();
          if (firstElement instanceof IAdaptable) {
-            currentResourceSelection = (IResource) ((IAdaptable) firstElement).getAdapter(IResource.class);
+            currentResourceSelection = ((IAdaptable) firstElement).getAdapter(IResource.class);
          }
       }
    }
@@ -82,7 +84,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
       createSourceGroup(composite);
       createParserSelectArea(composite);
-
+      createGitStructureCheckbox(composite);
       restoreWidgetValues();
       updateWidgetEnablements();
       setPageComplete(determinePageCompletion());
@@ -93,7 +95,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
    /**
     * The <code>WizardResourceImportPage</code> implementation of this <code>Listener</code> method handles all events
     * and enablements for controls on this page. Subclasses may extend.
-    * 
+    *
     * @param event Event
     */
    @Override
@@ -141,6 +143,27 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   private void createGitStructureCheckbox(Composite parent) {
+      Group composite = new Group(parent, SWT.NONE);
+      composite.setText(GIT_CODE_STRUCTURE_GROUP);
+      composite.setLayout(new GridLayout());
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+
+      Button handlerButton = new Button(composite, SWT.CHECK);
+      handlerButton.setText("Use Git Code Structure");
+      handlerButton.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object source = e.getSource();
+            if (source instanceof Button) {
+               Button button = (Button) source;
+               isGitCodeStructure = button.getSelection();
+            }
+         }
+      });
    }
 
    private void createTraceHandler(Composite parent, String text, String handlerId) {
@@ -196,6 +219,10 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
 
    public IOseeBranch getSelectedBranch() {
       return branchSelectComposite.getSelectedBranch();
+   }
+
+   public boolean isGitBased() {
+      return isGitCodeStructure;
    }
 
    @Override
