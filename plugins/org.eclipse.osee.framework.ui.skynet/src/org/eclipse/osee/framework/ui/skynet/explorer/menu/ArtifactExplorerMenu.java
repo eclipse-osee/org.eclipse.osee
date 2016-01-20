@@ -213,6 +213,8 @@ public class ArtifactExplorerMenu {
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
       createExpandAllMenuItem(popupMenu);
+      createCollapseAllMenuItem(popupMenu);
+
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
 
@@ -665,7 +667,7 @@ public class ArtifactExplorerMenu {
    private void createExpandAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
       menuItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
-      menuItem.setText("Expand All\tCtrl++");
+      menuItem.setText("Expand All");
       menuItem.addSelectionListener(new ExpandListener());
    }
 
@@ -686,9 +688,40 @@ public class ArtifactExplorerMenu {
 
    private void expandAll(Object object) {
       if (!(object instanceof ArtifactExplorerLinkNode)) {
-         treeViewer.expandToLevel(object, 1);
+         treeViewer.expandToLevel(object, 0);
          for (Object child : ((ArtifactContentProvider) treeViewer.getContentProvider()).getChildren(object)) {
             expandAll(child);
+         }
+      }
+   }
+
+   private void createCollapseAllMenuItem(Menu parentMenu) {
+      MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+      menuItem.setImage(ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      menuItem.setText("Collapse All\tCtrl-");
+      menuItem.addSelectionListener(new CollapseListener());
+   }
+
+   public class CollapseListener extends SelectionAdapter {
+      @Override
+      public void widgetSelected(SelectionEvent event) {
+         collapseAll((IStructuredSelection) treeViewer.getSelection());
+      }
+   }
+
+   private void collapseAll(IStructuredSelection selection) {
+      Iterator<?> iter = selection.iterator();
+      while (iter.hasNext()) {
+         Object obj = iter.next();
+         collapseAll(obj);
+      }
+   }
+
+   private void collapseAll(Object object) {
+      if (!(object instanceof ArtifactExplorerLinkNode)) {
+         treeViewer.collapseToLevel(object, 1);
+         for (Object child : ((ArtifactContentProvider) treeViewer.getContentProvider()).getChildren(object)) {
+            collapseAll(child);
          }
       }
    }
