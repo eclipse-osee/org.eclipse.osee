@@ -63,8 +63,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -84,6 +84,7 @@ public class WETransitionComposite extends Composite {
    private final AbstractWorkflowArtifact awa;
    private final SMAWorkFlowSection workflowSection;
    private final SMAEditor editor;
+   private final Button transitionButton;
 
    public WETransitionComposite(Composite parent, SMAWorkFlowSection workflowSection, final SMAEditor editor, final boolean isEditable) throws OseeCoreException {
       super(parent, SWT.NONE);
@@ -95,12 +96,21 @@ public class WETransitionComposite extends Composite {
       setLayout(new GridLayout((editor.getWorkFlowTab().isShowTargetedVersion() ? 7 : 5), false));
       setBackground(AtsUtil.ACTIVE_COLOR);
 
-      Button transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);
-      transitionButton.addSelectionListener(new SelectionAdapter() {
+      transitionButton = editor.getToolkit().createButton(this, "Transition", SWT.PUSH);
+      transitionButton.addMouseListener(new MouseAdapter() {
+
          @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleTransitionButtonSelection(editor, isEditable);
+         public void mouseUp(MouseEvent e) {
+            super.mouseUp(e);
+            /**
+             * Only respond to first click and not to double click. After system configured time, count will return to
+             * 1.
+             */
+            if (e.count == 1) {
+               handleTransitionButtonSelection(editor, isEditable);
+            }
          }
+
       });
       transitionButton.setBackground(AtsUtil.ACTIVE_COLOR);
 
@@ -190,6 +200,7 @@ public class WETransitionComposite extends Composite {
 
    private void handleTransitionButtonSelection(final SMAEditor editor, final boolean isEditable) {
       editor.doSave(null);
+      transitionButton.setEnabled(false);
       final List<IAtsWorkItem> workItems = Arrays.asList((IAtsWorkItem) awa);
       final IAtsStateDefinition toStateDef = (IAtsStateDefinition) transitionToStateCombo.getSelected();
       final IAtsStateDefinition fromStateDef = awa.getStateDefinition();
@@ -333,8 +344,8 @@ public class WETransitionComposite extends Composite {
 
       if (isRequireStateHoursSpentPrompt(fromStateDefinition) && !toStateDefinition.getStateType().isCancelledState()) {
          // Otherwise, open dialog to ask for hours complete
-         String msg =
-            awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
+         String msg = awa.getStateMgr().getCurrentStateName() + " State\n\n" + AtsUtilCore.doubleToI18nString(
+            hoursSpent) + " hours already spent on this state.\n" + "Enter the additional number of hours you spent on this state.";
          // Remove after ATS Resolution options is removed 0.9.9_SR5ish
          TransitionStatusData data = new TransitionStatusData(Arrays.asList(awa), false);
          TransitionStatusDialog dialog = new TransitionStatusDialog("Enter Hours Spent", msg, data);
@@ -434,7 +445,8 @@ public class WETransitionComposite extends Composite {
       UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setInitialSelections(userServiceClient.getOseeUsers(aba.getTransitionAssignees()));
       if (awa.getParentTeamWorkflow() != null) {
-         uld.setTeamMembers(userServiceClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
+         uld.setTeamMembers(
+            userServiceClient.getOseeUsers(awa.getParentTeamWorkflow().getTeamDefinition().getMembersAndLeads()));
       }
       if (uld.open() != 0) {
          return;
