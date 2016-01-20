@@ -154,7 +154,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
       }
 
       if (showRelations == null) {
-         showRelations = new DecoratorAction("Relations", FrameworkImage.FILTERS, true);
+         showRelations = new DecoratorAction("Relations", FrameworkImage.FILTERS, false);
       }
 
       if (attributesAction == null && branchProvider != null) {
@@ -352,9 +352,8 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                      } else {
                         Collection<IAttributeType> selectableTypes =
                            AttributeTypeManager.getValidAttributeTypes(branch);
-                        FilteredCheckboxAttributeTypeDialog dialog =
-                           new FilteredCheckboxAttributeTypeDialog("Select Attribute Types",
-                              "Select attribute types to display.");
+                        FilteredCheckboxAttributeTypeDialog dialog = new FilteredCheckboxAttributeTypeDialog(
+                           "Select Attribute Types", "Select attribute types to display.");
                         dialog.setSelectable(selectableTypes);
 
                         List<IAttributeType> initSelection = new ArrayList<>();
