@@ -77,7 +77,10 @@ public class TransitionManager implements IAtsTransitionManager {
    @Override
    public TransitionResults handleAll() {
       TransitionResults results = new TransitionResults();
-
+      handleWorkflowReload(results);
+      if (results.isCancelled() || !results.isEmpty()) {
+         return results;
+      }
       handleTransitionValidation(results);
       if (results.isCancelled() || !results.isEmpty()) {
          return results;
@@ -90,9 +93,13 @@ public class TransitionManager implements IAtsTransitionManager {
       return results;
    }
 
+   private void handleWorkflowReload(TransitionResults results) {
+      helper.handleWorkflowReload(results);
+   }
+
    /**
     * Validate AbstractWorkflowArtifact for transition including checking widget validation, rules, assignment, etc.
-    * 
+    *
     * @return Result.isFalse if failure
     */
    @Override
@@ -112,8 +119,8 @@ public class TransitionManager implements IAtsTransitionManager {
             return;
          }
       } catch (OseeCoreException ex) {
-         results.addResult(new TransitionResult(String.format("Exception while validating transition [%s]",
-            helper.getName()), ex));
+         results.addResult(
+            new TransitionResult(String.format("Exception while validating transition [%s]", helper.getName()), ex));
       }
       for (IAtsWorkItem workItem : helper.getWorkItems()) {
          try {
@@ -122,18 +129,17 @@ public class TransitionManager implements IAtsTransitionManager {
             IAtsStateDefinition fromStateDef = workItem.getStateDefinition();
             IAtsStateDefinition toStateDef = workItem.getWorkDefinition().getStateByName(helper.getToStateName());
             if (toStateDef == null) {
-               results.addResult(
-                  workItem,
-                  new TransitionResult(String.format(
-                     "Transition-To State [%s] does not exist for Work Definition [%s]", helper.getToStateName(),
-                     workItem.getWorkDefinition().getName())));
+               results.addResult(workItem,
+                  new TransitionResult(String.format("Transition-To State [%s] does not exist for Work Definition [%s]",
+                     helper.getToStateName(), workItem.getWorkDefinition().getName())));
                continue;
             }
 
             //Ignore transitions to the same state
             if (!fromStateDef.equals(toStateDef)) {
                // Validate transition from fromState and toState
-               if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
+               if (!helper.isOverrideTransitionValidityCheck() && !fromStateDef.getToStates().contains(
+                  toStateDef) && !fromStateDef.getStateType().isCompletedOrCancelledState()) {
                   String errStr =
                      String.format("Work Definition [%s] is not configured to transition from \"[%s]\" to \"[%s]\"",
                         fromStateDef.getWorkDefinition().getName(), fromStateDef.getName(), toStateDef.getName());
@@ -143,10 +149,9 @@ public class TransitionManager implements IAtsTransitionManager {
                }
 
                // Validate Editable
-               boolean stateIsEditable =
-                  WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
-                     helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
-                     userService.isAtsAdmin(helper.getTransitionUser()));
+               boolean stateIsEditable = WorkflowManagerCore.isEditable(workItem, workItem.getStateDefinition(),
+                  helper.isPrivilegedEditEnabled(), helper.getTransitionUser(),
+                  userService.isAtsAdmin(helper.getTransitionUser()));
                boolean currentlyUnAssigned =
                   workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.UNASSIGNED_USER);
                workItem.getStateMgr().validateNoBootstrapUser();
@@ -168,7 +173,8 @@ public class TransitionManager implements IAtsTransitionManager {
                }
 
                // Validate Assignees (UnAssigned ok cause will be resolve to current user upon transition
-               if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(workItem)) {
+               if (!overrideAssigneeCheck && !toStateDef.getStateType().isCancelledState() && helper.isSystemUserAssingee(
+                  workItem)) {
                   results.addResult(workItem, TransitionResult.CAN_NOT_TRANSITION_WITH_SYSTEM_USER_ASSIGNED);
                   continue;
                }
@@ -206,8 +212,7 @@ public class TransitionManager implements IAtsTransitionManager {
                continue;
             }
          } catch (OseeCoreException ex) {
-            results.addResult(
-               workItem,
+            results.addResult(workItem,
                new TransitionResult(String.format("Exception [%s] while validating transition extensions 1 [%s]",
                   ex.getMessage(), helper.getName()), ex));
          }
@@ -218,13 +223,13 @@ public class TransitionManager implements IAtsTransitionManager {
       if (results.isEmpty()) {
          for (ITransitionListener listener : helper.getTransitionListeners()) {
             try {
-               listener.transitioning(results, workItem, fromStateDef, toStateDef, getToAssignees(workItem, toStateDef));
+               listener.transitioning(results, workItem, fromStateDef, toStateDef,
+                  getToAssignees(workItem, toStateDef));
                if (results.isCancelled() || !results.isEmpty()) {
                   continue;
                }
             } catch (OseeCoreException ex) {
-               results.addResult(
-                  workItem,
+               results.addResult(workItem,
                   new TransitionResult(String.format("Exception [%s] while validating transition extensions 2 [%s]",
                      ex.getMessage(), helper.getName()), ex));
             }
@@ -235,7 +240,7 @@ public class TransitionManager implements IAtsTransitionManager {
 
    /**
     * Request extra information if transition requires hours spent prompt, cancellation reason, etc.
-    * 
+    *
     * @return Result.isFalse if failure or Result.isCancelled if canceled
     */
    @Override
@@ -258,7 +263,7 @@ public class TransitionManager implements IAtsTransitionManager {
 
    /**
     * Process transition and persist changes to given skynet transaction
-    * 
+    *
     * @return Result.isFalse if failure
     */
    @Override
@@ -299,9 +304,8 @@ public class TransitionManager implements IAtsTransitionManager {
 
                   // Create validation review if in correct state and TeamWorkflow
                   if (reviewService.isValidationReviewRequired(workItem) && workItem.isTeamWorkflow()) {
-                     IAtsDecisionReview review =
-                        reviewService.createValidateReview((IAtsTeamWorkflow) workItem, false, transitionDate,
-                           transitionUser, helper.getChangeSet());
+                     IAtsDecisionReview review = reviewService.createValidateReview((IAtsTeamWorkflow) workItem, false,
+                        transitionDate, transitionUser, helper.getChangeSet());
                      if (review != null) {
                         helper.getChangeSet().add(review);
                      }
@@ -326,8 +330,8 @@ public class TransitionManager implements IAtsTransitionManager {
             helper.getChangeSet().execute();
          }
       } catch (Exception ex) {
-         results.addResult(new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()),
-            ex));
+         results.addResult(
+            new TransitionResult(String.format("Exception while transitioning [%s]", helper.getName()), ex));
       }
 
    }
@@ -381,7 +385,8 @@ public class TransitionManager implements IAtsTransitionManager {
          // Loop through this state's blocking reviews to confirm complete
          if (workItem.isTeamWorkflow()) {
             for (IAtsAbstractReview review : reviewService.getReviewsFromCurrentState((IAtsTeamWorkflow) workItem)) {
-               if (reviewService.getReviewBlockType(review) == ReviewBlockType.Transition && !review.getStateMgr().getStateType().isCompletedOrCancelled()) {
+               if (reviewService.getReviewBlockType(
+                  review) == ReviewBlockType.Transition && !review.getStateMgr().getStateType().isCompletedOrCancelled()) {
                   results.addResult(workItem, TransitionResult.COMPLETE_BLOCKING_REVIEWS);
                }
             }
@@ -406,7 +411,8 @@ public class TransitionManager implements IAtsTransitionManager {
       // Loop through this state's tasks to confirm complete
       boolean checkTasksCompletedForState = true;
       // Don't check for task completion if transition to working state and AllowTransitionWithoutTaskCompletion rule is set
-      if (workItem.getStateDefinition().hasRule(RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
+      if (workItem.getStateDefinition().hasRule(
+         RuleDefinitionOption.AllowTransitionWithoutTaskCompletion.name()) && toStateDef.getStateType().isWorkingState()) {
          checkTasksCompletedForState = false;
       }
       if (checkTasksCompletedForState && workItem.isTeamWorkflow() && !workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {

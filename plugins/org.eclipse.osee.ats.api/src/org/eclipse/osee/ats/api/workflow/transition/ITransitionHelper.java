@@ -73,4 +73,6 @@ public interface ITransitionHelper {
 
    public IAtsServices getServices();
 
+   public void handleWorkflowReload(TransitionResults results);
+
 }

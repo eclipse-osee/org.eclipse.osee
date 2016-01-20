@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
@@ -21,6 +23,7 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * @author Donald G. Dunne
@@ -34,8 +37,27 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
-   public List<IAtsWorkItem> reload(List<IAtsWorkItem> inWorkWorkflows) {
-      throw new UnsupportedOperationException("Not Available");
+   public List<IAtsWorkItem> reload(List<IAtsWorkItem> workItems) {
+      List<IAtsWorkItem> results = new ArrayList<>();
+      try {
+         List<Artifact> artifacts = new LinkedList<Artifact>();
+         for (IAtsWorkItem workItem : workItems) {
+            if (workItem.getStoreObject() != null && workItem.getStoreObject() instanceof Artifact) {
+               artifacts.add((Artifact) workItem.getStoreObject());
+            }
+         }
+         for (Artifact art : ArtifactQuery.reloadArtifacts(artifacts)) {
+            if (!art.isDeleted()) {
+               IAtsWorkItem workItem = AtsClientService.get().getWorkItemFactory().getWorkItem(art);
+               if (workItem != null) {
+                  results.add(workItem);
+               }
+            }
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return results;
    }
 
    @Override

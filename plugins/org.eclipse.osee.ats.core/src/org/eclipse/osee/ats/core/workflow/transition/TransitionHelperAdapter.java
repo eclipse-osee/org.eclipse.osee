@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.workflow.transition;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionHelper;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResult;
+import org.eclipse.osee.ats.api.workflow.transition.TransitionResults;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -26,6 +30,7 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    private final IAtsServices services;
    private IAtsUser transitionUser;
+   private boolean workflowsReloaded = false;
 
    public TransitionHelperAdapter(IAtsServices services) {
       this.services = services;
@@ -63,8 +68,8 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
 
    @Override
    public boolean isSystemUserAssingee(IAtsWorkItem workItem) throws OseeCoreException {
-      return workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.GUEST_USER) || workItem.getStateMgr().getAssignees().contains(
-         AtsCoreUsers.SYSTEM_USER);
+      return workItem.getStateMgr().getAssignees().contains(
+         AtsCoreUsers.GUEST_USER) || workItem.getStateMgr().getAssignees().contains(AtsCoreUsers.SYSTEM_USER);
    }
 
    @Override
@@ -84,6 +89,22 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    @Override
    public void setTransitionUser(IAtsUser user) throws OseeCoreException {
       transitionUser = user;
+   }
+
+   @Override
+   public abstract Collection<? extends IAtsWorkItem> getWorkItems();
+
+   @Override
+   public void handleWorkflowReload(TransitionResults results) {
+      if (!workflowsReloaded) {
+         services.getStoreService().reload(new ArrayList<>(getWorkItems()));
+         for (IAtsWorkItem workItem : getWorkItems()) {
+            if (services.getStoreService().isDeleted(workItem)) {
+               results.addResult(workItem, TransitionResult.WORKITEM_DELETED);
+            }
+         }
+         workflowsReloaded = true;
+      }
    }
 
 }
