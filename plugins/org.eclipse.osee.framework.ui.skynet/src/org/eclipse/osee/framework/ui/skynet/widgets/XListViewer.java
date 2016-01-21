@@ -268,10 +268,11 @@ public class XListViewer extends GenericXWidget {
    }
 
    protected void updateListWidget() {
-      if (listViewer != null) {
-         listViewer.refresh();
-         validate();
+      if(listViewer == null || listViewer.getTable().isDisposed()) {
+         return;
       }
+      listViewer.getTable().deselectAll();
+      validate();
    }
 
    public void add(Object object) {
