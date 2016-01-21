@@ -105,17 +105,17 @@ public class UpdateBranchOperation extends AbstractOperation {
       doSubWork(operation, monitor, workPercentage);
    }
 
-   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, Branch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
+   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, IOseeBranch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
       String originalBranchName = originalBranch.getName();
 
-      originalBranch.setName(getUpdatedName(originalBranchName));
+      BranchManager.setName(originalBranch, getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
       newWorkingBranch.setName(originalBranchName);
-      newWorkingBranch.setAssociatedArtifactId(originalBranch.getAssociatedArtifactId());
+      newWorkingBranch.setAssociatedArtifactId(BranchManager.getAssociatedArtifactId(originalBranch));
       BranchManager.setState(originalBranch, BranchState.REBASELINED);
 
-      BranchManager.persist(originalBranch, newWorkingBranch);
+      BranchManager.persist(newWorkingBranch);
       BranchManager.deleteBranch(originalBranch).join();
       monitor.worked(calculateWork(workPercentage));
    }

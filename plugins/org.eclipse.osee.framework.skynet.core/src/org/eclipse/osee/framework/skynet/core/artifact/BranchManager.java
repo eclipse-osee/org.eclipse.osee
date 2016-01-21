@@ -673,4 +673,16 @@ public final class BranchManager {
    public static boolean isLoaded() {
       return getCache().isLoaded();
    }
+
+   public static void setName(BranchId branch, String newName) {
+      Branch fullBranch = getBranch(branch);
+      String oldName = fullBranch.getName();
+      fullBranch.setName(newName);
+      try {
+         persist(fullBranch);
+      } catch (Exception ex) {
+         fullBranch.setName(oldName);
+         throw ex;
+      }
+   }
 }

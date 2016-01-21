@@ -225,13 +225,12 @@ public class BranchEventTest {
       return workingBranch;
    }
 
-   private Branch testEvents__workingRenamed(Branch workingBranch) throws Exception {
+   private IOseeBranch testEvents__workingRenamed(IOseeBranch workingBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(workingBranch);
       String newName = method.getQualifiedTestName() + " - working renamed";
-      workingBranch.setName(newName);
-      BranchManager.persist(workingBranch);
+      BranchManager.setName(workingBranch, newName);
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, workingBranch);
 

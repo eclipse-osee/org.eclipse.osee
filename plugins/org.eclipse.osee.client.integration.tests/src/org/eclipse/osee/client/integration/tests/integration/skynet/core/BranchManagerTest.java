@@ -14,9 +14,9 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.After;
 import org.junit.Assert;
@@ -45,7 +45,7 @@ public class BranchManagerTest {
    public String branchName;
    public String branchReNamed;
 
-   private Branch testBranch;
+   private IOseeBranch testBranch;
 
    @Before
    public void setUp() throws Exception {
@@ -65,8 +65,7 @@ public class BranchManagerTest {
    public void testBranch() throws Exception {
       Assert.assertEquals(testBranch, BranchManager.getBranch(branchName));
 
-      testBranch.setName(branchReNamed);
-      BranchManager.persist(testBranch);
+      BranchManager.setName(testBranch, branchReNamed);
 
       testBranch = BranchManager.getBranch(BranchManager.getBranch(branchReNamed));
       Assert.assertEquals(branchReNamed, testBranch.getName());

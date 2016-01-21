@@ -16,15 +16,13 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.widgets.xBranch.BranchXViewerFactory;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -65,7 +63,7 @@ public class RenameBranchHandler extends CommandHandler {
          final TreeViewer treeViewer = (TreeViewer) selectionProvider;
          Tree tree = treeViewer.getTree();
 
-         final Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
+         final IOseeBranch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
          TreeItem[] myTreeItemsSelected = tree.getSelection();
 
          if (myTreeItemsSelected.length != 1) {
@@ -89,7 +87,7 @@ public class RenameBranchHandler extends CommandHandler {
          textBeingRenamed.addFocusListener(new FocusAdapter() {
             @Override
             public void focusLost(FocusEvent e) {
-               updateText(textBeingRenamed.getText(), selectedBranch);
+               BranchManager.setName(selectedBranch, textBeingRenamed.getText());
                treeViewer.refresh();
                textBeingRenamed.dispose();
             }
@@ -103,7 +101,7 @@ public class RenameBranchHandler extends CommandHandler {
             @Override
             public void keyReleased(KeyEvent e) {
                if (e.character == SWT.CR) {
-                  updateText(textBeingRenamed.getText(), selectedBranch);
+                  BranchManager.setName(selectedBranch, textBeingRenamed.getText());
                   treeViewer.refresh();
                   textBeingRenamed.dispose();
                } else if (e.keyCode == SWT.ESC) {
@@ -116,17 +114,6 @@ public class RenameBranchHandler extends CommandHandler {
          myTreeEditor.setEditor(textBeingRenamed, myTreeItem);
       }
       return null;
-   }
-
-   private void updateText(String newLabel, Branch selectedBranch) {
-      String oldName = selectedBranch.getName();
-      selectedBranch.setName(newLabel);
-      try {
-         BranchManager.updateBranchName(selectedBranch.getUuid(), newLabel);
-      } catch (Exception ex) {
-         selectedBranch.setName(oldName);
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
    }
 
    @Override
