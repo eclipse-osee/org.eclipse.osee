@@ -154,8 +154,8 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    @Override
    public Branch getBranch(IAtsVersion version) {
       Branch branch = null;
-      long branchUuid = getBranchId(version);
-      if (branchUuid > 0) {
+      Long branchUuid = getBranchId(version);
+      if (branchUuid != null && branchUuid > 0) {
          branch = BranchManager.getBranch(branchUuid);
       }
       return branch;
