@@ -26,8 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -42,7 +42,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * Provides utility methods for parsing wordML.
- * 
+ *
  * @author Jeff C. Phillips
  * @author Paul K. Waldfogel
  */
@@ -109,11 +109,11 @@ public class WordUtil {
    /**
     * Analyzes all successive versions of 'Word Formatted Content' for useful differences and removes versions that do
     * not provide and difference from the prior version.
-    * 
+    *
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
     */
-   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeCoreException {
+   public static boolean revertNonusefulWordChanges(int artId, BranchId branch, String table) throws OseeCoreException {
       if (branch == null) {
          throw new IllegalArgumentException("branch can not be null");
       }

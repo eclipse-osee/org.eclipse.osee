@@ -60,7 +60,7 @@ public class CompressWordAttributesHandler extends CommandHandler {
                monitor.beginTask("Analyzing attributes", total);
 
                for (Artifact artifact : artifacts) {
-                  if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getFullBranch(),
+                  if (WordUtil.revertNonusefulWordChanges(artifact.getArtId(), artifact.getBranch(),
                      "osee_compression_gammas")) {
                      count++;
                   }

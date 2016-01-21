@@ -399,7 +399,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             try {
                ArtifactType artType = ArtifactTypeManager.getType(getArtifactType());
                attributeTypeSelectPanel.setAllowedAttributeTypes(
-                  artType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
+                  artType.getAttributeTypes(BranchManager.getBranch(getDestinationArtifact().getBranch())));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -466,8 +466,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
             try {
                if (getArtifactType() != null) {
                   ArtifactType specificArtifactType = ArtifactTypeManager.getType(getArtifactType());
-                  attributeTypeSelectPanel.setAllowedAttributeTypes(
-                     specificArtifactType.getAttributeTypes(getDestinationArtifact().getFullBranch()));
+                  attributeTypeSelectPanel.setAllowedAttributeTypes(specificArtifactType.getAttributeTypes(
+                     BranchManager.getBranch(getDestinationArtifact().getBranch())));
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

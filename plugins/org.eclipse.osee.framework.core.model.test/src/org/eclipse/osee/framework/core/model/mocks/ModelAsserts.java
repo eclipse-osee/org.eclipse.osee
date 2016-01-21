@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -235,32 +234,6 @@ public class ModelAsserts {
             Assert.assertEquals(true, child.inheritsFrom(target));
          }
       }
-   }
-
-   public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, Long artTypeGuid, Branch branch, Long... attributeGuids) throws OseeCoreException {
-      ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
-      Assert.assertNotNull(artifactType);
-
-      List<IAttributeType> expectedAttributes = new ArrayList<>();
-      for (Long attrGuid : attributeGuids) {
-         IAttributeType attributeType = attrCache.getByGuid(attrGuid);
-         Assert.assertNotNull(attributeType);
-         expectedAttributes.add(attributeType);
-      }
-
-      Collection<IAttributeType> actualTypes = artifactType.getAttributeTypes(branch);
-      Assert.assertEquals(String.format("ArtifactType [%s] - incorrect number of attributes actual - %s expected - %s",
-         artTypeGuid, actualTypes, expectedAttributes), expectedAttributes.size(), actualTypes.size());
-
-      Collection<IAttributeType> typesNotFound =
-         org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(expectedAttributes, actualTypes);
-      Assert.assertTrue(String.format("Artifact [%s] for branch [%s] did not have the following attributes [%s]",
-         artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
-
-      typesNotFound =
-         org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(actualTypes, expectedAttributes);
-      Assert.assertTrue(String.format("Artifact [%s] for branch [%s] the following additional attributes [%s]",
-         artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
    }
 
    public static void checkRelationTypeInheritance(AbstractOseeCache<RelationType> cache, AbstractOseeCache<ArtifactType> artCache, Long relGuid, RelationSide relationSide, int maxValue, Long... artifactTypesAllowed) throws OseeCoreException {

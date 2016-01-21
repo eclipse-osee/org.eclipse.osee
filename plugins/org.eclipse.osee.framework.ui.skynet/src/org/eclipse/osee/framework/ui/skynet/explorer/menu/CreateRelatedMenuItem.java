@@ -16,11 +16,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -107,7 +107,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
    private void handleCreateRelated(Artifact existingArtifact, RelationType relationType, IRelationTypeSide relationTypeSide, RelationSide relationSide) {
       // get valid artifact types for this relation
       List<IArtifactType> artifactTypes = new ArrayList<>();
-      Branch branch = artifactExplorer.getBranch();
+      BranchId branch = artifactExplorer.getBranch();
       for (ArtifactType artifactType : ArtifactTypeManager.getConcreteArtifactTypes(branch)) {
          if (relationType.isArtifactTypeAllowed(relationSide,
             artifactType) && ArtifactTypeManager.isUserCreationAllowed(artifactType)) {
@@ -139,7 +139,7 @@ public class CreateRelatedMenuItem implements SelectionListener {
       }
    }
 
-   private void createRelatedArtifact(Artifact existingArtifact, IRelationTypeSide relationTypeSide, Branch branch, IArtifactType type, String name) {
+   private void createRelatedArtifact(Artifact existingArtifact, IRelationTypeSide relationTypeSide, BranchId branch, IArtifactType type, String name) {
       SkynetTransaction transaction = TransactionManager.createTransaction(branch,
          String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
       Artifact newArtifact = ArtifactTypeManager.addArtifact(type, branch, name);

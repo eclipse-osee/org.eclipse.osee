@@ -104,7 +104,7 @@ public class ArtifactEditorActionBarContributor implements IActionContributor {
       @Override
       public void run() {
          try {
-            BranchView.revealBranch(getSelectedArtifact().getFullBranch());
+            BranchView.revealBranch(getSelectedArtifact().getBranch());
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }

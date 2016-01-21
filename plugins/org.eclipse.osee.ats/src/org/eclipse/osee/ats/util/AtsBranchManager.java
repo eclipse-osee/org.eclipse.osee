@@ -137,7 +137,7 @@ public final class AtsBranchManager {
             AWorkbench.popup("ERROR", "No Current Working Branch");
             return;
          }
-         BranchView.revealBranch((Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt));
+         BranchView.revealBranch(AtsClientService.get().getBranchService().getWorkingBranch(teamArt));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

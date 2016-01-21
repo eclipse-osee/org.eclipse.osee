@@ -25,8 +25,8 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -302,11 +302,11 @@ public class MassArtifactEditor extends AbstractArtifactEditor {
       }
    }
 
-   public Branch getBranch() throws OseeCoreException {
+   public IOseeBranch getBranch() throws OseeCoreException {
       if (((MassArtifactEditorInput) getEditorInput()).getArtifacts().isEmpty()) {
          return null;
       }
-      return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getFullBranch();
+      return ((MassArtifactEditorInput) getEditorInput()).getArtifacts().iterator().next().getBranchToken();
    }
 
    @Override

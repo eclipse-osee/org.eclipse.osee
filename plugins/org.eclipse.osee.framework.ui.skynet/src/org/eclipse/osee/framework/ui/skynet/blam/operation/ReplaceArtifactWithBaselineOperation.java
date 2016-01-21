@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -53,7 +54,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             OseeClient client = ServiceUtil.getOseeClient();
             TransactionEndpoint txBuilder = client.getTransactionEndpoint();
             Artifact firstArtifact = artifacts.iterator().next();
-            TransactionRecord txRecord = firstArtifact.getFullBranch().getBaseTransaction();
+            TransactionRecord txRecord = BranchManager.getBaseTransaction(firstArtifact.getBranch());
             BranchId branch = firstArtifact.getBranch();
 
             for (Artifact artifact : artifacts) {

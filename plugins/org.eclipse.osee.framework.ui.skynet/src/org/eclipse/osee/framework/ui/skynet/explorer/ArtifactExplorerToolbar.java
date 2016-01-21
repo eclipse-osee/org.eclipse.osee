@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -92,7 +92,7 @@ public class ArtifactExplorerToolbar {
                            PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
                               QuickSearchView.VIEW_ID);
                         if (viewPart != null) {
-                           Branch branch = artifactExplorer.getBranch();
+                           IOseeBranch branch = artifactExplorer.getBranch();
                            if (branch != null) {
                               ((QuickSearchView) viewPart).setBranch(branch);
                            }

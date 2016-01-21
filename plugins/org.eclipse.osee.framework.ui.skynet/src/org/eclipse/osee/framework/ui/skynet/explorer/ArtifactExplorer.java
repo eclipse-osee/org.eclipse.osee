@@ -104,7 +104,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    private Artifact explorerRoot;
    private TreeEditor myTreeEditor;
    private XBranchSelectWidget branchSelect;
-   private Branch branch;
+   private IOseeBranch branch;
    private IGlobalMenuHelper globalMenuHelper;
 
    private ArtifactExplorerDragAndDrop dragAndDropWorker;
@@ -288,14 +288,14 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
 
-      setPartName("Artifact Explorer: " + artifact.getFullBranch().getShortName());
+      setPartName("Artifact Explorer: " + artifact.getBranchToken().getShortName());
       if (branch != null && branch != artifact.getBranch()) {
          explore(Arrays.asList(artifact));
          return;
       }
 
       explorerRoot = artifact;
-      branch = artifact.getFullBranch();
+      branch = artifact.getBranchToken();
 
       if (dragAndDropWorker != null) {
          dragAndDropWorker.updateBranch(branch);
@@ -430,7 +430,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       return branch;
    }
 
-   public Branch getBranch() {
+   public IOseeBranch getBranch() {
       return branch;
    }
 

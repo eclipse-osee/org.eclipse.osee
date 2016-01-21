@@ -103,7 +103,7 @@ public final class ChangeManager {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
       for (Artifact artifact : artifacts) {
-         BranchId branch = artifact.getFullBranch();
+         BranchId branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
          joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);

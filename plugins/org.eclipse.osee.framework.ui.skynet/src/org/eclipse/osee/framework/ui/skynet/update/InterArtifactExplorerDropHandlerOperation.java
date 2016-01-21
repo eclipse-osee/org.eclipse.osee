@@ -18,9 +18,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -62,8 +62,8 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       if (destinationParentArtifact == null || sourceArtifacts == null || sourceArtifacts.isEmpty()) {
          throw new OseeArgumentException("Invalid arguments");
       }
-      Branch sourceBranch = sourceArtifacts.iterator().next().getFullBranch();
-      final Branch destinationBranch = destinationParentArtifact.getFullBranch();
+      BranchId sourceBranch = sourceArtifacts.iterator().next().getBranchToken();
+      final BranchId destinationBranch = destinationParentArtifact.getBranchToken();
 
       if (isUpdateFromParent(sourceBranch, destinationBranch)) {
          Displays.ensureInDisplayThread(new Runnable() {
@@ -111,12 +111,12 @@ public class InterArtifactExplorerDropHandlerOperation extends AbstractOperation
       monitor.done();
    }
 
-   private boolean isAccessAllowed(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   private boolean isAccessAllowed(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       return AccessControlManager.hasPermission(destinationBranch,
          PermissionEnum.WRITE) && AccessControlManager.hasPermission(sourceBranch, PermissionEnum.READ);
    }
 
-   private boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   private boolean isUpdateFromParent(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       return sourceBranch.equals(BranchManager.getParentBranchId(destinationBranch));
    }
 

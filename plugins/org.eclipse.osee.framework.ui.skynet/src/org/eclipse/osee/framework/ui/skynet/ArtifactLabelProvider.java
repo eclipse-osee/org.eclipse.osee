@@ -82,7 +82,7 @@ public class ArtifactLabelProvider extends LabelProvider { //StyledCellLabelProv
 
             try {
                if (decorationProvider.showArtBranch()) {
-                  extraInfo.add("[" + artifact.getFullBranch().getShortName() + "]");
+                  extraInfo.add("[" + artifact.getBranchToken().getShortName() + "]");
                }
                String selectedAttributes = decorationProvider.getSelectedAttributeData(artifact);
                if (Strings.isValid(selectedAttributes)) {

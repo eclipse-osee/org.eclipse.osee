@@ -275,7 +275,7 @@ public class XHistoryWidget extends GenericXWidget {
                      if (loadHistory) {
                         String shortName = Strings.emptyString();
                         try {
-                           shortName = artifact.getFullBranch().getShortName();
+                           shortName = artifact.getBranchToken().getShortName();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                         }

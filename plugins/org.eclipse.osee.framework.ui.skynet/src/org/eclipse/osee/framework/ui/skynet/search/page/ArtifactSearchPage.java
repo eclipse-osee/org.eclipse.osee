@@ -460,7 +460,7 @@ public class ArtifactSearchPage extends AbstractArtifactSearchViewPage implement
    @Override
    public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
       if (getInput() != null && getInput().getArtifactResults() != null && !getInput().getArtifactResults().isEmpty()) {
-         return getInput().getArtifactResults().get(0).getFullBranch();
+         return getInput().getArtifactResults().get(0).getBranchToken();
       }
       return null;
    }

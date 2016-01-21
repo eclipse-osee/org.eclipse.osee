@@ -423,7 +423,7 @@ public class AccessControlService implements IAccessControlService {
       }
 
       Integer artId = artifact.getArtId();
-      Branch branch = artifact.getFullBranch();
+      BranchId branch = artifact.getBranch();
       Long branchUuid = branch.getUuid();
 
       //      accessObject = accessObjectCache.get(artId, branchUuid);

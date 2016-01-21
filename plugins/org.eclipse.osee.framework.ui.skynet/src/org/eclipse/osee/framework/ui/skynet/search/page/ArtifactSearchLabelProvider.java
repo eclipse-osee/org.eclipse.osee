@@ -125,7 +125,7 @@ public class ArtifactSearchLabelProvider extends LabelProvider implements IStyle
 
          try {
             if (decoration.showArtBranch()) {
-               coloredName.append(' ').append("[" + artifact.getFullBranch().getShortName() + "]",
+               coloredName.append(' ').append("[" + artifact.getBranchToken().getShortName() + "]",
                   StyledString.DECORATIONS_STYLER);
             }
             String selectedAttributes = decoration.getSelectedAttributeData(artifact);

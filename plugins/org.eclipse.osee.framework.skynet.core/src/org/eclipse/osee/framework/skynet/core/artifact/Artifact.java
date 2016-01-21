@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -238,10 +237,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    public final IOseeBranch getBranchToken() {
-      return BranchManager.getBranch(branch);
-   }
-
-   public final Branch getFullBranch() throws OseeCoreException {
       return BranchManager.getBranch(branch);
    }
 
@@ -479,7 +474,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    public final boolean isAttributeTypeValid(IAttributeType attributeType) throws OseeCoreException {
-      return getArtifactType().isValidAttributeType(attributeType, getFullBranch());
+      return getArtifactType().isValidAttributeType(attributeType, BranchManager.getBranch(branch));
    }
 
    public final boolean isRelationTypeValid(IRelationType relationType) throws OseeCoreException {
@@ -587,7 +582,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    public final Collection<IAttributeType> getAttributeTypes() throws OseeCoreException {
-      return getArtifactType().getAttributeTypes(getFullBranch());
+      return getArtifactType().getAttributeTypes(BranchManager.getBranch(branch));
    }
 
    public final <T> Attribute<T> getSoleAttribute(IAttributeType attributeType) throws OseeCoreException {

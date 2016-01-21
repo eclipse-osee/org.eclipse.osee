@@ -51,7 +51,7 @@ public abstract class AbstractArtifactSearchQuery implements ISearchQuery {
          }
          if (aResult.getArtifactResults() != null && !aResult.getArtifactResults().isEmpty()) {
             builder.append(" on Branch: \"");
-            builder.append(aResult.getArtifactResults().get(0).getFullBranch().getShortName());
+            builder.append(aResult.getArtifactResults().get(0).getBranchToken().getShortName());
             builder.append("\"");
          }
       } else {

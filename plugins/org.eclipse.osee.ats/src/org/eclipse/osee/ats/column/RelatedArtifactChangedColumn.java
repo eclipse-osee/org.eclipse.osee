@@ -15,10 +15,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
@@ -58,11 +58,11 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IX
                ((Artifact) element).getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
 
             if (refArt != null) {
-               Branch refBranch = refArt.getFullBranch();
+               BranchId refBranch = refArt.getBranch();
                if (refArt.isDeleted()) {
                   return "Deleted";
-               } else if (refBranch.getBranchState().equals(
-                  BranchState.COMMITTED) || refBranch.getBranchType().isBaselineBranch()) {
+               } else if (BranchManager.getState(refBranch).isCommitted() || BranchManager.getType(
+                  refBranch).isBaselineBranch()) {
                   return "Commited";
                } else if (refArt.getLastModified().after(((Artifact) element).getLastModified())) {
                   return refArt.getLastModified().toString();
@@ -75,7 +75,5 @@ public class RelatedArtifactChangedColumn extends XViewerAtsColumn implements IX
          return LogUtil.getCellExceptionString(ex);
       }
       return "";
-
    }
-
 }

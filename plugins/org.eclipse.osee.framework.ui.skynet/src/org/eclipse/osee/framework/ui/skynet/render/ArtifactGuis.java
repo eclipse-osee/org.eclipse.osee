@@ -14,8 +14,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -138,7 +138,7 @@ public final class ArtifactGuis {
 
          JdbcStatement chStmt = ConnectionHandler.getStatement();
          try {
-            Branch branch = artifact.getFullBranch();
+            BranchId branch = artifact.getBranch();
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), branch.getUuid(),
                BranchManager.getParentBranchId(branch).getId(), BranchType.WORKING.getValue());
 

@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.menu;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -126,7 +126,7 @@ public class GlobalMenuPermissions {
    /**
     * @return the branchReadable
     */
-   public boolean isBranchReadable(Branch branch) throws OseeCoreException {
+   public boolean isBranchReadable(BranchId branch) throws OseeCoreException {
       return AccessControlManager.hasPermission(branch, PermissionEnum.READ);
    }
 

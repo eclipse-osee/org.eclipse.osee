@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -73,7 +72,7 @@ public class ArtifactExplorerUtil {
       }
    }
 
-   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, IGlobalMenuHelper globalMenuHelper, Branch branch, BranchWarningComposite branchWarningComposite) {
+   public static void refreshBranchWarning(ArtifactExplorer artifactExplorer, TreeViewer treeViewer, IGlobalMenuHelper globalMenuHelper, BranchId branch, BranchWarningComposite branchWarningComposite) {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {

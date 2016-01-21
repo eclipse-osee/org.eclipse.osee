@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -66,7 +67,7 @@ public class RelationChangeWorker implements IChangeWorker {
 
             Artifact otherSideBase =
                ArtifactQuery.getHistoricalArtifactFromId(link.getArtifactOnOtherSide(artifact).getArtId(),
-                  artifact.getFullBranch().getBaseTransaction(), DeletionFlag.INCLUDE_DELETED);
+                  BranchManager.getBaseTransaction(artifact.getBranch()), DeletionFlag.INCLUDE_DELETED);
 
             RelationOrderData mergedOrderData =
                RelationOrderMergeUtility.mergeRelationOrder(otherSideBase, otherSideCurrent);
