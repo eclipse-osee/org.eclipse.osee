@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XHyperlabelGroupSelection;
+import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.IXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
@@ -104,7 +105,11 @@ public class AtsWidgetProvider implements IXWidgetProvider {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
       } else if (widgetName.equals(XVersionList.WIDGET_ID)) {
-         return new XVersionList();
+         XVersionList versionList = new XVersionList();
+         if (widgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT)) {
+            versionList.setMultiSelect(true);
+         }
+         return versionList;
       } else if (widgetName.equals(XGoalCombo.WIDGET_ID)) {
          return new XGoalCombo();
       } else if (widgetName.equals(XCpaOpenOriginatingPcrWidget.WIDGET_ID)) {
