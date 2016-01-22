@@ -11,7 +11,10 @@
 package org.eclipse.osee.disposition.rest.importer;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -159,8 +162,10 @@ public class AnnotationCopierTest {
       OperationReport report = new OperationReport();
 
       DispoSetCopier copier = new DispoSetCopier(connector);
-      List<DispoItem> toModify = copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
-         Collections.singletonList((DispoItem) sourceItem), true, report);
+      Map<String, Set<DispoItemData>> nameToItems = new HashMap<>();
+      nameToItems.put(destItem.getName(), Collections.singleton(destItem));
+      List<DispoItem> toModify =
+         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
@@ -212,8 +217,10 @@ public class AnnotationCopierTest {
 
       OperationReport report = new OperationReport();
       DispoSetCopier copier = new DispoSetCopier(connector);
-      List<DispoItem> toModify = copier.copyAllDispositions(Collections.singletonMap(destItem.getName(), destItem),
-         Collections.singletonList((DispoItem) sourceItem), true, report);
+      Map<String, Set<DispoItemData>> nameToItems = new HashMap<>();
+      nameToItems.put(destItem.getName(), Collections.singleton(destItem));
+      List<DispoItem> toModify =
+         copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
       JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();

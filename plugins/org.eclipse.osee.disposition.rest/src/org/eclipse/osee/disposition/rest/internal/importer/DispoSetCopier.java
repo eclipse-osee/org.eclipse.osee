@@ -43,12 +43,13 @@ public class DispoSetCopier {
       this.connector = connector;
    }
 
-   public List<DispoItem> copyAllDispositions(Map<String, DispoItemData> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, OperationReport report) {
+   public List<DispoItem> copyAllDispositions(Map<String, Set<DispoItemData>> nameToDestItems, Collection<DispoItem> sourceItems, boolean isCoverageCopy, OperationReport report) {
       List<DispoItem> modifiedItems = new ArrayList<>();
 
       // Iterate through every source item since we want to try to find a match for every item in the source
       for (DispoItem sourceItem : sourceItems) {
-         DispoItemData destItem = nameToDestItems.get(sourceItem.getName());
+         DispoItemData destItem = getCorrespondingDestItem(nameToDestItems, sourceItem);
+
          if (destItem != null) {
             // Only try to copy over annotations if matching dest item is NOT PASS
             if (!destItem.getStatus().equals(DispoStrings.Item_Pass)) {
@@ -76,6 +77,25 @@ public class DispoSetCopier {
          }
       }
       return modifiedItems;
+   }
+
+   private DispoItemData getCorrespondingDestItem(Map<String, Set<DispoItemData>> nameToDestItems, DispoItem sourceItem) {
+      DispoItemData destItem = null;
+      String name = sourceItem.getName();
+      Set<DispoItemData> itemsWithSameName = nameToDestItems.get(name);
+
+      if (itemsWithSameName != null) {
+         if (itemsWithSameName.size() == 1) {
+            destItem = itemsWithSameName.iterator().next();
+         } else {
+            for (DispoItemData itemWithSameName : itemsWithSameName) {
+               if (itemWithSameName.getMethodNumber().equals(sourceItem.getMethodNumber())) {
+                  destItem = itemWithSameName;
+               }
+            }
+         }
+      }
+      return destItem;
    }
 
    private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report) {
@@ -317,9 +337,9 @@ public class DispoSetCopier {
       return locationToText;
    }
 
-   public void copyCategories(Map<String, DispoItemData> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyCategories(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
-         DispoItem destItem = destinationItems.get(sourceItem.getName());
+         DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
          if (destItem != null) {
             String currentCategory = destItem.getCategory();
@@ -367,9 +387,9 @@ public class DispoSetCopier {
       }
    }
 
-   public void copyAssignee(Map<String, DispoItemData> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyAssignee(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
-         DispoItem destItem = destinationItems.get(sourceItem.getName());
+         DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
          if (destItem != null) {
             String currentAssignee = destItem.getAssignee();
@@ -412,9 +432,9 @@ public class DispoSetCopier {
       }
    }
 
-   public void copyNotes(Map<String, DispoItemData> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
+   public void copyNotes(Map<String, Set<DispoItemData>> destinationItems, Collection<DispoItem> sourceItems, Map<String, DispoItem> toEdit, CopySetParamOption option) {
       for (DispoItem sourceItem : sourceItems) {
-         DispoItem destItem = destinationItems.get(sourceItem.getName());
+         DispoItem destItem = getCorrespondingDestItem(destinationItems, sourceItem);
 
          if (destItem != null) {
             String currentItemNotes = destItem.getItemNotes();

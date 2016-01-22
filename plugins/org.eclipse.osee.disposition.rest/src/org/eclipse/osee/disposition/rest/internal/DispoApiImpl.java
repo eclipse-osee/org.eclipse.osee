@@ -16,9 +16,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -510,10 +512,20 @@ public class DispoApiImpl implements DispoApi {
    @Override
    public String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params) {
       List<DispoItem> sourceItems = getDispoItems(program, source.getGuid());
-      Map<String, DispoItemData> namesToDestItems = new HashMap<>();
+      Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
          DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
-         namesToDestItems.put(itemData.getName(), itemData);
+
+         String name = itemData.getName();
+         Set<DispoItemData> itemsWithSameName = namesToDestItems.get(name);
+         if (itemsWithSameName == null) {
+            Set<DispoItemData> set = new HashSet<>();
+            set.add(itemData);
+            namesToDestItems.put(name, set);
+         } else {
+            itemsWithSameName.add(itemData);
+            namesToDestItems.put(name, itemsWithSameName);
+         }
       }
       Map<String, DispoItem> namesToToEditItems = new HashMap<>();
       OperationReport report = new OperationReport();

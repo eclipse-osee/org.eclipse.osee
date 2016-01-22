@@ -120,12 +120,21 @@ public class LisFileParser implements DispoImporterApi {
          List<DispoItemData> itemsFromImport = new ArrayList<>();
          itemsFromImport.addAll(values);
 
-         Map<String, DispoItemData> nameToItem = new HashMap<>();
+         Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
          for (DispoItemData item : itemsFromImport) {
-            nameToItem.put(item.getName(), item);
+            String name = item.getName();
+            Set<DispoItemData> itemsWithSameName = namesToDestItems.get(name);
+            if (itemsWithSameName == null) {
+               Set<DispoItemData> set = new HashSet<>();
+               set.add(item);
+               namesToDestItems.put(name, set);
+            } else {
+               itemsWithSameName.add(item);
+               namesToDestItems.put(name, itemsWithSameName);
+            }
          }
 
-         toReturn = copier.copyAllDispositions(nameToItem, exisitingItems.values(), false, report);
+         toReturn = copier.copyAllDispositions(namesToDestItems, exisitingItems.values(), false, report);
       } else {
          toReturn = new ArrayList<>();
          toReturn.addAll(values);
