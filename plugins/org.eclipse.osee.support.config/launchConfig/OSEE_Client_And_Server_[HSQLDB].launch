@@ -10,7 +10,6 @@
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.mode" value="default"/>
 <stringAttribute key="org.eclipse.cdt.launch.launchGroup.1.name" value="OSEE_IDE_[localhost]"/>
 <listAttribute key="org.eclipse.debug.ui.favoriteGroups">
-<listEntry value="org.eclipse.debug.ui.launchGroup.debug"/>
 <listEntry value="org.eclipse.debug.ui.launchGroup.run"/>
 </listAttribute>
 </launchConfiguration>
