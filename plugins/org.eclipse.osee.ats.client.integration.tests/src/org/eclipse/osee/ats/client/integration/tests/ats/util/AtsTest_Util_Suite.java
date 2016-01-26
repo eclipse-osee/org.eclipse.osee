@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.util;
 
-import org.eclipse.osee.ats.client.integration.tests.ats.world.search.AtsQueryImplTest;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.junit.AfterClass;
@@ -21,7 +20,6 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
    AtsNotifyEndpointImplTest.class,
-   AtsQueryImplTest.class,
    AtsChangeSetTest.class,
    AtsDeleteManagerTest.class,
    AtsImageTest.class,
