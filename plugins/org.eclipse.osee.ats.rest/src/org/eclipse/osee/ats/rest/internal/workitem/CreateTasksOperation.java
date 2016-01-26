@@ -195,7 +195,7 @@ public class CreateTasksOperation {
 
    private IRelationType getRelationType(IAtsServer atsServer, String relationTypeName) {
       for (IRelationType relation : atsServer.getOrcsApi().getOrcsTypes().getRelationTypes().getAll()) {
-         if (relation.getName().equals(relation.getName())) {
+         if (relation.getName().equals(relationTypeName)) {
             return relation;
          }
       }
