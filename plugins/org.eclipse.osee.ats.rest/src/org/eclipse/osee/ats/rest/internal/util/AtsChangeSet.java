@@ -207,8 +207,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
-      getTransaction().relate(getArtifact(object1), relationSide, getArtifact(object2));
-      add(object1);
+      ArtifactId artifact = getArtifact(object1);
+      ArtifactId artifact2 = getArtifact(object2);
+      getTransaction().relate(artifact, relationSide, artifact2);
+      add(artifact);
+      add(artifact2);
    }
 
    private ArtifactReadable getArtifact(Object object) {
@@ -230,9 +233,12 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void setRelation(Object object1, IRelationTypeSide relationType, Object object2) {
-      unrelateAll(object1, relationType);
-      relate(object1, relationType, object2);
-      add(object1);
+      ArtifactId artifact = getArtifact(object1);
+      ArtifactId artifact2 = getArtifact(object2);
+      unrelateAll(artifact, relationType);
+      relate(artifact, relationType, artifact2);
+      add(artifact);
+      add(artifact2);
    }
 
    @Override
@@ -246,11 +252,10 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          ArtifactReadable art = getArtifact(obj);
          if (art != null) {
             artifacts.add(art);
+            add(art);
          }
       }
-      if (!relationSide.getSide().isSideA()) {
-         getTransaction().setRelations(artifact, relationSide, artifacts);
-      }
+      getTransaction().setRelations(artifact, relationSide, artifacts);
       add(object);
    }
 

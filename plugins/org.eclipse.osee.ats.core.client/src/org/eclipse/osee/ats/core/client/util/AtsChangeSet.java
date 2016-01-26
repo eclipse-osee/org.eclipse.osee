@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -291,7 +292,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void unrelateAll(Object object, IRelationTypeSide relationType) {
-      getArtifact(object).deleteRelations(relationType);
+      Artifact artifact = getArtifact(object);
+      artifact.deleteRelations(relationType);
+      add(artifact);
    }
 
    @Override
@@ -311,9 +314,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          Artifact art = getArtifact(obj);
          if (art != null) {
             artifacts.add(art);
+            add(art);
          }
       }
-      artifact.setRelations(null, relationSide, artifacts);
+      artifact.setRelations(RelationOrderBaseTypes.PREEXISTING, relationSide, artifacts);
+      add(artifact);
    }
 
    @SuppressWarnings("unchecked")
