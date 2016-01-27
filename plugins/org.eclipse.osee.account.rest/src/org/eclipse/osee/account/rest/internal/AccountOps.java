@@ -153,8 +153,8 @@ public class AccountOps {
       return preferences;
    }
 
-   public AccountWebPreferences getAccountWebPreferencesData(String value) {
-      ResultSet<Account> result = accountAdmin.getAccountByGuid(value);
+   public AccountWebPreferences getAccountWebPreferencesData(Long id) {
+      ResultSet<Account> result = accountAdmin.getAccountById(id);
       Account account = result.getExactlyOne();
       AccountWebPreferences preferences = account.getWebPreferences();
       return preferences;

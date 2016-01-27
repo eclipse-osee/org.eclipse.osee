@@ -54,7 +54,7 @@ public class AccountsResource {
    @Path("preferences/{id}")
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public Response getPreferences(@PathParam("id") String id) {
+   public Response getPreferences(@PathParam("id") Long id) {
       return Response.ok().entity(accountOps.getAccountWebPreferencesData(id)).build();
    }
 

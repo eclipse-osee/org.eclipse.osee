@@ -84,7 +84,7 @@ app.controller('meController', [
     	
     	$scope.getDefaultPreferences = function() {
         	Preferences.get({
-        		id: 'AAABDi35uzwAxJLISLBZdA'
+        		id: '1896'
         	}, function(data) {
         		$scope.defaultLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
         	});
@@ -93,7 +93,7 @@ app.controller('meController', [
     	
     	$scope.getPreferences = function() {
         	Preferences.get({
-        		id: $localStorage.guid
+        		id: $localStorage.uuid
         	}, function(data) {
         		$scope.personalLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
         	});
