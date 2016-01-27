@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo;
+package org.eclipse.osee.ats.demo.api;
 
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 

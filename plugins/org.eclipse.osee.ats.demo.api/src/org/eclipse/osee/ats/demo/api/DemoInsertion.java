@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo.config;
+package org.eclipse.osee.ats.demo.api;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

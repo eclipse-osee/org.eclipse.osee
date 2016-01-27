@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.core.client.artifact;
 
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.client.demo.DemoArtifactTypes;
+import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.junit.Assert;
 import org.junit.Test;

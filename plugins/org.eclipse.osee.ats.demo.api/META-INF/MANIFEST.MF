@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Osee Ats Demo Api (Incubation)
+Bundle-SymbolicName: org.eclipse.osee.ats.demo.api
+Bundle-Version: 0.24.0.qualifier
+Bundle-Vendor: Eclipse Open System Engineering Environment
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.eclipse.osee.ats.demo.api
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums
+Require-Bundle: org.eclipse.osee.ats.api;bundle-version="0.24.0"

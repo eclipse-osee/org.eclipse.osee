@@ -8,17 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo;
+package org.eclipse.osee.ats.demo.api;
 
 /**
+ * Declares the different work types for Widget_A and Widget_B
+ * 
  * @author Donald G. Dunne
  */
-public class DemoGroups {
-
-   private DemoGroups() {
-      // Constants class
-   }
-
-   public static String TEST_GROUP_NAME = "Test Group";
-
+public enum DemoWorkType {
+   Code,
+   Test,
+   Requirements,
+   SW_Design,
+   All
 }

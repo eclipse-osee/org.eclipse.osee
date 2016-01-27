@@ -12,10 +12,10 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.client.demo.DemoArtifactToken;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.junit.Assert;
 import org.junit.Test;
 

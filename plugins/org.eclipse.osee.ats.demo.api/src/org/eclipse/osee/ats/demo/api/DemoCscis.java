@@ -8,30 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.client.demo.config;
+package org.eclipse.osee.ats.demo.api;
 
 /**
  * @author Donald G. Dunne
  */
-public enum DemoDbAIs {
-   Computers,
-   Network,
-   Config_Mgmt,
-   Reviews,
-   Timesheet,
-   Website,
-   Reader,
-   CIS_Code,
-   CIS_Test,
-   CIS_Requirements,
-   CIS_SW_Design,
-   SAW_Code,
-   SAW_Test,
-   SAW_Requirements,
-   SAW_SW_Design,
-   Adapter;
-
-   public String getAIName() {
-      return name().replaceAll("_", " ");
-   }
+public enum DemoCscis {
+   CoreUnit,
+   Framework,
+   Interface,
+   Navigation,
+   Unspecified,
+   Visual;
 }

@@ -11,10 +11,10 @@
 package org.eclipse.osee.ats.client.integration.tests;
 
 import static org.junit.Assert.assertTrue;
-import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.demo.PopulateDemoActions;
 import org.eclipse.osee.ats.client.demo.PopulateDemoAgile;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.OseeClientSession;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;

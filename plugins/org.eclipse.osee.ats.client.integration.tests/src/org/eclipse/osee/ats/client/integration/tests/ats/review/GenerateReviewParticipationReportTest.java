@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.review;
 
 import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.client.demo.DemoUsers;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.ats.review.GenerateReviewParticipationReport;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.Assert;

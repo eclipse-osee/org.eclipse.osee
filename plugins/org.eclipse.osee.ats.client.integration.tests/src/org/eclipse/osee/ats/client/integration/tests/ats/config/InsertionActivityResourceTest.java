@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.config;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import org.eclipse.osee.ats.client.demo.config.DemoInsertionActivity;
+import org.eclipse.osee.ats.demo.api.DemoInsertionActivity;
 import org.junit.Assert;
 import org.junit.Test;
 
