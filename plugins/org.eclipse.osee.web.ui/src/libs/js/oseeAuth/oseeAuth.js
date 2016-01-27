@@ -147,6 +147,7 @@ directives.directive('osee', [
 						$localStorage.uuid = response.accountId;
 						$localStorage.guid = response.guid;
 						scope.profile = response;
+					    $rootScope.$broadcast('osee:userAuthenticated');
 					});
 					if($localStorage.continueTo) {
 						// Change the state to the continueTo we caught when User first tried to get into page

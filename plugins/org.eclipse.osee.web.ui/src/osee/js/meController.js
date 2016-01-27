@@ -89,16 +89,16 @@ app.controller('meController', [
         		$scope.defaultLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
         	});
     	}
-    	$scope.getDefaultPreferences();
+
     	
     	$scope.getPreferences = function() {
         	Preferences.get({
         		id: $localStorage.uuid
-        	}, function(data) {
-        		$scope.personalLinks = Object.keys(data.links).map(function (key) {return data.links[key]});
+        	}, function(data2) {
+        		$scope.personalLinks = Object.keys(data2.links).map(function (key) {return data2.links[key]});
         	});
     	}
-    	$scope.getPreferences();
+
     	
     	$scope.createNewLink = function(name, url) {
     		var newLink = {};
@@ -150,5 +150,9 @@ app.controller('meController', [
                 $modalInstance.dismiss('cancel');
             };
         };
+    	$scope.$on("osee:userAuthenticated", function(event, token) {
+        	$scope.getDefaultPreferences();
+        	$scope.getPreferences();
+    	});
     	
     }]);
