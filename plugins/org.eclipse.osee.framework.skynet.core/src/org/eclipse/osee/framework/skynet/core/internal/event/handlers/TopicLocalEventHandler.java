@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
+import org.eclipse.osee.framework.skynet.core.event.model.EventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventHandlerLocal;
@@ -35,7 +36,7 @@ public class TopicLocalEventHandler implements EventHandlerLocal<TopicEventAdmin
       if (transport.isDispatchToLocalAllowed(sender)) {
          transport.sendLocal(sender, event);
       }
-      if (sender.isLocal()) {
+      if (sender.isLocal() && event.getEventType() == EventType.LocalAndRemote) {
          transport.sendRemote(FrameworkEventUtil.getRemoteTopicEvent(event));
       }
    }

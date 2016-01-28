@@ -18,6 +18,7 @@ import java.util.Map;
  */
 public class TopicEvent implements FrameworkEvent, HasNetworkSender {
 
+   EventType eventType;
    private String topic;
    private final Map<String, String> properties;
    private NetworkSender networkSender;
@@ -27,8 +28,9 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
       properties = new HashMap<>();
    }
 
-   public TopicEvent(String topic, String key, String value) {
+   public TopicEvent(String topic, String key, String value, EventType eventType) {
       this(topic);
+      this.eventType = eventType;
       properties.put(key, value);
    }
 
@@ -56,6 +58,14 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
 
    public Map<String, String> getProperties() {
       return properties;
+   }
+
+   public EventType getEventType() {
+      return eventType;
+   }
+
+   public void setEventType(EventType eventType) {
+      this.eventType = eventType;
    }
 
 }

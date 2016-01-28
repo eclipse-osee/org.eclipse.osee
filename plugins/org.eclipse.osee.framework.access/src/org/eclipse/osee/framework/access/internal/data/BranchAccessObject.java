@@ -36,7 +36,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    @Override
-   public long getId() {
+   public long getBranchId() {
       return branchUuid;
    }
 

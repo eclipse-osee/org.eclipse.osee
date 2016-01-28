@@ -34,7 +34,8 @@ Import-Package: com.google.common.cache;version="15.0.0",
  org.eclipse.osee.framework.skynet.core.utility,
  org.eclipse.osee.jdbc,
  org.osgi.framework,
- org.osgi.util.tracker
+ org.osgi.util.tracker,
+ org.osgi.service.event
 Bundle-ActivationPolicy: lazy
 Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.access,

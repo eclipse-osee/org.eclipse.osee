@@ -104,7 +104,7 @@ public final class AccessControlManager implements IAccessControlEventListener {
       AccessControlData data = null;
       if (object instanceof Artifact && hasLock((Artifact) object)) {
          ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
-         User subject = UserManager.getUser();
+         Artifact subject = getSubjectFromLockedObject(object);
          data = new AccessControlData(subject, artifactAccessObject, PermissionEnum.LOCK, false, false);
          data.setBranchPermission(getService().getBranchPermission(subject, ((Artifact) object).getBranch()));
          data.setArtifactPermission(PermissionEnum.LOCK);

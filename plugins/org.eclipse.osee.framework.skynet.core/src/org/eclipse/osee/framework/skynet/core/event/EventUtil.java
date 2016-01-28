@@ -11,17 +11,23 @@
 package org.eclipse.osee.framework.skynet.core.event;
 
 import java.util.logging.Level;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
+import org.eclipse.osee.framework.skynet.core.event.model.EventType;
+import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.osgi.service.event.Event;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class EventUtil {
    private static BranchUuidEventFilter commonBranchGuidEvenFilter = new BranchUuidEventFilter(CoreBranches.COMMON);
+   private static ObjectMapper mapper;
 
    private EventUtil() {
       // Utility Class
@@ -83,4 +89,32 @@ public final class EventUtil {
       return "console".equals(debugConsole);
    }
 
+   public static ObjectMapper getEventJacksonMapper() {
+      if (mapper == null) {
+         mapper = new ObjectMapper();
+      }
+      return mapper;
+   }
+
+   /**
+    * Topic Events can have "json" property set. Desearialize as given class
+    */
+   public static <T> T getTopicJson(Event event, Class<T> class1) {
+      try {
+         return getEventJacksonMapper().readValue((String) event.getProperty("json"), class1);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex, "Error reading topic json [%s]", event.toString());
+      }
+   }
+
+   /**
+    * Create topic event given topic and oject to searialize to json property
+    */
+   public static TopicEvent createTopic(String topic, Object event, EventType eventType) {
+      try {
+         return new TopicEvent(topic, "json", EventUtil.getEventJacksonMapper().writeValueAsString(event), eventType);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex, "Error reading topic json [%s]", event.toString());
+      }
+   }
 }

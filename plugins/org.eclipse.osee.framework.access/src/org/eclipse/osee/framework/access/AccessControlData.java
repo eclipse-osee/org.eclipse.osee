@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * A data object in an access control list. Contains a subject (user artifact) and object (what the subject is trying to
  * access) and a permission level
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class AccessControlData implements Comparable<AccessControlData> {
@@ -43,16 +43,10 @@ public class AccessControlData implements Comparable<AccessControlData> {
       this.object = object;
    }
 
-   /**
-    * @return Returns the user.
-    */
    public Artifact getSubject() {
       return subject;
    }
 
-   /**
-    * @param permission The permissionLevel to set.
-    */
    public void setPermission(PermissionEnum permission) {
 
       if (this.permission == permission) {
@@ -79,9 +73,6 @@ public class AccessControlData implements Comparable<AccessControlData> {
       return permission;
    }
 
-   /**
-    * @return Returns the dirty.
-    */
    public boolean isDirty() {
       return dirty;
    }
@@ -90,13 +81,13 @@ public class AccessControlData implements Comparable<AccessControlData> {
       this.dirty = false;
    }
 
-   /**
-    * @return Returns the object.
-    */
    public AccessObject getObject() {
       return object;
    }
 
+   /**
+    * @return true if this is a new permission; false if update
+    */
    public boolean isBirth() {
       return birth;
    }
@@ -119,23 +110,14 @@ public class AccessControlData implements Comparable<AccessControlData> {
       return subject.getName().hashCode();
    }
 
-   /**
-    * @param branchPermission the branchPermission to set
-    */
    public void setBranchPermission(PermissionEnum branchPermission) {
       this.branchPermission = branchPermission;
    }
 
-   /**
-    * @param artifactTypePermission the artifactTypePermission to set
-    */
    public void setArtifactTypePermission(PermissionEnum artifactTypePermission) {
       this.artifactTypePermission = artifactTypePermission;
    }
 
-   /**
-    * @param artifactPermission the artifactPermission to set
-    */
    public void setArtifactPermission(PermissionEnum artifactPermission) {
       this.artifactPermission = artifactPermission;
    }

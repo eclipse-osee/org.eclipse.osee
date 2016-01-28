@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.EventType;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 
 /**
@@ -143,7 +144,7 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
       }
 
       TopicEvent event = new TopicEvent(AtsEvents.WORK_ITEM_MODIFIED, AtsEvents.WORK_ITEM_UUDS,
-         AtsObjects.toUuidsString(";", workItems));
+         AtsObjects.toUuidsString(";", workItems), EventType.LocalAndRemote);
       OseeEventManager.kickTopicEvent(getClass(), event);
 
       AtsClientService.get().getStoreService().reload(workItems);

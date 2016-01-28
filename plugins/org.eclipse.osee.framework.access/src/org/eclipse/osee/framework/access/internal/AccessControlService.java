@@ -64,6 +64,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
@@ -73,6 +74,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -491,6 +494,33 @@ public class AccessControlService implements IAccessControlService {
    }
 
    public void persistPermission(AccessControlData data, boolean recurse) {
+      if (data.getObject() instanceof ArtifactAccessObject) {
+
+         ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
+
+         AccessTopicEventPayload event = new AccessTopicEventPayload();
+         event.setBranchUuid(artifactAccessObject.getBranchId());
+
+         persistPermissionForArtifact(data, artifactAccessObject, recurse, event);
+         cacheAccessControlData(data);
+
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
+
+      } else if (data.getObject() instanceof BranchAccessObject) {
+
+         BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
+
+         persistPermissionForBranch(data, branchAccessObject, recurse, null);
+         cacheAccessControlData(data);
+
+         AccessTopicEventPayload event = new AccessTopicEventPayload();
+         event.setBranchUuid(branchAccessObject.getBranchId());
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_BRANCH_MODIFIED);
+
+      }
+   }
+
+   private void persistPermissionForArtifact(AccessControlData data, ArtifactAccessObject artifactAccessObject, boolean recurse, AccessTopicEventPayload event) {
       ensurePopulated();
       Artifact subject = data.getSubject();
       PermissionEnum permission = data.getPermission();
@@ -499,53 +529,62 @@ public class AccessControlService implements IAccessControlService {
          data.setNotDirty();
 
          try {
-            if (data.getObject() instanceof ArtifactAccessObject) {
-               ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
-               if (data.isBirth()) {
-                  getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
-                     data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getId());
-               } else {
-                  getJdbcClient().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getId());
-               }
+            if (data.isBirth()) {
+               getJdbcClient().runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
+                  data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getBranchId());
+            } else {
+               getJdbcClient().runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
+                  data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getBranchId());
+            }
+            event.addArtifact(artifactAccessObject.getArtId());
 
-               if (recurse) {
-                  Artifact artifact = ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                     BranchManager.getBranch(artifactAccessObject.getId()));
+            if (recurse) {
+               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
+                  BranchManager.getBranch(artifactAccessObject.getBranchId()));
+
+               for (Artifact child : artifact.getChildren()) {
                   AccessControlData childAccessControlData = null;
+                  AccessObject childAccessObject = getAccessObject(child);
 
-                  for (Artifact child : artifact.getChildren()) {
-                     AccessObject accessObject = getAccessObject(child);
+                  if (objectToSubjectCache.containsKey(childAccessObject)) {
+                     Collection<Integer> subjectIds = objectToSubjectCache.getValues(childAccessObject);
 
-                     if (objectToSubjectCache.containsKey(accessObject)) {
-                        Collection<Integer> subjectIds = objectToSubjectCache.getValues(accessObject);
-
-                        for (int subjectId : subjectIds) {
-                           if (subjectId == subject.getArtId()) {
-                              childAccessControlData = new AccessControlData(subject, accessObject, permission, false);
-                           }
+                     for (int subjectId : subjectIds) {
+                        if (subjectId == subject.getArtId()) {
+                           childAccessControlData =
+                              new AccessControlData(subject, childAccessObject, permission, false);
+                           break;
                         }
                      }
-
-                     if (childAccessControlData == null) {
-                        childAccessControlData = new AccessControlData(subject, accessObject, permission, true);
-                     }
-                     persistPermission(childAccessControlData, true);
                   }
-               }
-            } else if (data.getObject() instanceof BranchAccessObject) {
-               BranchAccessObject branchAccessObject = (BranchAccessObject) data.getObject();
 
-               if (data.isBirth()) {
-                  getJdbcClient().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), branchAccessObject.getId());
-               } else {
-                  getJdbcClient().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                     data.getSubject().getArtId(), branchAccessObject.getId());
+                  if (childAccessControlData == null) {
+                     childAccessControlData = new AccessControlData(subject, childAccessObject, permission, true);
+                  }
+                  persistPermissionForArtifact(childAccessControlData, (ArtifactAccessObject) childAccessObject, true,
+                     event);
                }
             }
-            cacheAccessControlData(data);
+
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   private void persistPermissionForBranch(AccessControlData data, BranchAccessObject branchAccessObject, boolean recurse, AccessTopicEventPayload event) {
+      ensurePopulated();
+      if (data.isDirty()) {
+         data.setNotDirty();
+         try {
+            if (data.isBirth()) {
+               getJdbcClient().runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
+                  data.getSubject().getArtId(), branchAccessObject.getBranchId());
+            } else {
+               getJdbcClient().runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
+                  data.getSubject().getArtId(), branchAccessObject.getBranchId());
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
          }
@@ -612,13 +651,14 @@ public class AccessControlService implements IAccessControlService {
    }
 
    private PermissionEnum getBranchPermission(IBasicArtifact<?> subject, Object object) throws OseeCoreException {
-      long branchUuid = ((AccessObject) object).getId();
+      long branchUuid = ((AccessObject) object).getBranchId();
       Branch branch = BranchManager.getBranch(branchUuid);
 
       return getBranchPermission(subject, branch);
    }
 
    public void removeAccessControlDataIf(boolean removeFromDb, AccessControlData data) throws OseeCoreException {
+
       int subjectId = data.getSubject().getArtId();
       AccessObject accessControlledObject = data.getObject();
       if (removeFromDb) {
@@ -629,6 +669,14 @@ public class AccessControlService implements IAccessControlService {
          accessControlledObject.removeFromCache();
       }
       deCacheAccessControlData(data);
+
+      AccessTopicEventPayload event = new AccessTopicEventPayload();
+      event.setBranchUuid(accessControlledObject.getBranchId());
+      if (accessControlledObject instanceof ArtifactAccessObject) {
+         event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
+      }
+      OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
+
    }
 
    private void deCacheAccessControlData(AccessControlData data) {

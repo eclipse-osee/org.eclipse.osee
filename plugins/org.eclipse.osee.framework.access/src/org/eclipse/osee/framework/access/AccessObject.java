@@ -24,7 +24,7 @@ public abstract class AccessObject {
 
    public abstract void removeFromDatabase(int subjectId) throws OseeCoreException;
 
-   public abstract long getId();
+   public abstract long getBranchId();
 
    public static AccessObject getAccessObject(Object object) throws OseeCoreException {
       if (object instanceof Artifact) {

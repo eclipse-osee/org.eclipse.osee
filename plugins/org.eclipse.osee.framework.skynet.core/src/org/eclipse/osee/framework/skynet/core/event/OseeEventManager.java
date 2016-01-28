@@ -14,8 +14,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -24,6 +26,8 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -104,6 +108,34 @@ public final class OseeEventManager {
       return getEventListeners().size();
    }
 
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////// NEW EVENT MODEL - TOPICS with JSON ////////////////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+   // Kick LOCAL and REMOTE transaction event
+   public static void kickTopicEvent(Object source, TopicEvent topicEvent) throws OseeCoreException {
+      Assert.isNotNull(source);
+      Assert.isNotNull(topicEvent);
+      Assert.isNotNull(topicEvent.getEventType(), "TopicEvent.eventType can not be null");
+      Assert.isTrue(Strings.isValid(topicEvent.getTopic()), "TopicEvent.topic can not be null.");
+      getEventService().send(source, topicEvent);
+   }
+
+   // Kick LOCAL and REMOTE access control events
+   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload event, AccessTopicEventType accessEventTopicType) {
+      try {
+         TopicEvent topicEvent =
+            EventUtil.createTopic(accessEventTopicType.getTopic(), event, accessEventTopicType.getEventType());
+         kickTopicEvent(source, topicEvent);
+      } catch (Exception ex) {
+         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s]", event);
+      }
+   }
+
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////// LEGACY EVENT MODEL - serialized jaxb object ///////////////////////////////////
+   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
    // Kick LOCAL remote-event event
    public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       getEventService().send(source, remoteEventServiceEventType);
@@ -122,11 +154,6 @@ public final class OseeEventManager {
    // Kick LOCAL and REMOTE transaction deleted event
    public static void kickTransactionEvent(Object source, final TransactionEvent transactionEvent) throws OseeCoreException {
       getEventService().send(source, transactionEvent);
-   }
-
-   // Kick LOCAL and REMOTE transaction event
-   public static void kickTopicEvent(Object source, TopicEvent artifactEvent) throws OseeCoreException {
-      getEventService().send(source, artifactEvent);
    }
 
    // Kick LOCAL and REMOTE transaction event

@@ -46,7 +46,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    @Override
-   public long getId() {
+   public long getBranchId() {
       return branchUuid;
    }
 

@@ -11,14 +11,15 @@
 package org.eclipse.osee.framework.ui.skynet.access;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -95,17 +96,16 @@ public class PolicyDialog extends Dialog {
       // Create Input Widgets
       Composite composite = new Composite(group, SWT.NONE);
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-      composite.setLayout(new GridLayout(4, false));
+      composite.setLayout(new GridLayout(3, false));
 
       permissionLevelCombo = new Combo(composite, SWT.NONE);
       userCombo = new Combo(composite, SWT.NONE);
       addButton = new Button(composite, SWT.PUSH);
       addButton.setText("Add");
+      chkChildrenPermission = new Button(composite, SWT.CHECK);
+      chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
 
       new Label(mainComposite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
-
-      chkChildrenPermission = new Button(mainComposite, SWT.CHECK);
-      chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
 
       try {
          populateInputWidgets();
@@ -127,8 +127,17 @@ public class PolicyDialog extends Dialog {
 
       // Setup permissions combo
       permissionLevelCombo.setText("-Select Permission-");
-      PermissionEnum[] permissions = PermissionEnum.values();
-      Arrays.sort(permissions, new Comparator<PermissionEnum>() {
+      List<PermissionEnum> permissions = new ArrayList<>();
+      for (PermissionEnum permission : PermissionEnum.values()) {
+         if (permission == PermissionEnum.LOCK) {
+            if (accessControlledObject instanceof ArtifactId) {
+               permissions.add(permission);
+            }
+         } else {
+            permissions.add(permission);
+         }
+      }
+      Collections.sort(permissions, new Comparator<PermissionEnum>() {
 
          @Override
          public int compare(PermissionEnum o1, PermissionEnum o2) {
