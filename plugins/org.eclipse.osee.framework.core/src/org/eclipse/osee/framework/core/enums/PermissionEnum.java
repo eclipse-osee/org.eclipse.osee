@@ -44,10 +44,16 @@ public enum PermissionEnum {
    private int permissionId;
    private String name;
    public boolean add;
+   private final String description;
+
+   public String getDescription() {
+      return description;
+   }
 
    PermissionEnum(int permissionId, String name, String description) {
       this.permissionId = permissionId;
       this.name = name;
+      this.description = description;
    }
 
    public int getRank() {

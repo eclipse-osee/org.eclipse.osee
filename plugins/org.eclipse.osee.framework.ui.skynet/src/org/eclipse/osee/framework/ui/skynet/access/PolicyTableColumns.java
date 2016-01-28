@@ -17,9 +17,9 @@ public enum PolicyTableColumns {
    dummyColumn("---", 0, 1 << 14, true, SortDataType.String, false, ""),
    delete("", 25, 1 << 24, true, SortDataType.String, false, ""),
    userName("User Name", 160, 1 << 14, true, SortDataType.String, false, ""),
-   totalAccess("Access Level", 75, 1 << 14, true, SortDataType.String, false, ""),
+   totalAccess("Access Level", 80, 1 << 14, true, SortDataType.String, false, ""),
    branchAccess("Branch", 75, 1 << 14, true, SortDataType.String, false, ""),
-   artifactType("Artifact Type", 75, 1 << 14, true, SortDataType.String, false, ""),
+   artifactType("Artifact Type", 80, 1 << 14, true, SortDataType.String, false, ""),
    artifact("Artifact", 75, 1 << 14, true, SortDataType.String, false, "");
 
    private final String label;

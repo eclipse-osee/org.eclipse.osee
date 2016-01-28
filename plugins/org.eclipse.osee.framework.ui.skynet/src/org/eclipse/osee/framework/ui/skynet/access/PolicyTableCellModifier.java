@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
+import java.util.Collections;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.osee.framework.access.AccessControlData;
+import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.swt.widgets.TreeItem;
 
 /**
@@ -29,6 +33,9 @@ public class PolicyTableCellModifier implements ICellModifier {
 
    @Override
    public boolean canModify(Object element, String property) {
+      if (policyTableViewer.isArtifact() && element instanceof AccessControlData && ((AccessControlData) element).getPermission() == PermissionEnum.LOCK) {
+         return policyTableViewer.currentUserCanModifyLock();
+      }
       boolean toReturn = property.equals(PolicyTableColumns.delete.toString()) || property.equals(
          PolicyTableColumns.totalAccess.toString());
       return toReturn;
@@ -49,13 +56,17 @@ public class PolicyTableCellModifier implements ICellModifier {
    public void modify(Object element, String property, Object value) {
       TreeItem item = (TreeItem) element;
       AccessControlData data = (AccessControlData) item.getData();
-
-      if (canDelete() && property.equals(PolicyTableColumns.delete.toString())) {
+      if (policyTableViewer.isArtifact() && data.getPermission() == PermissionEnum.LOCK) {
+         AccessControlManager.unLockObjects(Collections.singleton(policyTableViewer.getArtifact()),
+            UserManager.getUser());
          policyTableViewer.removeData(data);
-      } else if (property.equals(PolicyTableColumns.totalAccess.toString())) {
-         item.setData(value);
+      } else {
+         if (canDelete() && property.equals(PolicyTableColumns.delete.toString())) {
+            policyTableViewer.removeData(data);
+         } else if (property.equals(PolicyTableColumns.totalAccess.toString())) {
+            item.setData(value);
+         }
       }
-
       policyTableViewer.refresh();
    }
 

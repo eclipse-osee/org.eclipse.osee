@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlService;
+import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -94,6 +95,22 @@ public final class AccessControlManager implements IAccessControlEventListener {
 
    public static Collection<AccessControlData> getAccessControlList(Object object) {
       return getService().getAccessControlList(object);
+   }
+
+   /**
+    * @return AccessControlData for this user for this object if one exists; otherwise null
+    */
+   public static AccessControlData getAccessControlForLock(Object object) {
+      AccessControlData data = null;
+      if (object instanceof Artifact && hasLock((Artifact) object)) {
+         ArtifactAccessObject artifactAccessObject = ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
+         User subject = UserManager.getUser();
+         data = new AccessControlData(subject, artifactAccessObject, PermissionEnum.LOCK, false, false);
+         data.setBranchPermission(getService().getBranchPermission(subject, ((Artifact) object).getBranch()));
+         data.setArtifactPermission(PermissionEnum.LOCK);
+      }
+      return data;
+
    }
 
    public static AccessObject getAccessObject(Object object) throws OseeCoreException {

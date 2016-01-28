@@ -17,7 +17,6 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
 
 public class PolicyContentProvider implements ITreeContentProvider {
 
@@ -46,21 +45,19 @@ public class PolicyContentProvider implements ITreeContentProvider {
 
       Collection<AccessControlData> data = AccessControlManager.getAccessControlList(accessControlledObject);
       for (AccessControlData entry : data) {
-         if (isUniqueUnlockedEntry(entry) && !deleteControlList.contains(entry)) {
+         if (!deleteControlList.contains(entry)) {
             accessControlList.put(entry.getSubject().getGuid(), entry);
          }
+      }
+
+      AccessControlData lockData = AccessControlManager.getAccessControlForLock(accessControlledObject);
+      if (lockData != null) {
+         accessControlList.put(lockData.getSubject().getGuid(), lockData);
       }
 
       Object[] accessControlListArray = accessControlList.values().toArray();
       Arrays.sort(accessControlListArray);
       return accessControlListArray;
-   }
-
-   private boolean isUniqueUnlockedEntry(AccessControlData entry) {
-      String subjectGuid = entry.getSubject().getGuid();
-      boolean isUnique = !accessControlList.containsKey(subjectGuid);
-      boolean isUnlocked = entry.getPermission() != PermissionEnum.LOCK;
-      return isUnique && isUnlocked;
    }
 
    @Override

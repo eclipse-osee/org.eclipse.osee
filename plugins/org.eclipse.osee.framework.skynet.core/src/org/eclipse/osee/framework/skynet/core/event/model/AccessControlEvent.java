@@ -29,7 +29,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
     * the artifacts property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getArtifacts().add(newItem);
     * </pre>
@@ -45,7 +45,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
 
    /**
     * Gets the value of the networkSender property.
-    * 
+    *
     * @return possible object is {@link NetworkSender }
     */
    @Override
@@ -55,7 +55,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
 
    /**
     * Sets the value of the networkSender property.
-    * 
+    *
     * @param value allowed object is {@link NetworkSender }
     */
    @Override
@@ -79,6 +79,11 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
          }
       }
       return false;
+   }
+
+   @Override
+   public String toString() {
+      return "AccessControlEvent [type=" + eventType + ", artifacts=" + artifacts + ", sender=" + networkSender + "]";
    }
 
 }

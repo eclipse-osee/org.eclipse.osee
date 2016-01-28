@@ -191,6 +191,7 @@ public class AccessControlService implements IAccessControlService {
 
    public synchronized void clearCache() {
       initializeCaches();
+      ensurePopulated.set(false);
    }
 
    private void initializeCaches() {
@@ -411,7 +412,7 @@ public class AccessControlService implements IAccessControlService {
 
    public PermissionEnum getArtifactPermission(IBasicArtifact<?> subject, Artifact artifact) throws OseeCoreException {
       ensurePopulated();
-      PermissionEnum userPermission = null;
+      PermissionEnum userPermission = PermissionEnum.FULLACCESS;
       AccessObject accessObject = null;
 
       // The artifact is new and has not been persisted.
@@ -445,7 +446,7 @@ public class AccessControlService implements IAccessControlService {
 
    private PermissionEnum acquirePermissionRank(IBasicArtifact<?> subject, AccessObject accessObject) {
       ensurePopulated();
-      PermissionEnum userPermission = null;
+      PermissionEnum userPermission = PermissionEnum.FULLACCESS;
       int subjectId = subject.getArtId();
 
       userPermission = accessControlListCache.get(subjectId, accessObject);
@@ -721,6 +722,16 @@ public class AccessControlService implements IAccessControlService {
       Branch theBranch = getBranchCache().get(branch);
       getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
       getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
+
+      try {
+         if (eventService != null) {
+            AccessControlEvent event = new AccessControlEvent();
+            event.setEventType(AccessControlEventType.BranchAccessControlModified);
+            eventService.send(this, event);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
+      }
    }
 
    public boolean hasLock(Artifact object) throws OseeCoreException {

@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.UserGroup;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,13 +20,19 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -50,13 +54,14 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class PolicyDialog extends Dialog {
    private PolicyTableViewer policyTableViewer;
-   private Button btnAdd;
+   private Button addButton;
    private Button chkChildrenPermission;
-   private Combo cmbUsers;
-   private Combo cmbPermissionLevel;
+   private Combo userCombo;
+   private Combo permissionLevelCombo;
    private final Object accessControlledObject;
-   private Label accessLabel;
+   private Label accessLabel, objectLabel;
    private final Shell parentShell;
+   Boolean isArtifactLockedBeforeDialog = null;
 
    public PolicyDialog(Shell parentShell, Object accessControlledObject) {
       super(parentShell);
@@ -68,14 +73,42 @@ public class PolicyDialog extends Dialog {
    @Override
    protected Control createDialogArea(Composite parent) {
       getShell().setText("Access Control List: " + getHeaderName(accessControlledObject));
+
       Composite mainComposite = new Composite(parent, SWT.NONE);
       mainComposite.setFont(parent.getFont());
       mainComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       mainComposite.setLayout(new GridLayout(1, false));
 
-      addDialogContols(mainComposite);
+      accessLabel = new Label(mainComposite, SWT.NONE);
+
+      Group group = new Group(mainComposite, SWT.NULL);
+      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      group.setLayout(new GridLayout(1, false));
+
+      // Setup policy table
+      objectLabel = new Label(group, SWT.NONE);
+      objectLabel.setText(
+         String.format("Access Control for [%s]", Strings.truncate(accessControlledObject.toString(), 70)));
+
+      policyTableViewer = new PolicyTableViewer(group, accessControlledObject);
+
+      // Create Input Widgets
+      Composite composite = new Composite(group, SWT.NONE);
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
+      composite.setLayout(new GridLayout(4, false));
+
+      permissionLevelCombo = new Combo(composite, SWT.NONE);
+      userCombo = new Combo(composite, SWT.NONE);
+      addButton = new Button(composite, SWT.PUSH);
+      addButton.setText("Add");
+
+      new Label(mainComposite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
+
+      chkChildrenPermission = new Button(mainComposite, SWT.CHECK);
+      chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
+
       try {
-         setInputs();
+         populateInputWidgets();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -83,23 +116,17 @@ public class PolicyDialog extends Dialog {
       checkEnabled();
       setMaxModificationLevel();
 
+      if (accessControlledObject instanceof Artifact) {
+         isArtifactLockedBeforeDialog = AccessControlManager.hasLock((Artifact) accessControlledObject);
+      }
+
       return mainComposite;
    }
 
-   private void setInputs() throws OseeCoreException {
-      cmbUsers.setText("-Select Person-");
-      cmbPermissionLevel.setText("-Select Permission-");
+   private void populateInputWidgets() throws OseeCoreException {
 
-      ArrayList<Artifact> subjectList = new ArrayList<>();
-      subjectList.addAll(UserManager.getUsersSortedByName());
-      subjectList.addAll(ArtifactQuery.getArtifactListFromType(UserGroup, COMMON));
-      Collections.sort(subjectList, new UserComparator<Artifact>());
-      for (Artifact subject : subjectList) {
-         String name = subject.getName();
-         cmbUsers.add(name);
-         cmbUsers.setData(name, subject);
-      }
-
+      // Setup permissions combo
+      permissionLevelCombo.setText("-Select Permission-");
       PermissionEnum[] permissions = PermissionEnum.values();
       Arrays.sort(permissions, new Comparator<PermissionEnum>() {
 
@@ -108,22 +135,33 @@ public class PolicyDialog extends Dialog {
             return o1.getName().compareToIgnoreCase(o2.getName());
          }
       });
-
       for (PermissionEnum permission : permissions) {
-         if (!permission.equals(PermissionEnum.LOCK)) {
-            cmbPermissionLevel.add(permission.getName() + " - Rank = " + permission.getRank() + "");
-            cmbPermissionLevel.setData(permission.getName(), permission);
-         }
+         permissionLevelCombo.add(
+            permission.getName() + " - Rank = " + permission.getRank() + " - " + permission.getDescription());
+         permissionLevelCombo.setData(permission.getName(), permission);
       }
+
+      // Setup user combo
+      userCombo.setText("-Select Person-");
+      ArrayList<Artifact> subjectList = new ArrayList<>();
+      subjectList.addAll(UserManager.getUsersSortedByName());
+      subjectList.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, CoreBranches.COMMON));
+      Collections.sort(subjectList, new UserComparator<Artifact>());
+      for (Artifact subject : subjectList) {
+         String name = subject.getName();
+         userCombo.add(name);
+         userCombo.setData(name, subject);
+      }
+
    }
 
    private void addListeners() {
-      btnAdd.addSelectionListener(new SelectionAdapter() {
+      addButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            Artifact subject = (Artifact) cmbUsers.getData(cmbUsers.getText().replaceAll(" - Rank.*", ""));
-            PermissionEnum permission =
-               (PermissionEnum) cmbPermissionLevel.getData(cmbPermissionLevel.getText().replaceAll(" - Rank.*", ""));
+            Artifact subject = (Artifact) userCombo.getData(userCombo.getText().replaceAll(" - Rank.*", ""));
+            PermissionEnum permission = (PermissionEnum) permissionLevelCombo.getData(
+               permissionLevelCombo.getText().replaceAll(" - Rank.*", ""));
 
             if (subject != null && permission != null) {
                try {
@@ -137,30 +175,6 @@ public class PolicyDialog extends Dialog {
             }
          }
       });
-   }
-
-   private void addDialogContols(Composite mainComposite) {
-
-      accessLabel = new Label(mainComposite, SWT.NONE);
-
-      Group group = new Group(mainComposite, SWT.NULL);
-      group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      group.setLayout(new GridLayout(1, false));
-
-      policyTableViewer = new PolicyTableViewer(group, accessControlledObject);
-
-      Composite composite = new Composite(group, SWT.NONE);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
-      composite.setLayout(new GridLayout(4, false));
-
-      cmbUsers = new Combo(composite, SWT.NONE);
-      cmbPermissionLevel = new Combo(composite, SWT.NONE);
-      btnAdd = new Button(composite, SWT.PUSH);
-      btnAdd.setText("Add");
-      new Label(composite, SWT.NONE).setText("  NOTE: Higher permission rank overrides lower rank.");
-
-      chkChildrenPermission = new Button(mainComposite, SWT.CHECK);
-      chkChildrenPermission.setText("Set permission for artifact's default hierarchy descendents.");
    }
 
    private void setMaxModificationLevel() {
@@ -185,44 +199,33 @@ public class PolicyDialog extends Dialog {
       accessLabel.setText(displayText);
       boolean isArtifact = accessControlledObject instanceof Artifact;
 
-      cmbUsers.setEnabled(isAccessEnabled);
-      cmbPermissionLevel.setEnabled(isAccessEnabled);
-      btnAdd.setEnabled(isAccessEnabled);
+      userCombo.setEnabled(isAccessEnabled);
+      permissionLevelCombo.setEnabled(isAccessEnabled);
+      addButton.setEnabled(isAccessEnabled);
       policyTableViewer.allowTableModification(isAccessEnabled);
       chkChildrenPermission.setEnabled(isArtifact);
    }
 
    private boolean isModifyAccessEnabled() {
-      boolean returnValue;
-
-      try {
-         if (!SystemGroup.OseeAccessAdmin.isCurrentUserMember() && policyTableViewer.getAccessControlList().size() > 0) {
-            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.LOCK);
-         } else {
-            returnValue = true;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         returnValue = false;
-      }
-
-      return returnValue;
+      return isAccessEnabled(PermissionEnum.LOCK);
    }
 
    private boolean isAddAccessEnabled() {
-      boolean returnValue;
+      return isAccessEnabled(PermissionEnum.FULLACCESS);
+   }
 
+   private boolean isAccessEnabled(PermissionEnum permission) {
+      boolean returnValue = true;
       try {
-         if (!SystemGroup.OseeAccessAdmin.isCurrentUserMember() && policyTableViewer.getAccessControlList().size() > 0) {
-            returnValue = AccessControlManager.hasPermission(accessControlledObject, PermissionEnum.FULLACCESS);
-         } else {
-            returnValue = true;
+         boolean isOseeAccessAdmin = SystemGroup.OseeAccessAdmin.isCurrentUserMember();
+         boolean objectHasAccessSet = !policyTableViewer.getAccessControlList().isEmpty();
+         if (!isOseeAccessAdmin && objectHasAccessSet) {
+            returnValue = AccessControlManager.hasPermission(accessControlledObject, permission);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          returnValue = false;
       }
-
       return returnValue;
    }
 
@@ -236,6 +239,24 @@ public class PolicyDialog extends Dialog {
       }
       policyTableViewer.removeDataFromDB();
       AccessControlManager.clearCaches();
+
+      // Send artifact locked event if changed in dialog
+      if (isArtifactLockedBeforeDialog != null) {
+         try {
+            boolean isArtifactLockedAfterDialog = AccessControlManager.hasLock((Artifact) accessControlledObject);
+            if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
+               AccessControlEvent event = new AccessControlEvent();
+               event.setEventType(
+                  isArtifactLockedAfterDialog ? AccessControlEventType.ArtifactsLocked : AccessControlEventType.ArtifactsUnlocked);
+               event.getArtifacts().add(((Artifact) accessControlledObject).getBasicGuidArtifact());
+               OseeEventManager.kickAccessControlArtifactsEvent(PolicyDialog.class, event);
+               System.err.println("kicked access control event " + event);
+            }
+         } catch (Exception ex) {
+            OseeLog.log(PolicyDialog.class, Level.SEVERE, ex);
+         }
+
+      }
       super.okPressed();
    }
 

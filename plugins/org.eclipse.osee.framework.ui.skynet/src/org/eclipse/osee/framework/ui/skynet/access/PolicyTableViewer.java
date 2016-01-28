@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -34,7 +36,7 @@ import org.eclipse.swt.widgets.Composite;
 
 /**
  * Displays an <Code>Artifact</Code> access control list, used by the <Code>PolicyDialog</Code>.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class PolicyTableViewer {
@@ -61,7 +63,7 @@ public class PolicyTableViewer {
    public void addOrModifyItem(Artifact subject, Object object, PermissionEnum permission) throws OseeCoreException {
       AccessObject accessObject = AccessControlManager.getAccessObject(object);
       AccessControlData data = accessControlList.get(subject.getGuid());
-      if (data == null) { 
+      if (data == null) {
          data = new AccessControlData(subject, accessObject, permission, true);
       } else {
          modifyPermissionLevel(data, permission);
@@ -146,6 +148,29 @@ public class PolicyTableViewer {
    public void setMaxModificationLevel(PermissionEnum newValue) {
       maxModificationLevel = newValue;
       tableXViewer.setMaxPermission(maxModificationLevel);
+   }
+
+   public boolean currentUserCanModifyLock() {
+      if (isArtifact()) {
+         Artifact artifact = (Artifact) object;
+         boolean isAccessAdmin = SystemGroup.OseeAccessAdmin.isCurrentUserMember();
+         boolean canUnlockObject = AccessControlManager.canUnlockObject(artifact, UserManager.getUser());
+         boolean isUserFullAccess = AccessControlManager.getPermission(artifact).matches(PermissionEnum.FULLACCESS);
+         return isAccessAdmin || canUnlockObject || isUserFullAccess;
+      }
+      return false;
+   }
+
+   public boolean isArtifact() {
+      return object instanceof Artifact;
+   }
+
+   public Artifact getArtifact() {
+      Artifact result = null;
+      if (isArtifact()) {
+         result = (Artifact) object;
+      }
+      return result;
    }
 
 }
