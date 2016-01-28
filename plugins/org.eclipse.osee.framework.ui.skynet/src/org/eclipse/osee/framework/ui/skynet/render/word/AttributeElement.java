@@ -10,68 +10,51 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.word;
 
-import java.util.logging.Level;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
-import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-
 /**
  * @author Jeff C. Phillips
  */
 public class AttributeElement {
-   private static final Pattern internalAttributeElementsPattern =
-      Pattern.compile("<((\\w+:)?(Label|Outline|Name|Format|Editable))>(.*?)</\\1>",
-         Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   private String outlineNumber;
    private String label;
-   private String attributeName;
+   private String attributeType;
    private String format;
-
-   public AttributeElement(String element) {
-      Matcher matcher = internalAttributeElementsPattern.matcher(element);
-
-      this.outlineNumber = "";
+   private String formatPre;
+   private String formatPost;
+   
+   public AttributeElement()
+   {
       this.label = "";
-      this.attributeName = "";
+      this.attributeType = "";
+      this.formatPre = "";
+      this.formatPost = "";
       this.format = "";
-
-      while (matcher.find()) {
-         String elementType = matcher.group(3);
-         String value = matcher.group(4).trim();
-         if (elementType.equals("Outline")) {
-            value = WordUtil.textOnly(value);
-            if (value.length() > 0) {
-               outlineNumber = value;
-            } else {
-               outlineNumber = "1.0";
-            }
-         } else if (elementType.equals("Label")) {
-            label = value;
-         } else if (elementType.equals("Name")) {
-            attributeName = WordUtil.textOnly(value);
-         } else if (elementType.equals("Format")) {
-            format = value;
-         } else {
-            OseeLog.log(Activator.class, Level.WARNING, "Unexpected element read in Attribute:" + elementType);
-         }
-      }
+   }
+   
+   public void setElements(String attributeType, String label, String formatPre, String formatPost)
+   {
+      this.label = label;
+      this.attributeType = attributeType;
+      this.format = formatPre;
+      this.formatPre = formatPre;
+      this.formatPost = formatPost;
    }
 
    public String getAttributeName() {
-      return attributeName;
+      return attributeType;
    }
 
    public String getFormat() {
       return format;
    }
+   
+   public String getFormatPre() {
+      return formatPre;
+   }
+   
+   public String getFormatPost() {
+      return formatPost;
+   }
 
    public String getLabel() {
       return label;
-   }
-
-   public String getOutlineNumber() {
-      return outlineNumber;
    }
 }

@@ -30,8 +30,4 @@ public class WordRendererUtil {
       }
       return PageOrientation.fromString(pageTypeValue);
    }
-
-   public static String getDataRightsClassification(Artifact artifact) {
-      return artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
-   }
 }

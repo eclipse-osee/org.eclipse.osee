@@ -109,7 +109,7 @@ public class WholeWordRenderer extends WordRenderer {
             content = WordMlLinkHandler.link(linkType, artifact, content, unknownGuids);
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
-            String classification = WordRendererUtil.getDataRightsClassification(artifact);
+            String classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
             if (Strings.isValid(classification)) {
                content = addDataRights(content, classification, artifact);
             }

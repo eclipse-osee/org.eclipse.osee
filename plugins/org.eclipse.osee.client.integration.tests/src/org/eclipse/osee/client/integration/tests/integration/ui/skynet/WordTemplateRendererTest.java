@@ -86,6 +86,13 @@ public class WordTemplateRendererTest {
    private static String MASTER_TEMPLATE_STRING_IDONLY;
    private static String MASTER_TEMPLATE_STRING_IDANDNAME;
    private static String SLAVE_TEMPLATE_STRING;
+   
+   private static String RECURSIVE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String SINGLE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS =  "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String MASTER_RENDERER_OPTIONS = "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}]}";
+   private static String MASTER_ID_RENDERER_OPTIONS = "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}]}";
+   private static String SLAVE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r><w:t>Partition:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Development Assurance Level\", \"Label\" : \"<w:r><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
    private IOseeBranch rootBranch;
    private IOseeBranch updateBranch;
@@ -377,6 +384,7 @@ public class WordTemplateRendererTest {
             String rev = m.group();
             contents = contents.replace(rev, "wsp:rsidRDefault=\"TESTING\"");
          }
+
          Assert.assertTrue("Original Paragram Numbering for Notes is incorrect", contents.contains(
             "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3</w:t></w:r>"));
          Assert.assertTrue("Original Paragram Numbering for More Notes is incorrect", contents.contains(
@@ -615,27 +623,33 @@ public class WordTemplateRendererTest {
          "org.eclipse.osee.framework.ui.skynet.word PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
          "org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer PREVIEW PREVIEW_WITH_RECURSE_NO_ATTRIBUTES");
+      recurseTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
       singleTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Single Template");
       singleTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, SINGLE_TEMPLATE_STRING);
+      singleTemplate.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_RENDERER_OPTIONS);
       singleTemplateAttrib =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Single With Attributes");
       singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent,
          SINGLE_TEMPLATE_WITH_ATTRIBUTES_STRING);
+      singleTemplateAttrib.setSoleAttributeValue(CoreAttributeTypes.RendererOptions, SINGLE_ATTRIBUTE_RENDERER_OPTIONS);
       masterTemplate =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template");
       masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, MASTER_TEMPLATE_STRING);
+      masterTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_RENDERER_OPTIONS);
       masterTemplate_idOnly =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID only");
       masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDONLY);
+      masterTemplate_idOnly.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
       masterTemplate_idAndName =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID and name");
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDANDNAME);
-
+      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
       slaveTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsSlave Template");
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
-
+      slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, SLAVE_RENDERER_OPTIONS);
+      
       folder.addChild(recurseTemplate);
       folder.addChild(singleTemplate);
       folder.addChild(singleTemplateAttrib);

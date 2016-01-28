@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -65,7 +66,7 @@ public class TisRenderer extends WordTemplateRenderer {
 
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
-      String template;
+      Artifact template;
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
@@ -80,7 +81,7 @@ public class TisRenderer extends WordTemplateRenderer {
       handlers.add(new TISAttributeHandler());
       handlers.add(new WordAttributeTypeAttributeHandler());
       handlers.add(new BasicTemplateAttributeHandler());
-      WordTemplateManager wtm = new WordTemplateManager(template, handlers);
+      WordTemplateManager wtm = new WordTemplateManager(template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent), handlers);
       CharBackedInputStream charBak = null;
       try {
          charBak = new CharBackedInputStream();

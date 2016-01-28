@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
+   private static String EDIT_RENDERER_OPTIONS =  "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String RECURSIVE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
    @Override
    public void run() throws OseeCoreException {
       try {
@@ -55,6 +57,11 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
 
             if (url != null) {
                templateArtifact.setName(name);
+               if(name.equals("Word Edit Template")) {
+                  templateArtifact.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, EDIT_RENDERER_OPTIONS);
+               } else if(name.equals("PREVIEW_ALL_RECURSE")) {
+                  templateArtifact.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, RECURSIVE_RENDERER_OPTIONS);
+               }
                templateArtifact.setSoleAttributeFromStream(CoreAttributeTypes.WholeWordContent, url.openStream());
                for (IConfigurationElement matchCriteriaEl : el.getChildren()) {
                   String match = matchCriteriaEl.getAttribute("match");

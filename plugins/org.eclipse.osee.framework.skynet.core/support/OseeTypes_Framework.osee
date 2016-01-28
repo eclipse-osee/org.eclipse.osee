@@ -343,6 +343,7 @@ artifactType "Universal Group" extends "Group Artifact" {
 artifactType "Renderer Template" extends "MS Word Whole Document" {
 	uuid 0x0000000000000009
 	attribute "Template Match Criteria"
+	attribute "Renderer Options"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
@@ -353,6 +354,17 @@ attributeType "Template Match Criteria" extends StringAttribute {
 	taggerId DefaultAttributeTaggerProvider
 	description "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 	mediaType "text/plain"
+}
+
+attributeType "Renderer Options" extends StringAttribute {
+	uuid 0x0000000000000388
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+	taggerId DefaultAttributeTaggerProvider
+   defaultValue "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}"
+   fileExtension "txt"
+	mediaType "application/json"
 }
 
 relationType "Default Hierarchical" {

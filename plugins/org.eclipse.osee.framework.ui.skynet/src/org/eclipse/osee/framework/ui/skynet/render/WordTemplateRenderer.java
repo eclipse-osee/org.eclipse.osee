@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -61,8 +60,6 @@ import org.w3c.dom.Element;
  * @author Jeff C. Phillips
  */
 public class WordTemplateRenderer extends WordRenderer implements ITemplateRenderer {
-   public static final String DEFAULT_SET_NAME = "Default";
-   public static final String ARTIFACT_SCHEMA = "http://eclipse.org/artifact.xsd";
    private static final String EMBEDDED_OBJECT_NO = "w:embeddedObjPresent=\"no\"";
    private static final String EMBEDDED_OBJECT_YES = "w:embeddedObjPresent=\"yes\"";
    private static final String STYLES_END = "</w:styles>";
@@ -89,7 +86,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    public void publish(Artifact masterTemplateArtifact, Artifact slaveTemplateArtifact, List<Artifact> artifacts, Object... options) throws OseeCoreException {
       setOptions(options);
-      templateProcessor.publishWithExtensionTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
+      templateProcessor.publishWithNestedTemplates(masterTemplateArtifact, slaveTemplateArtifact, artifacts);
    }
 
    /**
@@ -189,14 +186,24 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
-      String template;
+      Artifact template;
+      String templateContent = "";
+      String templateOptions = "";
 
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
          template = getTemplate(null, presentationType);
+         if(template != null) {
+            templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+            templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
+         }
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
+         if(template != null) {
+            templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+            templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
+         }
 
          if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() > 1) {
             // currently we can't support the editing of multiple artifacts with OLE data
@@ -210,20 +217,20 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             artifacts.removeAll(notMultiEditableArtifacts);
          } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData, "").equals("")) {
-               template = template.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
-               template = template.replaceAll(STYLES_END,
+               templateContent = templateContent.replaceAll(EMBEDDED_OBJECT_NO, EMBEDDED_OBJECT_YES);
+               templateContent = templateContent.replaceAll(STYLES_END,
                   STYLES_END + OLE_START + firstArtifact.getSoleAttributeValue(CoreAttributeTypes.WordOleData,
                      "") + OLE_END);
             }
          }
       }
 
-      template = WordUtil.removeGUIDFromTemplate(template);
-      return templateProcessor.applyTemplate(artifacts, template, null, null, getStringOption("outlineType"),
+      templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
+      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, null, null, getStringOption("outlineType"),
          presentationType);
    }
 
-   protected String getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
+   protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
       // if USE_TEMPLATE_ONCE then only the first two artifacts will use the whole template (since they are diff'd with each other)
       // The settings from the template are stored previously and will be used, just not the content of the Word template
       boolean useTemplateOnce = getBooleanOption(USE_TEMPLATE_ONCE);
@@ -242,15 +249,16 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                setOption(SECOND_TIME, true);
             }
          }
-         return template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
-      } else if (option == null || option instanceof String || useTemplateOnce && !firstTime) {
+
+         return template;
+      } else if ((option == null || option instanceof String) || (useTemplateOnce && !firstTime)) {
          if (useTemplateOnce && !firstTime && !secondTime) {
             option = null;
          }
          Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, (String) option);
-         return templateArtifact.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
+         return templateArtifact;
       }
-      return Strings.EMPTY_STRING;
+     return null;
    }
 
    @Override
