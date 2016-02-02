@@ -46,7 +46,6 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -294,7 +293,7 @@ public class WordTemplateProcessor {
             String artifactName = renderer.getStringOption("Name");
             String artifactId = renderer.getStringOption("Id");
             String orcsQuery = renderer.getStringOption("OrcsQuery");
-            Branch branch = renderer.getBranchOption("Branch");
+            IOseeBranch branch = renderer.getBranchOption("Branch");
             List<Artifact> artifacts = null;
 
             if (Strings.isValid(artifactId)) {

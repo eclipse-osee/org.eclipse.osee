@@ -13,10 +13,10 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IAttribute;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +43,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       return "Set Verification Level for Subsystem Requirements";
    }
 
-   private Branch branch;
+   private IOseeBranch branch;
    private Collection<Artifact> subsystemRequirements;
    private StringBuilder report;
    private SkynetTransaction transaction;

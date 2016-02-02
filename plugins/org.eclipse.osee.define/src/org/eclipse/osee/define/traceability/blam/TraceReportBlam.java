@@ -36,9 +36,9 @@ import org.eclipse.osee.define.traceability.report.ArtifactToRelatedArtifact;
 import org.eclipse.osee.define.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.traceability.report.IReportDataCollector;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -147,7 +147,7 @@ public class TraceReportBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       //      String fileName = variableMap.getString("Select UI List File");
-      Branch branch = variableMap.getBranch("Requirements Branch");
+      IOseeBranch branch = variableMap.getBranch("Requirements Branch");
       if (branch == null) {
          throw new OseeArgumentException("Branch cannot be null");
       }

@@ -21,12 +21,12 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -45,7 +45,7 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
 
-   private BranchTraceabilityOperation(RequirementData requirementData, Branch branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
+   private BranchTraceabilityOperation(RequirementData requirementData, BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
       super("Branch Traceability Provider", Activator.PLUGIN_ID);
       this.requirementData = requirementData;
       this.branch = branch;
@@ -53,12 +53,12 @@ public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
       this.withInheritance = withInheritance;
    }
 
-   public BranchTraceabilityOperation(Branch branch) {
+   public BranchTraceabilityOperation(IOseeBranch branch) {
       this(new RequirementData(branch), branch, Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement),
          true);
    }
 
-   public BranchTraceabilityOperation(Branch branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
+   public BranchTraceabilityOperation(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
       this(new RequirementData(branch, types, withInheritance), branch, types, withInheritance);
    }
 

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * Perform keyword search (in word order) for a list of keywords. Results will be in an excel spreadsheet where each
  * match will show all the keyword groups that it matched with.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AdvancedKeywordSearchBlam extends AbstractBlam {
@@ -48,7 +48,7 @@ public class AdvancedKeywordSearchBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       IArtifactType ofArtifactType = variableMap.getArtifactType("Filter results by Artifact Type");
-      Branch branch = variableMap.getBranch("Branch");
+      IOseeBranch branch = variableMap.getBranch("Branch");
       if (branch == null) {
          AWorkbench.popup("Must enter Branch");
          return;

@@ -29,8 +29,8 @@ import org.eclipse.osee.define.traceability.TraceabilityFactory.TraceabilityStyl
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.TraceabilityTable;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -119,7 +119,7 @@ public class PublishStdStpTraceability extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Branch requirementsBranch = variableMap.getBranch("Program Branch");
+      IOseeBranch requirementsBranch = variableMap.getBranch("Program Branch");
       Collection<? extends IArtifactType> types =
          variableMap.getCollection(ArtifactType.class, "Artifact Type(s) to Trace");
       boolean searchInherited = variableMap.getBoolean("Search Inherited Types");

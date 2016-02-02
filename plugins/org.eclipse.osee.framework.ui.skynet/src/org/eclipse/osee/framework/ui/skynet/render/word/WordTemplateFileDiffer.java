@@ -22,14 +22,15 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -62,15 +63,15 @@ public final class WordTemplateFileDiffer {
       renderer.setOption(WordTemplateProcessor.PUBLISH_AS_DIFF, false);
       renderer.setOption("RecurseChildren", recurseChildren);
 
-      Branch endBranch = renderer.getBranchOption("Branch");
+      IOseeBranch endBranch = renderer.getBranchOption("Branch");
       renderer.setOption("Diff Branch", endBranch);
 
-      Branch compareBranch = renderer.getBranchOption("compareBranch");
+      IOseeBranch compareBranch = renderer.getBranchOption("compareBranch");
 
       TransactionRecord startTransaction;
 
       if (compareBranch == null) {
-         startTransaction = endBranch.getBaseTransaction();
+         startTransaction = BranchManager.getBaseTransaction(endBranch);
          compareBranch = endBranch;
       } else {
          startTransaction = TransactionManager.getHeadTransaction(compareBranch);
@@ -91,8 +92,7 @@ public final class WordTemplateFileDiffer {
       }
 
       boolean recurseOnLoad = renderer.getBooleanOption(WordTemplateProcessor.RECURSE_ON_LOAD);
-      Collection<Artifact> toProcess =
-         recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
+      Collection<Artifact> toProcess = recurseChildren || recurseOnLoad ? getAllArtifacts(endArtifacts) : endArtifacts;
       List<Change> changes = new LinkedList<>();
       ChangeDataLoader changeLoader = new ChangeDataLoader(changes, txDelta);
       IProgressMonitor monitor = (IProgressMonitor) renderer.getOption("Progress Monitor");
