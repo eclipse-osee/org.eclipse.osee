@@ -2,7 +2,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -17,10 +17,10 @@ public class MoveBranchDatabaseCallable {
 
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
    private final boolean archive;
-   private final Branch branch;
+   private final BranchId branch;
    private final JdbcClient jdbcClient;
 
-   public MoveBranchDatabaseCallable(JdbcClient jdbcClient, boolean archive, Branch branch) {
+   public MoveBranchDatabaseCallable(JdbcClient jdbcClient, boolean archive, BranchId branch) {
       this.jdbcClient = jdbcClient;
       this.archive = archive;
       this.branch = branch;

@@ -24,7 +24,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -67,7 +66,7 @@ import org.eclipse.osee.orcs.rest.model.Transaction;
  */
 public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    private final User user;
-   private final Branch sourceBranch;
+   private final BranchId sourceBranch;
    private final BranchId destinationBranch;
    private final boolean isArchiveAllowed;
    private final boolean skipChecksAndEvents;
@@ -75,7 +74,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    public CommitBranchHttpRequestOperation(User user, BranchId sourceBranch, BranchId destinationBranch, boolean isArchiveAllowed, boolean skipChecksAndEvents) {
       super("Commit " + sourceBranch, Activator.PLUGIN_ID);
       this.user = user;
-      this.sourceBranch = BranchManager.getBranch(sourceBranch);
+      this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.isArchiveAllowed = isArchiveAllowed;
       this.skipChecksAndEvents = skipChecksAndEvents;
@@ -84,7 +83,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
       BranchState currentState = BranchManager.getState(sourceBranch);
-      sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
+      BranchManager.getBranch(sourceBranch).setBranchState(BranchState.COMMIT_IN_PROGRESS); // the server changes the state in the database to COMMIT_IN_PROGRESS
 
       BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);
       OseeEventManager.kickBranchEvent(getClass(), branchEvent);
@@ -98,12 +97,12 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       try {
          Response response = proxy.commitBranch(sourceBranch.getUuid(), destinationBranch.getUuid(), options);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
-            sourceBranch.setBranchState(BranchState.COMMITTED);
+            BranchManager.setState(sourceBranch, BranchState.COMMITTED);
             int txId = getTransactionId(response);
             handleResponse(txId, monitor, sourceBranch, destinationBranch);
          }
       } catch (Exception ex) {
-         sourceBranch.setBranchState(currentState);
+         BranchManager.setState(sourceBranch, currentState);
          OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
          throw JaxRsExceptions.asOseeException(ex);
       }

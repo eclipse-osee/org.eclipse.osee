@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,10 +65,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateAssociatedArtifactHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchArchivedStateHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchNameHttpRequestOperation;
-import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
@@ -78,6 +73,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
@@ -265,7 +261,7 @@ public final class BranchManager {
    /**
     * Update branch
     */
-   public static Job updateBranch(final IOseeBranch branch, final ConflictResolverOperation resolver) {
+   public static Job updateBranch(IOseeBranch branch, final ConflictResolverOperation resolver) {
       IOperation operation = new UpdateBranchOperation(branch, resolver);
       return Operations.executeAsJob(operation, true);
    }
@@ -275,13 +271,17 @@ public final class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static void purgeBranch(final BranchId branch) throws OseeCoreException {
+   public static void purgeBranch(BranchId branch) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
-   public static void updateBranchType(IProgressMonitor monitor, final long branchUuid, final BranchType type) throws OseeCoreException {
-      IOperation operation = new UpdateBranchTypeHttpRequestOperation(branchUuid, type);
-      Operations.executeWorkAndCheckStatus(operation, monitor);
+   public static void setType(BranchId branch, BranchType type) throws OseeCoreException {
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+      Response response = proxy.setBranchType(branch.getId(), type);
+      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+         BranchManager.getBranch(branch).setBranchType(type);
+         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.TypeUpdated, branch));
+      }
    }
 
    public static void setState(BranchId branch, BranchState state) {
@@ -294,13 +294,32 @@ public final class BranchManager {
    }
 
    public static void setArchiveState(BranchId branch, BranchArchivedState state) throws OseeCoreException {
-      IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branch, state.isArchived());
-      Operations.executeWorkAndCheckStatus(operation, null);
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+      Long branchId = branch.getUuid();
+      if (state.isArchived()) {
+         Response response = proxy.archiveBranch(branchId);
+         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+            BranchManager.getBranch(branch).setArchived(true);
+            OseeEventManager.kickBranchEvent(BranchManager.class,
+               new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
+         }
+      } else {
+         Response response = proxy.unarchiveBranch(branchId);
+         if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+            BranchManager.getBranch(branch).setArchived(false);
+            OseeEventManager.kickBranchEvent(BranchManager.class,
+               new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
+         }
+      }
    }
 
-   public static void updateBranchName(final Long branchUuid, String newBranchName) {
-      IOperation operation = new UpdateBranchNameHttpRequestOperation(branchUuid, newBranchName);
-      Operations.executeWorkAndCheckStatus(operation);
+   public static void setName(BranchId branch, String newBranchName) {
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
+      Response response = proxy.setBranchName(branch.getId(), newBranchName);
+      if (response.getStatus() == javax.ws.rs.core.Response.Status.OK.getStatusCode()) {
+         BranchManager.getBranch(branch).setName(newBranchName);
+         OseeEventManager.kickBranchEvent(BranchManager.class, new BranchEvent(BranchEventType.Renamed, branch));
+      }
    }
 
    /**
@@ -558,20 +577,12 @@ public final class BranchManager {
       lastBranch = branch;
    }
 
-   public static void persist(Branch... branches) throws OseeCoreException {
-      getCache().storeItems(Arrays.asList(branches));
-   }
-
-   public static void persist(Collection<Branch> branches) throws OseeCoreException {
-      getCache().storeItems(branches);
-   }
-
    public static void decache(Branch branch) throws OseeCoreException {
       getCache().decache(branch);
    }
 
-   public static boolean hasChanges(Branch branch) throws OseeCoreException {
-      return branch.getBaseTransaction() != TransactionManager.getHeadTransaction(branch);
+   public static boolean hasChanges(BranchId branch) throws OseeCoreException {
+      return !getBaseTransaction(branch).equals(TransactionManager.getHeadTransaction(branch));
    }
 
    public static boolean isChangeManaged(BranchId branch) throws OseeCoreException {
@@ -579,20 +590,18 @@ public final class BranchManager {
       return associatedArtifactId > 0 && !associatedArtifactId.equals(SystemUser.OseeSystem);
    }
 
-   public static void setAssociatedArtifactId(IOseeBranch branch, Integer artifactId) {
-      getBranch(branch).setAssociatedArtifactId(artifactId);
-      IOperation operation = new UpdateAssociatedArtifactHttpRequestOperation(branch, artifactId);
-      Operations.executeWorkAndCheckStatus(operation);
+   public static void setAssociatedArtifactId(BranchId branch, Integer artifactId) {
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
+
+      Response response = proxy.associateBranchToArtifact(branch.getId(), artifactId);
+      if (javax.ws.rs.core.Response.Status.OK.getStatusCode() == response.getStatus()) {
+         getBranch(branch).setAssociatedArtifactId(artifactId);
+      }
    }
 
    public static Integer getAssociatedArtifactId(BranchId branch) {
       return getBranch(branch).getAssociatedArtifactId();
-   }
-
-   public static void setAssociatedArtifactId(BranchId branch, Integer artifactId) {
-      Branch fullBranch = getBranch(branch);
-      fullBranch.setAssociatedArtifactId(artifactId);
-      BranchManager.persist(fullBranch);
    }
 
    public static Artifact getAssociatedArtifact(BranchId branch) throws OseeCoreException {
@@ -650,10 +659,6 @@ public final class BranchManager {
       return getBranch(branch).getBranchState();
    }
 
-   public static boolean hasChanges(BranchId branch) {
-      return hasChanges(getBranch(branch));
-   }
-
    public static BranchType getType(BranchId branch) {
       return getBranch(branch).getBranchType();
    }
@@ -703,18 +708,6 @@ public final class BranchManager {
 
    public static boolean isLoaded() {
       return getCache().isLoaded();
-   }
-
-   public static void setName(BranchId branch, String newName) {
-      Branch fullBranch = getBranch(branch);
-      String oldName = fullBranch.getName();
-      fullBranch.setName(newName);
-      try {
-         persist(fullBranch);
-      } catch (Exception ex) {
-         fullBranch.setName(oldName);
-         throw ex;
-      }
    }
 
    public static String getBranchName(BranchId branch) {

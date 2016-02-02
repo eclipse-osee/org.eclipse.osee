@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -122,7 +121,7 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private void loadChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   private void loadChanges(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }

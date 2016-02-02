@@ -36,7 +36,7 @@ public class PromptChangeUtil {
          BranchType type = ld.getSelection();
          for (TreeItem item : branches) {
             Branch branch = (Branch) item.getData();
-            BranchManager.updateBranchType(null, branch.getUuid(), type);
+            BranchManager.setType(branch, type);
          }
          return true;
       }

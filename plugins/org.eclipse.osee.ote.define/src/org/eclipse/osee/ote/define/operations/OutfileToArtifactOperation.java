@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerExecutor;
 import org.eclipse.osee.framework.core.threading.ThreadedWorkerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -75,13 +74,13 @@ public class OutfileToArtifactOperation {
 
    private Artifact getParentArtifact() throws OseeCoreException {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      Artifact testFolder = OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test", (Branch) branch);
+      Artifact testFolder = OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test", branch);
       if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testFolder)) {
          root.addChild(testFolder);
          root.persist("New Test Folder");
       }
       Artifact scriptFolder =
-         OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test Script Results", (Branch) branch);
+         OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, "Test Script Results", branch);
       if (!testFolder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, scriptFolder)) {
          testFolder.addChild(scriptFolder);
          testFolder.persist("New Test Script Results Folder");

@@ -6,7 +6,6 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
@@ -125,8 +124,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException {
+   public TransactionRecord getHeadTransaction(TransactionCache cache, BranchId branch) throws OseeCoreException {
       String query = ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return cache.getOrLoad(jdbcClient.runPreparedQueryFetchObject(-1, query, branch.getUuid()));
+      return cache.getOrLoad(jdbcClient.runPreparedQueryFetchObject(-1, query, branch.getId()));
    }
 }

@@ -14,7 +14,6 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -48,9 +47,8 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      long branchUuid = branch.getUuid();
       BranchState currentState = BranchManager.getState(branch);
-      BranchArchivedState archivedState = branch.getArchiveState();
+      boolean archived = BranchManager.isArchived(branch);
 
       ArtifactCache.deCache(branch);
 
@@ -61,7 +59,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
       try {
-         Response response = proxy.purgeBranch(branchUuid, recursive);
+         Response response = proxy.purgeBranch(branch.getId(), recursive);
          if (Status.OK.getStatusCode() == response.getStatus()) {
             branch.setStorageState(StorageState.PURGED);
             branch.setBranchState(BranchState.PURGED);
@@ -70,13 +68,13 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch));
          } else {
             branch.setBranchState(currentState);
-            branch.setArchived(archivedState.isArchived());
+            branch.setArchived(archived);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branch));
          }
       } catch (Exception ex) {
          try {
             branch.setBranchState(currentState);
-            branch.setArchived(archivedState.isArchived());
+            branch.setArchived(archived);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branch));
          } catch (Exception ex2) {
             log(ex2);

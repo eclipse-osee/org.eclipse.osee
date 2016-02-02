@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -60,17 +61,17 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    private final int userArtId;
    private final BranchReadable sourceBranch;
    private final BranchReadable destinationBranch;
-   private final Long mergeBranchUuid;
+   private final BranchId mergeBranch;
    private final List<ChangeItem> changes;
 
-   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, int userArtId, BranchReadable sourceBranch, BranchReadable destinationBranch, Long mergeBranchUuid, List<ChangeItem> changes) {
+   public CommitBranchDatabaseTxCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, IdentityManager idManager, int userArtId, BranchReadable sourceBranch, BranchReadable destinationBranch, BranchId mergeBranch, List<ChangeItem> changes) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
       this.idManager = idManager;
       this.userArtId = userArtId;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
-      this.mergeBranchUuid = mergeBranchUuid;
+      this.mergeBranch = mergeBranch;
       this.changes = changes;
    }
 
@@ -93,31 +94,31 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
             destinationBranch.getUuid());
 
          manageBranchStates();
-         if (mergeBranchUuid != null && mergeBranchUuid > 0) {
+         if (mergeBranch.isValid()) {
             getJdbcClient().runPreparedUpdate(UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
-               ConflictStatus.RESOLVED.getValue(), mergeBranchUuid);
+               ConflictStatus.RESOLVED.getValue(), mergeBranch);
          }
       } catch (OseeCoreException ex) {
-         updateBranchState(storedBranchState, sourceBranch.getUuid());
+         updateBranchState(storedBranchState, sourceBranch);
          throw ex;
       }
       return newTx;
    }
 
    public synchronized void checkPreconditions() throws OseeCoreException {
-      int count = getJdbcClient().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getUuid(),
+      int count = getJdbcClient().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch,
          BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);
       }
 
       if (!sourceBranch.getBranchState().equals(BranchState.COMMITTED)) {
-         updateBranchState(BranchState.COMMIT_IN_PROGRESS, sourceBranch.getUuid());
+         updateBranchState(BranchState.COMMIT_IN_PROGRESS, sourceBranch);
       }
    }
 
-   public void updateBranchState(BranchState state, Long branchUuid) throws OseeCoreException {
-      getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), branchUuid);
+   public void updateBranchState(BranchState state, BranchId branchId) throws OseeCoreException {
+      getJdbcClient().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), branchId);
    }
 
    private void updatePreviousCurrentsOnDestinationBranch(JdbcConnection connection) throws OseeCoreException {
@@ -170,14 +171,14 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private void manageBranchStates() throws OseeCoreException {
-      updateBranchState(BranchState.MODIFIED, destinationBranch.getUuid());
+      updateBranchState(BranchState.MODIFIED, destinationBranch);
 
       BranchState sourceBranchState = sourceBranch.getBranchState();
       if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
-         updateBranchState(BranchState.COMMITTED, sourceBranch.getUuid());
+         updateBranchState(BranchState.COMMITTED, sourceBranch);
       }
-      if (mergeBranchUuid != null && mergeBranchUuid > 0) {
-         updateBranchState(BranchState.COMMITTED, mergeBranchUuid);
+      if (mergeBranch.isValid()) {
+         updateBranchState(BranchState.COMMITTED, mergeBranch);
       }
    }
 

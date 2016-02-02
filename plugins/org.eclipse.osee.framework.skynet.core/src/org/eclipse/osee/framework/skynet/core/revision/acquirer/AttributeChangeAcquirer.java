@@ -16,11 +16,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -44,7 +43,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeChangeAcquirer extends ChangeAcquirer {
 
-   public AttributeChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public AttributeChangeAcquirer(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
@@ -69,7 +68,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          }
          //Changes per a branch
          if (hasBranch) {
-            fromTransactionId = getSourceBranch().getBaseTransaction();
+            fromTransactionId = getSourceBaseTransaction();
             toTransaction = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS), getSourceBranch().getUuid(),
                fromTransactionId.getId());
@@ -98,7 +97,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       return getChangeBuilders();
    }
 
-   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, JdbcStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
+   private void loadIsValues(BranchId sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, JdbcStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
       ModificationType artModType;
       AttributeChangeBuilder attributeChangeBuilder;
 
@@ -158,7 +157,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       }
    }
 
-   private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
+   private void loadAttributeWasValues(BranchId sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
          long sqlParamter; // Will either be a branch uuid or transaction id
          BranchId wasValueBranch;

@@ -13,17 +13,18 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 
 /**
  * @author Jeff C. Phillips
  */
 public abstract class ChangeAcquirer {
-   private final Branch sourceBranch;
+   private final BranchId sourceBranch;
    private final TransactionRecord transactionId;
    private final IProgressMonitor monitor;
    private final Artifact specificArtifact;
@@ -31,7 +32,7 @@ public abstract class ChangeAcquirer {
    private final ArrayList<ChangeBuilder> changeBuilders;
    private final Set<Integer> newAndDeletedArtifactIds;
 
-   public ChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public ChangeAcquirer(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super();
       this.sourceBranch = sourceBranch;
       this.transactionId = transactionId;
@@ -42,8 +43,12 @@ public abstract class ChangeAcquirer {
       this.newAndDeletedArtifactIds = newAndDeletedArtifactIds;
    }
 
-   protected Branch getSourceBranch() {
+   protected BranchId getSourceBranch() {
       return sourceBranch;
+   }
+
+   protected TransactionRecord getSourceBaseTransaction() {
+      return BranchManager.getBaseTransaction(getSourceBranch());
    }
 
    protected TransactionRecord getTransaction() {

@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -50,37 +51,38 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
    private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId = new HashMap<>();
 
-   private final Long sourceBranchId, destinationBranchId, mergeBranchId;
+   private final BranchId sourceBranch, destinationBranch;
+   private final BranchId mergeBranch;
    private final Integer destinationHeadTxId, mergeTxId;
 
    private final ChangeItemLoader changeItemLoader;
    private final SqlJoinFactory joinFactory;
 
-   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, Long sourceBranchId, Long destinationBranchId, Integer destinationHeadTxId, Long mergeBranchId, Integer mergeTxId) {
+   public LoadDeltasBetweenBranches(Log logger, OrcsSession session, JdbcClient jdbcClient, SqlJoinFactory joinFactory, BranchId sourceBranch, BranchId destinationBranch, Integer destinationHeadTxId, BranchId mergeBranch, Integer mergeTxId) {
       super(logger, session, jdbcClient);
       this.joinFactory = joinFactory;
-      this.sourceBranchId = sourceBranchId;
-      this.destinationBranchId = destinationBranchId;
+      this.sourceBranch = sourceBranch;
+      this.destinationBranch = destinationBranch;
       this.destinationHeadTxId = destinationHeadTxId;
-      this.mergeBranchId = mergeBranchId;
+      this.mergeBranch = mergeBranch;
       this.mergeTxId = mergeTxId;
       this.changeItemLoader = new ChangeItemLoader(jdbcClient, changeByGammaId);
    }
 
    private boolean hasMergeBranch() {
-      return mergeBranchId != null;
+      return mergeBranch.isValid();
    }
 
    private int getSourceBaselineTxId() {
-      return getBaseTxId(sourceBranchId);
+      return getBaseTxId(sourceBranch);
    }
 
    @Override
    public List<ChangeItem> call() throws Exception {
       List<ChangeItem> changeData = new LinkedList<>();
 
-      Conditions.checkExpressionFailOnTrue(sourceBranchId.equals(destinationBranchId),
-         "Unable to compute deltas between transactions on the same branch [%s]", sourceBranchId);
+      Conditions.checkExpressionFailOnTrue(sourceBranch.equals(destinationBranch),
+         "Unable to compute deltas between transactions on the same branch [%s]", sourceBranch);
 
       TransactionJoinQuery txJoin = joinFactory.createTransactionJoinQuery();
       int sourceBaselineTxId = getSourceBaselineTxId();
@@ -112,8 +114,8 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
          txJoin.add(gammaId, -1);
          changeByGammaId.put(gammaId, new Pair<ModificationType, ApplicabilityId>(modType, appId));
       };
-      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_SOURCE_BRANCH_CHANGES,
-         sourceBranchId, TxChange.NOT_CURRENT.getValue(), sourceBaselineTxId, sourceBranchId, sourceBaselineTxId);
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_SOURCE_BRANCH_CHANGES, sourceBranch,
+         TxChange.NOT_CURRENT.getValue(), sourceBaselineTxId, sourceBranch, sourceBaselineTxId);
       txJoin.store();
    }
 
@@ -128,11 +130,11 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
 
          if (hasMergeBranch()) {
             loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-               mergeBranchId, mergeTxId, true);
+               mergeBranch, mergeTxId, true);
          }
 
          loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
-            destinationBranchId, destinationHeadTxId, false);
+            destinationBranch, destinationHeadTxId, false);
 
          loadNonCurrentSourceData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin, changesByItemId,
             factory.getItemValueColumnName(), sourceBaselineTxId);
@@ -143,7 +145,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, Long txBranchId, Integer txId, boolean isMergeBranch) throws OseeCoreException {
+   private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, BranchId txBranchId, Integer txId, boolean isMergeBranch) throws OseeCoreException {
       try (JdbcStatement chStmt = getJdbcClient().getStatement()) {
          String query = "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
          + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
@@ -182,7 +184,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.branch_id = ? order by idj.id, txs.transaction_id asc";
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, idJoin.getQueryId(),
-            TxChange.NOT_CURRENT.getValue(), sourceBranchId);
+            TxChange.NOT_CURRENT.getValue(), sourceBranch);
 
          int previousItemId = -1;
          boolean isFirstSet = false;
@@ -226,9 +228,9 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
       }
    }
 
-   private int getBaseTxId(long branchId) throws OseeCoreException {
+   private int getBaseTxId(BranchId branch) throws OseeCoreException {
       return getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
-         SELECT_BASE_TRANSACTION, branchId);
+         SELECT_BASE_TRANSACTION, branch);
    }
 
 }

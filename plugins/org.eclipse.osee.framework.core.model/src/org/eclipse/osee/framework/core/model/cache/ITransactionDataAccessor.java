@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -45,6 +44,6 @@ public interface ITransactionDataAccessor {
 
    public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchUuid) throws OseeCoreException;
 
-   public TransactionRecord getHeadTransaction(TransactionCache cache, Branch branch) throws OseeCoreException;
+   public TransactionRecord getHeadTransaction(TransactionCache cache, BranchId branch) throws OseeCoreException;
 
 }

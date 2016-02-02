@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,7 +56,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       // Only update if there are no other Merge Branches and we haven't committed this branch already
       if (originalBranch != null && !BranchManager.hasMergeBranches(originalBranch) && !BranchManager.getState(
          originalBranch).isCommitted()) {
-         performUpdate(monitor, BranchManager.getBranch(originalBranch));
+         performUpdate(monitor, originalBranch);
 
          OseeClient client = ServiceUtil.getOseeClient();
          BranchEndpoint proxy = client.getBranchEndpoint();
@@ -74,13 +73,12 @@ public class UpdateBranchOperation extends AbstractOperation {
       return BranchManager.createWorkingBranch(useFromBranch, getUpdatedName(originalBranch.getName()));
    }
 
-   private void performUpdate(IProgressMonitor monitor, Branch originalBranch) throws Exception {
+   private void performUpdate(IProgressMonitor monitor, IOseeBranch originalBranch) throws Exception {
       boolean wasSuccessful = false;
       try {
          monitor.setTaskName("Creating temporary branch");
          newBranch = createTempBranch(originalBranch);
-         originalBranch.setBranchState(BranchState.REBASELINE_IN_PROGRESS);
-         BranchManager.persist(originalBranch);
+         BranchManager.setState(originalBranch, BranchState.REBASELINE_IN_PROGRESS);
          monitor.worked(calculateWork(0.40));
 
          boolean hasChanges = BranchManager.hasChanges(originalBranch);

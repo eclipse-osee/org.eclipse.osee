@@ -18,6 +18,7 @@ import org.codehaus.jackson.map.annotate.JsonSerialize;
  */
 @JsonSerialize(using = IdSerializer.class)
 public interface Id {
+   public static final Long SENTINEL = -1L;
 
    Long getId();
 
@@ -32,5 +33,9 @@ public interface Id {
 
    default boolean equals(Long id) {
       return getId().equals(id);
+   }
+
+   default boolean isValid() {
+      return !getId().equals(-1L);
    }
 }

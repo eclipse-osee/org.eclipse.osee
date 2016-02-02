@@ -15,8 +15,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -35,7 +35,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class ArtifactChangeAcquirer extends ChangeAcquirer {
 
-   public ArtifactChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public ArtifactChangeAcquirer(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
@@ -53,7 +53,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
       try {
 
          if (hasBranch) { //Changes per a branch
-            fromTransactionId = getSourceBranch().getBaseTransaction();
+            fromTransactionId = getSourceBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
 
             chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT), getSourceBranch().getUuid(),

@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -55,7 +54,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
@@ -611,8 +609,7 @@ public class ArtifactQuery {
          //do nothing since this is expected if the artifact does not exist
       }
       if (artifact == null) {
-         Branch fullBranch = BranchManager.getBranch(branch);
-         artifact = ArtifactTypeManager.addArtifact(type, fullBranch, null, guid);
+         artifact = ArtifactTypeManager.addArtifact(type, branch, null, guid);
       }
       if (artifact == null) {
          throw new ArtifactDoesNotExist("Artifact of type [%s] does not exist on branch [%s]", type, branch);

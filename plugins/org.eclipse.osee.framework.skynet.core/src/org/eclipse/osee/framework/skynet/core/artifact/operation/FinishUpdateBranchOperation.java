@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,19 +47,17 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       monitor.worked(calculateWork(0.60));
 
-      Branch sourceBranch = BranchManager.getBranch(conflictManager.getSourceBranch());
-      Branch destinationBranch = BranchManager.getBranch(conflictManager.getDestinationBranch());
+      IOseeBranch sourceBranch = conflictManager.getSourceBranch();
+      IOseeBranch destinationBranch = BranchManager.getBranch(conflictManager.getDestinationBranch());
 
       String originalBranchName = sourceBranch.getName();
 
-      sourceBranch.setName(getUpdatedName(originalBranchName));
+      BranchManager.setName(sourceBranch, getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
-      destinationBranch.setName(originalBranchName);
-      destinationBranch.setAssociatedArtifactId(sourceBranch.getAssociatedArtifactId());
-      sourceBranch.setBranchState(BranchState.REBASELINED);
-
-      BranchManager.persist(sourceBranch, destinationBranch);
+      BranchManager.setName(destinationBranch, originalBranchName);
+      BranchManager.setAssociatedArtifactId(destinationBranch, BranchManager.getAssociatedArtifactId(sourceBranch));
+      BranchManager.setState(sourceBranch, BranchState.REBASELINED);
 
       monitor.worked(calculateWork(0.20));
    }

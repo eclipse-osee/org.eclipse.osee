@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
  * @author Roberto E. Escobar
@@ -22,7 +23,7 @@ public final class RelationalConstants {
    }
 
    public static final int JOIN_QUERY_ID_SENTINEL = -1;
-   public static final IOseeBranch BRANCH_SENTINEL = TokenFactory.createBranch(-1L, "Branch Sentinel");
+   public static final IOseeBranch BRANCH_SENTINEL = TokenFactory.createBranch(Id.SENTINEL, "Branch Sentinel");
    public static final int TRANSACTION_SENTINEL = -1;
    public static final long GAMMA_SENTINEL = -1;
    public static final boolean IS_HISTORICAL_DEFAULT = false;

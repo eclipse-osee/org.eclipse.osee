@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -63,17 +66,12 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
       return committer != null ? committer.getLocalId() : -1;
    }
 
-   private List<ChangeItem> callComputeChanges(Long mergeBranch) throws Exception {
-      Long mergeBranchId = null;
-      Integer mergeTxId = null;
-      if (mergeBranch != null && mergeBranch > 0) {
-         mergeBranchId = mergeBranch;
-         mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranchId);
-      }
+   private List<ChangeItem> callComputeChanges(BranchId mergeBranch) throws Exception {
+      Integer mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranch);
 
-      Callable<List<ChangeItem>> loadChanges = new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(),
-         joinFactory, sourceHead.getBranchId(), destinationHead.getBranchId(), destinationHead.getGuid(), mergeBranchId,
-         mergeTxId);
+      Callable<List<ChangeItem>> loadChanges =
+         new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory, sourceHead.getBranch(),
+            destinationHead.getBranch(), destinationHead.getGuid(), mergeBranch, mergeTxId);
       List<ChangeItem> changes = callAndCheckForCancel(loadChanges);
 
       changes.addAll(
@@ -96,12 +94,13 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
 
    @Override
    public Integer call() throws Exception {
-      Long mergeBranchUuid = getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID,
-         source.getGuid(), destination.getGuid());
-      List<ChangeItem> changes = callComputeChanges(mergeBranchUuid);
+      Long mergeBranchId = getJdbcClient().runPreparedQueryFetchObject(BRANCH_SENTINEL.getId(),
+         SELECT_MERGE_BRANCH_UUID, source, destination);
+      BranchId mergeBranch = TokenFactory.createBranch(mergeBranchId);
+      List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<Integer> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),
-         getJdbcClient(), joinFactory, idManager, getUserArtId(), source, destination, mergeBranchUuid, changes);
+         getJdbcClient(), joinFactory, idManager, getUserArtId(), source, destination, mergeBranch, changes);
       Integer newTx = callAndCheckForCancel(commitCallable);
 
       return newTx;

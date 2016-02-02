@@ -13,15 +13,14 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
@@ -38,32 +37,27 @@ public class DeleteBranchOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Branch branch = BranchManager.getBranch(this.branch);
       BranchState originalState = BranchManager.getState(branch);
       boolean originalArchivedState = BranchManager.isArchived(branch);
 
-      ArtifactCache.deCache(this.branch);
-      OseeClient client = ServiceUtil.getOseeClient();
-      BranchEndpoint proxy = client.getBranchEndpoint();
+      ArtifactCache.deCache(branch);
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
 
       try {
-         branch.setBranchState(BranchState.DELETE_IN_PROGRESS);
-         branch.setArchived(true);
+         BranchManager.setState(branch, BranchState.DELETE_IN_PROGRESS);
+         BranchManager.setArchiveState(branch, BranchArchivedState.ARCHIVED);
          OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleting, branch));
-         BranchManager.persist(branch);
 
-         branch.setBranchState(BranchState.DELETED);
-         BranchManager.persist(branch);
+         BranchManager.setState(branch, BranchState.DELETED);
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch));
 
          proxy.logBranchActivity(
-            String.format("Branch Operation Branch State Changed {branchUUID: %s prevState: %s newState: %s ",
-               branch.getUuid(), originalState, BranchState.DELETED));
+            String.format("Branch Operation Branch State Changed {branchId: %s prevState: %s newState: %s ",
+               branch.getId(), originalState, BranchState.DELETED));
       } catch (Exception ex) {
          try {
-            branch.setBranchState(originalState);
-            branch.setArchived(originalArchivedState);
-            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.StateUpdated, branch));
-            BranchManager.persist(branch);
+            BranchManager.setState(branch, originalState);
+            BranchManager.setArchiveState(branch, BranchArchivedState.fromBoolean(originalArchivedState));
          } catch (Exception ex2) {
             log(ex2);
          }

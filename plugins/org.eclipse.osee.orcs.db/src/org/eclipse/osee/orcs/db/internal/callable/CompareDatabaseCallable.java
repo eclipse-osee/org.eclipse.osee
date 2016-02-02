@@ -10,8 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
@@ -54,17 +57,16 @@ public class CompareDatabaseCallable extends AbstractDatastoreCallable<List<Chan
          callable =
             new LoadDeltasBetweenTxsOnTheSameBranch(getLogger(), getSession(), getJdbcClient(), joinFactory, txDelta);
       } else {
-         Long mergeBranchId = getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_MERGE_BRANCH_UUID,
-            sourceTx.getBranchId(), destinationTx.getBranchId());
+         Long mergeBranchId = getJdbcClient().runPreparedQueryFetchObject(BRANCH_SENTINEL.getId(),
+            SELECT_MERGE_BRANCH_UUID, sourceTx.getBranch(), destinationTx.getBranch());
+         BranchId mergeBranch = TokenFactory.createBranch(mergeBranchId);
 
          Integer mergeTxId = null;
-         if (mergeBranchId > 0) {
-            mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranchId);
-         } else {
-            mergeBranchId = null;
+         if (mergeBranch.isValid()) {
+            mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranch);
          }
          callable = new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory,
-            sourceTx.getBranchId(), destinationTx.getBranchId(), destinationTx.getGuid(), mergeBranchId, mergeTxId);
+            sourceTx.getBranch(), destinationTx.getBranch(), destinationTx.getGuid(), mergeBranch, mergeTxId);
       }
       List<ChangeItem> changes = callAndCheckForCancel(callable);
 

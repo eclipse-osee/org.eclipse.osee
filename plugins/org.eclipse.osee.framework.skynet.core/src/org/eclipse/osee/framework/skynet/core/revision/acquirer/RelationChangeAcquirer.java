@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.revision.acquirer;
 import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -34,7 +34,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class RelationChangeAcquirer extends ChangeAcquirer {
 
-   public RelationChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public RelationChangeAcquirer(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
@@ -52,7 +52,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
          //Changes per a branch
          if (hasBranch) {
-            fromTransactionId = getSourceBranch().getBaseTransaction();
+            fromTransactionId = getSourceBaseTransaction();
             toTransactionId = TransactionManager.getHeadTransaction(getSourceBranch());
             chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.CHANGE_BRANCH_RELATION), getSourceBranch().getUuid(),
                fromTransactionId.getId());

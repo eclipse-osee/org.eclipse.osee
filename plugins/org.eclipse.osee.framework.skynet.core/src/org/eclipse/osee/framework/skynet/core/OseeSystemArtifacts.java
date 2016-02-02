@@ -11,13 +11,12 @@
 package org.eclipse.osee.framework.skynet.core;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -50,7 +49,7 @@ public final class OseeSystemArtifacts {
     * @return the artifact specified by type, name, and branch from the cache if available otherwise the datastore is
     * accessed, and finally a new artifact is created if it can not be found
     */
-   public static Artifact getOrCreateArtifact(IArtifactType artifactType, String artifactName, Branch branch) throws OseeCoreException {
+   public static Artifact getOrCreateArtifact(IArtifactType artifactType, String artifactName, BranchId branch) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, true);
    }
 
