@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -41,17 +42,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.event.filter.ArtifactTypeEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  * This class will return access context ids related to editing artifacts stored on a team workflow's working branch.
@@ -61,10 +59,10 @@ import org.eclipse.osee.framework.skynet.core.event.model.Sender;
  * <br>
  * Access is determined from "Access Context Id" value stored on Team Workflow, if not there, then Actionable Items, if
  * not there, then Team Defs.
- * 
+ *
  * @author Donald G. Dunne
  */
-public class AtsBranchAccessManager implements IArtifactEventListener, IAccessControlEventListener {
+public class AtsBranchAccessManager implements IArtifactEventListener, EventHandler {
 
    // Cache to store artifact guid to context id list so don't have to re-compute
    private final Map<Long, Collection<IAccessContextId>> branchUuidToContextIdCache =
@@ -76,21 +74,13 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    private final RoleContextProvider roleContextProvider;
    private volatile long cacheUpdated = 0;
 
-   private final OseeEventService eventService;
-
-   public AtsBranchAccessManager(OseeEventService eventService) {
-      this(eventService, null);
-
+   public AtsBranchAccessManager() {
+      // Available for osgi instantiation
+      this(null);
    }
 
-   public AtsBranchAccessManager(OseeEventService eventService, RoleContextProvider roleContextProvider) {
-      this.eventService = eventService;
+   public AtsBranchAccessManager(RoleContextProvider roleContextProvider) {
       this.roleContextProvider = roleContextProvider;
-      eventService.addListener(EventQosType.NORMAL, this);
-   }
-
-   public void dispose() {
-      eventService.removeListener(EventQosType.NORMAL, this);
    }
 
    /**
@@ -240,13 +230,6 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      if (accessControlEvent.getEventType() == AccessControlEventType.BranchAccessControlModified) {
-         clearCache();
-      }
-   }
-
-   @Override
    public void handleArtifactEvent(ArtifactEvent artifactEvent, Sender sender) {
       for (EventBasicGuidArtifact guidArt : artifactEvent.getArtifacts()) {
          if (atsConfigArtifactTypes.contains(guidArt.getArtTypeGuid())) {
@@ -263,6 +246,15 @@ public class AtsBranchAccessManager implements IArtifactEventListener, IAccessCo
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      }
+   }
+
+   @Override
+   public void handleEvent(Event event) {
+      try {
+         clearCache();
+      } catch (Exception ex) {
+         OseeLog.log(AccessControlManager.class, Level.SEVERE, ex);
       }
    }
 

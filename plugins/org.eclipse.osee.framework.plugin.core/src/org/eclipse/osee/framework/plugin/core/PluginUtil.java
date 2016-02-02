@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
 
 /**
  * @author Ryan D. Brooks
@@ -43,7 +44,7 @@ public class PluginUtil {
 
    /**
     * finds a resource in the plugin bundle and writes it out to the default persistent storage area as a regular file
-    * 
+    *
     * @return Return plugin file reference
     */
    public File getPluginFile(String path) throws IOException {
@@ -83,6 +84,11 @@ public class PluginUtil {
          inputs.add((URL) enumeration.nextElement());
       }
       return inputs;
+   }
+
+   public BundleContext getBundleContext() {
+      Bundle bundle = Platform.getBundle(pluginId);
+      return bundle.getBundleContext();
    }
 
 }

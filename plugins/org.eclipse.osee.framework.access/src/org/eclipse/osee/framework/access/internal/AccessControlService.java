@@ -74,8 +74,8 @@ import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -661,6 +661,7 @@ public class AccessControlService implements IAccessControlService {
 
       int subjectId = data.getSubject().getArtId();
       AccessObject accessControlledObject = data.getObject();
+      boolean isArtifact = accessControlledObject instanceof ArtifactAccessObject;
       if (removeFromDb) {
          accessControlledObject.removeFromDatabase(subjectId);
       }
@@ -672,9 +673,10 @@ public class AccessControlService implements IAccessControlService {
 
       AccessTopicEventPayload event = new AccessTopicEventPayload();
       event.setBranchUuid(accessControlledObject.getBranchId());
-      if (accessControlledObject instanceof ArtifactAccessObject) {
+      if (isArtifact) {
          event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
       }
+
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
 
    }
@@ -772,11 +774,9 @@ public class AccessControlService implements IAccessControlService {
       getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());
 
       try {
-         if (eventService != null) {
-            AccessControlEvent event = new AccessControlEvent();
-            event.setEventType(AccessControlEventType.BranchAccessControlModified);
-            eventService.send(this, event);
-         }
+         AccessTopicEventPayload event = new AccessTopicEventPayload();
+         event.setBranchUuid(branch.getUuid());
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_BRANCH_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }

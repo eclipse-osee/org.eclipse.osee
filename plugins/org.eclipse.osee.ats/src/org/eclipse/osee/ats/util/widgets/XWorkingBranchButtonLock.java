@@ -21,11 +21,8 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -34,11 +31,14 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.osgi.service.event.EventHandler;
 
 /**
+ * TopicHandler for {@link AccessEventTopicType.ACCESS_BRANCH_MODIFIED}
+ *
  * @author Shawn F. Cook
  */
-public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract implements IAccessControlEventListener {
+public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract implements EventHandler {
 
    public static String WIDGET_NAME = "XWorkingBranchButtonLock";
 
@@ -114,9 +114,6 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
             } else {
                AccessControlManager.setPermission(SystemGroup.Everyone.getArtifact(), branch, PermissionEnum.READ);
             }
-            AccessControlEvent event = new AccessControlEvent();
-            event.setEventType(AccessControlEventType.BranchAccessControlModified);
-            OseeEventManager.kickAccessControlArtifactsEvent(this, event);
             AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }
       } catch (OseeCoreException ex) {
@@ -125,9 +122,13 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      if (accessControlEvent.getEventType() == AccessControlEventType.BranchAccessControlModified) {
-         refreshWorkingBranchWidget();
+   public void handleEvent(org.osgi.service.event.Event event) {
+      Branch branch = getTeamArt().getWorkingBranch();
+      if (branch != null) {
+         AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
+         if (accessEvent.isForBranch(branch)) {
+            refreshWorkingBranchWidget();
+         }
       }
    }
 

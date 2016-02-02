@@ -26,58 +26,21 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventService;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsBranchAccessManagerTest {
 
-   private static <T> T getService(Class<T> clazz) {
-      Bundle bundle = FrameworkUtil.getBundle(AtsBranchAccessManager.class);
-      Assert.assertNotNull(bundle);
-      BundleContext context = bundle.getBundleContext();
-      Assert.assertNotNull(context);
-      ServiceReference<T> reference = context.getServiceReference(clazz);
-      Assert.assertNotNull(reference);
-      T service = context.getService(reference);
-      Assert.assertNotNull(service);
-      return service;
-   }
-
-   public static OseeEventService getEventService() {
-      return getService(OseeEventService.class);
-   }
-
-   @Test
-   public void testAtsBranchAccessManager() {
-      int numListeners = OseeEventManager.getNumberOfListeners();
-      new AtsBranchAccessManager(getEventService());
-      Assert.assertEquals(numListeners + 1, OseeEventManager.getNumberOfListeners());
-   }
-
-   @Test
-   public void testDispose() {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
-      int numListeners = OseeEventManager.getNumberOfListeners();
-      mgr.dispose();
-      Assert.assertEquals(numListeners - 1, OseeEventManager.getNumberOfListeners());
-   }
-
    @Test
    public void testIsApplicable() throws OseeCoreException {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
       Assert.assertFalse(mgr.isApplicable(AtsUtilCore.getAtsBranch()));
       Assert.assertFalse(mgr.isApplicable(SAW_Bld_1));
 
@@ -118,7 +81,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testGetContextIdBranch() throws Exception {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
 
@@ -165,7 +128,7 @@ public class AtsBranchAccessManagerTest {
     */
    @Test
    public void testConvertAccessAttributeToGuid() throws Exception {
-      AtsBranchAccessManager mgr = new AtsBranchAccessManager(getEventService());
+      AtsBranchAccessManager mgr = new AtsBranchAccessManager();
       TeamWorkFlowArtifact teamArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
 

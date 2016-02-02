@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -36,13 +37,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -65,12 +66,17 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.event.EventConstants;
+import org.osgi.service.event.EventHandler;
 
 /**
+ * TopicHandler for {@link AccessEventTopicType.ACCESS_BRANCH_MODIFIED}
+ *
  * @author Megumi Telles
  * @author Donald G. Dunne
  */
-public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, IAccessControlEventListener, IArtifactEventListener, IBranchEventListener {
+public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, IArtifactEventListener, IBranchEventListener, EventHandler {
 
    private TeamWorkFlowArtifact teamArt;
    private Button createBranchButton;
@@ -244,6 +250,11 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       refreshLockImage();
       refreshLabel();
       refreshEnablement();
+
+      BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
+      context.registerService(EventHandler.class.getName(), this,
+         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEventType.ACCESS_BRANCH_MODIFIED.getTopic()));
+
    }
 
    private void refreshLockImage() {
@@ -326,9 +337,6 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             } else {
                AccessControlManager.setPermission(SystemGroup.Everyone.getArtifact(), branch, PermissionEnum.READ);
             }
-            AccessControlEvent event = new AccessControlEvent();
-            event.setEventType(AccessControlEventType.BranchAccessControlModified);
-            OseeEventManager.kickAccessControlArtifactsEvent(this, event);
             AWorkbench.popup(String.format("Branch set to [%s]", !isLocked ? "Locked" : "NOT Locked"));
          }
       } catch (OseeCoreException ex) {
@@ -465,9 +473,13 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      if (accessControlEvent.getEventType() == AccessControlEventType.BranchAccessControlModified) {
-         refreshOnBranchEvent();
+   public void handleEvent(org.osgi.service.event.Event event) {
+      IOseeBranch branch = teamArt.getBranch();
+      if (branch != null) {
+         AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
+         if (accessEvent.isForBranch(branch)) {
+            refreshOnBranchEvent();
+         }
       }
    }
 

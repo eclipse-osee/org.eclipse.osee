@@ -63,7 +63,6 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
       }
 
       if (atsBranchObjectManager != null) {
-         atsBranchObjectManager.dispose();
          atsBranchObjectManager = null;
       }
       cmService = null;
@@ -83,7 +82,7 @@ public class AtsCmAccessControlProxy implements CmAccessControl, HasAccessModel 
          accessModel = new OseeDslAccessModel(interpreter, dslProvider);
          RoleContextProvider roleAccessProvider = new OseeDslRoleContextProvider(dslProvider);
 
-         atsBranchObjectManager = new AtsBranchAccessManager(eventService, roleAccessProvider);
+         atsBranchObjectManager = new AtsBranchAccessManager(roleAccessProvider);
          cmService = new AtsCmAccessControl(atsBranchObjectManager);
 
          listener = new AtsDslProviderUpdateListener(dslProvider);

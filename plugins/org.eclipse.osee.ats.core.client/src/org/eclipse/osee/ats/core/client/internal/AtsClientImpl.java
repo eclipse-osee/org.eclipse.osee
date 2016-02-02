@@ -44,6 +44,7 @@ import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IArtifactResolver;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.util.IAtsEventService;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
@@ -182,6 +183,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IAtsTaskService taskService;
    private Log logger;
    List<IAtsSearchDataProvider> searchDataProviders;
+   private IAtsEventService eventService;
 
    public AtsClientImpl() {
       searchDataProviders = new ArrayList<>();
@@ -275,6 +277,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
          userService, attributeResolverService, atsStateFactory, configProxy, getServices());
       taskService = new AtsTaskService(this);
+
+      eventService = new AtsEventServiceImpl();
 
    }
 
@@ -832,6 +836,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public Log getLogger() {
       return logger;
+   }
+
+   @Override
+   public IAtsEventService getEventService() {
+      return eventService;
    }
 
 }
