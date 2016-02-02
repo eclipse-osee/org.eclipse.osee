@@ -113,7 +113,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       monitor.worked(calculateWork(0.20));
 
       newWorkingBranch.setName(originalBranchName);
-      newWorkingBranch.setAssociatedArtifactId(BranchManager.getAssociatedArtifactId(originalBranch));
+      BranchManager.setAssociatedArtifactId(newWorkingBranch, BranchManager.getAssociatedArtifactId(originalBranch));
       BranchManager.setState(originalBranch, BranchState.REBASELINED);
 
       BranchManager.persist(newWorkingBranch);

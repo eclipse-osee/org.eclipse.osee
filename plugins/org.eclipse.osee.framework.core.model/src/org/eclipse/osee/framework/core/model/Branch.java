@@ -85,8 +85,8 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
       return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY);
    }
 
-   public void setAssociatedArtifactId(Integer artId) throws OseeCoreException {
-      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, artId);
+   public void setAssociatedArtifactId(Integer artifactId) throws OseeCoreException {
+      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, artifactId);
    }
 
    @Override

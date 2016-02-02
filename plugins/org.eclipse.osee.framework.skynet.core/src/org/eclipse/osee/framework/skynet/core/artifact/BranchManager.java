@@ -577,6 +577,12 @@ public final class BranchManager {
       return getBranch(branch).getAssociatedArtifactId();
    }
 
+   public static void setAssociatedArtifactId(BranchId branch, Integer artifactId) {
+      Branch fullBranch = getBranch(branch);
+      fullBranch.setAssociatedArtifactId(artifactId);
+      BranchManager.persist(fullBranch);
+   }
+
    public static Artifact getAssociatedArtifact(BranchId branch) throws OseeCoreException {
       Integer associatedArtifactId = getAssociatedArtifactId(branch);
       if (associatedArtifactId == null || associatedArtifactId == -1) {
