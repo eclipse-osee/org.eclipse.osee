@@ -14,10 +14,11 @@ import java.net.URI;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -48,12 +49,17 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final Artifact associatedArtifact;
    private final String creationComment;
    private final int mergeAddressingQueryId;
-   private final long destinationBranchId;
-   private Branch newBranch;
+   private final BranchId destinationBranch;
+   private IOseeBranch newBranch;
    private boolean txCopyBranchType;
    private final long branchUuid;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, long destinationBranchId) {
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment) {
+      this(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment, -1,
+         RelationalConstants.BRANCH_SENTINEL);
+   }
+
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionRecord parentTransaction, String branchName, long branchUuid, Artifact associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
       super("Create branch " + branchName, Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
@@ -62,7 +68,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       this.associatedArtifact = associatedArtifact;
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
-      this.destinationBranchId = destinationBranchId;
+      this.destinationBranch = destinationBranch;
       this.txCopyBranchType = false;
    }
 
@@ -82,7 +88,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setBranchType(branchType);
       data.setCreationComment(creationComment);
       data.setMergeAddressingQueryId(mergeAddressingQueryId);
-      data.setMergeDestinationBranchId(destinationBranchId);
+      data.setMergeDestinationBranchId(destinationBranch);
       data.setParentBranchId(parentTransaction.getBranchId());
       data.setSourceTransactionId(parentTransaction.getId());
       data.setTxCopyBranchType(isTxCopyBranchType());
@@ -90,8 +96,8 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       try {
          Response response = proxy.createBranchWithId(branchUuid, data);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
-            long branchUuid = getBranchUuid(response);
-            newBranch = BranchManager.getBranch(branchUuid);
+            long branchId = getBranchUuid(response);
+            newBranch = BranchManager.getBranch(branchId); // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
          }
       } catch (Exception ex) {
@@ -136,7 +142,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       return UserManager.getUser().getArtId();
    }
 
-   public Branch getNewBranch() {
+   public IOseeBranch getNewBranch() {
       return newBranch;
    }
 

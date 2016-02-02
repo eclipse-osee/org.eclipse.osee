@@ -30,7 +30,7 @@ public interface JdbcClient {
 
    void runQuery(Consumer<JdbcStatement> consumer, String query, Object... data);
 
-   void runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object[] data);
+   void runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
 
    <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
 

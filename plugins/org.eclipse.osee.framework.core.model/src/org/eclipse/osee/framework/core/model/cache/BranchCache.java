@@ -16,10 +16,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -109,37 +107,4 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       super.decacheAll();
       txCache.decacheAll();
    }
-
-   public synchronized TransactionRecord getOrLoad(Integer txId) {
-      return txCache.getOrLoad(txId);
-   }
-
-   public synchronized TransactionRecord getPriorTransaction(TransactionRecord tx) {
-      return txCache.getPriorTransaction(tx);
-   }
-
-   public synchronized void cache(TransactionRecord record) {
-      txCache.cache(record);
-   }
-
-   public synchronized TransactionRecord getHeadTransaction(Branch fullBranch) {
-      return txCache.getHeadTransaction(fullBranch);
-   }
-
-   public synchronized Collection<TransactionRecord> getAllTx() {
-      return txCache.getAll();
-   }
-
-   public synchronized TransactionRecord getByTxId(Integer item) {
-      return txCache.getById(item);
-   }
-
-   public synchronized void loadTransactions(Collection<Integer> itemsIds) {
-      txCache.loadTransactions(itemsIds);
-   }
-
-   public synchronized TransactionRecord getTransaction(Branch branch, TransactionVersion revision) {
-      return txCache.getTransaction(branch, revision);
-   }
-
 }

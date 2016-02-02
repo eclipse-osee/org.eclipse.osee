@@ -82,7 +82,7 @@ public class BranchStateTest {
    @Test
    public void testModifiedState() throws OseeCoreException {
       String originalBranchName = "Modified State Branch";
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
@@ -104,7 +104,7 @@ public class BranchStateTest {
    @Test
    public void testDeleteState() throws OseeCoreException, InterruptedException {
       String originalBranchName = "Deleted State Branch";
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
@@ -128,20 +128,19 @@ public class BranchStateTest {
    @Test
    public void testPurgeState() throws OseeCoreException, InterruptedException {
       String originalBranchName = "Purged State Branch";
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       boolean branchPurged = false;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
          assertEquals(BranchState.CREATED, BranchManager.getState(workingBranch));
          assertTrue(BranchManager.isEditable(workingBranch));
 
+         Branch fullBranch = BranchManager.getBranch(workingBranch);
          BranchManager.purgeBranch(workingBranch);
          branchPurged = true;
 
-         assertEquals(BranchState.PURGED, BranchManager.getState(workingBranch));
-         assertTrue(BranchManager.isArchived(workingBranch));
-         assertTrue(!BranchManager.isEditable(workingBranch));
-         assertTrue(BranchManager.getState(workingBranch).isPurged());
+         assertEquals(BranchState.PURGED, fullBranch.getBranchState());
+         assertTrue(fullBranch.getArchiveState().isArchived());
       } finally {
          if (workingBranch != null && !branchPurged) {
             // needed to allow for archiving to occur
@@ -154,7 +153,7 @@ public class BranchStateTest {
    @Test
    public void testCommitState() throws OseeCoreException, InterruptedException {
       String originalBranchName = "Commit State Branch";
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       Artifact change = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
@@ -186,7 +185,7 @@ public class BranchStateTest {
    @Test
    public void testRebaselineBranchNoChanges() throws Exception {
       String originalBranchName = "UpdateBranch No Changes Test";
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       try {
          workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, originalBranchName);
 
@@ -209,7 +208,7 @@ public class BranchStateTest {
             BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
          IOseeBranch newWorkingBranch = operation.getNewBranch();
-         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
+         assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
          assertFalse("New Working branch was editable", BranchManager.isEditable(workingBranch));
@@ -222,7 +221,7 @@ public class BranchStateTest {
    public void testRebaselineWithoutConflicts() throws Exception {
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       Artifact change = null;
       try {
          baseArtifact =
@@ -277,7 +276,7 @@ public class BranchStateTest {
    public void testRebaselineWithConflicts() throws Exception {
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
-      Branch workingBranch = null;
+      IOseeBranch workingBranch = null;
       IOseeBranch mergeBranch = null;
       Artifact sameArtifact = null;
       try {
@@ -382,12 +381,12 @@ public class BranchStateTest {
       BranchManager.purgeBranch(branch);
    }
 
-   private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {
+   private void checkBranchWasRebaselined(String originalBranchName, BranchId branchToCheck) {
       assertTrue("Branch was not archived", BranchManager.isArchived(branchToCheck));
       assertTrue("Branch was still editable", !BranchManager.isEditable(branchToCheck));
       assertTrue("Branch state was not set as rebaselined", BranchManager.getState(branchToCheck).isRebaselined());
-      assertTrue("Branch name not set correctly",
-         branchToCheck.getName().startsWith(String.format("%s - moved by update on -", originalBranchName)));
+      assertTrue("Branch name not set correctly", BranchManager.getBranchName(branchToCheck).startsWith(
+         String.format("%s - moved by update on -", originalBranchName)));
    }
 
 }

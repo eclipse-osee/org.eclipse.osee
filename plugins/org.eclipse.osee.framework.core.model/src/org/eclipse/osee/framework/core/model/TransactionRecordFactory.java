@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, IOseeBranch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord create(int transactionNumber, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, IOseeBranch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       Conditions.checkNotNull(txCache, "txCache");
       TransactionRecord record = txCache.getById(transactionNumber);
       if (record == null) {

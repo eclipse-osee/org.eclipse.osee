@@ -118,9 +118,7 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
          oldParent.childBranches.remove(this);
       }
       setField(BranchField.PARENT_BRANCH, parentBranch);
-      if (parentBranch != null) {
-         parentBranch.childBranches.add(this);
-      }
+      parentBranch.childBranches.add(this);
    }
 
    public void setBaseTransaction(TransactionRecord baseTx) throws OseeCoreException {
@@ -192,7 +190,6 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
       List<BranchId> ancestors = new ArrayList<>();
       BranchReadable branchCursor = this;
       ancestors.add(branchCursor);
-
       while ((branchCursor = branchCursor.getParentBranch()) != null) {
          ancestors.add(branchCursor);
       }

@@ -15,7 +15,6 @@ import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -99,7 +98,7 @@ public class RenderingUtilTest {
    }
 
    private static Branch createBranch(AbstractOseeCache<Branch> cache, String name, long uuid) throws OseeCoreException {
-      Branch branch = new BranchFactory().create(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false, false);
+      Branch branch = new Branch(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false, false);
       Assert.assertNotNull(branch);
       return branch;
    }

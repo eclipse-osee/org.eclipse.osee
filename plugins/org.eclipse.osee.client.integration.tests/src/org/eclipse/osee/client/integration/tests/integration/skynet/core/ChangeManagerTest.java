@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +42,7 @@ import org.junit.Test;
 
 /**
  * Tests the Change Manager.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class ChangeManagerTest {
@@ -52,7 +52,7 @@ public class ChangeManagerTest {
 
    private static Artifact newArtifact;
    private static Artifact modArtifact;
-   private Branch branch;
+   private IOseeBranch branch;
 
    @Before
    public void setUp() throws Exception {

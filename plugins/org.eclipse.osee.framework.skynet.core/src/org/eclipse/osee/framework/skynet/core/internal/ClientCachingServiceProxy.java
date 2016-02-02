@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
@@ -75,7 +74,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       txCache = new TransactionCache();
       txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, new TransactionRecordFactory()));
-      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache, new BranchFactory()), txCache);
+      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache), txCache);
 
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();

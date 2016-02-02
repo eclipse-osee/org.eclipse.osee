@@ -15,10 +15,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -47,7 +47,7 @@ public class TemplateArtifactValidatorTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   private Branch testBranch;
+   private IOseeBranch testBranch;
 
    @Before
    public void setup() throws OseeCoreException {
@@ -107,7 +107,7 @@ public class TemplateArtifactValidatorTest {
       newTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria, templateId);
       newTemplate.persist(testInfo.getQualifiedTestName());
 
-      Branch testBranch2 =
+      IOseeBranch testBranch2 =
          BranchManager.createWorkingBranch(CoreBranches.COMMON, testInfo.getQualifiedTestName() + "2");
       Artifact newTemplate2 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, testBranch2);
       newTemplate2.persist(testInfo.getQualifiedTestName());

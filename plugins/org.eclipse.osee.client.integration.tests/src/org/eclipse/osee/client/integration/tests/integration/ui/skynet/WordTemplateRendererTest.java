@@ -23,10 +23,10 @@ import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -211,12 +211,12 @@ public class WordTemplateRendererTest {
       introArt.persist(tx);
       tx.execute();
 
-      Branch middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
+      IOseeBranch middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
       Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), middleBr);
       middleVol4.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, " ");
       middleVol4.persist("added blank content");
 
-      Branch childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
+      IOseeBranch childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
       vol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), childBr);
 
       modifyOption("Branch", childBr);

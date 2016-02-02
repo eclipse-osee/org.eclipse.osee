@@ -1,5 +1,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
+import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -15,10 +17,8 @@ import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
@@ -30,6 +30,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -37,20 +39,16 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Roberto E. Escobar
  */
 public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
-   private static final int NULL_PARENT_BRANCH_ID = -1;
-
    private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
+   private static final String SELECT_BRANCH = SELECT_BRANCHES + " where branch_id = ?";
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
    private final JdbcClient jdbcClient;
-
    private final TransactionCache txCache;
-   private final BranchFactory branchFactory;
 
-   public DatabaseBranchAccessor(JdbcClient jdbcClient, TransactionCache txCache, BranchFactory branchFactory) {
+   public DatabaseBranchAccessor(JdbcClient jdbcClient, TransactionCache txCache) {
       this.jdbcClient = jdbcClient;
       this.txCache = txCache;
-      this.branchFactory = branchFactory;
    }
 
    private JdbcClient getJdbcClient() {
@@ -62,59 +60,90 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Map<Branch, Long> childToParent = new HashMap<>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<>();
-      Map<Branch, Integer> associatedArtifact = new HashMap<>();
 
-      BranchCache brCache = (BranchCache) cache;
-      loadBranches(brCache, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
-      loadBranchHierarchy(brCache, childToParent);
-      loadMergeBranches(brCache);
-      loadAssociatedArtifacts(brCache, associatedArtifact);
-      loadBranchRelatedTransactions(brCache, branchToBaseTx, branchToSourceTx);
+      loadBranches(cache, childToParent, branchToBaseTx, branchToSourceTx);
+      loadBranchHierarchy(cache, childToParent);
+      loadMergeBranches(cache);
+      loadBranchRelatedTransactions(branchToBaseTx, branchToSourceTx);
 
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
    }
 
-   private void loadBranches(BranchCache cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
-         while (chStmt.next()) {
-            try {
-               String branchName = chStmt.getString("branch_name");
-               BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
-               BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
-               boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
-               long branchUuid = chStmt.getLong("branch_id");
-               int inheritAccessControl = chStmt.getInt("inherit_access_control");
-               Branch branch = branchFactory.createOrUpdate(cache, branchUuid, branchName, branchType, branchState,
-                  isArchived, StorageState.LOADED, inheritAccessControl == 1);
-
-               Long parentBranchId = chStmt.getLong("parent_branch_id");
-               if (parentBranchId != NULL_PARENT_BRANCH_ID) {
-                  childToParent.put(branch, parentBranchId);
-               }
-               branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
-               branchToBaseTx.put(branch, chStmt.getInt("baseline_transaction_id"));
-               associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, "Error loading branches", ex);
-            }
+   private void loadBranches(IOseeCache<Branch> cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) {
+      getJdbcClient().runQuery(stmt -> {
+         Branch branch = load(cache, stmt);
+         cache.cache(branch);
+         if (!SYSTEM_ROOT.equals(branch)) {
+            childToParent.put(branch, stmt.getLong("parent_branch_id"));
          }
-      } finally {
-         chStmt.close();
-      }
+         branchToSourceTx.put(branch, stmt.getInt("parent_transaction_id"));
+         branchToBaseTx.put(branch, stmt.getInt("baseline_transaction_id"));
+      }, JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
    }
 
-   private void loadAssociatedArtifacts(BranchCache cache, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      for (Entry<Branch, Integer> entry : associatedArtifact.entrySet()) {
-         Branch branch = entry.getKey();
-         branch.setAssociatedArtifactId(entry.getValue());
+   private static Branch create(Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
+      Branch toReturn;
+      if (branchType.isMergeBranch()) {
+         toReturn = new MergeBranch(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
+      } else {
+         toReturn = new Branch(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
       }
+      return toReturn;
    }
 
-   private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
+   private static Branch createOrUpdate(IOseeCache<Branch> cache, Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState, boolean inheritAccessControl, Integer artifactId) throws OseeCoreException {
+      Branch branch = cache.getById(branchId);
+      if (branch == null) {
+         branch = create(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
+      } else {
+         branch.setName(name);
+         branch.setBranchType(branchType);
+         branch.setBranchState(branchState);
+         branch.setArchived(isArchived);
+         branch.setInheritAccessControl(inheritAccessControl);
+      }
+      branch.setStorageState(storageState);
+      branch.setAssociatedArtifactId(artifactId);
+      return branch;
+   }
+
+   private static Branch load(IOseeCache<Branch> cache, JdbcStatement stmt) {
+      Long branchId = stmt.getLong("branch_id");
+      String branchName = stmt.getString("branch_name");
+      BranchType branchType = BranchType.valueOf(stmt.getInt("branch_type"));
+      BranchState branchState = BranchState.getBranchState(stmt.getInt("branch_state"));
+      boolean isArchived = BranchArchivedState.valueOf(stmt.getInt("archived")).isArchived();
+      int inheritAccessControl = stmt.getInt("inherit_access_control");
+      Integer artifactId = stmt.getInt("associated_art_id");
+
+      Branch branch = createOrUpdate(cache, branchId, branchName, branchType, branchState, isArchived,
+         StorageState.LOADED, inheritAccessControl == 1, artifactId);
+
+      return branch;
+   }
+
+   public static Branch loadBranch(IOseeCache<Branch> cache, Long branchId) {
+      Branch branch =
+         ConnectionHandler.getJdbcClient().fetchObject(null, stmt -> fetchBranch(cache, stmt), SELECT_BRANCH, branchId);
+      if (branch == null) {
+         throw new BranchDoesNotExist("Branch could not be acquired for branch id %d", branchId);
+      }
+      return branch;
+   }
+
+   private static Branch fetchBranch(IOseeCache<Branch> cache, JdbcStatement stmt) {
+      Branch branch = load(cache, stmt);
+      branch.setBaseTransaction(TransactionManager.getTransactionId(stmt.getInt("baseline_transaction_id")));
+      branch.setSourceTransaction(TransactionManager.getTransactionId(stmt.getInt("parent_transaction_id")));
+      if (!SYSTEM_ROOT.equals(branch)) {
+         branch.setParentBranch(BranchManager.getBranch(stmt.getLong("parent_branch_id")));
+      }
+      return branch;
+   }
+
+   private void loadBranchRelatedTransactions(Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
       Set<Integer> transactionIds = new HashSet<>();
       transactionIds.addAll(branchToSourceTx.values());
       transactionIds.addAll(branchToBaseTx.values());
@@ -137,10 +166,10 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       }
    }
 
-   private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Long> childToParent) throws OseeCoreException {
+   private void loadBranchHierarchy(IOseeCache<Branch> cache, Map<Branch, Long> childToParent) throws OseeCoreException {
       for (Entry<Branch, Long> entry : childToParent.entrySet()) {
          Branch childBranch = entry.getKey();
-         Branch parentBranch = branchCache.getByUuid(entry.getValue());
+         Branch parentBranch = cache.getById(entry.getValue());
          if (parentBranch == null) {
             throw new BranchDoesNotExist("Parent Branch uuid:[%s] does not exist for child branch [%s]",
                entry.getValue(), entry.getKey());
@@ -149,15 +178,15 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       }
    }
 
-   private void loadMergeBranches(BranchCache branchCache) throws OseeCoreException {
+   private void loadMergeBranches(IOseeCache<Branch> cache) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
-            Branch sourceBranch = branchCache.getByUuid(chStmt.getLong("source_branch_id"));
-            Branch destBranch = branchCache.getByUuid(chStmt.getLong("dest_branch_id"));
+            Branch sourceBranch = cache.getById(chStmt.getLong("source_branch_id"));
+            Branch destBranch = cache.getById(chStmt.getLong("dest_branch_id"));
 
-            MergeBranch mergeBranch = (MergeBranch) branchCache.getByUuid(chStmt.getLong("merge_branch_id"));
+            MergeBranch mergeBranch = (MergeBranch) cache.getById(chStmt.getLong("merge_branch_id"));
             mergeBranch.setSourceBranch(sourceBranch);
             mergeBranch.setDestinationBranch(destBranch);
          }

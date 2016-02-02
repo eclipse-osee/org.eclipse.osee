@@ -17,15 +17,16 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.ConflictDeletionTest;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
@@ -64,8 +65,8 @@ public class ConflictTestManager {
    private static final String FOLDER = "System Requirements";
    private static final String SOURCE_BRANCH = "Conflict_Test_Source_Branch";
    private static final String DEST_BRANCH = "Conflict_Test_Destination_Branch";
-   private static Branch sourceBranch;
-   private static Branch destBranch;
+   private static IOseeBranch sourceBranch;
+   private static IOseeBranch destBranch;
    private static final int NUMBER_OF_ARTIFACTS = 32;
    private static Artifact[] destArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
    private static Artifact[] sourceArtifacts = new Artifact[NUMBER_OF_ARTIFACTS];
@@ -320,17 +321,15 @@ public class ConflictTestManager {
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
    }
 
-   private static void purgeBranch(Branch branch) throws OseeCoreException {
-      if (branch != null) {
-         BranchManager.purgeBranch(branch);
-      }
-   }
-
-   public static Branch getSourceBranch() {
+   public static IOseeBranch getSourceBranch() {
       return sourceBranch;
    }
 
-   public static Branch getDestBranch() {
+   public static TransactionRecord getSourceBaseTransaction() {
+      return BranchManager.getBaseTransaction(sourceBranch);
+   }
+
+   public static IOseeBranch getDestBranch() {
       return destBranch;
    }
 

@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -112,13 +111,13 @@ public class BranchEventTest {
 
          topLevel = testEvents__topLevelAdded();
 
-         Branch workingBranch = testEvents__workingAdded();
+         IOseeBranch workingBranch = testEvents__workingAdded();
          testEvents__workingRenamed(workingBranch);
          testEvents__typeChange(workingBranch);
          testEvents__stateChange(workingBranch);
          testEvents__deleted(workingBranch);
          testEvents__purged();
-         Branch committedBranch = testEvents__committed();
+         IOseeBranch committedBranch = testEvents__committed();
          testEvents__changeArchiveState(committedBranch);
 
       } finally {
@@ -127,7 +126,7 @@ public class BranchEventTest {
       }
    }
 
-   private Branch testEvents__changeArchiveState(Branch committedBranch) throws Exception {
+   private void testEvents__changeArchiveState(IOseeBranch committedBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(committedBranch);
@@ -139,11 +138,10 @@ public class BranchEventTest {
 
       Assert.assertFalse(BranchManager.isArchived(committedBranch));
       Assert.assertFalse(BranchManager.isEditable(committedBranch));
-      return committedBranch;
    }
 
-   private Branch testEvents__committed() throws Exception {
-      Branch workingBranch =
+   private IOseeBranch testEvents__committed() throws Exception {
+      IOseeBranch workingBranch =
          BranchManager.createWorkingBranch(mainBranch, method.getQualifiedTestName() + " - to commit");
 
       Assert.assertNotNull(workingBranch);
@@ -163,8 +161,8 @@ public class BranchEventTest {
       return workingBranch;
    }
 
-   private Branch testEvents__purged() throws Exception {
-      Branch workingBranch =
+   private void testEvents__purged() throws Exception {
+      BranchId workingBranch =
          BranchManager.createWorkingBranch(mainBranch, method.getQualifiedTestName() + " - to purge");
 
       Assert.assertNotNull(workingBranch);
@@ -172,19 +170,18 @@ public class BranchEventTest {
       Assert.assertNotNull(workingBranch);
 
       branchEventListener.reset();
+      Branch fullBranch = BranchManager.getBranch(workingBranch); // get full branch before purge because it will be decached
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(workingBranch, false));
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Purging, workingBranch);
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Purged, workingBranch);
 
-      Assert.assertEquals(BranchState.PURGED, BranchManager.getState(workingBranch));
-      Assert.assertEquals(StorageState.PURGED, workingBranch.getStorageState());
-      Assert.assertFalse(BranchManager.isEditable(workingBranch));
+      Assert.assertEquals(BranchState.PURGED, fullBranch.getBranchState());
+      Assert.assertFalse(BranchManager.isEditable(fullBranch));
       Assert.assertFalse("Branch should not exist", BranchManager.branchExists(workingBranch));
-      return workingBranch;
    }
 
-   private Branch testEvents__deleted(Branch workingBranch) throws Exception {
+   private void testEvents__deleted(IOseeBranch workingBranch) throws Exception {
       Assert.assertNotNull(workingBranch);
       Assert.assertNotSame(BranchState.DELETED, BranchManager.getState(workingBranch));
 
@@ -195,10 +192,9 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getSecondResults(), BranchEventType.Deleted, workingBranch);
 
       Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
-      return workingBranch;
    }
 
-   private Branch testEvents__stateChange(Branch workingBranch) throws Exception {
+   private void testEvents__stateChange(IOseeBranch workingBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(workingBranch);
@@ -209,10 +205,9 @@ public class BranchEventTest {
          workingBranch);
 
       Assert.assertEquals(BranchState.MODIFIED, BranchManager.getState(workingBranch));
-      return workingBranch;
    }
 
-   private Branch testEvents__typeChange(Branch workingBranch) throws Exception {
+   private void testEvents__typeChange(IOseeBranch workingBranch) throws Exception {
       branchEventListener.reset();
       Assert.assertNotNull(workingBranch);
       Assert.assertTrue(BranchManager.getType(workingBranch).isWorkingBranch());
@@ -222,10 +217,9 @@ public class BranchEventTest {
          workingBranch);
 
       Assert.assertTrue(BranchManager.getType(workingBranch).isBaselineBranch());
-      return workingBranch;
    }
 
-   private IOseeBranch testEvents__workingRenamed(IOseeBranch workingBranch) throws Exception {
+   private void testEvents__workingRenamed(BranchId workingBranch) throws Exception {
       branchEventListener.reset();
 
       Assert.assertNotNull(workingBranch);
@@ -235,13 +229,12 @@ public class BranchEventTest {
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, workingBranch);
 
       Assert.assertEquals(newName, BranchManager.getBranchName(workingBranch));
-      return workingBranch;
    }
 
-   private Branch testEvents__workingAdded() throws Exception {
+   private IOseeBranch testEvents__workingAdded() throws Exception {
       branchEventListener.reset();
 
-      Branch workingBranch =
+      IOseeBranch workingBranch =
          BranchManager.createWorkingBranch(mainBranch, method.getQualifiedTestName() + " - working");
       Assert.assertNotNull(workingBranch);
 

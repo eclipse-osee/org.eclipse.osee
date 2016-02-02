@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -107,7 +108,7 @@ public class ConflictTest {
       Collection<Conflict> conflicts = null;
       try {
          conflicts = ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-            ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
+            ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBaseTransaction(),
             new NullProgressMonitor());
       } catch (Exception ex) {
          fail(Lib.exceptionToString(ex));
@@ -152,9 +153,10 @@ public class ConflictTest {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {
-         Collection<Conflict> conflicts = ConflictManagerInternal.getConflictsPerBranch(
-            ConflictTestManager.getSourceBranch(), ConflictTestManager.getDestBranch(),
-            ConflictTestManager.getSourceBranch().getBaseTransaction(), new NullProgressMonitor());
+         TransactionRecord baseTx = ConflictTestManager.getSourceBaseTransaction();
+         Collection<Conflict> conflicts =
+            ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
+               ConflictTestManager.getDestBranch(), baseTx, new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             if (conflict instanceof AttributeConflict) {
@@ -166,8 +168,7 @@ public class ConflictTest {
          }
 
          conflicts = ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-            ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch().getBaseTransaction(),
-            new NullProgressMonitor());
+            ConflictTestManager.getDestBranch(), baseTx, new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {
             ConflictStatus status = conflict.getStatus();
@@ -211,7 +212,7 @@ public class ConflictTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, parent, "Multiplicity Test");
       testArt.persist("Save testArt on parent");
       BranchId child1 = BranchManager.createWorkingBranch(parent, "Child1");
-      Branch child2 = BranchManager.createWorkingBranch(parent, "Child2");
+      IOseeBranch child2 = BranchManager.createWorkingBranch(parent, "Child2");
 
       Artifact onChild1 = ArtifactQuery.getArtifactFromId(testArt.getArtId(), child1);
       onChild1.setSoleAttributeFromString(CoreAttributeTypes.ParagraphNumber, "1");

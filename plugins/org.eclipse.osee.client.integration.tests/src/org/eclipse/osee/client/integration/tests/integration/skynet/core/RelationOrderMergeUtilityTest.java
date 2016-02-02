@@ -18,13 +18,13 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,7 +63,7 @@ public class RelationOrderMergeUtilityTest {
    private RelationType hierType;
    private RelationSide hierSide;
 
-   private Branch destBranch;
+   private IOseeBranch destBranch;
 
    @Before
    public void createBranch() throws OseeCoreException {
@@ -106,7 +106,7 @@ public class RelationOrderMergeUtilityTest {
       }
       destParent.persist(getClass().getSimpleName() + ".testOrderMerge()_1");
 
-      Branch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
+      IOseeBranch sourceBranch = BranchManager.createWorkingBranch(destBranch, "Source Branch");
       Artifact srcParent = ArtifactQuery.getArtifactFromId(destParent.getGuid(), sourceBranch);
       Artifact srcChild = ArtifactQuery.getArtifactFromId(destChildren[4].getGuid(), sourceBranch);
       setAsChild(srcParent, srcChild, USER_DEFINED);

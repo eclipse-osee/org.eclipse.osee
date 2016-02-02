@@ -69,7 +69,7 @@ public class UpdateBranchOperation extends AbstractOperation {
       }
    }
 
-   private Branch createTempBranch(IOseeBranch originalBranch) throws OseeCoreException {
+   private IOseeBranch createTempBranch(IOseeBranch originalBranch) throws OseeCoreException {
       IOseeBranch useFromBranch = fromBranch != null ? fromBranch : BranchManager.getParentBranch(originalBranch);
       return BranchManager.createWorkingBranch(useFromBranch, getUpdatedName(originalBranch.getName()));
    }

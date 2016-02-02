@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -107,8 +108,8 @@ public class NewBranch {
       this.mergeAddressingQueryId = mergeAddressingQueryId;
    }
 
-   public void setMergeDestinationBranchId(long mergeDestinationBranchId) {
-      this.mergeDestinationBranchId = mergeDestinationBranchId;
+   public void setMergeDestinationBranchId(BranchId mergeDestinationBranch) {
+      this.mergeDestinationBranchId = mergeDestinationBranch.getId();
    }
 
    public void setTxCopyBranchType(boolean txCopyBranchType) {

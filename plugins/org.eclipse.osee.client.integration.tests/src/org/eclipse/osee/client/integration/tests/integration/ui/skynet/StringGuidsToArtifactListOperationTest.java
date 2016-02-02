@@ -18,8 +18,8 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.operation.StringOperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +38,7 @@ import org.junit.Test;
 
 /**
  * {@link StringGuidsToArtifactListOperation}
- * 
+ *
  * @author Karol M. Wilk
  */
 public class StringGuidsToArtifactListOperationTest {
@@ -53,7 +53,7 @@ public class StringGuidsToArtifactListOperationTest {
    private static final String invalidGuid = String.format("4F@3g@#$G@GZS%s", SAMPLE_SEPARATOR);
    private static final int capacity = 10;
 
-   private Branch testBranch;
+   private IOseeBranch testBranch;
 
    private final Collection<Object> artifacts = new ArrayList<>(capacity);
    private final String[] guids = new String[capacity];

@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -56,7 +55,8 @@ public class CreateBranchOperationTest {
       IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       BranchManager.setState(workingBranch, BranchState.DELETED);
 
-      Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
+      IOseeBranch workingBranch2 =
+         BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));
@@ -72,7 +72,8 @@ public class CreateBranchOperationTest {
       IOseeBranch workingBranch = BranchManager.createWorkingBranch(SAW_Bld_1, method.getQualifiedTestName(), folder);
       BranchManager.setState(workingBranch, BranchState.REBASELINED);
 
-      Branch workingBranch2 = BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
+      IOseeBranch workingBranch2 =
+         BranchManager.createWorkingBranch(workingBranch, getName(workingBranch, "child"), folder);
 
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch));
       Operations.executeWorkAndCheckStatus(new DeleteBranchOperation(workingBranch2));

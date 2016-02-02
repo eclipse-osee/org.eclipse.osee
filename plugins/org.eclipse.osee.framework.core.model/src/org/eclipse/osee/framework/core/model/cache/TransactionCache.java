@@ -21,8 +21,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.enums.TransactionVersion;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -50,10 +48,6 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
 
    public void setAccessor(ITransactionDataAccessor accessor) {
       this.accessor = accessor;
-   }
-
-   protected ITransactionDataAccessor getDataAccessor() {
-      return accessor;
    }
 
    @Override
@@ -148,26 +142,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    }
 
    public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
-      return getDataAccessor().getOrLoadPriorTransaction(this, transactionId.getId(), transactionId.getBranchId());
-   }
-
-   public TransactionRecord getTransaction(Branch branch, TransactionVersion revision) throws OseeCoreException {
-      TransactionRecord toReturn = null;
-      if (TransactionVersion.BASE == revision) {
-         toReturn = branch.getBaseTransaction();
-      }
-      if (toReturn == null) {
-         toReturn = getDataAccessor().loadTransactionRecord(this, branch, revision);
-      }
-      return toReturn;
-   }
-
-   public TransactionRecord getHeadTransaction(Branch branch) throws OseeCoreException {
-      return accessor.getHeadTransaction(this, branch);
-   }
-
-   public Collection<TransactionRecord> getTransactions(Branch branch) {
-      return Collections.emptyList();
+      return accessor.getOrLoadPriorTransaction(this, transactionId.getId(), transactionId.getBranchId());
    }
 
    public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
@@ -181,7 +156,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
       }
 
       if (!toLoad.isEmpty()) {
-         getDataAccessor().loadTransactionRecord(this, toLoad);
+         accessor.loadTransactionRecord(this, toLoad);
       }
    }
 
@@ -202,9 +177,8 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
 
    @Override
    public synchronized boolean reloadCache() throws OseeCoreException {
-      ITransactionDataAccessor dataAccessor = getDataAccessor();
-      if (dataAccessor != null) {
-         dataAccessor.load(this);
+      if (accessor != null) {
+         accessor.load(this);
       } else {
          OseeLog.log(this.getClass(), Level.WARNING, "Transaction Data Accessor was null");
       }

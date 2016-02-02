@@ -128,10 +128,12 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
    private static void getAttributeTypes(Set<IAttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
-      for (BranchId ancestor : branch.getAncestors()) {
-         Collection<AttributeType> items = validityMap.get(ancestor);
-         if (items != null) {
-            attributeTypes.addAll(items);
+      if (!validityMap.isEmpty()) {
+         for (BranchId ancestor : branch.getAncestors()) {
+            Collection<AttributeType> items = validityMap.get(ancestor);
+            if (items != null) {
+               attributeTypes.addAll(items);
+            }
          }
       }
 
