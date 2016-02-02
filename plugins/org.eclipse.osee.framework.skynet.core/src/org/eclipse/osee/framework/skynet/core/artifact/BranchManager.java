@@ -16,12 +16,14 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -32,6 +34,7 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -227,8 +230,26 @@ public final class BranchManager {
       loadBranchToCache(branch.getId());
    }
 
-   public static Collection<Branch> getAll() {
-      return getCache().getAll();
+   public static IStatus isDeleteable(Collection<Artifact> artifacts) throws OseeCoreException {
+      List<Integer> artIdsToCheck = new LinkedList<>();
+      for (Artifact art : artifacts) {
+         if (art.isOnBranch(CoreBranches.COMMON_ID)) {
+            artIdsToCheck.add(art.getArtId());
+         }
+      }
+
+      if (!artIdsToCheck.isEmpty()) {
+         for (IOseeBranch branch : getCache().getAll()) {
+            Integer associatedArtifactId = getAssociatedArtifactId(branch);
+            if (getState(branch) != BranchState.DELETED && artIdsToCheck.contains(associatedArtifactId)) {
+               return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                  String.format("Cannot delete artId [%d] because it is the associated artifact of branch [%s]",
+                     associatedArtifactId, branch.getName()));
+            }
+         }
+      }
+
+      return ArtifactCheck.OK_STATUS;
    }
 
    /**

@@ -211,12 +211,12 @@ public class WordTemplateRendererTest {
       introArt.persist(tx);
       tx.execute();
 
-      IOseeBranch middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
+      BranchId middleBr = BranchManager.createWorkingBranch(rootBr, "Middle Branch");
       Artifact middleVol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), middleBr);
       middleVol4.setSoleAttributeFromString(CoreAttributeTypes.WordTemplateContent, " ");
       middleVol4.persist("added blank content");
 
-      IOseeBranch childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
+      BranchId childBr = BranchManager.createWorkingBranch(middleBr, "Child Branch");
       vol4 = ArtifactQuery.getArtifactFromId(vol4.getGuid(), childBr);
 
       modifyOption("Branch", childBr);
