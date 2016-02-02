@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
@@ -33,16 +34,18 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  * Common location for event handling for ArtifactExplorers in order to keep number of registrations and processing to a
  * minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
-public class ArtifactExplorerEventManager implements IArtifactEventListener {
+public class ArtifactExplorerEventManager implements IArtifactEventListener, EventHandler {
 
-   List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<>();
+   static List<IArtifactExplorerEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactExplorerEventManager instance;
 
    public static void add(IArtifactExplorerEventHandler iWorldEventHandler) {
@@ -50,12 +53,12 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          instance = new ArtifactExplorerEventManager();
          OseeEventManager.addListener(instance);
       }
-      instance.handlers.add(iWorldEventHandler);
+      ArtifactExplorerEventManager.handlers.add(iWorldEventHandler);
    }
 
    public static void remove(IArtifactExplorerEventHandler iWorldEventHandler) {
       if (instance != null) {
-         instance.handlers.remove(iWorldEventHandler);
+         ArtifactExplorerEventManager.handlers.remove(iWorldEventHandler);
       }
    }
 
@@ -152,4 +155,27 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener {
          }
       });
    }
+
+   @Override
+   public void handleEvent(Event event) {
+      try {
+         if (AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
+            for (final IArtifactExplorerEventHandler handler : handlers) {
+               if (!handler.isDisposed()) {
+                  Displays.ensureInDisplayThread(new Runnable() {
+
+                     @Override
+                     public void run() {
+                        handler.getArtifactExplorer().getTreeViewer().refresh();
+                        handler.getArtifactExplorer().refreshBranchWarning();
+                     }
+                  });
+               }
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
 }

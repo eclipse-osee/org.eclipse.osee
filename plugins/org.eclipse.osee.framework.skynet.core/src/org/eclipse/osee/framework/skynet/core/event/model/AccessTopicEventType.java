@@ -17,6 +17,8 @@ public class AccessTopicEventType extends AbstractTopicEventType {
 
    public static final AccessTopicEventType ACCESS_ARTIFACT_MODIFIED =
       new AccessTopicEventType(EventType.LocalAndRemote, "framework/access/artifact/modified");
+   public static final AccessTopicEventType ACCESS_ARTIFACT_LOCK_MODIFIED =
+      new AccessTopicEventType(EventType.LocalAndRemote, "framework/access/artifact/lock/modified");
    public static final AccessTopicEventType ACCESS_BRANCH_MODIFIED =
       new AccessTopicEventType(EventType.LocalAndRemote, "framework/access/branch/modified");
 

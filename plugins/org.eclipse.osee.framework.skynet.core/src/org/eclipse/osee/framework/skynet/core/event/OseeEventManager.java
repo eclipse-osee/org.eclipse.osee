@@ -26,8 +26,8 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -112,7 +112,7 @@ public final class OseeEventManager {
    /////////////////////////////////// NEW EVENT MODEL - TOPICS with JSON ////////////////////////////////////////////
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-   // Kick LOCAL and REMOTE transaction event
+   // Kick LOCAL and REMOTE topic event
    public static void kickTopicEvent(Object source, TopicEvent topicEvent) throws OseeCoreException {
       Assert.isNotNull(source);
       Assert.isNotNull(topicEvent);
@@ -121,14 +121,15 @@ public final class OseeEventManager {
       getEventService().send(source, topicEvent);
    }
 
-   // Kick LOCAL and REMOTE access control events
-   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload event, AccessTopicEventType accessEventTopicType) {
+   // Kick LOCAL and REMOTE topic event with payload
+   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload, AccessTopicEventType accessEventTopicType) {
       try {
          TopicEvent topicEvent =
-            EventUtil.createTopic(accessEventTopicType.getTopic(), event, accessEventTopicType.getEventType());
+            EventUtil.createTopic(accessEventTopicType.getTopic(), payload, accessEventTopicType.getEventType());
          kickTopicEvent(source, topicEvent);
       } catch (Exception ex) {
-         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s]", event);
+         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s][%s]", accessEventTopicType,
+            payload);
       }
    }
 

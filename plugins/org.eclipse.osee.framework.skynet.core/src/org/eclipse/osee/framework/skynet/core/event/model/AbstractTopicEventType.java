@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.osgi.service.event.Event;
+
 /**
  * 
  * @author Donald G. Dunne
@@ -38,6 +40,18 @@ public class AbstractTopicEventType {
 
    public void setTopic(String topic) {
       this.topic = topic;
+   }
+
+   @Override
+   public String toString() {
+      return "EventTopic [eventType=" + eventType + ", topic=" + topic + "]";
+   }
+
+   /**
+    * @return true of this topic matches the event topic
+    */
+   public boolean matches(Event event) {
+      return getTopic().equals(event.getTopic());
    }
 
 }

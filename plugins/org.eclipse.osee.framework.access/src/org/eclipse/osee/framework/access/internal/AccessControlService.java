@@ -72,8 +72,7 @@ import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
@@ -676,7 +675,7 @@ public class AccessControlService implements IAccessControlService {
       if (isArtifact) {
          event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
       }
-
+ 
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
 
    }
@@ -714,9 +713,12 @@ public class AccessControlService implements IAccessControlService {
    }
 
    public void lockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException {
+      Conditions.checkNotNull(subject, "subject");
+      Conditions.checkNotNullOrEmpty(objects, "objects");
       ensurePopulated();
-      AccessControlEvent event = new AccessControlEvent();
-      event.setEventType(AccessControlEventType.ArtifactsLocked);
+      AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
+      event.setBranchUuid(objects.iterator().next().getBranchId());
+      event.setLocked(true);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
@@ -728,14 +730,12 @@ public class AccessControlService implements IAccessControlService {
             AccessControlData data = new AccessControlData(subject, accessObject, PermissionEnum.LOCK, true);
             persistPermission(data);
             artifactLockCache.put(objectBranchId, objectArtId, subjectArtId);
-            event.getArtifacts().add(object.getBasicGuidArtifact());
+            event.addArtifact(object.getUuid());
             lockedArts.add(object);
          }
       }
       try {
-         if (eventService != null) {
-            eventService.send(this, event);
-         }
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
@@ -743,8 +743,9 @@ public class AccessControlService implements IAccessControlService {
 
    public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
       ensurePopulated();
-      AccessControlEvent event = new AccessControlEvent();
-      event.setEventType(AccessControlEventType.ArtifactsUnlocked);
+      AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
+      event.setBranchUuid(objects.iterator().next().getBranchId());
+      event.setLocked(false);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
          Integer objectArtId = object.getArtId();
@@ -754,14 +755,12 @@ public class AccessControlService implements IAccessControlService {
             AccessObject accessObject = getAccessObject(object);
             removeAccessControlDataIf(true, new AccessControlData(subject, accessObject, PermissionEnum.LOCK, false));
             artifactLockCache.removeAndGet(branchUuid, objectArtId);
-            event.getArtifacts().add(object.getBasicGuidArtifact());
+            event.addArtifact(object.getUuid());
             lockedArts.add(object);
          }
       }
       try {
-         if (eventService != null) {
-            eventService.send(this, event);
-         }
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }

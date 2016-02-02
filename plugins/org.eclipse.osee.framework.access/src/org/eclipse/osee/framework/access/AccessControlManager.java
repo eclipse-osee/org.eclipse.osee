@@ -25,16 +25,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 
 /**
  * @author Jeff C. Phillips
  */
 
-public final class AccessControlManager implements IAccessControlEventListener {
+public final class AccessControlManager {
 
    private AccessControlManager() {
       // Hide constructor
@@ -151,17 +147,4 @@ public final class AccessControlManager implements IAccessControlEventListener {
       return getService().getAccessData(UserManager.getUser(), objectsToCheck);
    }
 
-   @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      try {
-         if (accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
-            clearCaches();
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AccessControlManager.class, Level.SEVERE, ex);
-      }
-
-   }
 }

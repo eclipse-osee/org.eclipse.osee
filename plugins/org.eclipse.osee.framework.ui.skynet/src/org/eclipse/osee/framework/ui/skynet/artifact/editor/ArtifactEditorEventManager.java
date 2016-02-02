@@ -21,11 +21,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -34,6 +33,8 @@ import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  * Common location for event handling for ArtifactExplorers in order to keep number of registrations and processing to a
@@ -41,9 +42,9 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  *
  * @author Donald G. Dunne
  */
-public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, IAccessControlEventListener {
+public class ArtifactEditorEventManager implements IArtifactEventListener, IBranchEventListener, EventHandler {
 
-   List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
+   static List<IArtifactEditorEventHandler> handlers = new CopyOnWriteArrayList<>();
    static ArtifactEditorEventManager instance;
 
    public static void add(IArtifactEditorEventHandler iWorldEventHandler) {
@@ -51,12 +52,12 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
          instance = new ArtifactEditorEventManager();
          OseeEventManager.addListener(instance);
       }
-      instance.handlers.add(iWorldEventHandler);
+      ArtifactEditorEventManager.handlers.add(iWorldEventHandler);
    }
 
    public static void remove(IArtifactEditorEventHandler iWorldEventHandler) {
       if (instance != null) {
-         instance.handlers.remove(iWorldEventHandler);
+         ArtifactEditorEventManager.handlers.remove(iWorldEventHandler);
       }
    }
 
@@ -149,12 +150,13 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
    }
 
    @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
+   public void handleEvent(Event event) {
       try {
-         if (accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked || accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked) {
+         if (AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
             for (final IArtifactEditorEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
-                  if (accessControlEvent.getArtifacts().contains(handler.getArtifactFromEditorInput())) {
+                  AccessArtifactLockTopicEvent payload = EventUtil.getTopicJson(event, AccessArtifactLockTopicEvent.class);
+                  if (payload.matches(handler.getArtifactFromEditorInput())) {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {

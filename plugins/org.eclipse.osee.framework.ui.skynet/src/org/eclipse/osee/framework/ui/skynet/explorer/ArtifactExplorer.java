@@ -416,11 +416,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          if (!accessControlEvent.isForBranch(branch)) {
             return;
          }
-         if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsUnlocked ||
-         //
-         accessControlEvent.getEventType() == AccessControlEventType.ArtifactsLocked) {
+         if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

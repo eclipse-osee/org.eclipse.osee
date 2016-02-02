@@ -34,7 +34,7 @@ import org.eclipse.swt.widgets.Listener;
 import org.osgi.service.event.EventHandler;
 
 /**
- * TopicHandler for {@link AccessEventTopicType.ACCESS_BRANCH_MODIFIED}
+ * TopicHandler for {@link AccessTopicEventType.ACCESS_BRANCH_MODIFIED}
  *
  * @author Shawn F. Cook
  */

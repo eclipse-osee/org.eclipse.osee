@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -252,13 +252,13 @@ public class PolicyDialog extends Dialog {
       // Send artifact locked event if changed in dialog
       if (isArtifactLockedBeforeDialog != null) {
          try {
-            boolean isArtifactLockedAfterDialog = AccessControlManager.hasLock((Artifact) accessControlledObject);
+            Artifact artifact = (Artifact) accessControlledObject;
+            boolean isArtifactLockedAfterDialog = AccessControlManager.hasLock(artifact);
             if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
-               AccessControlEvent event = new AccessControlEvent();
-               event.setEventType(
-                  isArtifactLockedAfterDialog ? AccessControlEventType.ArtifactsLocked : AccessControlEventType.ArtifactsUnlocked);
-               event.getArtifacts().add(((Artifact) accessControlledObject).getBasicGuidArtifact());
-               OseeEventManager.kickAccessControlArtifactsEvent(PolicyDialog.class, event);
+               AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
+               event.setBranchUuid(artifact.getBranchId());
+               event.addArtifact(artifact.getUuid());
+               OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
                System.err.println("kicked access control event " + event);
             }
          } catch (Exception ex) {

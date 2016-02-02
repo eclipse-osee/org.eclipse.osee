@@ -590,8 +590,12 @@ public class ArtifactExplorerMenu {
             }
 
             try {
-               AccessControlManager.unLockObjects(unlockArtifacts, UserManager.getUser());
-               AccessControlManager.lockObjects(lockArtifacts, UserManager.getUser());
+               if (!unlockArtifacts.isEmpty()) {
+                  AccessControlManager.unLockObjects(unlockArtifacts, UserManager.getUser());
+               }
+               if (!lockArtifacts.isEmpty()) {
+                  AccessControlManager.lockObjects(lockArtifacts, UserManager.getUser());
+               }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }

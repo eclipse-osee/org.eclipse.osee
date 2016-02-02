@@ -15,14 +15,15 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 /**
  * Payload for the Access Topic Event
- * 
+ *
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class AccessTopicEventPayload {
+public class AccessTopicEventPayload implements ISerializeableTopicPayload {
 
    @JsonSerialize(using = ToStringSerializer.class)
    long branchUuid;
@@ -44,12 +45,26 @@ public class AccessTopicEventPayload {
       this.artifactUuids = artifactUuids;
    }
 
+   public void addArtifact(ArtifactId artifact) {
+      addArtifact(artifact.getUuid());
+   }
+
    public void addArtifact(Long artifactUuid) {
       getArtifactUuids().add(String.valueOf(artifactUuid));
    }
 
    public void addArtifact(Integer artifactId) {
       getArtifactUuids().add(String.valueOf(Long.valueOf(artifactId)));
+   }
+
+   /**
+    * @return true if this artifact matches event branch and contains artifact
+    */
+   public boolean matches(ArtifactId artifact) {
+      if (!artifactUuids.isEmpty()) {
+         return artifact.getBranchId().equals(branchUuid) && artifactUuids.contains(String.valueOf(artifact.getUuid()));
+      }
+      return false;
    }
 
 }

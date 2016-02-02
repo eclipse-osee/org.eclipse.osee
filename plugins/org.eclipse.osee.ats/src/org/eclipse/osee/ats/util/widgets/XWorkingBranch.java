@@ -71,7 +71,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * TopicHandler for {@link AccessEventTopicType.ACCESS_BRANCH_MODIFIED}
+ * TopicHandler for {@link AccessTopicEventType.ACCESS_BRANCH_MODIFIED}
  *
  * @author Megumi Telles
  * @author Donald G. Dunne
