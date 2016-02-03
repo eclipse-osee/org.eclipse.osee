@@ -19,14 +19,14 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 
@@ -41,27 +41,22 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
    }
 
    @Override
-   public Artifact adapt(Attribute<?> attribute, Identity<String> identity) throws OseeCoreException {
+   public Artifact adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
       Artifact retArt = null;
 
-      String guid = identity.getGuid();
-      if (GUID.isValid(guid)) {
+      int uuid = identity.getUuid() <= 0 ? 0 : identity.getUuid().intValue();
+      if (uuid > 0) {
          Artifact artifact = attribute.getArtifact();
          if (artifact instanceof TaskArtifact) {
             TaskArtifact taskArt = (TaskArtifact) artifact;
             TeamWorkFlowArtifact parentTeamWf = taskArt.getParentTeamWorkflow();
-            Artifact derivedArt = null;
-            try {
-               derivedArt = parentTeamWf.getRelatedArtifact(AtsRelationTypes.Derive_From);
-            } catch (ArtifactDoesNotExist e) {
-               //derivedArt = (remains) null;
-            }
+            Artifact derivedArt = parentTeamWf.getRelatedArtifactOrNull(AtsRelationTypes.Derive_From);
             if (derivedArt != null && derivedArt instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact derivedTeamWf = (TeamWorkFlowArtifact) derivedArt;
                // First, attempt to get from Working Branch if still exists
                IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
-               if (workingBranch != null) {
-                  retArt = ArtifactQuery.getArtifactFromId(guid, workingBranch, DeletionFlag.EXCLUDE_DELETED);
+               if (workingBranch != null && branchIsInWork(workingBranch)) {
+                  retArt = ArtifactQuery.getArtifactFromId(uuid, workingBranch, DeletionFlag.EXCLUDE_DELETED);
                } else {
                   // Else get from first commit transaction
                   // NOTE: Each workflow has it's own commit in parallel dev
@@ -69,7 +64,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
                      (TransactionRecord) AtsClientService.get().getBranchService().getEarliestTransactionId(
                         derivedTeamWf);
                   if (earliestTransactionId != null) {
-                     retArt = ArtifactQuery.getHistoricalArtifactFromId(guid, earliestTransactionId,
+                     retArt = ArtifactQuery.getHistoricalArtifactFromId(uuid, earliestTransactionId,
                         DeletionFlag.EXCLUDE_DELETED);
                   }
                }
@@ -78,6 +73,11 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
          }
       }
       return retArt;
+   }
+
+   private boolean branchIsInWork(IOseeBranch workingBranch) {
+      BranchState state = BranchManager.getState(workingBranch);
+      return (state.isCreated() || state.isModified());
    }
 
 }

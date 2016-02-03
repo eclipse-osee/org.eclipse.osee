@@ -14,9 +14,10 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public class BranchReferenceAttribute extends IdentityReferenceAttribute<IOseeBranch> {
+
    @Override
    protected boolean subClassSetValue(IOseeBranch value) throws OseeCoreException {
-      return getAttributeDataProvider().setValue(value == null ? "" : String.valueOf(value.getGuid()));
+      return getAttributeDataProvider().setValue(value == null ? "" : String.valueOf(value.getUuid()));
    }
 
 }

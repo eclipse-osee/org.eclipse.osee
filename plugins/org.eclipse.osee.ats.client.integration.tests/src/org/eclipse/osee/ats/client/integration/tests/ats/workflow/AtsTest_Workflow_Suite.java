@@ -22,6 +22,7 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
+   TaskRelatedToChangedArtifactTest.class,
    StoreWorkDefinitionTest.class,
    AtsTaskEndpointImplTest.class,
    SMAPromptChangeStatusTest.class,

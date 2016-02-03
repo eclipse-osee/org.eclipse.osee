@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.core.data.HasUuid;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.UuidBaseIdentityJaxRs;
 import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
-public abstract class IdentityReferenceAttribute<T extends Identity<?>> extends CharacterBackedAttribute<T> {
+public abstract class IdentityReferenceAttribute<T extends HasUuid> extends CharacterBackedAttribute<T> {
 
    @Override
    public T getValue() throws OseeCoreException {
@@ -26,7 +26,7 @@ public abstract class IdentityReferenceAttribute<T extends Identity<?>> extends 
    @Override
    protected T convertStringToValue(String value) throws OseeCoreException {
       AttributeAdapterService service = getAttributeAdapter();
-      T identity = service.adapt(this, new BaseIdentity<String>(value));
+      T identity = service.adapt(this, new UuidBaseIdentityJaxRs(Long.valueOf(value)));
       return identity;
    }
 

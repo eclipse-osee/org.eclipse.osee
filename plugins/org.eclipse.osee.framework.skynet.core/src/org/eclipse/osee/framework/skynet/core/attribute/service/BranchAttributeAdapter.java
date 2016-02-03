@@ -15,9 +15,8 @@ import java.util.Collections;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
@@ -25,9 +24,9 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
 public class BranchAttributeAdapter implements AttributeAdapter<IOseeBranch> {
 
    @Override
-   public IOseeBranch adapt(Attribute<?> attribute, Identity<String> identity) throws OseeCoreException {
-      String uuid = identity.getGuid();
-      return Strings.isNumeric(uuid) ? BranchManager.getBranch(Long.valueOf(uuid)) : null;
+   public IOseeBranch adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException {
+      Long uuid = identity.getUuid();
+      return uuid > 0 ? BranchManager.getBranch(uuid) : null;
    }
 
    @Override

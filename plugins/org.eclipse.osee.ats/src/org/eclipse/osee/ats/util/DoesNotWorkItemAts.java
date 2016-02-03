@@ -10,10 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.core.query.QueryTest;
-import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.DemoBranches;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -24,14 +28,23 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
 public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Test AtsQuery", PluginUiImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Task Realated To Artifact", PluginUiImage.ADMIN);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      QueryTest test = new QueryTest(AtsClientService.get().getServices());
-      test.run();
-      AWorkbench.popup("done");
+      TaskArtifact taskArt = (TaskArtifact) ArtifactQuery.getArtifactFromId(167072066, AtsUtilCore.getAtsBranch());
+
+      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API",
+         DemoBranches.SAW_Bld_1);
+
+      taskArt.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);
+      taskArt.persist(getClass().getSimpleName());
+
+      System.err.println("dirty (false) " + taskArt.isDirty());
+      Artifact robotReq2 = taskArt.getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
+
+      System.err.println(String.format("Robot Artifact  [%s]", robotReq2));
    }
 
 }

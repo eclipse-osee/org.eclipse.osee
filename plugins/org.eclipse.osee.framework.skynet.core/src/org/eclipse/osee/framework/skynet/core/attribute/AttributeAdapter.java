@@ -12,15 +12,17 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
 /**
- *
+ * @author Roberto E. Escobar
  */
 public interface AttributeAdapter<T> {
-   T adapt(Attribute<?> attribute, Identity<String> identity) throws OseeCoreException;
+
+   T adapt(Attribute<?> attribute, UuidIdentity identity) throws OseeCoreException;
 
    Collection<IAttributeType> getSupportedTypes();
+
 }
