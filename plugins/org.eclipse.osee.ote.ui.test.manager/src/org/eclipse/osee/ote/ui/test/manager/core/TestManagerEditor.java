@@ -19,6 +19,7 @@ import java.io.OutputStream;
 import java.util.logging.Level;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -141,7 +142,9 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       if (getActivePage() != sourcePage) {
          pageSourceLoad();
       }
-      getEditor(sourcePage).doSave(monitor);
+      if(isDirty()){
+         getEditor(sourcePage).doSave(monitor);
+      }
       fileIsDirty = false;
       fileWasSaved = true;
       doSave();
@@ -324,6 +327,11 @@ public abstract class TestManagerEditor extends MultiPageEditorPart implements I
       if (coreinput instanceof IFileEditorInput) {
          IFileEditorInput input = (IFileEditorInput) getEditorInput();
          thisIFile = input.getFile();
+         try {
+            thisIFile.refreshLocal(IResource.DEPTH_ZERO, null);
+         } catch (CoreException e) {
+            e.printStackTrace();
+         }
          String name = thisIFile.getName();
          this.setPartName(name);
          if (thisIFile != null) {
