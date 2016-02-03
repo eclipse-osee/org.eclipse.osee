@@ -16,7 +16,7 @@ import org.junit.Test;
 
 /**
  * Test case for {@link AtsObject}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsObjectTest {
@@ -25,7 +25,7 @@ public class AtsObjectTest {
    public void testGetNameGuidId() {
       AtsObject obj = new AtsObject("hello", 456);
       Assert.assertEquals("hello", obj.getName());
-      Assert.assertEquals(456, obj.getUuid());
+      Assert.assertEquals(456, obj.getUuid().longValue());
 
       obj = new AtsObject("hello", Lib.generateUuid());
       Assert.assertEquals("hello", obj.getName());

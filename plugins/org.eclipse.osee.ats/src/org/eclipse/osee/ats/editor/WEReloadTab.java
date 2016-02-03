@@ -83,7 +83,7 @@ public class WEReloadTab extends FormPage {
          bodyComp.setLayout(new GridLayout(1, false));
          bodyComp.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
 
-         if (AtsUtilCore.getAtsBranch().getUuid() != branchUuid) {
+         if (!AtsUtilCore.getAtsBranch().getUuid().equals(branchUuid)) {
             Label imageLabel = new Label(bodyComp, SWT.NONE);
             imageLabel.setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, false, true));
             Image image = PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJS_ERROR_TSK);
@@ -182,7 +182,7 @@ public class WEReloadTab extends FormPage {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
-         if (artUuid > 0 && branchUuid == AtsUtilCore.getAtsBranch().getUuid()) {
+         if (artUuid > 0 && AtsUtilCore.getAtsBranch().getUuid().equals(branchUuid)) {
             try {
                artifact = ArtifactQuery.getArtifactFromId(artUuid, AtsUtilCore.getAtsBranch());
             } catch (ArtifactDoesNotExist ex) {

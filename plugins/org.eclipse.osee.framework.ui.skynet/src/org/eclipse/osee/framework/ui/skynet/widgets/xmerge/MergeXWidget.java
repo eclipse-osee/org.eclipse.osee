@@ -695,7 +695,7 @@ public class MergeXWidget extends GenericXWidget {
                   Collection<Long> destBranches =
                      ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getUuid());
                   for (Long branchUuid : destBranches) {
-                     if (branchUuid.intValue() != destBranch.getUuid()) {
+                     if (!branchUuid.equals(destBranch.getUuid())) {
                         selections.add(BranchManager.getBranch(branchUuid).getName());
                         branchUuids.add(branchUuid);
                      }

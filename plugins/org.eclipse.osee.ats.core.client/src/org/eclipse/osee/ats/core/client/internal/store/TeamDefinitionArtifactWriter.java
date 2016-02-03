@@ -126,7 +126,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
 
       // set parent artifact to top team def
       IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig());
-      if (teamDef.getParentTeamDef() == null && teamDef.getUuid() != topTeamDefinition.getUuid()) {
+      if (teamDef.getParentTeamDef() == null && !teamDef.getUuid().equals(topTeamDefinition.getUuid())) {
          // if parent is null, add to top team definition
          Artifact topTeamDefArt = cache.getArtifact(topTeamDefinition);
          topTeamDefArt.addChild(artifact);
@@ -136,7 +136,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
          Artifact parentTeamDefArt = artifact.getParent();
          if (parentTeamDefArt != null) {
             if (parentTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
-               if (parentTeamDefArt.getUuid() != teamDef.getParentTeamDef().getUuid()) {
+               if (!parentTeamDefArt.getUuid().equals(teamDef.getParentTeamDef().getUuid())) {
                   Artifact newParentTeamDefArt = cache.getArtifact(teamDef);
                   newParentTeamDefArt.addChild(artifact);
                   changes.add(newParentTeamDefArt);

@@ -36,7 +36,7 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link ArtifactMatchInterpreter}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class ArtifactMatchInterpreterTest {
@@ -300,8 +300,8 @@ public class ArtifactMatchInterpreterTest {
          }
 
          @Override
-         public long getUuid() {
-            return 0;
+         public Long getUuid() {
+            return 0L;
          }
       };
    }

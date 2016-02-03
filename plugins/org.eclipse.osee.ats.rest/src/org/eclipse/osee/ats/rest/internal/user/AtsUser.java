@@ -132,7 +132,7 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return this.user.getUuid();
    }
 

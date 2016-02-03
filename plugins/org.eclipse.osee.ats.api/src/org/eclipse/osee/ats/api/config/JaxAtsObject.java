@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api.config;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+import org.codehaus.jackson.map.ser.std.ToStringSerializer;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
@@ -20,6 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 public class JaxAtsObject {
 
    private String name;
+   @JsonSerialize(using = ToStringSerializer.class)
    private long uuid;
    private boolean active;
    private String description;
@@ -94,7 +97,7 @@ public class JaxAtsObject {
          return false;
       }
       JaxAtsObject other = (JaxAtsObject) obj;
-      if (uuid != other.getUuid()) {
+      if (other.getUuid() != uuid) {
          return false;
       }
       return true;

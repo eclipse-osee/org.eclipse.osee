@@ -77,7 +77,7 @@ public enum AtsGroup {
 
    public boolean isMember(UuidIdentity user) {
       for (Artifact art : group.getGroupArtifact().getRelatedArtifacts(CoreRelationTypes.Users_User)) {
-         if (art.getUuid() == user.getUuid()) {
+         if (art.getUuid().equals(user.getUuid())) {
             return true;
          }
       }

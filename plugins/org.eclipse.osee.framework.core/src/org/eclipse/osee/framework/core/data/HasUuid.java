@@ -15,6 +15,6 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface HasUuid {
 
-   public long getUuid();
+   public Long getUuid();
 
 }

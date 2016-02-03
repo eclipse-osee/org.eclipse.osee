@@ -37,7 +37,7 @@ public class Program extends AtsConfigObject implements IAtsProgram {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return artifact.getUuid();
    }
 

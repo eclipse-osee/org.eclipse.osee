@@ -127,7 +127,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return artifact.getUuid();
    }
 

@@ -486,6 +486,9 @@ public class TransitionManagerTest {
       transMgr.handleTransitionValidation(results);
       Assert.assertTrue(results.contains(teamArt, TransitionResult.COMPLETE_BLOCKING_REVIEWS));
 
+      decArt.setSoleAttributeValue(AtsAttributeTypes.Decision, "yes");
+      decArt.persist(getClass().getSimpleName());
+
       // validate that can transition cause review completed
       changes = new AtsChangeSet(getClass().getSimpleName());
       Result result = DecisionReviewManager.transitionTo(decArt, DecisionReviewState.Completed,

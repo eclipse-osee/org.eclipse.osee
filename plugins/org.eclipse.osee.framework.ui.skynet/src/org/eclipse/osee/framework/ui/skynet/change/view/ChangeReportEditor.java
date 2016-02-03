@@ -174,7 +174,7 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
             OseeLog.log(Activator.class, Level.SEVERE, "Error obtaining change report branches for branch event", ex);
          }
          for (IOseeBranch branch : branches) {
-            if (branch != null && branch.getUuid() == branchEvent.getBranchUuid()) {
+            if (branch != null && branch.getUuid().equals(branchEvent.getBranchUuid())) {
                switch (branchEvent.getEventType()) {
                   case Deleting:
                   case Deleted:

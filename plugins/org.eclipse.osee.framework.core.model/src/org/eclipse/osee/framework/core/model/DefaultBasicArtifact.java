@@ -46,7 +46,7 @@ public final class DefaultBasicArtifact extends NamedIdentity<String>implements 
    }
 
    @Override
-   public long getUuid() {
-      return 0;
+   public Long getUuid() {
+      return 0L;
    }
 }

@@ -66,7 +66,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ITransaction execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
-      if (objects.isEmpty() && deleteObjects.isEmpty()) {
+      if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), comment);
@@ -331,8 +331,9 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
 
    @Override
    public void deleteArtifact(ArtifactId artifact) {
-      getArtifact(artifact).delete();
-      add(getArtifact(artifact));
+      Artifact art = getArtifact(artifact);
+      art.delete();
+      add(art);
    }
 
    @Override

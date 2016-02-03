@@ -88,7 +88,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public ITransaction execute() throws OseeCoreException {
       Conditions.checkNotNull(comment, "comment");
-      if (objects.isEmpty() && deleteObjects.isEmpty()) {
+      if (objects.isEmpty() && deleteObjects.isEmpty() && execptionIfEmpty) {
          throw new OseeArgumentException("objects/deleteObjects cannot be empty");
       }
       for (Object obj : objects) {

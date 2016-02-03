@@ -19,12 +19,11 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
  * @author Donald G. Dunne
  */
 @XmlRootElement
-public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
+public class JaxAtsUser extends JaxAtsObject {
 
    private String userId;
    private String email;
 
-   @Override
    public String getUserId() {
       return userId;
    }
@@ -33,7 +32,6 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
       this.userId = userId;
    }
 
-   @Override
    public String getEmail() {
       return email;
    }
@@ -42,19 +40,18 @@ public class JaxAtsUser extends JaxAtsObject implements IAtsUser {
       this.email = email;
    }
 
-   @Override
    public String toStringWithId() {
       return String.format("[%s]-[%d]", getName(), getUserId());
    }
 
    @JsonIgnore
-   @Override
    public ArtifactId getStoreObject() {
       return null;
    }
 
    @Override
-   public void setStoreObject(ArtifactId artifact) {
-      // do nothing
+   public long getUuid() {
+      return super.getUuid();
    }
+
 }

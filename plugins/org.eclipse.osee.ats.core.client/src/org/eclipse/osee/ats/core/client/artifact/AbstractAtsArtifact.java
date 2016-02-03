@@ -42,8 +42,8 @@ public abstract class AbstractAtsArtifact extends Artifact implements IAtsObject
    }
 
    @Override
-   public long getUuid() {
-      return getArtId();
+   public Long getUuid() {
+      return Long.valueOf(getArtId());
    }
 
    @Override

@@ -190,9 +190,14 @@ public class ActionResourceTest extends AbstractRestTest {
       Assert.assertTrue(String.format("Invalid url [%s]", url), path.contains("/ats/ui/action/ATS"));
       String atsId = path.replaceFirst("^.*/", "");
 
-      Artifact teamArt =
-         ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId, AtsUtilCore.getAtsBranch());
+      TeamWorkFlowArtifact teamArt =
+         (TeamWorkFlowArtifact) ArtifactQuery.getArtifactFromAttribute(AtsAttributeTypes.AtsId, atsId,
+            AtsUtilCore.getAtsBranch());
       Assert.assertNotNull(teamArt);
+
+      // Cleanup test
+      ((Artifact) teamArt.getParentAction().getStoreObject()).deleteAndPersist();
+      teamArt.deleteAndPersist();
    }
 
    private void postAndValidateResponse(String errorMessage, Form form) throws IOException {

@@ -34,6 +34,11 @@ public interface IAtsChangeSet {
 
    Collection<Object> getObjects();
 
+   /**
+    * Store changed items.
+    *
+    * @throws OseeCoreException if no items exist to store. Use executeIfNeeded to execute quietly.
+    */
    ITransaction execute() throws OseeCoreException;
 
    void clear();
@@ -99,5 +104,10 @@ public interface IAtsChangeSet {
    <T> void setAttribute(ArtifactId artifact, int attrId, T value);
 
    void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value);
+
+   /**
+    * Will check if anything is to be stored, else return quietly.
+    */
+   void executeIfNeeded();
 
 }

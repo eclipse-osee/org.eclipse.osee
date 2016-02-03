@@ -38,6 +38,7 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final IAtsUser user;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
+   protected boolean execptionIfEmpty = true;
 
    public AbstractAtsChangeSet(String comment, IAtsUser user) {
       this.comment = comment;
@@ -129,6 +130,12 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public void addWorkflowCreated(IAtsTeamWorkflow teamWf) {
       workItemsCreated.add(teamWf);
+   }
+
+   @Override
+   public void executeIfNeeded() {
+      execptionIfEmpty = false;
+      execute();
    }
 
 }

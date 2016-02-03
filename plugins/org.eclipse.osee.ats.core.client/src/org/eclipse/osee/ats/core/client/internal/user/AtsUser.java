@@ -129,8 +129,8 @@ public class AtsUser implements IAtsUser {
    }
 
    @Override
-   public long getUuid() {
-      return user.getArtId();
+   public Long getUuid() {
+      return Long.valueOf(user.getArtId());
    }
 
 }

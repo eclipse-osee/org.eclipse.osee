@@ -27,7 +27,7 @@ public class OwBase implements UuidIdentity {
    String data = null;
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 
@@ -69,7 +69,7 @@ public class OwBase implements UuidIdentity {
          return false;
       }
       UuidBaseIdentity other = (UuidBaseIdentity) obj;
-      if (uuid != other.getUuid()) {
+      if (other.getUuid().equals(uuid)) {
          return false;
       }
       return true;

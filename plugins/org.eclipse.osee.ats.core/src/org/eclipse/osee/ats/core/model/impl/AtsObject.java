@@ -75,7 +75,7 @@ public class AtsObject extends UuidNamedIdentity implements IAtsObject {
          return false;
       }
       IAtsObject other = (IAtsObject) obj;
-      if (getUuid() == other.getUuid()) {
+      if (getUuid().equals(other.getUuid())) {
          return true;
       }
       return false;

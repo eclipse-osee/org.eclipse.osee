@@ -25,7 +25,7 @@ import org.junit.Test;
  * Test case for {@link Anonymous}<br/>
  * Test case for {@link UnAssigned}<br/>
  * Test case for {@link AbstractAtsUser}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class CoreAtsUsersTest {
@@ -170,8 +170,8 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public long getUuid() {
-         return 999994;
+      public Long getUuid() {
+         return 999994L;
       }
    };
 
@@ -228,8 +228,8 @@ public class CoreAtsUsersTest {
       }
 
       @Override
-      public long getUuid() {
-         return 0;
+      public Long getUuid() {
+         return new Long(0);
       }
    };
 }

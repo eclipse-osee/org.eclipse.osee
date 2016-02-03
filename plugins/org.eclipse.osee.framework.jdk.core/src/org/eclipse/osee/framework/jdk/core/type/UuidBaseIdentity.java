@@ -21,23 +21,13 @@ public class UuidBaseIdentity implements UuidIdentity {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 
    @Override
    public String toString() {
       return String.valueOf(getUuid());
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @Override

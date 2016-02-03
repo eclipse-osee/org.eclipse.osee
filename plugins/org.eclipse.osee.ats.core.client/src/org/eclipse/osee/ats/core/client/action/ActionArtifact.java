@@ -90,8 +90,8 @@ public class ActionArtifact extends Artifact implements IAtsAction {
    }
 
    @Override
-   public long getUuid() {
-      return getArtId();
+   public Long getUuid() {
+      return Long.valueOf(getArtId());
    }
 
    @Override

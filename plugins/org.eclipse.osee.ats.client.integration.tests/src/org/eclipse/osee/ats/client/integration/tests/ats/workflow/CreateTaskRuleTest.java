@@ -71,6 +71,7 @@ public class CreateTaskRuleTest {
 
       AtsTestUtil.cleanupSimpleTest(CREATE_TASK_ACTION_FROM_TEAM_DEF_TITLE);
       AtsTestUtil.cleanupSimpleTest(CREATE_TASK_ACTION_FROM_AI_TITLE);
+      AtsTestUtil.cleanupSimpleTest(getClass().getSimpleName());
    }
 
    @Test
@@ -125,14 +126,15 @@ public class CreateTaskRuleTest {
       Collection<IAtsTask> tasks = atsClient.getTaskService().getTasks(pair.getSecond().iterator().next());
       Assert.assertEquals("There can be only one", 1, tasks.size());
       IAtsTask next = tasks.iterator().next();
-      Assert.assertEquals("Name should be *Create a Task from Rule*", "Create a Task from Rule", next.getName());
+      Assert.assertEquals("Name should be *Create a Task from Rule*", "Create a Task from Rule - CreateTaskRuleTest",
+         next.getName());
       Assert.assertEquals("Should be a description", "This is the description of the task", next.getDescription());
 
    }
 
    private String getTestDSL() {
       String rule = "rule name \"" + TEST_CREATE_TASK_RULE + "\" { \n";
-      rule += " title \"Create a Task from Rule\" \n";
+      rule += " title \"Create a Task from Rule - CreateTaskRuleTest\" \n";
       rule += " description \"This is the description of the task\" \n";
       rule += " ruleLocation TeamDefinition \n";
       rule += " assignees \"Joe Smith\" \n";

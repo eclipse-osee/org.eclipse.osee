@@ -191,7 +191,7 @@ public class ActionFactory implements IAtsActionFactory {
       // for that AI
       for (IAtsActionableItem aia : actionableItems) {
          IAtsTeamDefinition teamDefinitionInherited = aia.getTeamDefinitionInherited();
-         if (teamDefinitionInherited != null && teamDef.getUuid() == teamDefinitionInherited.getUuid()) {
+         if (teamDefinitionInherited != null && teamDef.getUuid().equals(teamDefinitionInherited.getUuid())) {
             actionableItemManager.addActionableItem(teamWf, aia, changes);
          }
       }

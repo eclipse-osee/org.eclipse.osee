@@ -112,7 +112,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
     * multiple TeamDefinitions to be versioned/released together by having the parent hold the versions. It is not
     * required that a product configured in ATS uses the versions option. If no parent with versions is found, null is
     * returned. If boolean "Team Uses Versions" is false, just return cause this team doesn't use versions
-    * 
+    *
     * @return parent TeamDefinition that holds the version definitions
     */
 
@@ -152,7 +152,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
     * are determined first from users configured as leads of individual actionable items and only if that returns no
     * leads, THEN default to using the leads configured for the TeamDefinition. In these cases, use getLeads(Collection
     * <IAtsActionableItem>) instead.
-    * 
+    *
     * @return users configured as leads for this IAtsTeamDefinition
     */
 
@@ -169,7 +169,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    /**
     * Returns leads configured first by ActionableItems and only if this is an empty set, THEN defaults to those
     * configured by TeamDefinitions. Use getLeads() to only get the leads configured for this
-    * 
+    *
     * @return users configured as leads by ActionableItems, then by TeamDefinition
     */
 
@@ -379,7 +379,7 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public void setParentTeamDef(IAtsTeamDefinition parentTeamDef) {
-      if (parentTeamDef.getUuid() == getUuid()) {
+      if (parentTeamDef.getUuid().equals(getUuid())) {
          throw new IllegalArgumentException("Can't set parent to self");
       }
       this.parentTeamDef = parentTeamDef;

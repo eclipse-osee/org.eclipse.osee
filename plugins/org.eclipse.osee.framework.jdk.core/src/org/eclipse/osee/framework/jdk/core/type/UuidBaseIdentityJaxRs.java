@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.jdk.core.type;
 
 /**
  * BaseIdentity with zero parameter constructor needed by Jax-Rs serialization
- * 
+ *
  * @author Donald G. Dunne
  */
 public class UuidBaseIdentityJaxRs implements UuidIdentity {
@@ -27,23 +27,13 @@ public class UuidBaseIdentityJaxRs implements UuidIdentity {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return uuid;
    }
 
    @Override
    public String toString() {
       return String.valueOf(getUuid());
-   }
-
-   @Override
-   public boolean matches(UuidIdentity... identities) {
-      for (UuidIdentity identity : identities) {
-         if (equals(identity)) {
-            return true;
-         }
-      }
-      return false;
    }
 
    @Override

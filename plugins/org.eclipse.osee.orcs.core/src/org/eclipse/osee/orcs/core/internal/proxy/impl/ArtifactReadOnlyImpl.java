@@ -280,8 +280,8 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    }
 
    @Override
-   public long getUuid() {
-      return getLocalId();
+   public Long getUuid() {
+      return Long.valueOf(getLocalId());
    }
 
    /*

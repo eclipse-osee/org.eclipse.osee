@@ -227,8 +227,8 @@ public class MockWorkItem implements IAtsWorkItem {
    }
 
    @Override
-   public long getUuid() {
-      return 456;
+   public Long getUuid() {
+      return Long.valueOf(456);
    }
 
    @Override

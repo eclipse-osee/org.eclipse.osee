@@ -12,7 +12,10 @@ package org.eclipse.osee.ats.rest.internal.workitem;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -56,9 +59,10 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
       return Response.ok().entity(tasks).build();
    }
 
-   @POST
+   @GET
+   @Path("{taskUuid}")
    @Override
-   public Response get(long taskUuid) {
+   public Response get(@PathParam("taskUuid") long taskUuid) {
       IAtsWorkItem task =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
             taskUuid).getResults().getOneOrNull();
@@ -70,8 +74,9 @@ public class AtsTaskEndpointImpl implements AtsTaskEndpointApi {
    }
 
    @DELETE
+   @Path("{taskUuid}")
    @Override
-   public void delete(long taskUuid) {
+   public void delete(@PathParam("taskUuid") long taskUuid) {
       IAtsWorkItem task =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).isOfType(WorkItemType.Task).andUuids(
             taskUuid).getResults().getOneOrNull();

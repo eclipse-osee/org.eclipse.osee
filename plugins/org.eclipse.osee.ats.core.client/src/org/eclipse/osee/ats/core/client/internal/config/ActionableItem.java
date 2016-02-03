@@ -93,7 +93,7 @@ public class ActionableItem extends AtsObject implements IAtsActionableItem {
 
    @Override
    public void setParentActionableItem(IAtsActionableItem parentActionableItem) {
-      if (parentActionableItem.getUuid() == getUuid()) {
+      if (parentActionableItem.getUuid().equals(getUuid())) {
          throw new IllegalArgumentException("Can't set parent to self");
       }
       this.parentActionableItem = parentActionableItem;

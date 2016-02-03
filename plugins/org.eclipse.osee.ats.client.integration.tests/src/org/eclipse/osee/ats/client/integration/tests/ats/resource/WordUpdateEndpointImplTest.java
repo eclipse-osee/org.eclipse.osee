@@ -14,6 +14,10 @@ import com.google.common.collect.Lists;
 import java.io.InputStream;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.client.integration.tests.DirtyArtifactCacheTest;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
@@ -22,7 +26,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -30,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.httpRequests.HttpWordUpdateRequest;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,6 +47,20 @@ import org.junit.Test;
 public class WordUpdateEndpointImplTest extends AbstractRestTest {
    private Artifact artReqt = null;
    private IOseeBranch branch = null;
+
+   @AfterClass
+   public static void cleanup() {
+      List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+         "Safety", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
+      IAtsChangeSet changes =
+         AtsClientService.get().getStoreService().createAtsChangeSet(WordUpdateEndpointImplTest.class.getSimpleName());
+      for (Artifact teamArt : teamWorkflows) {
+         changes.deleteArtifact(teamArt);
+      }
+      changes.executeIfNeeded();
+
+      new DirtyArtifactCacheTest().testArtifactCacheNotDirty();
+   }
 
    @Before
    public void setup() {
@@ -84,20 +103,13 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       List<WordArtifactChange> changes = change.getChangedArts();
       Assert.assertTrue(changes.size() == 1);
       WordArtifactChange wac = changes.get(0);
-      Assert.assertTrue(wac.getArtId() == artReqt.getUuid());
+      Assert.assertEquals(wac.getArtId(), artReqt.getUuid().longValue());
    }
 
    private void validateSafetyTeamWFExists() {
-      boolean exists = false;
-      List<Artifact> teamWorkflows =
-         ArtifactQuery.getArtifactListFromType(AtsArtifactTypes.TeamWorkflow, CoreBranches.COMMON);
-      for (Artifact art : teamWorkflows) {
-         if (art.getName().contains("Safety Workflow for")) {
-            exists = true;
-            break;
-         }
-      }
-      Assert.assertTrue(exists);
+      List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
+         "Safety Workflow", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
+      Assert.assertFalse(teamWorkflows.isEmpty());
    }
 
    private WordUpdateChange makeRequest(long branchId, List<Long> artifacts, String wordData, String comment) {

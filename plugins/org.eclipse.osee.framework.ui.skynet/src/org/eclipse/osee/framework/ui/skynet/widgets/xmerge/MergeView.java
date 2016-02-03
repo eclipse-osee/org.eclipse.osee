@@ -295,7 +295,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                case Deleted:
                   break;
                case Purged:
-                  if (mergeBranch.getUuid() == branchEvent.getBranchUuid()) {
+                  if (mergeBranch.getUuid().equals(branchEvent.getBranchUuid())) {
                      close();
                   }
                case Committed:
@@ -348,7 +348,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       Branch mergeBranch = null;
       try {
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-         if (mergeBranch == null || mergeBranch.getUuid() != artifactEvent.getBranchUuid()) {
+         if (mergeBranch == null || !mergeBranch.getUuid().equals(artifactEvent.getBranchUuid())) {
             return;
          }
          if (!isApplicableEvent(artifactEvent.getBranchUuid(), mergeBranch)) {

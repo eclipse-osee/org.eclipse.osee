@@ -16,8 +16,15 @@ package org.eclipse.osee.framework.jdk.core.type;
  */
 public interface UuidIdentity {
 
-   long getUuid();
+   Long getUuid();
 
-   boolean matches(UuidIdentity... identities);
+   default boolean matches(UuidIdentity... identities) {
+      for (UuidIdentity identity : identities) {
+         if (equals(identity)) {
+            return true;
+         }
+      }
+      return false;
+   }
 
 }

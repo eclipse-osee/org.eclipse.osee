@@ -152,7 +152,7 @@ public final class TokenFactory {
       }
 
       @Override
-      public long getUuid() {
+      public Long getUuid() {
          return uuid;
       }
    }
@@ -213,7 +213,7 @@ public final class TokenFactory {
       }
 
       @Override
-      public long getUuid() {
+      public Long getUuid() {
          return uuid;
       }
 

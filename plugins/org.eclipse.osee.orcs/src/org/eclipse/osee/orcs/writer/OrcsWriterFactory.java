@@ -78,7 +78,7 @@ public class OrcsWriterFactory {
    public OwAttribute getOrCreateAttribute(OwArtifact artifact, OwAttributeType attrType) {
       OwAttribute attr = null;
       for (OwAttribute fAttr : artifact.getAttributes()) {
-         if (fAttr.getType().getUuid() > 0L && fAttr.getType().getUuid() == attrType.getUuid()) {
+         if (fAttr.getType().getUuid() > 0L && fAttr.getType().getUuid().equals(attrType.getUuid())) {
             attr = fAttr;
             break;
          } else if (fAttr.getType().getName().equals(attrType.getName())) {

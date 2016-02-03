@@ -122,8 +122,8 @@ public class OrcsWriterEndpointTest extends AbstractRestTest {
 
       ArtifactCache.deCache(artifactFromId1);
 
-      List<Artifact> artifacts =
-         ArtifactQuery.getArtifactListFromIds(Collections.singleton((int) artifact.getUuid()), CoreBranches.COMMON);
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(
+         Collections.singleton(artifact.getUuid().intValue()), CoreBranches.COMMON);
       assertTrue(artifacts.iterator().next().isDeleted());
    }
 }

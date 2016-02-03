@@ -208,7 +208,7 @@ public class BranchStateTest {
             BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
          IOseeBranch newWorkingBranch = BranchManager.getBranch(originalBranchName);
-         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
+         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
          assertFalse("New Working branch was editable", BranchManager.isEditable(workingBranch));
@@ -257,13 +257,14 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals((long) BranchManager.getAssociatedArtifactId(workingBranch), SystemUser.OseeSystem.getUuid());
+         assertEquals((long) BranchManager.getAssociatedArtifactId(workingBranch),
+            SystemUser.OseeSystem.getUuid().longValue());
 
          Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          IOseeBranch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
+         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
       } finally {
@@ -342,7 +343,7 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          IOseeBranch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getUuid() != newWorkingBranch.getUuid());
+         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
 

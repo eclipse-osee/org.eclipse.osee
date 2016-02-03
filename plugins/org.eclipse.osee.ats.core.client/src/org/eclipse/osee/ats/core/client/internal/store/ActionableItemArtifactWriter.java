@@ -102,8 +102,8 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
       }
 
       // set parent artifact to top team def
-      if (ai.getParentActionableItem() == null && ai.getUuid() != ActionableItems.getTopActionableItem(
-         AtsClientService.get().getConfig()).getUuid()) {
+      if (ai.getParentActionableItem() == null && !ai.getUuid().equals(
+         ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()).getUuid())) {
          // if parent is null, add to top team definition
          Artifact topAIArt =
             cache.getArtifact(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
@@ -114,7 +114,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
          Artifact parentAiArt = artifact.getParent();
          if (parentAiArt != null) {
             if (parentAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-               if (parentAiArt.getUuid() != ai.getParentActionableItem().getUuid()) {
+               if (!parentAiArt.getUuid().equals(ai.getParentActionableItem().getUuid())) {
                   Artifact newParentAIArt = cache.getArtifact(ai);
                   newParentAIArt.addChild(artifact);
                   changes.add(newParentAIArt);

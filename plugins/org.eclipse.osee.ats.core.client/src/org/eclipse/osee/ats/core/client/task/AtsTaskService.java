@@ -120,7 +120,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {
       for (RelationLink relation : teamWf.getRelationsAll(DeletionFlag.EXCLUDE_DELETED)) {
-         if (relation.getBArtifactId() == task.getUuid()) {
+         if (relation.getBArtifactId() == (int) task.getUuid()) {
             return relation;
          }
       }

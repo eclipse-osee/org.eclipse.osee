@@ -32,7 +32,7 @@ public class Country extends AtsConfigObject implements IAtsCountry {
    }
 
    @Override
-   public long getUuid() {
+   public Long getUuid() {
       return artifact.getUuid();
    }
 

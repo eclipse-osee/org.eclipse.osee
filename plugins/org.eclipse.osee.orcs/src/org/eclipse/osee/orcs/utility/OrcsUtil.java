@@ -39,7 +39,7 @@ public final class OrcsUtil {
       }
 
       @Override
-      public long getUuid() {
+      public Long getUuid() {
          return uuid;
       }
 

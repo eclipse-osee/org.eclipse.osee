@@ -1729,8 +1729,8 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
    }
 
    @Override
-   public long getUuid() {
-      return getArtId();
+   public Long getUuid() {
+      return Long.valueOf(getArtId());
    }
 
    public Artifact getRelatedArtifactOrNull(IRelationTypeSide relationSide) {
