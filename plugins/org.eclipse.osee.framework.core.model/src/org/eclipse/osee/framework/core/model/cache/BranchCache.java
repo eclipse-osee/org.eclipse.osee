@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -36,7 +36,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       this.txCache = txCache;
    }
 
-   public MergeBranch findMergeBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public MergeBranch findMergeBranch(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
       Conditions.checkNotNull(destinationBranch, "destination branch");
       MergeBranch toReturn = null;
@@ -53,7 +53,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public MergeBranch findFirstMergeBranch(Branch sourceBranch) throws OseeCoreException {
+   public MergeBranch findFirstMergeBranch(BranchId sourceBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
       MergeBranch toReturn = null;
       for (Branch branch : getAll()) {
@@ -68,7 +68,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public List<MergeBranch> findAllMergeBranches(Branch sourceBranch) throws OseeCoreException {
+   public List<MergeBranch> findAllMergeBranches(BranchId sourceBranch) throws OseeCoreException {
       Conditions.checkNotNull(sourceBranch, "source branch");
       List<MergeBranch> toReturn = new ArrayList<>();
       for (Branch branch : getAll()) {
@@ -82,7 +82,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public synchronized <T extends IOseeBranch> List<T> getBranches(BranchFilter branchFilter) {
+   public synchronized <T extends BranchId> List<T> getBranches(BranchFilter branchFilter) {
       Collection<Branch> allBranches = getRawValues();
       List<T> branches = new LinkedList<>();
       for (Branch branch : allBranches) {

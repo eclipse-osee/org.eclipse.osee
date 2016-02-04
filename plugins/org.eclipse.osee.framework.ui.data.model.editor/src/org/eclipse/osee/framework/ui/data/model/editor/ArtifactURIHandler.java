@@ -22,7 +22,7 @@ import java.util.logging.Level;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.resource.URIConverter;
 import org.eclipse.emf.ecore.resource.impl.URIHandlerImpl;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.StringOutputStream;
@@ -63,7 +63,7 @@ public class ArtifactURIHandler extends URIHandlerImpl {
 
    private <T> T createStream(URI uri, BiFunction<Artifact, Long, T> function) {
       String[] segments = uri.segments();
-      IOseeBranch branch = BranchManager.getBranch(Long.parseLong(segments[0]));
+      BranchId branch = BranchManager.getBranch(Long.parseLong(segments[0]));
       Artifact artifact = ArtifactQuery.getArtifactFromId(Long.parseLong(segments[2]), branch);
       Long attributeId = Long.parseLong(segments[4]);
       return function.apply(artifact, attributeId);

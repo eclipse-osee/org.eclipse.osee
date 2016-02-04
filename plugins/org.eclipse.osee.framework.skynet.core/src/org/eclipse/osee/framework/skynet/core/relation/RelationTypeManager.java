@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -43,7 +43,7 @@ public class RelationTypeManager {
       return getCacheService().getArtifactTypeCache();
    }
 
-   public static List<RelationType> getValidTypes(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+   public static List<RelationType> getValidTypes(IArtifactType artifactType, BranchId branch) throws OseeCoreException {
       Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<>();
       for (RelationType relationType : relationTypes) {
@@ -70,7 +70,7 @@ public class RelationTypeManager {
    /**
     * @return all the relation types that are valid for the given branch
     */
-   public static Collection<RelationType> getValidTypes(IOseeBranch branch) throws OseeCoreException {
+   public static Collection<RelationType> getValidTypes(BranchId branch) throws OseeCoreException {
       return getAllTypes();
    }
 

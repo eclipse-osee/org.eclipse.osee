@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -29,7 +29,7 @@ import org.junit.Test;
 @Ignore
 public class ShowMergeManagerActionTest extends AbstractAtsActionRunTest {
 
-   private static IOseeBranch createdBranch = null;
+   private static BranchId createdBranch = null;
 
    @After
    public void cleanup_closeMergeView() {

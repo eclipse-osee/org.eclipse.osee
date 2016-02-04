@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,7 +39,7 @@ public class ImportTraceabilityWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       try {
-         IOseeBranch branch = mainPage.getSelectedBranch();
+         BranchId branch = mainPage.getSelectedBranch();
          File file = mainPage.getImportFile();
          boolean isGitBased = mainPage.isGitBased();
 

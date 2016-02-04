@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -107,7 +107,7 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
       try {
          final URI source = getSourceURI(variableMap);
          final boolean isRecursionAllowed = variableMap.getBoolean("Include Sub-Folders");
-         IOseeBranch requirementsBranch = variableMap.getBranch("Requirements Branch");
+         BranchId requirementsBranch = variableMap.getBranch("Requirements Branch");
 
          final int TOTAL_WORK = Integer.MAX_VALUE;
          monitor.beginTask(getName(), TOTAL_WORK);
@@ -135,7 +135,7 @@ public class AddTraceMarksToTraceUnits extends AbstractBlam {
       }
    }
 
-   private void processFiles(List<File> files, IOseeBranch branch) throws OseeCoreException {
+   private void processFiles(List<File> files, BranchId branch) throws OseeCoreException {
       Matcher matcher = TestUnitTagger.ANNOTATION_PATTERN.matcher("");
       for (File file : files) {
          String guid = null;

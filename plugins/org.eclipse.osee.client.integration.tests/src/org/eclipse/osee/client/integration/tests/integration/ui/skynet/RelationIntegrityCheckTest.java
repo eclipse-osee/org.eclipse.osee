@@ -15,7 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -58,8 +58,8 @@ public class RelationIntegrityCheckTest {
 
    private final DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map =
       new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
-   private IOseeBranch parentBranch;
-   private IOseeBranch workingBranch;
+   private BranchId parentBranch;
+   private BranchId workingBranch;
 
    @Before
    public void setUp() throws Exception {

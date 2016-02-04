@@ -21,9 +21,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -506,7 +506,7 @@ public class ArtifactExplorerMenu {
 
          @Override
          public void widgetSelected(SelectionEvent ev) {
-            IOseeBranch branch = BranchSelectionDialog.getBranchFromUser();
+            BranchId branch = BranchSelectionDialog.getBranchFromUser();
             if (branch != null) {
                for (Artifact artifact : getSelection().toList()) {
                   try {

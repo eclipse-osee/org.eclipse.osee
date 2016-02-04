@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -110,7 +111,7 @@ public class XBranchSelectWidget extends GenericXWidget implements Listener {
    }
 
    @Override
-   public IOseeBranch getData() {
+   public BranchId getData() {
       return getSelection();
    }
 

@@ -21,7 +21,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.A
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -50,7 +50,7 @@ public class PurgeTransactionTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = SAW_Bld_2;
+   private static final BranchId BRANCH = SAW_Bld_2;
 
    private static final String[] TABLES =
       new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};

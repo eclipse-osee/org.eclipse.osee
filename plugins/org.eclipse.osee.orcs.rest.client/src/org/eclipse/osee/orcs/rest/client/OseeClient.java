@@ -14,7 +14,7 @@ import java.io.Writer;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.DatastoreEndpoint;
 import org.eclipse.osee.orcs.rest.model.IdeClientEndpoint;
@@ -31,7 +31,7 @@ public interface OseeClient {
 
    String OSEE_APPLICATION_SERVER = org.eclipse.osee.framework.core.data.OseeClient.OSEE_APPLICATION_SERVER;
 
-   QueryBuilder createQueryBuilder(IOseeBranch branch);
+   QueryBuilder createQueryBuilder(BranchId branch);
 
    void executeScript(String script, Properties properties, boolean debug, MediaType media, Writer writer);
 

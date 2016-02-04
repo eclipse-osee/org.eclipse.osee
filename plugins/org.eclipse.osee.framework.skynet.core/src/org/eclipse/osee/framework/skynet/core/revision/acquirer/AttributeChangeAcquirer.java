@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -161,7 +161,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
    private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
          long sqlParamter; // Will either be a branch uuid or transaction id
-         IOseeBranch wasValueBranch;
+         BranchId wasValueBranch;
          String sql;
 
          if (hasBranch) {

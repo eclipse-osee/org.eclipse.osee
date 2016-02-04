@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -62,11 +62,11 @@ public interface TransactionBuilder {
 
    ArtifactId copyArtifact(ArtifactReadable sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactId copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
-   ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
+   ArtifactId copyArtifact(BranchId fromBranch, ArtifactId sourceArtifact, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException;
 
-   ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
+   ArtifactId introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException;
 
    ArtifactId replaceWithVersion(ArtifactReadable sourceArtifact, ArtifactReadable destination) throws OseeCoreException;
 

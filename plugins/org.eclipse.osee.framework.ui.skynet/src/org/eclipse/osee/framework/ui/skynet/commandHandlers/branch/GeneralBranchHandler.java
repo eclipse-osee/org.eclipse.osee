@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -98,13 +98,13 @@ public abstract class GeneralBranchHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) throws OseeCoreException {
-      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return !branches.isEmpty() && (AccessControlManager.isOseeAdmin() || canEnableBranches(branches));
    }
 
-   private boolean canEnableBranches(List<? extends IOseeBranch> branches) {
+   private boolean canEnableBranches(List<? extends BranchId> branches) {
       boolean canBeDeleted = true;
-      for (IOseeBranch branch : branches) {
+      for (BranchId branch : branches) {
          if (!isEnableAllowed(BranchManager.getBranch(branch))) {
             canBeDeleted = false;
             break;

@@ -23,7 +23,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -67,7 +67,7 @@ public class ArtifactCacheQueryTest {
    private static final String[] ALL_STATIC_IDS =
       new String[] {STATIC_ID_AAA, STATIC_ID_BBB, STATIC_ID_CCC, STATIC_ID_DDD, STATIC_ID_EEE};
 
-   private static final IOseeBranch branch = CoreBranches.COMMON;
+   private static final BranchId branch = CoreBranches.COMMON;
 
    @After
    public void tearDown() throws OseeCoreException {

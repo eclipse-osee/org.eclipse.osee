@@ -14,7 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -105,7 +105,7 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+         public Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName) {
             ExportItemFactory factory =
                new ExportItemFactory(logger, preferences, jdbcClient, resourceManager, orcsTypes);
             return new ExportBranchDatabaseCallable(session, factory, joinFactory, preferences, executorAdmin, branches,
@@ -113,7 +113,7 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
+         public Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
             ImportBranchDatabaseCallable callable = new ImportBranchDatabaseCallable(logger, session, jdbcClient,
                preferences, resourceManager, idManager, orcsTypes, fileToImport, branches, options);
             return callable;
@@ -126,32 +126,32 @@ public class BranchModule {
          }
 
          @Override
-         public Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState branchState) {
+         public Callable<Void> changeBranchState(OrcsSession session, BranchId branch, BranchState branchState) {
             return ChangeBranchFieldCallable.newBranchState(logger, session, jdbcClient, branch, branchState);
          }
 
          @Override
-         public Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType branchType) {
+         public Callable<Void> changeBranchType(OrcsSession session, BranchId branch, BranchType branchType) {
             return ChangeBranchFieldCallable.newBranchType(logger, session, jdbcClient, branch, branchType);
          }
 
          @Override
-         public Callable<Void> changeBranchName(OrcsSession session, IOseeBranch branch, String branchName) {
+         public Callable<Void> changeBranchName(OrcsSession session, BranchId branch, String branchName) {
             return ChangeBranchFieldCallable.newBranchName(logger, session, jdbcClient, branch, branchName);
          }
 
          @Override
-         public Callable<Void> changeBranchAssociatedArtId(OrcsSession session, IOseeBranch branch, int assocArtId) {
+         public Callable<Void> changeBranchAssociatedArtId(OrcsSession session, BranchId branch, int assocArtId) {
             return ChangeBranchFieldCallable.newAssocArtId(logger, session, jdbcClient, branch, assocArtId);
          }
 
          @Override
-         public Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op) {
+         public Callable<Void> archiveUnArchiveBranch(OrcsSession session, BranchId branch, ArchiveOperation op) {
             return new ArchiveUnarchiveBranchCallable(logger, session, jdbcClient, branch, op);
          }
 
          @Override
-         public Callable<Void> deleteBranch(OrcsSession session, IOseeBranch branch) {
+         public Callable<Void> deleteBranch(OrcsSession session, BranchId branch) {
             AbstractDatastoreTxCallable<?> deleteBranch =
                (AbstractDatastoreTxCallable<?>) changeBranchState(session, branch, BranchState.DELETED);
             AbstractDatastoreTxCallable<?> archiveBranch =

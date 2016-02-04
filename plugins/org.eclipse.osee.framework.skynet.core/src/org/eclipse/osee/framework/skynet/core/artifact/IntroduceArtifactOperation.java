@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
@@ -35,11 +35,11 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class IntroduceArtifactOperation {
    private final Artifact fosterParent;
-   private final IOseeBranch destinationBranch;
+   private final BranchId destinationBranch;
    private Collection<Artifact> sourceArtifacts;
    private List<Artifact> destinationArtifacts;
 
-   public IntroduceArtifactOperation(IOseeBranch destinationBranch) throws OseeCoreException {
+   public IntroduceArtifactOperation(BranchId destinationBranch) throws OseeCoreException {
       this(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(destinationBranch));
    }
 

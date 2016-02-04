@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  */
 public class BranchTraceabilityOperation extends TraceabilityProviderOperation {
 
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final RequirementData requirementData;
    private HashCollection<Artifact, String> requirementToTestUnitsMap;
    private Map<String, Artifact> testUnits;

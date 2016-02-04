@@ -51,8 +51,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -261,7 +260,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   @SuppressWarnings({"unused", "unchecked"})
+   @SuppressWarnings({"unused"})
    private List<Collection<Integer>> getFromGuids() {
       List<String> guids = Arrays.asList("AD3zXUb9kkF08ltQPwQA", "AD3zWI5UrUmhDxwBekAA", "BPLQGf99g2qG_LoknEQA");
       List<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(guids, AtsUtilCore.getAtsBranch());
@@ -743,18 +742,18 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             try {
                Branch workingBranch = (Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                if (workingBranch != null && workingBranch.getBranchType() != BranchType.BASELINE) {
-                  if (workingBranch.getBranchState() != BranchState.COMMITTED) {
-                     Collection<IOseeBranch> branchesCommittedTo =
+                  if (!workingBranch.getBranchState().isCommitted()) {
+                     Collection<BranchId> branchesCommittedTo =
                         AtsClientService.get().getBranchService().getBranchesCommittedTo(teamArt);
                      if (branchesCommittedTo.size() > 0) {
                         results.log(artifact, "testAtsBranchManagerA",
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
                               teamArt) + " has committed branches but working branch [" + workingBranch.getUuid() + "] != COMMITTED");
                      }
-                  } else if (workingBranch.getBranchState() == BranchState.COMMITTED && !workingBranch.getArchiveState().isArchived()) {
-                     Collection<IOseeBranch> branchesLeftToCommit =
+                  } else if (!workingBranch.getArchiveState().isArchived()) {
+                     Collection<BranchId> branchesLeftToCommit =
                         AtsClientService.get().getBranchService().getBranchesLeftToCommit(teamArt);
-                     if (branchesLeftToCommit.size() == 0) {
+                     if (branchesLeftToCommit.isEmpty()) {
                         results.log(artifact, "testAtsBranchManagerA",
                            "Error: TeamWorkflow " + XResultDataUI.getHyperlink(
                               teamArt) + " has committed all branches but working branch [" + workingBranch.getUuid() + "] != ARCHIVED");

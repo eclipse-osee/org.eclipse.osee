@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -72,7 +72,7 @@ public class RelationOrderRenderer {
 
    }
 
-   public void toWordML(Producer producer, IOseeBranch branch, RelationOrderData relationOrderData) {
+   public void toWordML(Producer producer, BranchId branch, RelationOrderData relationOrderData) {
       WordMLProducer writer = (WordMLProducer) producer;
       try {
          writer.startTable();

@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -86,7 +86,7 @@ public class CommitXManager extends XViewer {
    public void handleDoubleClick() {
       try {
          Object firstSelectedArt = getSelectedArtifacts().iterator().next();
-         IOseeBranch branch = null;
+         BranchId branch = null;
          String displayName = "";
          ICommitConfigItem configArt = null;
          if (firstSelectedArt instanceof ICommitConfigItem) {
@@ -133,7 +133,7 @@ public class CommitXManager extends XViewer {
       }
    }
 
-   private void handleCommittedWithMerge(IOseeBranch branch) throws OseeCoreException {
+   private void handleCommittedWithMerge(BranchId branch) throws OseeCoreException {
       MessageDialog dialog = new MessageDialog(Displays.getActiveShell(), "Select Report", null,
          "Both Change Report and Merge Manager exist.\n\nSelect to open.", MessageDialog.QUESTION,
          new String[] {"Show Change Report", "Show Merge Manager", "Cancel"}, 0);

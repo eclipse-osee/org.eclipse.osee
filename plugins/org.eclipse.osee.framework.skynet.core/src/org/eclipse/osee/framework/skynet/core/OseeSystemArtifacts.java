@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -37,7 +37,7 @@ public final class OseeSystemArtifacts {
          COMMON);
    }
 
-   public static Artifact getDefaultHierarchyRootArtifact(IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getDefaultHierarchyRootArtifact(BranchId branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, branch);
    }
 
@@ -54,20 +54,20 @@ public final class OseeSystemArtifacts {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, true);
    }
 
-   public static Artifact getOrCreateArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getOrCreateArtifact(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactToken.getArtifactType(), artifactToken.getName(), branch,
          artifactToken.getGuid(), artifactToken.getUuid(), true);
    }
 
-   public static Artifact getCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getCachedArtifact(IArtifactType artifactType, String artifactName, BranchId branch) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, null, false);
    }
 
-   private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch, String guid, boolean create) throws OseeCoreException {
+   private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, BranchId branch, String guid, boolean create) throws OseeCoreException {
       return getOrCreateCachedArtifact(artifactType, artifactName, branch, guid, null, create);
    }
 
-   private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, IOseeBranch branch, String guid, Long uuid, boolean create) throws OseeCoreException {
+   private static Artifact getOrCreateCachedArtifact(IArtifactType artifactType, String artifactName, BranchId branch, String guid, Long uuid, boolean create) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getByTextId(artifactType.getName() + "." + artifactName, branch);
       if (artifact == null) {
          artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);

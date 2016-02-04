@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -48,7 +49,7 @@ public interface OrcsBranch {
 
    Callable<BranchReadable> createTopLevelBranch(IOseeBranch branch, ArtifactReadable author) throws OseeCoreException;
 
-   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
+   Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, BranchId parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
    Callable<BranchReadable> createWorkingBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException;
 
@@ -58,35 +59,35 @@ public interface OrcsBranch {
 
    /////////////////////////////////////////////////////////////////////////
 
-   Callable<Void> changeBranchState(IOseeBranch branch, BranchState branchState);
+   Callable<Void> changeBranchState(BranchId branch, BranchState branchState);
 
-   Callable<Void> changeBranchType(IOseeBranch branch, BranchType branchType);
+   Callable<Void> changeBranchType(BranchId branch, BranchType branchType);
 
-   Callable<Void> changeBranchName(IOseeBranch branch, String name);
+   Callable<Void> changeBranchName(BranchId branch, String name);
 
-   Callable<Void> associateBranchToArtifact(IOseeBranch branch, ArtifactReadable associatedArtifact);
+   Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactReadable associatedArtifact);
 
-   Callable<Void> unassociateBranch(IOseeBranch branch);
+   Callable<Void> unassociateBranch(BranchId branch);
 
-   Callable<Void> deleteBranch(IOseeBranch branch);
+   Callable<Void> deleteBranch(BranchId branch);
 
    /////////////////////////////////////////////////////////////////////////
 
    Callable<BranchReadable> createBranch(CreateBranchData branchData);
 
-   Callable<Void> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp);
+   Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp);
 
-   Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse);
+   Callable<List<BranchId>> purgeBranch(BranchId branch, boolean recurse);
 
-   Callable<TransactionReadable> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination);
+   Callable<TransactionReadable> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination);
 
    Callable<List<ChangeItem>> compareBranch(TransactionReadable sourceTx, TransactionReadable destinationTx);
 
-   Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException;
+   Callable<List<ChangeItem>> compareBranch(BranchId branch) throws OseeCoreException;
 
-   Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName);
+   Callable<URI> exportBranch(List<? extends BranchId> branches, PropertyStore options, String exportName);
 
-   Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options);
+   Callable<URI> importBranch(URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
 
    Callable<URI> checkBranchExchangeIntegrity(URI fileToCheck);
 

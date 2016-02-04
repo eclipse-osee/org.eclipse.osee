@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -79,7 +79,7 @@ public final class ChangeManager {
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
-   public static IOperation comparedToParent(IOseeBranch sourceBranch, Collection<Change> changes) throws OseeCoreException {
+   public static IOperation comparedToParent(BranchId sourceBranch, Collection<Change> changes) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(sourceBranch);
 
       TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
@@ -89,7 +89,7 @@ public final class ChangeManager {
       return new ChangeDataLoader(changes, txDelta);
    }
 
-   public static IOperation compareTwoBranchesHead(IOseeBranch sourceBranch, IOseeBranch destinationBranch, Collection<Change> changes) throws OseeCoreException {
+   public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch, Collection<Change> changes) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getHeadTransaction(sourceBranch);
       TransactionRecord endTx = TransactionManager.getHeadTransaction(destinationBranch);
       return new ChangeDataLoader(changes, new TransactionDelta(startTx, endTx));
@@ -148,12 +148,12 @@ public final class ChangeManager {
    public static HashCollection<Artifact, Branch> getModifingBranches(Collection<Artifact> artifacts) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
 
-      CompositeKeyHashMap<Integer, IOseeBranch, Artifact> artifactMap =
-         new CompositeKeyHashMap<Integer, IOseeBranch, Artifact>();
+      CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap =
+         new CompositeKeyHashMap<Integer, BranchId, Artifact>();
       for (Artifact artifact : artifacts) {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
-         for (IOseeBranch workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
+         for (BranchId workingBranch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED,
             BranchType.WORKING)) {
             if (artifact.isOnBranch(BranchManager.getParentBranch(workingBranch))) {
                joinQuery.add(artifact.getArtId(), workingBranch.getUuid());

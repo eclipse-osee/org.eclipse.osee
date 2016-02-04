@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.debug.core.DebugPlugin;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -60,7 +60,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 public class ChangeArtifactType {
    private final HashSet<IAttributeType> attributeTypes = new HashSet<>();
    private final HashSet<IRelationType> relationTypes = new HashSet<>();
-   private final HashMap<IOseeBranch, SkynetTransaction> txMap = new HashMap<>();
+   private final HashMap<BranchId, SkynetTransaction> txMap = new HashMap<>();
    private final Set<EventBasicGuidArtifact> artifactChanges = new HashSet<>();
    private final List<Artifact> modifiedArtifacts = new ArrayList<>();
    private static final IStatus promptStatus = new Status(IStatus.WARNING, Activator.PLUGIN_ID, 257, "", null);
@@ -138,7 +138,7 @@ public class ChangeArtifactType {
          while (chStmt.next()) {
             int gammaId = chStmt.getInt("gamma_id");
             long branchUuid = chStmt.getLong("branch_id");
-            IOseeBranch branch = BranchManager.getBranch(branchUuid);
+            BranchId branch = BranchManager.getBranch(branchUuid);
             int artId = gammaToArtId.get(gammaId);
             Artifact artifact = ArtifactQuery.checkArtifactFromId(artId, branch, DeletionFlag.EXCLUDE_DELETED);
             if (artifact != null) {
@@ -157,8 +157,8 @@ public class ChangeArtifactType {
       }
    }
 
-   private void addTransaction(Artifact artifact, HashMap<IOseeBranch, SkynetTransaction> txMap) throws OseeCoreException {
-      IOseeBranch branch = artifact.getBranch();
+   private void addTransaction(Artifact artifact, HashMap<BranchId, SkynetTransaction> txMap) throws OseeCoreException {
+      BranchId branch = artifact.getBranch();
       SkynetTransaction transaction = txMap.get(branch);
       if (transaction == null) {
          transaction = TransactionManager.createTransaction(branch, "Change Artifact Type");
@@ -276,7 +276,7 @@ public class ChangeArtifactType {
 
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       branchFilter.setNegatedBranchStates(BranchState.PURGED, BranchState.DELETED);
-      for (IOseeBranch branch : BranchManager.getBranches(branchFilter)) {
+      for (BranchId branch : BranchManager.getBranches(branchFilter)) {
          branchJoin.add(branch.getUuid());
       }
 

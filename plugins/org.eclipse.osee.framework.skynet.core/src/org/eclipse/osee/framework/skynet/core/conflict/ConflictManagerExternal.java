@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +32,7 @@ public class ConflictManagerExternal {
    private final Branch sourceBranch;
    private List<Conflict> originalConflicts;
 
-   public ConflictManagerExternal(IOseeBranch destinationBranch, IOseeBranch sourceBranch) throws OseeCoreException {
+   public ConflictManagerExternal(BranchId destinationBranch, BranchId sourceBranch) throws OseeCoreException {
       this.destinationBranch = BranchManager.getBranch(destinationBranch);
       this.sourceBranch = BranchManager.getBranch(sourceBranch);
    }

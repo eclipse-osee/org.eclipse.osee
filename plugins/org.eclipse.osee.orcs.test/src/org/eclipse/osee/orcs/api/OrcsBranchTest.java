@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -243,7 +244,7 @@ public class OrcsBranchTest {
       assertEquals(assocArtId, branch.getAssociatedArtifactId());
    }
 
-   private BranchReadable getBranch(IOseeBranch branch) {
+   private BranchReadable getBranch(BranchId branch) {
       return query.branchQuery().andIds(branch).getResults().getExactlyOne();
    }
 

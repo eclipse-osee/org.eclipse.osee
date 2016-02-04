@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -184,7 +184,7 @@ public class ArtifactRemoteEventHandler implements EventHandlerRemote<RemotePers
             boolean bArtifactLoaded = bArtifact != null;
 
             if (aArtifactLoaded || bArtifactLoaded) {
-               IOseeBranch branch = TokenFactory.createBranch(guidArt.getArtA().getBranchId());
+               BranchId branch = TokenFactory.createBranch(guidArt.getArtA().getBranchId());
                RelationLink relation = RelationManager.getLoadedRelationById(guidArt.getRelationId(),
                   guidArt.getArtAId(), guidArt.getArtBId(), branch);
 

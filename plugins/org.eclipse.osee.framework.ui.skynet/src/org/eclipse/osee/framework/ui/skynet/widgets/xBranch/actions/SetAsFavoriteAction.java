@@ -15,6 +15,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -60,7 +61,7 @@ public class SetAsFavoriteAction extends Action {
          }
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch Favorites",
             "Toggle Branch Favorites for " + branches.size() + " branch(s)")) {
-            for (IOseeBranch branch : branches) {
+            for (BranchId branch : branches) {
                user.toggleFavoriteBranch(branch);
             }
             user.persist("Toggle Branch Favorites");

@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -334,7 +333,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
    private boolean conflictInvovlesArtifact(Artifact artifact, Conflict conflict) {
       if (artifact.getArtId() == conflict.getArtId()) {
-         IOseeBranch branch = artifact.getBranch();
+         BranchId branch = artifact.getBranch();
          return branch.equals(conflict.getSourceBranch()) || branch.equals(conflict.getDestBranch());
       }
       return false;
@@ -373,7 +372,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
             }
             for (Artifact artifact : modifiedArts) {
                try {
-                  IOseeBranch branch = artifact.getBranch();
+                  BranchId branch = artifact.getBranch();
                   if (showConflicts) {
                      Conflict[] conflicts = getConflicts();
                      for (Conflict conflict : conflicts) {

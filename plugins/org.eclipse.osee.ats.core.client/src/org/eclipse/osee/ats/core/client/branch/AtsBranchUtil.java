@@ -32,7 +32,7 @@ import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Result;
@@ -97,7 +97,7 @@ public class AtsBranchUtil {
             return new Result(
                "Committed branch already exists. Can not create another working branch once changes have been committed.");
          }
-         IOseeBranch parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+         BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
          if (parentBranch == null) {
             return new Result(
                "Parent Branch can not be determined.\n\nPlease specify " + "parent branch through Version Artifact or Team Definition Artifact.\n\n" + "Contact your team lead to configure this.");
@@ -126,16 +126,16 @@ public class AtsBranchUtil {
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
-      final IOseeBranch parentBranch =
+      final BranchId parentBranch =
          AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
       return createWorkingBranch_Create(teamArt, parentBranch, pend);
    }
 
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch) throws OseeCoreException {
       return createWorkingBranch_Create(teamArt, parentBranch, false);
    }
 
-   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final IOseeBranch parentBranch, boolean pend) throws OseeCoreException {
+   public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch, boolean pend) throws OseeCoreException {
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
@@ -190,7 +190,7 @@ public class AtsBranchUtil {
    }
 
    public static Result deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
-      IOseeBranch branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+      BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
       if (branch != null) {
          IStatus status = null;
          if (pend) {

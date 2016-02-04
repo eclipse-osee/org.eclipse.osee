@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -33,7 +33,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -110,8 +109,7 @@ public class ArtifactQueryTest {
    public void testGetArtifactListFromType() throws OseeCoreException {
       // Should exist
       Set<Artifact> searchedArtifacts = new LinkedHashSet<>();
-      List<IOseeBranch> branches = BranchManager.getBranches(new BranchFilter(BranchType.BASELINE));
-      for (IOseeBranch branch : branches) {
+      for (BranchId branch : BranchManager.getBranches(new BranchFilter(BranchType.BASELINE))) {
          List<Artifact> results = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
             DeletionFlag.INCLUDE_DELETED);
          searchedArtifacts.addAll(results);
@@ -180,7 +178,7 @@ public class ArtifactQueryTest {
    @Test
    public void testGetOrCreate() throws Exception {
       String guid = GUID.create();
-      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       Assert.assertNotNull(artifact1);
       Artifact artifact2 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
@@ -192,7 +190,7 @@ public class ArtifactQueryTest {
    @Test
    public void testLargeAttributeIndexing() throws Exception {
       String guid = GUID.create();
-      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
       Artifact artifact1 = ArtifactQuery.getOrCreate(guid, CoreArtifactTypes.GeneralData, branch);
       artifact1.setSoleAttributeFromString(CoreAttributeTypes.Name, longStr());
       artifact1.persist(testInfo.getTestName());
@@ -207,7 +205,7 @@ public class ArtifactQueryTest {
 
    @Test
    public void testQueryById() throws OseeCoreException {
-      IOseeBranch branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
+      BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
 
       List<Integer> newIdsInOrder = new LinkedList<>();
       Map<Integer, TransactionRecord> idToTxId = new HashMap<>();

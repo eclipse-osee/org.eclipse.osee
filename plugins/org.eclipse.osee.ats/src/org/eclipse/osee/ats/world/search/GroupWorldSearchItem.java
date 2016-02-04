@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,9 +32,9 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
    private Collection<Artifact> groups;
    private Collection<Artifact> selectedGroups;
    private String groupName;
-   private final IOseeBranch branch;
+   private final BranchId branch;
 
-   public GroupWorldSearchItem(String displayName, String groupName, IOseeBranch branch) {
+   public GroupWorldSearchItem(String displayName, String groupName, BranchId branch) {
       super(displayName, FrameworkImage.GROUP);
       this.groupName = groupName;
       this.branch = branch;
@@ -47,7 +47,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       this.branch = group.getBranch();
    }
 
-   public GroupWorldSearchItem(IOseeBranch branch) {
+   public GroupWorldSearchItem(BranchId branch) {
       this("Group Search", null, branch);
    }
 

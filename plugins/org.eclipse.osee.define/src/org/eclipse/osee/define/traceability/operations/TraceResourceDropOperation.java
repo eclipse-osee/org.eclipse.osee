@@ -29,7 +29,7 @@ import org.eclipse.nebula.widgets.xviewer.Activator;
 import org.eclipse.osee.define.traceability.HierarchyHandler;
 import org.eclipse.osee.define.traceability.TestUnitTagger;
 import org.eclipse.osee.define.utility.IResourceLocator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -73,7 +73,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!resources.isEmpty()) {
-         IOseeBranch branch = requirement.getBranch();
+         BranchId branch = requirement.getBranch();
          SkynetTransaction transaction = null;
          if (persistChanges) {
             transaction = TransactionManager.createTransaction(branch, "TraceResourceDrop");
@@ -117,7 +117,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       TestUnitTagger tagger = TestUnitTagger.getInstance();
       String tag = tagger.getSourceTag(fileUri);
       Artifact testUnitArtifact = null;
-      IOseeBranch branch = requirement.getBranch();
+      BranchId branch = requirement.getBranch();
       boolean tagSource = false;
       if (GUID.isValid(tag)) {
          try {

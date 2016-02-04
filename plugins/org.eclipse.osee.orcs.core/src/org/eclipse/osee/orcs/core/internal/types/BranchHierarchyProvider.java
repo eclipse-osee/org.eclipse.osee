@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.types;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface BranchHierarchyProvider {
 
-   Iterable<? extends IOseeBranch> getParentHierarchy(IOseeBranch branch) throws OseeCoreException;
+   Iterable<? extends BranchId> getParentHierarchy(BranchId branch) throws OseeCoreException;
 
 }

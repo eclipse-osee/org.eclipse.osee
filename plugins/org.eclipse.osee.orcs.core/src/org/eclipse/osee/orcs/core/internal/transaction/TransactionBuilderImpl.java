@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.AttributeId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -110,7 +110,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId artifactId) throws OseeCoreException {
+   public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId) throws OseeCoreException {
       return copyArtifact(fromBranch.getUuid(), artifactId);
    }
 
@@ -124,7 +124,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId copyArtifact(IOseeBranch fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
+   public ArtifactId copyArtifact(BranchId fromBranch, ArtifactId artifactId, Collection<? extends IAttributeType> attributesToDuplicate) throws OseeCoreException {
       return copyArtifact(fromBranch.getUuid(), artifactId, attributesToDuplicate);
    }
 
@@ -133,7 +133,7 @@ public class TransactionBuilderImpl implements TransactionBuilder {
    }
 
    @Override
-   public ArtifactId introduceArtifact(IOseeBranch fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
+   public ArtifactId introduceArtifact(BranchId fromBranch, ArtifactId sourceArtifact) throws OseeCoreException {
       checkAreOnDifferentBranches(txData, fromBranch.getUuid());
       ArtifactReadable source = getArtifactReadable(txData.getSession(), query, fromBranch.getUuid(), sourceArtifact);
       Conditions.checkNotNull(source, "Source Artifact");

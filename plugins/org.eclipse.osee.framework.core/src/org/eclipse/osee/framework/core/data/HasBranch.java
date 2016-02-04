@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.core.data;
  */
 public interface HasBranch {
 
-   default IOseeBranch getBranch() {
-      return TokenFactory.createBranch(getBranchId(), null);
+   default BranchId getBranch() {
+      return TokenFactory.createBranch(getBranchId());
    }
 
    default Long getBranchId() {
-      return getBranch().getUuid();
+      return getBranch().getId();
    }
 
    default boolean isOnBranch(Long branchId) {
@@ -32,6 +32,6 @@ public interface HasBranch {
    }
 
    default boolean isOnBranch(BranchId branch) {
-      return branch != null && getBranchId().equals(branch.getId());
+      return getBranch().equals(branch);
    }
 }

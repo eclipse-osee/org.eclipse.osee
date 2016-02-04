@@ -30,6 +30,7 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -122,7 +123,7 @@ public class DispoApiTest {
 
    @Test
    public void testGetDispoPrograms() {
-      List<IOseeBranch> programsSet = Collections.singletonList(mockBranch);
+      List<BranchId> programsSet = Collections.singletonList(mockBranch);
       when(storage.getDispoBranches()).thenAnswer(newAnswer(programsSet));
       List<IOseeBranch> actual = dispoApi.getDispoPrograms();
       assertEquals(programsSet.iterator().next(), actual.iterator().next());

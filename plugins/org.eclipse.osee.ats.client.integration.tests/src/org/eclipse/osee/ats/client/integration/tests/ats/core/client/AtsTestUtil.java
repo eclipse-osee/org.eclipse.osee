@@ -67,7 +67,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -485,7 +485,7 @@ public class AtsTestUtil {
       TaskEditor.closeAll();
 
       if (teamWf != null) {
-         IOseeBranch workingBranch = teamWf.getWorkingBranch();
+         BranchId workingBranch = teamWf.getWorkingBranch();
          if (workingBranch != null) {
             BranchManager.deleteBranchAndPend(workingBranch);
          }

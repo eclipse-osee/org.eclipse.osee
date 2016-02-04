@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,7 +60,7 @@ public class DeleteMultipleAttributesBlam extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       boolean keepOldest = "Oldest".equals(variableMap.getRadioSelection(ATTRIBUTE_TO_KEEP));
-      IOseeBranch branch = variableMap.getBranch(SELECT_BRANCH_LABEL);
+      BranchId branch = variableMap.getBranch(SELECT_BRANCH_LABEL);
       if (branch == null) {
          log("ERROR: A branch must be selected!");
          return;

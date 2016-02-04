@@ -19,6 +19,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -56,9 +57,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       IOseeBranch initialBranch = null;
       for (Artifact artifact : artifacts) {
          if (initialBranch == null) {
-            initialBranch = artifact.getBranch();
+            initialBranch = artifact.getBranchToken();
          } else {
-            if (artifact.getBranch() != initialBranch) {
+            if (!artifact.isOnBranch(initialBranch)) {
                throw new IllegalArgumentException("All of the artifacts must be on the same branch to be mass edited");
             }
          }
@@ -129,5 +130,5 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       }
    }
 
-   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException;
+   protected abstract IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) throws OseeCoreException;
 }

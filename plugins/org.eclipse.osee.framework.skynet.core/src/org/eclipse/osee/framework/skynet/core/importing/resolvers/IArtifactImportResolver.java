@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
@@ -22,5 +22,5 @@ import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
  */
 public interface IArtifactImportResolver {
 
-   public Artifact resolve(RoughArtifact roughArtifact, IOseeBranch branch, Artifact realParent, Artifact root) throws OseeCoreException;
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException;
 }

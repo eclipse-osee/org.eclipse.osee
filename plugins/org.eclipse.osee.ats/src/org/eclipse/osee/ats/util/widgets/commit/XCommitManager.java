@@ -31,7 +31,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -158,7 +158,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                         try {
                            // commit all branches in order
                            Map<Long, Branch> branchUuidToBranchMap = new HashMap<>();
-                           for (IOseeBranch destinationBranch : AtsClientService.get().getBranchService().getBranchesLeftToCommit(
+                           for (BranchId destinationBranch : AtsClientService.get().getBranchService().getBranchesLeftToCommit(
                               teamArt)) {
                               branchUuidToBranchMap.put(destinationBranch.getUuid(), (Branch) destinationBranch);
                            }

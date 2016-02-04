@@ -12,7 +12,6 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -55,9 +54,9 @@ public interface BranchQueryBuilder<T> {
 
    T andNamePattern(String pattern) throws OseeCoreException;
 
-   T andIsChildOf(IOseeBranch branch) throws OseeCoreException;
+   T andIsChildOf(BranchId branch) throws OseeCoreException;
 
-   T andIsAncestorOf(IOseeBranch branch) throws OseeCoreException;
+   T andIsAncestorOf(BranchId branch) throws OseeCoreException;
 
    T andIsMergeFor(Long sourceUuid, Long destUuid);
 

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -126,7 +126,7 @@ public final class WordTemplateFileDiffer {
       for (Change change : changes) {
          changeIds.add(change.getArtId());
       }
-      IOseeBranch endBranch = txDelta.getEndTx().getBranch();
+      BranchId endBranch = txDelta.getEndTx().getBranch();
       // loop through all artifacts that are on the IS branch
       for (Artifact art : endArtifacts) {
          Integer artId = art.getArtId();

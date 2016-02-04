@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -73,9 +73,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
       private IProgressMonitor monitor;
       private final String artifactName;
       private final XResultData rd = new XResultData();
-      private final IOseeBranch branch;
+      private final BranchId branch;
 
-      public ActionToArtifactImpactJob(String artifactName, IOseeBranch branch) {
+      public ActionToArtifactImpactJob(String artifactName, BranchId branch) {
          super("Searching \"" + artifactName + "\"...");
          this.artifactName = artifactName;
          this.branch = branch;
@@ -117,7 +117,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             processArts.addAll(srchArts);
          }
          int x = 1;
-         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getName() + "\"");
+         rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getId() + "\"");
 
          HashCollection<Artifact, TransactionRecord> transactionMap =
             ChangeManager.getModifingTransactions(processArts);

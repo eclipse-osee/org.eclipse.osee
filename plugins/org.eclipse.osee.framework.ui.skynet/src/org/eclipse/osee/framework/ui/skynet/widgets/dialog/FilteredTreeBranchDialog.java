@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,22 +29,22 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredTreeBranchDialog extends FilteredTreeDialog {
 
-   private Collection<? extends IOseeBranch> selectable;
+   private Collection<? extends BranchId> selectable;
 
-   public FilteredTreeBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable, ILabelProvider labelProvider) {
+   public FilteredTreeBranchDialog(String title, String message, Collection<? extends BranchId> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredTreeBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredTreeBranchDialog(String title, String message, Collection<? extends BranchId> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new BranchNameSorter());
       this.selectable = selectable;
    }
 
-   public FilteredTreeBranchDialog(String title, Collection<? extends IOseeBranch> selectable) {
+   public FilteredTreeBranchDialog(String title, Collection<? extends BranchId> selectable) {
       this(title, title, selectable, new BranchLabelProvider());
    }
 
-   public FilteredTreeBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable) {
+   public FilteredTreeBranchDialog(String title, String message, Collection<? extends BranchId> selectable) {
       this(title, message, selectable, new BranchLabelProvider());
    }
 
@@ -64,7 +64,7 @@ public class FilteredTreeBranchDialog extends FilteredTreeDialog {
       return super.isComplete();
    }
 
-   public void setSelectable(Collection<IOseeBranch> selectable) {
+   public void setSelectable(Collection<BranchId> selectable) {
       this.selectable = selectable;
    }
 

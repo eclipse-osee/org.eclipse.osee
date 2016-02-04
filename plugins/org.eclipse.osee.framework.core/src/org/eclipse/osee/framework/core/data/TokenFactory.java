@@ -82,7 +82,7 @@ public final class TokenFactory {
       return new BranchToken(branchId, name);
    }
 
-   public static IOseeBranch createBranch(Long branchId) {
+   public static BranchId createBranch(Long branchId) {
       return new BranchToken(branchId, null);
    }
 

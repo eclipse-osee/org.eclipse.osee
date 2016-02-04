@@ -135,7 +135,7 @@ public abstract class XSelectFromDialog<T> extends XText {
       }
    }
 
-   public void setSelectableItems(Collection<T> input) {
+   public void setSelectableItems(Collection<? extends T> input) {
       this.input.clear();
       this.input.addAll(input);
    }

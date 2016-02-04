@@ -82,7 +82,8 @@ public class CommitTestRunJob extends Job {
       for (IOseeBranch branch : commitMap.keySet()) {
          monitor.setTaskName(String.format("Committing Artifacts into Branch: [%s]", branch.getName()));
          List<Artifact> artList = commitMap.get(branch);
-         ImportOutfileOperation.commitTestRunTx(monitor, comment, branch, artList.toArray(new Artifact[artList.size()]));
+         ImportOutfileOperation.commitTestRunTx(monitor, comment, branch,
+            artList.toArray(new Artifact[artList.size()]));
          committedList.addAll(artList);
       }
       return committedList.toArray(new Artifact[committedList.size()]);
@@ -92,7 +93,7 @@ public class CommitTestRunJob extends Job {
       Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
-         IOseeBranch branch = testRun.getBranch();
+         IOseeBranch branch = testRun.getBranchToken();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
             artList = new ArrayList<>();

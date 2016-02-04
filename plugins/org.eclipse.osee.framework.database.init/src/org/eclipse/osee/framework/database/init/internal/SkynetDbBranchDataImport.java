@@ -25,7 +25,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -55,7 +55,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
-         for (IOseeBranch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
+         for (BranchId branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
             BranchType.BASELINE)) {
             if (!branch.equals(CoreBranches.COMMON)) {
                BranchManager.purgeBranch(branch);

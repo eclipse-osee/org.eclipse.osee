@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -28,10 +28,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifa
  */
 final class IdArtifactSearch extends AbstractLegacyArtifactSearchQuery {
    private final String searchString;
-   private final IOseeBranch branchToSearch;
+   private final BranchId branchToSearch;
    private final DeletionFlag allowDeleted;
 
-   IdArtifactSearch(String searchString, IOseeBranch branchToSearch, DeletionFlag allowDeleted) {
+   IdArtifactSearch(String searchString, BranchId branchToSearch, DeletionFlag allowDeleted) {
       super();
       this.searchString = searchString;
       this.branchToSearch = branchToSearch;

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -193,7 +193,7 @@ public final class OseeEventManager {
       return toReturn;
    }
 
-   public static List<IEventFilter> getEventFiltersForBranch(final IOseeBranch branch) {
+   public static List<IEventFilter> getEventFiltersForBranch(final BranchId branch) {
       try {
          List<IEventFilter> eventFilters = new ArrayList<>(2);
          eventFilters.add(new BranchUuidEventFilter(branch));

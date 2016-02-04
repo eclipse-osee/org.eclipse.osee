@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IUserToken;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -105,7 +105,7 @@ public final class UserManagerTest {
       return user;
    }
 
-   private void createSampleDefaultGroups(IOseeBranch branch, String... names) throws OseeCoreException {
+   private void createSampleDefaultGroups(BranchId branch, String... names) throws OseeCoreException {
       for (String name : names) {
          //Create artifact
          Artifact groupArt = ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, branch, name);
@@ -121,7 +121,7 @@ public final class UserManagerTest {
       }
    }
 
-   private void deleteSampleDefaultGroups(IOseeBranch branch, String... artifactNames) throws OseeCoreException {
+   private void deleteSampleDefaultGroups(BranchId branch, String... artifactNames) throws OseeCoreException {
       Collection<Artifact> list = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UserGroup, branch);
       for (Artifact artifact : list) {
          for (String artifactName : artifactNames) {

@@ -2,7 +2,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -82,7 +82,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, IOseeBranch branch, TransactionVersion transactionType) throws OseeCoreException {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, BranchId branch, TransactionVersion transactionType) throws OseeCoreException {
       ensureDependantCachePopulated();
       TransactionRecord toReturn = null;
       switch (transactionType) {

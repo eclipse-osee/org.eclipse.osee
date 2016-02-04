@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -66,12 +67,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchType getBranchType(IOseeBranch branch) {
+   public BranchType getBranchType(BranchId branch) {
       return BranchManager.getBranchType(branch);
    }
 
    @Override
-   public BranchState getBranchState(IOseeBranch branch) {
+   public BranchState getBranchState(BranchId branch) {
       return BranchManager.getState(branch);
    }
 
@@ -90,14 +91,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * have
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, IOseeBranch workingBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) throws OseeCoreException {
       if (workingBranch == null) {
          return false;
       }
       return BranchManager.doesMergeBranchExist(workingBranch, destinationBranch);
    }
 
-   public boolean isMergeCompleted(TeamWorkFlowArtifact teamWf, IOseeBranch destinationBranch) throws OseeCoreException {
+   public boolean isMergeCompleted(TeamWorkFlowArtifact teamWf, BranchId destinationBranch) throws OseeCoreException {
       ConflictManagerExternal conflictManager = new ConflictManagerExternal(destinationBranch,
          AtsClientService.get().getBranchService().getWorkingBranch(teamWf));
       return !conflictManager.remainingConflictsExist();
@@ -114,7 +115,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchArchivedState getArchiveState(IOseeBranch branch) {
+   public BranchArchivedState getArchiveState(BranchId branch) {
       return BranchManager.getBranch(branch).getArchiveState();
    }
 
@@ -124,12 +125,12 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getParentBranch(IOseeBranch destinationBranch) {
+   public BranchId getParentBranch(BranchId destinationBranch) {
       return BranchManager.getBranch(destinationBranch).getParentBranch();
    }
 
    @Override
-   public ITransaction getBaseTransaction(IOseeBranch destinationBranch) {
+   public ITransaction getBaseTransaction(BranchId destinationBranch) {
       return BranchManager.getBranch(destinationBranch).getBaseTransaction();
    }
 

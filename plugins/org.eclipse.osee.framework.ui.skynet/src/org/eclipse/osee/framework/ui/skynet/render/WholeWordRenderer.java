@@ -30,7 +30,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.DataRightInput;
 import org.eclipse.osee.define.report.api.DataRightResult;
 import org.eclipse.osee.define.report.api.PageOrientation;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -101,7 +101,7 @@ public class WholeWordRenderer extends WordRenderer {
             if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
-                  artifact.getName(), artifact.getBranch().getName());
+                  artifact.getName(), artifact.getBranchToken().getName());
             }
 
             Set<String> unknownGuids = new HashSet<>();
@@ -128,7 +128,7 @@ public class WholeWordRenderer extends WordRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.WholeWordContent);
    }
 

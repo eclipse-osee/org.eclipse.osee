@@ -16,7 +16,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -62,7 +62,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    private void refreshLockImage(Button button) {
       boolean noBranch = false, someAccessControlSet = false;
-      IOseeBranch branch = null;
+      BranchId branch = null;
       try {
          branch = getTeamArt().getWorkingBranch();
       } catch (OseeCoreException ex) {
@@ -82,7 +82,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    private void toggleWorkingBranchLock(Button button) {
       try {
-         IOseeBranch branch = getTeamArt().getWorkingBranch();
+         BranchId branch = getTeamArt().getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
@@ -124,7 +124,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
 
    @Override
    public void handleEvent(org.osgi.service.event.Event event) {
-      IOseeBranch branch = getTeamArt().getWorkingBranch();
+      BranchId branch = getTeamArt().getWorkingBranch();
       if (branch != null) {
          AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
          if (accessEvent.isForBranch(branch)) {

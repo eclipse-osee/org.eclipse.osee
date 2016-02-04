@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -154,7 +154,7 @@ public class ArtifactFactoryTest {
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
 
-      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(IOseeBranch.class),
+      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(BranchId.class),
          eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);
@@ -195,7 +195,7 @@ public class ArtifactFactoryTest {
       when(source.getExistingAttributeTypes()).thenAnswer(new ReturnExistingTypes(types));
       when(source.getAttributes(CoreAttributeTypes.Annotation)).thenAnswer(new ReturnAttribute(attribute));
       when(attribute.getOrcsData()).thenReturn(attributeData);
-      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(IOseeBranch.class),
+      when(artifactTypeCache.isValidAttributeType(eq(artifactType), any(BranchId.class),
          eq(CoreAttributeTypes.Annotation))).thenReturn(true);
 
       ArgumentCaptor<Artifact> implCapture = ArgumentCaptor.forClass(Artifact.class);

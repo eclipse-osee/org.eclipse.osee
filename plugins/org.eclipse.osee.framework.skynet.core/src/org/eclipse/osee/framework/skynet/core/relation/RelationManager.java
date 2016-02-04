@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
@@ -220,7 +220,7 @@ public class RelationManager {
          }
 
          if (relatedArtIds.size() > 0) {
-            IOseeBranch branch = artifacts.iterator().next().getBranch();
+            BranchId branch = artifacts.iterator().next().getBranch();
             newArtifacts = ArtifactQuery.getArtifactListFromIds(relatedArtIds, branch, allowDeleted);
          }
          newArtifactsToSearch.clear();
@@ -596,7 +596,7 @@ public class RelationManager {
     * @param relationId 0 or relationId if already created
     * @throws OseeCoreException
     */
-   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, IOseeBranch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) throws OseeCoreException {
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) throws OseeCoreException {
       RelationLink relation = null;
       if (relationId != 0) {
          relation = getLoadedRelationById(relationId, aArtifactId, bArtifactId, branch);
@@ -613,11 +613,11 @@ public class RelationManager {
       return relation;
    }
 
-   public static RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, IOseeBranch branch) {
+   public static RelationLink getLoadedRelation(IRelationType relationType, int aArtifactId, int bArtifactId, BranchId branch) {
       return relationCache.getLoadedRelation(relationType, aArtifactId, bArtifactId, branch);
    }
 
-   public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, IOseeBranch branch) {
+   public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, BranchId branch) {
       return relationCache.getByRelIdOnArtifact(relLinkId, aArtifactId, bArtifactId, branch);
    }
 
@@ -632,12 +632,12 @@ public class RelationManager {
    private static final class RelationArtifactLinker implements ArtifactLinker {
 
       @Override
-      public Artifact getArtifact(int artifactId, IOseeBranch branch) throws OseeCoreException {
+      public Artifact getArtifact(int artifactId, BranchId branch) throws OseeCoreException {
          return ArtifactQuery.getArtifactFromId(artifactId, branch, DeletionFlag.INCLUDE_DELETED);
       }
 
       @Override
-      public String getLazyArtifactName(int artifactId, IOseeBranch branch) {
+      public String getLazyArtifactName(int artifactId, BranchId branch) {
          Artifact artifact = null;
          try {
             artifact = ArtifactCache.getActive(artifactId, branch);
@@ -657,7 +657,7 @@ public class RelationManager {
       }
 
       @Override
-      public void updateCachedArtifact(int artId, IOseeBranch branch) {
+      public void updateCachedArtifact(int artId, BranchId branch) {
          try {
             ArtifactCache.updateCachedArtifact(artId, branch.getUuid());
          } catch (OseeCoreException ex) {

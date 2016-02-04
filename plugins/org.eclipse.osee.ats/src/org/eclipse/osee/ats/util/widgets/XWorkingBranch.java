@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -258,7 +259,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void refreshLockImage() {
       boolean noBranch = false, someAccessControlSet = false;
-      IOseeBranch branch = null;
+      BranchId branch = null;
       try {
          branch = teamArt.getWorkingBranch();
       } catch (OseeCoreException ex) {
@@ -284,7 +285,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
          }
-         IOseeBranch branch = teamArt.getWorkingBranch();
+         BranchId branch = teamArt.getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
@@ -303,7 +304,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void toggleWorkingBranchLock() {
       try {
-         IOseeBranch branch = teamArt.getWorkingBranch();
+         BranchId branch = teamArt.getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
@@ -473,7 +474,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    @Override
    public void handleEvent(org.osgi.service.event.Event event) {
-      IOseeBranch branch = teamArt.getBranch();
+      BranchId branch = teamArt.getBranch();
       if (branch != null) {
          AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
          if (accessEvent.isForBranch(branch)) {

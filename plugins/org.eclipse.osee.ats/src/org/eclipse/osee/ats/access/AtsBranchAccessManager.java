@@ -30,7 +30,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.RoleContextProvider;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -86,7 +86,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
    /**
     * True if not common branch and branch's associated artifact is a Team Workflow artifact
     */
-   public boolean isApplicable(IOseeBranch objectBranch) {
+   public boolean isApplicable(BranchId objectBranch) {
       boolean result = false;
       try {
          if (!AtsUtilCore.getAtsBranch().equals(objectBranch)) {
@@ -101,7 +101,7 @@ public class AtsBranchAccessManager implements IArtifactEventListener, EventHand
       return result;
    }
 
-   public Collection<IAccessContextId> getContextId(IOseeBranch branch) {
+   public Collection<IAccessContextId> getContextId(BranchId branch) {
       if (branchUuidToContextIdCache.containsKey(branch.getUuid())) {
          return branchUuidToContextIdCache.get(branch.getUuid());
       }

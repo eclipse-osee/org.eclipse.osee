@@ -16,7 +16,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class User extends Artifact {
    private PropertyStore userSettings;
 
-   public User(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+   public User(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
    }
 
@@ -88,10 +88,10 @@ public class User extends Artifact {
       setSoleAttributeValue(CoreAttributeTypes.Active, active);
    }
 
-   public void toggleFavoriteBranch(IOseeBranch favoriteBranch) throws OseeCoreException {
+   public void toggleFavoriteBranch(BranchId favoriteBranch) throws OseeCoreException {
       Conditions.checkNotNull(favoriteBranch, "Branch");
       HashSet<Long> branchUuids = new HashSet<>();
-      for (IOseeBranch branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
+      for (BranchId branch : BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING,
          BranchType.BASELINE)) {
          branchUuids.add(branch.getUuid());
       }
@@ -124,7 +124,7 @@ public class User extends Artifact {
       saveSettings();
    }
 
-   public boolean isFavoriteBranch(IOseeBranch branch) throws OseeCoreException {
+   public boolean isFavoriteBranch(BranchId branch) throws OseeCoreException {
       Collection<String> attributes = getAttributesToStringList(CoreAttributeTypes.FavoriteBranch);
       for (String value : attributes) {
          try {

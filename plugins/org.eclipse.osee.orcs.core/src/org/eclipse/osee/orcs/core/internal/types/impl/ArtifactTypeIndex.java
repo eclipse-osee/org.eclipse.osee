@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.internal.types.BranchHierarchyProvider;
@@ -42,7 +42,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
       metaData.setSuperTypes(superTypes);
    }
 
-   public void put(IArtifactType type, Map<IOseeBranch, Collection<IAttributeType>> attributes) {
+   public void put(IArtifactType type, Map<BranchId, Collection<IAttributeType>> attributes) {
       ArtifactTypeMetaData metaData = getOrCreateData(type);
       metaData.setAttributeTypes(attributes);
    }
@@ -56,7 +56,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
       return metaData;
    }
 
-   public Map<IOseeBranch, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artifactType) {
+   public Map<BranchId, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artifactType) {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       return metaData.attributeTypes;
    }
@@ -101,19 +101,19 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
       return result;
    }
 
-   public Collection<IAttributeType> getAttributeTypes(IArtifactType artType, IOseeBranch branch) throws OseeCoreException {
+   public Collection<IAttributeType> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
       Set<IAttributeType> attributeTypes = Sets.newLinkedHashSet();
       getAttributeTypes(attributeTypes, artType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(Set<IAttributeType> attributeTypes, IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+   private void getAttributeTypes(Set<IAttributeType> attributeTypes, IArtifactType artifactType, BranchId branch) throws OseeCoreException {
       ArtifactTypeMetaData metaData = tokenToTypeData.get(artifactType);
       if (metaData != null) {
-         Map<IOseeBranch, Collection<IAttributeType>> validityMap = metaData.getAttributeTypes();
+         Map<BranchId, Collection<IAttributeType>> validityMap = metaData.getAttributeTypes();
 
-         Iterable<? extends IOseeBranch> branches = hierarchyProvider.getParentHierarchy(branch);
-         for (IOseeBranch parent : branches) {
+         Iterable<? extends BranchId> branches = hierarchyProvider.getParentHierarchy(branch);
+         for (BranchId parent : branches) {
             Collection<IAttributeType> items = validityMap.get(parent);
             if (items != null) {
                attributeTypes.addAll(items);
@@ -129,7 +129,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
       private final IArtifactType type;
       private Set<IArtifactType> superTypes;
       private final Set<IArtifactType> descendantTypes;
-      private Map<IOseeBranch, Collection<IAttributeType>> attributeTypes;
+      private Map<BranchId, Collection<IAttributeType>> attributeTypes;
 
       public ArtifactTypeMetaData(IArtifactType type) {
          super();
@@ -156,7 +156,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
          }
       }
 
-      public void setAttributeTypes(Map<IOseeBranch, Collection<IAttributeType>> attributes) {
+      public void setAttributeTypes(Map<BranchId, Collection<IAttributeType>> attributes) {
          this.attributeTypes = attributes;
       }
 
@@ -168,7 +168,7 @@ public class ArtifactTypeIndex extends TokenTypeIndex<Long, IArtifactType, XArti
          return descendantTypes;
       }
 
-      public Map<IOseeBranch, Collection<IAttributeType>> getAttributeTypes() {
+      public Map<BranchId, Collection<IAttributeType>> getAttributeTypes() {
          return attributeTypes;
       }
 

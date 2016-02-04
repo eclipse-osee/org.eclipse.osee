@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -119,7 +119,7 @@ public class OseeGroup {
       return groupArtifact;
    }
 
-   private Artifact getOrCreateUserGroupsFolder(IOseeBranch branch) throws OseeCoreException {
+   private Artifact getOrCreateUserGroupsFolder(BranchId branch) throws OseeCoreException {
       String cacheKey = CoreArtifactTypes.Folder.getName() + "." + CoreArtifactTokens.UserGroups.getName();
       Artifact usersGroupFolder = ArtifactCache.getByTextId(cacheKey, branch);
       if (usersGroupFolder == null) {

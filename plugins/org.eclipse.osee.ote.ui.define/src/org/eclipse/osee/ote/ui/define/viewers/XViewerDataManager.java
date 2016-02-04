@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -41,7 +42,7 @@ public class XViewerDataManager {
    private final XViewer xViewer;
    private final List<DataItem> commitableItems;
    private final List<DataItem> uncommitableItems;
-   private final Map<IOseeBranch, DataItem> branchMap;
+   private final Map<BranchId, DataItem> branchMap;
    private final List<DataItem> backingData;
    private final Collection<IDataChangedListener> listeners;
    private boolean isInitialized;
@@ -129,7 +130,7 @@ public class XViewerDataManager {
    }
 
    private DataItem getBranchItem(Artifact artifact) {
-      IOseeBranch branch = artifact.getBranch();
+      IOseeBranch branch = artifact.getBranchToken();
       DataItem toReturn = branchMap.get(branch);
       if (toReturn == null) {
          toReturn = new BranchItem(branch, null);

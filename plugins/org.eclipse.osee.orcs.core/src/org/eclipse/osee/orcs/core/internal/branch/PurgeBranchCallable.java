@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -28,13 +28,13 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 /**
  * @author Roberto E. Escobar
  */
-public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch>> {
+public class PurgeBranchCallable extends AbstractBranchCallable<List<BranchId>> {
 
-   private final IOseeBranch branchToken;
+   private final BranchId branchToken;
    private final boolean isRecursive;
    private final QueryFactory queryFactory;
 
-   public PurgeBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, IOseeBranch branchToken, boolean isRecursive, QueryFactory queryFactory) {
+   public PurgeBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, BranchId branchToken, boolean isRecursive, QueryFactory queryFactory) {
       super(logger, session, branchStore);
       this.branchToken = branchToken;
       this.isRecursive = isRecursive;
@@ -42,7 +42,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch
    }
 
    @Override
-   protected List<IOseeBranch> innerCall() throws Exception {
+   protected List<BranchId> innerCall() throws Exception {
       Conditions.checkNotNull(branchToken, "branchToPurge");
 
       BranchQuery branchQuery = queryFactory.branchQuery();
@@ -53,7 +53,7 @@ public class PurgeBranchCallable extends AbstractBranchCallable<List<IOseeBranch
 
       ResultSet<BranchReadable> branches = branchQuery.getResults();
 
-      List<IOseeBranch> purged = new LinkedList<>();
+      List<BranchId> purged = new LinkedList<>();
       List<BranchReadable> orderedBranches = BranchUtil.orderByParentReadable(queryFactory, branches);
       for (BranchReadable aBranch : orderedBranches) {
          checkForCancelled();

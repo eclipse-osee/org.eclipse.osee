@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -78,7 +78,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       return toReturn;
    }
 
-   public IOseeBranch getSelection() {
+   public BranchId getSelection() {
       return branchSelectComposite.getSelectedBranch();
    }
 
@@ -125,7 +125,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          }
 
          try {
-            IOseeBranch branch = getSelection();
+            BranchId branch = getSelection();
             if (branch != null) {
                String lastBranchSelected = Long.toString(branch.getUuid());
 
@@ -152,8 +152,8 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
       }
    }
 
-   public static IOseeBranch getBranchFromUser() throws OseeCoreException {
-      IOseeBranch toReturn = null;
+   public static BranchId getBranchFromUser() throws OseeCoreException {
+      BranchId toReturn = null;
       BranchComboDialog branchSelection = new BranchComboDialog(AWorkbench.getActiveShell());
       int result = branchSelection.open();
       if (result == Window.OK) {

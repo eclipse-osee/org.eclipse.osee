@@ -24,7 +24,7 @@ import org.eclipse.search.ui.text.Match;
 
 /**
  * This is a utility class for OSEE handlers
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class Handlers {

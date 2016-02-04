@@ -20,8 +20,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -61,7 +61,7 @@ public class AddRequirementData implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       try {
          // Import all requirements on SAW_Bld_1 Branch
-         IOseeBranch branch = SAW_Bld_1;
+         BranchId branch = SAW_Bld_1;
 
          //@formatter:off
          importRequirements(branch, CoreArtifactTypes.SoftwareRequirement, "Software Requirements", "support/SAW-SoftwareRequirements.xml");
@@ -79,7 +79,7 @@ public class AddRequirementData implements IDbInitializationTask {
             OseeLog.log(AddRequirementData.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         IOseeBranch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+         BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          sleep(5000);
          // need to update the branch type;
@@ -91,7 +91,7 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
+   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"",
             folderName, branch);
@@ -131,7 +131,7 @@ public class AddRequirementData implements IDbInitializationTask {
       }
    }
 
-   private void demoDbTraceabilityTx(SkynetTransaction transaction, IOseeBranch branch) throws Exception {
+   private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchId branch) throws Exception {
       Collection<Artifact> systemArts =
          getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirementMSWord, "Robot", branch);
 
@@ -241,10 +241,10 @@ public class AddRequirementData implements IDbInitializationTask {
 
    }
 
-   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
+   private Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) throws OseeCoreException {
       if (DEBUG) {
          OseeLog.logf(AddRequirementData.class, Level.INFO, "Getting [%s] requirement(s) from Branch [%s]",
-            artifactNameStr, branch.getName());
+            artifactNameStr, branch.getId());
       }
       Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
          QueryOption.CONTAINS_MATCH_OPTIONS);

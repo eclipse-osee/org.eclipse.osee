@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
@@ -63,7 +64,7 @@ public abstract class AbstractWordCompare implements IComparator {
       return renderer;
    }
 
-   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) throws OseeCoreException {
+   protected IVbaDiffGenerator createGenerator(List<Artifact> artifacts, BranchId branch, PresentationType presentationType) throws OseeCoreException {
       boolean show = !getRenderer().getBooleanOption(IRenderer.NO_DISPLAY);
       boolean executeVbScript = System.getProperty("os.name").contains("Windows");
       boolean skipErrors = !getRenderer().getBooleanOption(IRenderer.SKIP_ERRORS);
@@ -80,7 +81,7 @@ public abstract class AbstractWordCompare implements IComparator {
       if (artifact == null) {
          artifact = artifactDelta.getEndArtifact();
       }
-      IOseeBranch branch = artifact.getBranch();
+      IOseeBranch branch = artifact.getBranchToken();
 
       IVbaDiffGenerator diffGenerator = createGenerator(Collections.singletonList(artifact), branch, presentationType);
 
@@ -103,7 +104,7 @@ public abstract class AbstractWordCompare implements IComparator {
 
    @Override
    public void compare(CompareDataCollector collector, Artifact baseVersion, Artifact newerVersion, IFile baseFile, IFile newerFile, PresentationType presentationType, String pathPrefix) throws OseeCoreException {
-      IOseeBranch branch = (baseVersion != null ? baseVersion : newerVersion).getBranch();
+      IOseeBranch branch = (baseVersion != null ? baseVersion : newerVersion).getBranchToken();
 
       String resultPath = getDiffPath(baseVersion, newerVersion, presentationType, pathPrefix);
       String vbsPath = RenderingUtil.getRenderPath(renderer, branch, presentationType, null, "compareDocs", ".vbs");
@@ -128,7 +129,7 @@ public abstract class AbstractWordCompare implements IComparator {
       Artifact artifact = baseVersion != null ? baseVersion : newerVersion;
       List<Artifact> artifacts = Collections.singletonList(artifact);
       String diffPath =
-         RenderingUtil.getRenderPath(renderer, artifacts, artifact.getBranch(), presentationType, prefix, ".xml");
+         RenderingUtil.getRenderPath(renderer, artifacts, artifact.getBranchToken(), presentationType, prefix, ".xml");
       return diffPath;
    }
 

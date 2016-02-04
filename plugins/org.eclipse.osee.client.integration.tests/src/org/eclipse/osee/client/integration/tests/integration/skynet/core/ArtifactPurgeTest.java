@@ -41,7 +41,7 @@ import org.junit.Test;
  * equal.<br/>
  * <br/>
  * Test unit for {@link PurgeArtifacts}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ArtifactPurgeTest {

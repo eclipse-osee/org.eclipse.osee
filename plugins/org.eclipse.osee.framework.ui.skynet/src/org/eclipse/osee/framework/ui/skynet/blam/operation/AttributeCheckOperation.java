@@ -17,7 +17,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -99,7 +99,7 @@ public class AttributeCheckOperation extends AbstractOperation {
    @SuppressWarnings("unchecked")
    private void compareAllChildrenWithPopularValue(List<Artifact> allDescendants, String popularValue, Artifact folder, IProgressMonitor monitor) throws OseeCoreException {
       if (!allDescendants.isEmpty()) {
-         IOseeBranch tempBranch = allDescendants.get(0).getBranch();
+         BranchId tempBranch = allDescendants.get(0).getBranch();
          Branch branch = BranchManager.getBranch(tempBranch);
          SkynetTransaction transaction = TransactionManager.createTransaction(branch, "Attribute Check Blam");
          if (!branch.getBranchType().isWorkingBranch()) {

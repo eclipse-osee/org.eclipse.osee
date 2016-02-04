@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -64,7 +64,7 @@ public class BranchCreationHandler extends CommandHandler {
          IExceptionableRunnable runnable = new IExceptionableRunnable() {
             @Override
             public IStatus run(IProgressMonitor monitor) throws Exception {
-               IOseeBranch branch = parentTransactionId.getBranch();
+               BranchId branch = parentTransactionId.getBranch();
                if (branch.equals(CoreBranches.SYSTEM_ROOT)) {
                   BranchManager.createTopLevelBranch(dialog.getEntry());
                } else {
@@ -93,10 +93,10 @@ public class BranchCreationHandler extends CommandHandler {
       }
 
       Object object = structuredSelection.getFirstElement();
-      IOseeBranch branch = null;
+      BranchId branch = null;
 
-      if (object instanceof IOseeBranch) {
-         branch = (IOseeBranch) object;
+      if (object instanceof BranchId) {
+         branch = (BranchId) object;
       } else if (object instanceof TransactionRecord) {
          branch = ((TransactionRecord) object).getBranch();
       }

@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.ExecutionCallbackAdapter;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,12 +48,12 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final SqlJoinFactory joinFactory;
    private final SystemPreferences preferences;
    private final ExecutorAdmin executorAdmin;
-   private final List<IOseeBranch> branches;
+   private final List<? extends BranchId> branches;
    private final PropertyStore options;
 
    private String exportName;
 
-   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SqlJoinFactory joinFactory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public ExportBranchDatabaseCallable(OrcsSession session, ExportItemFactory factory, SqlJoinFactory joinFactory, SystemPreferences preferences, ExecutorAdmin executorAdmin, List<? extends BranchId> branches, PropertyStore options, String exportName) {
       super(factory.getLogger(), session, factory.getDbService());
       this.joinFactory = joinFactory;
       this.factory = factory;
@@ -110,7 +110,7 @@ public class ExportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private void doWork() throws Exception {
       ExportImportJoinQuery joinQuery = joinFactory.createExportImportJoinQuery();
 
-      for (IOseeBranch branch : branches) {
+      for (BranchId branch : branches) {
          long branchUuid = branch.getUuid();
          joinQuery.add(branchUuid, -1L);
       }

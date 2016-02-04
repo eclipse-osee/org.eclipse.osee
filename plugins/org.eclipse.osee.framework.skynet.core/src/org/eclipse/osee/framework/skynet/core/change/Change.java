@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.change;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -31,12 +31,12 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    private final TransactionDelta txDelta;
    private final ArtifactDelta artifactDelta;
    private final ModificationType modType;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final boolean isHistorical;
    private final Artifact changeArtifact;
    private ChangeItem changeItem;
 
-   public Change(IOseeBranch branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
+   public Change(BranchId branch, long sourceGamma, int artId, TransactionDelta txDelta, ModificationType modType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta) {
       this.branch = branch;
       this.sourceGamma = sourceGamma;
       this.artId = artId;
@@ -139,7 +139,7 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    }
 
    @Override
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -54,7 +54,7 @@ public class ReplaceArtifactWithBaselineOperation extends AbstractOperation {
             TransactionEndpoint txBuilder = client.getTransactionEndpoint();
             Artifact firstArtifact = artifacts.iterator().next();
             TransactionRecord txRecord = firstArtifact.getFullBranch().getBaseTransaction();
-            IOseeBranch branch = firstArtifact.getBranch();
+            BranchId branch = firstArtifact.getBranch();
 
             for (Artifact artifact : artifacts) {
                monitor.subTask("Reverting: " + artifact.getName());

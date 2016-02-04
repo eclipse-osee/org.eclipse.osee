@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -181,7 +181,7 @@ public class DragDropHandler {
    }
 
    private void handleResourceDrops(URI[] iFiles) throws OseeCoreException {
-      IOseeBranch branch = BranchComboDialog.getBranchFromUser();
+      BranchId branch = BranchComboDialog.getBranchFromUser();
       if (branch != null) {
          OutfileToArtifactJob artifactJob = new OutfileToArtifactJob(branch, iFiles);
          artifactJob.addJobChangeListener(new JobChangeAdapter() {

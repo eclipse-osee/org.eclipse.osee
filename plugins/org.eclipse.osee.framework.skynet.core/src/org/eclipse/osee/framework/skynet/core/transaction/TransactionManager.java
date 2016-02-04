@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -69,9 +69,9 @@ public final class TransactionManager {
    private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
       new HashMap<Integer, List<TransactionRecord>>();
 
-   private static final TxMonitorImpl<IOseeBranch> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
+   private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
 
-   public static SkynetTransaction createTransaction(IOseeBranch branch, String comment) throws OseeCoreException {
+   public static SkynetTransaction createTransaction(BranchId branch, String comment) throws OseeCoreException {
       SkynetTransaction tx = new SkynetTransaction(txMonitor, branch, comment);
       txMonitor.createTx(branch, tx);
       return tx;
@@ -107,7 +107,7 @@ public final class TransactionManager {
       return getCacheService().getBranchCache();
    }
 
-   public static List<TransactionRecord> getTransactionsForBranch(IOseeBranch branch) throws OseeCoreException {
+   public static List<TransactionRecord> getTransactionsForBranch(BranchId branch) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<>();
       JdbcStatement chStmt = ConnectionHandler.getStatement();
 
@@ -166,7 +166,7 @@ public final class TransactionManager {
    /**
     * @return the largest (most recent) transaction on the given branch
     */
-   public static TransactionRecord getHeadTransaction(IOseeBranch branch) throws OseeCoreException {
+   public static TransactionRecord getHeadTransaction(BranchId branch) throws OseeCoreException {
       long branchUuid = branch.getUuid();
       int transactionNumber = ConnectionHandler.runPreparedQueryFetchInt(-1,
          ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchUuid);
@@ -181,7 +181,7 @@ public final class TransactionManager {
       return (int) ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ, false);
    }
 
-   public static synchronized TransactionRecord internalCreateTransactionRecord(IOseeBranch branch, User userToBlame, String comment) throws OseeCoreException {
+   public static synchronized TransactionRecord internalCreateTransactionRecord(BranchId branch, User userToBlame, String comment) throws OseeCoreException {
       if (comment == null) {
          comment = "";
       }
@@ -200,7 +200,7 @@ public final class TransactionManager {
          transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
-   public static TransactionRecord getTransactionAtDate(IOseeBranch branch, Date maxDateExclusive) throws OseeCoreException {
+   public static TransactionRecord getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
       long branchUuid = branch.getUuid();

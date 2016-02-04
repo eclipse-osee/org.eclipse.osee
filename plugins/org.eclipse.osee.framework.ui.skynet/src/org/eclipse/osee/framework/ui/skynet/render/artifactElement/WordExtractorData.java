@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.render.artifactElement;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,7 +47,7 @@ public class WordExtractorData {
       return parent;
    }
 
-   public Artifact getArtifact(IOseeBranch branch) throws OseeCoreException {
+   public Artifact getArtifact(BranchId branch) throws OseeCoreException {
       if (artifact == null && Strings.isValid(getGuid())) {
          artifact = ArtifactQuery.getArtifactFromId(getGuid(), branch, DeletionFlag.INCLUDE_DELETED);
       }

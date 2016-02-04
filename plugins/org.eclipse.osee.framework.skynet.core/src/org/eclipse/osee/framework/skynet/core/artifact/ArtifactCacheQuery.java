@@ -15,7 +15,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -32,7 +32,7 @@ public class ArtifactCacheQuery {
     * Return non-deleted artifacts stored in ArtifactCache. If queryIfNotFound, query artifacts and cacheByText results
     * before returning.
     */
-   public static Set<Artifact> getArtifactsFromArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch, boolean queryIfNotFound) throws OseeCoreException {
+   public static Set<Artifact> getArtifactsFromArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, BranchId branch, boolean queryIfNotFound) throws OseeCoreException {
       Set<Artifact> artifacts = new HashSet<>();
       // Retrieve cached artifacts first
       for (Artifact artifact : ArtifactCache.getListByTextId(text, branch)) {
@@ -57,7 +57,7 @@ public class ArtifactCacheQuery {
    /**
     * Get artifact, query if not already found and cacheByText.
     */
-   public static Artifact getSingletonArtifactByTextOrException(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getSingletonArtifactByTextOrException(IArtifactType artifactType, IAttributeType attributeType, String text, BranchId branch) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactByText(artifactType, attributeType, text, branch, true);
       // Exception on problems
       if (artifacts.isEmpty()) {
@@ -72,7 +72,7 @@ public class ArtifactCacheQuery {
    /**
     * Return singleton artifact from ArtifactCache. If queryIfNotFound, perform query and cacheByText result.
     */
-   public static Artifact getSingletonArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch, boolean queryIfNotFound) throws OseeCoreException {
+   public static Artifact getSingletonArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, BranchId branch, boolean queryIfNotFound) throws OseeCoreException {
       if (queryIfNotFound) {
          return getOrCreateSingletonArtifactHelper(artifactType, attributeType, text, branch, false);
       } else {
@@ -87,7 +87,7 @@ public class ArtifactCacheQuery {
    /**
     * Return first artifact with attribute (multiples may exist) or create one if non exist
     */
-   public static Artifact getOrCreateSingletonArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getOrCreateSingletonArtifactByText(IArtifactType artifactType, IAttributeType attributeType, String text, BranchId branch) throws OseeCoreException {
       return getOrCreateSingletonArtifactHelper(artifactType, attributeType, text, branch, true);
    }
 
@@ -96,7 +96,7 @@ public class ArtifactCacheQuery {
     * 
     * @param create will create artifact and add attribute value not found
     */
-   private static Artifact getOrCreateSingletonArtifactHelper(IArtifactType artifactType, IAttributeType attributeType, String text, IOseeBranch branch, boolean create) throws OseeCoreException {
+   private static Artifact getOrCreateSingletonArtifactHelper(IArtifactType artifactType, IAttributeType attributeType, String text, BranchId branch, boolean create) throws OseeCoreException {
       Set<Artifact> artifacts = getArtifactsFromArtifactByText(artifactType, attributeType, text, branch, true);
       if (artifacts.isEmpty() && create) {
          Artifact artifact = ArtifactTypeManager.addArtifact(artifactType, branch);

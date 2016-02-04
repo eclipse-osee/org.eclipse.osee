@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -41,7 +41,7 @@ public class CatchTrackedChanges implements CommitAction {
     */
 
    @Override
-   public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       Set<Artifact> changedArtifacts = new HashSet<>();
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.compareTwoBranchesHead(sourceBranch, destinationBranch, changes);

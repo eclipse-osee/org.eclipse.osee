@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -316,7 +316,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
    protected boolean validateSourceGroup() {
       boolean result = directoryFileSelector.validate(this);
       if (result) {
-         IOseeBranch branch = getSelectedBranch();
+         BranchId branch = getSelectedBranch();
          if (branch == null) {
             result = false;
             setErrorMessage("Please select a valid working branch");
@@ -350,7 +350,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       return toReturn;
    }
 
-   public IOseeBranch getSelectedBranch() {
+   public BranchId getSelectedBranch() {
       return isWidgetAccessible(branchSelectComposite) ? branchSelectComposite.getSelectedBranch() : null;
    }
 
@@ -443,7 +443,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       super.saveWidgetValues();
       IDialogSettings settings = getDialogSettings();
       if (settings != null) {
-         IOseeBranch branch = getSelectedBranch();
+         BranchId branch = getSelectedBranch();
          if (branch != null) {
             try {
                settings.put(BRANCH_KEY, branch.getUuid());

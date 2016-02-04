@@ -194,7 +194,7 @@ public final class BranchManager {
    /**
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
-   public static MergeBranch getMergeBranch(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public static MergeBranch getMergeBranch(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
       MergeBranch mergeBranch = getCache().findMergeBranch(sourceBranch, destinationBranch);
       return mergeBranch;
    }
@@ -202,15 +202,14 @@ public final class BranchManager {
    /**
     * returns the first merge branch for this source destination pair from the cache or null if not found
     */
-   public static MergeBranch getFirstMergeBranch(Branch sourceBranch) throws OseeCoreException {
-      MergeBranch mergeBranch = getCache().findFirstMergeBranch(sourceBranch);
-      return mergeBranch;
+   public static MergeBranch getFirstMergeBranch(BranchId sourceBranch) throws OseeCoreException {
+      return getCache().findFirstMergeBranch(sourceBranch);
    }
 
    /**
     * returns a list tof all the merge branches for this source branch from the cache or null if not found
     */
-   public static List<MergeBranch> getMergeBranches(Branch sourceBranch) throws OseeCoreException {
+   public static List<MergeBranch> getMergeBranches(BranchId sourceBranch) throws OseeCoreException {
       List<MergeBranch> mergeBranches = getCache().findAllMergeBranches(sourceBranch);
       return mergeBranches;
    }
@@ -229,7 +228,7 @@ public final class BranchManager {
    /**
     * returns whether a merge branch exists for a source and dest branch pair
     */
-   public static boolean doesMergeBranchExist(IOseeBranch sourceBranch, IOseeBranch destBranch) throws OseeCoreException {
+   public static boolean doesMergeBranchExist(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
       return getMergeBranch(sourceBranch, destBranch) != null;
    }
 
@@ -271,7 +270,7 @@ public final class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   public static void purgeBranch(final IOseeBranch branch) throws OseeCoreException {
+   public static void purgeBranch(final BranchId branch) throws OseeCoreException {
       Operations.executeWorkAndCheckStatus(new PurgeBranchHttpRequestOperation(branch, false));
    }
 
@@ -299,11 +298,11 @@ public final class BranchManager {
     * Delete a branch from the system. (This operation will set the branch state to deleted. This operation is
     * undo-able)
     */
-   public static Job deleteBranch(final IOseeBranch branch) {
+   public static Job deleteBranch(final BranchId branch) {
       return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
    }
 
-   public static IStatus deleteBranchAndPend(final IOseeBranch branch) {
+   public static IStatus deleteBranchAndPend(final BranchId branch) {
       return Operations.executeWork(new DeleteBranchOperation(branch));
    }
 
@@ -312,9 +311,9 @@ public final class BranchManager {
     *
     * @throws OseeCoreException
     */
-   public static Job deleteBranch(final List<? extends IOseeBranch> branches) {
+   public static Job deleteBranch(final List<? extends BranchId> branches) {
       List<IOperation> ops = new ArrayList<>();
-      for (IOseeBranch branch : branches) {
+      for (BranchId branch : branches) {
          ops.add(new DeleteBranchOperation(branch));
       }
       OperationBuilder builder = Operations.createBuilder("Deleting multiple branches...");
@@ -401,7 +400,7 @@ public final class BranchManager {
 
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
       Conditions.notNull(childBranchUuid, "childBranchUuid");
-      String creationComment = String.format("New Branch from %s (%s)", parentTransactionId.getBranch().getName(),
+      String creationComment = String.format("New Branch from %s (%s)", parentTransactionId.getBranchToken().getName(),
          parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
@@ -414,7 +413,7 @@ public final class BranchManager {
     */
    public static Branch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New branch, copy of %s from transaction %s",
-         parentTransactionId.getBranch().getName(), parentTransactionId.getId());
+         parentTransactionId.getBranchToken().getName(), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
@@ -427,7 +426,7 @@ public final class BranchManager {
 
    public static Branch createPortBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",
-         parentTransactionId.getBranch().getName(), parentTransactionId.getId());
+         parentTransactionId.getBranchToken().getName(), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
@@ -438,11 +437,11 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName) throws OseeCoreException {
+   public static Branch createWorkingBranch(BranchId parentBranch, String childBranchName) throws OseeCoreException {
       return createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
    }
 
-   public static Branch createWorkingBranch(IOseeBranch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createWorkingBranch(BranchId parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       Conditions.checkNotNull(childBranchName, "Child Branch Name");
       Conditions.checkNotNull(associatedArtifact, "Associated Artifact");
@@ -450,11 +449,11 @@ public final class BranchManager {
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
-   public static IOseeBranch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+   public static BranchId createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
       return createWorkingBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
    }
 
-   public static IOseeBranch createWorkingBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static BranchId createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getUuid(), associatedArtifact);
    }
@@ -462,11 +461,11 @@ public final class BranchManager {
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
     */
-   public static IOseeBranch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch) throws OseeCoreException {
+   public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch) throws OseeCoreException {
       return createBaselineBranch(parentBranch, childBranch, UserManager.getUser(SystemUser.OseeSystem));
    }
 
-   public static IOseeBranch createBaselineBranch(IOseeBranch parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
+   public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return createBranch(BranchType.BASELINE, parentTransactionId, childBranch.getName(), childBranch.getUuid(),
@@ -485,11 +484,11 @@ public final class BranchManager {
     *
     * @param initializeArtifacts adds common artifacts needed by most normal root branches
     */
-   public static IOseeBranch createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
+   public static BranchId createTopLevelBranch(IOseeBranch branch) throws OseeCoreException {
       return createBaselineBranch(CoreBranches.SYSTEM_ROOT, branch, null);
    }
 
-   public static IOseeBranch createTopLevelBranch(final String branchName) throws OseeCoreException {
+   public static BranchId createTopLevelBranch(final String branchName) throws OseeCoreException {
       return createTopLevelBranch(TokenFactory.createBranch(branchName));
    }
 
@@ -559,7 +558,7 @@ public final class BranchManager {
       return branch.getBaseTransaction() != TransactionManager.getHeadTransaction(branch);
    }
 
-   public static boolean isChangeManaged(IOseeBranch branch) throws OseeCoreException {
+   public static boolean isChangeManaged(BranchId branch) throws OseeCoreException {
       Integer associatedArtifactId = getAssociatedArtifactId(branch);
       return associatedArtifactId > 0 && !associatedArtifactId.equals(SystemUser.OseeSystem);
    }
@@ -574,7 +573,7 @@ public final class BranchManager {
       return getBranch(branch).getAssociatedArtifactId();
    }
 
-   public static Artifact getAssociatedArtifact(IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getAssociatedArtifact(BranchId branch) throws OseeCoreException {
       Integer associatedArtifactId = getAssociatedArtifactId(branch);
       if (associatedArtifactId == null || associatedArtifactId == -1) {
          return UserManager.getUser(SystemUser.OseeSystem);
@@ -591,7 +590,7 @@ public final class BranchManager {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
          }
       } else {
-         IOseeBranch sourceBranch = txDelta.getStartTx().getBranch();
+         BranchId sourceBranch = txDelta.getStartTx().getBranch();
          associatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
       }
       return associatedArtifact;
@@ -601,31 +600,31 @@ public final class BranchManager {
       getCache().invalidate();
    }
 
-   public static Branch getParentBranch(IOseeBranch branch) {
+   public static Branch getParentBranch(BranchId branch) {
       return getBranch(branch).getParentBranch();
    }
 
-   public static boolean isParentSystemRoot(IOseeBranch branch) {
+   public static boolean isParentSystemRoot(BranchId branch) {
       return CoreBranches.SYSTEM_ROOT.equals(getParentBranch(branch));
    }
 
-   public static TransactionRecord getBaseTransaction(IOseeBranch branch) {
+   public static TransactionRecord getBaseTransaction(BranchId branch) {
       return getBranch(branch).getBaseTransaction();
    }
 
-   public static BranchState getState(IOseeBranch branch) {
+   public static BranchState getState(BranchId branch) {
       return getBranch(branch).getBranchState();
    }
 
-   public static boolean hasChanges(IOseeBranch branch) {
+   public static boolean hasChanges(BranchId branch) {
       return hasChanges(getBranch(branch));
    }
 
-   public static BranchType getBranchType(IOseeBranch branch) {
+   public static BranchType getBranchType(BranchId branch) {
       return getBranch(branch).getBranchType();
    }
 
-   public static boolean isEditable(IOseeBranch branch) {
+   public static boolean isEditable(BranchId branch) {
       Branch fullBranch = getBranch(branch);
       BranchState state = fullBranch.getBranchState();
       return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && fullBranch.getArchiveState().isUnArchived();

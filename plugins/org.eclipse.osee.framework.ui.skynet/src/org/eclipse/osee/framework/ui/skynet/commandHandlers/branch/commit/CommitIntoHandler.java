@@ -17,6 +17,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -77,7 +78,7 @@ public class CommitIntoHandler extends CommitHandler {
 
    @Override
    public boolean isEnabledWithException(IStructuredSelection structuredSelection) {
-      List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+      List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
       return branches.size() == 1;
    }
 

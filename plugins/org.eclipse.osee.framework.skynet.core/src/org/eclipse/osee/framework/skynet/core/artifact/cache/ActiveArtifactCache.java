@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -102,7 +102,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return items;
    }
 
-   public void deCacheByText(String text, IOseeBranch branch, Artifact artifact) {
+   public void deCacheByText(String text, BranchId branch, Artifact artifact) {
       super.deCache(artifact);
       Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
       objects.remove(artifact);
@@ -113,7 +113,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
     *
     * @throws OseeStateException if more than one artifact stored.
     */
-   public Artifact getByText(String text, IOseeBranch branch) throws OseeCoreException {
+   public Artifact getByText(String text, BranchId branch) throws OseeCoreException {
       Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
       if (objects != null) {
          if (objects.size() > 1) {
@@ -126,7 +126,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return null;
    }
 
-   public Collection<Artifact> getListByText(String text, IOseeBranch branch) {
+   public Collection<Artifact> getListByText(String text, BranchId branch) {
       Set<Object> objects = keyedArtifactCache.get(text, branch.getUuid());
       if (objects == null) {
          return Collections.emptyList();
@@ -164,7 +164,7 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
    public void deCache(Long uuid, Long branchUuid) {
       ArtifactKey artifactKey = uuidToArtifactKey.get(uuid);
       if (artifactKey != null) {
-         IOseeBranch branch = artifactKey.getBranch();
+         BranchId branch = artifactKey.getBranch();
          keyedArtifactCache.remove(uuid, branch);
       }
       String guid = uuidBranchUuidToGuid.get(uuid, branchUuid);

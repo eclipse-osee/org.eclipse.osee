@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -58,7 +58,7 @@ public class ArtifactPromptChangeTest {
    private static class MockAccessPolicyHandler implements AccessPolicy {
 
       @Override
-      public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) {
+      public PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
@@ -68,7 +68,7 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) {
+      public PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) {
          return new PermissionStatus();
       }
 
@@ -88,7 +88,7 @@ public class ArtifactPromptChangeTest {
       }
 
       @Override
-      public void removePermissions(IOseeBranch branch) {
+      public void removePermissions(BranchId branch) {
          //
       }
 

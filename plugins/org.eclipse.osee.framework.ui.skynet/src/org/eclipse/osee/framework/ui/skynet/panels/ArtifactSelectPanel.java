@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
@@ -55,7 +55,7 @@ public class ArtifactSelectPanel extends AbstractItemSelectPanel<Artifact> {
       dialog.setMessage(message);
       dialog.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
       dialog.setValidator(new SingleSelectionStatusValidator());
-      IOseeBranch branch = lastSelected != null ? lastSelected.getBranch() : COMMON;
+      BranchId branch = lastSelected != null ? lastSelected.getBranch() : COMMON;
       dialog.setInput(branch);
       if (lastSelected != null) {
          dialog.setInitialSelections(new Object[] {lastSelected});

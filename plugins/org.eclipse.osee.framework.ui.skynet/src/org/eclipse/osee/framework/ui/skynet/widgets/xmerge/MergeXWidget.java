@@ -26,7 +26,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -414,7 +414,7 @@ public class MergeXWidget extends GenericXWidget {
       }
    }
 
-   private void refreshAssociatedArtifactItem(IOseeBranch sourceBranch) {
+   private void refreshAssociatedArtifactItem(BranchId sourceBranch) {
       try {
          IArtifact branchAssociatedArtifact = BranchManager.getAssociatedArtifact(sourceBranch);
          if (branchAssociatedArtifact != null) {

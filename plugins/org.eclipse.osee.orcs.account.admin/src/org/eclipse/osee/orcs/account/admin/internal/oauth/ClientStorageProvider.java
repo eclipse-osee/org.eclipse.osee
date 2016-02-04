@@ -18,7 +18,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
 import org.eclipse.osee.logger.Log;
@@ -49,7 +49,7 @@ public class ClientStorageProvider extends LazyObject<ClientStorage> {
          @Override
          public ClientStorage call() throws Exception {
             GsonBuilder builder = new GsonBuilder();
-            IOseeBranch storageBranch = CoreBranches.COMMON;
+            BranchId storageBranch = CoreBranches.COMMON;
             ClientStorage clientStorage = new ClientStorage(logger, builder, orcsApi, storageBranch);
 
             if (!clientStorage.typesExist()) {

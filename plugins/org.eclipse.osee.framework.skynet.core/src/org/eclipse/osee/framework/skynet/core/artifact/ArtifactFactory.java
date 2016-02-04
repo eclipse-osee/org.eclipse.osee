@@ -15,7 +15,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
@@ -38,18 +38,18 @@ public abstract class ArtifactFactory {
       }
    }
 
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String guid) throws OseeCoreException {
+   public Artifact makeNewArtifact(BranchId branch, IArtifactType artifactTypeToken, String guid) throws OseeCoreException {
       return makeNewArtifact(branch, artifactTypeToken, null, guid);
    }
 
    /**
     * Used to create a new artifact (one that has never been saved into the datastore)
     */
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid) throws OseeCoreException {
+   public Artifact makeNewArtifact(BranchId branch, IArtifactType artifactTypeToken, String artifactName, String guid) throws OseeCoreException {
       return makeNewArtifact(branch, artifactTypeToken, artifactName, guid, null);
    }
 
-   public Artifact makeNewArtifact(IOseeBranch branch, IArtifactType artifactTypeToken, String artifactName, String guid, Long uuid) {
+   public Artifact makeNewArtifact(BranchId branch, IArtifactType artifactTypeToken, String artifactName, String guid, Long uuid) {
       ArtifactType artifactType = ArtifactTypeManager.getType(artifactTypeToken);
 
       Conditions.checkExpressionFailOnTrue(artifactType.isAbstract(), "Cannot create an instance of abstract type [%s]",
@@ -80,7 +80,7 @@ public abstract class ArtifactFactory {
       return uuid == null ? (int) ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid.intValue();
    }
 
-   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {
+   public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, ModificationType modificationType) throws OseeCoreException {
       Artifact toReturn = internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modificationType, false,
          Artifact.TRANSACTION_SENTINEL, true);
       ArtifactCache.cache(toReturn);
@@ -90,7 +90,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
+   private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, ModificationType modType, boolean historical, int transactionId, boolean useBackingData) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, branch, artifactType, true);
 
       artifact.setArtId(artId);
@@ -102,7 +102,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, int transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modType, historical, transactionId,
          false);
    }
@@ -116,7 +116,7 @@ public abstract class ArtifactFactory {
     * @param branch branch on which this instance of this artifact will be associated
     * @param hrid
     */
-   protected abstract Artifact getArtifactInstance(String guid, IOseeBranch branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
+   protected abstract Artifact getArtifactInstance(String guid, BranchId branch, IArtifactType artifactType, boolean inDataStore) throws OseeCoreException;
 
    @Override
    public String toString() {

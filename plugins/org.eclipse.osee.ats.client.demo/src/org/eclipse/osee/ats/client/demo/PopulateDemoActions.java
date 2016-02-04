@@ -56,7 +56,7 @@ import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManagerUI;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -247,7 +247,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             OseeLog.log(Activator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          }
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         IOseeBranch childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
+         BranchId childBranch = BranchManager.createBaselineBranch(SAW_Bld_1, SAW_Bld_2);
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;
@@ -374,7 +374,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void importRequirements(IOseeBranch branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
+   private void importRequirements(BranchId branch, IArtifactType requirementType, String folderName, String filename) throws Exception {
       if (DEBUG) {
          OseeLog.logf(Activator.class, Level.INFO, "Importing \"%s\" requirements on branch \"%s\"", folderName,
             branch);
@@ -407,7 +407,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       }
    }
 
-   private void demoDbTraceabilityTx(SkynetTransaction transaction, IOseeBranch branch) {
+   private void demoDbTraceabilityTx(SkynetTransaction transaction, BranchId branch) {
       try {
          Collection<Artifact> systemArts =
             DemoDbUtil.getArtTypeRequirements(DEBUG, CoreArtifactTypes.SystemRequirementMSWord, "Robot", branch);

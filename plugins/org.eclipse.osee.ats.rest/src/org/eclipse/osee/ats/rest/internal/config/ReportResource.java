@@ -29,7 +29,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.core.model.change.ChangeType;
@@ -153,10 +153,10 @@ public class ReportResource {
    private List<ChangeItem> getChanges(long branchUuid) {
       TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
       TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
-      IOseeBranch branchReadable =
+      BranchId branchReadable =
          orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
 
-      IOseeBranch parentBranch = atsServer.getBranchService().getParentBranch(branchReadable);
+      BranchId parentBranch = atsServer.getBranchService().getParentBranch(branchReadable);
 
       TransactionReadable startTx = transactionQuery2.andIsHead(branchReadable).getResults().getExactlyOne();
       Integer start = startTx.getLocalId();

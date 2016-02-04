@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.access.internal;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -93,10 +93,10 @@ public final class ObjectAccessProviderProxy implements IAccessProvider {
          new AccessDetail<IBasicArtifact<Artifact>>(artifact, userPermission, Scope.createLegacyScope(), reason));
    }
 
-   private void setBranchAccessData(IBasicArtifact<?> userArtifact, IOseeBranch branch, AccessData accessData) throws OseeCoreException {
+   private void setBranchAccessData(IBasicArtifact<?> userArtifact, BranchId branch, AccessData accessData) throws OseeCoreException {
       String reason = "Legacy Branch Permission";
       PermissionEnum userPermission = getAccessService().getBranchPermission(userArtifact, branch);
-      accessData.add(branch, new AccessDetail<IOseeBranch>(branch, userPermission, Scope.createLegacyScope(), reason));
+      accessData.add(branch, new AccessDetail<BranchId>(branch, userPermission, Scope.createLegacyScope(), reason));
    }
 
 }

@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.data.RequirementData;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
  * @author Roberto E. Escobar
  */
 public class RequirementTraceabilityData {
-   private final IOseeBranch testProcedureBranch;
+   private final BranchId testProcedureBranch;
    private final TraceabilityProviderOperation traceabilityProvider;
    private RequirementData requirementData;
    private HashCollection<Artifact, String> requirementsToCodeUnits;
@@ -52,7 +52,7 @@ public class RequirementTraceabilityData {
    private final Map<String, Artifact> testProcedures = new HashMap<>();
    private File testProcedureFilter;
 
-   public RequirementTraceabilityData(IOseeBranch testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
+   public RequirementTraceabilityData(BranchId testProcedureBranch, TraceabilityProviderOperation traceabilityProvider) {
       this.testProcedureBranch = testProcedureBranch;
       this.traceabilityProvider = traceabilityProvider;
       this.testProcedureFilter = null;
@@ -91,7 +91,7 @@ public class RequirementTraceabilityData {
       return status;
    }
 
-   private void getTestProcedureTraceability(IOseeBranch testProcedureBranch) throws OseeCoreException {
+   private void getTestProcedureTraceability(BranchId testProcedureBranch) throws OseeCoreException {
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch
       Map<String, Artifact> testProcedureBranchReqsToReqsBranchMap = new HashMap<>();
       for (Artifact tpRequirement : ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement,

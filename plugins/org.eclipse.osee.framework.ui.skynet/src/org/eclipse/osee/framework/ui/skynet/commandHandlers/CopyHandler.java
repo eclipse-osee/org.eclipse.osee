@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
@@ -54,7 +53,7 @@ public class CopyHandler extends AbstractHandler {
                   Object object = iterator.next();
 
                   if (object instanceof IAdaptable) {
-                     selectionObject = ((IAdaptable) object).getAdapter(Branch.class);
+                     selectionObject = ((IAdaptable) object).getAdapter(IOseeBranch.class);
 
                      if (selectionObject == null) {
                         selectionObject = ((IAdaptable) object).getAdapter(Artifact.class);

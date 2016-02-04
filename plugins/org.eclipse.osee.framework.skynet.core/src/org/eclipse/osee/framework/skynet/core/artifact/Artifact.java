@@ -26,6 +26,7 @@ import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -100,7 +101,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       new HashCollection<IAttributeType, Attribute<?>>(false, LinkedList.class, 12);
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private int transactionId = TRANSACTION_SENTINEL;
    private int artId;
    private int gammaId;
@@ -112,7 +113,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    private boolean useBackingData;
    private IArtifactType artifactTypeToken;
 
-   public Artifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+   public Artifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(GUID.checkOrCreate(guid), "");
       this.artifactTypeToken = artifactType;
       objectEditState = EditState.NO_CHANGE;
@@ -232,8 +233,12 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    }
 
    @Override
-   public final IOseeBranch getBranch() {
+   public final BranchId getBranch() {
       return branch;
+   }
+
+   public final IOseeBranch getBranchToken() {
+      return BranchManager.getBranch(branch);
    }
 
    public final Branch getFullBranch() throws OseeCoreException {
@@ -1410,15 +1415,15 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
    /**
     * Creates a new artifact and duplicates all of its attribute data.
     */
-   public final Artifact duplicate(IOseeBranch branch) throws OseeCoreException {
+   public final Artifact duplicate(BranchId branch) throws OseeCoreException {
       return duplicate(branch, new ArrayList<IAttributeType>());
    }
 
-   public final Artifact duplicate(IOseeBranch branch, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
+   public final Artifact duplicate(BranchId branch, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
       return duplicate(branch, getArtifactType(), excludeAttributeTypes);
    }
 
-   public final Artifact duplicate(IOseeBranch branch, IArtifactType newType, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
+   public final Artifact duplicate(BranchId branch, IArtifactType newType, Collection<IAttributeType> excludeAttributeTypes) throws OseeCoreException {
       Artifact newArtifact = ArtifactTypeManager.addArtifact(newType, branch);
       // we do this because attributes were added on creation to meet the
       // minimum attribute requirements
@@ -1450,11 +1455,11 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
     *
     * @return the newly created artifact or this artifact if the destinationBranch is this artifact's branch
     */
-   public final Artifact reflect(IOseeBranch destinationBranch) throws OseeCoreException {
+   public final Artifact reflect(BranchId destinationBranch) throws OseeCoreException {
       return new IntroduceArtifactOperation(destinationBranch).introduce(this);
    }
 
-   Artifact introduceShallowArtifact(IOseeBranch destinationBranch) throws OseeCoreException {
+   Artifact introduceShallowArtifact(BranchId destinationBranch) throws OseeCoreException {
       Artifact shallowArt = ArtifactTypeManager.getFactory(getArtifactType()).reflectExisitingArtifact(artId, getGuid(),
          getArtifactType(), gammaId, destinationBranch, modType);
       return shallowArt;

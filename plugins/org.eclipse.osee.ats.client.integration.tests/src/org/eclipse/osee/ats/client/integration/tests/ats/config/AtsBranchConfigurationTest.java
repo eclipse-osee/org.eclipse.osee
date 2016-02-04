@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -119,7 +120,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Creating root branch");
       }
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      IOseeBranch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
+      BranchId viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_VERSIONS);
 
       TestUtil.sleep(2000);
 
@@ -240,7 +241,7 @@ public class AtsBranchConfigurationTest {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Creating root branch");
       }
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      IOseeBranch viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
+      BranchId viaTeamDefBranch = BranchManager.createTopLevelBranch(BRANCH_VIA_TEAM_DEFINITION);
 
       TestUtil.sleep(2000);
 

@@ -14,7 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,7 +36,7 @@ import org.eclipse.ui.IWorkbenchWindow;
  */
 public class LoadGraphOperation implements IExceptionableRunnable {
 
-   private IOseeBranch resource;
+   private BranchId resource;
    private final GraphicalViewer viewer;
    private final BranchGraphEditor editor;
    private GraphCache graph;
@@ -52,7 +52,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       this.editor = editor;
    }
 
-   public LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor, IOseeBranch resource) {
+   public LoadGraphOperation(IWorkbenchPart part, GraphicalViewer viewer, BranchGraphEditor editor, BranchId resource) {
       this(part, viewer, editor);
       this.resource = resource;
    }

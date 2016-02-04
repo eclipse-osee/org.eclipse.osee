@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -45,7 +45,7 @@ public class OpenArtifactExplorerHandler extends CommandHandler {
 
    @Override
    public Object executeWithException(ExecutionEvent event, IStructuredSelection selection) {
-      List<? extends IOseeBranch> branches = getSelectedBranches(selection);
+      List<? extends BranchId> branches = getSelectedBranches(selection);
       if (!branches.isEmpty()) {
          ArtifactExplorer.exploreBranch(branches.iterator().next());
       }

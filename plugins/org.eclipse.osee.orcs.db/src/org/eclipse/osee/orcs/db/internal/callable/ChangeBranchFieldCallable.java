@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,11 +28,11 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
 
    private static final String UPDATE_BRANCH_FIELD = "UPDATE osee_branch SET %s = ? WHERE branch_id = ?";
 
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final String field;
    private final Object value;
 
-   private ChangeBranchFieldCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, String field, Object value) {
+   private ChangeBranchFieldCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, String field, Object value) {
       super(logger, session, jdbcClient);
       this.branch = branch;
       this.field = field;
@@ -49,22 +49,22 @@ public class ChangeBranchFieldCallable extends AbstractDatastoreTxCallable<Void>
       return null;
    }
 
-   public static Callable<Void> newBranchState(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, BranchState branchState) {
+   public static Callable<Void> newBranchState(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchState branchState) {
       Conditions.checkNotNull(branchState, "branchState");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_state", branchState.getValue());
    }
 
-   public static Callable<Void> newBranchType(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, BranchType branchType) {
+   public static Callable<Void> newBranchType(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, BranchType branchType) {
       Conditions.checkNotNull(branchType, "branchType");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_type", branchType.getValue());
    }
 
-   public static Callable<Void> newBranchName(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, String branchName) {
+   public static Callable<Void> newBranchName(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, String branchName) {
       Conditions.checkNotNullOrEmpty(branchName, "branchName");
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "branch_name", branchName);
    }
 
-   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, int associatedArtId) {
+   public static Callable<Void> newAssocArtId(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, int associatedArtId) {
       return new ChangeBranchFieldCallable(logger, session, jdbcClient, branch, "associated_art_id", associatedArtId);
    }
 }

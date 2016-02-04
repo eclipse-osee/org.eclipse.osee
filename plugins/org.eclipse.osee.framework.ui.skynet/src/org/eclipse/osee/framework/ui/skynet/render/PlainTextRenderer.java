@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -76,7 +76,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
             if (presentationType == PresentationType.DIFF && WordUtil.containsWordAnnotations(content)) {
                throw new OseeStateException(
                   "Trying to diff the [%s] artifact on the [%s] branch, which has tracked changes turned on.  All tracked changes must be removed before the artifacts can be compared.",
-                  artifact.getName(), artifact.getBranch().getName());
+                  artifact.getName(), artifact.getBranchToken().getName());
             }
             stream = Streams.convertStringToInputStream(content, "UTF-8");
          }
@@ -112,7 +112,7 @@ public class PlainTextRenderer extends FileSystemRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.PlainTextContent);
    }
 

@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.access.internal.AccessControlHelper;
 import org.eclipse.osee.framework.access.internal.AccessControlService;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
@@ -134,8 +134,8 @@ public final class AccessControlManager {
    }
 
    public static PermissionEnum getPermission(User user, Object object) {
-      if (object instanceof IOseeBranch) {
-         return getService().getBranchPermission(user, (IOseeBranch) object);
+      if (object instanceof BranchId) {
+         return getService().getBranchPermission(user, (BranchId) object);
       } else if (object instanceof Artifact) {
          return getService().getArtifactPermission(user, (Artifact) object);
       } else {

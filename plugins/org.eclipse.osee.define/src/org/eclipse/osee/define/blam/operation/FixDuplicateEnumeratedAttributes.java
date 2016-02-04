@@ -13,7 +13,7 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation.Display;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -50,7 +50,7 @@ public class FixDuplicateEnumeratedAttributes extends AbstractBlam {
 
    @Override
    public IOperation createOperation(VariableMap variableMap, OperationLogger logger) throws Exception {
-      IOseeBranch branch = variableMap.getBranch(SELECT_BRANCH_LABEL);
+      BranchId branch = variableMap.getBranch(SELECT_BRANCH_LABEL);
       boolean commitChangesBool = variableMap.getBoolean(COMMIT_CHANGES_LABEL);
 
       Branch fullBranch = BranchManager.getBranch(branch);

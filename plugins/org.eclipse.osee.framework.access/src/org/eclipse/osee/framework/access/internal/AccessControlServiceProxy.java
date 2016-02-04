@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.IAccessProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.access.AccessDataQuery;
@@ -180,7 +180,7 @@ public final class AccessControlServiceProxy implements IAccessControlService {
    }
 
    @Override
-   public void removePermissions(IOseeBranch branch) throws OseeCoreException {
+   public void removePermissions(BranchId branch) throws OseeCoreException {
       checkInitialized();
       getProxiedObject().removePermissions(branch);
    }

@@ -19,7 +19,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -106,8 +106,8 @@ public final class BranchExportCommand implements ConsoleCommand {
          this.orcsApi = orcsApi;
       }
 
-      private List<IOseeBranch> getBranchesToExport() throws OseeCoreException {
-         List<IOseeBranch> branches = new LinkedList<>();
+      private List<BranchId> getBranchesToExport() throws OseeCoreException {
+         List<BranchId> branches = new LinkedList<>();
          BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
          if (includeBranchIds.isEmpty()) {
             ResultSet<BranchReadable> branchReadables = null;
@@ -142,7 +142,7 @@ public final class BranchExportCommand implements ConsoleCommand {
       @Override
       public URI call() throws Exception {
          Conditions.checkNotNullOrEmpty(exportFileName, "exportFileName");
-         List<IOseeBranch> branches = getBranchesToExport();
+         List<BranchId> branches = getBranchesToExport();
          console.writeln("Exporting: [%s] branches", branches.size());
          Callable<URI> callable = orcsBranch.exportBranch(branches, options, exportFileName);
          return callable.call();

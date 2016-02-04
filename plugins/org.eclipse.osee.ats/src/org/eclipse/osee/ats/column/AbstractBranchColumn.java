@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -48,7 +48,7 @@ public abstract class AbstractBranchColumn extends XViewerAtsColumn implements I
             TeamWorkFlowArtifact teamArt = ((AbstractWorkflowArtifact) element).getParentTeamWorkflow();
             if (teamArt != null) {
                try {
-                  IOseeBranch workingBranch = null;
+                  BranchId workingBranch = null;
                   if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
                      workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
                   }

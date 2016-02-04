@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -55,7 +55,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       monitor.beginTask(getDescriptionUsage(), 100);
 
       List<Artifact> subsystems = variableMap.getArtifacts("Subsystem Root Artifacts");
-      IOseeBranch branch = subsystems.get(0).getBranch();
+      BranchId branch = subsystems.get(0).getBranch();
 
       init();
 

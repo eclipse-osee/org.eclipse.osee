@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -71,7 +71,7 @@ public class AttributeBasedArtifactResolver extends NewArtifactImportResolver {
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, IOseeBranch branch, Artifact realParent, Artifact root) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, BranchId branch, Artifact realParent, Artifact root) throws OseeCoreException {
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 

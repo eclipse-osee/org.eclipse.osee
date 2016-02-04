@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeField;
@@ -38,8 +38,8 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
 
    private final Set<ArtifactType> superTypes = new HashSet<>();
    private final Set<ArtifactType> childTypes = new HashSet<>();
-   private final Map<IOseeBranch, Collection<AttributeType>> attributes =
-      new HashMap<IOseeBranch, Collection<AttributeType>>();
+   private final Map<BranchId, Collection<AttributeType>> attributes =
+      new HashMap<BranchId, Collection<AttributeType>>();
 
    public ArtifactType(Long guid, String name, boolean isAbstract) {
       super(guid, name);
@@ -99,12 +99,12 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       }
    }
 
-   public void setAttributeTypes(Collection<AttributeType> attributeTypes, IOseeBranch branch) throws OseeCoreException {
+   public void setAttributeTypes(Collection<AttributeType> attributeTypes, BranchId branch) throws OseeCoreException {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).put(branch, attributeTypes);
    }
 
-   public void setAllAttributeTypes(Map<IOseeBranch, Collection<AttributeType>> attributeTypes) throws OseeCoreException {
+   public void setAllAttributeTypes(Map<BranchId, Collection<AttributeType>> attributeTypes) throws OseeCoreException {
       IOseeField<?> field = getField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
       ((ArtifactTypeAttributesField) field).set(attributeTypes);
    }
@@ -114,7 +114,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
       return attributes.contains(attributeType);
    }
 
-   public Map<IOseeBranch, Collection<AttributeType>> getLocalAttributeTypes() throws OseeCoreException {
+   public Map<BranchId, Collection<AttributeType>> getLocalAttributeTypes() throws OseeCoreException {
       return getFieldValue(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY);
    }
 
@@ -126,7 +126,7 @@ public class ArtifactType extends AbstractOseeIdType implements IArtifactType {
    }
 
    private static void getAttributeTypes(Set<IAttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      Map<IOseeBranch, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
+      Map<BranchId, Collection<AttributeType>> validityMap = artifactType.getLocalAttributeTypes();
 
       Branch branchCursor = branch;
       do {

@@ -23,6 +23,7 @@ import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -69,7 +70,7 @@ public class XBranchWidget extends GenericXWidget {
    private final boolean filterRealTime;
    private final boolean searchRealTime;
    private ToolBar toolBar;
-   private final IOseeBranch selectedBranch;
+   private final BranchId selectedBranch;
    private final List<BranchSelectedListener> branchSelectedListeners;
    private BranchXViewerFactory branchXViewerFactory;
    private final IBranchWidgetMenuListener menuListener;
@@ -78,7 +79,7 @@ public class XBranchWidget extends GenericXWidget {
       this(false, false, null, menuListener);
    }
 
-   public XBranchWidget(boolean filterRealTime, boolean searchRealTime, IOseeBranch selectedBranch, IBranchWidgetMenuListener menuListener) {
+   public XBranchWidget(boolean filterRealTime, boolean searchRealTime, BranchId selectedBranch, IBranchWidgetMenuListener menuListener) {
       super(VIEW_ID);
       this.filterRealTime = filterRealTime;
       this.searchRealTime = searchRealTime;
@@ -356,7 +357,7 @@ public class XBranchWidget extends GenericXWidget {
 
    public interface BranchSelectedListener {
 
-      public void onBranchSelected(IOseeBranch branch);
+      public void onBranchSelected(BranchId branch);
    }
    public interface IBranchWidgetMenuListener {
       public void updateMenuActionsForTable(MenuManager mm);

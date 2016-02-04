@@ -25,7 +25,7 @@ import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
@@ -217,7 +217,7 @@ public class ImportTraceabilityPage extends WizardDataTransferPage {
       return directoryFileSelector.getSingleSelection();
    }
 
-   public IOseeBranch getSelectedBranch() {
+   public BranchId getSelectedBranch() {
       return branchSelectComposite.getSelectedBranch();
    }
 

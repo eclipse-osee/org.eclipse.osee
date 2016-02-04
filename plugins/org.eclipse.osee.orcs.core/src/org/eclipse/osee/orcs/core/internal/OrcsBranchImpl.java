@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -67,22 +68,22 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> archiveUnarchiveBranch(IOseeBranch branch, ArchiveOperation archiveOp) {
+   public Callable<Void> archiveUnarchiveBranch(BranchId branch, ArchiveOperation archiveOp) {
       return branchStore.archiveUnArchiveBranch(session, branch, archiveOp);
    }
 
    @Override
-   public Callable<Void> deleteBranch(IOseeBranch branch) {
+   public Callable<Void> deleteBranch(BranchId branch) {
       return branchStore.deleteBranch(session, branch);
    }
 
    @Override
-   public Callable<List<IOseeBranch>> purgeBranch(IOseeBranch branch, boolean recurse) {
+   public Callable<List<BranchId>> purgeBranch(BranchId branch, boolean recurse) {
       return new PurgeBranchCallable(logger, session, branchStore, branch, recurse, queryFactory);
    }
 
    @Override
-   public Callable<TransactionReadable> commitBranch(ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
+   public Callable<TransactionReadable> commitBranch(ArtifactReadable committer, BranchId source, BranchId destination) {
       return new CommitBranchCallable(logger, session, branchStore, queryFactory, committer, source, destination);
    }
 
@@ -92,7 +93,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<List<ChangeItem>> compareBranch(IOseeBranch branch) throws OseeCoreException {
+   public Callable<List<ChangeItem>> compareBranch(BranchId branch) throws OseeCoreException {
       int baseTransaction = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne().getBaseTransaction();
       TransactionReadable fromTx =
          queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
@@ -101,38 +102,38 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<Void> changeBranchState(IOseeBranch branch, BranchState branchState) {
+   public Callable<Void> changeBranchState(BranchId branch, BranchState branchState) {
       return branchStore.changeBranchState(session, branch, branchState);
    }
 
    @Override
-   public Callable<Void> changeBranchType(IOseeBranch branch, BranchType branchType) {
+   public Callable<Void> changeBranchType(BranchId branch, BranchType branchType) {
       return branchStore.changeBranchType(session, branch, branchType);
    }
 
    @Override
-   public Callable<Void> changeBranchName(IOseeBranch branch, String branchName) {
+   public Callable<Void> changeBranchName(BranchId branch, String branchName) {
       return branchStore.changeBranchName(session, branch, branchName);
    }
 
    @Override
-   public Callable<Void> associateBranchToArtifact(IOseeBranch branch, ArtifactReadable associatedArtifact) {
+   public Callable<Void> associateBranchToArtifact(BranchId branch, ArtifactReadable associatedArtifact) {
       Conditions.checkNotNull(associatedArtifact, "associatedArtifact");
       return branchStore.changeBranchAssociatedArtId(session, branch, associatedArtifact.getLocalId());
    }
 
    @Override
-   public Callable<Void> unassociateBranch(IOseeBranch branch) {
+   public Callable<Void> unassociateBranch(BranchId branch) {
       return branchStore.changeBranchAssociatedArtId(session, branch, -1);
    }
 
    @Override
-   public Callable<URI> exportBranch(List<IOseeBranch> branches, PropertyStore options, String exportName) {
+   public Callable<URI> exportBranch(List<? extends BranchId> branches, PropertyStore options, String exportName) {
       return branchStore.exportBranch(session, orcsTypes, branches, options, exportName);
    }
 
    @Override
-   public Callable<URI> importBranch(URI fileToImport, List<IOseeBranch> branches, PropertyStore options) {
+   public Callable<URI> importBranch(URI fileToImport, List<? extends BranchId> branches, PropertyStore options) {
       return branchStore.importBranch(session, orcsTypes, fileToImport, branches, options);
    }
 
@@ -148,7 +149,7 @@ public class OrcsBranchImpl implements OrcsBranch {
    }
 
    @Override
-   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public Callable<BranchReadable> createBaselineBranch(IOseeBranch branch, ArtifactReadable author, BranchId parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       CreateBranchData branchData =
          branchDataFactory.createBaselineBranchData(branch, author, parent, associatedArtifact);
       return createBranch(branchData);

@@ -33,7 +33,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -91,11 +91,11 @@ public class OrcsTypesTest {
 
    static long BRANCH_A_UUID = 3458234234L;
    static long BRANCH_B_UUID = 9993245332L;
-   private static final IOseeBranch BRANCH_A = TokenFactory.createBranch(BRANCH_A_UUID, "Branch A");
-   private static final IOseeBranch BRANCH_B = TokenFactory.createBranch(BRANCH_B_UUID, "Branch B");
-   private static final IOseeBranch BRANCH_C = TokenFactory.createBranch("Branch C");
-   private static final IOseeBranch BRANCH_D = TokenFactory.createBranch("Branch D");
-   private static final IOseeBranch BRANCH_E = TokenFactory.createBranch("Branch E");
+   private static final BranchId BRANCH_A = TokenFactory.createBranch(BRANCH_A_UUID, "Branch A");
+   private static final BranchId BRANCH_B = TokenFactory.createBranch(BRANCH_B_UUID, "Branch B");
+   private static final BranchId BRANCH_C = TokenFactory.createBranch("Branch C");
+   private static final BranchId BRANCH_D = TokenFactory.createBranch("Branch D");
+   private static final BranchId BRANCH_E = TokenFactory.createBranch("Branch E");
    
    @Mock private Log logger;
    @Mock private OrcsTypesDataStore dataStore;
@@ -105,7 +105,7 @@ public class OrcsTypesTest {
 
    private OrcsTypes orcsTypes;
    private List<InputSupplier<? extends InputStream>> resources;
-   private Multimap<IOseeBranch, IOseeBranch> branchHierachies;
+   private Multimap<BranchId, BranchId> branchHierachies;
    private OrcsTypesModule module;
 
    @Before
@@ -138,12 +138,12 @@ public class OrcsTypesTest {
       branchHierachies.putAll(BRANCH_D, Arrays.asList(BRANCH_D, BRANCH_A, CoreBranches.SYSTEM_ROOT));
       branchHierachies.putAll(BRANCH_E, Arrays.asList(BRANCH_E, BRANCH_B, CoreBranches.SYSTEM_ROOT));
 
-      when(hierarchyProvider.getParentHierarchy(any(IOseeBranch.class))).thenAnswer(
-         new Answer<Iterable<? extends IOseeBranch>>() {
+      when(hierarchyProvider.getParentHierarchy(any(BranchId.class))).thenAnswer(
+         new Answer<Iterable<? extends BranchId>>() {
 
             @Override
-            public Iterable<? extends IOseeBranch> answer(InvocationOnMock invocation) throws Throwable {
-               IOseeBranch branchToGet = (IOseeBranch) invocation.getArguments()[0];
+            public Iterable<? extends BranchId> answer(InvocationOnMock invocation) throws Throwable {
+               BranchId branchToGet = (BranchId) invocation.getArguments()[0];
                return branchHierachies.get(branchToGet);
             }
          });

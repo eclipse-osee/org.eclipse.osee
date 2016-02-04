@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -40,11 +40,11 @@ public class RelationLink implements HasBranch {
 
    public static interface ArtifactLinker {
 
-      public void updateCachedArtifact(int artId, IOseeBranch branch);
+      public void updateCachedArtifact(int artId, BranchId branch);
 
-      public Artifact getArtifact(int ArtId, IOseeBranch branch) throws OseeCoreException;
+      public Artifact getArtifact(int ArtId, BranchId branch) throws OseeCoreException;
 
-      public String getLazyArtifactName(int aArtifactId, IOseeBranch branch);
+      public String getLazyArtifactName(int aArtifactId, BranchId branch);
 
       public void deleteFromRelationOrder(Artifact aArtifact, Artifact bArtifact, IRelationType relationType) throws OseeCoreException;
    }
@@ -56,7 +56,7 @@ public class RelationLink implements HasBranch {
    private boolean dirty;
    private final int aArtifactId;
    private final int bArtifactId;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private ModificationType modificationType;
 
    private static final boolean SET_DIRTY = true;
@@ -65,7 +65,7 @@ public class RelationLink implements HasBranch {
    private final ArtifactLinker artifactLinker;
    private boolean useBackingData;
 
-   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, IOseeBranch branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
+   public RelationLink(ArtifactLinker artifactLinker, int aArtifactId, int bArtifactId, BranchId branch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
       this.artifactLinker = artifactLinker;
       this.relationType = relationType;
       this.relationId = relationId;
@@ -323,7 +323,7 @@ public class RelationLink implements HasBranch {
    }
 
    @Override
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

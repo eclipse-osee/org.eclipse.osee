@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -62,7 +62,7 @@ import org.json.JSONObject;
  */
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
-   private IOseeBranch branch;
+   private BranchId branch;
 
    private XBranchSelectWidget branchWidget;
    private XCombo slaveWidget;

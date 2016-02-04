@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -85,7 +85,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
          monitor.setTaskName("Compute artifact deltas");
          double workAmount = 0.60 / changeItems.size();
-         IOseeBranch startTxBranch = txDelta.getStartTx().getBranch();
+         BranchId startTxBranch = txDelta.getStartTx().getBranch();
          for (ChangeItem item : changeItems) {
             checkForCancelledStatus(monitor);
             Change change = computeChange(bulkLoaded, startTxBranch, item);
@@ -108,7 +108,7 @@ public class ChangeDataLoader extends AbstractOperation {
 
       monitor.setTaskName("Compute artifact deltas");
       double workAmount = 0.30 / changeItems.size();
-      IOseeBranch startTxBranch = txDelta.getStartTx().getBranch();
+      BranchId startTxBranch = txDelta.getStartTx().getBranch();
       for (ChangeItem item : changeItems) {
          checkForCancelledStatus(monitor);
          Change change = computeChangeFromGamma(bulkLoaded, startTxBranch, item);
@@ -117,7 +117,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
    }
 
-   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, IOseeBranch startTxBranch, ChangeItem item) {
+   private Change computeChangeFromGamma(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
@@ -157,7 +157,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change computeChange(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, IOseeBranch startTxBranch, ChangeItem item) {
+   private Change computeChange(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, BranchId startTxBranch, ChangeItem item) {
       Change change = null;
       try {
          int artId = item.getArtId();
@@ -182,7 +182,7 @@ public class ChangeDataLoader extends AbstractOperation {
       return change;
    }
 
-   private Change createChangeObject(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, IOseeBranch startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
+   private Change createChangeObject(CompositeKeyHashMap<TransactionRecord, Integer, Artifact> bulkLoaded, ChangeItem item, TransactionDelta txDelta, BranchId startTxBranch, ArtifactDelta artifactDelta) throws OseeCoreException {
       Change change = null;
 
       int itemId = item.getItemId();

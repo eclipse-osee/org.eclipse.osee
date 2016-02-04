@@ -20,7 +20,7 @@ import org.eclipse.osee.authorization.admin.AuthorizationData;
 import org.eclipse.osee.authorization.admin.AuthorizationProvider;
 import org.eclipse.osee.authorization.admin.AuthorizationRequest;
 import org.eclipse.osee.authorization.admin.AuthorizationUser;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -62,7 +62,7 @@ public class OseeAuthorizationProvider implements AuthorizationProvider, Authori
       return this;
    }
 
-   private IOseeBranch getAdminBranch() {
+   private BranchId getAdminBranch() {
       return CoreBranches.COMMON;
    }
 

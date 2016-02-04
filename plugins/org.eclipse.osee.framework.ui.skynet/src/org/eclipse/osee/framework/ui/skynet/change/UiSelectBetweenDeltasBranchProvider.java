@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,7 +43,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       if (txDelta.areOnTheSameBranch()) {
          selectedBranch[0] = txDelta.getStartTx().getFullBranch();
       } else {
-         final Collection<IOseeBranch> selectable = new ArrayList<>();
+         final Collection<BranchId> selectable = new ArrayList<>();
          selectable.add(uiData.getTxDelta().getStartTx().getFullBranch());
          selectable.add(uiData.getTxDelta().getEndTx().getFullBranch());
          IStatus status = executeInUiThread(selectable, selectedBranch);
@@ -51,7 +52,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       return selectedBranch[0];
    }
 
-   private IStatus executeInUiThread(final Collection<IOseeBranch> selectable, final IOseeBranch[] selectedBranch) throws OseeCoreException {
+   private IStatus executeInUiThread(final Collection<BranchId> selectable, final BranchId[] selectedBranch) throws OseeCoreException {
       IStatus status = null;
       Display display = AWorkbench.getDisplay();
       if (display.getThread().equals(Thread.currentThread())) {
@@ -73,7 +74,7 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
       return status;
    }
 
-   private IStatus getUserSelection(Collection<IOseeBranch> selectable, IOseeBranch[] selectedBranch) {
+   private IStatus getUserSelection(Collection<BranchId> selectable, BranchId[] selectedBranch) {
       IStatus status = Status.OK_STATUS;
       BranchSelectionDialog dialog = new BranchSelectionDialog("Select branch to compare against", selectable);
       int result = dialog.open();

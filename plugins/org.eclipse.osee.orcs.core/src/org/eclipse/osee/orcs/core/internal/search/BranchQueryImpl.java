@@ -22,7 +22,7 @@ import org.eclipse.osee.orcs.search.BranchQuery;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery>implements BranchQuery {
+public class BranchQueryImpl extends BranchQueryBuilderImpl<BranchQuery> implements BranchQuery {
 
    private final BranchCallableQueryFactory queryFactory;
    private final OrcsSession session;

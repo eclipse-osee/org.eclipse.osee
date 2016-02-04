@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.change.view;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -166,14 +166,14 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       @Override
       public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
-         IOseeBranch[] branches = new IOseeBranch[2];
+         BranchId[] branches = new BranchId[2];
          try {
             branches[0] = changeUiData.getTxDelta().getStartTx().getBranch();
             branches[1] = changeUiData.getTxDelta().getEndTx().getBranch();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error obtaining change report branches for branch event", ex);
          }
-         for (IOseeBranch branch : branches) {
+         for (BranchId branch : branches) {
             if (branch != null && branch.equals(branchEvent.getSourceBranch())) {
                switch (branchEvent.getEventType()) {
                   case Deleting:

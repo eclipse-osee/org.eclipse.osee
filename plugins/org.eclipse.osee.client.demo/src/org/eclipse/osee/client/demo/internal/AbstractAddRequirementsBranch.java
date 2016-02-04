@@ -11,6 +11,7 @@
 package org.eclipse.osee.client.demo.internal;
 
 import org.eclipse.osee.client.demo.DemoSubsystems;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.database.init.IDbInitializationTask;
@@ -34,7 +35,7 @@ public abstract class AbstractAddRequirementsBranch implements IDbInitialization
 
    @Override
    public void run() throws OseeCoreException {
-      IOseeBranch requirementsBranch = BranchManager.createTopLevelBranch(branch);
+      BranchId requirementsBranch = BranchManager.createTopLevelBranch(branch);
 
       Artifact sawProduct =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.Component, requirementsBranch, "SAW Product Decomposition");

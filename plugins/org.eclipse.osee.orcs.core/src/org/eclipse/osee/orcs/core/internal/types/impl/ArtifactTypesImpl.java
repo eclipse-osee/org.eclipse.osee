@@ -16,7 +16,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.dsl.oseeDsl.XArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -100,13 +100,13 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public boolean isValidAttributeType(IArtifactType artType, IOseeBranch branch, IAttributeType attributeType) throws OseeCoreException {
+   public boolean isValidAttributeType(IArtifactType artType, BranchId branch, IAttributeType attributeType) throws OseeCoreException {
       Collection<IAttributeType> attributes = getAttributeTypes(artType, branch);
       return attributes.contains(attributeType);
    }
 
    @Override
-   public Collection<IAttributeType> getAttributeTypes(IArtifactType artType, IOseeBranch branch) throws OseeCoreException {
+   public Collection<IAttributeType> getAttributeTypes(IArtifactType artType, BranchId branch) throws OseeCoreException {
       Conditions.checkNotNull(artType, "artifactType");
       Conditions.checkNotNull(branch, "branch");
       return getArtifactTypesIndex().getAttributeTypes(artType, branch);
@@ -128,7 +128,7 @@ public class ArtifactTypesImpl implements ArtifactTypes {
    }
 
    @Override
-   public Map<IOseeBranch, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException {
+   public Map<BranchId, Collection<IAttributeType>> getAllAttributeTypes(IArtifactType artType) throws OseeCoreException {
       return getArtifactTypesIndex().getAllAttributeTypes(artType);
    }
 

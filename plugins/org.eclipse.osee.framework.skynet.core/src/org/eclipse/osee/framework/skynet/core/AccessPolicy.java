@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
@@ -26,13 +26,13 @@ public interface AccessPolicy {
 
    boolean isReadOnly(Artifact artifact);
 
-   void removePermissions(IOseeBranch branch) throws OseeCoreException;
+   void removePermissions(BranchId branch) throws OseeCoreException;
 
-   PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) throws OseeCoreException;
 
    PermissionStatus hasAttributeTypePermission(Collection<? extends IBasicArtifact<?>> artifacts, IAttributeType attributeType, PermissionEnum permission, Level level) throws OseeCoreException;
 
-   PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
+   PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException;
 
    PermissionStatus hasArtifactPermission(Collection<? extends IBasicArtifact<?>> artifacts, PermissionEnum permission, Level level) throws OseeCoreException;
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -41,7 +42,7 @@ public class BranchDataFactory {
          null, false);
    }
 
-   public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, IOseeBranch parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
+   public CreateBranchData createBaselineBranchData(IOseeBranch branch, ArtifactReadable author, BranchId parent, ArtifactReadable associatedArtifact) throws OseeCoreException {
       TransactionQuery txQuery = queryFactory.transactionQuery();
       TransactionReadable fromTx = txQuery.andIsHead(parent).getResults().getExactlyOne();
       String creationComment = String.format("Branch Creation for %s", branch.getName());
@@ -82,7 +83,7 @@ public class BranchDataFactory {
          true);
    }
 
-   private CreateBranchData createBranchData(IOseeBranch branch, IOseeBranch parent, BranchType branchType, String creationComment, TransactionReadable sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
+   private CreateBranchData createBranchData(IOseeBranch branch, BranchId parent, BranchType branchType, String creationComment, TransactionReadable sysRootHeadTx, ArtifactReadable author, ArtifactReadable associatedArtifact, boolean bCopyTx) {
       CreateBranchData createData = new CreateBranchData();
       createData.setUuid(branch.getUuid());
       createData.setName(branch.getName());

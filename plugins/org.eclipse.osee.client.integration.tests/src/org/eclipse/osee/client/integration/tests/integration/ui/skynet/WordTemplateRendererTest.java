@@ -22,7 +22,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -100,8 +100,8 @@ public class WordTemplateRendererTest {
    private static String SLAVE_RENDERER_OPTIONS =
       "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r><w:t>Partition:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Development Assurance Level\", \"Label\" : \"<w:r><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
-   private IOseeBranch rootBranch;
-   private IOseeBranch updateBranch;
+   private BranchId rootBranch;
+   private BranchId updateBranch;
    private Artifact docFolder;
    private Artifact swReqFolder;
    private Artifact templateFolder;
@@ -198,7 +198,7 @@ public class WordTemplateRendererTest {
 
    @Test
    public void testBlankWordTemplateContent() {
-      IOseeBranch rootBr = BranchManager.createTopLevelBranch("Root Branch");
+      BranchId rootBr = BranchManager.createTopLevelBranch("Root Branch");
       SkynetTransaction tx =
          TransactionManager.createTransaction(rootBr, String.format("%s", method.getQualifiedTestName()));
       Artifact vol4 = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, rootBr, "Volume 4");
@@ -622,7 +622,7 @@ public class WordTemplateRendererTest {
    }
 
    // Create the folder to store the templates
-   private void setupTemplates(Artifact folder, IOseeBranch branch) throws OseeCoreException {
+   private void setupTemplates(Artifact folder, BranchId branch) throws OseeCoreException {
       recurseTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "Recurse Template");
       recurseTemplate.setSoleAttributeValue(CoreAttributeTypes.WholeWordContent, RECURSE_TEMPLATE_STRING);
       recurseTemplate.addAttributeFromString(CoreAttributeTypes.TemplateMatchCriteria,
@@ -679,7 +679,7 @@ public class WordTemplateRendererTest {
          |     |---- Ventilation
     */
    //@formatter:on
-   private void setUpSWReq(Artifact swReqFolder, IOseeBranch branch) throws OseeCoreException {
+   private void setUpSWReq(Artifact swReqFolder, BranchId branch) throws OseeCoreException {
       Artifact crewReq =
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Crew Station Requirements");
       Artifact commReq = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch,
@@ -728,7 +728,7 @@ public class WordTemplateRendererTest {
          |---- More Notes
     */
    //@formatter:on
-   private void setUpDocFolder(Artifact docFolder, IOseeBranch branch) throws OseeCoreException {
+   private void setUpDocFolder(Artifact docFolder, BranchId branch) throws OseeCoreException {
       Artifact intro = ArtifactTypeManager.addArtifact(CoreArtifactTypes.HeadingMSWord, branch, "Introduction");
       Artifact background = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Background");
       Artifact scope = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SubsystemDesign, branch, "Scope");

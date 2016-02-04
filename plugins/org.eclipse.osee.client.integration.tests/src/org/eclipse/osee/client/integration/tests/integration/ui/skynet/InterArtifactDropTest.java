@@ -41,7 +41,7 @@ import org.junit.Test;
 
 /**
  * Tests cross branch drag and drop.
- * 
+ *
  * @author Jeff C. Phillips
  * @author Megumi Telles
  */

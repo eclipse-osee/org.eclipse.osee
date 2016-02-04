@@ -27,17 +27,16 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class OseeDslSegmentParser {
 
-   public String getStartTag(IBasicArtifact<?> artifact) throws OseeCoreException {
-      return getSegmentTag("start", artifact);
+   public String getStartTag(IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
+      return getSegmentTag("start", artifact, branch);
    }
 
-   public String getEndTag(IBasicArtifact<?> artifact) throws OseeCoreException {
-      return getSegmentTag("end", artifact);
+   public String getEndTag(IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
+      return getSegmentTag("end", artifact, branch);
    }
 
-   private static String getSegmentTag(String tagPrefix, IBasicArtifact<?> artifact) throws OseeCoreException {
+   private static String getSegmentTag(String tagPrefix, IBasicArtifact<?> artifact, IOseeBranch branch) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
-      IOseeBranch branch = artifact.getBranch();
       Conditions.checkNotNull(branch, "branch");
       return String.format("//@%s_artifact branch/%s/artifact/%s/ (%s:%s)", tagPrefix, branch.getUuid(),
          artifact.getGuid(), branch.getName(), artifact.getName());

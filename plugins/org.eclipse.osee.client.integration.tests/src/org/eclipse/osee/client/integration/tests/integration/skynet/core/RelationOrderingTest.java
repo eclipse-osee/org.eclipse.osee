@@ -20,7 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -56,7 +56,7 @@ public class RelationOrderingTest {
    @Rule
    public TestInfo method = new TestInfo();
 
-   private static final IOseeBranch branch = CoreBranches.COMMON;
+   private static final BranchId branch = CoreBranches.COMMON;
 
    private Set<Artifact> itemsToDelete;
    private Artifact parent;

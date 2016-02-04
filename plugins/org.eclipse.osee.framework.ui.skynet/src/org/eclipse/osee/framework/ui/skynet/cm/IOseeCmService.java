@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
@@ -34,7 +34,7 @@ public interface IOseeCmService {
 
    boolean isCmAdmin();
 
-   public IOseeBranch getCmBranchToken();
+   public BranchId getCmBranchToken();
 
    void openArtifact(Artifact artifact, OseeCmEditor oseeCmEditor);
 
@@ -62,7 +62,7 @@ public interface IOseeCmService {
 
    IArtifactType getPcrTaskArtifactType();
 
-   boolean isWorkFlowBranch(IOseeBranch branch);
+   boolean isWorkFlowBranch(BranchId branch);
 
    void commitBranch(Artifact art, Branch branch, boolean isArchiveSource);
 }

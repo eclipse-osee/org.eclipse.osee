@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.mocks;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink.ArtifactLinker;
@@ -32,17 +32,17 @@ public class MockLinker implements ArtifactLinker {
    }
 
    @Override
-   public void updateCachedArtifact(int artId, IOseeBranch branch) {
+   public void updateCachedArtifact(int artId, BranchId branch) {
       //
    }
 
    @Override
-   public Artifact getArtifact(int ArtId, IOseeBranch branch) {
+   public Artifact getArtifact(int ArtId, BranchId branch) {
       return null;
    }
 
    @Override
-   public String getLazyArtifactName(int aArtifactId, IOseeBranch branch) {
+   public String getLazyArtifactName(int aArtifactId, BranchId branch) {
       return name;
    }
 

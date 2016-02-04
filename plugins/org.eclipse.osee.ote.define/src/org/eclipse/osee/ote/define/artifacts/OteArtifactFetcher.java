@@ -16,9 +16,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,21 +43,21 @@ public class OteArtifactFetcher<T extends Artifact> {
     * Creates a new Artifact in the specified branch
     */
    @SuppressWarnings("unchecked")
-   public T getNewArtifact(IOseeBranch branch) throws OseeCoreException {
+   public T getNewArtifact(BranchId branch) throws OseeCoreException {
       checkForNull(branch);
       return (T) ArtifactTypeManager.addArtifact(oteArtifactType, branch);
    }
 
    /**
     * Retrieves a unique artifact matching input parameter
-    * 
+    *
     * @param typeName Attribute type name
     * @param value attribute value to match
     * @param branch to search in
     * @return the unique artifact
     */
    @SuppressWarnings("unchecked")
-   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, IOseeBranch branch) throws OseeCoreException {
+   public T searchForUniqueArtifactMatching(IAttributeType attributeType, String attributeValue, BranchId branch) throws OseeCoreException {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNull(attributeValue, "attributeValue");
       Conditions.checkNotNull(branch, "branch");
@@ -66,12 +66,12 @@ public class OteArtifactFetcher<T extends Artifact> {
 
    /**
     * Returns all artifact instances found in branch matching the type <b>T</b>
-    * 
+    *
     * @param branch to search in
     * @return artifact instances
     */
    @SuppressWarnings("unchecked")
-   public Set<T> getAllArtifacts(IOseeBranch branch) throws OseeArgumentException {
+   public Set<T> getAllArtifacts(BranchId branch) throws OseeArgumentException {
       checkForNull(branch);
       Set<T> toReturn = new HashSet<>();
       try {
@@ -80,8 +80,8 @@ public class OteArtifactFetcher<T extends Artifact> {
             toReturn.add((T) artifact);
          }
       } catch (OseeCoreException ex) {
-         OseeLog.logf(OteDefinePlugin.class, Level.WARNING, ex, "Search for all artifacts failed [%s, %s]",
-            oteArtifactType.getName(), branch.getName());
+         OseeLog.logf(OteDefinePlugin.class, Level.WARNING, ex, "Search for all artifacts failed [%s] on branch [%s]",
+            oteArtifactType.getName(), branch.getId());
       }
       return toReturn;
    }
@@ -89,7 +89,7 @@ public class OteArtifactFetcher<T extends Artifact> {
    /**
     * Returns all artifact instances found in branch matching the type <b>T</b> Results are indexed by artifact
     * descriptive name.
-    * 
+    *
     * @param branch to search in
     * @return artifact instances indexed by descriptive name
     */

@@ -17,7 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -126,7 +126,7 @@ public class RelationOrderData {
             addOrderList(type, side, requestedSorterId, relativeSequence);
             relationOrderModType = RelationOrderModType.Absolute;
          }
-         IOseeBranch branch = getIArtifact().getBranch();
+         BranchId branch = getIArtifact().getBranch();
          DefaultBasicGuidArtifact guidArtifact =
             new DefaultBasicGuidArtifact(branch, getIArtifact().getArtifactType().getGuid(), getIArtifact().getGuid());
 

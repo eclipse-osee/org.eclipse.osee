@@ -19,7 +19,7 @@ import org.apache.commons.io.FilenameUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -64,9 +64,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
    private final IViewPart viewPart;
 
-   private IOseeBranch selectedBranch;
+   private BranchId selectedBranch;
 
-   public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart, IOseeBranch selectedBranch) {
+   public ArtifactExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IViewPart viewPart, BranchId selectedBranch) {
       this(treeViewer, viewId, viewPart);
       this.selectedBranch = selectedBranch;
    }
@@ -78,7 +78,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       this.viewPart = viewPart;
    }
 
-   public void updateBranch(IOseeBranch branch) {
+   public void updateBranch(BranchId branch) {
       selectedBranch = branch;
    }
 
@@ -119,7 +119,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                AccessPolicy policy = ServiceUtil.getAccessPolicy();
                Artifact[] artifactsBeingDropped = toBeDropped.getArtifacts();
                List<Artifact> artsOnSameBranchAsDestination = new LinkedList<>();
-               IOseeBranch destinationBranch = dropTarget.getBranch();
+               BranchId destinationBranch = dropTarget.getBranch();
                for (Artifact art : artifactsBeingDropped) {
                   if (art.isOnBranch(destinationBranch)) {
                      artsOnSameBranchAsDestination.add(art);

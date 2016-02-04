@@ -18,7 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -50,7 +50,7 @@ public class OrcsCollectorWriter {
    private final OrcsApi orcsApi;
    private Map<Long, ArtifactId> uuidToArtifact;
    private TransactionBuilder transaction;
-   private IOseeBranch branch;
+   private BranchId branch;
    private ArtifactReadable user;
    private final XResultData results;
 
@@ -345,7 +345,7 @@ public class OrcsCollectorWriter {
       return date;
    }
 
-   private IOseeBranch getBranch() {
+   private BranchId getBranch() {
       if (branch == null) {
          branch = orcsApi.getQueryFactory().branchQuery().andUuids(
             collector.getBranch().getUuid()).getResults().getAtMostOneOrNull();

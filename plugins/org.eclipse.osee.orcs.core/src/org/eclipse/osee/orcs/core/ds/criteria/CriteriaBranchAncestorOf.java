@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds.criteria;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.orcs.core.ds.Criteria;
@@ -21,14 +21,14 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaBranchAncestorOf extends Criteria implements BranchCriteria {
 
-   private final IOseeBranch child;
+   private final BranchId child;
 
-   public CriteriaBranchAncestorOf(IOseeBranch child) {
+   public CriteriaBranchAncestorOf(BranchId child) {
       super();
       this.child = child;
    }
 
-   public IOseeBranch getChild() {
+   public BranchId getChild() {
       return child;
    }
 

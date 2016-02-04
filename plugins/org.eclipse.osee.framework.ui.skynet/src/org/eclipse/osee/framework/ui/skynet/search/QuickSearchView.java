@@ -21,6 +21,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -98,7 +99,7 @@ public class QuickSearchView extends GenericViewPart {
       if (DbConnectionExceptionComposite.dbConnectionIsOk() && memento != null) {
          if (Widgets.isAccessible(attrSearchComposite)) {
             memento.putString(LAST_QUERY_KEY_ID, attrSearchComposite.getQuery());
-            IOseeBranch branch = branchSelect.getData();
+            BranchId branch = branchSelect.getData();
             if (branch != null) {
                memento.putString(LAST_BRANCH_UUID, String.valueOf(branch.getUuid()));
             }
@@ -264,7 +265,7 @@ public class QuickSearchView extends GenericViewPart {
       public void handleEvent(Event event) {
          if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
             branchLabel.setText("");
-            final IOseeBranch branch = branchSelect.getData();
+            final BranchId branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
             } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {
@@ -300,7 +301,7 @@ public class QuickSearchView extends GenericViewPart {
       public void handleEvent(Event event) {
          if (Widgets.isAccessible(branchLabel) && branchSelect != null) {
             branchLabel.setText("");
-            final IOseeBranch branch = branchSelect.getData();
+            final BranchId branch = branchSelect.getData();
             if (branch == null) {
                branchLabel.setText("Error: Must Select a Branch");
             } else if (!AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ)) {

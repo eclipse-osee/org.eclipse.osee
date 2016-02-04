@@ -22,6 +22,7 @@ import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -46,7 +47,7 @@ import org.junit.Test;
  */
 public class WordUpdateEndpointImplTest extends AbstractRestTest {
    private Artifact artReqt = null;
-   private IOseeBranch branch = null;
+   private BranchId branch = null;
 
    @AfterClass
    public static void cleanup() {
@@ -127,8 +128,8 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
       return change;
    }
 
-   private IOseeBranch getWorkingBranch() {
-      IOseeBranch branchReturn = null;
+   private BranchId getWorkingBranch() {
+      BranchId branchReturn = null;
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
       List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
       for (IOseeBranch branch : branches) {

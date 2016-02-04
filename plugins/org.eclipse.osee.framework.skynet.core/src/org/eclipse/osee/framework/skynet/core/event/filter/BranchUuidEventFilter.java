@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 
@@ -21,12 +20,12 @@ import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
  */
 public class BranchUuidEventFilter implements IEventFilter {
 
-   private final IOseeBranch branchToken;
+   private final BranchId branchToken;
 
    /**
     * Provide branch of events that should be passed through. All other branches will be ignored.
     */
-   public BranchUuidEventFilter(IOseeBranch branchToken) {
+   public BranchUuidEventFilter(BranchId branchToken) {
       this.branchToken = branchToken;
    }
 

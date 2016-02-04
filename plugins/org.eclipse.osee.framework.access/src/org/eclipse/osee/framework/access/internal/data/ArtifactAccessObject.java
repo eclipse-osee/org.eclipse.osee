@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.access.internal.data;
 
 import org.eclipse.osee.framework.access.AccessObject;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -64,11 +64,11 @@ public class ArtifactAccessObject extends AccessObject {
 
    public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) throws OseeCoreException {
       Integer artId = artifact.getArtId();
-      IOseeBranch branchUuid = artifact.getBranch();
+      BranchId branchUuid = artifact.getBranch();
       return getArtifactAccessObject(artId, branchUuid);
    }
 
-   public static ArtifactAccessObject getArtifactAccessObject(Integer artId, IOseeBranch branch) throws OseeCoreException {
+   public static ArtifactAccessObject getArtifactAccessObject(Integer artId, BranchId branch) throws OseeCoreException {
       long branchUuid = branch.getUuid();
       ArtifactAccessObject accessObject = cache.get(artId, branchUuid);
 
@@ -83,7 +83,7 @@ public class ArtifactAccessObject extends AccessObject {
       return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch());
    }
 
-   public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, IOseeBranch branch) throws OseeCoreException {
+   public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, BranchId branch) throws OseeCoreException {
       long branchUuid2 = branch.getUuid();
       return cache.get(artId2, branchUuid2);
    }

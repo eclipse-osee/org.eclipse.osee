@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.commit.CommitStatus;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -38,7 +39,7 @@ public interface IAtsBranchService {
 
    IOseeBranch getBranch(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   IOseeBranch getBranch(IAtsConfigObject configObject);
+   BranchId getBranch(IAtsConfigObject configObject);
 
    IOseeBranch getBranch(ICommitConfigItem configObject);
 
@@ -64,21 +65,21 @@ public interface IAtsBranchService {
 
    Collection<ITransaction> getTransactionIds(IAtsTeamWorkflow teamWf, boolean forMergeBranches);
 
-   boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, IOseeBranch branchToExclude);
+   boolean isBranchesAllCommittedExcept(IAtsTeamWorkflow teamWf, BranchId branchToExclude);
 
-   Collection<IOseeBranch> getBranchesCommittedTo(IAtsTeamWorkflow teamWf);
+   Collection<BranchId> getBranchesCommittedTo(IAtsTeamWorkflow teamWf);
 
-   Collection<IOseeBranch> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf);
+   Collection<BranchId> getBranchesLeftToCommit(IAtsTeamWorkflow teamWf);
 
    CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, ICommitConfigItem configArt);
 
    ICommitConfigItem getParentBranchConfigArtifactConfiguredToCommitTo(IAtsTeamWorkflow teamWf);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, IOseeBranch destinationBranch, ICommitConfigItem configArt);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch, ICommitConfigItem configArt);
 
    IOseeBranch getWorkingBranchExcludeStates(IAtsTeamWorkflow teamWf, BranchState... negatedBranchStates);
 
-   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, IOseeBranch destinationBranch);
+   CommitStatus getCommitStatus(IAtsTeamWorkflow teamWf, BranchId destinationBranch);
 
    Collection<Object> getCommitTransactionsAndConfigItemsForTeamWf(IAtsTeamWorkflow teamWf);
 
@@ -92,15 +93,15 @@ public interface IAtsBranchService {
 
    Collection<ITransaction> getCommitTransactionsToUnarchivedBaselineBranchs(IAtsTeamWorkflow teamWf);
 
-   BranchType getBranchType(IOseeBranch branch);
+   BranchType getBranchType(BranchId branch);
 
-   BranchState getBranchState(IOseeBranch branch);
+   BranchState getBranchState(BranchId branch);
 
    Collection<ITransaction> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf);
 
-   boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, IOseeBranch destinationBranch);
+   boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch);
 
-   boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, IOseeBranch workingBranch, IOseeBranch destinationBranch);
+   boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch);
 
    Result isCommitBranchAllowed(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
@@ -110,21 +111,21 @@ public interface IAtsBranchService {
 
    boolean branchExists(long branchUuid);
 
-   BranchArchivedState getArchiveState(IOseeBranch branch);
+   BranchArchivedState getArchiveState(BranchId branch);
 
-   ITransaction getCommitTransactionRecord(IAtsTeamWorkflow teamWf, IOseeBranch branch);
+   ITransaction getCommitTransactionRecord(IAtsTeamWorkflow teamWf, BranchId branch);
 
    Date getTimeStamp(ITransaction committedToParentTransRecord);
 
-   Collection<IOseeBranch> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException;
+   Collection<BranchId> getBranchesToCommitTo(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 
-   Collection<IOseeBranch> getBranchesInCommit();
+   Collection<BranchId> getBranchesInCommit();
 
-   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, IOseeBranch destinationBranch, Collection<ITransaction> commitTransactionIds) throws OseeCoreException;
+   boolean workingBranchCommittedToDestinationBranchParentPriorToDestinationBranchCreation(IAtsTeamWorkflow teamWf, BranchId destinationBranch, Collection<ITransaction> commitTransactionIds) throws OseeCoreException;
 
-   IOseeBranch getParentBranch(IOseeBranch branch);
+   BranchId getParentBranch(BranchId branch);
 
-   ITransaction getBaseTransaction(IOseeBranch branch);
+   ITransaction getBaseTransaction(BranchId branch);
 
    String getBranchName(IAtsTeamWorkflow teamWf);
 

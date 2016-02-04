@@ -46,24 +46,24 @@ public class OseeDslSegmentParserTest {
 
    @Test(expected = OseeArgumentException.class)
    public void testGetStartTagNullCheck1() throws OseeCoreException {
-      parser.getStartTag(null);
+      parser.getStartTag(null, null);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testGetStartTagNullCheck2() throws OseeCoreException {
       IBasicArtifact<?> artifact = new DefaultBasicArtifact(45, "abc", "name");
-      parser.getStartTag(artifact);
+      parser.getStartTag(artifact, null);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testGetEndTagNullCheck1() throws OseeCoreException {
-      parser.getEndTag(null);
+      parser.getEndTag(null, null);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testGetEndTagNullCheck2() throws OseeCoreException {
       IBasicArtifact<?> artifact = new DefaultBasicArtifact(45, "abc", "name");
-      parser.getEndTag(artifact);
+      parser.getEndTag(artifact, null);
    }
 
    @Test
@@ -76,12 +76,12 @@ public class OseeDslSegmentParserTest {
 
       IBasicArtifact<?> artifact = new MockArtifact(artifactGuid, artifactName, branch, CoreArtifactTypes.Artifact, 45);
 
-      String actual = parser.getStartTag(artifact);
+      String actual = parser.getStartTag(artifact, branch);
       String expected = String.format("//@start_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid,
          branchName, artifactName);
       Assert.assertEquals(expected, actual);
 
-      actual = parser.getEndTag(artifact);
+      actual = parser.getEndTag(artifact, branch);
       expected = String.format("//@end_artifact branch/%d/artifact/%s/ (%s:%s)", branchUuid, artifactGuid, branchName,
          artifactName);
       Assert.assertEquals(expected, actual);

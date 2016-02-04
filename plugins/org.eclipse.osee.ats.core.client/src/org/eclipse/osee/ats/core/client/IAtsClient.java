@@ -59,7 +59,7 @@ import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -174,7 +174,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IArtifactMembersCache<SprintArtifact> getSprintItemsCache();
 
-   Artifact checkArtifactFromId(long uuid, IOseeBranch atsBranch);
+   Artifact checkArtifactFromId(long uuid, BranchId atsBranch);
 
    @Override
    IAtsStoreService getStoreService();

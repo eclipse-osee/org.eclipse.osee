@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 /**
  * @author Jeff C. Phillips
  */
-public class MockArtifact extends NamedIdentity<String>implements IBasicArtifact<Object> {
+public class MockArtifact extends NamedIdentity<String> implements IBasicArtifact<Object> {
 
    private final Branch branch;
    private final ArtifactType artifactType;

@@ -12,7 +12,7 @@ package org.eclipse.osee.orcs.transaction;
 
 import java.util.Collection;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -24,7 +24,7 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
  */
 public interface TransactionFactory {
 
-   TransactionBuilder createTransaction(IOseeBranch branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
+   TransactionBuilder createTransaction(BranchId branch, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 
    TransactionBuilder createTransaction(Long branchId, ArtifactReadable userArtifact, String comment) throws OseeCoreException;
 

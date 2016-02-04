@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -32,34 +32,34 @@ import org.eclipse.swt.widgets.Control;
  */
 public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog {
 
-   private Collection<? extends IOseeBranch> selectable;
+   private Collection<? extends BranchId> selectable;
 
-   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable) {
+   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends BranchId> selectable) {
       this(title, message, selectable, new ArrayTreeContentProvider(), new BranchLabelProvider());
    }
 
-   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable, ILabelProvider labelProvider) {
+   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends BranchId> selectable, ILabelProvider labelProvider) {
       this(title, message, selectable, new ArrayTreeContentProvider(), labelProvider);
    }
 
-   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends IOseeBranch> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
+   public FilteredCheckboxBranchDialog(String title, String message, Collection<? extends BranchId> selectable, ITreeContentProvider contentProvider, ILabelProvider labelProvider) {
       super(title, message, contentProvider, labelProvider, new BranchNameSorter());
       this.selectable = selectable;
    }
 
-   public FilteredCheckboxBranchDialog(String title, Collection<? extends IOseeBranch> selectable) {
+   public FilteredCheckboxBranchDialog(String title, Collection<? extends BranchId> selectable) {
       this(title, title, selectable, new BranchLabelProvider());
    }
 
    @SuppressWarnings("unchecked")
    @Override
-   public Collection<IOseeBranch> getChecked() {
+   public Collection<BranchId> getChecked() {
       if (super.getTreeViewer() == null) {
          return Collections.emptyList();
       }
-      Set<IOseeBranch> checked = new HashSet<>();
+      Set<BranchId> checked = new HashSet<>();
       for (Object obj : getResult()) {
-         checked.add((IOseeBranch) obj);
+         checked.add((BranchId) obj);
       }
       return checked;
    }
@@ -80,11 +80,11 @@ public class FilteredCheckboxBranchDialog extends FilteredCheckboxTreeDialog {
       return super.isComplete();
    }
 
-   public Collection<? extends IOseeBranch> getSelectable() {
+   public Collection<? extends BranchId> getSelectable() {
       return selectable;
    }
 
-   public void setSelectable(Collection<IOseeBranch> selectable) {
+   public void setSelectable(Collection<BranchId> selectable) {
       this.selectable = selectable;
    }
 

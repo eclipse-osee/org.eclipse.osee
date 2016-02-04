@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -52,7 +52,7 @@ public class AttributeTypeManager {
       return getCacheService().getBranchCache();
    }
 
-   public static Collection<IAttributeType> getValidAttributeTypes(IOseeBranch branchToken) throws OseeCoreException {
+   public static Collection<IAttributeType> getValidAttributeTypes(BranchId branchToken) throws OseeCoreException {
       Branch branch = getBranchCache().get(branchToken);
       Set<IAttributeType> attributeTypes = new HashSet<>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {

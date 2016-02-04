@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.AbstractOseeField;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,21 +25,21 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<IOseeBranch, Collection<AttributeType>>> {
+public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<BranchId, Collection<AttributeType>>> {
 
-   private final Map<IOseeBranch, Collection<AttributeType>> validityMap;
+   private final Map<BranchId, Collection<AttributeType>> validityMap;
 
-   public ArtifactTypeAttributesField(Map<IOseeBranch, Collection<AttributeType>> validityMap) {
+   public ArtifactTypeAttributesField(Map<BranchId, Collection<AttributeType>> validityMap) {
       super();
       this.validityMap = validityMap;
    }
 
    @Override
-   public Map<IOseeBranch, Collection<AttributeType>> get() {
-      return new HashMap<IOseeBranch, Collection<AttributeType>>(validityMap);
+   public Map<BranchId, Collection<AttributeType>> get() {
+      return new HashMap<BranchId, Collection<AttributeType>>(validityMap);
    }
 
-   public void put(IOseeBranch branch, Collection<AttributeType> attributes) {
+   public void put(BranchId branch, Collection<AttributeType> attributes) {
       Collection<AttributeType> current = validityMap.get(branch);
       validityMap.put(branch, attributes);
       if (Compare.isDifferent(current, attributes)) {
@@ -48,12 +48,12 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<IOs
    }
 
    @Override
-   public void set(Map<IOseeBranch, Collection<AttributeType>> attributeTypeMap) throws OseeCoreException {
+   public void set(Map<BranchId, Collection<AttributeType>> attributeTypeMap) throws OseeCoreException {
       Conditions.checkNotNull(attributeTypeMap, "attribute type map input");
       boolean isDifferent = Compare.isDifferent(get(), attributeTypeMap);
       if (isDifferent) {
          validityMap.clear();
-         for (Entry<IOseeBranch, Collection<AttributeType>> entry : attributeTypeMap.entrySet()) {
+         for (Entry<BranchId, Collection<AttributeType>> entry : attributeTypeMap.entrySet()) {
             // Ensure we are using a hash set - don't use putAll
             set(entry.getKey(), entry.getValue());
          }
@@ -61,7 +61,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<IOs
       isDirty |= isDifferent;
    }
 
-   private void set(IOseeBranch branch, Collection<AttributeType> attributeTypes) throws OseeCoreException {
+   private void set(BranchId branch, Collection<AttributeType> attributeTypes) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(attributeTypes, "attribute types list");
 

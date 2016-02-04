@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -39,7 +39,7 @@ public interface ITransactionDataAccessor {
     * @param transactionType transaction type to load, can be {@link TransactionVersion#HEAD} or
     * {@link TransactionVersion#BASE}
     */
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, IOseeBranch branch, TransactionVersion transactionType) throws OseeCoreException;
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, BranchId branch, TransactionVersion transactionType) throws OseeCoreException;
 
    public void load(TransactionCache transactionCache) throws OseeCoreException;
 

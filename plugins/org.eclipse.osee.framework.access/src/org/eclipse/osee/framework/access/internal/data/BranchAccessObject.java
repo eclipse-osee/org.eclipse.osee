@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 
@@ -67,7 +66,7 @@ public class BranchAccessObject extends AccessObject {
       return branchAccessObject;
    }
 
-   public static BranchAccessObject getBranchAccessObjectFromCache(IOseeBranch branch) throws OseeCoreException {
+   public static BranchAccessObject getBranchAccessObjectFromCache(BranchId branch) throws OseeCoreException {
       return cache.get(branch.getUuid());
    }
 

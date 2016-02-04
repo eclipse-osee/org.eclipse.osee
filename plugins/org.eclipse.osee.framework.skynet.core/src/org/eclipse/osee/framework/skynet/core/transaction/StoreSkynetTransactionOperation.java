@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -57,14 +57,14 @@ public final class StoreSkynetTransactionOperation extends AbstractDbTxOperation
    private final HashCollection<String, Object[]> dataItemInserts = new HashCollection<>();
    private final Map<Integer, String> dataInsertOrder = new HashMap<>();
 
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final TransactionRecord transactionRecord;
    private final Collection<BaseTransactionData> txDatas;
    private final Collection<Artifact> artifactReferences;
 
    private boolean executedWithException;
 
-   public StoreSkynetTransactionOperation(String name, IOseeBranch branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
+   public StoreSkynetTransactionOperation(String name, BranchId branch, TransactionRecord transactionRecord, Collection<BaseTransactionData> txDatas, Collection<Artifact> artifactReferences) {
       super(ConnectionHandler.getJdbcClient(), name, Activator.PLUGIN_ID);
       this.branch = branch;
       this.transactionRecord = transactionRecord;

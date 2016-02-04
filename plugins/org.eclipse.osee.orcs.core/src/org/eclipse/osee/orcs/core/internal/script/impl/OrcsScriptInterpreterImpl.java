@@ -22,7 +22,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -486,7 +486,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsBranchChildOfClause(OsBranchChildOfClause object) {
          Long id = resolver.resolveSingle(Long.class, object.getId());
-         IOseeBranch branch = asBranch(id);
+         BranchId branch = asBranch(id);
          getBranchQuery().andIsChildOf(branch);
          return null;
       }
@@ -494,7 +494,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       @Override
       public Void caseOsBranchParentOfClause(OsBranchParentOfClause object) {
          Long id = resolver.resolveSingle(Long.class, object.getId());
-         IOseeBranch branch = asBranch(id);
+         BranchId branch = asBranch(id);
          getBranchQuery().andIsAncestorOf(branch);
          return null;
       }
@@ -700,7 +700,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
       }
 
       ////////////////////////////// Functions;
-      private IOseeBranch asBranch(Long typeId) {
+      private BranchId asBranch(Long typeId) {
          return TokenFactory.createBranch(typeId);
       }
 

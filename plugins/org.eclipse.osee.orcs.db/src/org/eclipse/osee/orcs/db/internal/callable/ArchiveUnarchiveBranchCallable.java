@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -29,10 +29,10 @@ public class ArchiveUnarchiveBranchCallable extends AbstractDatastoreTxCallable<
    private static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
    private static final String UPDATE_BRANCH = "UPDATE osee_branch SET archived = ? WHERE branch_id = ?";
 
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final ArchiveOperation op;
 
-   public ArchiveUnarchiveBranchCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, IOseeBranch branch, ArchiveOperation op) {
+   public ArchiveUnarchiveBranchCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, BranchId branch, ArchiveOperation op) {
       super(logger, session, jdbcClient);
       this.branch = branch;
       this.op = op;

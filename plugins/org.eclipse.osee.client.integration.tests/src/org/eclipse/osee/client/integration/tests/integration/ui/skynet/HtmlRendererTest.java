@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -57,7 +57,7 @@ public class HtmlRendererTest {
    private final static String LEGACY_ID = "ABC-123,ABC-234";
    private final static String PARAGRAPH_NUMBER = "1.2.3.4";
 
-   private IOseeBranch rootBranch;
+   private BranchId rootBranch;
 
    private List<Artifact> theArtifacts = null;
 

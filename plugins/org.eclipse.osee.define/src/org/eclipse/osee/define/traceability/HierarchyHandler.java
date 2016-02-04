@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,7 +34,7 @@ public final class HierarchyHandler {
    private static final Matcher subsystemMatcher = Pattern.compile("(\\w*)\\.ss").matcher("");
    private final Map<String, Artifact> folderNameToArtifact = new HashMap<>(50);
    private final SkynetTransaction transaction;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private Artifact root;
 
    public HierarchyHandler(SkynetTransaction transaction) {

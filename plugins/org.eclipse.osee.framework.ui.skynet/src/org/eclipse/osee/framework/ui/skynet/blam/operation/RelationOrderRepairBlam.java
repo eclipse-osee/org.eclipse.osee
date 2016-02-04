@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -66,7 +66,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
          return;
       }
       recurse = variableMap.getBoolean("Recurse Over Hierarchy");
-      IOseeBranch branch = getBranch(inputArtifacts);
+      BranchId branch = getBranch(inputArtifacts);
       transaction = TransactionManager.createTransaction(branch, getName());
       for (Artifact art : inputArtifacts) {
          resetRelationOrder(art);
@@ -74,7 +74,7 @@ public class RelationOrderRepairBlam extends AbstractBlam {
       transaction.execute();
    }
 
-   private IOseeBranch getBranch(List<Artifact> arts) throws OseeArgumentException {
+   private BranchId getBranch(List<Artifact> arts) throws OseeArgumentException {
       Artifact firstArt = arts.get(0);
       for (Artifact art : arts) {
          if (!firstArt.isOnSameBranch(art)) {

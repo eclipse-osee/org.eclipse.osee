@@ -15,8 +15,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.util.OseeDslSegmentParser;
 import org.eclipse.osee.framework.core.dsl.ui.integration.AbstractDslRenderer;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -61,11 +61,11 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
          data = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.UriGeneralStringData, "");
       } else {
          StringBuilder builder = new StringBuilder();
-         builder.append(parser.getStartTag(artifact));
+         builder.append(parser.getStartTag(artifact, artifact.getBranchToken()));
          builder.append("\n");
          builder.append(artifact.getSoleAttributeValueAsString(CoreAttributeTypes.GeneralStringData, ""));
          builder.append("\n");
-         builder.append(parser.getEndTag(artifact));
+         builder.append(parser.getEndTag(artifact, artifact.getBranchToken()));
          data = builder.toString();
       }
 
@@ -77,7 +77,7 @@ public final class OseeDslRenderer extends AbstractDslRenderer {
    }
 
    @Override
-   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, IOseeBranch branch, PresentationType presentationType) {
+   protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       IOperation op;
       Artifact artifact = artifacts.iterator().next();
       if (artifact.isOfType(CoreArtifactTypes.OseeTypeDefinition)) {

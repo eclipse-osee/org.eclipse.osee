@@ -23,7 +23,7 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -119,7 +119,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.WORKING);
          }
 
-         Set<IOseeBranch> branchesToReturn = new HashSet<>();
+         Set<BranchId> branchesToReturn = new HashSet<>();
          if (showOnlyWorkingBranches) {
             branchesToReturn.addAll(BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchType.WORKING));
          }
@@ -131,7 +131,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
                BranchFilter filter =
                   new BranchFilter(branchState, branchTypes.toArray(new BranchType[branchTypes.size()]));
 
-               for (IOseeBranch branch : BranchManager.getBranches(filter)) {
+               for (BranchId branch : BranchManager.getBranches(filter)) {
                   if (BranchManager.isParentSystemRoot(branch)) {
                      branchesToReturn.add(branch);
                   }
@@ -153,7 +153,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       return null;
    }
 
-   private Collection<Object> getTransactions(IOseeBranch branch) throws OseeCoreException {
+   private Collection<Object> getTransactions(BranchId branch) throws OseeCoreException {
       if (!showTransactions) {
          return Collections.emptyList();
       }

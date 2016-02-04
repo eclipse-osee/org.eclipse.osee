@@ -1,7 +1,7 @@
 package org.eclipse.osee.orcs.core.internal.search;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -42,11 +42,11 @@ public class BranchCriteriaFactory {
       return new CriteriaBranchName(value, isPattern);
    }
 
-   public Criteria createBranchChildOfCriteria(IOseeBranch parent) {
+   public Criteria createBranchChildOfCriteria(BranchId parent) {
       return new CriteriaBranchChildOf(parent);
    }
 
-   public Criteria createBranchAncestorOfCriteria(IOseeBranch child) {
+   public Criteria createBranchAncestorOfCriteria(BranchId child) {
       return new CriteriaBranchAncestorOf(child);
    }
 

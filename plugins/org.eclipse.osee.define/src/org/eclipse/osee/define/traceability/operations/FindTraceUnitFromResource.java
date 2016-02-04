@@ -26,7 +26,7 @@ import org.eclipse.osee.define.traceability.ITraceUnitResourceLocator;
 import org.eclipse.osee.define.traceability.ResourceIdentifier;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -95,7 +95,7 @@ public final class FindTraceUnitFromResource {
       }
    }
 
-   public static void search(IOseeBranch branch, IResource... resources) {
+   public static void search(BranchId branch, IResource... resources) {
       HashCollection<IArtifactType, ResourceIdentifier> typeAndIds = toIdentifiers(resources);
       if (!typeAndIds.isEmpty()) {
          Set<Artifact> artifacts = new HashSet<>();

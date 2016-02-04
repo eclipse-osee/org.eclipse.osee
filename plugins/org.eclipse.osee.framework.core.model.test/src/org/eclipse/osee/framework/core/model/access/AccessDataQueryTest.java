@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -28,14 +29,14 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link AccessDataQuery}
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class AccessDataQueryTest {
 
    @Test
    public void testBranch() throws OseeCoreException {
-      IOseeBranch branchToCheck = CoreBranches.SYSTEM_ROOT;
+      BranchId branchToCheck = CoreBranches.SYSTEM_ROOT;
 
       TestObject testObject = getTestData();
       AccessData data = testObject.getAccessData();
@@ -130,11 +131,11 @@ public class AccessDataQueryTest {
    @Test
    public void testBranchMatchesAll() throws OseeCoreException {
       AccessData data = new AccessData();
-      IOseeBranch common = CoreBranches.COMMON;
-      IOseeBranch branch = CoreBranches.SYSTEM_ROOT;
+      BranchId common = CoreBranches.COMMON;
+      BranchId branch = CoreBranches.SYSTEM_ROOT;
 
-      data.add(common, new AccessDetail<IOseeBranch>(common, PermissionEnum.READ, new Scope()));
-      data.add(branch, new AccessDetail<IOseeBranch>(branch, PermissionEnum.WRITE, new Scope()));
+      data.add(common, new AccessDetail<BranchId>(common, PermissionEnum.READ, new Scope()));
+      data.add(branch, new AccessDetail<BranchId>(branch, PermissionEnum.WRITE, new Scope()));
 
       AccessDataQuery query = new AccessDataQuery(data);
 
@@ -185,7 +186,7 @@ public class AccessDataQueryTest {
       IBasicArtifact<?> artifactToCheck = new MockArtifact(GUID.create(), "Hello", branchToCheck, artifactType, 12);
       AccessData data = new AccessData();
 
-      data.add(branchToCheck, new AccessDetail<IOseeBranch>(branchToCheck, PermissionEnum.WRITE, new Scope()));
+      data.add(branchToCheck, new AccessDetail<BranchId>(branchToCheck, PermissionEnum.WRITE, new Scope()));
       data.add(artifactToCheck,
          new AccessDetail<IBasicArtifact<?>>(artifactToCheck, PermissionEnum.WRITE, new Scope()));
       data.add(artifactToCheck, new AccessDetail<IArtifactType>(artifactType, PermissionEnum.WRITE, new Scope()));

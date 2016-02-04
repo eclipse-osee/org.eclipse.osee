@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.search;
 import java.sql.Timestamp;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -39,9 +39,9 @@ public interface TxQueryBuilder<T> {
 
    T andIs(Collection<TransactionDetailsType> types) throws OseeCoreException;
 
-   T andBranch(IOseeBranch... ids) throws OseeCoreException;
+   T andBranch(BranchId... ids) throws OseeCoreException;
 
-   T andBranch(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
+   T andBranch(Collection<? extends BranchId> ids) throws OseeCoreException;
 
    T andBranchIds(long... id) throws OseeCoreException;
 
@@ -67,7 +67,7 @@ public interface TxQueryBuilder<T> {
 
    T andIsHead(long branchUuid) throws OseeCoreException;
 
-   T andIsHead(IOseeBranch branch) throws OseeCoreException;
+   T andIsHead(BranchId branch) throws OseeCoreException;
 
    T andIsPriorTx(int txId) throws OseeCoreException;
 }

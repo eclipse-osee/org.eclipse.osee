@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 public final class ArtifactKey {
 
    private int artId;
-   private IOseeBranch branch;
+   private BranchId branch;
 
    public ArtifactKey(IArtifact artifact) {
       this.artId = artifact.getArtId();
@@ -33,7 +33,7 @@ public final class ArtifactKey {
       return this;
    }
 
-   public ArtifactKey setKey(int artId, IOseeBranch branch) {
+   public ArtifactKey setKey(int artId, BranchId branch) {
       this.artId = artId;
       this.branch = branch;
       return this;
@@ -69,7 +69,7 @@ public final class ArtifactKey {
       return true;
    }
 
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 }

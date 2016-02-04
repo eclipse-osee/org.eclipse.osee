@@ -14,10 +14,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -46,8 +46,8 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       if (object instanceof Artifact) {
          final Artifact artifact = (Artifact) object;
          proxy = new XArtifactProxy(artifact);
-      } else if (object instanceof IOseeBranch) {
-         IOseeBranch branch = (IOseeBranch) object;
+      } else if (object instanceof BranchId) {
+         BranchId branch = (BranchId) object;
          final Artifact artifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
          proxy = new XArtifactProxy(artifact);
       }
@@ -111,8 +111,13 @@ public final class ArtifactDataProviderImpl implements ArtifactDataProvider {
       }
 
       @Override
-      public IOseeBranch getBranch() {
+      public BranchId getBranch() {
          return self.getBranch();
+      }
+
+      @Override
+      public IOseeBranch getBranchToken() {
+         return self.getBranchToken();
       }
 
       @Override

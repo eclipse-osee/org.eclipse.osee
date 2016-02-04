@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -47,5 +48,5 @@ public interface BranchReadable extends IOseeBranch {
 
    Collection<? extends BranchReadable> getAncestors() throws OseeCoreException;
 
-   boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException;
+   boolean isAncestorOf(BranchId branch) throws OseeCoreException;
 }

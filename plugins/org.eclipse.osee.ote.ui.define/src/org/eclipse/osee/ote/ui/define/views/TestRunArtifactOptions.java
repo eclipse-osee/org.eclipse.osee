@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.define.views;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
@@ -48,7 +48,7 @@ public class TestRunArtifactOptions implements IPropertyStoreBasedControl {
       propertyStore.put(TestRunStorageKey.STORAGE_ENABLED, this.panel.isBranchSelectEnabled());
       propertyStore.put(TestRunStorageKey.BRANCH_IDS, this.panel.getBranchIds());
 
-      IOseeBranch branch = this.panel.getSelectedBranch();
+      BranchId branch = this.panel.getSelectedBranch();
       long branchUuid = -1;
       if (branch != null) {
          branchUuid = branch.getUuid();

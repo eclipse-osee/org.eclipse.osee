@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -46,7 +46,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      IOseeBranch branch = null;
+      BranchId branch = null;
       if (element instanceof ICommitConfigItem) {
          ICommitConfigItem configArt = (ICommitConfigItem) element;
          branch = AtsClientService.get().getBranchService().getBranch(configArt);
@@ -155,7 +155,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       }
    }
 
-   private String handleCommitDateColumn(IOseeBranch branch) throws OseeCoreException {
+   private String handleCommitDateColumn(BranchId branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
          (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
             commitXManager.getXCommitViewer().getTeamArt(), branch);
@@ -166,7 +166,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "Not Committed";
    }
 
-   private String handleCommitCommentColumn(IOseeBranch branch) throws OseeCoreException {
+   private String handleCommitCommentColumn(BranchId branch) throws OseeCoreException {
       TransactionRecord transactionRecord =
          (TransactionRecord) AtsClientService.get().getBranchService().getCommitTransactionRecord(
             commitXManager.getXCommitViewer().getTeamArt(), branch);
@@ -200,7 +200,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String handleActionColumn(IOseeBranch branch) throws OseeCoreException {
+   private String handleActionColumn(BranchId branch) throws OseeCoreException {
       CommitStatus commitStatus = AtsClientService.get().getBranchService().getCommitStatus(
          commitXManager.getXCommitViewer().getTeamArt(), branch);
       if (commitStatus == CommitStatus.Rebaseline_In_Progress) {

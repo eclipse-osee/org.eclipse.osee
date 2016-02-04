@@ -15,6 +15,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -103,7 +104,7 @@ public class BranchCallableQueryFactory {
       };
    }
 
-   private abstract class BranchBuilder<T extends IOseeBranch> extends LoadDataHandlerAdapter {
+   private abstract class BranchBuilder<T extends BranchId> extends LoadDataHandlerAdapter {
 
       private Map<Long, T> branchMap;
       private List<T> results;

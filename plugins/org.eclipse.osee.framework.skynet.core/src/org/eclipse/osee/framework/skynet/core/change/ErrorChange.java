@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.change;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.revision.LoadChangeType;
 
 /**
@@ -22,7 +22,7 @@ public final class ErrorChange extends Change {
    private final String errorMessage;
    private final String name;
 
-   public ErrorChange(IOseeBranch branch, int artId, String exception) {
+   public ErrorChange(BranchId branch, int artId, String exception) {
       super(branch, 0, artId, null, null, false, null, null);
       this.errorMessage = String.format("%s %s", ERROR_STRING, exception);
       this.name = String.format("%s ArtID: %s BranchUuid: %s - %s", ERROR_STRING, getArtId(),

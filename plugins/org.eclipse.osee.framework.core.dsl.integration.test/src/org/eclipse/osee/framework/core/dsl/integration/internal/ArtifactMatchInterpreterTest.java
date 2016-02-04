@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.dsl.integration.internal;
 
 import java.util.Collection;
 import java.util.Iterator;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -260,7 +261,12 @@ public class ArtifactMatchInterpreterTest {
       return new ArtifactProxy() {
 
          @Override
-         public IOseeBranch getBranch() {
+         public BranchId getBranch() {
+            return getBranchToken();
+         }
+
+         @Override
+         public IOseeBranch getBranchToken() {
             return TokenFactory.createBranch(branchGuid, branchName);
          }
 

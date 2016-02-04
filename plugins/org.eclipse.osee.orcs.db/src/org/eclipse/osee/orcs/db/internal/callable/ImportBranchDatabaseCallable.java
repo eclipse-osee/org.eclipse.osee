@@ -20,7 +20,7 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -70,7 +70,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private final SavePointManager savePointManager;
 
    private final URI exchangeFile;
-   private final List<IOseeBranch> selectedBranches;
+   private final List<? extends BranchId> selectedBranches;
    private final PropertyStore options;
 
    private ExchangeTransformer exchangeTransformer;
@@ -81,7 +81,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
    private ExchangeDataProcessor exchangeDataProcessor;
    private long[] branchesToImport;
 
-   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<IOseeBranch> selectedBranches, PropertyStore options) {
+   public ImportBranchDatabaseCallable(Log logger, OrcsSession session, JdbcClient jdbcClient, SystemPreferences preferences, IResourceManager resourceManager, IdentityLocator identityService, OrcsTypes orcsTypes, URI exchangeFile, List<? extends BranchId> selectedBranches, PropertyStore options) {
       super(logger, session, jdbcClient);
       this.preferences = preferences;
       this.resourceManager = resourceManager;
@@ -117,7 +117,7 @@ public class ImportBranchDatabaseCallable extends AbstractDatastoreCallable<URI>
 
          branchesToImport = new long[selectedBranches.size()];
          int index = 0;
-         for (IOseeBranch branch : selectedBranches) {
+         for (BranchId branch : selectedBranches) {
             branchesToImport[index++] = branch.getUuid();
          }
 

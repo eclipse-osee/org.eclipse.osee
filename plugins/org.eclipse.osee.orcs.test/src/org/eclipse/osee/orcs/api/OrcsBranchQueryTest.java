@@ -13,8 +13,8 @@ package org.eclipse.osee.orcs.api;
 import static org.eclipse.osee.framework.core.enums.BranchState.CREATED;
 import static org.eclipse.osee.framework.core.enums.BranchState.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.BranchType.BASELINE;
-import static org.eclipse.osee.framework.core.enums.BranchType.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
@@ -22,6 +22,7 @@ import static org.eclipse.osee.orcs.OrcsIntegrationRule.integrationRule;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import java.util.Iterator;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -60,8 +61,6 @@ public class OrcsBranchQueryTest {
 
    private QueryFactory factory;
 
-   private static IOseeBranch SYS_ROOT = CoreBranches.SYSTEM_ROOT;
-
    @Before
    public void setup() {
       factory = orcsApi.getQueryFactory();
@@ -83,7 +82,7 @@ public class OrcsBranchQueryTest {
       BranchReadable branch5 = iterator.next();
 
       // actual, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(branch1, SYS_ROOT, SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
+      assertBranch(branch1, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
       assertBranch(branch2, SAW_Bld_1, BASELINE, MODIFIED, false, 1, 15, 3, -1);
       assertBranch(branch3, CIS_Bld_1, BASELINE, MODIFIED, false, 1, 17, 3, -1);
       assertBranch(branch4, SAW_Bld_2, BASELINE, CREATED, false, 3, 23, 22, 9);
@@ -93,7 +92,7 @@ public class OrcsBranchQueryTest {
    @Test
    public void testGetByType() throws OseeCoreException {
       BranchQuery query = factory.branchQuery();
-      query.andIsOfType(SYSTEM_ROOT);
+      query.andIsOfType(BranchType.SYSTEM_ROOT);
 
       assertEquals(1, query.getCount());
       assertEquals(CoreBranches.SYSTEM_ROOT, query.getResults().getExactlyOne());
@@ -178,7 +177,7 @@ public class OrcsBranchQueryTest {
       assertEquals(1, query.getCount());
 
       query = factory.branchQuery();
-      query.andIsChildOf(SYS_ROOT);
+      query.andIsChildOf(SYSTEM_ROOT);
 
       ResultSet<BranchReadable> results = query.getResults();
       assertEquals(4, results.size());
@@ -209,7 +208,7 @@ public class OrcsBranchQueryTest {
       BranchReadable branch1 = iterator.next();
       BranchReadable branch2 = iterator.next();
 
-      assertEquals(SYS_ROOT, branch1);
+      assertEquals(SYSTEM_ROOT, branch1);
       assertEquals(SAW_Bld_1, branch2);
 
       query = factory.branchQuery();
@@ -222,7 +221,7 @@ public class OrcsBranchQueryTest {
       iterator = results.iterator();
       branch1 = iterator.next();
 
-      assertEquals(SYS_ROOT, branch1);
+      assertEquals(SYSTEM_ROOT, branch1);
    }
 
    @Test
@@ -277,7 +276,7 @@ public class OrcsBranchQueryTest {
    public void testGetWithMultipleConditions1() throws Exception {
       IOseeBranch child = TokenFactory.createBranch(testName.getMethodName());
 
-      IOseeBranch actual = createBranch(SAW_Bld_2, child);
+      BranchId actual = createBranch(SAW_Bld_2, child);
 
       BranchQuery query = factory.branchQuery();
       query.andIsOfType(BranchType.WORKING).andIsChildOf(SAW_Bld_1).andStateIs(BranchState.CREATED);

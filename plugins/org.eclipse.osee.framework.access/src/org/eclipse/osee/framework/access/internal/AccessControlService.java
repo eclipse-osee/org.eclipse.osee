@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessObject;
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -400,7 +400,7 @@ public class AccessControlService implements IAccessControlService {
       return service;
    }
 
-   public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, IOseeBranch branch) throws OseeCoreException {
+   public PermissionEnum getBranchPermission(IBasicArtifact<?> subject, BranchId branch) throws OseeCoreException {
       PermissionEnum userPermission = null;
       AccessObject accessObject = BranchAccessObject.getBranchAccessObjectFromCache(branch);
 
@@ -767,7 +767,7 @@ public class AccessControlService implements IAccessControlService {
    }
 
    @Override
-   public void removePermissions(IOseeBranch branch) throws OseeCoreException {
+   public void removePermissions(BranchId branch) throws OseeCoreException {
       Branch theBranch = getBranchCache().get(branch);
       getJdbcClient().runPreparedUpdate(DELETE_ARTIFACT_ACL_FROM_BRANCH, theBranch.getUuid());
       getJdbcClient().runPreparedUpdate(DELETE_BRANCH_ACL_FROM_BRANCH, theBranch.getUuid());

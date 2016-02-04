@@ -42,7 +42,7 @@ import java.util.List;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -91,7 +91,7 @@ public class TransactionBuilderImplTest {
    @Mock private QueryBuilder builder;
    @Mock private QueryModule query;
 
-   @Mock private IOseeBranch branch;
+   @Mock private BranchId branch;
 
    @Mock private ArtifactReadable expectedAuthor;
    @Mock private ArtifactReadable expectedDestination;
@@ -107,7 +107,7 @@ public class TransactionBuilderImplTest {
    @Mock private TxData txData;
    // @formatter:on
 
-   private final IOseeBranch expectedBranch = CoreBranches.COMMON;
+   private final BranchId expectedBranch = CoreBranches.COMMON;
    private final Long BRANCH_ID = expectedBranch.getUuid();
    private TransactionBuilderImpl factory;
    private String guid;

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -51,7 +51,7 @@ public class RelationCache {
       return key.setKey(artifact);
    }
 
-   private ArtifactKey getKey(int artId, IOseeBranch branchUuid) {
+   private ArtifactKey getKey(int artId, BranchId branchUuid) {
       ArtifactKey key = THREAD_SHARED_KEY.get();
       return key.setKey(artId, branchUuid);
    }
@@ -116,12 +116,12 @@ public class RelationCache {
       return linksFound;
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchUuid, IRelationType relationType, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, int artId, BranchId branchUuid, IRelationType relationType, RelationMatcher matcher) {
       List<RelationLink> sourceLink = relationsByType.get(getKey(artId, branchUuid), relationType);
       RelationFilterUtil.filter(sourceLink, linksFound, matcher);
    }
 
-   private void findRelations(Collection<RelationLink> linksFound, int artId, IOseeBranch branchUuid, RelationMatcher matcher) {
+   private void findRelations(Collection<RelationLink> linksFound, int artId, BranchId branchUuid, RelationMatcher matcher) {
       ArtifactKey artifactKey = getKey(artId, branchUuid);
       findRelations(linksFound, artifactKey, matcher);
    }
@@ -138,7 +138,7 @@ public class RelationCache {
    /**
     * Find RelationById Related On ArtA or ArtB
     */
-   public RelationLink getByRelIdOnArtifact(int relLinkId, int aArtifactId, int bArtifactId, IOseeBranch branch) {
+   public RelationLink getByRelIdOnArtifact(int relLinkId, int aArtifactId, int bArtifactId, BranchId branch) {
       RelationMatcher relIdMatcher = RelationFilterUtil.createFindFirstRelationLinkIdMatcher(relLinkId);
       List<RelationLink> links = new ArrayList<>();
       findRelations(links, aArtifactId, branch, relIdMatcher);
@@ -152,7 +152,7 @@ public class RelationCache {
       Set<RelationLink> itemsFound = new HashSet<>();
 
       final int artifactId = artifact.getArtId();
-      final IOseeBranch branchUuid = artifact.getBranch();
+      final BranchId branchUuid = artifact.getBranch();
       RelationMatcher artIdMatcher = new RelationMatcher() {
 
          @Override
@@ -184,7 +184,7 @@ public class RelationCache {
       return size != 0 ? relations.iterator().next() : null;
    }
 
-   public RelationLink getLoadedRelation(IRelationType relationType, final int aArtifactId, final int bArtifactId, IOseeBranch branch) {
+   public RelationLink getLoadedRelation(IRelationType relationType, final int aArtifactId, final int bArtifactId, BranchId branch) {
       RelationMatcher bArtIdMatcher =
          RelationFilterUtil.createFindFirstRelatedArtIdMatcher(bArtifactId, RelationSide.SIDE_B);
       List<RelationLink> links = new ArrayList<>();

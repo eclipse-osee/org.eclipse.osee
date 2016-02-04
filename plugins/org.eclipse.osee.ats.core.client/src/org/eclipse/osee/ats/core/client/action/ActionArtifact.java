@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class ActionArtifact extends Artifact implements IAtsAction {
 
-   public ActionArtifact(String guid, IOseeBranch branch, IArtifactType artifactType) throws OseeCoreException {
+   public ActionArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
    }
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecord extends BaseIdentity<Integer>implements ITransaction, IAdaptable {
+public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
    private static final int NON_EXISTING_BRANCH = -1;
    private final TransactionDetailsType txType;
 
@@ -57,6 +58,10 @@ public class TransactionRecord extends BaseIdentity<Integer>implements ITransact
    @Override
    public Long getBranchId() {
       return branchUuid;
+   }
+
+   public final IOseeBranch getBranchToken() {
+      return getFullBranch();
    }
 
    public Branch getFullBranch() {

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.access;
 
 import org.eclipse.osee.framework.access.internal.data.ArtifactAccessObject;
 import org.eclipse.osee.framework.access.internal.data.BranchAccessObject;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -29,8 +29,8 @@ public abstract class AccessObject {
    public static AccessObject getAccessObject(Object object) throws OseeCoreException {
       if (object instanceof Artifact) {
          return ArtifactAccessObject.getArtifactAccessObject((Artifact) object);
-      } else if (object instanceof IOseeBranch) {
-         return BranchAccessObject.getBranchAccessObject((IOseeBranch) object);
+      } else if (object instanceof BranchId) {
+         return BranchAccessObject.getBranchAccessObject((BranchId) object);
       } else {
          return null;
       }
@@ -39,8 +39,8 @@ public abstract class AccessObject {
    public static AccessObject getAccessObjectFromCache(Object object) throws OseeCoreException {
       if (object instanceof Artifact) {
          return ArtifactAccessObject.getArtifactAccessObjectFromCache((Artifact) object);
-      } else if (object instanceof IOseeBranch) {
-         return BranchAccessObject.getBranchAccessObjectFromCache((IOseeBranch) object);
+      } else if (object instanceof BranchId) {
+         return BranchAccessObject.getBranchAccessObjectFromCache((BranchId) object);
       } else {
          return null;
       }

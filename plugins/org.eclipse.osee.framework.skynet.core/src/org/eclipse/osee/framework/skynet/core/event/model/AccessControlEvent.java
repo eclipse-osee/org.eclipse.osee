@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 
 public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, HasEventType<AccessControlEventType> {
@@ -72,7 +72,7 @@ public class AccessControlEvent implements FrameworkEvent, HasNetworkSender, Has
       this.eventType = eventType;
    }
 
-   public boolean isForBranch(IOseeBranch branch) {
+   public boolean isForBranch(BranchId branch) {
       for (DefaultBasicGuidArtifact guidArt : getArtifacts()) {
          if (guidArt.isOnBranch(branch)) {
             return true;

@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.util.AtsEditor;
 import org.eclipse.osee.ats.world.IWorldEditorConsumer;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -25,7 +25,7 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
    private String enteredIds = "";
    private List<String> ids = new ArrayList<>();
    private boolean includeArtIds;
-   private IOseeBranch branch;
+   private BranchId branch;
    private String name;
    private WorldEditor worldEditor;
    private AtsEditor atsEditor;
@@ -68,7 +68,7 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
       return ids;
    }
 
-   public IOseeBranch getBranchForIncludeArtIds() {
+   public BranchId getBranchForIncludeArtIds() {
       return branch;
    }
 
@@ -98,7 +98,7 @@ public class MultipleIdSearchData implements IWorldEditorConsumer {
       this.includeArtIds = includeArtIds;
    }
 
-   public void setBranch(IOseeBranch branch) {
+   public void setBranch(BranchId branch) {
       this.branch = branch;
    }
 

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -38,7 +38,7 @@ public class RequirementReorderOperation extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("artifacts");
-      IOseeBranch branch = artifacts.get(0).getBranch();
+      BranchId branch = artifacts.get(0).getBranch();
       transaction = TransactionManager.createTransaction(branch, "Fix Requirement Ordering BLAM");
       for (Artifact input : artifacts) {
          reorderChildren(input);

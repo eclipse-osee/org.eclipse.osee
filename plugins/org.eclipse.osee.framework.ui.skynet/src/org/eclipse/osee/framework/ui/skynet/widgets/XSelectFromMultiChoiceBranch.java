@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -25,7 +26,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Roberto E. Escobar
  */
-public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<IOseeBranch> {
+public class XSelectFromMultiChoiceBranch extends XSelectFromDialog<BranchId> {
 
    public XSelectFromMultiChoiceBranch(String displayLabel) {
       super(displayLabel);

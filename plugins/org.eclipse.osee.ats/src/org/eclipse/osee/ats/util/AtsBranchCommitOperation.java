@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItemManager;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -43,11 +43,11 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 public class AtsBranchCommitOperation extends AbstractOperation {
    private final boolean commitPopup;
    private final boolean overrideStateValidation;
-   private final IOseeBranch destinationBranch;
+   private final BranchId destinationBranch;
    private final boolean archiveWorkingBranch;
    private final TeamWorkFlowArtifact teamArt;
 
-   public AtsBranchCommitOperation(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, IOseeBranch destinationBranch, boolean archiveWorkingBranch) {
+   public AtsBranchCommitOperation(TeamWorkFlowArtifact teamArt, boolean commitPopup, boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch) {
       super("Commit Branch", Activator.PLUGIN_ID);
       this.teamArt = teamArt;
       this.commitPopup = commitPopup;
@@ -58,7 +58,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      IOseeBranch workflowWorkingBranch = teamArt.getWorkingBranch();
+      BranchId workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
          AtsClientService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {

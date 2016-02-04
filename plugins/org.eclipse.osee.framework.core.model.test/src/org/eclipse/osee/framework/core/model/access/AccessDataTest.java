@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -43,8 +43,8 @@ import org.junit.Test;
  */
 public class AccessDataTest {
 
-   private IOseeBranch branchToCheck1;
-   private IOseeBranch branchToCheck2;
+   private BranchId branchToCheck1;
+   private BranchId branchToCheck2;
    private IArtifactType artifactType;
    private IAttributeType attributeType;
    private IAttributeType wordAttributeType;

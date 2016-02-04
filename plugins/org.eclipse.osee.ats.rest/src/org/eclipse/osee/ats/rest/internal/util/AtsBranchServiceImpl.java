@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -74,13 +75,13 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchType getBranchType(IOseeBranch branch) {
+   public BranchType getBranchType(BranchId branch) {
       BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
       return fullBranch.getBranchType();
    }
 
    @Override
-   public BranchState getBranchState(IOseeBranch branch) {
+   public BranchState getBranchState(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
       return fullBranch.getBranchState();
@@ -90,7 +91,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * Return true if merge branch exists in DB (whether archived or not)
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, IOseeBranch destinationBranch) throws OseeCoreException {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId destinationBranch) throws OseeCoreException {
       return isMergeBranchExists(teamWf, getWorkingBranch(teamWf), destinationBranch);
    }
 
@@ -99,7 +100,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
     * have
     */
    @Override
-   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, IOseeBranch workingBranch, IOseeBranch destinationBranch) throws OseeCoreException {
+   public boolean isMergeBranchExists(IAtsTeamWorkflow teamWf, BranchId workingBranch, BranchId destinationBranch) throws OseeCoreException {
       if (workingBranch == null) {
          return false;
       }
@@ -120,7 +121,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public BranchArchivedState getArchiveState(IOseeBranch branch) {
+   public BranchArchivedState getArchiveState(BranchId branch) {
       BranchReadable fullBranch = getBranchByUuid(branch.getUuid());
       return fullBranch.getArchiveState();
    }
@@ -149,14 +150,14 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public IOseeBranch getParentBranch(IOseeBranch branch) {
+   public BranchId getParentBranch(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
       BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
       return getBranchByUuid(fullBranch.getParentBranch());
    }
 
    @Override
-   public ITransaction getBaseTransaction(IOseeBranch branch) {
+   public ITransaction getBaseTransaction(BranchId branch) {
       TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
       return txQuery.andBranch(branch).andIs(TransactionDetailsType.Baselined).getResults().getExactlyOne();
    }

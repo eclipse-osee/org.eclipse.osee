@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -219,8 +219,8 @@ public final class Artifacts {
       return sb.toString();
    }
 
-   public static HashCollection<IOseeBranch, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
-      HashCollection<IOseeBranch, Artifact> branchMap = new HashCollection<>();
+   public static HashCollection<BranchId, Artifact> getBranchArtifactMap(Collection<Artifact> artifacts) {
+      HashCollection<BranchId, Artifact> branchMap = new HashCollection<>();
       for (Artifact artifact : artifacts) {
          branchMap.put(artifact.getBranch(), artifact);
       }

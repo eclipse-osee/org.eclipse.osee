@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -101,7 +101,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      IOseeBranch atsBranch = AtsUtilCore.getAtsBranch();
+      BranchId atsBranch = AtsUtilCore.getAtsBranch();
       SkynetTransaction transaction = TransactionManager.createTransaction(atsBranch, "Create ATS Folders");
 
       Artifact headingArt = OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactToken.HeadingFolder, atsBranch);

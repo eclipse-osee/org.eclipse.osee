@@ -29,7 +29,7 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandl
 import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -89,11 +89,11 @@ public class ScriptTraceabilityOperation extends TraceabilityProviderOperation {
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
+   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
       this(new RequirementData(branch), file, writeOutResults, traceHandlers, isGitBased);
    }
 
-   public ScriptTraceabilityOperation(File file, IOseeBranch branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
+   public ScriptTraceabilityOperation(File file, BranchId branch, boolean writeOutResults, Collection<? extends IArtifactType> types, boolean withInheritance, Collection<TraceHandler> traceHandlers, boolean isGitBased) throws IOException {
       this(new RequirementData(branch, types, withInheritance), file, writeOutResults, traceHandlers, isGitBased);
    }
 

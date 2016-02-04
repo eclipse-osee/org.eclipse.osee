@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -62,7 +62,7 @@ public final class ArtifactLoader {
       return new LinkedList<Artifact>(artifacts);
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted, TransactionRecord transactionId) throws OseeCoreException {
       List<Pair<Integer, Long>> toLoad = new LinkedList<>();
       Long branchUuid = branch.getUuid();
       for (Integer artId : new HashSet<Integer>(artIds)) {
@@ -72,7 +72,7 @@ public final class ArtifactLoader {
       return artifacts;
    }
 
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, IOseeBranch branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, BranchId branch, LoadLevel loadLevel, LoadType reload, DeletionFlag allowDeleted) throws OseeCoreException {
       return loadArtifacts(artIds, branch, loadLevel, reload, allowDeleted, null);
    }
 
@@ -305,7 +305,7 @@ public final class ArtifactLoader {
     */
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
-      IOseeBranch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
+      BranchId branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
       int transactionId = Artifact.TRANSACTION_SENTINEL;
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");

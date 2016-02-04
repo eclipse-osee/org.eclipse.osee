@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.core.client.artifact;
 
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -25,7 +25,7 @@ public abstract class CollectorArtifact extends AbstractWorkflowArtifact impleme
 
    private final IRelationTypeSide membersRelationType;
 
-   public CollectorArtifact(String guid, IOseeBranch branch, IArtifactType artifactType, IRelationTypeSide membersRelationType) throws OseeCoreException {
+   public CollectorArtifact(String guid, BranchId branch, IArtifactType artifactType, IRelationTypeSide membersRelationType) throws OseeCoreException {
       super(guid, branch, artifactType);
       this.membersRelationType = membersRelationType;
    }

@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -481,11 +481,11 @@ public class BranchQuerySqlContextFactoryImplTest {
       assertEquals(4, iterator.next());
    }
 
-   private static Criteria ancestorOf(IOseeBranch child) {
+   private static Criteria ancestorOf(BranchId child) {
       return new CriteriaBranchAncestorOf(child);
    }
 
-   private static Criteria childOf(IOseeBranch parent) {
+   private static Criteria childOf(BranchId parent) {
       return new CriteriaBranchChildOf(parent);
    }
 

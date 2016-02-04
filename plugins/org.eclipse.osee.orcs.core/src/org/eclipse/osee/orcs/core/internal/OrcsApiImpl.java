@@ -18,7 +18,7 @@ import java.util.concurrent.FutureTask;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -121,19 +121,19 @@ public class OrcsApiImpl implements OrcsApi {
 
       BranchHierarchyProvider hierarchyProvider = new BranchHierarchyProvider() {
 
-         private final ThreadLocal<Iterable<? extends IOseeBranch>> cache =
-            new ThreadLocal<Iterable<? extends IOseeBranch>>();
+         private final ThreadLocal<Iterable<? extends BranchId>> cache =
+            new ThreadLocal<Iterable<? extends BranchId>>();
 
          @Override
-         public Iterable<? extends IOseeBranch> getParentHierarchy(IOseeBranch branch) throws OseeCoreException {
-            Iterable<? extends IOseeBranch> toReturn = cache.get();
+         public Iterable<? extends BranchId> getParentHierarchy(BranchId branch) throws OseeCoreException {
+            Iterable<? extends BranchId> toReturn = cache.get();
             if (toReturn == null) {
-               Set<IOseeBranch> branches = Sets.newLinkedHashSet();
+               Set<BranchId> branches = Sets.newLinkedHashSet();
                BranchQuery branchQuery = getQueryFactory().branchQuery();
                branchQuery.andIsAncestorOf(branch);
                branches.add(branch);
 
-               for (IOseeBranch parent : branchQuery.getResults()) {
+               for (BranchId parent : branchQuery.getResults()) {
                   if (!branches.add(parent)) {
                      logger.error("Cycle detected with branch: [%s]", parent);
                      return Collections.emptyList();

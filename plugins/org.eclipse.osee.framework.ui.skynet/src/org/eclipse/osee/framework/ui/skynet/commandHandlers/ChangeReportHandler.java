@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -37,7 +37,7 @@ public class ChangeReportHandler extends CommandHandler {
 
             if (selectedObject instanceof TransactionRecord) {
                enabled = ((TransactionRecord) selectedObject).getTxType() != TransactionDetailsType.Baselined;
-            } else if (selectedObject instanceof IOseeBranch) {
+            } else if (selectedObject instanceof BranchId) {
                enabled = true;
             }
          } else if (selection.size() == 2) {
@@ -72,8 +72,8 @@ public class ChangeReportHandler extends CommandHandler {
                Object selectedObject = selection.getFirstElement();
                if (selectedObject instanceof TransactionRecord) {
                   ChangeUiUtil.open((TransactionRecord) selectedObject);
-               } else if (selectedObject instanceof IOseeBranch) {
-                  ChangeUiUtil.open((IOseeBranch) selectedObject);
+               } else if (selectedObject instanceof BranchId) {
+                  ChangeUiUtil.open((BranchId) selectedObject);
                }
             }
          } catch (Exception ex) {

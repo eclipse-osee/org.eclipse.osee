@@ -29,6 +29,7 @@ import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -130,7 +131,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
 
    public static void explore(Collection<Artifact> artifacts, IWorkbenchPage page) {
       Artifact sampleArtifact = null;
-      IOseeBranch inputBranch = null;
+      BranchId inputBranch = null;
       if (artifacts != null && !artifacts.isEmpty()) {
          sampleArtifact = artifacts.iterator().next();
          inputBranch = sampleArtifact.getBranch();
@@ -166,7 +167,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
                @Override
                public void handleEvent(Event event) {
                   try {
-                     IOseeBranch selectedBranch = branchSelect.getData();
+                     BranchId selectedBranch = branchSelect.getData();
                      if (selectedBranch != null) {
                         branch = BranchManager.getBranch(selectedBranch);
                         dragAndDropWorker.updateBranch(selectedBranch);
@@ -277,7 +278,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    /**
     * Reveal an artifact in the viewer and select it.
     */
-   public static void exploreBranch(IOseeBranch branch) {
+   public static void exploreBranch(BranchId branch) {
       if (branch != null) {
          IWorkbenchPage page = AWorkbench.getActivePage();
          ArtifactExplorerUtil.findView(branch, page);

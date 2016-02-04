@@ -47,6 +47,7 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.XAtsProgramComboWidget;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -178,7 +179,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          scriptName.length() - ".java".length());
    }
 
-   private void loadTestRunArtifacts(IOseeBranch scriptsBranch, IProgressMonitor monitor) throws OseeCoreException {
+   private void loadTestRunArtifacts(BranchId scriptsBranch, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Loading Test Run Artifacts");
       Collection<Artifact> testRuns =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
@@ -213,8 +214,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
          return;
       }
 
-      IOseeBranch reportBranch = variableMap.getBranch("Requirements Branch");
-      IOseeBranch resultsBranch = variableMap.getBranch("Test Results Branch");
+      BranchId reportBranch = variableMap.getBranch("Requirements Branch");
+      BranchId resultsBranch = variableMap.getBranch("Test Results Branch");
       versions = variableMap.getCollection(IAtsVersion.class, "Versions");
 
       reqTaskMap = new CompositeKeyHashMap<>();
@@ -511,7 +512,7 @@ public class DetailedTestStatusBlam extends AbstractBlam {
       }
    }
 
-   private HashCollection<String, Artifact> getTestProcedureTraceability(IOseeBranch testProcedureBranch, IProgressMonitor monitor) throws OseeCoreException {
+   private HashCollection<String, Artifact> getTestProcedureTraceability(BranchId testProcedureBranch, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Gathering test procedures");
       HashCollection<String, Artifact> requirementNameToTestProcedures = new HashCollection<>();
       // Map Software Requirements from TestProcedure IOseeBranch to Requirements IOseeBranch

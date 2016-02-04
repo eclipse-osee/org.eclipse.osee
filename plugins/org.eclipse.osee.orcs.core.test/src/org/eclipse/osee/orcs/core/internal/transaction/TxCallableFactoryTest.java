@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -65,7 +65,7 @@ public class TxCallableFactoryTest {
    @Mock private RelationManager relationManager;
    @Mock private TxDataLoader loader;
 
-   @Mock private IOseeBranch branch;
+   @Mock private BranchId branch;
    @Mock private GraphData graph;
    @Mock private TxDataStore txDataStore;
 

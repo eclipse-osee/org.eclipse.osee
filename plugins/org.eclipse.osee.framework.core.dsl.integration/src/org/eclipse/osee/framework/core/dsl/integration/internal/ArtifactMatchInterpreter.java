@@ -114,7 +114,7 @@ public class ArtifactMatchInterpreter {
             input = proxy.getName();
             break;
          case BRANCH_NAME:
-            input = proxy.getBranch().getName();
+            input = proxy.getBranchToken().getName();
             break;
          default:
             throw new OseeArgumentException("Invalid field [%s]", field);

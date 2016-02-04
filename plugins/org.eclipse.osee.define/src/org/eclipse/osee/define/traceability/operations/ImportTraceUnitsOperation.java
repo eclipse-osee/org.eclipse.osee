@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.nebula.widgets.xviewer.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public class ImportTraceUnitsOperation extends AbstractOperation {
-   private final IOseeBranch importToBranch;
+   private final BranchId importToBranch;
    private final boolean isRecursive;
    private final boolean isPersistChanges;
    private final boolean fileWithMultiPaths;
@@ -32,7 +32,7 @@ public class ImportTraceUnitsOperation extends AbstractOperation {
    private final Iterable<URI> sources;
    private final String[] traceTypeIds;
 
-   public ImportTraceUnitsOperation(String jobName, IOseeBranch importToBranch, Iterable<URI> sources, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, boolean addGuidToSourceFile, String... traceHandlerIds) {
+   public ImportTraceUnitsOperation(String jobName, BranchId importToBranch, Iterable<URI> sources, boolean isRecursive, boolean isPersistChanges, boolean fileWithMultiPaths, boolean addGuidToSourceFile, String... traceHandlerIds) {
       super("ImportTraceUnitsOperation", Activator.PLUGIN_ID);
       this.importToBranch = importToBranch;
       this.sources = sources;

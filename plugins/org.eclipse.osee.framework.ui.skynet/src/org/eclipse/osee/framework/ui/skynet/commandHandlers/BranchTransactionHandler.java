@@ -13,8 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers;
 
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -34,7 +33,7 @@ public class BranchTransactionHandler extends CommandHandler {
          if (selection.size() == 1) {
             Object selectedObject = selection.getFirstElement();
 
-            if (selectedObject instanceof Branch) {
+            if (selectedObject instanceof BranchId) {
                enabled = true;
             }
          } else {
@@ -50,7 +49,7 @@ public class BranchTransactionHandler extends CommandHandler {
          try {
             if (selection.size() == 1) {
                Object selectedObject = selection.getFirstElement();
-               ChangeUiUtil.open((IOseeBranch) selectedObject, true);
+               ChangeUiUtil.open((BranchId) selectedObject, true);
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

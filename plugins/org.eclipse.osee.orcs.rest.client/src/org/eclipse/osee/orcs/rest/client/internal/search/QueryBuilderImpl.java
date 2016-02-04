@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -35,12 +35,12 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 public class QueryBuilderImpl implements QueryBuilder {
 
    private final PredicateFactory predicateFactory;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final QueryOptions options;
    private final List<Predicate> predicates;
    private final QueryExecutor executor;
 
-   public QueryBuilderImpl(IOseeBranch branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, QueryExecutor executor) {
+   public QueryBuilderImpl(BranchId branch, List<Predicate> predicates, QueryOptions options, PredicateFactory predicateFactory, QueryExecutor executor) {
       this.branch = branch;
       this.predicates = predicates;
       this.options = options;

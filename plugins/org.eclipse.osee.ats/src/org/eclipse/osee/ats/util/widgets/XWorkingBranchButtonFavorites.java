@@ -15,7 +15,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -62,7 +62,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
          }
-         IOseeBranch branch = getTeamArt().getWorkingBranch();
+         BranchId branch = getTeamArt().getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;

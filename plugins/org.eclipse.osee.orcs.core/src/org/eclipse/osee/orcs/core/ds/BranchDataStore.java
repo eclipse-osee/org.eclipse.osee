@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.net.URI;
 import java.util.List;
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -41,22 +41,22 @@ public interface BranchDataStore {
 
    Callable<List<ChangeItem>> compareBranch(OrcsSession session, TransactionReadable sourceTx, TransactionReadable destinationTx);
 
-   Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<IOseeBranch> branches, PropertyStore options, String exportName);
+   Callable<URI> exportBranch(OrcsSession session, OrcsTypes orcsTypes, List<? extends BranchId> branches, PropertyStore options, String exportName);
 
-   Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<IOseeBranch> branches, PropertyStore options);
+   Callable<URI> importBranch(OrcsSession session, OrcsTypes orcsTypes, URI fileToImport, List<? extends BranchId> branches, PropertyStore options);
 
    Callable<URI> checkBranchExchangeIntegrity(OrcsSession session, URI fileToCheck);
 
-   Callable<Void> changeBranchState(OrcsSession session, IOseeBranch branch, BranchState branchState);
+   Callable<Void> changeBranchState(OrcsSession session, BranchId branch, BranchState branchState);
 
-   Callable<Void> changeBranchType(OrcsSession session, IOseeBranch branch, BranchType branchType);
+   Callable<Void> changeBranchType(OrcsSession session, BranchId branch, BranchType branchType);
 
-   Callable<Void> changeBranchName(OrcsSession session, IOseeBranch branch, String branchName);
+   Callable<Void> changeBranchName(OrcsSession session, BranchId branch, String branchName);
 
-   Callable<Void> changeBranchAssociatedArtId(OrcsSession session, IOseeBranch branch, int assocArtId);
+   Callable<Void> changeBranchAssociatedArtId(OrcsSession session, BranchId branch, int assocArtId);
 
-   Callable<Void> archiveUnArchiveBranch(OrcsSession session, IOseeBranch branch, ArchiveOperation op);
+   Callable<Void> archiveUnArchiveBranch(OrcsSession session, BranchId branch, ArchiveOperation op);
 
-   Callable<Void> deleteBranch(OrcsSession session, IOseeBranch branch);
+   Callable<Void> deleteBranch(OrcsSession session, BranchId branch);
 
 }

@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -69,7 +69,7 @@ public class PublishSystemLevelSSDD extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generating System Level SSDD", 100);
 
-      IOseeBranch branch = variableMap.getBranch("Branch");
+      BranchId branch = variableMap.getBranch("Branch");
 
       init();
 

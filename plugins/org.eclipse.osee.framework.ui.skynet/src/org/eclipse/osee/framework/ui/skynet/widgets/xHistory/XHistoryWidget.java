@@ -24,7 +24,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -161,7 +161,7 @@ public class XHistoryWidget extends GenericXWidget {
             if (dialog.open() == 0) {
                String guid = dialog.getEntry();
                Conditions.checkNotNullOrEmpty(guid, "GUID");
-               IOseeBranch branch = dialog.getBranch();
+               BranchId branch = dialog.getBranch();
                Conditions.checkNotNull(branch, "Branch");
                Artifact art = ArtifactQuery.getArtifactFromId(guid, branch, DeletionFlag.EXCLUDE_DELETED);
                if (art != null) {

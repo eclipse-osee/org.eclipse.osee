@@ -34,7 +34,7 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -69,7 +69,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private TestUnitData testUnitData;
    private final boolean addGuidToSourceFile;
 
-   private final IOseeBranch importIntoBranch;
+   private final BranchId importIntoBranch;
    private SkynetTransaction transaction;
    private HierarchyHandler handler;
 
@@ -77,7 +77,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private final HashCollection<String, String> unknownRelationError;
    private final Set<String> unRelatedUnits;
 
-   public TraceUnitToArtifactProcessor(IOseeBranch importIntoBranch, boolean addGuidToSourceFile) {
+   public TraceUnitToArtifactProcessor(BranchId importIntoBranch, boolean addGuidToSourceFile) {
       this.importIntoBranch = importIntoBranch;
       this.reportTraceNotFound = new HashCollection<>(false, HashSet.class);
       this.unknownRelationError = new HashCollection<>(false, HashSet.class);

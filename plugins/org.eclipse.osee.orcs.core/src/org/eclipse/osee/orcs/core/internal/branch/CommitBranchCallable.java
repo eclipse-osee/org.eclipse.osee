@@ -11,7 +11,7 @@
 package org.eclipse.osee.orcs.core.internal.branch;
 
 import java.util.concurrent.Callable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -24,11 +24,11 @@ import org.eclipse.osee.orcs.search.QueryFactory;
 public class CommitBranchCallable extends AbstractBranchCallable<TransactionReadable> {
 
    private final ArtifactReadable committer;
-   private final IOseeBranch source;
-   private final IOseeBranch destination;
+   private final BranchId source;
+   private final BranchId destination;
    private final QueryFactory queryFactory;
 
-   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactReadable committer, IOseeBranch source, IOseeBranch destination) {
+   public CommitBranchCallable(Log logger, OrcsSession session, BranchDataStore branchStore, QueryFactory queryFactory, ArtifactReadable committer, BranchId source, BranchId destination) {
       super(logger, session, branchStore);
       this.committer = committer;
       this.source = source;

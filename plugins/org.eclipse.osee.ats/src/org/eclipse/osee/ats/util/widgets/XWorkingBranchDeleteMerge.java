@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -51,7 +51,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
                Branch workingBranch = BranchManager.getBranch(getTeamArt().getWorkingBranch());
                if (isWorkingBranchCommitWithMergeInProgress()) {
                   List<Branch> selectedBranches = new ArrayList<>();
-                  Collection<IOseeBranch> branchesAlreadyCommitted =
+                  Collection<BranchId> branchesAlreadyCommitted =
                      AtsClientService.get().getBranchService().getBranchesCommittedTo(getTeamArt());
                   List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(workingBranch);
 
@@ -69,7 +69,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
                            "Select the Destination branch(es) for which you want to Delete the Merge Branch",
                            destinationMinusAlreadyCommitted);
                      if (dialog.open() == 0) {
-                        for (IOseeBranch branchToken : dialog.getChecked()) {
+                        for (BranchId branchToken : dialog.getChecked()) {
                            selectedBranches.add(BranchManager.getBranch(branchToken));
                         }
                      }
@@ -99,7 +99,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
       try {
          if (isWorkingBranchCommitWithMergeInProgress()) {
             List<MergeBranch> mergeBranches = BranchManager.getMergeBranches(getWorkingBranch());
-            Collection<IOseeBranch> committedBranches =
+            Collection<BranchId> committedBranches =
                AtsClientService.get().getBranchService().getBranchesCommittedTo(getTeamArt());
             List<MergeBranch> remainingMergeBranches = new ArrayList<>();
 

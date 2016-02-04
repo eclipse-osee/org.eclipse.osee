@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
@@ -110,7 +110,7 @@ public final class AtsBranchManager {
       }
    }
 
-   public static void showMergeManager(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) throws OseeCoreException {
+   public static void showMergeManager(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) throws OseeCoreException {
       if (AtsClientService.get().getBranchService().isWorkingBranchInWork(teamArt)) {
          MergeView.openView((Branch) AtsClientService.get().getBranchService().getWorkingBranch(teamArt),
             (Branch) destinationBranch,
@@ -148,7 +148,7 @@ public final class AtsBranchManager {
    public static void deleteWorkingBranch(TeamWorkFlowArtifact teamArt, boolean promptUser) {
       boolean isExecutionAllowed = !promptUser;
       try {
-         IOseeBranch branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
+         BranchId branch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
          if (promptUser) {
             StringBuilder message = new StringBuilder();
             if (BranchManager.hasChanges(branch)) {
@@ -256,13 +256,13 @@ public final class AtsBranchManager {
    /**
     * Grab the change report for the indicated branch
     */
-   public static void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, IOseeBranch destinationBranch) {
+   public static void showChangeReportForBranch(TeamWorkFlowArtifact teamArt, BranchId destinationBranch) {
       try {
          Collection<ITransaction> transactions =
             AtsClientService.get().getBranchService().getTransactionIds(teamArt, false);
          Collection<TransactionRecord> trs = Collections.castAll(transactions);
          for (TransactionRecord transactionId : trs) {
-            if (transactionId.getBranch() == destinationBranch) {
+            if (transactionId.isOnBranch(destinationBranch)) {
                ChangeUiUtil.open(transactionId);
             }
          }
@@ -276,7 +276,7 @@ public final class AtsBranchManager {
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     * used for developmental testing or automation
     */
-   public static IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, IOseeBranch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+   public static IOperation commitWorkingBranch(final TeamWorkFlowArtifact teamArt, final boolean commitPopup, final boolean overrideStateValidation, BranchId destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
       if (AtsClientService.get().getBranchService().isBranchInCommit(teamArt)) {
          throw new OseeCoreException("Branch is currently being committed.");
       }

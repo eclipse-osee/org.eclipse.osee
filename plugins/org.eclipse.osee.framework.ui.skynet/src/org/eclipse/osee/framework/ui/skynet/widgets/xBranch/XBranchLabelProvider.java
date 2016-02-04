@@ -20,7 +20,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -208,9 +208,9 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) {
       if (xCol.equals(BranchXViewerFactory.associatedArtifact)) {
-         if (element instanceof IOseeBranch) {
+         if (element instanceof BranchId) {
             try {
-               Artifact associatedArtifact = BranchManager.getAssociatedArtifact((IOseeBranch) element);
+               Artifact associatedArtifact = BranchManager.getAssociatedArtifact((BranchId) element);
                if (!associatedArtifact.equals(SystemUser.OseeSystem)) {
                   return ArtifactImageManager.getImage(associatedArtifact);
                }

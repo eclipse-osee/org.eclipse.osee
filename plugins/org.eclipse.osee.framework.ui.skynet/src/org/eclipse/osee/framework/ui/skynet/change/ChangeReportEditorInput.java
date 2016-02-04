@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change;
 
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,7 +28,7 @@ import org.eclipse.ui.IPersistableElement;
 public class ChangeReportEditorInput implements IEditorInput, IPersistableElement {
 
    private final ChangeUiData changeData;
-   private IOseeBranch branch;
+   private BranchId branch;
    private boolean transactionTabActive = false;
    private boolean notLoaded = false;
 
@@ -36,7 +36,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       this(changeData, null);
    }
 
-   public ChangeReportEditorInput(ChangeUiData changeData, IOseeBranch branch) {
+   public ChangeReportEditorInput(ChangeUiData changeData, BranchId branch) {
       this.changeData = changeData;
       this.branch = branch;
    }
@@ -122,7 +122,7 @@ public class ChangeReportEditorInput implements IEditorInput, IPersistableElemen
       ChangeReportEditorInputFactory.saveState(memento, this);
    }
 
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

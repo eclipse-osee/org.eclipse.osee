@@ -19,7 +19,7 @@ import java.util.Set;
 import org.eclipse.jface.viewers.AbstractTreeViewer;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -50,9 +50,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    private final TreeViewer treeViewer;
    private final String viewId;
    private boolean isCtrlPressed = false;
-   private IOseeBranch branch;
+   private BranchId branch;
 
-   public GroupExplorerDragAndDrop(TreeViewer treeViewer, String viewId, IOseeBranch branch) {
+   public GroupExplorerDragAndDrop(TreeViewer treeViewer, String viewId, BranchId branch) {
       super(treeViewer.getTree(), viewId);
       this.treeViewer = treeViewer;
       this.viewId = viewId;

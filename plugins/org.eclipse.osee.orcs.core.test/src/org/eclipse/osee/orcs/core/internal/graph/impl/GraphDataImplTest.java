@@ -21,8 +21,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -55,7 +56,6 @@ public class GraphDataImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private Branch branch;
    @Mock private ArtifactFactory artifactFactory;
    @Mock private AttributeFactory attributeFactory;
    @Mock private RelationFactory relationFactory;
@@ -86,6 +86,7 @@ public class GraphDataImplTest {
    @Mock private Relation relation3;
 
    @Mock private OrcsSession session;
+   private final BranchId branch = TokenFactory.createBranch(0L);
 
    // @formatter:on
 
@@ -96,7 +97,7 @@ public class GraphDataImplTest {
    public void setUp() throws Exception {
       MockitoAnnotations.initMocks(this);
 
-      graph = new GraphDataImpl(session, branch.getUuid(), TRANSACTION_ID);
+      graph = new GraphDataImpl(session, branch.getId(), TRANSACTION_ID);
    }
 
    @Test

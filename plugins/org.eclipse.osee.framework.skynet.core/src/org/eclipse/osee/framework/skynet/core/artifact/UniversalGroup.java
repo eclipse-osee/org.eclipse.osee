@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  */
 public class UniversalGroup {
 
-   public static Collection<Artifact> getGroups(IOseeBranch branch) {
+   public static Collection<Artifact> getGroups(BranchId branch) {
       Collection<Artifact> artifacts = null;
       try {
          artifacts = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.UniversalGroup, branch);
@@ -42,7 +42,7 @@ public class UniversalGroup {
       return artifacts;
    }
 
-   public static Collection<Artifact> getGroupsNotRoot(IOseeBranch branch) {
+   public static Collection<Artifact> getGroupsNotRoot(BranchId branch) {
       Collection<Artifact> groups = new HashSet<>();
       for (Artifact group : UniversalGroup.getGroups(branch)) {
          if (!group.getName().equals("Root Artifact")) {
@@ -52,7 +52,7 @@ public class UniversalGroup {
       return groups;
    }
 
-   public static Collection<Artifact> getGroups(String groupName, IOseeBranch branch) {
+   public static Collection<Artifact> getGroups(String groupName, BranchId branch) {
       try {
          return ArtifactQuery.getArtifactListFromTypeAndName(CoreArtifactTypes.UniversalGroup, groupName, branch);
       } catch (OseeCoreException ex) {
@@ -61,7 +61,7 @@ public class UniversalGroup {
       return new ArrayList<Artifact>();
    }
 
-   public static Artifact addGroup(String name, IOseeBranch branch, SkynetTransaction transaction) throws OseeCoreException {
+   public static Artifact addGroup(String name, BranchId branch, SkynetTransaction transaction) throws OseeCoreException {
       if (!getGroups(name, branch).isEmpty()) {
          throw new OseeArgumentException("Group Already Exists");
       }
@@ -76,7 +76,7 @@ public class UniversalGroup {
       return groupArt;
    }
 
-   public static Artifact getTopUniversalGroupArtifact(IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getTopUniversalGroupArtifact(BranchId branch) throws OseeCoreException {
       return ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.UniversalGroupRoot, branch);
    }
 }

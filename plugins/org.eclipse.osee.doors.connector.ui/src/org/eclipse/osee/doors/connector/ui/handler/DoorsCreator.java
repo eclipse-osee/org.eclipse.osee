@@ -8,7 +8,7 @@ package org.eclipse.osee.doors.connector.ui.handler;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -41,7 +41,7 @@ public class DoorsCreator {
     * @param reqName : name of the artifact to be created
     * @param branch on which artifact is created
     */
-   public void createCQRequirement(final String url, final String reqName, final IOseeBranch branch) {
+   public void createCQRequirement(final String url, final String reqName, final BranchId branch) {
 
       Artifact newArtifact = null;
 

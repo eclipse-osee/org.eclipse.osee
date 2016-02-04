@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.Asserts;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -365,7 +366,7 @@ public class BranchStateTest {
          if (workingBranch != null) {
             purgeBranchAndChildren(workingBranch);
          }
-         for (IOseeBranch branch : BranchManager.getBranchesByName(originalBranchName)) {
+         for (BranchId branch : BranchManager.getBranchesByName(originalBranchName)) {
             purgeBranchAndChildren(branch);
          }
          if (toDelete != null && toDelete.length > 0) {
@@ -376,7 +377,7 @@ public class BranchStateTest {
       }
    }
 
-   private void purgeBranchAndChildren(IOseeBranch branch) throws OseeCoreException {
+   private void purgeBranchAndChildren(BranchId branch) throws OseeCoreException {
       for (Branch child : BranchManager.getBranch(branch).getChildBranches(true)) {
          BranchManager.purgeBranch(child);
       }

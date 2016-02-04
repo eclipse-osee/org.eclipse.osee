@@ -23,7 +23,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -116,8 +116,8 @@ public final class ReplaceWithBaselineTest {
    private static enum ChangeItem { NEW, DELETED, MODIFIED, MOVED, INTRODUCED, RELATION_ORDER_ATTR };
    //@formatter:on
 
-   private IOseeBranch workingBranch;
-   private IOseeBranch baselineBranch;
+   private BranchId workingBranch;
+   private BranchId baselineBranch;
 
    private final String testName;
    private final int expectedChangesLeft;
@@ -308,7 +308,7 @@ public final class ReplaceWithBaselineTest {
                      testData.setArtifactId(createNewArtifact(workingBranch, GUID.create()).getArtId());
                      break;
                   case INTRODUCED:
-                     IOseeBranch anotherBranch = BranchManager.createWorkingBranch(workingBranch,
+                     BranchId anotherBranch = BranchManager.createWorkingBranch(workingBranch,
                         "another working branch", UserManager.getUser(SystemUser.OseeSystem));
 
                      Artifact artifactToIntroduce = createNewArtifact(anotherBranch, "introduce artifact");
@@ -438,7 +438,7 @@ public final class ReplaceWithBaselineTest {
 
    }
 
-   private Artifact createNewArtifact(IOseeBranch branch, String name) throws Exception {
+   private Artifact createNewArtifact(BranchId branch, String name) throws Exception {
       Artifact artifact = ArtifactTypeManager.addArtifact(DOC, branch, name);
       artifact.persist(testName + name);
       return artifact;
@@ -459,7 +459,7 @@ public final class ReplaceWithBaselineTest {
       Operations.executeWorkAndCheckStatus(new ReplaceAttributeWithBaselineOperation(attrChanges));
    }
 
-   private List<Change> getBranchChanges(IOseeBranch branch) throws OseeCoreException {
+   private List<Change> getBranchChanges(BranchId branch) throws OseeCoreException {
       List<Change> changes = new ArrayList<>();
       Operations.executeWorkAndCheckStatus(ChangeManager.comparedToParent(branch, changes), MONITOR);
       return changes;

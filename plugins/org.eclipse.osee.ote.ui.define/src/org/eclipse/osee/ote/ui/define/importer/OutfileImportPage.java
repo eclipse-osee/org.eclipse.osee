@@ -29,7 +29,7 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TestRunStorageKey;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -264,7 +264,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
    @Override
    protected boolean validateDestinationGroup() {
       boolean toReturn = super.validateDestinationGroup();
-      IOseeBranch branch = branchSelect.getData();
+      BranchId branch = branchSelect.getData();
       if (branch == null) {
          setMessage(null);
          setErrorMessage("Please select a working branch. Cannot import into a null branch.");
@@ -303,7 +303,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
             branchUuids = new String[0];
          }
 
-         IOseeBranch branch = branchSelect.getData();
+         BranchId branch = branchSelect.getData();
          try {
             if (branch != null) {
                String lastBranchSelected = Long.toString(branch.getUuid());

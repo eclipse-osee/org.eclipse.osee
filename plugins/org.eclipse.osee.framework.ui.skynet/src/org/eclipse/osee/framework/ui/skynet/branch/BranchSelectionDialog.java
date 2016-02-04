@@ -18,6 +18,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -48,18 +49,18 @@ import org.eclipse.swt.widgets.TreeItem;
 public class BranchSelectionDialog extends MessageDialog implements IBranchWidgetMenuListener {
 
    private IOseeBranch selected;
-   private IOseeBranch defaultSelected;
-   private static IOseeBranch lastSelectedBranch;
+   private BranchId defaultSelected;
+   private static BranchId lastSelectedBranch;
    private XBranchWidget branchWidget;
    private boolean allowOnlyWorkingBranches;
-   private final Collection<? extends IOseeBranch> branches;
+   private final Collection<? extends BranchId> branches;
 
    public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
       this(title, null);
       this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
    }
 
-   public BranchSelectionDialog(String title, Collection<? extends IOseeBranch> branches) {
+   public BranchSelectionDialog(String title, Collection<? extends BranchId> branches) {
       super(Displays.getActiveShell(), title, null, null, MessageDialog.NONE, new String[] {"Ok", "Cancel"}, 0);
       allowOnlyWorkingBranches = false;
       selected = null;
@@ -67,7 +68,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
-   public void setDefaultSelection(IOseeBranch branch) {
+   public void setDefaultSelection(BranchId branch) {
       defaultSelected = branch;
    }
 
@@ -85,7 +86,7 @@ public class BranchSelectionDialog extends MessageDialog implements IBranchWidge
       branchWidget.addBranchSelectedListener(new BranchSelectedListener() {
 
          @Override
-         public void onBranchSelected(IOseeBranch branch) {
+         public void onBranchSelected(BranchId branch) {
             getButton(IDialogConstants.OK_ID).setEnabled(true);
             storeSelectedBranch();
          }

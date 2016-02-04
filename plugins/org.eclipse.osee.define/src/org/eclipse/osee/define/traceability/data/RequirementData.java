@@ -20,7 +20,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.TraceabilityExtractor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -38,13 +38,13 @@ public class RequirementData extends BaseTraceDataCache {
    private final Collection<? extends IArtifactType> types;
    private final boolean withInheritance;
 
-   public RequirementData(IOseeBranch branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
+   public RequirementData(BranchId branch, Collection<? extends IArtifactType> types, boolean withInheritance) {
       super("Software Requirements Data", branch);
       this.types = types;
       this.withInheritance = withInheritance;
    }
 
-   public RequirementData(IOseeBranch branch) {
+   public RequirementData(BranchId branch) {
       super("Software Requirements Data", branch);
       types = Collections.singleton(CoreArtifactTypes.AbstractSoftwareRequirement);
       withInheritance = true;

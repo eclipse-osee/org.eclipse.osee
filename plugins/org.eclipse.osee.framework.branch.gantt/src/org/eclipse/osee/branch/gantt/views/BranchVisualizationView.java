@@ -20,7 +20,7 @@ import org.eclipse.nebula.widgets.ganttchart.GanttChart;
 import org.eclipse.nebula.widgets.ganttchart.GanttComposite;
 import org.eclipse.nebula.widgets.ganttchart.GanttEvent;
 import org.eclipse.osee.branch.gantt.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -99,7 +99,7 @@ public class BranchVisualizationView extends ViewPart {
 
    private void storeSelectedBranch() {
       if (xBranchSelectWidget != null && !xBranchSelectWidget.getControl().isDisposed()) {
-         IOseeBranch selectedBranch = xBranchSelectWidget.getData();
+         BranchId selectedBranch = xBranchSelectWidget.getData();
          if (selectedBranch != null) {
             try {
                UserManager.getUser().setSetting(BRANCH_KEY, selectedBranch.getUuid());
@@ -146,7 +146,7 @@ public class BranchVisualizationView extends ViewPart {
       }
    }
 
-   private IOseeBranch getSelectedBranch() {
+   private BranchId getSelectedBranch() {
       return xBranchSelectWidget.getData();
    }
 
@@ -173,7 +173,7 @@ public class BranchVisualizationView extends ViewPart {
       //      ganttChart.getSettings().getInitialZoomLevel()
 
       try {
-         IOseeBranch oseeBranch = getSelectedBranch();
+         BranchId oseeBranch = getSelectedBranch();
          Branch selectedBranch = null;
          if (oseeBranch != null) {
             selectedBranch = BranchManager.getBranch(oseeBranch);

@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -154,13 +153,13 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIsChildOf(IOseeBranch parent) throws OseeCoreException {
+   public T andIsChildOf(BranchId parent) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createBranchChildOfCriteria(parent);
       return addAndCheck(getQueryData(), criteria);
    }
 
    @Override
-   public T andIsAncestorOf(IOseeBranch child) throws OseeCoreException {
+   public T andIsAncestorOf(BranchId child) throws OseeCoreException {
       Criteria criteria = criteriaFactory.createBranchAncestorOfCriteria(child);
       return addAndCheck(getQueryData(), criteria);
    }

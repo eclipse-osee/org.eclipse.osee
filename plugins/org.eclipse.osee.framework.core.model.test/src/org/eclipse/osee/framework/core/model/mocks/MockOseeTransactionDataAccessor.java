@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.mocks;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -61,7 +61,7 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
    }
 
    @Override
-   public TransactionRecord loadTransactionRecord(TransactionCache cache, IOseeBranch branch, TransactionVersion transactionType) throws OseeCoreException {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, BranchId branch, TransactionVersion transactionType) throws OseeCoreException {
       return null;
    }
 

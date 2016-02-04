@@ -24,7 +24,7 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -69,12 +69,12 @@ import org.eclipse.ui.progress.UIJob;
 public class BranchTransactionPage extends FormPage implements IBranchWidgetMenuListener, ITransactionEventListener, ITransactionRecordSelectionProvider {
 
    private XBranchWidget xBranchWidget;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final AtomicBoolean refreshNeeded = new AtomicBoolean(false);
    private final AtomicBoolean processEvents = new AtomicBoolean(false);
    private BranchTransactionUiData branchTransactionData;
 
-   public BranchTransactionPage(ChangeReportEditor editor, IOseeBranch branch) {
+   public BranchTransactionPage(ChangeReportEditor editor, BranchId branch) {
       super(editor, "transaction", "Transactions");
       this.branch = branch;
    }

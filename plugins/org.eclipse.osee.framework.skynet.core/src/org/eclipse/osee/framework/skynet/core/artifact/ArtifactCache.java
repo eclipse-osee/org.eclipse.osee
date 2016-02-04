@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -59,7 +59,7 @@ public final class ArtifactCache {
     *
     * @param branch of which artifacts (all) will be de-cache'ed.
     */
-   public static void deCache(IOseeBranch branch) {
+   public static void deCache(BranchId branch) {
       for (Artifact artifact : ACTIVE_CACHE.getAll()) {
          if (artifact.isOnBranch(branch)) {
             ACTIVE_CACHE.deCache(artifact);
@@ -166,7 +166,7 @@ public final class ArtifactCache {
       return arts;
    }
 
-   public static Artifact getActive(Integer artId, IOseeBranch branch) {
+   public static Artifact getActive(Integer artId, BranchId branch) {
       return getActive(artId, branch.getUuid());
    }
 
@@ -178,7 +178,7 @@ public final class ArtifactCache {
       return ACTIVE_CACHE.getByGuid(artGuid, uuid);
    }
 
-   public static Artifact getActive(String artGuid, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getActive(String artGuid, BranchId branch) throws OseeCoreException {
       return getActive(artGuid, branch.getUuid());
    }
 
@@ -187,7 +187,7 @@ public final class ArtifactCache {
     *
     * @throws OseeStateException if more than one artifact stored.
     */
-   public static Artifact getByTextId(String key, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getByTextId(String key, BranchId branch) throws OseeCoreException {
       Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
       // decache if deleted
       if (artifact != null && artifact.isDeleted()) {
@@ -196,13 +196,13 @@ public final class ArtifactCache {
       return artifact;
    }
 
-   public static Artifact deCacheByTextId(String key, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact deCacheByTextId(String key, BranchId branch) throws OseeCoreException {
       Artifact artifact = ACTIVE_CACHE.getByText(key, BranchManager.getBranch(branch));
       ACTIVE_CACHE.deCacheByText(key, branch, artifact);
       return artifact;
    }
 
-   public static Collection<Artifact> getListByTextId(String key, IOseeBranch branch) throws OseeCoreException {
+   public static Collection<Artifact> getListByTextId(String key, BranchId branch) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<>();
       Collection<Artifact> cached = ACTIVE_CACHE.getListByText(key, BranchManager.getBranch(branch));
       // decache any deleted artifacts

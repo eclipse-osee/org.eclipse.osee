@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,12 +38,12 @@ import org.eclipse.osee.ote.define.utilities.OutfileParserExtensionManager;
  * @author Roberto E. Escobar
  */
 public class OutfileToArtifactOperation {
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final List<URI> filesToImport;
    private final List<Artifact> results;
    private final List<URI> filesWithErrors;
 
-   public OutfileToArtifactOperation(IOseeBranch branch, URI... filesToImport) {
+   public OutfileToArtifactOperation(BranchId branch, URI... filesToImport) {
       this.branch = branch;
       this.filesToImport = Arrays.asList(filesToImport);
       this.results = new ArrayList<>();

@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -48,7 +48,7 @@ public class ArtifactExplorerUtil {
       // Utility Class
    }
 
-   protected static ArtifactExplorer findView(IOseeBranch inputBranch, IWorkbenchPage page) {
+   protected static ArtifactExplorer findView(BranchId inputBranch, IWorkbenchPage page) {
       for (IViewReference view : page.getViewReferences()) {
          if (view.getId().equals(ArtifactExplorer.VIEW_ID)) {
             if (view.getView(false) != null && inputBranch.equals(

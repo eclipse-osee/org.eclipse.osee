@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -71,7 +70,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       return relationReorderRecords;
    }
 
-   public boolean isForBranch(IOseeBranch branch) {
+   public boolean isForBranch(BranchId branch) {
       return getBranch().equals(branch.getUuid());
    }
 

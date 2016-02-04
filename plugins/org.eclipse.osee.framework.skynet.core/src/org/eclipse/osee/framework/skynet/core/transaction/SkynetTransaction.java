@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -63,7 +63,7 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Ryan D. Brooks
  * @author Jeff C. Phillips
  */
-public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
+public final class SkynetTransaction extends TransactionOperation<BranchId> {
    private static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
    private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
 
@@ -81,7 +81,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
    private int transactionId = -1;
    private TransactionRecord transaction;
 
-   protected SkynetTransaction(TxMonitor<IOseeBranch> txMonitor, IOseeBranch branch, String comment) {
+   protected SkynetTransaction(TxMonitor<BranchId> txMonitor, BranchId branch, String comment) {
       super(txMonitor, branch, comment);
       this.comment = comment;
    }
@@ -109,7 +109,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
       if (UserManager.duringMainUserCreation()) {
          return;
       }
-      IOseeBranch txBranch = getBranch();
+      BranchId txBranch = getBranch();
       if (!artifact.isOnBranch(txBranch)) {
          String msg = String.format("The artifact [%s] is on branch [%s] but this transaction is for branch [%s]",
             artifact.getGuid(), artifact.getBranch(), txBranch);
@@ -142,7 +142,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
       }
    }
 
-   private boolean isBranchWritable(IOseeBranch branch) throws OseeCoreException {
+   private boolean isBranchWritable(BranchId branch) throws OseeCoreException {
       boolean toReturn = true;
       if (!UserManager.duringMainUserCreation()) {
          toReturn = getAccess().hasBranchPermission(branch, PermissionEnum.WRITE,
@@ -156,7 +156,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
          return;
       }
       checkBranch(link);
-      IOseeBranch txBranch = getBranch();
+      BranchId txBranch = getBranch();
       if (!link.isOnBranch(txBranch)) {
          String msg = String.format("The relation link [%s] is on branch [%s] but this transaction is for branch [%s]",
             link.getId(), link.getBranch(), txBranch);
@@ -199,7 +199,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
       alreadyProcessedArtifacts.clear();
    }
 
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return getKey();
    }
 
@@ -315,7 +315,7 @@ public final class SkynetTransaction extends TransactionOperation<IOseeBranch> {
          ModificationType modificationType;
          RelationEventType relationEventType; // needed until persist undeleted modtypes and modified == rational only change
 
-         IOseeBranch branch = link.getBranch();
+         BranchId branch = link.getBranch();
          Artifact aArtifact = ArtifactQuery.checkArtifactFromId(link.getAArtifactId(), branch, INCLUDE_DELETED);
          Artifact bArtifact = ArtifactQuery.checkArtifactFromId(link.getBArtifactId(), branch, INCLUDE_DELETED);
 

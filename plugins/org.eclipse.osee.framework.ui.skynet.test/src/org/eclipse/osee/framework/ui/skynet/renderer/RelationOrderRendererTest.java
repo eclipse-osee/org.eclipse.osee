@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -218,7 +218,7 @@ public class RelationOrderRendererTest {
       }
 
       @Override
-      public List<String> resolveAsOseeLinks(IOseeBranch branch, List<String> artifactGuids) {
+      public List<String> resolveAsOseeLinks(BranchId branch, List<String> artifactGuids) {
          List<String> values = new ArrayList<>();
          for (String guid : artifactGuids) {
             values.add(guid);

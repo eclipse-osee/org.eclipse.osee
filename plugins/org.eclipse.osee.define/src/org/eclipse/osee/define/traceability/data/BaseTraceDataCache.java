@@ -16,7 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.define.internal.Activator;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -25,10 +25,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public abstract class BaseTraceDataCache {
 
    private boolean isInitialized;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final String traceType;
 
-   public BaseTraceDataCache(String traceType, IOseeBranch branch) {
+   public BaseTraceDataCache(String traceType, BranchId branch) {
       isInitialized = false;
       this.traceType = traceType;
       this.branch = branch;
@@ -38,7 +38,7 @@ public abstract class BaseTraceDataCache {
       return isInitialized;
    }
 
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

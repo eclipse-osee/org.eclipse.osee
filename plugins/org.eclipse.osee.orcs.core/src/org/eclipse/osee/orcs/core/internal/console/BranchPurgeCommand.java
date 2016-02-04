@@ -22,6 +22,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -111,7 +112,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          unArchived, unDeleted, baseline, runPurge);
    }
 
-   private static class PurgeBranchCallable extends CancellableCallable<List<IOseeBranch>> {
+   private static class PurgeBranchCallable extends CancellableCallable<List<BranchId>> {
 
       private final Console console;
       private final OrcsBranch orcsBranch;
@@ -211,26 +212,27 @@ public final class BranchPurgeCommand implements ConsoleCommand {
       }
 
       @Override
-      public List<IOseeBranch> call() throws Exception {
+      public List<BranchId> call() throws Exception {
          Collection<BranchReadable> branchesToPurge = getBranchesToPurge();
 
          Conditions.checkNotNull(branchesToPurge, "branchesToPurge");
          if (branchesToPurge.isEmpty()) {
             console.writeln("no branches matched specified criteria");
          } else {
-            List<BranchReadable> orderedBranches = BranchUtil.orderByParentReadable(queryFactory, branchesToPurge);
+            List<? extends IOseeBranch> orderedBranches =
+               BranchUtil.orderByParentReadable(queryFactory, branchesToPurge);
 
             for (IOseeBranch toPurge : orderedBranches) {
                console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());
             }
 
-            List<IOseeBranch> purged = new LinkedList<>();
+            List<BranchId> purged = new LinkedList<>();
             if (runPurge) {
                int size = orderedBranches.size();
                int count = 0;
-               for (IOseeBranch aBranch : orderedBranches) {
+               for (BranchId aBranch : orderedBranches) {
                   console.writeln("Purging Branch [%s of %s]: [%s]", ++count, size, aBranch);
-                  Callable<List<IOseeBranch>> callable = orcsBranch.purgeBranch(aBranch, false);
+                  Callable<List<BranchId>> callable = orcsBranch.purgeBranch(aBranch, false);
                   purged.addAll(callable.call());
                }
             }

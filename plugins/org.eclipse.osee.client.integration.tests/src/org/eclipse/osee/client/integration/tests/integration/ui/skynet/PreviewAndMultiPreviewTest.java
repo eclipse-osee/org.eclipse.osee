@@ -18,7 +18,7 @@ import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -187,7 +187,7 @@ public class PreviewAndMultiPreviewTest {
       RendererManager.openInJob(Arrays.asList(art), PresentationType.PREVIEW);
    }
 
-   private Artifact createArtifact(IArtifactType type, IOseeBranch branch, String name) throws OseeCoreException {
+   private Artifact createArtifact(IArtifactType type, BranchId branch, String name) throws OseeCoreException {
       Artifact artifact = ArtifactTypeManager.addArtifact(type, branch, name);
       Assert.assertNotNull(artifact);
       testArtifacts.add(artifact);

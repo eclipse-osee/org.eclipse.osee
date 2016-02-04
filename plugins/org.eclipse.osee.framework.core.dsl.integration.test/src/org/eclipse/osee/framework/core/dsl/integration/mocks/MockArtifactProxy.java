@@ -12,13 +12,14 @@ package org.eclipse.osee.framework.core.dsl.integration.mocks;
 
 import java.util.Collection;
 import java.util.Collections;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.integration.ArtifactDataProvider.ArtifactProxy;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.RelationType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 
 /**
  * @author Roberto E. Escobar
@@ -79,18 +80,18 @@ public class MockArtifactProxy implements ArtifactProxy {
    }
 
    @Override
-   public IOseeBranch getBranch() {
-      return artifactObject.getBranch();
+   public BranchId getBranch() {
+      return getBranchToken();
+   }
+
+   @Override
+   public IOseeBranch getBranchToken() {
+      return TokenFactory.createBranch(getBranchId(), getClass().getName());
    }
 
    @Override
    public String getName() {
       return artifactObject.getName();
-   }
-
-   @Override
-   public boolean matches(Identity... identities) {
-      return artifactObject.matches(identities);
    }
 
    @Override

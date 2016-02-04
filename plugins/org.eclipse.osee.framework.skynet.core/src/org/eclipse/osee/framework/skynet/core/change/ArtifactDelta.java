@@ -66,7 +66,7 @@ public class ArtifactDelta {
    }
 
    public IOseeBranch getBranch() {
-      return getStartArtifact() != null ? getStartArtifact().getBranch() : getEndArtifact().getBranch();
+      return getStartArtifact() != null ? getStartArtifact().getBranchToken() : getEndArtifact().getBranchToken();
    }
 
    @Override

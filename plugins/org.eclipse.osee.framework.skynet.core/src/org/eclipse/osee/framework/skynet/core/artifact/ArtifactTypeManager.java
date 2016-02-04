@@ -24,7 +24,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -66,7 +66,7 @@ public class ArtifactTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, IOseeBranch branchToken) throws OseeCoreException {
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(IAttributeType attributeType, BranchId branchToken) throws OseeCoreException {
       Branch branch = getCacheService().getBranchCache().get(branchToken);
       List<ArtifactType> artifactTypes = new ArrayList<>();
       for (ArtifactType artifactType : getAllTypes()) {
@@ -77,12 +77,12 @@ public class ArtifactTypeManager {
       return artifactTypes;
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(IOseeBranch branch) throws OseeCoreException {
+   public static Collection<ArtifactType> getValidArtifactTypes(BranchId branch) throws OseeCoreException {
       // TODO Filter artifact types by branch
       return getAllTypes();
    }
 
-   public static Collection<ArtifactType> getConcreteArtifactTypes(IOseeBranch branch) throws OseeCoreException {
+   public static Collection<ArtifactType> getConcreteArtifactTypes(BranchId branch) throws OseeCoreException {
       Collection<ArtifactType> types = getAllTypes();
       Iterator<ArtifactType> iterator = types.iterator();
       while (iterator.hasNext()) {
@@ -147,29 +147,29 @@ public class ArtifactTypeManager {
    /**
     * Get a new instance of type artifactTypeName
     */
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null);
    }
 
    /**
     * Get a new instance of type artifactTypeName and set it's name.
     */
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name) throws OseeCoreException {
+   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name) throws OseeCoreException {
       Artifact artifact = addArtifact(artifactType, branch);
       artifact.setName(name);
       return artifact;
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid) throws OseeCoreException {
+   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid) throws OseeCoreException {
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid);
    }
 
-   public static Artifact addArtifact(IArtifactType artifactType, IOseeBranch branch, String name, String guid, long uuid) {
+   public static Artifact addArtifact(IArtifactType artifactType, BranchId branch, String name, String guid, long uuid) {
       Conditions.checkExpressionFailOnTrue(uuid <= 0L, "Invalid Uuid %d. Must be > 0", uuid);
       return getFactory(artifactType).makeNewArtifact(branch, artifactType, name, guid, uuid);
    }
 
-   public static Artifact addArtifact(IArtifactToken artifactToken, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact addArtifact(IArtifactToken artifactToken, BranchId branch) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(artifactToken.getUuid() <= 0L, "Invalid Uuid %d. Must be > 0",
          artifactToken.getUuid());
       return getFactory(artifactToken.getArtifactType()).makeNewArtifact(branch, artifactToken.getArtifactType(),
@@ -201,7 +201,7 @@ public class ArtifactTypeManager {
       for (IArtifactType purgeArtifactType : purgeArtifactTypes) {
          // find all artifact of this type on all branches and make a unique list for type change (since it is not by branch)
          Set<Artifact> artifacts = new LinkedHashSet<>();
-         for (IOseeBranch branch : BranchManager.getBranches(new BranchFilter())) {
+         for (BranchId branch : BranchManager.getBranches(new BranchFilter())) {
             artifacts.addAll(ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SoftwareRequirement, branch,
                DeletionFlag.INCLUDE_DELETED));
          }
@@ -211,7 +211,7 @@ public class ArtifactTypeManager {
                artifactMap.put(artifact.getArtId(), artifact);
             }
             if (newArtifactType == null) {
-               HashSet<IOseeBranch> branches = new HashSet<>();
+               HashSet<BranchId> branches = new HashSet<>();
                for (Artifact artifact : artifacts) {
                   branches.add(artifact.getBranch());
                }

@@ -25,7 +25,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -60,7 +60,7 @@ public final class ViewWordChangeAndDiffTest {
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
    private IFolder renderFolder;
-   private IOseeBranch branch;
+   private BranchId branch;
 
    @Before
    public void setUp() throws Exception {
@@ -138,7 +138,7 @@ public final class ViewWordChangeAndDiffTest {
       assertTrue("Single Native Diff test passed", true);
    }
 
-   private static Collection<Change> getChanges(IOseeBranch testBranch) throws OseeCoreException {
+   private static Collection<Change> getChanges(BranchId testBranch) throws OseeCoreException {
       Collection<Change> changes = new ArrayList<>();
       IOperation operation = ChangeManager.comparedToParent(testBranch, changes);
       Operations.executeWorkAndCheckStatus(operation);

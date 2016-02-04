@@ -16,7 +16,7 @@ import java.net.URI;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -61,7 +61,7 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       }
    }
 
-   public static ArtifactTestRunOperator getNewArtifactWithOperator(IOseeBranch branch) throws OseeCoreException {
+   public static ArtifactTestRunOperator getNewArtifactWithOperator(BranchId branch) throws OseeCoreException {
       return new ArtifactTestRunOperator(TEST_RUN_ARTIFACT_FETCHER.getNewArtifact(branch));
    }
 

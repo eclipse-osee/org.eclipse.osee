@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.httpRequests;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -40,7 +40,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
    private final Branch branch;
    private final boolean recursive;
 
-   public PurgeBranchHttpRequestOperation(IOseeBranch branch, boolean recursive) throws OseeCoreException {
+   public PurgeBranchHttpRequestOperation(BranchId branch, boolean recursive) throws OseeCoreException {
       super("Purge " + branch, Activator.PLUGIN_ID);
       this.branch = BranchManager.getBranch(branch);
       this.recursive = recursive;

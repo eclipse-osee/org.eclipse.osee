@@ -30,6 +30,7 @@ import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -71,7 +72,7 @@ public class OrcsStorageImpl implements Storage {
       this.orcsApi = orcsApi;
    }
 
-   private IOseeBranch getAdminBranch() {
+   private BranchId getAdminBranch() {
       return CoreBranches.COMMON;
    }
 
@@ -400,7 +401,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data) {
-      IOseeBranch branch = TokenFactory.createBranch(program.getUuid());
+      BranchId branch = TokenFactory.createBranch(program.getUuid());
       TransactionBuilder tx = getTxFactory().createTransaction(branch, author, "Update Dispo Item");
       ArtifactReadable dispoItemArt = findDispoArtifact(program, dispoItemId, DispoConstants.DispoItem);
       updateSingleItem(author, program, dispoItemArt, data, tx, false);

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.access.exp;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
@@ -46,6 +46,6 @@ public class ArtifactAccessFilter implements IAccessFilter {
    @Override
    public boolean acceptToObject(Object object) {
       //Return false if the object to be checked is a branch.
-      return !(object instanceof IOseeBranch);
+      return !(object instanceof BranchId);
    }
 }

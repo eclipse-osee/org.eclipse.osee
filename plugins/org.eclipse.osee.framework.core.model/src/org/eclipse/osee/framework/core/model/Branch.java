@@ -18,7 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -259,7 +259,7 @@ public class Branch extends AbstractOseeType implements WriteableBranch, IAdapta
    }
 
    @Override
-   public boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException {
+   public boolean isAncestorOf(BranchId branch) throws OseeCoreException {
       return getChildBranches(true).contains(branch);
    }
 

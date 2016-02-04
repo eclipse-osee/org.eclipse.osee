@@ -30,7 +30,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -71,7 +71,7 @@ public class ArtifactLoaderTest {
    private static final int TOTAL_THREADS = 7;
    private static final int NUM_ARTIFACTS = 100;
    private static final String ATTRIBUTE_VALUE = "now is the time";
-   private static final IOseeBranch branch = CoreBranches.COMMON;
+   private static final BranchId branch = CoreBranches.COMMON;
 
    @After
    public void tearDown() throws Exception {

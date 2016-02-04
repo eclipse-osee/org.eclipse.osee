@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -120,7 +121,7 @@ public class ImportOutfileOperation {
       Map<IOseeBranch, List<Artifact>> branchMap = new HashMap<>();
       for (Object object : items) {
          Artifact testRun = (Artifact) object;
-         IOseeBranch branch = testRun.getBranch();
+         IOseeBranch branch = testRun.getBranchToken();
          List<Artifact> artList = branchMap.get(branch);
          if (artList == null) {
             artList = new ArrayList<>();
@@ -131,7 +132,7 @@ public class ImportOutfileOperation {
       return branchMap;
    }
 
-   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, IOseeBranch branch, Artifact... artifacts) throws OseeCoreException {
+   public static void commitTestRunTx(IProgressMonitor monitor, String commitComment, BranchId branch, Artifact... artifacts) throws OseeCoreException {
       monitor.setTaskName("Persist Test Runs");
       Date uploadDate = new Date();
       for (Artifact artifact : artifacts) {

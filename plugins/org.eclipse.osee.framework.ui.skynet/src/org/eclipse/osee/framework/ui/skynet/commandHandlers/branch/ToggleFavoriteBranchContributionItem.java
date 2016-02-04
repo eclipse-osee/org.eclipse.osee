@@ -18,7 +18,7 @@ import org.eclipse.core.commands.Command;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -48,10 +48,10 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
 
       if (selectionProvider != null && selectionProvider.getSelection() instanceof IStructuredSelection) {
          IStructuredSelection structuredSelection = (IStructuredSelection) selectionProvider.getSelection();
-         List<? extends IOseeBranch> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
+         List<? extends BranchId> branches = Handlers.getBranchesFromStructuredSelection(structuredSelection);
 
          if (!branches.isEmpty()) {
-            IOseeBranch selectedBranch = branches.iterator().next();
+            BranchId selectedBranch = branches.iterator().next();
             if (selectedBranch != null) {
                try {
                   String commandId = ToggleFavoriteBranchHandler.COMMAND_ID;
@@ -73,7 +73,7 @@ public class ToggleFavoriteBranchContributionItem extends CompoundContributionPr
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(String label, IOseeBranch branch, String commandId) {
+   private CommandContributionItem createCommand(String label, BranchId branch, String commandId) {
       CommandContributionItem contributionItem;
 
       contributionItem = new CommandContributionItem(

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -67,7 +68,7 @@ public class BranchGraphEditorInput implements IEditorInput {
       return transactionId;
    }
 
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

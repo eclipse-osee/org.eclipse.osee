@@ -11,7 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.change;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.type.RelationType;
@@ -31,7 +31,7 @@ public final class RelationChange extends Change {
    private final String rationale;
    private final RelationType relationType;
 
-   public RelationChange(IOseeBranch branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
+   public RelationChange(BranchId branch, long sourceGamma, int aArtId, TransactionDelta txDelta, ModificationType modType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact changeArtifact, ArtifactDelta artifactDelta, Artifact endTxBArtifact) {
       super(branch, sourceGamma, aArtId, txDelta, modType, isHistorical, changeArtifact, artifactDelta);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;

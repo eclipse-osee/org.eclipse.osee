@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.util.Result;
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
  * Branch Selection with branch uuid storage as String
- * 
+ *
  * @author Donald G. Dunne
  */
 public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAttributeWidget {
@@ -48,7 +49,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
 
    @Override
    public void saveToArtifact() throws OseeCoreException {
-      IOseeBranch selection = getSelection();
+      BranchId selection = getSelection();
       if (selection == null) {
          artifact.deleteAttributes(attributeType);
       } else {
@@ -66,7 +67,7 @@ public class XBranchSelectByWidgetDam extends XBranchSelectWidget implements IAt
       if (isEditable()) {
          try {
             Long storedUuid = getStoredUuid();
-            IOseeBranch widgetInput = getSelection();
+            BranchId widgetInput = getSelection();
             Long widgetUuid = widgetInput == null ? 0L : widgetInput.getUuid();
             if (!storedUuid.equals(widgetUuid)) {
                return new Result(true, getAttributeType() + " is dirty");

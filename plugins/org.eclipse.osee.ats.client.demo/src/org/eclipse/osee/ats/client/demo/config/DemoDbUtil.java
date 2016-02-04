@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IUserToken;
@@ -83,10 +84,10 @@ public class DemoDbUtil {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
-   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, IOseeBranch branch) throws OseeCoreException {
+   public static Collection<Artifact> getArtTypeRequirements(boolean DEBUG, IArtifactType artifactType, String artifactNameStr, BranchId branch) throws OseeCoreException {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO,
-            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getName());
+            "Getting \"" + artifactNameStr + "\" requirement(s) from Branch " + branch.getId());
       }
       Collection<Artifact> arts = ArtifactQuery.getArtifactListFromTypeAndName(artifactType, artifactNameStr, branch,
          QueryOption.CONTAINS_MATCH_OPTIONS);
@@ -106,7 +107,7 @@ public class DemoDbUtil {
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
-   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, IOseeBranch branch) throws OseeCoreException {
+   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, BranchId branch) throws OseeCoreException {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }

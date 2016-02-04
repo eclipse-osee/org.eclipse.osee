@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
 import org.eclipse.osee.framework.core.dsl.OseeDslResourceUtil;
@@ -147,7 +147,7 @@ public class DslToTypeLoader implements TypesLoader {
    private void handleXArtifactTypeCrossRef(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) throws OseeCoreException {
       ArtifactType targetArtifactType = buffer.getArtTypes().getByGuid(HexUtil.toLong(xArtifactType.getUuid()));
       translateSuperTypes(buffer, targetArtifactType, xArtifactType);
-      Map<IOseeBranch, Collection<AttributeType>> validAttributesPerBranch =
+      Map<BranchId, Collection<AttributeType>> validAttributesPerBranch =
          getOseeAttributes(buffer, branchCache, xArtifactType);
       targetArtifactType.setAllAttributeTypes(validAttributesPerBranch);
    }
@@ -165,12 +165,12 @@ public class DslToTypeLoader implements TypesLoader {
       }
    }
 
-   private Map<IOseeBranch, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) throws OseeCoreException {
-      Map<IOseeBranch, Collection<AttributeType>> validAttributes =
-         new HashMap<IOseeBranch, Collection<AttributeType>>();
+   private Map<BranchId, Collection<AttributeType>> getOseeAttributes(TypeBuffer buffer, BranchCache branchCache, XArtifactType xArtifactType) throws OseeCoreException {
+      Map<BranchId, Collection<AttributeType>> validAttributes =
+         new HashMap<BranchId, Collection<AttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : xArtifactType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
-         IOseeBranch branch = getAttributeBranch(branchCache, xAttributeTypeRef);
+         BranchId branch = getAttributeBranch(branchCache, xAttributeTypeRef);
          Long attrUuid = HexUtil.toLong(xAttributeType.getUuid());
          AttributeType oseeAttributeType = buffer.getAttrTypes().getByGuid(attrUuid);
          if (oseeAttributeType != null) {
@@ -187,7 +187,7 @@ public class DslToTypeLoader implements TypesLoader {
       return validAttributes;
    }
 
-   private IOseeBranch getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
+   private BranchId getAttributeBranch(BranchCache branchCache, XAttributeTypeRef xAttributeTypeRef) throws OseeCoreException {
       String branchIdStr = xAttributeTypeRef.getBranchUuid();
       if (branchIdStr == null) {
          return CoreBranches.SYSTEM_ROOT;

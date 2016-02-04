@@ -18,8 +18,8 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -58,7 +58,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
             if (derivedArt != null && derivedArt instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact derivedTeamWf = (TeamWorkFlowArtifact) derivedArt;
                // First, attempt to get from Working Branch if still exists
-               IOseeBranch workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
+               BranchId workingBranch = AtsClientService.get().getBranchService().getWorkingBranch(derivedTeamWf);
                if (workingBranch != null && branchIsInWork(workingBranch)) {
                   retArt = ArtifactQuery.getArtifactFromId(uuid, workingBranch, DeletionFlag.INCLUDE_DELETED);
                } else {
@@ -79,7 +79,7 @@ public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements Attrib
       return retArt;
    }
 
-   private boolean branchIsInWork(IOseeBranch workingBranch) {
+   private boolean branchIsInWork(BranchId workingBranch) {
       BranchState state = BranchManager.getState(workingBranch);
       return (state.isCreated() || state.isModified());
    }

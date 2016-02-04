@@ -11,25 +11,25 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.data.HasBranch;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author Roberto E. Escobar
  */
 public class SearchRequest implements HasBranch {
 
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final String rawSearch;
    private final SearchOptions options;
 
-   public SearchRequest(IOseeBranch branch, String rawSearch, SearchOptions options) {
+   public SearchRequest(BranchId branch, String rawSearch, SearchOptions options) {
       this.branch = branch;
       this.rawSearch = rawSearch;
       this.options = options != null ? options : new SearchOptions();
    }
 
    @Override
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 

@@ -37,7 +37,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -200,12 +200,12 @@ public class AtsOseeCmService implements IOseeCmService {
    }
 
    @Override
-   public IOseeBranch getCmBranchToken() {
+   public BranchId getCmBranchToken() {
       return AtsUtilCore.getAtsBranch();
    }
 
    @Override
-   public boolean isWorkFlowBranch(IOseeBranch branch) {
+   public boolean isWorkFlowBranch(BranchId branch) {
       boolean toReturn = false;
       Artifact art;
       try {

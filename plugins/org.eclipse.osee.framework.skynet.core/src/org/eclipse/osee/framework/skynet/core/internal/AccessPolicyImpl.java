@@ -16,7 +16,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -72,7 +72,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public void removePermissions(IOseeBranch branch) throws OseeCoreException {
+   public void removePermissions(BranchId branch) throws OseeCoreException {
       getAccessService().removePermissions(branch);
    }
 
@@ -88,7 +88,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasBranchPermission(IOseeBranch branch, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasBranchPermission(BranchId branch, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
       PermissionStatus permissionStatus = null;
@@ -159,7 +159,7 @@ public class AccessPolicyImpl implements AccessPolicy {
    }
 
    @Override
-   public PermissionStatus hasArtifactTypePermission(IOseeBranch branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
+   public PermissionStatus hasArtifactTypePermission(BranchId branch, Collection<? extends IArtifactType> artifactTypes, PermissionEnum permission, Level level) throws OseeCoreException {
       User currentUser = getCurrentUser();
       AccessDataQuery query = getAccessService().getAccessData(currentUser, java.util.Collections.singleton(branch));
 

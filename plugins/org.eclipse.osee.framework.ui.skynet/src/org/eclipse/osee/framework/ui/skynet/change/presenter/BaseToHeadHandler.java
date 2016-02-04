@@ -39,7 +39,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getEndTx().getBranch().getShortName(BRANCH_NAME_LEN);
+         branchName = txDelta.getEndTx().getBranchToken().getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
@@ -63,7 +63,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format(
          "Shows all changes made to [<b>%s</b>] from when it was created (transaction <b>%s</b>) until it was last modified (transaction <b>%s</b>).",
-         AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
+         AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
          AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
          AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
    }

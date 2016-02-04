@@ -38,7 +38,7 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getStartTx().getBranch().getShortName(BRANCH_NAME_LEN);
+         branchName = txDelta.getStartTx().getBranchToken().getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
@@ -69,12 +69,12 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
       if (changeUiData.isMergeBranchValid()) {
          data = String.format(
             "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to branch [<b>%s</b>].",
-            AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-            AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+            AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
+            AXml.textToXml(txDelta.getEndTx().getBranchToken().getName()));
       } else {
          data = String.format("Shows all changes made to [<b>%s</b>] compared to branch [<b>%s</b>].",
-            AXml.textToXml(txDelta.getStartTx().getBranch().getName()),
-            AXml.textToXml(txDelta.getEndTx().getBranch().getName()));
+            AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
+            AXml.textToXml(txDelta.getEndTx().getBranchToken().getName()));
       }
       return data;
    }

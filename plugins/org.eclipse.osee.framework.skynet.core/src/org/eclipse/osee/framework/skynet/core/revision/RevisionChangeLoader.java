@@ -19,7 +19,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -157,7 +157,7 @@ public final class RevisionChangeLoader {
       }
       monitor.subTask("Loading Artifacts from the Database");
 
-      IOseeBranch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
+      BranchId branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
       Collection<Change> changesLoaded = getChanges(branch, isHistorical, changeBuilders);
       changes.addAll(changesLoaded);
@@ -165,7 +165,7 @@ public final class RevisionChangeLoader {
       monitor.done();
    }
 
-   private CompositeKeyHashMap<TransactionRecord, Integer, Artifact> getBulkLoadedArtifacts(IOseeBranch branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+   private CompositeKeyHashMap<TransactionRecord, Integer, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
       HashCollection<TransactionRecord, Integer> loadMap =
          new HashCollection<TransactionRecord, Integer>(false, HashSet.class);
       for (ChangeBuilder builder : changeBuilders) {
@@ -195,7 +195,7 @@ public final class RevisionChangeLoader {
       return loadedMap;
    }
 
-   private Collection<Change> getChanges(IOseeBranch branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+   private Collection<Change> getChanges(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
       CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
          getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
 

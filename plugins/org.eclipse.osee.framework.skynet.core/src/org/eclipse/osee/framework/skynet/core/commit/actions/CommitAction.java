@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit.actions;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Theron Virgin
  */
 public interface CommitAction {
-   public void runCommitAction(IOseeBranch sourceBranch, IOseeBranch destinationBranch) throws OseeCoreException;
+   public void runCommitAction(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException;
 }

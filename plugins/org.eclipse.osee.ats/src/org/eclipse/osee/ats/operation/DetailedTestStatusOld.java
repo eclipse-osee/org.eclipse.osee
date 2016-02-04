@@ -53,6 +53,7 @@ import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
 import org.eclipse.osee.define.traceability.TraceabilityProviderOperation;
 import org.eclipse.osee.define.traceability.report.RequirementStatus;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -196,7 +197,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
          scriptPath.length() - ".java".length());
    }
 
-   private void loadTestRunArtifacts(IOseeBranch scriptsBranch) throws OseeCoreException {
+   private void loadTestRunArtifacts(BranchId scriptsBranch) throws OseeCoreException {
       Collection<Artifact> testRuns =
          ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.TestRun, scriptsBranch, DeletionFlag.EXCLUDE_DELETED);
 
@@ -222,9 +223,9 @@ public class DetailedTestStatusOld extends AbstractBlam {
          return;
       }
 
-      IOseeBranch requirementsBranch = variableMap.getBranch("Requirements Branch");
-      IOseeBranch scriptsBranch = variableMap.getBranch("Test Results Branch");
-      IOseeBranch procedureBranch = variableMap.getBranch("Test Procedure Branch");
+      BranchId requirementsBranch = variableMap.getBranch("Requirements Branch");
+      BranchId scriptsBranch = variableMap.getBranch("Test Results Branch");
+      BranchId procedureBranch = variableMap.getBranch("Test Procedure Branch");
 
       File scriptDir = new File(variableMap.getString("Script Root Directory"));
       versions = new ArrayList<>();

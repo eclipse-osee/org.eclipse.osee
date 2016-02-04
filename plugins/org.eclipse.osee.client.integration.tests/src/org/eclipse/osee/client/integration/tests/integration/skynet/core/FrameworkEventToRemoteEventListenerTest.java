@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
@@ -50,7 +50,7 @@ public class FrameworkEventToRemoteEventListenerTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private static final IOseeBranch BRANCH = SAW_Bld_1;
+   private static final BranchId BRANCH = SAW_Bld_1;
    private static final String ARTIFACT_NAME_1 =
       FrameworkEventToRemoteEventListenerTest.class.getSimpleName() + ".Edit1";
    private static final int newArtTx = 12345;
@@ -124,7 +124,7 @@ public class FrameworkEventToRemoteEventListenerTest {
       return remoteEvent;
    }
 
-   private static Artifact createArtifact(IOseeBranch branch, String artifactName) throws OseeCoreException {
+   private static Artifact createArtifact(BranchId branch, String artifactName) throws OseeCoreException {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
       Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, branch, artifactName);

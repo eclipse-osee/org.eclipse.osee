@@ -15,7 +15,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,13 +34,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 public class ExcelXmlArtifact implements RowProcessor {
    private final XMLReader xmlReader;
    private final String staticId;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final ExcelSaxHandler excelHandler;
    private final List<Worksheet> workbook = new ArrayList<>();
    private Worksheet currentWorksheet = null;
    private boolean initialized = false;
 
-   public ExcelXmlArtifact(boolean firstRowIsHeader, String staticId, IOseeBranch branch) throws SAXException {
+   public ExcelXmlArtifact(boolean firstRowIsHeader, String staticId, BranchId branch) throws SAXException {
       excelHandler = new ExcelSaxHandler(this, firstRowIsHeader, true);
       xmlReader = XMLReaderFactory.createXMLReader();
       xmlReader.setContentHandler(excelHandler);

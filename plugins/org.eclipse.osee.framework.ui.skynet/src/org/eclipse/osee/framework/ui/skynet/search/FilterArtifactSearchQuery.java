@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.search;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.search.filter.FilterModelList;
  */
 public class FilterArtifactSearchQuery extends AbstractLegacyArtifactSearchQuery {
    private final FilterModelList filterList;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private String criteriaLabel = "";
 
-   public FilterArtifactSearchQuery(FilterModelList filterList, IOseeBranch branch) {
+   public FilterArtifactSearchQuery(FilterModelList filterList, BranchId branch) {
       this.filterList = filterList;
       this.branch = branch;
    }

@@ -19,7 +19,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -218,13 +218,13 @@ public final class SkynetTransactionTest {
    }
 
    private class WorkerThread extends Thread {
-      private final IOseeBranch branch;
+      private final BranchId branch;
       private final Object lock;
       private final Set<Artifact> data = new HashSet<>();
       private Throwable ex;
       private final WorkerType workerType;
 
-      public WorkerThread(Object lock, IOseeBranch branch, WorkerType workerType) {
+      public WorkerThread(Object lock, BranchId branch, WorkerType workerType) {
          this.lock = lock;
          this.branch = branch;
          this.workerType = workerType;

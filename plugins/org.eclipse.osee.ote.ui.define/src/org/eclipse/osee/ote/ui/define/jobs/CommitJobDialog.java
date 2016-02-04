@@ -151,7 +151,7 @@ class CommitJobDialog extends UIJob {
                   CommitColumnEnum column = CommitColumnEnum.values()[columnIndex - DUMMY_COLUMNS];
                   switch (column) {
                      case Branch:
-                        toReturn = artifact.getBranch().getName();
+                        toReturn = artifact.getBranchToken().getName();
                         break;
                      case Id:
                         try {
@@ -165,7 +165,8 @@ class CommitJobDialog extends UIJob {
                         break;
                      case Outfile:
                         try {
-                           toReturn = new ArtifactTestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
+                           toReturn =
+                              new ArtifactTestRunOperator(artifact).getOutfileAttribute().getDisplayableString();
                         } catch (Exception ex) {
                            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, "Error getting Outfile", ex);
                         }

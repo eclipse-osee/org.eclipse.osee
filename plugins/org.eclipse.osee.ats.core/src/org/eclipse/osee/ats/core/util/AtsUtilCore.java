@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -43,7 +43,7 @@ public class AtsUtilCore {
    public static final String USER_CREATION_DISABLED = "UserCreationDisabled";
 
    private static final Object lock = new Object();
-   private volatile static IOseeBranch atsBranch;
+   private volatile static BranchId atsBranch;
    private volatile static String atsConfigName;
    private static Map<Long, String> uuidToGuidMap = new HashMap<>(50);
    private static Map<String, Long> guidToUuidMap = new HashMap<>(50);
@@ -53,7 +53,7 @@ public class AtsUtilCore {
       return atsConfigName;
    }
 
-   public static IOseeBranch getAtsBranch() {
+   public static BranchId getAtsBranch() {
       synchronized (lock) {
          if (atsBranch == null) {
             // Preference store overrides all
@@ -100,7 +100,7 @@ public class AtsUtilCore {
       return guids;
    }
 
-   public static void storeAtsBranch(IOseeBranch branch, String name) {
+   public static void storeAtsBranch(BranchId branch, String name) {
       AtsPreferencesService.get().put(ATS_BRANCH_UUID, String.valueOf(branch.getUuid()));
       AtsPreferencesService.get().put(ATS_BRANCH_NAME, name);
    }

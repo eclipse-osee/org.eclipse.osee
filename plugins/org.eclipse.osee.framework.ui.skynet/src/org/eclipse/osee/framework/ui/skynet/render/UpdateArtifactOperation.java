@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,10 +43,10 @@ import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 public class UpdateArtifactOperation extends AbstractOperation {
    private final File workingFile;
    private final List<Artifact> artifacts;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final boolean threeWayMerge;
 
-   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, IOseeBranch branch, boolean threeWayMerge) {
+   public UpdateArtifactOperation(File workingFile, List<Artifact> artifacts, BranchId branch, boolean threeWayMerge) {
       super("Update Artifact", Activator.PLUGIN_ID);
       this.workingFile = workingFile;
       this.artifacts = artifacts;

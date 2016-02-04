@@ -15,7 +15,7 @@ import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED
 import java.net.HttpURLConnection;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,7 +44,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
       } else {
          try {
             final Artifact artifact;
-            final IOseeBranch branch;
+            final BranchId branch;
             if (Strings.isValid(transactionIdStr)) {
                int transactionNumber = Integer.parseInt(transactionIdStr);
                TransactionRecord transactionId = TransactionManager.getTransactionId(transactionNumber);

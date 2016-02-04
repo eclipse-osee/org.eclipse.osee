@@ -26,7 +26,7 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
@@ -152,15 +152,15 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       @Override
       public void handleEvent(Event event) {
-         IOseeBranch branch = branchSelect.getSelection();
+         BranchId branch = branchSelect.getSelection();
          if (!isBranchReadable(branch)) {
             AWorkbench.popup(String.format("Read Access Denied for branch [%s]", branch));
          }
       }
    }
 
-   private IOseeBranch getSelectedBranch() {
-      IOseeBranch branch = branchSelect.getData();
+   private BranchId getSelectedBranch() {
+      BranchId branch = branchSelect.getData();
       if (branch == null) {
          branch = BranchManager.getLastBranch();
       }
@@ -538,7 +538,7 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       }
    }
 
-   private static boolean isBranchReadable(IOseeBranch branch) {
+   private static boolean isBranchReadable(BranchId branch) {
       boolean read = false;
       if (branch != null) {
          read = AccessControlService.getAccessService().hasPermission(branch, PermissionEnum.READ);

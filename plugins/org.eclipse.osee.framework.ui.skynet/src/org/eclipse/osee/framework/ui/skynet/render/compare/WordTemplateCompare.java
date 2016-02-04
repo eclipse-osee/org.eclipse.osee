@@ -53,7 +53,7 @@ public class WordTemplateCompare extends AbstractWordCompare {
       if (artifact == null) {
          artifact = artifactDelta1.getEndArtifact();
       }
-      IOseeBranch branch = artifact.getBranch();
+      IOseeBranch branch = artifact.getBranchToken();
       List<Artifact> artifacts = Collections.emptyList();
 
       IVbaDiffGenerator diffGenerator = createGenerator(artifacts, branch, presentationType);

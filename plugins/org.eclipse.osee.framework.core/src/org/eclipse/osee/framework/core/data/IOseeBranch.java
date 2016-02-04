@@ -17,8 +17,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Ryan D. Brooks
  */
 public interface IOseeBranch extends BranchId, Named {
-
-
    static final int SHORT_NAME_LIMIT = 35;
 
    default String getShortName() {

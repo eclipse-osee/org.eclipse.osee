@@ -20,6 +20,7 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.T
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -43,7 +44,7 @@ import org.junit.Test;
  * This test is intended to be run against a demo database. It tests the branch purge logic by counting the rows of the
  * version and txs tables, creating a branch, making changes and then purging the branch. If it works properly, all rows
  * should be equal.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class BranchPurgeTest {
@@ -83,7 +84,7 @@ public class BranchPurgeTest {
 
       Map<String, Integer> initialRowCount = TestUtil.getTableRowCounts(TABLES);
 
-      IOseeBranch branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
+      BranchId branch = BranchManager.createWorkingBranch(SAW_Bld_2, workingBranch);
       Collection<Artifact> softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10,
          method.getQualifiedTestName(), branch);
       Artifacts.persistInTransaction("Test purge branch", softArts);

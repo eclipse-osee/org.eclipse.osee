@@ -19,7 +19,7 @@ import org.eclipse.osee.console.admin.Console;
 import org.eclipse.osee.console.admin.ConsoleCommand;
 import org.eclipse.osee.console.admin.ConsoleParameters;
 import org.eclipse.osee.executor.admin.CancellableCallable;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.orcs.ExportOptions;
@@ -104,9 +104,9 @@ public final class BranchImportCommand implements ConsoleCommand {
             throw new OseeArgumentException("Files to import were not specified");
          }
 
-         List<IOseeBranch> branches = new LinkedList<>();
+         List<BranchId> branches = new LinkedList<>();
          for (String branchUuidString : branchUuids) {
-            IOseeBranch branch = branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
+            BranchId branch = branchQuery.andUuids(Long.valueOf(branchUuidString)).getResults().getExactlyOne();
             branches.add(branch);
          }
 

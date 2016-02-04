@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.logger.Log;
@@ -30,7 +30,7 @@ public abstract class AbstractOrcsStorage {
    private Log logger;
    private OrcsApi orcsApi;
 
-   private IOseeBranch storageBranch;
+   private BranchId storageBranch;
    private AccountFactory factory;
 
    public void setLogger(Log logger) {
@@ -55,7 +55,7 @@ public abstract class AbstractOrcsStorage {
       storageBranch = null;
    }
 
-   private IOseeBranch getBranch() {
+   private BranchId getBranch() {
       return storageBranch;
    }
 

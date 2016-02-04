@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -30,7 +30,7 @@ public abstract class XTypeListViewer extends XListViewer {
       setSorter(new ViewerSorter());
    }
 
-   public IOseeBranch resolveBranch(long branchUuid) {
+   public BranchId resolveBranch(long branchUuid) {
       try {
          return BranchManager.getBranch(branchUuid);
       } catch (OseeCoreException ex) {

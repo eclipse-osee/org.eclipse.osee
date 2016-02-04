@@ -22,7 +22,7 @@ import javax.ws.rs.core.Form;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -92,25 +92,25 @@ public class OseeClientImpl implements OseeClient, QueryExecutor {
    }
 
    @Override
-   public QueryBuilder createQueryBuilder(IOseeBranch branch) {
+   public QueryBuilder createQueryBuilder(BranchId branch) {
       QueryOptions options = new QueryOptions();
       List<Predicate> predicates = new ArrayList<>();
       return new QueryBuilderImpl(branch, predicates, options, predicateFactory, this);
    }
 
    @Override
-   public int getCount(IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   public int getCount(BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       SearchResponse result = performSearch(RequestType.COUNT, branch, predicates, options);
       return result.getTotal();
    }
 
    @Override
-   public SearchResult getResults(RequestType request, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   public SearchResult getResults(RequestType request, BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       SearchResponse result = performSearch(request, branch, predicates, options);
       return result;
    }
 
-   private SearchResponse performSearch(RequestType requestType, IOseeBranch branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
+   private SearchResponse performSearch(RequestType requestType, BranchId branch, List<Predicate> predicates, QueryOptions options) throws OseeCoreException {
       Conditions.checkNotNull(requestType, "RequestType");
       int fromTx = 0;
       if (options.isHistorical()) {

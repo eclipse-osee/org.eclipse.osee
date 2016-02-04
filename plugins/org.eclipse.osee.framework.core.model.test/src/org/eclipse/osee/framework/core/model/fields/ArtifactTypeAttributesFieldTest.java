@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.internal.fields.ArtifactTypeAttributesField;
 import org.eclipse.osee.framework.core.model.mocks.MockDataFactory;
@@ -53,7 +53,7 @@ public class ArtifactTypeAttributesFieldTest {
 
    @Test
    public void testGetSet() throws OseeCoreException {
-      Map<IOseeBranch, Collection<AttributeType>> input = new LinkedHashMap<>();
+      Map<BranchId, Collection<AttributeType>> input = new LinkedHashMap<>();
       ArtifactTypeAttributesField field = new ArtifactTypeAttributesField(input);
 
       Assert.assertEquals(false, field.isDirty());
@@ -73,33 +73,33 @@ public class ArtifactTypeAttributesFieldTest {
       field.clearDirty();
 
       // Add to entry
-      Map<IOseeBranch, Collection<AttributeType>> values = map(br1, attr2, attr4);
+      Map<BranchId, Collection<AttributeType>> values = map(br1, attr2, attr4);
       map(values, br2, attr3, attr1);
       assertSetGet(field, values, values, true);
       field.clearDirty();
 
       // Add to emptylist
-      assertSetGet(field, Collections.<IOseeBranch, Collection<AttributeType>> emptyMap(),
-         Collections.<IOseeBranch, Collection<AttributeType>> emptyMap(), true);
+      assertSetGet(field, Collections.<BranchId, Collection<AttributeType>> emptyMap(),
+         Collections.<BranchId, Collection<AttributeType>> emptyMap(), true);
       field.clearDirty();
    }
 
-   private static Map<IOseeBranch, Collection<AttributeType>> map(IOseeBranch branch, AttributeType... attrs) {
-      Map<IOseeBranch, Collection<AttributeType>> map = new LinkedHashMap<>();
+   private static Map<BranchId, Collection<AttributeType>> map(BranchId branch, AttributeType... attrs) {
+      Map<BranchId, Collection<AttributeType>> map = new LinkedHashMap<>();
       map.put(branch, Arrays.asList(attrs));
       return map;
    }
 
-   private static Map<IOseeBranch, Collection<AttributeType>> map(Map<IOseeBranch, Collection<AttributeType>> map, IOseeBranch branch, AttributeType... attrs) {
+   private static Map<BranchId, Collection<AttributeType>> map(Map<BranchId, Collection<AttributeType>> map, BranchId branch, AttributeType... attrs) {
       map.put(branch, Arrays.asList(attrs));
       return map;
    }
 
-   private static void assertSetGet(ArtifactTypeAttributesField field, Map<IOseeBranch, Collection<AttributeType>> setValues, Map<IOseeBranch, Collection<AttributeType>> expected, boolean expectedDirty) throws OseeCoreException {
+   private static void assertSetGet(ArtifactTypeAttributesField field, Map<BranchId, Collection<AttributeType>> setValues, Map<BranchId, Collection<AttributeType>> expected, boolean expectedDirty) throws OseeCoreException {
       field.set(setValues);
       Assert.assertEquals(expectedDirty, field.isDirty());
 
-      Map<IOseeBranch, Collection<AttributeType>> actual = field.get();
+      Map<BranchId, Collection<AttributeType>> actual = field.get();
       Assert.assertEquals(expected.size(), actual.size());
 
       Assert.assertFalse(Compare.isDifferent(actual, expected));

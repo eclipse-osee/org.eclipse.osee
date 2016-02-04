@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -346,7 +346,7 @@ public class ArtifactDecorator implements IArtifactDecoratorPreferences {
                public IStatus runInUIThread(IProgressMonitor monitor) {
                   IStatus status = Status.OK_STATUS;
                   try {
-                     IOseeBranch branch = branchProvider.getBranch(monitor);
+                     BranchId branch = branchProvider.getBranch(monitor);
                      if (branch == null) {
                         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Branch not selected");
                      } else {

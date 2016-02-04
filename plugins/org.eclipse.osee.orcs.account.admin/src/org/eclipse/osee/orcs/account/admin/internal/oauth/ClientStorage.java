@@ -24,7 +24,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -52,9 +52,9 @@ public class ClientStorage {
    private final Log logger;
    private final GsonBuilder builder;
    private final OrcsApi orcsApi;
-   private final IOseeBranch storageBranch;
+   private final BranchId storageBranch;
 
-   public ClientStorage(Log logger, GsonBuilder builder, OrcsApi orcsApi, IOseeBranch storageBranch) {
+   public ClientStorage(Log logger, GsonBuilder builder, OrcsApi orcsApi, BranchId storageBranch) {
       super();
       this.logger = logger;
       this.builder = builder;
@@ -62,7 +62,7 @@ public class ClientStorage {
       this.storageBranch = storageBranch;
    }
 
-   private IOseeBranch getBranch() {
+   private BranchId getBranch() {
       return storageBranch;
    }
 

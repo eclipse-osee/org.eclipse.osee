@@ -24,8 +24,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -63,13 +63,13 @@ public abstract class AbstractEditTest {
    public TestInfo method = new TestInfo();
 
    private final String editFile;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final IArtifactType artType;
    private final FileSystemRenderer renderer;
 
    private Artifact artifact;
 
-   protected AbstractEditTest(IOseeBranch branch, String editFile, IArtifactType artType, FileSystemRenderer renderer) {
+   protected AbstractEditTest(BranchId branch, String editFile, IArtifactType artType, FileSystemRenderer renderer) {
       this.branch = branch;
       this.editFile = editFile;
       this.artType = artType;
@@ -91,7 +91,7 @@ public abstract class AbstractEditTest {
       }
    }
 
-   private Artifact createArtifact(IOseeBranch branch, IArtifactType artType, String artifactName) throws OseeCoreException {
+   private Artifact createArtifact(BranchId branch, IArtifactType artType, String artifactName) throws OseeCoreException {
       Assert.assertNotNull(branch);
       Assert.assertNotNull(artifactName);
       Artifact artifact = ArtifactTypeManager.addArtifact(artType, branch, artifactName);
@@ -119,7 +119,7 @@ public abstract class AbstractEditTest {
    }
 
    private IFile openArtifactForEdit(FileSystemRenderer renderer, Artifact artifact) throws OseeCoreException {
-      IFile editFile = renderer.renderToFile(artifact, artifact.getBranch(), PresentationType.SPECIALIZED_EDIT);
+      IFile editFile = renderer.renderToFile(artifact, artifact.getBranchToken(), PresentationType.SPECIALIZED_EDIT);
       Assert.assertNotNull(editFile);
       return editFile;
    }
@@ -155,7 +155,7 @@ public abstract class AbstractEditTest {
       Assert.assertNotNull(artifact);
 
       IFile renderedFileFromModifiedStorage =
-         renderer.renderToFile(artifact, artifact.getBranch(), PresentationType.SPECIALIZED_EDIT);
+         renderer.renderToFile(artifact, artifact.getBranchToken(), PresentationType.SPECIALIZED_EDIT);
       Assert.assertNotNull(renderedFileFromModifiedStorage);
       InputStream inputStream = null;
       try {

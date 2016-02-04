@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
@@ -33,11 +33,11 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.UIJob;
 
 public final class ChangeUiUtil {
-   public static void open(IOseeBranch branch) throws OseeCoreException {
+   public static void open(BranchId branch) throws OseeCoreException {
       open(branch, false);
    }
 
-   public static void open(IOseeBranch branch, boolean showTransactionTab) throws OseeCoreException {
+   public static void open(BranchId branch, boolean showTransactionTab) throws OseeCoreException {
       Branch heavyBranch = BranchManager.getBranch(branch);
       Conditions.checkNotNull(branch, "Branch");
       if (heavyBranch.getBranchType() == BranchType.BASELINE) {

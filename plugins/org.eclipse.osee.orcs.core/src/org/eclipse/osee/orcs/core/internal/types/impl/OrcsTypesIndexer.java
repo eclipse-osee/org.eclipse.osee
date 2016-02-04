@@ -23,7 +23,7 @@ import java.util.Set;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.dsl.OseeDslResource;
@@ -147,11 +147,11 @@ public class OrcsTypesIndexer {
    }
 
    private void indexAttributes(ArtifactTypeIndex artifactTypeIndex, AttributeTypeIndex attributeTypeIndex, XArtifactType dslType) throws OseeCoreException {
-      Map<IOseeBranch, Collection<IAttributeType>> validAttributes =
-         new HashMap<IOseeBranch, Collection<IAttributeType>>();
+      Map<BranchId, Collection<IAttributeType>> validAttributes =
+         new HashMap<BranchId, Collection<IAttributeType>>();
       for (XAttributeTypeRef xAttributeTypeRef : dslType.getValidAttributeTypes()) {
          XAttributeType xAttributeType = xAttributeTypeRef.getValidAttributeType();
-         IOseeBranch branch = getAttributeBranch(xAttributeTypeRef);
+         BranchId branch = getAttributeBranch(xAttributeTypeRef);
 
          IAttributeType attributeType = attributeTypeIndex.getTokenByDslType(xAttributeType);
          if (attributeType != null) {
@@ -231,8 +231,8 @@ public class OrcsTypesIndexer {
       return new EnumTypeImpl(uuid, dslType.getName(), entries);
    }
 
-   private IOseeBranch getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) {
-      IOseeBranch branchToken = CoreBranches.SYSTEM_ROOT;
+   private BranchId getAttributeBranch(XAttributeTypeRef xAttributeTypeRef) {
+      BranchId branchToken = CoreBranches.SYSTEM_ROOT;
       if (Strings.isValid(xAttributeTypeRef.getBranchUuid())) {
          Long branchId = Long.valueOf(xAttributeTypeRef.getBranchUuid());
          if (branchId > 0) {

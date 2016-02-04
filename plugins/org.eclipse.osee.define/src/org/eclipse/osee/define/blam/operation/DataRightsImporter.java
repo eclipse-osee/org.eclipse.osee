@@ -21,7 +21,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -60,7 +60,7 @@ public class DataRightsImporter extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IOseeBranch branch = variableMap.getBranch("Branch");
+      BranchId branch = variableMap.getBranch("Branch");
       String xmlPath = variableMap.getString("Path to DataRights XML");
 
       if (branch == null) {
@@ -107,7 +107,7 @@ public class DataRightsImporter extends AbstractBlam {
 
    private final class DataRightsProcessor implements RowProcessor {
 
-      private final IOseeBranch branch;
+      private final BranchId branch;
 
       private boolean ignore;
       private int smeIndex;
@@ -117,7 +117,7 @@ public class DataRightsImporter extends AbstractBlam {
       private boolean changesAvailable;
       private SkynetTransaction transaction;
 
-      public DataRightsProcessor(IOseeBranch branch) {
+      public DataRightsProcessor(BranchId branch) {
          super();
          this.branch = branch;
       }
