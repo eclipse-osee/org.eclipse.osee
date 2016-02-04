@@ -22,14 +22,18 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactDelta;
+import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
 import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
@@ -87,8 +91,13 @@ public abstract class AbstractWordCompare implements IComparator {
       CompareData data = new CompareData(resultPath, vbsPath);
 
       addToCompare(monitor, data, presentationType, artifactDelta);
+      try {
+         diffGenerator.generate(monitor, data);
+      } catch (OperationTimedoutException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+      }
 
-      diffGenerator.generate(monitor, data);
       collector.onCompare(data);
    }
 
@@ -106,7 +115,12 @@ public abstract class AbstractWordCompare implements IComparator {
          createGenerator(Collections.singletonList(newerVersion), branch, presentationType);
 
       IProgressMonitor monitor = new NullProgressMonitor();
-      diffGenerator.generate(monitor, data);
+      try {
+         diffGenerator.generate(monitor, data);
+      } catch (OperationTimedoutException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", newerVersion, branch));
+      }
       collector.onCompare(data);
    }
 

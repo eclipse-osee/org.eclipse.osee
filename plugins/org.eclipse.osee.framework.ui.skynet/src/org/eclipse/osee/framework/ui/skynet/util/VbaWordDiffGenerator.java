@@ -19,14 +19,18 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.compare.CompareData;
 
@@ -197,6 +201,7 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          ProcessBuilder builder = new ProcessBuilder(cmd);
 
          File parentDir = vbDiffScript.getParentFile();
+
          if (parentDir != null) {
             builder.directory(parentDir);
          }
@@ -220,7 +225,16 @@ public class VbaWordDiffGenerator implements IVbaDiffGenerator {
          errorCatcher.start();
          outputCatcher.start();
 
-         process.waitFor();
+         Long timeoutMs = Long.MAX_VALUE;
+         String timeout = OseeInfo.getValue("osee.vba.word.diff.timeout");
+         if (Strings.isValid(timeout)) {
+            timeoutMs = Long.parseLong(timeout);
+         }
+
+         if (!process.waitFor(timeoutMs, TimeUnit.MILLISECONDS)) {
+            throw new OperationTimedoutException("The View Word Change Report Timed-out");
+         }
+
       } catch (Exception ex) {
          OseeCoreException.wrapAndThrow(ex);
       } finally {

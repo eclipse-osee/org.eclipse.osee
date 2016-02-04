@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.exception.OperationTimedoutException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -65,7 +66,12 @@ public class WordTemplateCompare extends AbstractWordCompare {
       CompareData data = new CompareData(resultPath, vbsPath);
 
       addArtifactDeltas(monitor, artifactDeltas, data);
-      diffGenerator.generate(monitor, data);
+      try {
+         diffGenerator.generate(monitor, data);
+      } catch (OperationTimedoutException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, String.format(
+            "The View Word Change Report Timed-out for Artifact(s) [%s] on Branch [%s]", artifact, branch));
+      }
 
       getRenderer().setOption(IRenderer.RESULT_PATH_RETURN, resultPath);
       collector.onCompare(data);
