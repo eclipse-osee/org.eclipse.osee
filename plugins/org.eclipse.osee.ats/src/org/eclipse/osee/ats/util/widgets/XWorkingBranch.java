@@ -258,7 +258,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void refreshLockImage() {
       boolean noBranch = false, someAccessControlSet = false;
-      Branch branch = null;
+      IOseeBranch branch = null;
       try {
          branch = teamArt.getWorkingBranch();
       } catch (OseeCoreException ex) {
@@ -284,7 +284,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
             AWorkbench.popup("Can't set preference as System User = " + user);
             return;
          }
-         Branch branch = teamArt.getWorkingBranch();
+         IOseeBranch branch = teamArt.getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;
@@ -303,7 +303,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
    private void toggleWorkingBranchLock() {
       try {
-         Branch branch = teamArt.getWorkingBranch();
+         IOseeBranch branch = teamArt.getWorkingBranch();
          if (branch == null) {
             AWorkbench.popup("Working branch doesn't exist");
             return;

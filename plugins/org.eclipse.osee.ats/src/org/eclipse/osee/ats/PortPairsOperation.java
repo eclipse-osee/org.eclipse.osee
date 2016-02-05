@@ -24,7 +24,6 @@ import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
@@ -120,7 +119,7 @@ public final class PortPairsOperation extends AbstractOperation {
          AtsBranchUtil.createWorkingBranch_Create(destinationWorkflow, true);
       }
 
-      Branch destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
+      IOseeBranch destinationBranch = destinationWorkflow.getWorkingBranchForceCacheUpdate();
       IOseeBranch portBranch = getPortBranchFromWorkflow(sourceWorkflow, destinationWorkflow);
       if (portBranch == null) {
          logf("Source workflow [%s] not ready for port to Workflow [%s].", sourceWorkflow, destinationWorkflow);

@@ -79,7 +79,7 @@ public class DemoDbUtil {
       return Result.TrueResult;
    }
 
-   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, Branch branch) throws OseeCoreException {
+   public static Collection<Artifact> getSoftwareRequirements(boolean DEBUG, SoftwareRequirementStrs str, IOseeBranch branch) throws OseeCoreException {
       return getArtTypeRequirements(DEBUG, CoreArtifactTypes.SoftwareRequirement, str.name(), branch);
    }
 
@@ -106,7 +106,7 @@ public class DemoDbUtil {
    };
    public static String HAPTIC_CONSTRAINTS_REQ = "Haptic Constraints";
 
-   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, Branch branch) throws OseeCoreException {
+   public static Artifact getInterfaceInitializationSoftwareRequirement(boolean DEBUG, IOseeBranch branch) throws OseeCoreException {
       if (DEBUG) {
          OseeLog.log(Activator.class, Level.INFO, "Getting \"" + INTERFACE_INITIALIZATION + "\" requirement.");
       }

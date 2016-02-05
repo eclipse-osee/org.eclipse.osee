@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.Assert;
 
 /**
@@ -66,7 +67,7 @@ public class AtsTestUtilTest extends AtsTestUtil {
       Result result = AtsTestUtil.createWorkingBranchFromTeamWf();
       Assert.assertTrue(result.getText(), result.isTrue());
       Thread.sleep(2000);
-      Branch branch = AtsTestUtil.getTeamWf().getWorkingBranch();
+      Branch branch = BranchManager.getBranch(AtsTestUtil.getTeamWf().getWorkingBranch());
       Assert.assertNotNull(branch);
       AtsTestUtil.cleanup();
       Assert.assertTrue(branch.isDeleted());

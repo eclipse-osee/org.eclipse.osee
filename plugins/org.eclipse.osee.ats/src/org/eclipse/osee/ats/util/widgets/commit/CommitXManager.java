@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.RebaselineInProgressHandler;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -102,7 +104,8 @@ public class CommitXManager extends XViewer {
          CommitStatus commitStatus =
             AtsClientService.get().getBranchService().getCommitStatus(xCommitManager.getTeamArt(), branch, configArt);
          if (commitStatus == CommitStatus.Rebaseline_In_Progress) {
-            RebaselineInProgressHandler.handleRebaselineInProgress(xCommitManager.getTeamArt().getWorkingBranch());
+            Branch workingBranch = BranchManager.getBranch(xCommitManager.getTeamArt().getWorkingBranch());
+            RebaselineInProgressHandler.handleRebaselineInProgress(workingBranch);
          } else if (commitStatus == CommitStatus.Working_Branch_Not_Created) {
             AWorkbench.popup(commitStatus.getDisplayName(), "Need to create a working branch");
          } else if (commitStatus == CommitStatus.No_Commit_Needed) {

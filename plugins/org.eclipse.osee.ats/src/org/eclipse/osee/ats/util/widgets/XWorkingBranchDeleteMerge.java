@@ -48,7 +48,7 @@ public class XWorkingBranchDeleteMerge extends XWorkingBranchButtonAbstract {
          @Override
          public void handleEvent(Event e) {
             try {
-               Branch workingBranch = getTeamArt().getWorkingBranch();
+               Branch workingBranch = BranchManager.getBranch(getTeamArt().getWorkingBranch());
                if (isWorkingBranchCommitWithMergeInProgress()) {
                   List<Branch> selectedBranches = new ArrayList<>();
                   Collection<IOseeBranch> branchesAlreadyCommitted =

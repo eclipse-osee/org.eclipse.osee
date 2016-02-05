@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -144,7 +144,7 @@ public class SMADetailsSection extends SectionPart {
       if (accessControl == null) {
          message = "AtsCmAccessControlService not found.";
       } else {
-         Branch workingBranch = null;
+         IOseeBranch workingBranch = null;
          try {
             workingBranch = workflow.getWorkingBranch();
          } catch (Exception ex) {

@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -59,7 +58,7 @@ public class AtsBranchCommitOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Branch workflowWorkingBranch = teamArt.getWorkingBranch();
+      IOseeBranch workflowWorkingBranch = teamArt.getWorkingBranch();
       try {
          AtsClientService.get().getBranchService().getBranchesInCommit().add(workflowWorkingBranch);
          if (workflowWorkingBranch == null) {

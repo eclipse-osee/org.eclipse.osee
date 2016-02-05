@@ -64,7 +64,7 @@ public final class AtsBranchManager {
 
    public static void showMergeManager(TeamWorkFlowArtifact teamArt) {
       try {
-         Branch workingBranch = teamArt.getWorkingBranch();
+         Branch workingBranch = BranchManager.getBranch(teamArt.getWorkingBranch());
          List<Branch> destinationBranches = new ArrayList<>();
 
          if (workingBranch != null) {

@@ -40,7 +40,6 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -248,12 +247,12 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
       return new Float(value).doubleValue();
    }
 
-   public Branch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
-      return (Branch) AtsClientService.get().getBranchService().getWorkingBranch(this, true);
+   public IOseeBranch getWorkingBranchForceCacheUpdate() throws OseeCoreException {
+      return AtsClientService.get().getBranchService().getWorkingBranch(this, true);
    }
 
-   public Branch getWorkingBranch() throws OseeCoreException {
-      return (Branch) AtsClientService.get().getBranchService().getWorkingBranch(this);
+   public IOseeBranch getWorkingBranch() throws OseeCoreException {
+      return AtsClientService.get().getBranchService().getWorkingBranch(this);
    }
 
    public boolean isWorkingBranchCreationInProgress() {
