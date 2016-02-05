@@ -13,7 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.core.ds.BranchData;
 import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
@@ -21,10 +21,7 @@ import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchDataImpl extends OrcsObjectImpl<Long>implements BranchData, BranchReadable {
-
-   private Long uuid = RelationalConstants.DEFAULT_UUID;
-   private String name = "";
+public class BranchDataImpl extends NamedId implements BranchData, BranchReadable {
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
    private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
    private int sourceTransaction = RelationalConstants.TRANSACTION_SENTINEL;
@@ -34,23 +31,8 @@ public class BranchDataImpl extends OrcsObjectImpl<Long>implements BranchData, B
    private BranchType branchType = BranchType.WORKING;
    private boolean inheritAccessControl = false;
 
-   public BranchDataImpl() {
-      super();
-   }
-
-   @Override
-   public Long getGuid() {
-      return getUuid();
-   }
-
-   @Override
-   public String getName() {
-      return name;
-   }
-
-   @Override
-   public void setName(String name) {
-      this.name = name;
+   public BranchDataImpl(Long branchId, String name) {
+      super(branchId, name);
    }
 
    @Override
@@ -129,33 +111,8 @@ public class BranchDataImpl extends OrcsObjectImpl<Long>implements BranchData, B
    }
 
    @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof Identity) {
-         Identity<?> id = (Identity<?>) obj;
-         return id.getGuid().equals(this.getGuid());
-      }
-      return false;
-
-   }
-
-   @Override
    public String toString() {
-      return "BranchData [uuid=" + uuid + ", " + super.toString() + "]";
-   }
-
-   @Override
-   public Long getUuid() {
-      return uuid;
-   }
-
-   @Override
-   public void setUuid(Long uuid) {
-      this.uuid = uuid;
+      return "BranchData [uuid=" + getId() + ", " + super.toString() + "]";
    }
 
    @Override
@@ -167,5 +124,4 @@ public class BranchDataImpl extends OrcsObjectImpl<Long>implements BranchData, B
    public void setInheritAccessControl(boolean inheritAccessControl) {
       this.inheritAccessControl = inheritAccessControl;
    }
-
 }

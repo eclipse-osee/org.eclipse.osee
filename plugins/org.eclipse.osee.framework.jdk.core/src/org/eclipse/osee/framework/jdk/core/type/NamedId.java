@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,24 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Named;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+package org.eclipse.osee.framework.jdk.core.type;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IOseeBranch extends BranchId, Named {
+public class NamedId extends BaseId implements Named {
+   private String name;
 
-
-   static final int SHORT_NAME_LIMIT = 35;
-
-   default String getShortName() {
-      return getShortName(SHORT_NAME_LIMIT);
+   public NamedId(Long id, String name) {
+      super(id);
+      this.name = name;
    }
 
-   default String getShortName(int length) {
-      return Strings.truncate(getName(), length);
+   @Override
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   @Override
+   public String toString() {
+      return getName();
    }
 }

@@ -28,14 +28,11 @@ import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactF
 import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IAdaptable {
-
-   private static final int SHORT_NAME_LIMIT = 35;
+public class Branch extends AbstractOseeType<Long> implements WriteableBranch, IAdaptable {
 
    private final Collection<Branch> childBranches = new HashSet<>();
 
@@ -83,19 +80,6 @@ public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IA
             }
          }
       }
-   }
-
-   @Override
-   public String getShortName() {
-      return getShortName(this);
-   }
-
-   public String getShortName(int length) {
-      return Strings.truncate(getName(), length);
-   }
-
-   public static String getShortName(IOseeBranch branch) {
-      return Strings.truncate(branch.getName(), SHORT_NAME_LIMIT);
    }
 
    @Override
@@ -196,11 +180,6 @@ public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IA
       return getBranchState() == BranchState.PURGE_IN_PROGRESS;
    }
 
-   @Override
-   public String toString() {
-      return getName();
-   }
-
    public Collection<Branch> getChildren() throws OseeCoreException {
       return getFieldValue(BranchField.BRANCH_CHILDREN);
    }
@@ -291,13 +270,17 @@ public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IA
       return String.format("[%s][%s]", getGuid(), getName());
    }
 
-   @Override
-   public Long getUuid() {
-      return getGuid();
-   }
-
    public String toStringWithDetails() {
       return "Branch [name=" + getShortName() + ", type=" + getBranchType() + ", state=" + getBranchState() + ", archived=" + getArchiveState() + ", assocArtId=" + getAssociatedArtifactId() + ", uuid=" + getUuid() + "]";
    }
 
+   @Override
+   public String toString() {
+      return getName();
+   }
+
+   @Override
+   public Long getId() {
+      return getGuid();
+   }
 }

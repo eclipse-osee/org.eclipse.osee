@@ -23,7 +23,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -199,7 +198,7 @@ public final class RenderingUtil {
 
    public static String toFileName(IOseeBranch branch) throws OseeCoreException {
       // replace invalid filename characters \/:"*?<>| and . and ' with _
-      String shortName = Strings.saferReplace(Branch.getShortName(branch), "[\\.\\/:\"*?<>|'\\\\]+", "_");
+      String shortName = Strings.saferReplace(branch.getShortName(), "[\\.\\/:\"*?<>|'\\\\]+", "_");
       return encode(shortName);
    }
 

@@ -18,13 +18,13 @@ import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.SoftwareRe
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.AccessContextId;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.Active;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
+import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -42,24 +42,6 @@ public class OseeClientQueryTest {
 
    private static final String GUID1 = SystemUser.Anonymous.getGuid();
    private static final String GUID2 = SystemUser.OseeSystem.getGuid();
-
-   private static final IOseeBranch SAW_1 = new IOseeBranch() {
-
-      @Override
-      public Long getGuid() {
-         return 3L;
-      }
-
-      @Override
-      public String getName() {
-         return "SAW_Bld_1";
-      }
-
-      @Override
-      public Long getUuid() {
-         return 3L;
-      }
-   };
 
    private static OseeClient createClient;
 
@@ -138,14 +120,14 @@ public class OseeClientQueryTest {
    public void searchForArtifactType() throws OseeCoreException {
       final int EXPECTED_RESULTS = 7;
       SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andTypeEquals(Folder).getSearchResult(RequestType.IDS);
+         createClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(Folder).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
    @Test
    public void searchForArtifactTypes() throws OseeCoreException {
       final int EXPECTED_RESULTS = 24;
-      SearchResult results = createClient.createQueryBuilder(SAW_1).andTypeEquals(GeneralData, GeneralDocument,
+      SearchResult results = createClient.createQueryBuilder(SAW_Bld_1).andTypeEquals(GeneralData, GeneralDocument,
          SoftwareRequirement).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
@@ -153,9 +135,8 @@ public class OseeClientQueryTest {
    @Test
    public void searchForArtifactTypesIncludeTypeInheritance() throws OseeCoreException {
       final int EXPECTED_RESULTS = 150;
-      SearchResult results =
-         createClient.createQueryBuilder(SAW_1).andIsOfType(GeneralData, GeneralDocument, Requirement).getSearchResult(
-            RequestType.IDS);
+      SearchResult results = createClient.createQueryBuilder(SAW_Bld_1).andIsOfType(GeneralData, GeneralDocument,
+         Requirement).getSearchResult(RequestType.IDS);
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 

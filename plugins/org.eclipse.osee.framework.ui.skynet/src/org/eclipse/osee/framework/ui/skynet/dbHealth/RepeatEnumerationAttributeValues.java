@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.TxChange;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -95,7 +94,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
             ArtifactQuery.getArtifactListFromIds(artifactGuids, branch, EXCLUDE_DELETED); // bulk load for speed
             SkynetTransaction transaction = TransactionManager.createTransaction(branch,
-               "Delete Repeat Attribute Values for" + Branch.getShortName(branch));
+               "Delete Repeat Attribute Values for" + branch.getShortName());
             for (AttrData attrData : attributeData) {
                Artifact artifact = ArtifactQuery.getArtifactFromId(attrData.getArtifactGuid(), branch);
                AttributeType attributeType = AttributeTypeManager.getTypeByGuid(attrData.getAttributeTypeId());

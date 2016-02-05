@@ -39,7 +39,7 @@ public final class BaseToHeadHandler implements IChangeReportUiHandler {
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getEndTx().getFullBranch().getShortName(BRANCH_NAME_LEN);
+         branchName = txDelta.getEndTx().getBranch().getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";

@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -79,7 +80,7 @@ public final class TokenFactory {
       return new SorterIdToken(guid, name);
    }
 
-   private final static class SorterIdToken extends NamedIdentity<String>implements IRelationSorterId {
+   private final static class SorterIdToken extends NamedIdentity<String> implements IRelationSorterId {
 
       public SorterIdToken(String guid, String name) {
          super(guid, name);
@@ -91,9 +92,14 @@ public final class TokenFactory {
       }
    }
 
-   private final static class ArtifactTypeToken extends NamedIdentity<Long>implements IArtifactType {
-      public ArtifactTypeToken(Long guid, String name) {
-         super(guid, name);
+   private final static class ArtifactTypeToken extends NamedId implements IArtifactType {
+      public ArtifactTypeToken(Long id, String name) {
+         super(id, name);
+      }
+
+      @Override
+      public Long getGuid() {
+         return getId();
       }
    }
 
@@ -101,26 +107,19 @@ public final class TokenFactory {
       return new TransactionToken(txId);
    }
 
-   private static final class TransactionToken extends BaseIdentity<Integer>implements ITransaction {
+   private static final class TransactionToken extends BaseIdentity<Integer> implements ITransaction {
       public TransactionToken(Integer txId) {
          super(txId);
       }
    }
 
-   private static final class BranchToken extends NamedIdentity<Long>implements IOseeBranch {
-
+   private static final class BranchToken extends NamedId implements IOseeBranch {
       public BranchToken(Long branchId, String name) {
          super(branchId, name);
       }
-
-      @Override
-      public Long getUuid() {
-         return getGuid();
-      }
-
    }
 
-   private final static class AttributeTypeToken extends FullyNamedIdentity<Long>implements IAttributeType {
+   private final static class AttributeTypeToken extends FullyNamedIdentity<Long> implements IAttributeType {
       public AttributeTypeToken(Long guid, String name) {
          super(guid, name);
       }
@@ -130,13 +129,13 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeToken extends FullyNamedIdentity<Long>implements IRelationType {
+   private final static class RelationTypeToken extends FullyNamedIdentity<Long> implements IRelationType {
       public RelationTypeToken(Long guid, String name) {
          super(guid, name);
       }
    }
 
-   private static class ArtifactToken extends NamedIdentity<String>implements IArtifactToken {
+   private static class ArtifactToken extends NamedIdentity<String> implements IArtifactToken {
       private final IArtifactType artifactType;
       private final long uuid;
 
@@ -157,7 +156,7 @@ public final class TokenFactory {
       }
    }
 
-   private static class UserToken extends NamedIdentity<String>implements IUserToken {
+   private static class UserToken extends NamedIdentity<String> implements IUserToken {
 
       private final String userId;
       private final boolean active;
@@ -219,7 +218,7 @@ public final class TokenFactory {
 
    }
 
-   private final static class AccessContextIdToken extends NamedIdentity<String>implements IAccessContextId {
+   private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {
       public AccessContextIdToken(String guid, String name) {
          super(guid, name);
       }
@@ -230,7 +229,7 @@ public final class TokenFactory {
       }
    }
 
-   private final static class RelationTypeSideToken extends FullyNamedIdentity<Long>implements IRelationTypeSide {
+   private final static class RelationTypeSideToken extends FullyNamedIdentity<Long> implements IRelationTypeSide {
 
       private final RelationSide relationSide;
       private RelationTypeSideToken opposite;

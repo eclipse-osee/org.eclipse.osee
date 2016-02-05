@@ -48,7 +48,4 @@ public interface BranchReadable extends IOseeBranch {
    Collection<? extends BranchReadable> getAncestors() throws OseeCoreException;
 
    boolean isAncestorOf(IOseeBranch branch) throws OseeCoreException;
-
-   String getShortName();
-
 }

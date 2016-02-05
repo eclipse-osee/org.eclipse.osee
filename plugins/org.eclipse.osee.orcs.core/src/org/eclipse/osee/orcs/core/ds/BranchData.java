@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
-import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -18,15 +18,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 /**
  * @author Roberto E. Escobar
  */
-public interface BranchData extends HasLocalId<Long> {
-
-   void setUuid(Long uuid);
-
-   Long getUuid();
-
-   String getName();
-
-   void setName(String name);
+public interface BranchData extends IOseeBranch {
 
    int getAssociatedArtifactId();
 

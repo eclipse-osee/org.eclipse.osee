@@ -116,7 +116,7 @@ public class HtmlWriter {
       Map<String, Object> data = new LinkedHashMap<>();
       data.put("Name", branch.getName());
       data.put("Uuid", branch.getUuid());
-      data.put("Local Id", branch.getLocalId());
+      data.put("Local Id", branch.getId());
       data.put("State", branch.getBranchState());
       data.put("Type", branch.getBranchType());
       data.put("Archived", branch.getArchiveState());
