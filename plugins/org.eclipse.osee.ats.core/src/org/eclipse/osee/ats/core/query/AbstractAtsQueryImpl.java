@@ -154,8 +154,11 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       else {
          Collection<ArtifactId> artifacts = runQuery();
          for (ArtifactId artifact : artifacts) {
-            if (artifactTypes.isEmpty() || isArtifactTypeMatch(artifact, artifactTypes)) {
-               workItems.add((T) services.getWorkItemFactory().getWorkItem(artifact));
+            if (allArtTypes.isEmpty() || isArtifactTypeMatch(artifact, allArtTypes)) {
+               IAtsWorkItem workItem = services.getWorkItemFactory().getWorkItem(artifact);
+               if (workItem != null) {
+                  workItems.add((T) workItem);
+               }
             }
          }
          addtoResultsWithNullCheck(allResults, handleReleasedOption(workItems));
