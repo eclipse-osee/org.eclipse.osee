@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * Common location for event handling for SMAEditors in order to keep number of registrations and processing to a
  * minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SMAEditorArtifactEventManager implements IArtifactEventListener {
@@ -119,12 +119,17 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             public void run() {
                handler.getSMAEditor().refreshPages();
             }
-
          });
       } else if (isReloaded(artifactEvent, awa)) {
-         SMAEditor.close(Collections.singleton(awa), false);
-         if (!awa.isDeleted()) {
-            SMAEditor.editArtifact(awa);
+         if (awa.isDeleted()) {
+            SMAEditor.close(Collections.singleton(awa), false);
+         } else {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  handler.getSMAEditor().refreshPages();
+               }
+            });
          }
       }
       if (!refreshed && awa.isTeamWorkflow() && ReviewManager.hasReviews((TeamWorkFlowArtifact) awa)) {
@@ -173,7 +178,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
             // list of actionable items when a sibling changes
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(awa.getParentActionArtifact())) {
                ActionArtifact parentAction = teamWf.getParentActionArtifact();
-               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(teamWf) && (parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)))) {
+               if (!awa.equals(teamWf) && (artifactEvent.isHasEvent(
+                  teamWf) && (parentAction != null && artifactEvent.isRelAddedChangedDeleted(parentAction)))) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -213,7 +219,7 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
                      // If relation is parallel config and guid is one of parallel configured versions
                      if (relation.is(AtsRelationTypes.ParallelVersion_Child) && (relation.getArtA().getGuid().equals(
                         AtsUtilCore.getGuid(version)) || relation.getArtB().getGuid().equals(
-                        AtsUtilCore.getGuid(version)))) {
+                           AtsUtilCore.getGuid(version)))) {
                         changed = true;
                         break;
                      }
