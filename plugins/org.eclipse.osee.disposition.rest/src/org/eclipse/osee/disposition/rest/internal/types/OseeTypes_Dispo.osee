@@ -119,19 +119,15 @@ attributeType "dispo.Import State" extends EnumeratedAttribute {
 
 oseeEnumType "enum.dispo.imported state" {
 	uuid 0x3000000000000197
-	entry "NONE"
+	entry "None"
 	entryGuid "AHkD1ZWRgG65kO3xVB"
-	entry "No Import"
-	entryGuid "AHkD1ZWRgG65kO2xwA"
 	entry "No Change"
 	entryGuid "AHkD42Lk63rhGqAyBOAA"
-	entry "Import OK"
+	entry "OK"
 	entryGuid "AHkD145yThP3YIc3P3AA"
-	entry "Importing"
-	entryGuid "AHkD1ZnB3kjoOpcY2bgA"
-	entry "Import Warnings"
+	entry "Warnings"
 	entryGuid "AHkD1ZnB5kjoOpcY2bcC"
-	entry "Import Failed"
+	entry "Failed"
 	entryGuid "AHkD1ZnB5kjoOpZz2bcD"
 	entry "Unspecified"
 	entryGuid "AHkD1ZtZdviGWH2sJvwC"
