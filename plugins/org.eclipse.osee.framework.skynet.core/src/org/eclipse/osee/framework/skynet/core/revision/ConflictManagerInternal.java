@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -52,27 +51,33 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  * @author Jeff C. Phillips
  */
 public class ConflictManagerInternal {
-   private static final String MULTIPLICITY_DETECTION =
-      "select attr_s.art_id, attr_s.attr_id as source_attr_id, attr_d.attr_id as dest_attr_id " + //
-      "from " + //
-      "osee_attribute attr_s, " + //
-      "osee_txs txs_s, " + //
-      "osee_txs txs_d, " + //
-      "osee_attribute attr_d, " + //
-      "osee_join_id jid " + //
-      "where " + //
-      "txs_s.tx_current = 1 AND " + //
-      "txs_s.branch_id = ? AND " + //
-      "txs_s.transaction_id > ? AND " + //
-      "txs_s.gamma_id = attr_s.gamma_id AND " + //
-      "attr_s.attr_type_id = jid.id AND " + //
-      "jid.query_id = ? AND " + //
-      "txs_d.tx_current = 1 AND " + //
-      "txs_d.branch_id = ? AND " + //
-      "txs_d.gamma_id = attr_d.gamma_id AND " + //
-      "attr_d.attr_type_id = attr_s.attr_type_id AND " + //
-      "attr_d.art_id = attr_s.art_id AND " + //
-      "attr_d.attr_id <> attr_s.attr_id";
+
+   private static final String MULTIPLICITY_DETECTION = "with " + //
+   "attr_c as (select attr_src.art_id as src_art_id, " + //
+   "attr_src.attr_id as src_attr_id, " + //
+   "attr_src.attr_type_id as src_attr_tid, " + //
+   "txs_src.gamma_id as src_txs_gid " + //
+   "from osee_txs txs_src, osee_attribute attr_src where " + //
+   "branch_id = ? and " + //
+   "tx_current = 1 and " + //
+   "transaction_id > ? and " + //
+   "txs_src.gamma_id = attr_src.gamma_id), " + //
+   "sj_c as (select attr_c.src_art_id as sj_art_id, " + //
+   "attr_c.src_attr_id as sj_attr_id, " + //
+   "attr_c.src_attr_tid as sj_attr_tid " + //
+   "from attr_c, osee_join_id jid where " + //
+   "attr_c.src_attr_tid = jid.id and " + //
+   "jid.query_id = ?) " + //
+   "select attr_d.art_id as art_id, " + //
+   "sj_c.sj_attr_id as source_attr_id, " + //
+   "attr_d.attr_id as dest_attr_id " + //
+   "from sj_c, osee_attribute attr_d, osee_txs txs_d where " + //
+   "txs_d.branch_id = ? and " + //
+   "txs_d.tx_current = 1 and " + //
+   "txs_d.gamma_id = attr_d.gamma_id and " + //
+   "attr_d.attr_type_id = sj_c.sj_attr_tid and " + //
+   "attr_d.art_id = sj_c.sj_art_id and " + //
+   "attr_d.attr_id <> sj_c.sj_attr_id";
 
    private static final String CONFLICT_CLEANUP =
       "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id and (t1.conflict_type = transaction_id or transaction_id is NULL))";
@@ -142,7 +147,7 @@ public class ConflictManagerInternal {
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
       String disableChecks = OseeInfo.getValue("osee.disable.multiplicity.conflicts");
-      if (!Strings.isValid(disableChecks)) {
+      if ("false".equals(disableChecks)) {
          // check for multiplicity conflicts
          Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
          loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, baselineTransaction,

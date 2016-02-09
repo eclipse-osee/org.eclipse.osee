@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
+import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -241,6 +242,9 @@ public class ConflictTest {
       int child2AttrId = attr.getId();
 
       Assert.assertNotEquals(child1AttrId, child2AttrId);
+
+      // enable multiplicity conflict checking
+      OseeInfo.setValue("osee.disable.multiplicity.conflicts", "false");
 
       mgr = new ConflictManagerExternal(parent, child2);
       Assert.assertTrue(mgr.originalConflictsExist());
