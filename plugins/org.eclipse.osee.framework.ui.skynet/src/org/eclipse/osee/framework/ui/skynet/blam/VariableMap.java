@@ -114,9 +114,13 @@ public class VariableMap {
    @SuppressWarnings("unchecked")
    public <T> Collection<T> getCollection(Class<T> clazz, String parameterName) throws OseeArgumentException {
       List<T> results = new ArrayList<>();
-      for (Object obj : getValue(Collection.class, parameterName)) {
-         if (clazz.isInstance(obj)) {
-            results.add((T) obj);
+      Collection<T> collection = getValue(Collection.class, parameterName);
+
+      if (collection != null) {
+         for (Object obj : collection) {
+            if (clazz.isInstance(obj)) {
+               results.add((T) obj);
+            }
          }
       }
       return results;
