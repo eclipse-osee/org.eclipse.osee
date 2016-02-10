@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -37,6 +39,14 @@ public interface IAtsConfigQuery {
    IAtsConfigQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
 
    IAtsConfigQuery andUuids(Long... uuids);
+
+   IAtsConfigQuery andProgram(IAtsProgram program);
+
+   IAtsConfigQuery andProgram(Long uuid);
+
+   IAtsConfigQuery andWorkType(WorkType workType, WorkType... workTypes);
+
+   IAtsConfigQuery andCsci(Collection<String> cscis);
 
    <T extends ArtifactId> ResultSet<T> getResultArtifacts();
 

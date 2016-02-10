@@ -20,6 +20,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.WorkType;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryFilter;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -231,6 +234,31 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    public void setArtifactType(IArtifactType artifactType) {
       this.artifactType = artifactType;
+   }
+
+   @Override
+   public IAtsConfigQuery andProgram(IAtsProgram program) {
+      return andProgram(program.getUuid());
+   }
+
+   @Override
+   public IAtsConfigQuery andProgram(Long uuid) {
+      return andAttr(AtsAttributeTypes.ProgramUuid, Collections.singleton(String.valueOf(uuid)));
+   }
+
+   @Override
+   public IAtsConfigQuery andWorkType(WorkType workType, WorkType... workTypes) {
+      List<String> workTypeStrs = new LinkedList<>();
+      workTypeStrs.add(workType.name());
+      for (WorkType workType2 : workTypes) {
+         workTypeStrs.add(workType2.name());
+      }
+      return andAttr(AtsAttributeTypes.WorkType, workTypeStrs);
+   }
+
+   @Override
+   public IAtsConfigQuery andCsci(Collection<String> cscis) {
+      return andAttr(AtsAttributeTypes.CSCI, cscis);
    }
 
 }

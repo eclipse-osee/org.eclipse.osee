@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.client.demo.config;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.CIS_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.CountryEndpointApi;
 import org.eclipse.osee.ats.api.country.JaxCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
@@ -81,6 +82,41 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
 
       // Create Work Packages
       createWorkPackages();
+
+      addSawWorkTypes();
+   }
+
+   private void addSawWorkTypes() {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Add SAW Work Types");
+      Artifact sawProgram = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Program);
+      for (DemoCsci csci : DemoCsci.values()) {
+         sawProgram.addAttribute(AtsAttributeTypes.CSCI, csci.name());
+      }
+      sawProgram.persist(transaction);
+      Artifact sawTeamDef = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_SW);
+      for (Artifact child : sawTeamDef.getChildren()) {
+         child.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram.getUuid().intValue());
+         if (child.getName().contains("Code")) {
+            child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Code.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
+         } else if (child.getName().contains("Test")) {
+            child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Test.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
+         } else if (child.getName().contains("Requirements")) {
+            child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Requirements.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
+         } else if (child.getName().contains("Design")) {
+            child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.SW_Design.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
+         } else if (child.getName().contains("HW")) {
+            child.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Hardware.name());
+            child.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
+         }
+         child.persist(transaction);
+      }
+      transaction.execute();
    }
 
    // configure USG for country, program, insertion, activity and work package

@@ -49,6 +49,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType CancelledBy = createType(0x10000000000000C2L, "Cancelled By", "UserId of the user who cancelled workflow.");
    public static final IAttributeType CancelledReason = createType(0x10000000000000C3L, "Cancelled Reason", "Explanation of why worklfow was cancelled.");
    public static final IAttributeType CancelledFromState = createType(0x10000000000000C4L, "Cancelled From State", "State workflow was in when cancelled.");
+   public static final IAttributeType CSCI = createType(0x1000555143210FBL, "CSCI", "CSCI this Team is reponsible for.");
 
    public static final IAttributeType CreatedDate = createType(0x10000000000000C5L, "Created Date", "Date the workflow was created.");
    public static final IAttributeType CreatedBy = createType(0x10000000000000C6L, "Created By", "UserId of the user who created the workflow.");
@@ -125,6 +126,7 @@ public final class AtsAttributeTypes {
    public static final IAttributeType VersionLocked = createType(0x10000000000000B4L, "Version Locked", "True if version artifact is locked.");
    public static final IAttributeType WeeklyBenefit = createType(0x10000000000000D2L, "Weekly Benefit", "Estimated number of hours that will be saved over a single year if this change is completed.");
    public static final IAttributeType WorkflowDefinition = createType(0x10000000000000ADL, "Workflow Definition", "Specific work flow definition id used by this Workflow artifact");
+   public static final IAttributeType WorkType = createType(0x1000555112340FBL, "Work Type", "Work Type of this Team.");
    public static final IAttributeType TeamWorkflowArtifactType = createType(0x10000000000000ACL, "Team Workflow Artifact Type", "Specific Artifact Type to use in creation of Team Workflow");
    public static final IAttributeType RelatedTaskWorkDefinition = createType(0x10000000000000B0L, "Related Task Workflow Definition", "Specific work flow definition id used by Tasks related to this Workflow");
    public static final IAttributeType WorkPackage = createType(0x10000000000000E6L, "Work Package", "Designated accounting work package for completing workflow.");

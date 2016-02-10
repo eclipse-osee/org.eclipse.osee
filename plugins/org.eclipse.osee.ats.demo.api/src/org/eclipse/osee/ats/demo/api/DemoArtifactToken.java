@@ -43,7 +43,7 @@ public final class DemoArtifactToken {
    public static IArtifactToken SAW_Requirements = TokenFactory.createArtifactToken(20592, "At2WHxEfLXfCLytmLlAA",
       "SAW Requirements", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW =
-      TokenFactory.createArtifactToken(3902389, "At2WHxFk5VVE2cafF5AA", "SAW_SW", CoreArtifactTypes.Folder);
+      TokenFactory.createArtifactToken(3902389, "At2WHxFk5VVE2cafF5AA", "SAW SW", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_CSCI_AI =
       TokenFactory.createArtifactToken(1866, "AZ2uRHybOnvKPIuRqKAA", "SAW CSCI", AtsArtifactTypes.ActionableItem);
 

@@ -62,6 +62,7 @@ artifactType "Program" extends "ats.Ats Config Artifact" {
 	attribute "ats.Namespace"
 	attribute "ats.Description"
    attribute "ats.closure.Closure State"
+   attribute "ats.CSCI"
 }
 
 artifactType "ats.Review" extends "ats.State Machine" {
@@ -125,11 +126,17 @@ artifactType "Team Definition" extends "ats.Ats Team Definition or AI" , "Abstra
 	attribute "ats.Id Sequence Name"
 	attribute "ats.Team Workflow Artifact Type"
 	attribute "ats.closure.Active"
+	attribute "ats.Work Type"
+	attribute "ats.CSCI"
+	attribute "ats.Program Uuid"
 }
 
 artifactType "Actionable Item" extends "ats.Ats Team Definition or AI" , "Abstract Access Controlled" {
 	uuid 0x0000000000000045
 	attribute "ats.Allow User Action Creation"
+	attribute "ats.Work Type"
+	attribute "ats.CSCI"
+	attribute "ats.Program Uuid"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
@@ -295,6 +302,24 @@ oseeEnumType "enum.color.team" {
    entry "Gold Team" entryGuid "74319306"
    entry "Plaid Team" entryGuid "74319307"
    entry "Unspecified" entryGuid "74319308"
+}
+
+attributeType "ats.Work Type" extends StringAttribute {
+	uuid 0x1000555112340FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
+}
+
+attributeType "ats.CSCI" extends StringAttribute {
+	uuid 0x1000555143210FB
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max unlimited
+	taggerId DefaultAttributeTaggerProvider
+	mediaType "text/plain"
 }
 
 attributeType "ats.ATS Configured Branch" extends StringAttribute {
