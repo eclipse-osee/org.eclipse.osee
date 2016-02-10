@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 
 /**
  * Methods in support of Decision Reviews
- * 
+ *
  * @author Donald G. Dunne
  */
 public class DecisionReviewManager {
@@ -54,7 +54,7 @@ public class DecisionReviewManager {
    /**
     * Quickly transition to a state with minimal metrics and data entered. Should only be used for automated
     * transitioning for things such as developmental testing and demos.
-    * 
+    *
     * @param user User to transition to OR null if should use user of current state
     */
    public static Result transitionTo(DecisionReviewArtifact reviewArt, DecisionReviewState toState, IAtsUser user, boolean popup, IAtsChangeSet changes) throws OseeCoreException {
@@ -107,7 +107,7 @@ public class DecisionReviewManager {
       TransitionHelper helper =
          new TransitionHelper("Transition to " + toState.getName(), Arrays.asList(reviewArt), toState.getName(),
             Arrays.asList(user == null ? reviewArt.getStateMgr().getAssignees().iterator().next() : user), null,
-            changes, AtsClientService.get().getServices(), TransitionOption.None);
+            changes, AtsClientService.get().getServices(), TransitionOption.OverrideAssigneeCheck);
       IAtsTransitionManager transitionMgr = TransitionFactory.getTransitionManager(helper);
       TransitionResults results = transitionMgr.handleAll();
       if (results.isEmpty()) {
