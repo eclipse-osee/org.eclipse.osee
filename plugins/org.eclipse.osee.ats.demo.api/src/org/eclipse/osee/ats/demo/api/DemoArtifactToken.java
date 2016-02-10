@@ -33,15 +33,15 @@ public final class DemoArtifactToken {
    public static final IArtifactToken SAW_Program =
       TokenFactory.createArtifactToken(19196003, "At2WHxCeMCHacr02EkAA", "SAW Program", AtsArtifactTypes.Program);
    public static IArtifactToken SAW_HW =
-      TokenFactory.createArtifactToken(2876840, "At2WHxCeMCHfcr02EkAA", "SAW_HW", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(2876840, "At2WHxCeMCHfcr02EkAA", "SAW HW", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Code =
-      TokenFactory.createArtifactToken(30013695, "At2WHxC2lxLOGB0YiuQA", "SAW_Code", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(30013695, "At2WHxC2lxLOGB0YiuQA", "SAW Code", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Test =
-      TokenFactory.createArtifactToken(31608252, "At2WHxDuXkCIJFEtQ0AA", "SAW_Test", AtsArtifactTypes.TeamDefinition);
+      TokenFactory.createArtifactToken(31608252, "At2WHxDuXkCIJFEtQ0AA", "SAW Test", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW_Design = TokenFactory.createArtifactToken(138220, "At2WHxEGxl7nWuqx7FQA",
-      "SAW_SW_Design", AtsArtifactTypes.TeamDefinition);
+      "SAW SW Design", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_Requirements = TokenFactory.createArtifactToken(20592, "At2WHxEfLXfCLytmLlAA",
-      "SAW_Requirements", AtsArtifactTypes.TeamDefinition);
+      "SAW Requirements", AtsArtifactTypes.TeamDefinition);
    public static IArtifactToken SAW_SW =
       TokenFactory.createArtifactToken(3902389, "At2WHxFk5VVE2cafF5AA", "SAW_SW", CoreArtifactTypes.Folder);
    public static IArtifactToken SAW_CSCI_AI =

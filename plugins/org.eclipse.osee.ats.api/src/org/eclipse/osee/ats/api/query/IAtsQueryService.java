@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
@@ -36,5 +37,7 @@ public interface IAtsQueryService {
    AtsSearchData getSearch(String jsonStr);
 
    AtsSearchData createSearchData(String namespace, String searchName);
+
+   IAtsConfigQuery createQuery(IArtifactType artifactType);
 
 }

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
+import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.query.IAtsWorkItemFilter;
@@ -21,6 +22,7 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.query.AtsWorkItemFilter;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
@@ -40,6 +42,13 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       for (WorkItemType type : workItemTypes) {
          query.isOfType(type);
       }
+      return query;
+   }
+
+   @Override
+   public IAtsConfigQuery createQuery(IArtifactType artifactType) {
+      AtsConfigQueryImpl query = new AtsConfigQueryImpl(atsServer);
+      query.isOfType(artifactType);
       return query;
    }
 
