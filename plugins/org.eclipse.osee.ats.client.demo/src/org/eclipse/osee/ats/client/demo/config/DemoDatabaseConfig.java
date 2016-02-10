@@ -116,6 +116,19 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
          }
          child.persist(transaction);
       }
+
+      Artifact sawTestAi = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Test_AI);
+      sawTestAi.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram.getUuid().intValue());
+      sawTestAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Test.name());
+      sawTestAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.DP.name());
+      sawTestAi.persist(transaction);
+
+      Artifact sawCodeAi = AtsClientService.get().getArtifact(DemoArtifactToken.SAW_Code_AI);
+      sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.ProgramUuid, sawProgram.getUuid().intValue());
+      sawCodeAi.setSoleAttributeValue(AtsAttributeTypes.WorkType, WorkType.Code.name());
+      sawCodeAi.addAttribute(AtsAttributeTypes.CSCI, DemoCsci.SP.name());
+      sawCodeAi.persist(transaction);
+
       transaction.execute();
    }
 

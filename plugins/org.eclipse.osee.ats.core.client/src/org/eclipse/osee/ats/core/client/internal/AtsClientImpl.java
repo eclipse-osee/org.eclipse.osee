@@ -91,7 +91,6 @@ import org.eclipse.osee.ats.core.client.internal.workdef.ArtifactResolverImpl;
 import org.eclipse.osee.ats.core.client.internal.workdef.AtsWorkDefinitionCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.workflow.AtsRelationResolverServiceImpl;
-import org.eclipse.osee.ats.core.client.program.internal.AtsProgramService;
 import org.eclipse.osee.ats.core.client.task.AtsTaskService;
 import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
@@ -104,6 +103,7 @@ import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
+import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
@@ -269,8 +269,8 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       };
       utilService = AtsCoreFactory.getUtilService(attributeResolverService);
 
-      programService = new AtsProgramService(this, configProxy);
-      teamDefinitionService = new AtsTeamDefinitionService(configProxy, configItemFactory);
+      programService = new AtsProgramService(this);
+      teamDefinitionService = new AtsTeamDefinitionService(this);
 
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
          userService, attributeResolverService, atsStateFactory, configProxy, getServices());

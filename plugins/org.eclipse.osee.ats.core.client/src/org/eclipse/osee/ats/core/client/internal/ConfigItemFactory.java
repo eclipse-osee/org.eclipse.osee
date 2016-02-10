@@ -32,6 +32,7 @@ import org.eclipse.osee.ats.core.config.Country;
 import org.eclipse.osee.ats.core.config.Program;
 import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
+import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -86,7 +87,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
       IAtsWorkPackage workPackage = null;
       if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.WorkPackage)) {
-         workPackage = (IAtsWorkPackage) atsClient.getConfigObject((Artifact) artifact);
+         workPackage = new WorkPackage(logger, artifact, atsClient.getServices());
       }
       return workPackage;
    }

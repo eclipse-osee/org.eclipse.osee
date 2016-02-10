@@ -16,12 +16,12 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,12 +31,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
 
-   private final IAtsConfig config;
-   private final IAtsConfigItemFactory configFactory;
+   private final IAtsClient atsClient;
 
-   public AtsTeamDefinitionService(IAtsConfig config, IAtsConfigItemFactory configFactory) {
-      this.config = config;
-      this.configFactory = configFactory;
+   public AtsTeamDefinitionService(IAtsClient atsClient) {
+      this.atsClient = atsClient;
    }
 
    @Override
@@ -46,7 +44,7 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
          ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
          Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(teamDefGuid);
-         teamDef = (IAtsTeamDefinition) config.getSoleByUuid(uuid);
+         teamDef = (IAtsTeamDefinition) atsClient.getConfig().getSoleByUuid(uuid);
       }
       return teamDef;
    }
@@ -56,9 +54,19 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
       List<IAtsVersion> versions = new ArrayList<>();
       for (Artifact verArt : ((Artifact) teamDef.getStoreObject()).getRelatedArtifacts(
          AtsRelationTypes.TeamDefinitionToVersion_Version)) {
-         versions.add(configFactory.getVersion(verArt));
+         versions.add(atsClient.getConfigItemFactory().getVersion(verArt));
       }
       return versions;
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsTeamDefinition teamDef) {
+      return teamDef.getTeamDefinitionHoldingVersions();
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
+      return atsClient.getProgramService().getTeamDefHoldingVersions(program);
    }
 
 }

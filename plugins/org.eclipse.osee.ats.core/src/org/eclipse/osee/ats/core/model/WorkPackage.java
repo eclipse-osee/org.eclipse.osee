@@ -31,7 +31,7 @@ import org.eclipse.osee.logger.Log;
  */
 public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
-   private final ArtifactId artifact;
+   private ArtifactId artifact;
    private final IAtsServices services;
 
    public WorkPackage(Log logger, ArtifactId artifact, IAtsServices services) {
@@ -160,6 +160,16 @@ public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
    @Override
    public Long getUuid() {
       return artifact.getUuid();
+   }
+
+   @Override
+   public ArtifactId getStoreObject() {
+      return artifact;
+   }
+
+   @Override
+   public void setStoreObject(ArtifactId artifact) {
+      this.artifact = artifact;
    }
 
    @Override

@@ -35,10 +35,10 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
@@ -115,7 +115,7 @@ public class DetailedTestStatusOld extends AbstractBlam {
    private Collection<String> availableTraceHandlers;
 
    private IOseeBranch selectedBranch;
-   private IAtsProgramClient selectedProgram;
+   private IAtsProgram selectedProgram;
    private static final int MAX_EXCEL_COLUMNS = 256;
 
    private enum Index {
@@ -163,11 +163,12 @@ public class DetailedTestStatusOld extends AbstractBlam {
 
          Iterator<?> iter = selection.iterator();
          if (iter.hasNext()) {
-            selectedProgram = (IAtsProgramClient) iter.next();
+            selectedProgram = (IAtsProgram) iter.next();
             selectedBranch = null;
 
             try {
-               Collection<IAtsVersion> versionArtifacts = selectedProgram.getTeamDefHoldingVersions().getVersions();
+               Collection<IAtsVersion> versionArtifacts =
+                  AtsClientService.get().getProgramService().getTeamDefHoldingVersions(selectedProgram).getVersions();
                versionsListViewer.setInputAtsObjects(versionArtifacts);
 
                requirementsBranchWidget.setSelection(null);

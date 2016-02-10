@@ -17,7 +17,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
-import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -100,9 +99,9 @@ public class AtsObjects {
       return uuids;
    }
 
-   public static Collection<ArtifactId> getArtifacts(Collection<IAtsTask> tasks) {
+   public static Collection<ArtifactId> getArtifacts(Collection<IAtsObject> atsObjects) {
       List<ArtifactId> artifacts = new LinkedList<>();
-      for (IAtsTask task : tasks) {
+      for (IAtsObject task : atsObjects) {
          artifacts.add(task.getStoreObject());
       }
       return artifacts;

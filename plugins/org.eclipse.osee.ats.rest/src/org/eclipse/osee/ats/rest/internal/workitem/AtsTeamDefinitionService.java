@@ -1,8 +1,13 @@
-/*
- * Created on Nov 18, 2014
+/*******************************************************************************
+ * Copyright (c) 2014 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.workitem;
 
 import java.util.ArrayList;
@@ -11,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -19,6 +25,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
 
    private final AtsServerImpl atsServer;
@@ -47,6 +56,16 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
          versions.add(atsServer.getConfigItemFactory().getVersion(verArt));
       }
       return versions;
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsTeamDefinition teamDef) {
+      return teamDef.getTeamDefinitionHoldingVersions();
+   }
+
+   @Override
+   public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
+      return atsServer.getProgramService().getTeamDefHoldingVersions(program);
    }
 
 }

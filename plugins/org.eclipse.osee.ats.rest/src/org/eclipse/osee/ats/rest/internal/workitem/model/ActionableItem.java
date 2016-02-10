@@ -41,7 +41,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       Set<IAtsActionableItem> children = new HashSet<>();
       try {
          for (ArtifactReadable childArt : getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Child)) {
-            IAtsActionableItem childTeamDef = atsServices.getConfigItemFactory().getActionableItem(childArt);
+            IAtsActionableItem childTeamDef = services.getConfigItemFactory().getActionableItem(childArt);
             children.add(childTeamDef);
          }
       } catch (OseeCoreException ex) {
@@ -60,7 +60,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = getArtifact().getRelated(CoreRelationTypes.Default_Hierarchical__Parent);
          if (!related.isEmpty()) {
-            parent = atsServices.getConfigItemFactory().getActionableItem(related.iterator().next());
+            parent = services.getConfigItemFactory().getActionableItem(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getParentActionableItem");
@@ -74,7 +74,7 @@ public class ActionableItem extends AtsConfigObject implements IAtsActionableIte
       try {
          ResultSet<ArtifactReadable> related = getArtifact().getRelated(AtsRelationTypes.TeamActionableItem_Team);
          if (!related.isEmpty()) {
-            teamDef = atsServices.getConfigItemFactory().getTeamDef(related.iterator().next());
+            teamDef = services.getConfigItemFactory().getTeamDef(related.iterator().next());
          }
       } catch (OseeCoreException ex) {
          getLogger().error(ex, "Error getTeamDefinition");

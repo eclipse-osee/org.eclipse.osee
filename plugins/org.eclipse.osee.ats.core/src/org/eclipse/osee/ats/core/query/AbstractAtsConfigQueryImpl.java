@@ -266,5 +266,14 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public IAtsConfigQuery andName(String name) {
       return andAttr(CoreAttributeTypes.Name, name);
    }
+   
+   @Override
+   public IAtsConfigQuery andWorkType(Collection<WorkType> workTypes) {
+      List<String> workTypeStrs = new LinkedList<>();
+      for (WorkType workType2 : workTypes) {
+         workTypeStrs.add(workType2.name());
+      }
+      return andAttr(AtsAttributeTypes.WorkType, workTypeStrs);
+   }
 
 }

@@ -157,7 +157,7 @@ public class ConfigJsonWriter implements MessageBodyWriter<IAtsConfigObject> {
          }
       } else if (atsObject instanceof IAtsProgram) {
          IAtsProgram program = (IAtsProgram) atsObject;
-         writer.writeStringField("Namespace", program.getNamespace());
+         writer.writeStringField("Namespace", atsServer.getProgramService().getNamespace(program));
          writer.writeBooleanField("Active", program.isActive());
          if (!identityView) {
             writer.writeArrayFieldStart("country");

@@ -99,6 +99,11 @@ public class AtsStoreService implements IAtsStoreService {
    }
 
    @Override
+   public String getGuid(IAtsObject atsObject) {
+      return ((Artifact) atsObject).getGuid();
+   }
+
+   @Override
    public String getTypeName(ArtifactId artifact) {
       return ((Artifact) artifact).getArtifactTypeName();
    }

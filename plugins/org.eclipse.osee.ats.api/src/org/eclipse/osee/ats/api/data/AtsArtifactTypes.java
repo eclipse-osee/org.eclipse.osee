@@ -33,7 +33,7 @@ public final class AtsArtifactTypes {
    public static final IArtifactType Goal = TokenFactory.createArtifactType(0x0000000000000048L, "Goal");
    public static final IArtifactType AtsArtifact = TokenFactory.createArtifactType(0x000000000000003FL, "ats.Ats Artifact");
    public static final IArtifactType WorkDefinition = TokenFactory.createArtifactType(0x000000000000003EL, "Work Definition");
-   public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Definition");
+   public static final IArtifactType WorkPackage = TokenFactory.createArtifactType(0x0000000000000322L, "Work Package");
    public static final IArtifactType Program = TokenFactory.createArtifactType(0x0000BA123443210004L, "Program");
    public static final IArtifactType Country = TokenFactory.createArtifactType(0x44C69E6EBB2D8324L, "Country");
 

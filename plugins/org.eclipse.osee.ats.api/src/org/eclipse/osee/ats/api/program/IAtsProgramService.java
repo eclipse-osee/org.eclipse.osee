@@ -13,24 +13,31 @@ package org.eclipse.osee.ats.api.program;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.WorkType;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsProgramService {
 
-   IAtsTeamDefinition getTeamDefinition(IAtsProgram atsProgram);
+   // country
+   IAtsCountry getCountry(IAtsProgram atsProgram);
 
-   IAtsProgram getProgram(IAtsWorkItem workItem);
+   long getCountryUuid(IAtsProgram program);
+
+   // program
+   IAtsProgram getProgram(IAtsWorkItem wi);
 
    IAtsProgram getProgramByGuid(String guid);
-
-   IAtsCountry getCountry(IAtsProgram atsProgram);
 
    List<IAtsProgram> getPrograms(IAtsCountry atsCountry);
 
@@ -38,22 +45,69 @@ public interface IAtsProgramService {
 
    Collection<IAtsProgram> getPrograms();
 
+   IAtsProgram getProgram(IAtsInsertion insertion);
+
+   // insertions
    Collection<IAtsInsertion> getInsertions(IAtsProgram program);
 
    IAtsInsertion getInsertion(Long insertionUuid);
+
+   IAtsInsertion getInsertion(IAtsInsertionActivity activity);
+
+   // insertion activities
+   IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage);
 
    Collection<IAtsInsertionActivity> getInsertionActivities(IAtsInsertion iAtsInsertion);
 
    IAtsInsertionActivity getInsertionActivity(Long insertionActivityUuid);
 
+   // work package
    IAtsWorkPackage getWorkPackage(Long workPackageUuid);
 
-   IAtsInsertionActivity getInsertionActivity(IAtsWorkPackage workPackage);
-
-   IAtsInsertion getInsertion(IAtsInsertionActivity activity);
-
-   IAtsProgram getProgram(IAtsInsertion insertion);
-
    void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems);
+
+   // program
+   String getDescription(IAtsProgram program);
+
+   IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program);
+
+   IAtsTeamDefinition getTeamDefinition(IAtsProgram program);
+
+   Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program);
+
+   Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes);
+
+   Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, WorkType workType);
+
+   Collection<IAtsActionableItem> getAis(IAtsProgram program);
+
+   Collection<IAtsActionableItem> getAis(IAtsProgram program, WorkType workType);
+
+   Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes);
+
+   Collection<IAtsProgram> getPrograms(IArtifactType artifactType);
+
+   Collection<String> getCscis(IAtsProgram program);
+
+   WorkType getWorkType(IAtsTeamWorkflow teamWf);
+
+   ProjectType getProjectType(IAtsProgram program);
+
+   String getNamespace(IAtsProgram program);
+
+   boolean isActive(IAtsProgram program);
+
+   Collection<IAtsVersion> getVersions(IAtsProgram program);
+
+   IAtsVersion getVersion(IAtsProgram program, String versionName);
+
+   // workflows
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType, IAtsWorkItem workItem);
+
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem);
+
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes);
+
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType);
 
 }

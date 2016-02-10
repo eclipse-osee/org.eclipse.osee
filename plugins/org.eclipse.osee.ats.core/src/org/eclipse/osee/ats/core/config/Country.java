@@ -38,6 +38,6 @@ public class Country extends AtsConfigObject implements IAtsCountry {
 
    @Override
    public String getDescription() {
-      return atsServices.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 }

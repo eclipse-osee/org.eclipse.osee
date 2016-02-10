@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -157,8 +156,8 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          ((TeamWorkFlowArtifact) awa))) {
          try {
             // If related review has made a change, redraw
-            for (TaskArtifact taskArt : getTaskArtifactsFromCurrentState(((TeamWorkFlowArtifact) awa))) {
-               if (artifactEvent.isHasEvent(taskArt)) {
+            for (IAtsTask task : AtsClientService.get().getTaskService().getTasks(awa, awa.getStateDefinition())) {
+               if (artifactEvent.isHasEvent((TaskArtifact) task.getStoreObject())) {
                   refreshed = true;
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -198,11 +197,6 @@ public class SMAEditorArtifactEventManager implements IArtifactEventListener {
          }
       }
 
-   }
-
-   public Collection<TaskArtifact> getTaskArtifactsFromCurrentState(TeamWorkFlowArtifact teamWf) throws OseeCoreException {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(AtsObjects.getArtifacts(
-         AtsClientService.get().getTaskService().getTasks(teamWf, teamWf.getStateMgr().getCurrentState())));
    }
 
    /**

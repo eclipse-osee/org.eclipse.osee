@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.config;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -29,13 +30,13 @@ public interface IAtsProgramManager {
 
    public String getName();
 
-   public Collection<? extends IAtsProgramClient> getPrograms() throws OseeCoreException;
+   public Collection<IAtsProgram> getPrograms() throws OseeCoreException;
 
    public void reloadCache() throws OseeCoreException;
 
    public String getXProgramComboWidgetName();
 
-   public IAtsProgramClient getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
+   public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
    public IArtifactToken getWcafeReviewAssigneeUserGroup() throws OseeCoreException;
 

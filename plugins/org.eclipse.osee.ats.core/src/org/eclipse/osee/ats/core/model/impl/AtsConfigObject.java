@@ -32,12 +32,12 @@ import org.eclipse.osee.logger.Log;
 public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.impl.AtsObject implements IAtsConfigObject {
    protected final ArtifactId artifact;
    protected final Log logger;
-   protected final IAtsServices atsServices;
+   protected final IAtsServices services;
 
-   public AtsConfigObject(Log logger, IAtsServices atsServices, ArtifactId artifact) {
+   public AtsConfigObject(Log logger, IAtsServices services, ArtifactId artifact) {
       super(artifact.getName(), artifact.getUuid());
       this.logger = logger;
-      this.atsServices = atsServices;
+      this.services = services;
       this.artifact = artifact;
       setStoreObject(artifact);
    }
@@ -47,7 +47,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    }
 
    public IAtsServices getAtsServices() {
-      return atsServices;
+      return services;
    }
 
    public void setFullName(String fullName) {
@@ -72,7 +72,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected <T> T getAttributeValue(IAttributeType attributeType, Object defaultValue) {
       T value = null;
       try {
-         value = (T) atsServices.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);
+         value = (T) services.getAttributeResolver().getSoleAttributeValue(artifact, attributeType, defaultValue);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting attribute value for - attributeType[%s]", attributeType);
       }
@@ -91,7 +91,7 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    public Collection<String> getStaticIds() {
       Collection<String> results = Collections.emptyList();
       try {
-         results = atsServices.getAttributeResolver().getAttributeValues(artifact, CoreAttributeTypes.StaticId);
+         results = services.getAttributeResolver().getAttributeValues(artifact, CoreAttributeTypes.StaticId);
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting static Ids");
       }
@@ -109,9 +109,9 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
    protected Collection<IAtsUser> getRelatedUsers(IRelationTypeSide relation) {
       Set<IAtsUser> results = new HashSet<>();
       try {
-         for (Object userArt : atsServices.getRelationResolver().getRelated(artifact, relation)) {
-            IAtsUser lead = atsServices.getUserService().getUserById(
-               (String) atsServices.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
+         for (Object userArt : services.getRelationResolver().getRelated(artifact, relation)) {
+            IAtsUser lead = services.getUserService().getUserById(
+               (String) services.getAttributeResolver().getSoleAttributeValue((ArtifactId) userArt,
                   CoreAttributeTypes.UserId, null));
             results.add(lead);
          }
@@ -133,6 +133,6 @@ public abstract class AtsConfigObject extends org.eclipse.osee.ats.core.model.im
 
    @Override
    public String getDescription() {
-      return atsServices.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Description, "");
    }
 }

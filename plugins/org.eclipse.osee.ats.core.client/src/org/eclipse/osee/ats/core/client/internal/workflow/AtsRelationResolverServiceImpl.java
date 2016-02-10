@@ -154,4 +154,13 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
       return count;
    }
 
+   @Override
+   public ArtifactId getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationSide) {
+      Artifact art = getArtifact(atsObject);
+      if (art != null) {
+         return art.getRelatedArtifactOrNull(relationSide);
+      }
+      return null;
+   }
+
 }

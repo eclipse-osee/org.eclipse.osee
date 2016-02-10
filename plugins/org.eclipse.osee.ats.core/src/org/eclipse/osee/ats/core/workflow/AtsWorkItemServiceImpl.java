@@ -85,11 +85,17 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public IAtsTeamWorkflow getFirstTeam(IAtsAction action) throws OseeCoreException {
+      Collection<IAtsTeamWorkflow> related = getTeams(action);
+      return related.isEmpty() ? null : related.iterator().next();
+   }
+
+   @Override
+   public Collection<IAtsTeamWorkflow> getTeams(IAtsAction action) {
       ArtifactId artifact = services.getArtifactResolver().get(action);
       Conditions.checkNotNull(artifact, "action", "Can't Find Artifact matching [%s]", action.toString());
       Collection<IAtsTeamWorkflow> related = services.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class);
-      return related.isEmpty() ? null : related.iterator().next();
+      return related;
    }
 
    @Override

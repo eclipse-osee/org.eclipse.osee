@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.api.team;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -20,5 +21,9 @@ public interface IAtsTeamDefinitionService {
    IAtsTeamDefinition getTeamDefinition(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<IAtsVersion> getVersions(IAtsTeamDefinition teamDef);
+
+   IAtsTeamDefinition getTeamDefHoldingVersions(IAtsTeamDefinition teamDef);
+
+   IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program);
 
 }

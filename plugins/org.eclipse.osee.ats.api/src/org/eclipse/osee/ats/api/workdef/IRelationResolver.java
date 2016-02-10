@@ -31,6 +31,8 @@ public interface IRelationResolver {
 
    ArtifactId getRelatedOrNull(ArtifactId artifact, IRelationTypeSide relationType);
 
+   ArtifactId getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType);
+
    <T> T getRelatedOrNull(IAtsObject atsObject, IRelationTypeSide relationType, Class<T> clazz);
 
    int getRelatedCount(IAtsWorkItem workItem, IRelationTypeSide relationType);

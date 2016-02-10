@@ -40,7 +40,9 @@ public interface IAttributeResolver {
 
    String getSoleAttributeValueAsString(IAtsObject atsObject, IAttributeType attributeType, String defaultReturnValue) throws OseeCoreException;
 
-   int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException;
+   int getAttributeCount(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException;
+
+   int getAttributeCount(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException;
 
    void addAttribute(IAtsWorkItem workItem, IAttributeType attributeType, Object value) throws OseeCoreException;
 
@@ -75,5 +77,9 @@ public interface IAttributeResolver {
    <T> Collection<T> getAttributeValues(ArtifactId artifact, IAttributeType attributeType);
 
    Collection<Object> getAttributeValues(IAtsObject atsObject, IAttributeType attributeType);
+
+   String getSoleAttributeValueAsString(ArtifactId artifact, IAttributeType worktype, String defaultReturnValue);
+
+   int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType);
 
 }

@@ -45,7 +45,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
    public List<IAtsVersion> getParallelVersions() {
       List<IAtsVersion> parallelVersions = new ArrayList<>();
       for (ArtifactReadable parallelVerArt : getArtifact().getRelated(AtsRelationTypes.ParallelVersion_Child)) {
-         IAtsVersion parallelVer = atsServices.getConfigItemFactory().getVersion(parallelVerArt);
+         IAtsVersion parallelVer = services.getConfigItemFactory().getVersion(parallelVerArt);
          parallelVersions.add(parallelVer);
       }
       return parallelVersions;
@@ -84,7 +84,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
       if (!isAllowCreateBranch()) {
          return new Result(false, "Branch creation disabled for Version [" + this + "]");
       }
-      if (!atsServices.getBranchService().isBranchValid(this)) {
+      if (!services.getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -115,7 +115,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
       if (!isAllowCommitBranch()) {
          return new Result(false, "Version [" + this + "] not configured to allow branch commit.");
       }
-      if (!atsServices.getBranchService().isBranchValid(this)) {
+      if (!services.getBranchService().isBranchValid(this)) {
          return new Result(false, "Parent Branch not configured for Version [" + this + "]");
       }
       return Result.TrueResult;
@@ -202,7 +202,7 @@ public class Version extends AtsConfigObject implements IAtsVersion {
          return getBaselineBranchUuid();
       } else {
          try {
-            IAtsTeamDefinition teamDef = atsServices.getVersionService().getTeamDefinition(this);
+            IAtsTeamDefinition teamDef = services.getVersionService().getTeamDefinition(this);
             if (teamDef != null) {
                return teamDef.getTeamBranchUuid();
             } else {

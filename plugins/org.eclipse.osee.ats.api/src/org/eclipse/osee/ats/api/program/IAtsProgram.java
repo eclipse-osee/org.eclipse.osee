@@ -11,17 +11,10 @@
 package org.eclipse.osee.ats.api.program;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsProgram extends IAtsConfigObject {
-
-   public IAtsTeamDefinition getTeamDefinition();
-
-   public String getNamespace();
-
-   long getCountryUuid();
 
 }

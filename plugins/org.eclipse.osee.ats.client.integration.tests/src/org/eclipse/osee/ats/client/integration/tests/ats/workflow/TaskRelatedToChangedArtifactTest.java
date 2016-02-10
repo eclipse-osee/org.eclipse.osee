@@ -27,6 +27,8 @@ import org.eclipse.osee.framework.core.enums.DemoBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.ArtifactReferenceAttribute;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,6 +37,12 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class TaskRelatedToChangedArtifactTest {
+
+   @Before
+   @After
+   public void cleanup() {
+      AtsTestUtil.cleanup();
+   }
 
    @Test
    public void testCreateSawTestWf() throws Exception {

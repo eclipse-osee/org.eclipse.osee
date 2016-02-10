@@ -30,5 +30,7 @@ public interface IAtsStoreService {
    Long getUuidFromGuid(String guid);
 
    String getTypeName(ArtifactId artifact);
+   
+   String getGuid(IAtsObject atsObject);
 
 }

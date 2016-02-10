@@ -104,6 +104,16 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
+   public String getSoleAttributeValueAsString(ArtifactId artifact, IAttributeType attributeType, String defaultValue) {
+      String result = defaultValue;
+      Artifact art = AtsClientService.get().getArtifact(artifact);
+      if (artifact != null) {
+         result = art.getSoleAttributeValueAsString(attributeType, defaultValue);
+      }
+      return result;
+   }
+
+   @Override
    public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       AtsClientService.get().getArtifact(atsObject).setSoleAttributeValue(attributeType, value);
    }
@@ -111,6 +121,16 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       return AtsClientService.get().getArtifact(workItem).getAttributeCount(attributeType);
+   }
+
+   @Override
+   public int getAttributeCount(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException {
+      return AtsClientService.get().getArtifact(atsObject).getAttributeCount(attributeType);
+   }
+
+   @Override
+   public int getAttributeCount(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException {
+      return AtsClientService.get().getArtifact(artifact).getAttributeCount(attributeType);
    }
 
    @Override
@@ -238,4 +258,5 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       }
       return attributes;
    }
+
 }

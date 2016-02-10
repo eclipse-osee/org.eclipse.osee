@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.osee.ats.core.client.config.IAtsProgramClient;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.core.client.config.IAtsProgramManager;
 import org.eclipse.osee.ats.core.client.config.ProgramManagers;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,9 +28,9 @@ import org.eclipse.swt.widgets.Composite;
  */
 public class XAtsProgramComboWidget extends XComboViewer {
 
-   private final Collection<? extends IAtsProgramClient> atsPrograms;
+   private final Collection<? extends IAtsProgram> atsPrograms;
 
-   public XAtsProgramComboWidget(String displayLabel, Collection<? extends IAtsProgramClient> atsPrograms) {
+   public XAtsProgramComboWidget(String displayLabel, Collection<? extends IAtsProgram> atsPrograms) {
       super(displayLabel, SWT.READ_ONLY);
       this.atsPrograms = atsPrograms;
       setLabelProvider(new AtsProgramLabelProvider());
@@ -46,8 +46,8 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this("ATS Program", getAllPrograms());
    }
 
-   private static Collection<? extends IAtsProgramClient> getAllPrograms() throws OseeCoreException {
-      List<IAtsProgramClient> programs = new ArrayList<>();
+   private static Collection<? extends IAtsProgram> getAllPrograms() throws OseeCoreException {
+      List<IAtsProgram> programs = new ArrayList<>();
       for (IAtsProgramManager manager : ProgramManagers.getAtsProgramManagers()) {
          programs.addAll(manager.getPrograms());
       }
@@ -58,13 +58,12 @@ public class XAtsProgramComboWidget extends XComboViewer {
    protected void createControls(Composite parent, int horizontalSpan) {
       super.createControls(parent, horizontalSpan);
       setSorter(new AtsProgramViewerSorter());
-
-      reload(atsPrograms);
+      reload();
    }
 
-   public void reload(Collection<? extends IAtsProgramClient> lbaPrograms) {
+   public void reload() {
       Collection<Object> objs = new ArrayList<>();
-      for (IAtsProgramClient proj : atsPrograms) {
+      for (IAtsProgram proj : atsPrograms) {
          objs.add(proj);
       }
       setInput(objs);

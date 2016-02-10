@@ -46,6 +46,8 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andWorkType(WorkType workType, WorkType... workTypes);
 
+   IAtsConfigQuery andWorkType(Collection<WorkType> workTypes);
+
    IAtsConfigQuery andCsci(Collection<String> cscis);
 
    <T extends ArtifactId> ResultSet<T> getResultArtifacts();

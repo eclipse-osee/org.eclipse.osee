@@ -45,4 +45,6 @@ public interface IAtsWorkItemService {
 
    String getArtifactTypeShortName(IAtsTeamWorkflow teamWf);
 
+   Collection<IAtsTeamWorkflow> getTeams(IAtsAction action);
+
 }

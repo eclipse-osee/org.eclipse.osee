@@ -127,6 +127,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
+   public String getSoleAttributeValueAsString(ArtifactId artifact, IAttributeType attributeType, String defaultValue) {
+      return getArtifact(artifact).getSoleAttributeValue(attributeType, defaultValue);
+   }
+
+   @Override
    public void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException {
       // Sets on Server need to be through transaction
       throw new OseeStateException(
@@ -136,6 +141,16 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    @Override
    public int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       return getArtifact(workItem).getAttributeCount(attributeType);
+   }
+
+   @Override
+   public int getAttributeCount(IAtsObject atsObject, IAttributeType attributeType) throws OseeCoreException {
+      return getArtifact(atsObject).getAttributeCount(attributeType);
+   }
+
+   @Override
+   public int getAttributeCount(ArtifactId artifact, IAttributeType attributeType) throws OseeCoreException {
+      return getArtifact(artifact).getAttributeCount(attributeType);
    }
 
    @Override

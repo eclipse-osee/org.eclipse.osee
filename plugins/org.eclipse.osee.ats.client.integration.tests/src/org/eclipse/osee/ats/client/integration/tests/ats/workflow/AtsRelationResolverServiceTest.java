@@ -98,8 +98,8 @@ public class AtsRelationResolverServiceTest {
          relationResolver.getRelatedOrNull(sawTestAi, CoreRelationTypes.Default_Hierarchical__Parent);
       Assert.assertNotNull(relatedOrNull);
 
-      ArtifactId nullParentId =
-         relationResolver.getRelatedOrNull(sawCodeCommittedWf, CoreRelationTypes.Default_Hierarchical__Parent);
+      ArtifactId nullParentId = relationResolver.getRelatedOrNull((Artifact) sawCodeCommittedWf,
+         CoreRelationTypes.Default_Hierarchical__Parent);
       Assert.assertNull(nullParentId);
    }
 
