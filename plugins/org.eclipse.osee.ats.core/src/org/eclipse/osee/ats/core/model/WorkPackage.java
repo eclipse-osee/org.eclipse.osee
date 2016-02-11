@@ -8,39 +8,46 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.client.ev;
+package org.eclipse.osee.ats.core.model;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageType;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
+import org.eclipse.osee.ats.core.model.impl.AtsConfigObject;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.logger.Log;
 
 /**
  * Wrapper class for the Work Package storage artifact
  *
  * @author Donald G. Dunne
  */
-public class WorkPackageArtifact implements IAtsWorkPackage {
+public class WorkPackage extends AtsConfigObject implements IAtsWorkPackage {
 
-   private final Artifact artifact;
+   private final ArtifactId artifact;
+   private final IAtsServices services;
 
-   public WorkPackageArtifact(Artifact artifact) {
+   public WorkPackage(Log logger, ArtifactId artifact, IAtsServices services) {
+      super(logger, services, artifact);
       this.artifact = artifact;
+      this.services = services;
    }
 
    @Override
    public String getActivityId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.ActivityId, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityId, "");
    }
 
    @Override
    public String getActivityName() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.ActivityName, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.ActivityName, "");
    }
 
    @Override
@@ -55,17 +62,18 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
 
    @Override
    public String getWorkPackageId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.WorkPackageId, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageId, "");
    }
 
    @Override
    public String getWorkPackageProgram() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.WorkPackageProgram, "");
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageProgram, "");
    }
 
    @Override
    public AtsWorkPackageType getWorkPackageType() throws OseeCoreException {
-      String value = artifact.getSoleAttributeValue(AtsAttributeTypes.WorkPackageType, "");
+      String value =
+         services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.WorkPackageType, "");
       AtsWorkPackageType type = AtsWorkPackageType.None;
       if (Strings.isValid(value)) {
          try {
@@ -80,22 +88,22 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
 
    @Override
    public boolean isActive() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.Active, true);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.Active, true);
    }
 
    @Override
    public Date getStartDate() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.StartDate, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.StartDate, null);
    }
 
    @Override
    public Date getEndDate() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.EndDate, null);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.EndDate, null);
    }
 
    @Override
    public int getWorkPackagePercent() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(AtsAttributeTypes.PercentComplete, 0);
+      return services.getAttributeResolver().getSoleAttributeValue(artifact, AtsAttributeTypes.PercentComplete, 0);
    }
 
    @Override
@@ -107,7 +115,7 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
          addWithHypen(builder, getName());
          return builder.toString();
       } catch (OseeCoreException ex) {
-         OseeLog.log(org.eclipse.osee.ats.core.client.internal.Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(WorkPackage.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return String.format("%s - Exception (see log file)", getName());
    }
@@ -152,6 +160,16 @@ public class WorkPackageArtifact implements IAtsWorkPackage {
    @Override
    public Long getUuid() {
       return artifact.getUuid();
+   }
+
+   @Override
+   public int compareTo(Named other) {
+      return artifact.compareTo(other);
+   }
+
+   @Override
+   public String getTypeName() {
+      return services.getStoreService().getTypeName(artifact);
    }
 
 }

@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -259,6 +260,11 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    @Override
    public IAtsConfigQuery andCsci(Collection<String> cscis) {
       return andAttr(AtsAttributeTypes.CSCI, cscis);
+   }
+
+   @Override
+   public IAtsConfigQuery andName(String name) {
+      return andAttr(CoreAttributeTypes.Name, name);
    }
 
 }

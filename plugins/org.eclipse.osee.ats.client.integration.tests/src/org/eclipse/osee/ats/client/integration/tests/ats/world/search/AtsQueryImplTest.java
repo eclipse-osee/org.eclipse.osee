@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -63,5 +64,15 @@ public class AtsQueryImplTest {
    public void test() {
       QueryTest test = new QueryTest(AtsClientService.get().getServices());
       test.run();
+   }
+
+   @Test
+   public void testWorkPackage() {
+      IAtsClient client = AtsClientService.get();
+
+      IAtsWorkPackage workPackage =
+         (IAtsWorkPackage) client.getQueryService().createQuery(AtsArtifactTypes.WorkPackage).andName(
+            "Work Pkg 0A").getResults().getAtMostOneOrNull();
+      Assert.assertNotNull(workPackage);
    }
 }

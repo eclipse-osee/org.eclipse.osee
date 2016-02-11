@@ -22,7 +22,9 @@ import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.core.client.internal.Activator;
+import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
+import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -104,7 +106,8 @@ public class SearchWorkPackageOperation extends AbstractOperation {
    public Set<IAtsWorkPackage> getResults() {
       Set<IAtsWorkPackage> resultWorkPgks = new HashSet<>();
       for (Artifact art : results) {
-         resultWorkPgks.add(new WorkPackageArtifact(art));
+         resultWorkPgks.add(
+            new WorkPackage(AtsClientService.get().getLogger(), art, AtsClientService.get().getServices()));
       }
       return resultWorkPgks;
    }

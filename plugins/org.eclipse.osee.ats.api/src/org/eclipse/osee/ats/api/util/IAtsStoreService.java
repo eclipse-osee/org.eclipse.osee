@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 
 public interface IAtsStoreService {
 
@@ -27,5 +28,7 @@ public interface IAtsStoreService {
    boolean isDeleted(IAtsObject atsObject);
 
    Long getUuidFromGuid(String guid);
+
+   String getTypeName(ArtifactId artifact);
 
 }

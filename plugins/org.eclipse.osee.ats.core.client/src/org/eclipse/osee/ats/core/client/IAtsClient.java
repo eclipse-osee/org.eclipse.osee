@@ -62,6 +62,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.logger.Log;
 
 /**
  * @author Donald G. Dunne
@@ -188,4 +189,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    IAtsTaskService getTaskService();
 
    List<IAtsSearchDataProvider> getSearchDataProviders();
+
+   Log getLogger();
 }

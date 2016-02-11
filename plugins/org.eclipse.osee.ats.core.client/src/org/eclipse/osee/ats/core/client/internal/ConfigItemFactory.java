@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxInsertion;
@@ -74,9 +75,20 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
             configObject = getInsertionActivity(artifact);
          } else if (artifact.isOfType(AtsArtifactTypes.Country)) {
             configObject = getCountry(artifact);
+         } else if (artifact.isOfType(AtsArtifactTypes.WorkPackage)) {
+            configObject = getWorkPackage(artifact);
          }
       }
       return configObject;
+   }
+
+   @Override
+   public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
+      IAtsWorkPackage workPackage = null;
+      if (artifact instanceof Artifact && ((Artifact) artifact).isOfType(AtsArtifactTypes.WorkPackage)) {
+         workPackage = (IAtsWorkPackage) atsClient.getConfigObject((Artifact) artifact);
+      }
+      return workPackage;
    }
 
    @Override

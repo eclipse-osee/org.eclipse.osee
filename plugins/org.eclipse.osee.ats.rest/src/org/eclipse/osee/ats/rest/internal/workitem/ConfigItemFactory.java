@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxInsertion;
@@ -29,6 +30,7 @@ import org.eclipse.osee.ats.core.config.Country;
 import org.eclipse.osee.ats.core.config.Program;
 import org.eclipse.osee.ats.core.insertion.Insertion;
 import org.eclipse.osee.ats.core.insertion.InsertionActivity;
+import org.eclipse.osee.ats.core.model.WorkPackage;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.util.AtsChangeSet;
@@ -83,12 +85,24 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
                configObject = getInsertionActivity(artRead);
             } else if (artRead.isOfType(AtsArtifactTypes.Country)) {
                configObject = getCountry(artRead);
+            } else if (artRead.isOfType(AtsArtifactTypes.WorkPackage)) {
+               configObject = getWorkPackage(artRead);
             }
          }
       } catch (OseeCoreException ex) {
          logger.error(ex, "Error getting config object for [%s]", artifact);
       }
       return configObject;
+   }
+
+   @Override
+   public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
+      IAtsWorkPackage workPackage = null;
+      if (artifact instanceof ArtifactReadable && ((ArtifactReadable) artifact).isOfType(
+         AtsArtifactTypes.WorkPackage)) {
+         workPackage = new WorkPackage(logger, artifact, atsServer.getServices());
+      }
+      return workPackage;
    }
 
    @Override

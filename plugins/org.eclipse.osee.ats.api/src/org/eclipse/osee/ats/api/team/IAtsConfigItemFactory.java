@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
 import org.eclipse.osee.ats.api.agile.IAgileTeam;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.country.IAtsCountry;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.insertion.JaxInsertion;
@@ -68,5 +69,7 @@ public interface IAtsConfigItemFactory {
    IAtsCountry getCountry(ArtifactId artifact);
 
    IAtsCountry getCountry(long uuid);
+
+   IAtsWorkPackage getWorkPackage(ArtifactId artifact);
 
 }

@@ -224,7 +224,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
       artifactStore = new AtsArtifactStore(readers, writers);
       configCacheProvider = new AtsConfigCacheProvider(artifactStore);
-      earnedValueService = new AtsEarnedValueImpl();
+      earnedValueService = new AtsEarnedValueImpl(logger, getServices());
 
       configItemFactory = new ConfigItemFactory(logger, this);
       AtsVersionCache versionCache = new AtsVersionCache(configCacheProvider);
@@ -827,6 +827,11 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public List<IAtsSearchDataProvider> getSearchDataProviders() {
       return searchDataProviders;
+   }
+
+   @Override
+   public Log getLogger() {
+      return logger;
    }
 
 }

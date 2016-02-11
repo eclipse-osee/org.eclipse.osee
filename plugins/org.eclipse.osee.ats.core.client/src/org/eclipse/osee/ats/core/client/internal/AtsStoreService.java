@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
@@ -95,6 +96,11 @@ public class AtsStoreService implements IAtsStoreService {
          }
       }
       return result;
+   }
+
+   @Override
+   public String getTypeName(ArtifactId artifact) {
+      return ((Artifact) artifact).getArtifactTypeName();
    }
 
 }

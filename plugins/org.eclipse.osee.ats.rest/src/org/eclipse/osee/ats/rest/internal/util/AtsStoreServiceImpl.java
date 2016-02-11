@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -95,6 +96,11 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
          }
       }
       return result;
+   }
+
+   @Override
+   public String getTypeName(ArtifactId artifact) {
+      return ((ArtifactReadable) artifact).getArtifactType().getName();
    }
 
 }

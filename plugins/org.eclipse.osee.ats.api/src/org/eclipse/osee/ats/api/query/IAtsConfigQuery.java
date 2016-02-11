@@ -50,4 +50,6 @@ public interface IAtsConfigQuery {
 
    <T extends ArtifactId> ResultSet<T> getResultArtifacts();
 
+   IAtsConfigQuery andName(String name);
+
 }

@@ -11,18 +11,17 @@
 package org.eclipse.osee.ats.api.ev;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsWorkPackage {
+public interface IAtsWorkPackage extends IAtsConfigObject {
 
    public String getActivityId() throws OseeCoreException;
 
    public String getActivityName() throws OseeCoreException;
-
-   public String getName();
 
    public String getGuid();
 
@@ -34,12 +33,8 @@ public interface IAtsWorkPackage {
 
    public int getWorkPackagePercent() throws OseeCoreException;
 
-   public boolean isActive() throws OseeCoreException;
-
    public Date getStartDate() throws OseeCoreException;
 
    public Date getEndDate() throws OseeCoreException;
-
-   public Long getUuid();
 
 }
