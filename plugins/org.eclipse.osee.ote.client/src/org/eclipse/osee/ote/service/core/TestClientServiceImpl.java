@@ -55,14 +55,14 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 	private volatile boolean stopped = false;
 	private TestHostConnection testConnection;
 
-	private final OteClientEndpointSend endpointSend;
-	private final OteClientEndpointReceive endpointReceive;
+//	private final OteClientEndpointSend endpointSend;
+//	private final OteClientEndpointReceive endpointReceive;
 
-	public TestClientServiceImpl(IConnectionService connectionService, OteClientEndpointSend endpointSend, OteClientEndpointReceive endpointReceive) {
+	public TestClientServiceImpl(IConnectionService connectionService) {
 		this.connectionService = connectionService;
-		this.endpointReceive = endpointReceive;
-		this.endpointSend = endpointSend;
-		endpointSend.setTestClientService(this);
+//		this.endpointReceive = endpointReceive;
+//		this.endpointSend = endpointSend;
+//		endpointSend.setTestClientService(this);
 	}
 
 	public void init() {
@@ -253,7 +253,7 @@ public class TestClientServiceImpl implements IOteClientService, IConnectorListe
 		if (session != null) {
 			session.close();
 		}
-		session = new ClientSession(user, address, endpointReceive);
+		session = new ClientSession(user, address);
 	}
 
 	@Override

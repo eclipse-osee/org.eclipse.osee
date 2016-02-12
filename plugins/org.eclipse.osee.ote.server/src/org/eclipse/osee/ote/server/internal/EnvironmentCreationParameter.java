@@ -14,7 +14,6 @@ import java.io.Serializable;
 import java.rmi.server.ExportException;
 
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
@@ -26,7 +25,7 @@ import org.eclipse.osee.ote.server.TestEnvironmentFactory;
  * @author Andrew M. Finkbeiner
  */
 class EnvironmentCreationParameter {
-   private final NodeInfo oteEmbeddedBroker;
+//   private final NodeInfo oteEmbeddedBroker;
    private final IServiceConnector serviceConnector;
    private final ITestEnvironmentServiceConfig config;
    private final IRuntimeLibraryManager runtimeLibraryManager;
@@ -35,8 +34,8 @@ class EnvironmentCreationParameter {
    private TestEnvironmentFactory factory;
    private final String environmentFactoryClass;
 
-   public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager, NodeInfo oteEmbeddedBroker, IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass) {
-      this.oteEmbeddedBroker = oteEmbeddedBroker;
+   public EnvironmentCreationParameter(IRuntimeLibraryManager runtimeLibraryManager,/* NodeInfo oteEmbeddedBroker,*/ IServiceConnector serviceConnector, ITestEnvironmentServiceConfig config, TestEnvironmentFactory factory, String environmentFactoryClass) {
+//      this.oteEmbeddedBroker = oteEmbeddedBroker;
       this.serviceConnector = serviceConnector;
       this.config = config;
       this.runtimeLibraryManager = runtimeLibraryManager;
@@ -45,9 +44,9 @@ class EnvironmentCreationParameter {
 
    }
    
-   public NodeInfo getBroker(){
-      return oteEmbeddedBroker;
-   }
+//   public NodeInfo getBroker(){
+//      return oteEmbeddedBroker;
+//   }
 
    public Serializable getServerTitle() {
       return config.getServerTitle();
@@ -69,7 +68,7 @@ class EnvironmentCreationParameter {
          factory = clazz.newInstance();
       }
       MessageSystemTestEnvironment testEnvironment = factory.createEnvironment(runtimeLibraryManager);
-      testEnvironment.setOteNodeInfo(oteEmbeddedBroker);
+    //  testEnvironment.setOteNodeInfo(oteEmbeddedBroker);
       testEnvironment.init(serviceConnector);
       return testEnvironment;
    }

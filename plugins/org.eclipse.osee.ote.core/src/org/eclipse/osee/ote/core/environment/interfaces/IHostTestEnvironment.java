@@ -15,7 +15,6 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
-import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
@@ -29,7 +28,7 @@ public interface IHostTestEnvironment extends Remote {
    ConnectionRequestResult requestEnvironment(IRemoteUserSession session, UUID id, TestEnvironmentConfig config) throws RemoteException;
    void disconnect(UUID sessionId) throws RemoteException;
    
-   public NodeInfo getBroker() throws RemoteException;
+//   public NodeInfo getBroker() throws RemoteException;
    
    public String getHttpURL() throws RemoteException;
    

@@ -50,8 +50,6 @@ Import-Package: net.jini.activation,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
- org.eclipse.osee.framework.messaging,
- org.eclipse.osee.framework.messaging.id,
  org.eclipse.osee.framework.plugin.core.util,
  org.eclipse.osee.ote,
  org.eclipse.osee.ote.connection.jini,
@@ -69,5 +67,4 @@ Import-Package: net.jini.activation,
 Export-Package: org.eclipse.osee.ote.service,
  org.eclipse.osee.ote.service.core
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
-Require-Bundle: org.eclipse.osee.framework.logging,
- org.eclipse.osee.framework.messaging
+Require-Bundle: org.eclipse.osee.framework.logging

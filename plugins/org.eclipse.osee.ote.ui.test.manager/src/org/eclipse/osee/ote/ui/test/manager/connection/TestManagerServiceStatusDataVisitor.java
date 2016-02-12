@@ -189,9 +189,10 @@ final class TestManagerServiceStatusDataVisitor implements IServiceStatusDataVis
                task.getScriptModel().getOutputModel().setPassedTestPoints(testPointUpdate.getPass());
                task.getScriptModel().getOutputModel().setFailedTestPoints(testPointUpdate.getFail());
                scriptManager.updateScriptTableViewerTimed(task);
-            } else {
-               OseeLog.log(TestManagerPlugin.class, Level.WARNING, "testPointsUpdated: task is null");
-            }
+            } 
+//            else {
+//               OseeLog.log(TestManagerPlugin.class, Level.WARNING, "testPointsUpdated: task is null");
+//            }
          }
       });
       logExecutorSize();

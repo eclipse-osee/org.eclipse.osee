@@ -59,6 +59,8 @@ public class OteEndpointReceiveRunnable implements Runnable {
                      channel.receive(buffer);
                      buffer.flip();
                      processBuffer(buffer);
+                  } catch(ClosedByInterruptException ex){
+                     stop();
                   } catch (Throwable th){
                      th.printStackTrace();
                   }

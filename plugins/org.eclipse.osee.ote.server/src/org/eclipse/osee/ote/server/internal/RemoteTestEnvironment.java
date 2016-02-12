@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.console.ICommandManager;
@@ -252,11 +252,11 @@ public class RemoteTestEnvironment implements ITestEnvironmentMessageSystem {
       Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
       env.setBatchMode(isInBatchMode);
    }
-
-   @Override
-   public void sendMessage(Message message) throws RemoteException {
-      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-      env.sendMessageToServer(message);
-   }
+//
+//   @Override
+//   public void sendMessage(Message message) throws RemoteException {
+//      Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+//      env.sendMessageToServer(message);
+//   }
 
 }

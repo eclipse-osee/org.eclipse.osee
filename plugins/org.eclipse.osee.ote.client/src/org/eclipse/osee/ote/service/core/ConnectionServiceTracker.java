@@ -15,7 +15,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.service.IOteClientService;
-import org.eclipse.osee.ote.service.MessagingGatewayBindTracker;
 import org.eclipse.osee.ote.service.TestSessionException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
@@ -24,23 +23,23 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class ConnectionServiceTracker extends ServiceTracker {
 
-   private final OteClientEndpointReceive endpointReceive = new OteClientEndpointReceive();
-   private final OteClientEndpointSend endpointSend = new OteClientEndpointSend();
-   private final MessagingGatewayBindTracker messagingGatewayTracker;
+//   private final OteClientEndpointReceive endpointReceive = new OteClientEndpointReceive();
+//   private final OteClientEndpointSend endpointSend = new OteClientEndpointSend();
+//   private final MessagingGatewayBindTracker messagingGatewayTracker;
 
    private ServiceRegistration registration;
    private TestClientServiceImpl testClientService;
 
    public ConnectionServiceTracker(BundleContext context) {
       super(context, IConnectionService.class.getName(), null);
-      messagingGatewayTracker = new MessagingGatewayBindTracker(context, endpointSend, endpointReceive);
-      messagingGatewayTracker.open(true);
+//      messagingGatewayTracker = new MessagingGatewayBindTracker(context, endpointSend, endpointReceive);
+//      messagingGatewayTracker.open(true);
    }
 
    @Override
    public Object addingService(ServiceReference reference) {
       IConnectionService connectionService = (IConnectionService) super.addingService(reference);
-      testClientService = new TestClientServiceImpl(connectionService, endpointSend, endpointReceive);
+      testClientService = new TestClientServiceImpl(connectionService);
       testClientService.init();
       // register the service
       registration = context.registerService(IOteClientService.class.getName(), testClientService, null);
@@ -71,7 +70,7 @@ public class ConnectionServiceTracker extends ServiceTracker {
    @Override
    public void close() {
       shutdownClientService();
-      messagingGatewayTracker.close();
+//      messagingGatewayTracker.close();
       super.close();
    }
 

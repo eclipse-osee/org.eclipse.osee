@@ -1,7 +1,6 @@
 package org.eclipse.osee.ote;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.UUID;
 
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -96,10 +95,4 @@ public class NonRemoteUserSession implements IRemoteUserSession, Serializable {
       return null;
    }
 
-   @Override
-   public void sendMessageToClient(org.eclipse.osee.framework.messaging.Message message) throws RemoteException {
-      // TODO Auto-generated method stub
-      
-   }
-   
 }

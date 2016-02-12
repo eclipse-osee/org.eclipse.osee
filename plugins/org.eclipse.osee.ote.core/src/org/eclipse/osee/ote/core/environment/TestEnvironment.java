@@ -15,7 +15,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetAddress;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.UnknownHostException;
@@ -30,7 +29,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.connection.service.LocalConnector;
 import org.eclipse.osee.framework.jdk.core.reportdata.ReportDataListener;
@@ -38,9 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.Message;
-import org.eclipse.osee.framework.messaging.MessagingGateway;
-import org.eclipse.osee.framework.messaging.NodeInfo;
 import org.eclipse.osee.ote.OseeLogStatusCallback;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.OseeTestThread;
@@ -65,7 +60,6 @@ import org.eclipse.osee.ote.core.framework.command.ITestContext;
 import org.eclipse.osee.ote.core.framework.command.ITestServerCommand;
 import org.eclipse.osee.ote.core.internal.Activator;
 import org.eclipse.osee.ote.properties.OtePropertiesCore;
-import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
@@ -98,21 +92,21 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
    @Deprecated
    private final List<IScriptSetupEvent> scriptSetupListeners = new ArrayList<>();
 
-   private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
-   private OteServerSideEndpointSender oteServerSideEndpointSender;
-   private final ServiceTracker messagingServiceTracker;
+//   private OteServerSideEndprointRecieve oteServerSideEndpointRecieve;
+//   private OteServerSideEndpointSender oteServerSideEndpointSender;
+//   private final ServiceTracker messagingServiceTracker;
 
    private volatile boolean isShutdown = false;
-   private NodeInfo oteEmbeddedBroker;
+//   private NodeInfo oteEmbeddedBroker;
    private ServiceRegistration<TestEnvironmentInterface> myRegistration;
 
    protected TestEnvironment(IEnvironmentFactory factory) {
       GCHelper.getGCHelper().addRefWatch(this);
-      try {
-         oteEmbeddedBroker = new NodeInfo("OTEEmbeddedBroker", new URI("vm://localhost?broker.persistent=false"));
-      } catch (URISyntaxException ex) {
-         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
-      }
+//      try {
+//         oteEmbeddedBroker = new NodeInfo("OTEEmbeddedBroker", new URI("vm://localhost?broker.persistent=false"));
+//      } catch (URISyntaxException ex) {
+//         OseeLog.log(TestEnvironment.class, Level.SEVERE, ex);
+//      }
       this.factory = factory;
       this.testStation = factory.getTestStation();
       this.runtimeManager = factory.getRuntimeManager();
@@ -121,7 +115,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       this.associatedObjects = new HashMap<>(100);
       this.batchMode = OteProperties.isOseeOteInBatchModeEnabled();
 
-      messagingServiceTracker = setupOteMessagingSenderAndReceiver();
+//      messagingServiceTracker = setupOteMessagingSenderAndReceiver();
    }
 
    public void init(IServiceConnector connector) {
@@ -141,18 +135,18 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       connector = new LocalConnector(this, Integer.toString(this.getUniqueId()), props);
    }
 
-   private ServiceTracker setupOteMessagingSenderAndReceiver() {
-      oteServerSideEndpointRecieve = new OteServerSideEndprointRecieve();
-      oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
-      BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
-      return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
-            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
-            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
-   }
-
-   public void sendMessageToServer(Message message) {
-      oteServerSideEndpointRecieve.recievedMessage(message);
-   }
+//   private ServiceTracker setupOteMessagingSenderAndReceiver() {
+//      oteServerSideEndpointRecieve = new OteServerSideEndprointRecieve();
+//      oteServerSideEndpointSender = new OteServerSideEndpointSender(this);
+//      BundleContext context = Platform.getBundle("org.eclipse.osee.ote.core").getBundleContext();
+//      return getServiceTracker(MessagingGateway.class.getName(), new OteEnvironmentTrackerCustomizer(context,
+//            oteServerSideEndpointRecieve, oteServerSideEndpointSender,
+//            OteServerSideEndpointSender.OTE_SERVER_SIDE_SEND_PROTOCOL));
+//   }
+//
+//   public void sendMessageToServer(Message message) {
+//      oteServerSideEndpointRecieve.recievedMessage(message);
+//   }
 
    public ServiceTracker getServiceTracker(String clazz, ServiceTrackerCustomizer customizer) {
       return Activator.getInstance().getServiceTracker(clazz, customizer);
@@ -335,7 +329,7 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
          this.associatedObjects.clear();// get rid of all models and support
       }
 
-      messagingServiceTracker.close();
+//      messagingServiceTracker.close();
 
       OseeLog.log(TestEnvironment.class, Level.FINE, "shutting down environment");
       factory.getTimerControl().cancelTimers();
@@ -590,11 +584,11 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       getRunManager().abort(t, false);
    }
 
-   public void setOteNodeInfo(NodeInfo oteEmbeddedBroker) {
-      this.oteEmbeddedBroker = oteEmbeddedBroker;
-   }
-
-   public NodeInfo getOteNodeInfo() {
-      return oteEmbeddedBroker;
-   }
+//   public void setOteNodeInfo(NodeInfo oteEmbeddedBroker) {
+//      this.oteEmbeddedBroker = oteEmbeddedBroker;
+//   }
+//
+//   public NodeInfo getOteNodeInfo() {
+//      return oteEmbeddedBroker;
+//   }
 }

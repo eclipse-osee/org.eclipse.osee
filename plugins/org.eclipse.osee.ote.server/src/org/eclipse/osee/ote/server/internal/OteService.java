@@ -26,8 +26,6 @@ import net.jini.id.UuidFactory;
 
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.NodeInfo;
-import org.eclipse.osee.framework.messaging.services.RegisteredServiceReference;
 import org.eclipse.osee.ote.HostServerProperties;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
 import org.eclipse.osee.ote.core.IRemoteUserSession;
@@ -38,7 +36,6 @@ import org.eclipse.osee.ote.core.ReturnStatus;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.TestEnvironmentConfig;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
-import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
 import org.eclipse.osee.ote.core.environment.interfaces.ITestEnvironment;
 import org.eclipse.osee.ote.endpoint.OteUdpEndpoint;
 import org.eclipse.osee.ote.io.OTEServerFolder;
@@ -53,13 +50,13 @@ public class OteService implements IHostTestEnvironment {
    private MessageSystemTestEnvironment currentEnvironment;
    private ITestEnvironment remoteEnvironment;
    private final EnvironmentCreationParameter environmentCreation;
-   private final IRuntimeLibraryManager runtimeLibraryManager;
-   private RegisteredServiceReference registeredServiceReference;
+//   private final IRuntimeLibraryManager runtimeLibraryManager;
+//   private RegisteredServiceReference registeredServiceReference;
    private OTESessionManager oteSessions;
    
    
-   public OteService(IRuntimeLibraryManager runtimeLibraryManager, EnvironmentCreationParameter environmentCreation, OTESessionManager oteSessions, PropertyParamter parameterObject, EnhancedProperties properties, OteUdpEndpoint receiver) {
-      this.runtimeLibraryManager = runtimeLibraryManager;
+   public OteService(EnvironmentCreationParameter environmentCreation, OTESessionManager oteSessions, PropertyParamter parameterObject, EnhancedProperties properties, OteUdpEndpoint receiver) {
+//      this.runtimeLibraryManager = runtimeLibraryManager;
       this.environmentCreation = environmentCreation;
       this.oteSessions = oteSessions;
       
@@ -79,7 +76,7 @@ public class OteService implements IHostTestEnvironment {
       enhancedProperties.setProperty(HostServerProperties.group.name(), "OSEE Test Environment");
       enhancedProperties.setProperty(HostServerProperties.owner.name(), OtePropertiesCore.userName.getValue());
       enhancedProperties.setProperty(HostServerProperties.id.name(), serviceID.toString());
-      enhancedProperties.setProperty(HostServerProperties.activeMq.name(), environmentCreation.getBroker().getUri().toString());
+//      enhancedProperties.setProperty(HostServerProperties.activeMq.name(), environmentCreation.getBroker().getUri().toString());
       try {
          String format = String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort());
          if(OtePropertiesCore.httpPort.getValue() == null){
@@ -111,10 +108,10 @@ public class OteService implements IHostTestEnvironment {
       }
    }
    
-   @Override
-   public NodeInfo getBroker(){
-      return environmentCreation.getBroker();
-   }
+//   @Override
+//   public NodeInfo getBroker(){
+//      return environmentCreation.getBroker();
+//   }
 
    @Override
    public EnhancedProperties getProperties() throws RemoteException {
@@ -173,9 +170,9 @@ public class OteService implements IHostTestEnvironment {
       } else {
          environmentCreation.getServiceConnector().setProperty("user_list", "N/A");
       }
-      if (registeredServiceReference != null) {
-         registeredServiceReference.update();
-      }
+//      if (registeredServiceReference != null) {
+//         registeredServiceReference.update();
+//      }
    }
 
    public ServiceID getServiceID() throws RemoteException {
@@ -188,9 +185,9 @@ public class OteService implements IHostTestEnvironment {
       }
    }
 
-   public void set(RegisteredServiceReference ref) {
-      this.registeredServiceReference = ref;
-   }
+//   public void set(RegisteredServiceReference ref) {
+//      this.registeredServiceReference = ref;
+//   }
 
    @Override
    public void disconnect(UUID sessionId) throws RemoteException {

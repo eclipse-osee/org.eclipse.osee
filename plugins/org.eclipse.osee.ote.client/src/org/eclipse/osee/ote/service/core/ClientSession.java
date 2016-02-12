@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.AbstractRemoteSession;
 import org.eclipse.osee.ote.core.ConnectionRequestResult;
@@ -44,13 +43,13 @@ public class ClientSession extends AbstractRemoteSession {
    private final InetAddress address;
    private SessionDelegate sessionDelegate = null;
    private final ReentrantLock lock = new ReentrantLock();
-   private final OteClientEndpointReceive receive;
+//   private final OteClientEndpointReceive receive;
    private UUID id;
 
-   public ClientSession(OSEEPerson1_4 user, InetAddress address, OteClientEndpointReceive receive) {
+   public ClientSession(OSEEPerson1_4 user, InetAddress address) {
       super(user);
       this.address = address;
-      this.receive = receive;
+//      this.receive = receive;
       this.id = UUID.randomUUID();
       Activator.log(Level.INFO,
          String.format("Created OTE session for %s. Address=%s\n ", user.getName(), address.toString()));
@@ -202,11 +201,6 @@ public class ClientSession extends AbstractRemoteSession {
          }
       }
       throw new IllegalStateException(LOCK_ERROR_MSG);
-   }
-
-   @Override
-   public void sendMessageToClient(Message message) throws RemoteException {
-      receive.receivedMessage(message);
    }
 
    @Override

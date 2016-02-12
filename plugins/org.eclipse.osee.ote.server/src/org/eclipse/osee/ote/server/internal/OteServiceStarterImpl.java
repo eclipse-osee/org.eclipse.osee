@@ -10,20 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.server.internal;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
-import java.net.Inet6Address;
-import java.net.InetAddress;
 import java.net.URI;
 import java.net.UnknownHostException;
-import java.rmi.RemoteException;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
@@ -37,20 +27,9 @@ import java.util.logging.Level;
 import org.apache.activemq.broker.BrokerService;
 import org.eclipse.osee.connection.service.IConnectionService;
 import org.eclipse.osee.connection.service.IServiceConnector;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.messaging.MessageService;
-import org.eclipse.osee.framework.messaging.NodeInfo;
-import org.eclipse.osee.framework.messaging.OseeMessagingListener;
-import org.eclipse.osee.framework.messaging.OseeMessagingStatusCallback;
-import org.eclipse.osee.framework.messaging.ReplyConnection;
-import org.eclipse.osee.framework.messaging.services.ServiceInfoPopulator;
-import org.eclipse.osee.framework.messaging.services.messages.ServiceDescriptionPair;
-import org.eclipse.osee.framework.plugin.core.util.ExportClassLoader;
 import org.eclipse.osee.ote.core.OTESessionManager;
-import org.eclipse.osee.ote.core.OteBaseMessages;
 import org.eclipse.osee.ote.core.ServiceUtility;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
 import org.eclipse.osee.ote.core.environment.interfaces.IRuntimeLibraryManager;
@@ -64,21 +43,20 @@ import org.eclipse.osee.ote.server.OteServiceStarter;
 import org.eclipse.osee.ote.server.PropertyParamter;
 import org.eclipse.osee.ote.server.TestEnvironmentFactory;
 import org.osgi.framework.FrameworkUtil;
-import org.osgi.service.packageadmin.PackageAdmin;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopulator, OseeMessagingStatusCallback {
+public class OteServiceStarterImpl implements OteServiceStarter {
    
-	private PackageAdmin packageAdmin;
+//	private PackageAdmin packageAdmin;
 	private IRuntimeLibraryManager runtimeLibraryManager;
 	private IConnectionService connectionService;
-	private MessageService messageService;
+//	private MessageService messageService;
 
 	private BrokerService brokerService;
 	private OteService service;
-	private final ListenForHostRequest listenForHostRequest;
+//	private final ListenForHostRequest listenForHostRequest;
 
 	private IServiceConnector serviceSideConnector;
    private OTESessionManager oteSessions;
@@ -89,13 +67,13 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
    private ScheduledFuture<?> taskToCancel;
    private LookupRegistration lookupRegistration;
    private URI masterURI;
-   private NodeInfo nodeInfo;
-   private int brokerPort = 0;
+//   private NodeInfo nodeInfo;
+//   private int brokerPort = 0;
    private OteUdpEndpoint receiver;
-   private boolean ENABLE_BROKER;
+//   private boolean ENABLE_BROKER;
    
    public OteServiceStarterImpl() {
-      listenForHostRequest = new ListenForHostRequest();
+//      listenForHostRequest = new ListenForHostRequest();
       executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactory(){
          
          @Override
@@ -125,13 +103,13 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       this.runtimeLibraryManager = null;
    } 
 	
-	public void bindMessageService(MessageService messageService){
-	   this.messageService = messageService;
-	}
-
-	public void unbindMessageService(MessageService messageService){
-	   this.messageService = null;
-	}
+//	public void bindMessageService(MessageService messageService){
+//	   this.messageService = messageService;
+//	}
+//
+//	public void unbindMessageService(MessageService messageService){
+//	   this.messageService = null;
+//	}
 	
 	public void bindIConnectionService(IConnectionService connectionService){
 	   this.connectionService = connectionService;
@@ -149,13 +127,13 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
       this.masterServer = null;
    }
 	
-	public void bindPackageAdmin(PackageAdmin packageAdmin){
-	   this.packageAdmin = packageAdmin;
-	}
-	
-	public void unbindPackageAdmin(PackageAdmin packageAdmin){
-      this.packageAdmin = null;
-   }
+//	public void bindPackageAdmin(PackageAdmin packageAdmin){
+//	   this.packageAdmin = packageAdmin;
+//	}
+//	
+//	public void unbindPackageAdmin(PackageAdmin packageAdmin){
+//      this.packageAdmin = null;
+//   }
 	
 	public void bindOteUdpEndpoint(OteUdpEndpoint receiver){
 	   this.receiver = receiver;
@@ -180,52 +158,52 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			throw new OseeStateException("An ote Server has already been started.");
 		}
 		this.serviceSideConnector = serviceSideConnector;
-		ENABLE_BROKER = Boolean.parseBoolean(System.getProperty("ote.enable.broker", "true"));
-		if(ENABLE_BROKER){
-		   brokerService = new BrokerService();
-
-		   String strUri;
-		   try {
-		      String addressAsString = getAddress();
-		      if(brokerPort <= 0){
-		         brokerPort = getServerPort();
-		      }
-		      strUri = String.format("tcp://%s:%d", addressAsString, brokerPort);
-		      try {
-		         brokerService.addConnector(strUri);
-		         OseeLog.log(getClass(), Level.FINE, "Added TCP connector: " + strUri);			
-		      } catch (Exception e) {
-		         OseeLog.log(getClass(), Level.SEVERE, "could not add connector for " + strUri, e);
-		         strUri = "vm://localhost?broker.persistent=false";
-		      }
-		   } catch (Exception e) {
-		      OseeLog.log(getClass(), Level.SEVERE, "could acquire a TCP address", e);
-		      strUri = "vm://localhost?broker.persistent=false";
-		   }
-		   //necessary for rmi/jini classloading
-		   Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
-
-		   brokerService.setEnableStatistics(false);
-		   brokerService.setBrokerName("OTEServer");
-		   brokerService.setPersistent(false);
-		   brokerService.setUseJmx(false);
-		   brokerService.start();
-		   URI uri = new URI(strUri);
-
-		   nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
-		} else {
-		   URI uri = new URI(String.format("tcp://%s:%d", "nohost", 0));
-		   nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
-		}
+//		ENABLE_BROKER = Boolean.parseBoolean(System.getProperty("ote.enable.broker", "true"));
+//		if(ENABLE_BROKER){
+////		   brokerService = new BrokerService();
+//
+//		   String strUri;
+//		   try {
+//		      String addressAsString = getAddress();
+//		      if(brokerPort <= 0){
+//		         brokerPort = getServerPort();
+//		      }
+//		      strUri = String.format("tcp://%s:%d", addressAsString, brokerPort);
+//		      try {
+//		         brokerService.addConnector(strUri);
+//		         OseeLog.log(getClass(), Level.INFO, "Added TCP connector: " + strUri);			
+//		      } catch (Exception e) {
+//		         OseeLog.log(getClass(), Level.SEVERE, "could not add connector for " + strUri, e);
+//		         strUri = "vm://localhost?broker.persistent=false";
+//		      }
+//		   } catch (Exception e) {
+//		      OseeLog.log(getClass(), Level.SEVERE, "could acquire a TCP address", e);
+//		      strUri = "vm://localhost?broker.persistent=false";
+//		   }
+//		   //necessary for rmi/jini classloading
+//		   Thread.currentThread().setContextClassLoader(ExportClassLoader.getInstance());
+//
+//		   brokerService.setEnableStatistics(false);
+//		   brokerService.setBrokerName("OTEServer");
+//		   brokerService.setPersistent(false);
+//		   brokerService.setUseJmx(false);
+//		   brokerService.start();
+//		   URI uri = new URI(strUri);
+//
+////		   nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
+//		} else {
+////		   URI uri = new URI(String.format("tcp://%s:%d", "nohost", 0));
+////		   nodeInfo = new NodeInfo("OTEEmbeddedBroker", uri);
+//		}
 		OteUdpEndpoint oteEndpoint = ServiceUtility.getService(OteUdpEndpoint.class);
 		System.out.printf("SERVER CONNECTION URI[\n\ttcp://%s:%d\n]\n", oteEndpoint.getLocalEndpoint().getAddress().getHostAddress(), oteEndpoint.getLocalEndpoint().getPort());
 
 		EnvironmentCreationParameter environmentCreationParameter =
-				new EnvironmentCreationParameter(runtimeLibraryManager, nodeInfo, serviceSideConnector, config, factory,
+				new EnvironmentCreationParameter(runtimeLibraryManager, serviceSideConnector, config, factory,
 						environmentFactoryClass);
 
 		service =
-				new OteService(runtimeLibraryManager, environmentCreationParameter, oteSessions, propertyParameter,
+				new OteService(environmentCreationParameter, oteSessions, propertyParameter,
 						serviceSideConnector.getProperties(), receiver);
 
 		serviceSideConnector.init(service);
@@ -240,7 +218,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			if(masterURIStr != null){
 			   try{
 			      masterURI = new URI(masterURIStr);
-			      oteServerEntry = createOTEServer(nodeInfo, environmentCreationParameter, propertyParameter, service.getServiceID().toString());
+			      oteServerEntry = createOTEServer(environmentCreationParameter, propertyParameter, service.getServiceID().toString());
 			      lookupRegistration = new LookupRegistration(masterURI, masterServer, oteServerEntry, service);
 			      taskToCancel = executor.scheduleWithFixedDelay(lookupRegistration, 0, 30, TimeUnit.SECONDS);
 			   } catch(Throwable th){
@@ -251,7 +229,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 			}
 			
 		} else {
-			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
+//			serviceSideConnector.setProperty("OTEEmbeddedBroker", nodeInfo);
 		}
 		
 		FrameworkUtil.getBundle(getClass()).getBundleContext().registerService(IHostTestEnvironment.class, service, null);
@@ -260,7 +238,7 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		return service;
 	}
 	
-	private OTEServer createOTEServer(NodeInfo nodeInfo, EnvironmentCreationParameter environmentCreationParameter, PropertyParamter propertyParameter, String uuid) throws NumberFormatException, UnknownHostException{
+	private OTEServer createOTEServer(EnvironmentCreationParameter environmentCreationParameter, PropertyParamter propertyParameter, String uuid) throws NumberFormatException, UnknownHostException{
 	   OTEServer server = new OTEServer();
 	   server.setName(environmentCreationParameter.getServerTitle().toString());
 	   server.setStation(propertyParameter.getStation());
@@ -271,36 +249,36 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 	   server.setOwner(OtePropertiesCore.userName.getValue());
 	   server.setUUID(uuid);
 	   server.setOteRestServer(String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort()));
-	   server.setOteActivemqServer(nodeInfo.getUri().toString());
+	   server.setOteActivemqServer(String.format("tcp://%s:%d", receiver.getLocalEndpoint().getAddress().getHostAddress(), receiver.getLocalEndpoint().getPort()));
 	   return server;
 	}
 
-	private int getServerPort() throws IOException {
-		String portFromLaunch = OtePropertiesCore.brokerUriPort.getValue();
-		int port = 0;
-		if (portFromLaunch != null) {
-			try {
-				port = Integer.parseInt(portFromLaunch);
-			} catch (NumberFormatException ex) {
-			}
-		}
-		if (port == 0) {
-			port = PortUtil.getInstance().getValidPort();
-		}
-		return port;
-	}
+//	private int getServerPort() throws IOException {
+//		String portFromLaunch = OtePropertiesCore.brokerUriPort.getValue();
+//		int port = 0;
+//		if (portFromLaunch != null) {
+//			try {
+//				port = Integer.parseInt(portFromLaunch);
+//			} catch (NumberFormatException ex) {
+//			}
+//		}
+//		if (port == 0) {
+//			port = PortUtil.getInstance().getValidPort();
+//		}
+//		return port;
+//	}
 
 	@Override
 	public void stop() {
-	   if(messageService != null && nodeInfo != null && service != null){
-	      try {
-            messageService.get(nodeInfo).send(OteBaseMessages.OteHostShutdown, service.getServiceID().toString());
-         } catch (OseeCoreException e) {
-            OseeLog.log(getClass(), Level.SEVERE, e);
-         } catch (RemoteException e) {
-            OseeLog.log(getClass(), Level.SEVERE, e);
-         }
-	   }
+//	   if(messageService != null && nodeInfo != null && service != null){
+//	      try {
+//            messageService.get(nodeInfo).send(OteBaseMessages.OteHostShutdown, service.getServiceID().toString());
+//         } catch (OseeCoreException e) {
+//            OseeLog.log(getClass(), Level.SEVERE, e);
+//         } catch (RemoteException e) {
+//            OseeLog.log(getClass(), Level.SEVERE, e);
+//         }
+//	   }
 		if (service != null) {
 			try {
 				service.updateDynamicInfo();
@@ -345,63 +323,63 @@ public class OteServiceStarterImpl implements OteServiceStarter, ServiceInfoPopu
 		brokerService = null;
 	}
 
-	private String getAddress() throws UnknownHostException {
-		InetAddress[] all = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
-		String defaultAddress = all[0].getHostAddress();
-		for (InetAddress address : all ) {
-		   if(!address.isSiteLocalAddress())
-		   {
-		      String firstRealLocalAddress = address.getHostAddress();
-		      if (address instanceof Inet6Address) {
-		         firstRealLocalAddress = "[" + firstRealLocalAddress + "]";
-		      }
-		      return firstRealLocalAddress;
-		   }
-		}
-		return defaultAddress;
-	}
+//	private String getAddress() throws UnknownHostException {
+//		InetAddress[] all = InetAddress.getAllByName(InetAddress.getLocalHost().getHostName());
+//		String defaultAddress = all[0].getHostAddress();
+//		for (InetAddress address : all ) {
+//		   if(!address.isSiteLocalAddress())
+//		   {
+//		      String firstRealLocalAddress = address.getHostAddress();
+//		      if (address instanceof Inet6Address) {
+//		         firstRealLocalAddress = "[" + firstRealLocalAddress + "]";
+//		      }
+//		      return firstRealLocalAddress;
+//		   }
+//		}
+//		return defaultAddress;
+//	}
 
-	private class ListenForHostRequest extends OseeMessagingListener {
-
-		@Override
-		public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
-			if (replyConnection.isReplyRequested()) {
-				try {
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();
-					ObjectOutputStream oos = new ObjectOutputStream(baos);
-					oos.writeObject(message);
-					oos.writeObject(serviceSideConnector.getService());
-					replyConnection.send(baos.toByteArray(), null, OteServiceStarterImpl.this);
-				} catch (OseeCoreException ex) {
-					OseeLog.log(getClass(), Level.SEVERE, ex);
-				} catch (IOException ex) {
-					OseeLog.log(getClass(), Level.SEVERE, ex);
-				}
-			}
-		}
-	}
-
-	@Override
-	public void updateServiceInfo(List<ServiceDescriptionPair> serviceDescription) {
-		for (Entry<String, Serializable> entry : serviceSideConnector.getProperties().entrySet()) {
-			ServiceDescriptionPair pair = new ServiceDescriptionPair();
-			if (entry.getKey() != null && entry.getValue() != null) {
-				pair.setName(entry.getKey());
-				pair.setValue(entry.getValue().toString());
-				serviceDescription.add(pair);
-			}
-		}
-	}
-
-	@Override
-	public void fail(Throwable th) {
-		OseeLog.log(getClass(), Level.SEVERE, th);
-	}
-
-	@Override
-	public void success() {
-	}
-	
+//	private class ListenForHostRequest extends OseeMessagingListener {
+//
+//		@Override
+//		public void process(Object message, Map<String, Object> headers, ReplyConnection replyConnection) {
+//			if (replyConnection.isReplyRequested()) {
+//				try {
+//					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+//					ObjectOutputStream oos = new ObjectOutputStream(baos);
+//					oos.writeObject(message);
+//					oos.writeObject(serviceSideConnector.getService());
+//					replyConnection.send(baos.toByteArray(), null, OteServiceStarterImpl.this);
+//				} catch (OseeCoreException ex) {
+//					OseeLog.log(getClass(), Level.SEVERE, ex);
+//				} catch (IOException ex) {
+//					OseeLog.log(getClass(), Level.SEVERE, ex);
+//				}
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void updateServiceInfo(List<ServiceDescriptionPair> serviceDescription) {
+//		for (Entry<String, Serializable> entry : serviceSideConnector.getProperties().entrySet()) {
+//			ServiceDescriptionPair pair = new ServiceDescriptionPair();
+//			if (entry.getKey() != null && entry.getValue() != null) {
+//				pair.setName(entry.getKey());
+//				pair.setValue(entry.getValue().toString());
+//				serviceDescription.add(pair);
+//			}
+//		}
+//	}
+//
+//	@Override
+//	public void fail(Throwable th) {
+//		OseeLog.log(getClass(), Level.SEVERE, th);
+//	}
+//
+//	@Override
+//	public void success() {
+//	}
+//	
 	private static class LookupRegistration implements Runnable {
 
       private final OTEMasterServer masterServer;

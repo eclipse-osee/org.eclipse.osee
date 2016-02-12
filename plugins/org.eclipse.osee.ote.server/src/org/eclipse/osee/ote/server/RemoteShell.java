@@ -20,7 +20,7 @@ import org.eclipse.osee.ote.core.environment.interfaces.IRemoteCommandConsole;
  */
 public class RemoteShell extends ConsoleShell implements IRemoteCommandConsole {
 
-   private static final long serialVersionUID = -4931966494670170915L;
+//   private static final long serialVersionUID = -4931966494670170915L;
    private final StringBuffer buffer = new StringBuffer(32000);
 
    @Override

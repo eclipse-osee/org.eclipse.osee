@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core.environment.interfaces;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.model.IModelManagerRemote;
 import org.eclipse.osee.ote.message.IInstrumentationRegistrationListener;
 
@@ -35,7 +34,7 @@ public interface ITestEnvironment extends Remote {
 
    public void setBatchMode(boolean isBatched) throws RemoteException;
 
-   public void sendMessage(Message message) throws RemoteException;
+//   public void sendMessage(Message message) throws RemoteException;
    
    void addInstrumentationRegistrationListener(IInstrumentationRegistrationListener listener) throws RemoteException;
 

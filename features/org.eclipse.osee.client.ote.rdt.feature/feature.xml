@@ -26,7 +26,6 @@
       <import plugin="org.eclipse.osgi"/>
       <import plugin="org.apache.xerces"/>
       <import plugin="org.eclipse.osee.framework.core"/>
-      <import plugin="org.eclipse.osee.framework.messaging"/>
       <import plugin="org.eclipse.osee.framework.plugin.core"/>
       <import plugin="org.eclipse.osgi.services"/>
       <import plugin="org.eclipse.ui" version="3.5.1" match="greaterOrEqual"/>

@@ -13,7 +13,9 @@ package org.eclipse.osee.ote.service.core;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
+
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.service.Activator;
@@ -24,7 +26,15 @@ import org.eclipse.osee.ote.service.ITestConnectionListener;
  * @author Ken J. Aguilar
  */
 class ListenerNotifier {
-   private final ExecutorService executor = Executors.newCachedThreadPool();
+   private final ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {
+      private int count = 0;
+      @Override
+      public Thread newThread(Runnable r) {
+         Thread th = new Thread(r);
+         th.setName(String.format("OTE listener notifier [%d]", count++));
+         return th;
+      }
+   });
    private final CopyOnWriteArraySet<ITestConnectionListener> testConnectionListeners =
       new CopyOnWriteArraySet<ITestConnectionListener>();
 

@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core;
 
 import java.util.UUID;
 
-import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
@@ -43,7 +42,7 @@ public interface IUserSession {
 
    public void initiateResumePrompt(IResumeResponse prompt) throws Exception;
 
-   public void sendMessageToClient(Message message) throws Exception;
+//   public void sendMessageToClient(Message message) throws Exception;
 
    public void cancelPrompts() throws Exception;
 

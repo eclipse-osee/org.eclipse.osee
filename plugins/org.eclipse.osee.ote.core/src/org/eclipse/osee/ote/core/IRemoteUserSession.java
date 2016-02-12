@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.core;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
-import org.eclipse.osee.framework.messaging.Message;
 import org.eclipse.osee.ote.core.framework.prompt.IPassFailPromptResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IResumeResponse;
 import org.eclipse.osee.ote.core.framework.prompt.IUserInputPromptResponse;
@@ -49,7 +48,7 @@ public interface IRemoteUserSession extends Remote, IUserSession {
    @Override
    public boolean isAlive() throws RemoteException;
 
-   @Override
-   public void sendMessageToClient(Message message) throws RemoteException;
+//   @Override
+//   public void sendMessageToClient(Message message) throws RemoteException;
 
 }
