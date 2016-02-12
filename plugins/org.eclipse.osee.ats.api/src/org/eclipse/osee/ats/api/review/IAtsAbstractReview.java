@@ -17,5 +17,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
  * @author Donald G. Dunne
  */
 public interface IAtsAbstractReview extends IAtsWorkItem, IAtsActionableItemProvider {
-   // do nothing
+
+   String getRelatedToState();
+
 }

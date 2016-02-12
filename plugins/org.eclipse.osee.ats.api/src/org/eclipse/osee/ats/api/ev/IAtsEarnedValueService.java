@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
+import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -37,5 +38,19 @@ public interface IAtsEarnedValueService {
    public Collection<String> getColorTeams();
 
    public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity);
+
+   double getEstimatedHoursFromArtifact(IAtsWorkItem workItem);
+
+   double getEstimatedHoursFromTasks(IAtsWorkItem workItem, IStateToken relatedToState);
+
+   double getEstimatedHoursFromTasks(IAtsWorkItem workItem);
+
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem) throws OseeCoreException;
+
+   double getEstimatedHoursFromReviews(IAtsWorkItem workItem, IStateToken relatedToState) throws OseeCoreException;
+
+   double getEstimatedHoursTotal(IAtsWorkItem workItem, IStateToken relatedToState) throws OseeCoreException;
+
+   double getEstimatedHoursTotal(IAtsWorkItem workItem) throws OseeCoreException;
 
 }

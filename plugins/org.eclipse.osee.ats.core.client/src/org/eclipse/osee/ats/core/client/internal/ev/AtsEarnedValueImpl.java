@@ -10,35 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.ev;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
-import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
-import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
-import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.util.AtsEvents;
-import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.model.WorkPackage;
+import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
 import org.eclipse.osee.ats.core.util.AtsObjects;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventType;
@@ -48,15 +33,12 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public class AtsEarnedValueImpl implements IAtsEarnedValueService {
-
-   private final Log logger;
-   private final IAtsServices services;
+public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
 
    public AtsEarnedValueImpl(Log logger, IAtsServices services) {
-      this.logger = logger;
-      this.services = services;
+      super(logger, services);
    }
+
    @Override
    public String getWorkPackageId(IAtsWorkItem workItem) {
       String guid = null;
@@ -67,65 +49,6 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          guid = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, null);
       }
       return guid;
-   }
-
-   @Override
-   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException {
-      WorkPackage wpa = null;
-      String workPackageGuid = getWorkPackageId(workItem);
-      if (Strings.isValid(workPackageGuid)) {
-         Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranch());
-         wpa = new WorkPackage(logger, workPkgArt, services);
-      }
-      return wpa;
-   }
-
-   @Override
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object) throws OseeCoreException {
-      List<IAtsWorkPackage> workPackageOptions = new ArrayList<>();
-      getWorkPackageOptions(object, workPackageOptions);
-      return workPackageOptions;
-   }
-
-   public Collection<IAtsWorkPackage> getWorkPackageOptions(IAtsObject object, List<IAtsWorkPackage> workPackageOptions) throws OseeCoreException {
-      // Config objects get work package options from related work package artifacts
-      if (object instanceof IAtsConfigObject) {
-         IAtsConfigObject configObj = (IAtsConfigObject) object;
-         Artifact artifact = AtsClientService.get().getArtifact(configObj);
-         if (artifact != null) {
-            for (Artifact workPackageArt : artifact.getRelatedArtifacts(AtsRelationTypes.WorkPackage_WorkPackage)) {
-               workPackageOptions.add(new WorkPackage(logger, workPackageArt, services));
-            }
-         }
-      }
-      // Team Wf get work package options of Ais and Team Definition
-      else if (object instanceof IAtsTeamWorkflow) {
-         IAtsTeamWorkflow teamWf = (IAtsTeamWorkflow) object;
-         getWorkPackageOptions(teamWf.getTeamDefinition(), workPackageOptions);
-         for (IAtsActionableItem ai : teamWf.getActionableItems()) {
-            getWorkPackageOptions(ai, workPackageOptions);
-         }
-      }
-      // Children work items inherit the work packages options of their parent team workflow
-      else if (object instanceof IAtsWorkItem) {
-         IAtsWorkItem workItem = (IAtsWorkItem) object;
-         // Work Items related to Team Wf get their options from Team Wf
-         IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         if (teamWf != null) {
-            getWorkPackageOptions(teamWf, workPackageOptions);
-         }
-         // Stand-alone reviews get their options from related AIs and Team Defs
-         else if (workItem instanceof IAtsAbstractReview) {
-            IAtsAbstractReview review = (IAtsAbstractReview) workItem;
-            for (IAtsActionableItem ai : review.getActionableItems()) {
-               getWorkPackageOptions(ai, workPackageOptions);
-               if (ai.getTeamDefinition() != null) {
-                  getWorkPackageOptions(ai.getTeamDefinition(), workPackageOptions);
-               }
-            }
-         }
-      }
-      return workPackageOptions;
    }
 
    @Override
@@ -140,7 +63,7 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
 
    private void changeWorkPackage(IAtsWorkPackage workPackage, Collection<IAtsWorkItem> workItems, boolean remove) {
       JaxWorkPackageData data = new JaxWorkPackageData();
-      data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
+      data.setAsUserId(services.getUserService().getCurrentUserId());
       for (IAtsWorkItem workItem : workItems) {
          data.getWorkItemUuids().add(workItem.getUuid());
       }
@@ -156,27 +79,12 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
          AtsObjects.toUuidsString(";", workItems), EventType.LocalAndRemote);
       OseeEventManager.kickTopicEvent(getClass(), event);
 
-      AtsClientService.get().getStoreService().reload(workItems);
-   }
-
-   @Override
-   public IAtsWorkPackage getWorkPackage(ArtifactId artifact) {
-      return new WorkPackage(logger, artifact, services);
+      services.getStoreService().reload(workItems);
    }
 
    @Override
    public Collection<String> getColorTeams() {
       return AttributeTypeManager.getEnumerationValues(AtsAttributeTypes.ColorTeam);
-   }
-
-   @Override
-   public Collection<IAtsWorkPackage> getWorkPackages(IAtsInsertionActivity insertionActivity) {
-      List<IAtsWorkPackage> workPackages = new ArrayList<>();
-      for (Artifact artifact : AtsClientService.get().getArtifact(insertionActivity.getUuid()).getRelatedArtifacts(
-         AtsRelationTypes.InsertionActivityToWorkPackage_WorkPackage)) {
-         workPackages.add(new WorkPackage(logger, artifact, services));
-      }
-      return workPackages;
    }
 
 }

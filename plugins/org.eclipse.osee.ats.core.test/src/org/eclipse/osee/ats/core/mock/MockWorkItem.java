@@ -246,4 +246,24 @@ public class MockWorkItem implements IAtsWorkItem {
       return false;
    }
 
+   @Override
+   public boolean isInWork() {
+      return getStateMgr().getStateType().isInWork();
+   }
+
+   @Override
+   public boolean isCompleted() {
+      return getStateMgr().getStateType().isCompleted();
+   }
+
+   @Override
+   public boolean isCompletedOrCancelled() {
+      return isCompleted() || isCancelled();
+   }
+
+   @Override
+   public boolean isCancelled() {
+      return getStateMgr().getStateType().isCancelled();
+   }
+
 }

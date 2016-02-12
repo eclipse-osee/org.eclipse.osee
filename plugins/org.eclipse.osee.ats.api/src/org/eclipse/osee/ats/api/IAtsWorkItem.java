@@ -73,4 +73,12 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    boolean isGoal();
 
+   boolean isInWork();
+
+   boolean isCompleted();
+
+   boolean isCompletedOrCancelled();
+
+   boolean isCancelled();
+
 }

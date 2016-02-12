@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -78,6 +79,7 @@ import org.eclipse.osee.ats.rest.internal.util.ArtifactResolverImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.rest.internal.util.AtsAttributeResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsBranchServiceImpl;
+import org.eclipse.osee.ats.rest.internal.util.AtsEarnedValueImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
@@ -143,6 +145,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private IAgileService agileService;
    private IAtsQueryService atsQueryService;
    private IAtsTaskService taskService;
+   private IAtsEarnedValueService earnedValueService;
 
    private volatile boolean emailEnabled = true;
    private boolean loggedNotificationDisabled = false;
@@ -239,6 +242,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       atsQueryService = new AtsQueryServiceIimpl(this);
       versionService = new AtsVersionServiceImpl(getServices());
       taskService = new AtsTaskService(this);
+      earnedValueService = new AtsEarnedValueImpl(logger, this);
 
       addAtsDatabaseConversion(new ConvertBaselineGuidToBaselineUuid(logger, jdbcClient, orcsApi, this));
       addAtsDatabaseConversion(new ConvertFavoriteBranchGuidToUuid(logger, jdbcClient, orcsApi, this));
@@ -604,4 +608,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          name).getResults().getAtMostOneOrNull();
    }
 
+   @Override
+   public IAtsEarnedValueService getEarnedValueService() {
+      return earnedValueService;
+   }
 }

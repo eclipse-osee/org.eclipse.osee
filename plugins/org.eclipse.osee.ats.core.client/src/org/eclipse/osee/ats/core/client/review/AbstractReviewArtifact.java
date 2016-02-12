@@ -16,10 +16,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -41,7 +41,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 /**
  * @author Donald G. Dunne
  */
-public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsActionableItemProvider {
+public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact implements IAtsAbstractReview {
 
    private ActionableItemManager actionableItemsDam;
    private Boolean standAlone = null;
@@ -204,6 +204,11 @@ public abstract class AbstractReviewArtifact extends AbstractWorkflowArtifact im
    @Override
    public Set<IAtsActionableItem> getActionableItems() throws OseeCoreException {
       return getActionableItemsDam().getActionableItems();
+   }
+
+   @Override
+   public String getRelatedToState() {
+      return getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
    }
 
 }

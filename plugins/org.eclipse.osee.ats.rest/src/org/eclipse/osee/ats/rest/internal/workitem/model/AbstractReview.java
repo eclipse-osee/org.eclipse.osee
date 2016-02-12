@@ -41,4 +41,8 @@ public abstract class AbstractReview extends WorkItem implements IAtsAbstractRev
       return ais;
    }
 
+   @Override
+   public String getRelatedToState() {
+      return artifact.getSoleAttributeValue(AtsAttributeTypes.RelatedToState, "");
+   }
 }
