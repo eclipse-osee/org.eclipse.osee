@@ -13,11 +13,14 @@ package org.eclipse.osee.ats.rest.internal.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -29,6 +32,9 @@ import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -102,10 +108,31 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    public String getTypeName(ArtifactId artifact) {
       return ((ArtifactReadable) artifact).getArtifactType().getName();
    }
-   
+
    @Override
    public String getGuid(IAtsObject atsObject) {
       return ((ArtifactReadable) atsObject).getGuid();
+   }
+
+   /**
+    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
+    */
+   @Override
+   public Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
+      Set<IArtifactType> artifactTypes = new HashSet<>();
+      artifactTypes.addAll(
+         atsServer.getOrcsApi().getOrcsTypes().getArtifactTypes().getAllDescendantTypes(AtsArtifactTypes.TeamWorkflow));
+      return artifactTypes;
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType) {
+      return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType) {
+      return ((ArtifactReadable) artifact).isAttributeTypeValid(attributeType);
    }
 
 }

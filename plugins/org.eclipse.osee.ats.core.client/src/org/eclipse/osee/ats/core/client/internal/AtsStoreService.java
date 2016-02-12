@@ -13,11 +13,14 @@ package org.eclipse.osee.ats.core.client.internal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -25,7 +28,12 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.model.type.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -106,6 +114,33 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public String getTypeName(ArtifactId artifact) {
       return ((Artifact) artifact).getArtifactTypeName();
+   }
+
+   /**
+    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
+    */
+   @Override
+   public Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException {
+      Set<IArtifactType> artifactTypes = new HashSet<>();
+      getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(AtsArtifactTypes.TeamWorkflow), artifactTypes);
+      return artifactTypes;
+   }
+
+   private static void getTeamWorkflowArtifactTypesRecursive(ArtifactType artifactType, Set<IArtifactType> allArtifactTypes) throws OseeCoreException {
+      allArtifactTypes.add(artifactType);
+      for (IArtifactType child : artifactType.getFirstLevelDescendantTypes()) {
+         getTeamWorkflowArtifactTypesRecursive(ArtifactTypeManager.getType(child), allArtifactTypes);
+      }
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType) {
+      return isAttributeTypeValid(atsObject.getStoreObject(), attributeType);
+   }
+
+   @Override
+   public boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType) {
+      return ((Artifact) artifact).isAttributeTypeValid(attributeType);
    }
 
 }

@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -160,6 +161,12 @@ public class AtsRelationResolverServiceImpl implements IRelationResolver {
          return art.getRelated(relationSide).getAtMostOneOrNull();
       }
       return null;
+   }
+
+   @Override
+   public List<ArtifactId> getRelatedArtifacts(IAtsWorkItem workItem, IRelationTypeSide relationTypeSide) {
+      ArtifactReadable artifact = getArtifact(workItem);
+      return Collections.castAll(getRelated(artifact, relationTypeSide));
    }
 
 }

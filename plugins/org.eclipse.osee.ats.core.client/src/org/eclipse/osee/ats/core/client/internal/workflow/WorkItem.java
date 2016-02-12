@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -279,6 +280,11 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    }
 
    @Override
+   public int compareTo(Named other) {
+      return artifact.compareTo(other);
+   }
+
+   @Override
    public boolean isInWork() {
       return getStateMgr().getStateType().isInWork();
    }
@@ -297,4 +303,5 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    public boolean isCancelled() {
       return getStateMgr().getStateType().isCancelled();
    }
+
 }

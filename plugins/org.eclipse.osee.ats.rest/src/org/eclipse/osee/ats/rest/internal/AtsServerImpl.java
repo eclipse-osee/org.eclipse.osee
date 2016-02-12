@@ -84,12 +84,12 @@ import org.eclipse.osee.ats.rest.internal.util.AtsRelationResolverServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsStoreServiceImpl;
 import org.eclipse.osee.ats.rest.internal.util.AtsWorkDefinitionCacheProvider;
-import org.eclipse.osee.ats.rest.internal.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskService;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsVersionServiceImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.ConfigItemFactory;
 import org.eclipse.osee.ats.rest.internal.workitem.WorkItemFactory;
+import org.eclipse.osee.ats.rest.util.ChangeTypeUtil;
 import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
@@ -612,4 +612,5 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    public IAtsEarnedValueService getEarnedValueService() {
       return earnedValueService;
    }
+
 }

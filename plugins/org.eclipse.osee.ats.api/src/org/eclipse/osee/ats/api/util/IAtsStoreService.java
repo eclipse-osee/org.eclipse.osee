@@ -12,10 +12,14 @@ package org.eclipse.osee.ats.api.util;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAtsStoreService {
 
@@ -30,7 +34,13 @@ public interface IAtsStoreService {
    Long getUuidFromGuid(String guid);
 
    String getTypeName(ArtifactId artifact);
-   
+
    String getGuid(IAtsObject atsObject);
+
+   boolean isAttributeTypeValid(IAtsObject atsObject, IAttributeType attributeType);
+
+   boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType);
+
+   Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException;
 
 }

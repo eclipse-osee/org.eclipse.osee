@@ -17,8 +17,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -77,7 +79,8 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       changes.unrelateAll(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
    }
 
-   public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) throws OseeCoreException {
+   @Override
+   public IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes) {
       changes.setRelation(teamWf, AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, version);
       return version;
    }
@@ -160,6 +163,17 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
          branchUuid = null;
       }
       return branchUuid;
+   }
+
+   @Override
+   public IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
+      IAtsVersion version = null;
+      version = services.getProgramService().getVersion(program, versionName);
+      if (version == null) {
+         version =
+            services.getConfigItemFactory().getVersion(changes.createArtifact(AtsArtifactTypes.Version, versionName));
+      }
+      return version;
    }
 
 }

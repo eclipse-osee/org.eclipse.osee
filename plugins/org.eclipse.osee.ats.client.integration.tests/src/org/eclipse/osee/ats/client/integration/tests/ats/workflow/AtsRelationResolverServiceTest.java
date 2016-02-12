@@ -56,7 +56,7 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testGetRelatedIAtsObjectIRelationTypeSideClassOfT() {
       Assert.assertEquals(8,
-         relationResolver.getRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task).size());
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task).size());
    }
 
    @Test
@@ -73,7 +73,7 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testAreRelatedIAtsObjectIRelationTypeSideIAtsObject() {
       Collection<ArtifactId> related =
-         relationResolver.getRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstTask = related.iterator().next();
 
       Assert.assertTrue(relationResolver.areRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task, firstTask));
@@ -82,7 +82,7 @@ public class AtsRelationResolverServiceTest {
 
       // get task from un-related workflow
       Collection<ArtifactId> unRelated =
-         relationResolver.getRelated(sawCodeUnCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeUnCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstUnRelatedTask = unRelated.iterator().next();
 
       Assert.assertFalse(
@@ -106,7 +106,7 @@ public class AtsRelationResolverServiceTest {
    @Test
    public void testGetRelatedOrNullIAtsObjectIRelationTypeSideClassOfT() {
       Collection<ArtifactId> related =
-         relationResolver.getRelated(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
+         relationResolver.getRelatedArtifacts(sawCodeCommittedWf, AtsRelationTypes.TeamWfToTask_Task);
       ArtifactId firstTaskArt = related.iterator().next();
       IAtsTask firstTask = services.getWorkItemFactory().getTask(firstTaskArt);
 
