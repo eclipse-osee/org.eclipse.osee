@@ -22,10 +22,6 @@
          version="0.0.0"/>
 
    <includes
-         id="org.eclipse.osee.client.ote.rdt.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.eclipse.osee.core.runtime.feature"
          version="0.0.0"/>
 

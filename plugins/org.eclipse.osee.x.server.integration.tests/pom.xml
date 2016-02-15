@@ -217,21 +217,6 @@
 							</execution>
 						</executions>
 					</plugin>
-					<plugin>
-						<artifactId>maven-assembly-plugin</artifactId>
-						<configuration>
-							<descriptor>${project.basedir}/assembly/benchmark-assembly.xml</descriptor>
-							<finalName>${project.artifactId}.benchmarks</finalName>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>post-integration-test</phase>
-								<goals>
-									<goal>single</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
 				</plugins>
 			</build>
 		</profile>

@@ -392,190 +392,15 @@
 
 	<profiles>
 		<profile>
-			<id>platform-helios</id>
+			<id>eclipse-platform</id>
 			<activation>
 				<property>
-					<name>platform-version-name</name>
-					<value>helios</value>
+					<name>eclipse-platform</name>
 				</property>
 			</activation>
 			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/helios</eclipse-site>
-				<platform-version>[3.6,3.7)</platform-version>
+				<eclipse-site>${eclipse-platform}</eclipse-site>
 			</properties>
-		</profile>
-
-		<profile>
-			<id>platform-indigo</id>
-			<activation>
-				<property>
-					<name>platform-version-name</name>
-					<value>indigo</value>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-site>http://download.eclipse.org/releases/indigo</eclipse-site>
-				<platform-version>[3.7,3.8)</platform-version>
-			</properties>
-		</profile>
-
-		<profile>
-			<id>check-style</id>
-			<activation>
-				<property>
-					<name>allow-static-analysis</name>
-				</property>
-			</activation>
-			<properties>
-				<checkstyle.reportPath>target/checkstyle</checkstyle.reportPath>
-				<checkstyle.configPath>../../plugins/org.eclipse.osee.support.config/codeStyle</checkstyle.configPath>
-				<checkstyle.configFile>${checkstyle.configPath}/osee_check_style.xml</checkstyle.configFile>
-				<checkstyle.failOnErrors>false</checkstyle.failOnErrors>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-checkstyle-plugin</artifactId>
-						<version>${checkstyle-version}</version>
-						<executions>
-							<execution>
-								<id>check-source-style</id>
-								<phase>verify</phase>
-								<goals>
-									<goal>checkstyle</goal>
-								</goals>
-								<configuration>
-									<failOnErrors>${checkstyle.failOnErrors}</failOnErrors>
-									<consoleOutput>true</consoleOutput>
-									<outputFileFormat>xml</outputFileFormat>
-									<includes>*osee*</includes>
-									<configLocation>${checkstyle.configFile}</configLocation>
-									<!-- <suppressionsLocation></suppressionsLocation> -->
-									<!-- <propertiesLocation></propertiesLocation> -->
-									<!-- <headerLocation></headerLocation> to check license info -->
-									<outputDirectory>${checkstyle.reportPath}</outputDirectory>
-								</configuration>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>check-findbugs</id>
-			<activation>
-				<property>
-					<name>allow-static-analysis</name>
-				</property>
-			</activation>
-			<properties>
-				<findbugs.reportPath>target/findbugs</findbugs.reportPath>
-				<findbugs.failOnErrors>false</findbugs.failOnErrors>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.codehaus.mojo</groupId>
-						<artifactId>findbugs-maven-plugin</artifactId>
-						<version>${findbugs-version}</version>
-						<configuration>
-							<xmlOutput>true</xmlOutput>
-							<xmlOutputDirectory>${findbugs.reportPath}</xmlOutputDirectory>
-							<outputDirectory>${findbugs.reportPath}</outputDirectory>
-							<failOnError>${findbugs.failOnErrors}</failOnError>
-							<includeFileFilter>*osee*</includeFileFilter>
-							<excludeFileFilter>*test*</excludeFileFilter>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>check-pmd</id>
-			<activation>
-				<property>
-					<name>allow-static-analysis</name>
-				</property>
-			</activation>
-			<properties>
-				<pmd.reportPath>target/pmd</pmd.reportPath>
-				<pmd.failOnErrors>false</pmd.failOnErrors>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-pmd-plugin</artifactId>
-						<version>${pmd-version}</version>
-						<configuration>
-							<sourceEncoding>utf-8</sourceEncoding>
-							<minimumTokens>100</minimumTokens>
-							<targetJdk>1.6</targetJdk>
-							<format>xml</format>
-							<failOnViolation>${pmd.failOnErrors}</failOnViolation>
-							<outputDirectory>${pmd.reportPath}</outputDirectory>
-							<targetDirectory>${pmd.reportPath}</targetDirectory>
-						</configuration>
-						<executions>
-							<execution>
-								<goals>
-									<goal>cpd-check</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-
-		<profile>
-			<id>code-coverage</id>
-			<activation>
-				<property>
-					<name>allow-code-coverage</name>
-				</property>
-			</activation>
-			<properties>
-				<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-				<sonar.jacoco.reportPath>${project.build.directory}/coverage/jacoco.exec</sonar.jacoco.reportPath>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.jacoco</groupId>
-						<artifactId>jacoco-maven-plugin</artifactId>
-						<version>${jacoco-version}</version>
-						<executions>
-							<execution>
-								<id>collect-coverage</id>
-								<goals>
-									<goal>prepare-agent</goal>
-								</goals>
-								<configuration>
-									<includes>*.osee.*</includes>
-									<destFile>${sonar.jacoco.reportPath}</destFile>
-									<append>true</append>
-								</configuration>
-							</execution>
-							<!-- <execution> <id>create-coverage-reports</id> <phase>verify</phase> 
-								<goals> <goal>report</goal> </goals> <configuration> <dataFile>${sonar.jacoco.reportPath}</dataFile> 
-								<includes>*.osee.*</includes> <outputDirectory>${coverage.reportPath}</outputDirectory> 
-								<outputEncoding>UTF-8</outputEncoding> </configuration> </execution> -->
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
 		</profile>
 
 		<profile>
@@ -906,38 +731,6 @@
 		</profile>
 
 		<profile>
-			<id>osee-ote-client</id>
-			<activation>
-				<property>
-					<name>osee-build-stage</name>
-					<value>osee-ote-client</value>
-				</property>
-			</activation>
-			<properties>
-				<eclipse-ip-site>${git-repo-root}/org.eclipse.ip/org.eclipse.ip.p2/target/repository</eclipse-ip-site>
-				<osee-xserver-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.server.p2/target/repository</osee-xserver-site>
-				<osee-runtime-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.runtime.p2/target/repository</osee-runtime-site>
-			</properties>
-			<repositories>
-				<repository>
-					<id>eclipse-ip</id>
-					<layout>p2</layout>
-					<url>${eclipse-ip-site}</url>
-				</repository>
-				<repository>
-					<id>osee-xserver</id>
-					<layout>p2</layout>
-					<url>${osee-xserver-site}</url>
-				</repository>
-				<repository>
-					<id>osee-runtime</id>
-					<layout>p2</layout>
-					<url>${osee-runtime-site}</url>
-				</repository>
-			</repositories>
-		</profile>
-
-		<profile>
 			<id>osee-client</id>
 			<activation>
 				<property>
@@ -1064,7 +857,6 @@
 				<osee-xserver-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.x.server.p2/target/repository</osee-xserver-site>
 				<osee-runtime-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.runtime.p2/target/repository</osee-runtime-site>
 
-				<osee-ote-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ote.rdt.p2/target/repository</osee-ote-site>
 				<osee-client-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.client.p2/target/repository</osee-client-site>
 				<osee-ats-site>${git-repo-root}/org.eclipse.osee/plugins/org.eclipse.osee.ats.p2/target/repository</osee-ats-site>
 			</properties>
@@ -1083,11 +875,6 @@
 					<id>osee-runtime</id>
 					<layout>p2</layout>
 					<url>${osee-runtime-site}</url>
-				</repository>
-				<repository>
-					<id>osee-ote</id>
-					<layout>p2</layout>
-					<url>${osee-ote-site}</url>
 				</repository>
 				<repository>
 					<id>osee-client</id>

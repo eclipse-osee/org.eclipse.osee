@@ -31,7 +31,6 @@ import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.MethodRule;
 import org.junit.rules.TestName;
 import org.junit.runners.MethodSorters;
 
@@ -40,9 +39,6 @@ import org.junit.runners.MethodSorters;
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class AccountClientTest {
-
-   @Rule
-   public MethodRule performanceRule = IntegrationUtil.createPerformanceRule();
 
    @Rule
    public TestName testName = new TestName();

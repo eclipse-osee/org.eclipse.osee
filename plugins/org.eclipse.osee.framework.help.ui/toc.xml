@@ -4,10 +4,13 @@
 		<topic href="OSEE/Users_Guide/Getting_Started/Getting-Started.html" label="What is OSEE?"></topic>
 		<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html" label="Installation and Initialization">
 			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Requirements" label="Requirements"></topic>
-			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Eclipse_Installation" label="Eclipse Installation"></topic>
+			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Eclipse_Installation" label="Eclipse Installation">
+				<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Quick_Server_Installation" label="Quick Server Installation"></topic>
+				<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Client_Installation" label="Client Installation"></topic>
+			</topic>
+			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Additional_Configuration_Options" label="Additional Configuration Options"></topic>
 			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Server_Installation" label="Server Installation"></topic>
 			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Supported_Databases" label="Supported Databases">
-				<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#H2_Installation" label="H2 Installation"></topic>
 				<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#PostgreSQL_Installation" label="PostgreSQL Installation"></topic>
 			</topic>
 			<topic href="OSEE/Users_Guide/Getting_Started/Installation-and-Initialization.html#Launch_Application_Server" label="Launch Application Server"></topic>
@@ -77,9 +80,10 @@
 			<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_View" label="Quick Search View">
 				<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Quick_Search_Options" label="Quick Search Options">
 					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Attribute_Type_Filter" label="Attribute Type Filter"></topic>
+					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#By_GUID" label="By GUID"></topic>
 					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Include_Deleted" label="Include Deleted"></topic>
 					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Match_Word_Order" label="Match Word Order"></topic>
-					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#All_Match_Locations" label="All Match Locations"></topic>
+					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Exact_Match" label="Exact Match"></topic>
 					<topic href="OSEE/Users_Guide/Features/Views-and-Editors.html#Case_Sensitive" label="Case Sensitive"></topic>
 				</topic>
 			</topic>
@@ -162,8 +166,9 @@
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Importing_Microsoft_Word.28c.29_documents_into_OSEE" label="Importing Microsoft Word(c) documents into OSEE"></topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#How_are_MS_Word_styles_and_formatting_handled.3F" label="How are MS Word styles and formatting handled?"></topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Stop_Word_from_raising_a_.22Convert_File.22_prompt" label="Stop Word from raising a &quot;Convert File&quot; prompt">
-				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2003" label="Office 2003"></topic>
+				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2013" label="Office 2013"></topic>
 				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2007" label="Office 2007"></topic>
+				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2003" label="Office 2003"></topic>
 			</topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Stop_Word_from_adding_Smart_Tags" label="Stop Word from adding Smart Tags">
 				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2003_2" label="Office 2003"></topic>
@@ -178,6 +183,7 @@
 				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Office_2007_Preference_Settings_2" label="Office 2007 Preference Settings"></topic>
 			</topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Configure_MS_Word_.282003.2F2007.29_so_it_does_NOT_auto-format_bulleted_and_numbered_lists" label="Configure MS Word (2003/2007) so it does NOT auto-format bulleted and numbered lists"></topic>
+			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Restarting_a_numbered_list_in_an_OSEE_Artifact" label="Restarting a numbered list in an OSEE Artifact"></topic>
 			<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Creating_Cross-References_between_Multiple_Word_Artifacts_having_OLE_Data" label="Creating Cross-References between Multiple Word Artifacts having OLE Data">
 				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Method1:_Use_single_edit" label="Method1: Use single edit"></topic>
 				<topic href="OSEE/Users_Guide/Tips/MS-Word-Tips.html#Method2:_Separate_contents_and_reference_with_hyperlinks" label="Method2: Separate contents and reference with hyperlinks"></topic>

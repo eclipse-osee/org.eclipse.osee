@@ -7,6 +7,7 @@
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Data_Model" label="Data Model"></topic>
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Configuration_Properties" label="Configuration Properties">
+			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Server_OSGi_properties" label="Server OSGi properties"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Datastore_Preferences_.28via_Global_Preferences_artifact.29" label="Datastore Preferences (via Global Preferences artifact)"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Common_Java_System_Properties" label="Common Java System Properties"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Application_Server_Java_System_Properties" label="Application Server Java System Properties"></topic>
@@ -17,7 +18,6 @@
 				<topic href="OSEE/Developers_Guide/Developers-Guide.html#Configure_New_Code_Template_Preferences" label="Configure New Code Template Preferences"></topic>
 			</topic>
 		</topic>
-		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Database_Connection_Information" label="Database Connection Information"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Custom_Data_Model" label="Custom Data Model">
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Type_Table" label="Artifact Type Table"></topic>
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#Artifact_Factory" label="Artifact Factory"></topic>
@@ -60,6 +60,7 @@
 		</topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Database_Schema" label="Database Schema"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#How_to_Define_Classes_for_Coverage_Importing" label="How to Define Classes for Coverage Importing"></topic>
+		<topic href="OSEE/Developers_Guide/Developers-Guide.html#OSEE_Web_Development" label="OSEE Web Development"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Helpful_links" label="Helpful links"></topic>
 		<topic href="OSEE/Developers_Guide/Developers-Guide.html#Design_Questions" label="Design Questions">
 			<topic href="OSEE/Developers_Guide/Developers-Guide.html#I_have_strange_eclipse.2Fosee_issues_can_I_delete_stuff_from_my_.27.27.27.27.27configuration.27.27.27.27.27_folder.3F" label="I have strange eclipse/osee issues can I delete stuff from my '''''configuration''''' folder?"></topic>

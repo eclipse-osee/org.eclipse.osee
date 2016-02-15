@@ -18,7 +18,6 @@
 
 	<modules>
 		<module>../../plugins/org.eclipse.osee.runtime.parent</module>
-		<module>../../plugins/org.eclipse.osee.ote.rdt.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.parent</module>
 		<module>../../plugins/org.eclipse.osee.ats.parent</module>
 		<module>../../plugins/org.eclipse.osee.client.all.parent</module>

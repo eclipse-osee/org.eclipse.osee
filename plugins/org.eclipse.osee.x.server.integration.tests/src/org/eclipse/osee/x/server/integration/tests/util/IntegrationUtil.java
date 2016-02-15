@@ -13,24 +13,15 @@ package org.eclipse.osee.x.server.integration.tests.util;
 import static org.eclipse.osee.orcs.rest.client.OseeClient.OSEE_APPLICATION_SERVER;
 import java.util.HashMap;
 import java.util.Map;
-import org.databene.contiperf.junit.ContiPerfRule;
-import org.databene.contiperf.report.CSVLatencyReportModule;
-import org.databene.contiperf.report.CSVSummaryReportModule;
-import org.databene.contiperf.report.HtmlReportModule;
 import org.eclipse.osee.account.rest.client.AccountClient;
 import org.eclipse.osee.account.rest.client.AccountClientStandaloneSetup;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.OseeClientStandaloneSetup;
-import org.junit.rules.MethodRule;
 
 public final class IntegrationUtil {
 
    private IntegrationUtil() {
       // Utility class
-   }
-
-   public static MethodRule createPerformanceRule() {
-      return new ContiPerfRule(new HtmlReportModule(), new CSVSummaryReportModule(), new CSVLatencyReportModule());
    }
 
    public static OseeClient createClient() {

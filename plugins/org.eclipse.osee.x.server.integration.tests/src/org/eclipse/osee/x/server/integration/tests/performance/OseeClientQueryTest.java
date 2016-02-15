@@ -24,7 +24,6 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.Properties;
 import javax.ws.rs.core.MediaType;
-import org.databene.contiperf.PerfTest;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
@@ -37,11 +36,8 @@ import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
 import org.eclipse.osee.orcs.rest.model.search.artifact.SearchResult;
 import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
 import org.junit.BeforeClass;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.MethodRule;
 
-@PerfTest(threads = 2, invocations = 100)
 public class OseeClientQueryTest {
 
    private static final String GUID1 = SystemUser.Anonymous.getGuid();
@@ -64,9 +60,6 @@ public class OseeClientQueryTest {
          return 3L;
       }
    };
-
-   @Rule
-   public MethodRule performanceRule = IntegrationUtil.createPerformanceRule();
 
    private static OseeClient createClient;
 
@@ -189,7 +182,6 @@ public class OseeClientQueryTest {
       assertEquals(EXPECTED_RESULTS, results.getTotal());
    }
 
-   @PerfTest(threads = 1, invocations = 1)
    @Test
    public void supportedVersions() {
       IdeClientEndpoint endpoint = createClient.getIdeClientEndpoint();
@@ -199,7 +191,6 @@ public class OseeClientQueryTest {
       assertEquals(true, !supportedVersions.isEmpty());
    }
 
-   @PerfTest(threads = 1, invocations = 1)
    @Test
    public void orcsScript() {
       String script =
