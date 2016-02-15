@@ -37,7 +37,7 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    /**
     * Set metrics and log if changed
-    * 
+    *
     * @param changes JavaTip
     */
    void setMetrics(IStateToken state, double hours, int percentComplete, boolean logMetrics, IAtsUser user, Date date) throws OseeCoreException;
@@ -154,5 +154,7 @@ public interface IAtsStateManager extends WorkStateFactory {
    void setPercentCompleteValue(Integer percentComplete);
 
    WorkState getState(String string);
+
+   boolean isInState(IStateToken state);
 
 }

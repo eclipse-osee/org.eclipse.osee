@@ -43,12 +43,12 @@ import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoArtifactTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -96,7 +96,7 @@ import org.eclipse.osee.support.test.util.TestUtil;
 /**
  * Run from the ATS Navigator after the DB is configured for "OSEE Demo Database", this class will populate the database
  * with sample actions written against XYZ configured teams
- * 
+ *
  * @author Donald G. Dunne
  */
 public class PopulateDemoActions extends XNavigateItemAction {
@@ -297,8 +297,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                aData.getActionableItems(), createdDate, createdBy, null, changes);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
-               TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-                  TransitionOption.OverrideTransitionValidityCheck);
+               TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+                  TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
                // Add validation required flag if Decision review is required
                if (aData.getCreateReviews().length > 0) {
                   for (CreateReview createReview : aData.getCreateReviews()) {

@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch.BranchStatus;
@@ -96,7 +95,7 @@ public abstract class XWorkingBranchWidgetAbstract extends GenericXWidget implem
    @Override
    public void setArtifact(Artifact artifact) throws OseeCoreException {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         this.teamArt = TeamWorkFlowManager.cast(artifact);
+         this.teamArt = (TeamWorkFlowArtifact) artifact;
          updateBranchState();
       }
    }

@@ -74,7 +74,7 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsConfig config;
-   private final IAtsServices atsServices;
+   private final IAtsServices services;
 
    public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
@@ -85,7 +85,7 @@ public class ActionFactory implements IAtsActionFactory {
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
       this.config = config;
-      this.atsServices = atsServices;
+      this.services = atsServices;
    }
 
    @Override
@@ -140,15 +140,19 @@ public class ActionFactory implements IAtsActionFactory {
       return teamWf;
    }
 
-   private IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) throws OseeCoreException {
+   public IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef) throws OseeCoreException {
+      return getTeamWorkflowArtifactType(teamDef, services);
+   }
+
+   public static IArtifactType getTeamWorkflowArtifactType(IAtsTeamDefinition teamDef, IAtsServices services) throws OseeCoreException {
       Conditions.checkNotNull(teamDef, "teamDef");
       IArtifactType teamWorkflowArtifactType = AtsArtifactTypes.TeamWorkflow;
       if (teamDef.getStoreObject() != null) {
-         String artifactTypeName =
-            attrResolver.getSoleAttributeValue(teamDef, AtsAttributeTypes.TeamWorkflowArtifactType, null);
+         String artifactTypeName = services.getAttributeResolver().getSoleAttributeValue(teamDef,
+            AtsAttributeTypes.TeamWorkflowArtifactType, null);
          if (Strings.isValid(artifactTypeName)) {
             boolean found = false;
-            for (IArtifactType type : atsServices.getArtifactTypes()) {
+            for (IArtifactType type : services.getArtifactTypes()) {
                if (type.getName().equals(artifactTypeName)) {
                   teamWorkflowArtifactType = type;
                   found = true;
@@ -173,7 +177,7 @@ public class ActionFactory implements IAtsActionFactory {
          for (IAtsTeamWorkflow teamArt : action.getTeamWorkflows()) {
             if (teamArt.getTeamDefinition().equals(teamDef)) {
                throw new OseeArgumentException("Team [%s] already exists for Action [%s]", teamDef,
-                  atsServices.getAtsId(action));
+                  services.getAtsId(action));
             }
          }
       }
@@ -307,7 +311,7 @@ public class ActionFactory implements IAtsActionFactory {
    @Override
    public void addActionToConfiguredGoal(IAtsTeamDefinition teamDef, IAtsTeamWorkflow teamWf, Collection<IAtsActionableItem> actionableItems, IAtsChangeSet changes) throws OseeCoreException {
       // Auto-add this team artifact to configured goals
-      IRelationResolver relationResolver = atsServices.getRelationResolver();
+      IRelationResolver relationResolver = services.getRelationResolver();
       for (IAtsGoal goal : relationResolver.getRelated(teamDef, AtsRelationTypes.AutoAddActionToGoal_Goal,
          IAtsGoal.class)) {
          if (!relationResolver.areRelated(goal, AtsRelationTypes.Goal_Member, teamWf)) {
@@ -337,7 +341,7 @@ public class ActionFactory implements IAtsActionFactory {
       Conditions.checkNotNull(changes, "changes");
       setArtifactIdentifyData(toTeam, fromAction.getName(),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.Description, ""),
-         atsServices.getChangeType(fromAction),
+         services.getChangeType(fromAction),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.PriorityType, ""),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.ValidationRequired, false),
          attrResolver.getSoleAttributeValue(fromAction, AtsAttributeTypes.NeedBy, (Date) null), changes);
@@ -351,7 +355,7 @@ public class ActionFactory implements IAtsActionFactory {
       if (Strings.isValid(desc)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.Description, desc);
       }
-      atsServices.setChangeType(atsObject, changeType, changes);
+      services.setChangeType(atsObject, changeType, changes);
       if (Strings.isValid(priority)) {
          changes.addAttribute(atsObject, AtsAttributeTypes.PriorityType, priority);
       }
@@ -367,7 +371,7 @@ public class ActionFactory implements IAtsActionFactory {
    public Collection<IAtsTeamWorkflow> getSiblingTeamWorkflows(IAtsTeamWorkflow teamWf) {
       List<IAtsTeamWorkflow> teams = new LinkedList<>();
       IAtsAction action = getAction(teamWf);
-      for (IAtsTeamWorkflow teamChild : atsServices.getRelationResolver().getRelated(action,
+      for (IAtsTeamWorkflow teamChild : services.getRelationResolver().getRelated(action,
          AtsRelationTypes.ActionToWorkflow_WorkFlow, IAtsTeamWorkflow.class)) {
          if (!teamChild.equals(teamWf)) {
             teams.add(teamChild);
@@ -378,7 +382,7 @@ public class ActionFactory implements IAtsActionFactory {
 
    @Override
    public IAtsAction getAction(IAtsTeamWorkflow teamWf) {
-      return atsServices.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action,
+      return services.getRelationResolver().getRelatedOrNull(teamWf, AtsRelationTypes.ActionToWorkflow_Action,
          IAtsAction.class);
    }
 

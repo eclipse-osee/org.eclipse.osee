@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
@@ -45,7 +44,7 @@ public class AtsArtifactFactory extends ArtifactFactory {
       super(AtsArtifactTypes.Action, AtsArtifactTypes.PeerToPeerReview, AtsArtifactTypes.DecisionReview,
          AtsArtifactTypes.Task, AtsArtifactTypes.TeamWorkflow, AtsArtifactTypes.Goal, AtsArtifactTypes.AgileSprint);
       try {
-         for (IArtifactType teamWorkflowTypeName : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
+         for (IArtifactType teamWorkflowTypeName : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
             registerAsResponsible(teamWorkflowTypeName);
          }
       } catch (OseeCoreException ex) {

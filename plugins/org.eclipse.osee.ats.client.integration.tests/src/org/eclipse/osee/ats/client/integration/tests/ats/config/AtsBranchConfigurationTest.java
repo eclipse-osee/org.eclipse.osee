@@ -28,11 +28,11 @@ import org.eclipse.osee.ats.config.AtsConfigOperation;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.util.Result;
@@ -168,7 +167,7 @@ public class AtsBranchConfigurationTest {
       AtsClientService.get().getVersionService().setTargetedVersionAndStore(teamWf, versionToTarget);
       changes.execute();
 
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
 
       // Transition to desired state
       if (DEBUG) {
@@ -278,7 +277,7 @@ public class AtsBranchConfigurationTest {
       changes.execute();
 
       final TeamWorkFlowArtifact teamWf = ActionManager.getTeams(actionArt).iterator().next();
-      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf);
+      TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices());
 
       // Transition to desired state
       if (DEBUG) {

@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -447,7 +446,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         this.teamArt = TeamWorkFlowManager.cast(artifact);
+         this.teamArt = (TeamWorkFlowArtifact) artifact;
       }
       enablement = new XWorkingBranchEnablement(teamArt);
    }

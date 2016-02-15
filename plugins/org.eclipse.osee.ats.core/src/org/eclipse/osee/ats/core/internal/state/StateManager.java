@@ -626,4 +626,9 @@ public class StateManager implements IAtsStateManager {
    public String toString() {
       return String.format("StateManager id[%s] for workitem [%s]", instanceGuid, workItem);
    }
+
+   @Override
+   public boolean isInState(IStateToken state) {
+      return getCurrentStateName().equals(state.getName());
+   }
 }

@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 public interface IAtsStoreService {
 
@@ -41,6 +40,9 @@ public interface IAtsStoreService {
 
    boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType);
 
-   Set<IArtifactType> getTeamWorkflowArtifactTypes() throws OseeCoreException;
+   /**
+    * Uses artifact type inheritance to retrieve all TeamWorkflow artifact types
+    */
+   Set<IArtifactType> getTeamWorkflowArtifactTypes();
 
 }

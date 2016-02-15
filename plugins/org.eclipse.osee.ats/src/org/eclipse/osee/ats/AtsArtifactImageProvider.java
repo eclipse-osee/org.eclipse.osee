@@ -14,7 +14,6 @@ import org.eclipse.osee.ats.agile.AgileUtilClient;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.SubscribeManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -60,7 +59,7 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.DecisionReview);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.Goal);
       ArtifactImageManager.registerOverrideImageProvider(this, AtsArtifactTypes.AgileSprint);
-      for (IArtifactType artifactType : TeamWorkFlowManager.getTeamWorkflowArtifactTypes()) {
+      for (IArtifactType artifactType : AtsClientService.get().getStoreService().getTeamWorkflowArtifactTypes()) {
          ArtifactImageManager.registerOverrideImageProvider(this, artifactType);
       }
    }

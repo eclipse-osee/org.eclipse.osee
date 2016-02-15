@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +27,7 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * Provides a widget where user is required for Yes,No answer to Operational Impact. If Yes, a description and
  * workaround combo shows, else nothing more is to be done.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class OperationalImpactXWidget extends XComboWithText implements IArtifactWidget {
@@ -95,7 +94,7 @@ public class OperationalImpactXWidget extends XComboWithText implements IArtifac
    @Override
    public void setArtifact(Artifact artifact) {
       if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-         teamArt = TeamWorkFlowManager.cast(artifact);
+         teamArt = (TeamWorkFlowArtifact) artifact;
       }
    }
 

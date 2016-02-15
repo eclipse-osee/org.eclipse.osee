@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerReviewDefinitionManager;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManager;
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
@@ -144,7 +143,8 @@ public class AtsBranchUtil {
    }
 
    public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionRecord parentTransactionId, boolean pend) throws OseeCoreException {
-      final String branchName = Strings.truncate(TeamWorkFlowManager.getBranchName(teamArt), 195, true);
+      final String branchName =
+         Strings.truncate(AtsClientService.get().getBranchService().getBranchName(teamArt), 195, true);
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentTransactionId, "Parent Branch");
 

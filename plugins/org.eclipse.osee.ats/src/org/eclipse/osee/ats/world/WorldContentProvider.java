@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
@@ -29,7 +30,6 @@ import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -100,7 +100,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return arts.toArray(new Artifact[arts.size()]);
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.cast(artifact);
+               TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                List<Artifact> arts = new ArrayList<>();
                // Convert artifacts to WorldArtifactItems
                arts.addAll(ReviewManager.getReviews(teamArt));
@@ -128,7 +128,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                return null;
             }
             if (artifact.isOfType(AtsArtifactTypes.TeamWorkflow)) {
-               return TeamWorkFlowManager.cast(artifact).getParentActionArtifact();
+               return ((IAtsTeamWorkflow) artifact).getParentAction();
             }
             if (artifact.isOfType(AtsArtifactTypes.Task)) {
                return ((TaskArtifact) artifact).getParentAWA();

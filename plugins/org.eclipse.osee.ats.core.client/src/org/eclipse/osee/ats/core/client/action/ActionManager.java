@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.INewActionListener;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
+import org.eclipse.osee.ats.core.util.ActionFactory;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -53,7 +53,7 @@ public class ActionManager {
 
    public static TeamWorkFlowArtifact createTeamWorkflow(Artifact actionArt, IAtsTeamDefinition teamDef, Collection<IAtsActionableItem> actionableItems, List<? extends IAtsUser> assignees, IAtsChangeSet changes, Date createdDate, IAtsUser createdBy, INewActionListener newActionListener, CreateTeamOption... createTeamOption) throws OseeCoreException {
       IArtifactType teamWorkflowArtifactType =
-         TeamWorkFlowManager.getTeamWorkflowArtifactType(teamDef, actionableItems);
+         ActionFactory.getTeamWorkflowArtifactType(teamDef, AtsClientService.get().getServices());
 
       IAtsTeamWorkflow teamWf = AtsClientService.get().getActionFactory().createTeamWorkflow((IAtsAction) actionArt,
          teamDef, actionableItems, assignees, createdDate, createdBy, null, teamWorkflowArtifactType, newActionListener,

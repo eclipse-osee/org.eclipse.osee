@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.core.client.branch.AtsBranchUtil;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
+import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoCscis;
 import org.eclipse.osee.ats.demo.api.DemoDbAIs;
@@ -111,8 +111,8 @@ public class PopulateSawBuild2Actions {
          ChangeType.Problem, priority, false, null, aias, createdDate, createdBy, null, changes);
       for (TeamWorkFlowArtifact teamWf : ActionManager.getTeams(actionArt)) {
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-            TransitionOption.OverrideTransitionValidityCheck);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);
@@ -149,7 +149,8 @@ public class PopulateSawBuild2Actions {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck);
 
          if (isSwDesign) {
             // transition to analyze
@@ -219,8 +220,8 @@ public class PopulateSawBuild2Actions {
 
          boolean isSwDesign = teamWf.getTeamDefinition().getName().contains("SW Design");
 
-         TeamWorkFlowManager dtwm =
-            new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck, TransitionOption.None);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck, TransitionOption.None);
 
          if (isSwDesign) {
             // transition to analyze
@@ -306,8 +307,8 @@ public class PopulateSawBuild2Actions {
                teamWf.getWorkDefinition().getName());
          }
 
-         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, TransitionOption.OverrideAssigneeCheck,
-            TransitionOption.OverrideTransitionValidityCheck);
+         TeamWorkFlowManager dtwm = new TeamWorkFlowManager(teamWf, AtsClientService.get().getServices(),
+            TransitionOption.OverrideAssigneeCheck, TransitionOption.OverrideTransitionValidityCheck);
 
          // Transition to desired state
          Result result = dtwm.transitionTo(toState, teamWf.getAssignees().iterator().next(), false, changes);

@@ -23,7 +23,6 @@ import org.eclipse.osee.ats.core.client.config.IAtsClientVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowManager;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.CacheProvider;
@@ -80,7 +79,7 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    @Override
    public void removeTargetedVersion(IAtsTeamWorkflow teamWf, boolean store) throws OseeCoreException {
       if (store) {
-         TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          teamArt.deleteRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       }
       versionCache.deCache(teamWf);
@@ -113,7 +112,7 @@ public class AtsVersionServiceImpl extends AbstractAtsVersionServiceImpl impleme
    private IAtsTeamWorkflow setTargetedVersionLink(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
       Artifact versionArt = atsClient.checkArtifactFromId(version.getUuid(), AtsUtilCore.getAtsBranch());
       if (versionArt != null) {
-         TeamWorkFlowArtifact teamArt = TeamWorkFlowManager.getTeamWorkflowArt(teamWf);
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          if (teamArt != null) {
             teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
                Collections.singleton(versionArt));
