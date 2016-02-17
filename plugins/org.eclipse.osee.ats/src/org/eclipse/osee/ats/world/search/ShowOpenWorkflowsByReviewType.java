@@ -10,44 +10,47 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.swt.KeyedImage;
 
 /**
  * @author Donald G. Dunne
  */
-public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
+public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
 
-   private final IArtifactType artifactType;
    private final boolean showFinished;
    private final boolean showWorkflow;
+   private WorkItemType workItemType;
 
-   public ShowOpenWorkflowsByArtifactType(String displayName, IArtifactType artifactType, boolean showFinished, boolean showWorkflow, KeyedImage oseeImage) {
+   public ShowOpenWorkflowsByReviewType(String displayName, WorkItemType workItemType, boolean showFinished, boolean showWorkflow, KeyedImage oseeImage) {
       super(displayName, oseeImage);
-      this.artifactType = artifactType;
+      this.workItemType = workItemType;
       this.showFinished = showFinished;
       this.showWorkflow = showWorkflow;
+      Conditions.assertTrue(
+         Arrays.asList(WorkItemType.Review, WorkItemType.DecisionReview, WorkItemType.PeerReview).contains(
+            workItemType),
+         "WorkItemType must be a review type, not %s", workItemType.getDisplayName());
    }
 
-   public ShowOpenWorkflowsByArtifactType(ShowOpenWorkflowsByArtifactType showOpenWorkflowsByArtifactType) {
+   public ShowOpenWorkflowsByReviewType(ShowOpenWorkflowsByReviewType showOpenWorkflowsByArtifactType) {
       super(showOpenWorkflowsByArtifactType);
-      this.artifactType = showOpenWorkflowsByArtifactType.artifactType;
       this.showFinished = showOpenWorkflowsByArtifactType.showFinished;
       this.showWorkflow = showOpenWorkflowsByArtifactType.showWorkflow;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem);
-      query.isOfType(artifactType);
+      IAtsQuery query = AtsClientService.get().getQueryService().createQuery(workItemType);
       if (!showFinished) {
          query.andStateType(StateType.Working);
       }
@@ -60,7 +63,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
 
    @Override
    public WorldUISearchItem copy() {
-      return new ShowOpenWorkflowsByArtifactType(this);
+      return new ShowOpenWorkflowsByReviewType(this);
    }
 
 }

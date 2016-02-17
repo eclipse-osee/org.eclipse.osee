@@ -16,21 +16,41 @@ package org.eclipse.osee.ats.api.config;
  * @author Donald G. Dunne
  */
 public enum WorkType {
+
+   Program("Top Level item of given type for a Program"),
    Code,
    Test,
+   Test_Librarian,
    Requirements,
+   Applicability,
    SW_Design,
    SW_TechAppr,
    Test_Procedures,
    SubSystems,
    Software,
+   Hardware,
+   Issues,
    Support,
    Integration,
    Systems,
    ICDs,
    PIDS,
+   SSDD,
    All,
-   Hardware,
-   None,
-   Custom;
+   Custom("Custom Work Type that doesn't match a WorkType enum"),
+   None;
+
+   private String description;
+
+   private WorkType() {
+      this("");
+   }
+
+   private WorkType(String description) {
+      this.description = description;
+   }
+
+   public String getDescription() {
+      return description;
+   }
 }

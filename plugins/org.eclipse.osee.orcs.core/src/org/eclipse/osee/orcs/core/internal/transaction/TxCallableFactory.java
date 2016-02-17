@@ -67,7 +67,9 @@ public class TxCallableFactory {
                txManager.startTx(txData);
                TransactionResult result = doCommit();
                txManager.txCommitSuccess(txData);
-               transaction = result.getTransaction();
+               if (result != null) {
+                  transaction = result.getTransaction();
+               }
             } catch (Exception ex) {
                Exception toThrow = ex;
                try {

@@ -111,7 +111,7 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
 
    @Override
    public String getGuid(IAtsObject atsObject) {
-      return ((ArtifactReadable) atsObject).getGuid();
+      return ((ArtifactReadable) atsObject.getStoreObject()).getGuid();
    }
 
    /**

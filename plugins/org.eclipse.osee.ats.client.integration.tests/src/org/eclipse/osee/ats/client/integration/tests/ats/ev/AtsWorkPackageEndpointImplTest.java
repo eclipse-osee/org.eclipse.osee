@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -26,7 +27,6 @@ import org.junit.Test;
  */
 public class AtsWorkPackageEndpointImplTest {
 
-   public static Long SAW_Code_Team_WorkPackage_01 = 38512616L;
    private AtsWorkPackageEndpointApi workPackageEp;
 
    @Before
@@ -36,24 +36,33 @@ public class AtsWorkPackageEndpointImplTest {
 
    @Test
    public void testGetWorkItems() {
-      Collection<IAtsWorkItem> workItems = workPackageEp.getWorkItems(SAW_Code_Team_WorkPackage_01);
+      Collection<IAtsWorkItem> workItems =
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid());
       assertEquals(2, workItems.size());
    }
 
    @Test
+   public void testGetEmptyWorkItems() {
+      Collection<IAtsWorkItem> workItems =
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Test_AI_WorkPackage_0C.getUuid());
+      assertEquals(0, workItems.size());
+   }
+
+   @Test
    public void testSetRemoveWorkPackageItems() {
-      Collection<IAtsWorkItem> workItems = workPackageEp.getWorkItems(SAW_Code_Team_WorkPackage_01);
+      Collection<IAtsWorkItem> workItems =
+         workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid());
       assertEquals(2, workItems.size());
       IAtsWorkItem workItem = workItems.iterator().next();
       JaxWorkPackageData data = new JaxWorkPackageData();
       data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
       data.getWorkItemUuids().add(workItem.getUuid());
 
-      workPackageEp.deleteWorkPackageItems(SAW_Code_Team_WorkPackage_01, data);
-      assertEquals(1, workPackageEp.getWorkItems(SAW_Code_Team_WorkPackage_01).size());
+      workPackageEp.deleteWorkPackageItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid(), data);
+      assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()).size());
 
-      workPackageEp.setWorkPackage(SAW_Code_Team_WorkPackage_01, data);
-      assertEquals(2, workPackageEp.getWorkItems(SAW_Code_Team_WorkPackage_01).size());
+      workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid(), data);
+      assertEquals(2, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()).size());
    }
 
 }

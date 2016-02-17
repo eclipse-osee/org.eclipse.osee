@@ -209,10 +209,36 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Create and transition reviews off sample workflows
          DemoDbReviews.createReviews(DEBUG);
 
+         // Set Default Work Packages
+         setDefaultWorkPackages();
+
          validateArtifactCache();
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(Activator.class, Level.INFO, "Populate Complete");
       }
+   }
+
+   private void setDefaultWorkPackages() {
+      SkynetTransaction transaction =
+         TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Set Work Packages");
+
+      // set work packages
+      TeamWorkFlowArtifact commWf = DemoUtil.getSawCodeCommittedWf();
+      commWf.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid());
+      commWf.persist(transaction);
+
+      TeamWorkFlowArtifact unCommWf = DemoUtil.getSawCodeUnCommittedWf();
+      unCommWf.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getGuid());
+      unCommWf.persist(transaction);
+
+      TeamWorkFlowArtifact noBranchWf = DemoUtil.getSawCodeNoBranchWf();
+      noBranchWf.setSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid,
+         DemoArtifactToken.SAW_Code_Team_WorkPackage_03.getGuid());
+      noBranchWf.persist(transaction);
+
+      transaction.execute();
    }
 
    private void createMainWorkingBranchTx() {

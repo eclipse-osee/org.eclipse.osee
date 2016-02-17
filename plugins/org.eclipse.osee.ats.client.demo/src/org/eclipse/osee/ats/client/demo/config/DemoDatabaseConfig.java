@@ -81,7 +81,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       createCntryCountryConfig();
 
       // Create Work Packages
-      createWorkPackages();
+      createAndSetWorkPackages();
 
       addSawWorkTypes();
    }
@@ -246,7 +246,7 @@ public class DemoDatabaseConfig implements IDbInitializationTask {
       return jaxCountry;
    }
 
-   private void createWorkPackages() throws OseeCoreException {
+   private void createAndSetWorkPackages() throws OseeCoreException {
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Create Work Packages");
 

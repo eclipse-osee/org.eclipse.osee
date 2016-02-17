@@ -176,4 +176,8 @@ public abstract class AbstractAtsVersionServiceImpl implements IAtsVersionServic
       return version;
    }
 
+   @Override
+   public IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes) {
+      return services.getProgramService().getVersion(program, versionName);
+   }
 }

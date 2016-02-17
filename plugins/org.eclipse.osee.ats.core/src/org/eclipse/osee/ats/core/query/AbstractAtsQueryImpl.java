@@ -986,4 +986,9 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
       return this;
    }
 
+   @Override
+   public boolean exists() {
+      return !getItemIds().isEmpty();
+   }
+
 }

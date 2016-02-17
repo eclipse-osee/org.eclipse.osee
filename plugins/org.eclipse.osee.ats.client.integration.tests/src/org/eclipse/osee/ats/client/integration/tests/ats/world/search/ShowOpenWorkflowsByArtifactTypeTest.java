@@ -8,7 +8,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.world.search;
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByArtifactType;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
+import org.eclipse.osee.ats.world.search.ShowOpenWorkflowsByReviewType;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -16,36 +17,36 @@ public class ShowOpenWorkflowsByArtifactTypeTest {
 
    @org.junit.Test
    public void testOpenDecisionReviews() throws Exception {
-      ShowOpenWorkflowsByArtifactType search =
-         new ShowOpenWorkflowsByArtifactType("Show Open " + AtsArtifactTypes.DecisionReview.getName() + "s",
-            AtsArtifactTypes.DecisionReview, false, false, AtsImage.DECISION_REVIEW);
+      ShowOpenWorkflowsByReviewType search =
+         new ShowOpenWorkflowsByReviewType("Show Open " + WorkItemType.DecisionReview.name() + "s",
+            WorkItemType.DecisionReview, false, false, AtsImage.DECISION_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
       checkResults(5, AtsArtifactTypes.DecisionReview, results);
    }
 
    @org.junit.Test
    public void testWorkflowsWaitingDecisionReviews() throws Exception {
-      ShowOpenWorkflowsByArtifactType search = new ShowOpenWorkflowsByArtifactType(
-         "Show Workflows Waiting " + AtsArtifactTypes.DecisionReview.getName() + "s", AtsArtifactTypes.DecisionReview,
-         false, true, AtsImage.DECISION_REVIEW);
+      ShowOpenWorkflowsByReviewType search =
+         new ShowOpenWorkflowsByReviewType("Show Workflows Waiting " + WorkItemType.DecisionReview.name() + "s",
+            WorkItemType.DecisionReview, false, true, AtsImage.DECISION_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
       checkResults(5, AtsArtifactTypes.TeamWorkflow, results);
    }
 
    @org.junit.Test
    public void testOpenPeerReviews() throws Exception {
-      ShowOpenWorkflowsByArtifactType search =
-         new ShowOpenWorkflowsByArtifactType("Show Open " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
-            AtsArtifactTypes.PeerToPeerReview, false, false, AtsImage.PEER_REVIEW);
+      ShowOpenWorkflowsByReviewType search =
+         new ShowOpenWorkflowsByReviewType("Show Open " + WorkItemType.PeerReview.name() + "s", WorkItemType.PeerReview,
+            false, false, AtsImage.PEER_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
       checkResults(5, AtsArtifactTypes.PeerToPeerReview, results);
    }
 
    @org.junit.Test
    public void testWorkflowsWaitingPeerToPeerReviews() throws Exception {
-      ShowOpenWorkflowsByArtifactType search = new ShowOpenWorkflowsByArtifactType(
-         "Show Workflows Waiting " + AtsArtifactTypes.PeerToPeerReview.getName() + "s",
-         AtsArtifactTypes.PeerToPeerReview, false, true, AtsImage.PEER_REVIEW);
+      ShowOpenWorkflowsByReviewType search =
+         new ShowOpenWorkflowsByReviewType("Show Workflows Waiting " + WorkItemType.PeerReview.name() + "s",
+            WorkItemType.PeerReview, false, true, AtsImage.PEER_REVIEW);
       Collection<Artifact> results = search.performSearchGetResults();
       checkResults(4, AtsArtifactTypes.TeamWorkflow, results);
    }

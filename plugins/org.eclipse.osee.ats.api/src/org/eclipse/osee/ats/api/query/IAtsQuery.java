@@ -104,4 +104,9 @@ public interface IAtsQuery {
 
    IAtsQuery andFilter(IAtsQueryFilter queryFilter);
 
+   /**
+    * @return true if one or more results were found
+    */
+   boolean exists();
+
 }

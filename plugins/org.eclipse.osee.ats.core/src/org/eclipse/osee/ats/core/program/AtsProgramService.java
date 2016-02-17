@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.program.ProjectType;
 import org.eclipse.osee.ats.api.query.IAtsConfigQuery;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -40,6 +41,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -109,7 +111,17 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems) {
-      throw new UnsupportedOperationException("setWorkPackage not supported on server");
+      IAtsChangeSet changes = services.getStoreService().createAtsChangeSet("Set Work Package");
+      for (IAtsWorkItem workItem : workItems) {
+         if (workPackage == null) {
+            changes.deleteSoleAttribute(workItem, AtsAttributeTypes.WorkPackageGuid);
+         } else {
+            changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackage.getGuid());
+         }
+      }
+      if (!changes.isEmpty()) {
+         changes.execute();
+      }
    }
 
    @Override
@@ -247,7 +259,7 @@ public class AtsProgramService implements IAtsProgramService {
       for (WorkType type : workTypes) {
          types.add(type.name());
       }
-      query.andAttr(AtsAttributeTypes.WorkType, types);
+      query.andAttr(AtsAttributeTypes.WorkType, types, QueryOption.EXACT_MATCH_OPTIONS);
       return Collections.castAll(query.getResults().getList());
    }
 
@@ -260,7 +272,7 @@ public class AtsProgramService implements IAtsProgramService {
       for (WorkType type : workTypes) {
          types.add(type.name());
       }
-      query.andAttr(AtsAttributeTypes.WorkType, types);
+      query.andAttr(AtsAttributeTypes.WorkType, types, QueryOption.EXACT_MATCH_OPTIONS);
       return Collections.castAll(query.getResults().getList());
    }
 

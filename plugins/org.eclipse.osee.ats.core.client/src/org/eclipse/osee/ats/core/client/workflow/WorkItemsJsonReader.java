@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
@@ -49,22 +50,31 @@ public class WorkItemsJsonReader implements MessageBodyReader<Collection<IAtsWor
          JsonParser jParser = jfactory.createJsonParser(entityStream);
 
          List<Long> uuids = new ArrayList<>();
-         while (jParser.nextToken() != JsonToken.END_ARRAY) {
-            while (jParser.nextToken() != JsonToken.END_OBJECT) {
-               String key = jParser.getCurrentName();
-               if ("uuid".equals(key)) {
-                  jParser.nextToken();
-                  String value = jParser.getText();
-                  if (Strings.isNumeric(value)) {
-                     long uuid = Long.valueOf(value);
-                     uuids.add(uuid);
+         JsonToken nextToken = jParser.nextToken();
+         while (nextToken != JsonToken.END_ARRAY) {
+            if (nextToken == JsonToken.START_OBJECT) {
+               while (nextToken != JsonToken.END_OBJECT) {
+                  String key = jParser.getCurrentName();
+                  if ("uuid".equals(key)) {
+                     jParser.nextToken();
+                     String value = jParser.getText();
+                     if (Strings.isNumeric(value)) {
+                        long uuid = Long.valueOf(value);
+                        uuids.add(uuid);
+                     }
                   }
+                  nextToken = jParser.nextToken();
                }
             }
+            nextToken = jParser.nextToken();
          }
-         Collection<IAtsWorkItem> items =
-            AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
+         Collection<IAtsWorkItem> items = null;
+         if (uuids.isEmpty()) {
+            items = Collections.emptyList();
+         } else {
+            items = AtsClientService.get().getQueryService().createQuery(WorkItemType.WorkItem).andUuids(
                uuids.toArray(new Long[uuids.size()])).getItems();
+         }
          return items;
       } catch (Exception ex) {
          throw new IOException("Error deserializing a IAtsWorkItem.", ex);

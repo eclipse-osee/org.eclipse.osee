@@ -50,4 +50,6 @@ public interface IAtsVersionService {
 
    IAtsVersion createVersion(IAtsProgram lbaProgram, String versionName, IAtsChangeSet changes);
 
+   IAtsVersion getVersion(IAtsProgram lbaProgram, String versionName, IAtsChangeSet changes);
+
 }

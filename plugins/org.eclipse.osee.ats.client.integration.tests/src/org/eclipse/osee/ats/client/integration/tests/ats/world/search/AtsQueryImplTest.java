@@ -18,7 +18,6 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
@@ -33,9 +32,12 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
+import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
+import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.junit.AfterClass;
@@ -56,21 +58,17 @@ public class AtsQueryImplTest {
       AtsTestUtil.cleanup();
 
       IAtsClient client = AtsClientService.get();
-      IAtsUser joeSmith = client.getUserService().getUserByName("Joe Smith");
-      IAtsQueryService queryService = client.getQueryService();
 
       Artifact wpArt = (Artifact) AtsClientService.get().getArtifactByName(AtsArtifactTypes.WorkPackage, "Work Pkg 01");
       Conditions.checkNotNull(wpArt, "Work Package");
       IAtsWorkPackage wp = client.getEarnedValueService().getWorkPackage(wpArt);
 
-      IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
-      query.andAssignee(joeSmith);
-      query.andAttr(AtsAttributeTypes.WorkPackageGuid, wpArt.getGuid());
-      ResultSet<IAtsWorkItem> workItems = query.getResults();
+      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
+         DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
+      IAtsTask codeTask = (IAtsTask) AtsClientService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
+         CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();
 
-      if (!workItems.isEmpty()) {
-         client.getEarnedValueService().removeWorkPackage(wp, workItems.getList());
-      }
+      client.getEarnedValueService().removeWorkPackage(wp, Arrays.asList(codeWf, codeTask));
    }
 
    @Test
@@ -79,10 +77,6 @@ public class AtsQueryImplTest {
       IAtsQueryService queryService = services.getQueryService();
 
       IAtsUser joeSmith = services.getUserService().getUserById("3333");
-
-      ArtifactId wpArt = services.getArtifactByName(AtsArtifactTypes.WorkPackage, "Work Pkg 01");
-      Conditions.checkNotNull(wpArt, "Work Package");
-      IAtsWorkPackage wp = services.getProgramService().getWorkPackage(wpArt.getUuid());
 
       // test by type
       IAtsQuery query = queryService.createQuery(WorkItemType.TeamWorkflow);
@@ -172,27 +166,17 @@ public class AtsQueryImplTest {
 
       IAtsProgramService programService = services.getProgramService();
 
-      IAtsInsertionActivity activity = programService.getInsertionActivity(wp);
-      IAtsInsertion insertion = programService.getInsertion(activity);
-      IAtsProgram program = programService.getProgram(insertion);
+      IAtsWorkPackage wp =
+         services.getProgramService().getWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()); // Work Pkg 01
+      IAtsInsertionActivity activity = programService.getInsertionActivity(wp); // COMM Page
+      IAtsInsertion insertion = programService.getInsertion(activity); // COMM
+      IAtsProgram program = programService.getProgram(insertion); // SAW Program
 
-      IAtsTeamWorkflow codeWf = null;
-      IAtsTask codeTask = null;
-      IAtsQuery query2 = queryService.createQuery(WorkItemType.WorkItem);
-      query2.isOfType(WorkItemType.TeamWorkflow);
-      query2.andAssignee(joeSmith);
-      for (IAtsWorkItem workItem : query2.getResults()) {
-         if (workItem.getArtifactTypeName().contains("Code")) {
-            codeWf = (IAtsTeamWorkflow) workItem;
-            for (IAtsTask task : services.getTaskService().getTasks(codeWf)) {
-               codeTask = task;
-               break;
-            }
-         }
-         if (codeTask != null) {
-            break;
-         }
-      }
+      IAtsTeamWorkflow codeWf = AtsClientService.get().getWorkItemFactory().getTeamWf(
+         DemoTestUtil.getCommittedActionWorkflow(DemoWorkType.Code));
+      IAtsTask codeTask = (IAtsTask) AtsClientService.get().getQueryService().createQuery(WorkItemType.Task).andAttr(
+         CoreAttributeTypes.Name, "Create test plan").getItems().iterator().next();
+
       Conditions.checkNotNull(codeWf, "Code Team Workflow");
       Conditions.checkNotNull(codeTask, "Code Team Workflow");
 
@@ -201,7 +185,7 @@ public class AtsQueryImplTest {
       // by program
       query = queryService.createQuery(WorkItemType.TeamWorkflow);
       query.andProgram(program.getUuid());
-      assertEquals(1, query.getResults().size());
+      assertEquals(2, query.getResults().size());
 
       query = queryService.createQuery(WorkItemType.Task);
       query.andProgram(program.getUuid());
@@ -209,12 +193,12 @@ public class AtsQueryImplTest {
 
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andProgram(program.getUuid());
-      assertEquals(2, query.getResults().size());
+      assertEquals(3, query.getResults().size());
 
       // by insertion
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);
       query.andInsertion(insertion.getUuid());
-      assertEquals(2, query.getResults().size());
+      assertEquals(3, query.getResults().size());
 
       // by insertion activity
       query = queryService.createQuery(WorkItemType.TeamWorkflow, WorkItemType.Task);

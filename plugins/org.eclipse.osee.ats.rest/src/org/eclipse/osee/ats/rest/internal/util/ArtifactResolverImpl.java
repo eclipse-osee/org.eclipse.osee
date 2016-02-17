@@ -40,8 +40,8 @@ public class ArtifactResolverImpl implements IArtifactResolver {
 
    @Override
    public ArtifactId get(IAtsObject atsObject) throws OseeCoreException {
-      if (atsObject instanceof ArtifactReadable) {
-         return (ArtifactReadable) atsObject;
+      if (atsObject.getStoreObject() instanceof ArtifactReadable) {
+         return atsObject.getStoreObject();
       }
       ArtifactReadable artifact = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
          atsObject.getUuid()).getResults().getAtMostOneOrNull();

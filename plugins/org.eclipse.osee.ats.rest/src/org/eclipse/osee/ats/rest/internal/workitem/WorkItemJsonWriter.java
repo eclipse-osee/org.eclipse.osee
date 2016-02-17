@@ -87,7 +87,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       try {
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
-         addProgramObject(atsServer, config, annotations, writer, matches(IdentityView.class, annotations),
+         addWorkItem(atsServer, config, annotations, writer, matches(IdentityView.class, annotations),
             getAttributeTypes());
          writer.writeEndArray();
       } finally {
@@ -97,7 +97,7 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
       }
    }
 
-   protected static void addProgramObject(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
+   protected static void addWorkItem(IAtsServer atsServer, IAtsWorkItem config, Annotation[] annotations, JsonGenerator writer, boolean identityView, AttributeTypes attributeTypes) throws IOException, JsonGenerationException, JsonProcessingException {
       ArtifactReadable action = (ArtifactReadable) config.getStoreObject();
       writer.writeStartObject();
       writer.writeNumberField("uuid", ConfigJsonWriter.getUuid(config));

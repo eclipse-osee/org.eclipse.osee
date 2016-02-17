@@ -80,7 +80,7 @@ public class WorkItemsJsonWriter implements MessageBodyWriter<Collection<IAtsWor
          writer = jsonFactory.createJsonGenerator(entityStream);
          writer.writeStartArray();
          for (IAtsWorkItem workItem : workItems) {
-            WorkItemJsonWriter.addProgramObject(atsServer, workItem, annotations, writer,
+            WorkItemJsonWriter.addWorkItem(atsServer, workItem, annotations, writer,
                matches(IdentityView.class, annotations), getAttributeTypes());
          }
          writer.writeEndArray();
