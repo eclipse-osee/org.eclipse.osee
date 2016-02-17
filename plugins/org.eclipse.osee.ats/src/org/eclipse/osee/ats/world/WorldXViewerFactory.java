@@ -165,6 +165,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       InsertionColumnUI.getInstance(),
       InsertionActivityColumnUI.getInstance(),
       ColorTeamColumnUI.getInstance(),
+      RelatedArtifactChangedColumn.getInstance(),
+      RelatedArtifactLastModifiedByColumn.getInstance(),
+      RelatedArtifactLastModifiedDateColumn.getInstance(),
       new UuidColumn(false)};
 
    public WorldXViewerFactory() {
