@@ -60,7 +60,7 @@ public interface DispoApi {
 
    boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
-   String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params);
+   String copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params);
 
    String copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
 

@@ -80,8 +80,11 @@
 					 </select>
             </div>
             <div class="form-group">
+					 Select Source Program
+                <select class="form-control" ng-change="updateProgramLocal()" ng-model="sourceProgram" ng-options="obj.value as obj.text for obj in programsLocal">
+					 </select>
 					 Select Source Set
-                <select class="form-control" ng-model="sourceSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+                <select class="form-control" ng-model="sourceSet" ng-options="obj.guid as obj.name for obj in setsLocalSource">
 					 </select>
             </div>
 

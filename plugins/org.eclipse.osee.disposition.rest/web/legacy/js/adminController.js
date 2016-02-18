@@ -250,10 +250,12 @@
 		        	copySetOp.categoryParam = inputs.categoryParam;
 		        	copySetOp.assigneeParam = inputs.assigneeParam;
 		        	copySetOp.noteParam = inputs.noteParam;
+		        	copySetOp.sourceProgram = inputs.sourceProgram;
 		        	
 		        	copySetOp.$save({
 		                programId: $scope.programSelection,
 		                destinationSet: inputs.destinationSet,
+		                sourceProgram: inputs.sourceProgram,
 		                sourceSet: inputs.sourceSet,
 		            }, function(data) {
 		            	$scope.isCopying = false;
@@ -318,6 +320,15 @@
 		                resolve: {
 		                	sets: function() {
 		                		return $scope.sets;
+		                	}, 
+		                	programs: function() {
+		                		return $scope.programs;
+		                	}, 
+		                	showLoadingModal: function() {
+		                		return $scope.showLoadingModal;
+		                	}, 
+		                	currentlySelectedProgram: function() {
+		                		return $scope.programSelection;
 		                	}
 		                }
 		            });
@@ -328,8 +339,27 @@
 		        }
 		        
 		        
-		        var CopySetModalCtrl = function($scope, $modalInstance, sets) {
+		        var CopySetModalCtrl = function($scope, $modalInstance, programs, currentlySelectedProgram, sets, showLoadingModal) {
 		            $scope.setsLocal = angular.copy(sets);
+		            $scope.programsLocal = angular.copy(programs);
+		            $scope.setsLocalSource = angular.copy(sets);
+		            $scope.sourceProgram = currentlySelectedProgram;
+		            
+			        $scope.updateProgramLocal = function() {
+		        		var loadingModal = showLoadingModal();
+		        		$scope.loading = true;
+			            Set.query({
+			                programId: $scope.sourceProgram,
+			                type: $rootScope.type
+			            }, function(data) {
+			            	loadingModal.close();
+			                $scope.setsLocalSource = data;
+			            }, function(data) {
+			            	loadingModal.close();
+			            	alert(data.statusText);
+			            });
+			        };
+		            
 		            $scope.annotationOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}];
 		            $scope.categoryOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}, { value: 2, text: 'ONLY COPY IF DEST IS EMPTY'}, { value: 3, text: 'MERGE DEST AND SOURCE'}];
 		            $scope.assigneeOptions = [{ value: 0, text: 'NONE'}, { value: 1, text: 'OVERRIDE'}, { value: 2, text: 'ONLY COPY IF DEST IS UNASSIGNED'}];
@@ -343,11 +373,50 @@
 		            $scope.ok = function() {
 		                var inputs = {};
 		                inputs.destinationSet = this.destinationSet;
+		                inputs.sourceProgram = this.sourceProgram;
 		                inputs.sourceSet = this.sourceSet;
 		                inputs.annotationParam = this.annotationParam;
 		                inputs.categoryParam = this.categoryParam;
 		                inputs.noteParam = this.noteParam;
 		                inputs.assigneeParam = this.assigneeParam;
+		                
+		                $modalInstance.close(inputs);
+		            };
+
+		            $scope.cancel = function() {
+		                $modalInstance.dismiss('cancel');
+		            };
+		        };
+
+		        
+		        // Copy Coverage Modal
+		        $scope.openCopyCoverageModal = function() {
+		            var modalInstance = $modal.open({
+		                templateUrl: 'copySetCoverage.html',
+		                controller: CopyCoverageModalCtrl,
+		                size: 'md',
+		                windowClass: 'copyCoverageModal',
+		                resolve: {
+		                	sets: function() {
+		                		return $scope.sets;
+		                	}
+		                }
+		            });
+
+		            modalInstance.result.then(function(inputs) {
+		                $scope.copySetCoverage(inputs);
+		            });
+		        }
+		        
+		        
+		        var CopyCoverageModalCtrl = function($scope, $modalInstance, sets) {
+		            $scope.setsLocal = angular.copy(sets);
+		            
+		            $scope.ok = function() {
+		                var inputs = {};
+		                inputs.destinationSet = this.destinationSet;
+		                inputs.sourceBranch = this.sourceBranch;
+		                inputs.sourcePackage = this.sourcePackage;
 		                
 		                $modalInstance.close(inputs);
 		            };

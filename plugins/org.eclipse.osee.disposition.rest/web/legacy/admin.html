@@ -74,8 +74,11 @@
 					 </select>
             </div>
             <div class="form-group">
+					 Select Source Program
+                <select class="form-control" ng-change="updateProgramLocal()" ng-model="sourceProgram" ng-options="obj.value as obj.text for obj in programsLocal">
+					 </select>
 					 Select Source Set
-                <select class="form-control" ng-model="sourceSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+                <select class="form-control" ng-model="sourceSet" ng-options="obj.guid as obj.name for obj in setsLocalSource">
 					 </select>
             </div>
 
@@ -98,6 +101,31 @@
 
     </script>
     
+    <script type="text/ng-template" id="copySetCoverage.html">
+        <div class="modal-header">
+            <h3 class="modal-title">Copy From Coverage</h3>
+        </div>
+        <div class="modal-body" overflow: auto;">
+            <div class="form-group">
+					 Select Destination Set
+                <select class="form-control" ng-model="destinationSet" ng-options="obj.guid as obj.name for obj in setsLocal">
+					 </select>
+            </div>
+            <div class="form-group">
+					 Enter Source Branch
+                <input class="form-control" ng-model="sourceBranch" placeholder="Enter Branch Uuid"></input>
+            </div>
+            <div class="form-group">
+					 Enter Coverage Package id
+                <input class="form-control" ng-model="sourcePackage" placeholder="Enter Coverage Package Uuid"></input>
+            </div>            
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" ng-click="ok()">OK</button>
+            <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+        </div>
+
+    </script>
     
    <script type="text/ng-template" id="loadingModal.html">
         <div id="loadingModal" class="alert alert-info">

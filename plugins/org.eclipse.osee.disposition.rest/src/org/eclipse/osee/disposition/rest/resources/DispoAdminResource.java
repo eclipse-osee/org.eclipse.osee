@@ -29,6 +29,7 @@ import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoProgram;
+import org.eclipse.osee.disposition.model.DispoProgramImpl;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.rest.DispoApi;
@@ -131,12 +132,13 @@ public class DispoAdminResource {
    @POST
    @RolesAllowed(DispoRoles.ROLES_ADMINISTRATOR)
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
+   public Response getDispoSetCopy(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceProgram") String sourceProgram, @QueryParam("sourceSet") String sourceSet, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
-      final DispoSet source = dispoApi.getDispoSetById(program, sourceSet);
+      DispoProgramImpl sourceDispoProgram = new DispoProgramImpl("", Long.valueOf(sourceProgram));
+      final DispoSet source = dispoApi.getDispoSetById(sourceDispoProgram, sourceSet);
 
-      String reportUrl = dispoApi.copyDispoSet(program, destination, source, params);
+      String reportUrl = dispoApi.copyDispoSet(program, destination, sourceDispoProgram, source, params);
       DispoSetData responseSet = new DispoSetData();
       responseSet.setOperationStatus(reportUrl);
 

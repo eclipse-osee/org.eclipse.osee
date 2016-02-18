@@ -510,8 +510,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String copyDispoSet(DispoProgram program, DispoSet destination, DispoSet source, CopySetParams params) {
-      List<DispoItem> sourceItems = getDispoItems(program, source.getGuid());
+   public String copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params) {
+      List<DispoItem> sourceItems = getDispoItems(sourceProgram, sourceSet.getGuid());
       Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
          DispoItemData itemData = DispoUtil.itemArtToItemData(itemArt, true, true);
