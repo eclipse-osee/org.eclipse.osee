@@ -12,7 +12,7 @@ app.controller('meController', [
     			item.url = "http://" + item.url;
     		}
     		Preferences.update({
-                id: $localStorage.guid,
+                id: $localStorage.uuid,
                 key: key,
                 itemId: item.id,
             }, item, function() {
@@ -26,7 +26,7 @@ app.controller('meController', [
     		var newLink = {};
     		var key = "links";
     		Preferences.update({
-                id: $localStorage.guid,
+                id: $localStorage.uuid,
                 key: key,
                 itemId: item.id,
             }, newLink, function() {
@@ -110,7 +110,7 @@ app.controller('meController', [
     		var key = "links";
     		
     		Preferences.update({
-                id: $localStorage.guid,
+                id: $localStorage.uuid,
                 key: key,
                 itemId: null,
             }, newLink, function() {

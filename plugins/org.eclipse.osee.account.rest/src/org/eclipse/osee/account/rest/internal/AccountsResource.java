@@ -62,8 +62,8 @@ public class AccountsResource {
    @Path("preferences/{id}")
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public Response editPreferences(@PathParam("id") String userGuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
-      return Response.ok().entity(accountOps.editAccountWebPreferencesData(userGuid, key, itemId, newValue)).build();
+   public Response editPreferences(@PathParam("id") String userUuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
+      return Response.ok().entity(accountOps.editAccountWebPreferencesData(userUuid, key, itemId, newValue)).build();
    }
 
    /**
