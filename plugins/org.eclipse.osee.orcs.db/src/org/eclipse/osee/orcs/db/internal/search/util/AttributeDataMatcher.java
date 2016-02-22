@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.util;
 
-import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
-import org.eclipse.osee.orcs.core.ds.AttributeDataMatchHandler;
 import org.eclipse.osee.orcs.core.ds.BinaryDataProxy;
 import org.eclipse.osee.orcs.core.ds.CharacterDataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
@@ -34,6 +32,7 @@ import org.eclipse.osee.orcs.core.ds.IndexedResource;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
+import com.google.common.collect.Lists;
 
 /**
  * @author Roberto E. Escobar
@@ -58,12 +57,12 @@ public class AttributeDataMatcher {
       return toReturn;
    }
 
-   public void process(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, Collection<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) throws Exception {
+   public List<MatchLocation> process(HasCancellation cancellation, AttributeData data, Collection<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) throws Exception {
       logger.debug("Attribute Data match for attr[%s] - [%s]", data.getLocalId(), valuesToMatch);
       if (Conditions.hasValues(options)) {
-         matchTokenizedValue(cancellation, handler, data, valuesToMatch, typesFilter, options);
+         return matchTokenizedValue(cancellation, data, valuesToMatch, typesFilter, options);
       } else {
-         matchValuesExactly(cancellation, handler, data, valuesToMatch);
+         return matchValuesExactly(cancellation, data, valuesToMatch);
       }
    }
 
@@ -73,18 +72,20 @@ public class AttributeDataMatcher {
       }
    }
 
-   private void matchValuesExactly(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, Iterable<String> valuesToMatch) throws Exception {
+   private List<MatchLocation> matchValuesExactly(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch) throws Exception {
       String value = getValue(data);
+      List<MatchLocation> matched = Lists.newLinkedList();
       for (String toMatch : valuesToMatch) {
          checkCancelled(cancellation);
          if (value.equals(toMatch) || !Strings.isValid(value) && !Strings.isValid(toMatch)) {
             MatchLocation matchLocation = new MatchLocation(1, value.length());
-            handler.onData(data, matchLocation);
+            matched.add(matchLocation);
          }
       }
+      return matched;
    }
 
-   private void matchTokenizedValue(HasCancellation cancellation, AttributeDataMatchHandler handler, AttributeData data, Iterable<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
+   private List<MatchLocation> matchTokenizedValue(HasCancellation cancellation, AttributeData data, Iterable<String> valuesToMatch, Collection<? extends IAttributeType> typesFilter, QueryOption... options) {
       AttributeIndexedResource source = adapt(data);
       IAttributeType attrType = attrTypes.getByUuid(source.getTypeUuid());
       if (typesFilter.contains(attrType)) {
@@ -98,16 +99,14 @@ public class AttributeDataMatcher {
                for (String toMatch : valuesToMatch) {
                   matched.addAll(tagger.find(source, toMatch, true, options));
                }
-               for (MatchLocation matchLocation : matched) {
-                  checkCancelled(cancellation);
-                  handler.onData(data, matchLocation);
-               }
+               return matched;
             } catch (Exception ex) {
                logger.error(ex, "Error searching attrId [%d] gamma [%d]", data.getLocalId(),
                   data.getVersion().getGammaId());
             }
          }
       }
+      return null;
    }
 
    private AttributeIndexedResource adapt(AttributeData data) {

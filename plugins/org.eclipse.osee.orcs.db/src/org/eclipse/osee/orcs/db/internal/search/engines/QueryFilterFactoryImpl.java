@@ -12,7 +12,9 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentSkipListSet;
 import java.util.concurrent.Future;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -43,6 +46,9 @@ import org.eclipse.osee.orcs.db.internal.search.util.LoadDataBuffer;
 import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * @author Roberto E. Escobar
@@ -132,11 +138,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
       @Override
       public void onData(AttributeData data, LoadDataHandler handler) throws OseeCoreException {
          try {
-            if (data.getDataProxy().isInMemory()) {
-               process(cancellation, data, handler);
-            } else {
-               addToQueue(data, handler);
-            }
+            addToQueue(data, handler);
          } catch (Exception ex) {
             OseeCoreException.wrapAndThrow(ex);
          } finally {
@@ -166,6 +168,7 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             @Override
             public Void call() throws Exception {
                boolean isEndOfQueue = false;
+               Map<Integer, CriteriaMatchTracker> artIdToCriteriaTracker = Maps.newHashMap();
                while (!isEndOfQueue) {
                   Set<AttributeData> toProcess = new HashSet<>();
                   AttributeData entry = dataToProcess.take();
@@ -173,26 +176,43 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
                   toProcess.add(entry);
                   for (AttributeData item : toProcess) {
                      if (END_OF_QUEUE != item) {
+                        CriteriaMatchTracker tracker = artIdToCriteriaTracker.get(item.getArtifactId());
+                        if (tracker == null) {
+                           tracker = new CriteriaMatchTracker(criterias);
+                           artIdToCriteriaTracker.put(item.getArtifactId(), tracker);
+                        }
                         checkForCancelled();
-                        process(this, item, handler);
+                        List<MatchLocation> matches = process(this, item, handler, tracker.remainingCriteriaToMatch);
+                        tracker.addMatches(item, matches);
                      } else {
                         isEndOfQueue = true;
                      }
                   }
+               }
+               for (Entry<Integer, CriteriaMatchTracker> e : artIdToCriteriaTracker.entrySet()) {
+                  // matched all criteria
+                  CriteriaMatchTracker tracker = e.getValue();
+                  tracker.finish(handler);
                }
                return null;
             }
          };
       }
 
-      private void process(HasCancellation cancellation, AttributeData data, LoadDataHandler handler) throws Exception {
+      private List<MatchLocation> process(HasCancellation cancellation, AttributeData data, LoadDataHandler handler, Set<CriteriaAttributeKeywords> remaining) throws Exception {
+         List<MatchLocation> locations = Lists.newLinkedList();
          for (CriteriaAttributeKeywords criteria : criterias) {
             cancellation.checkForCancelled();
             Collection<String> valuesToMatch = criteria.getValues();
             Collection<? extends IAttributeType> typesFilter = criteria.getTypes();
             QueryOption[] options = criteria.getOptions();
-            matcher.process(cancellation, handler, data, valuesToMatch, typesFilter, options);
+            List<MatchLocation> matches = matcher.process(cancellation, data, valuesToMatch, typesFilter, options);
+            if (Conditions.hasValues(matches)) {
+               remaining.remove(criteria);
+               locations.addAll(matches);
+            }
          }
+         return locations;
       }
 
       @Override
@@ -310,6 +330,38 @@ public class QueryFilterFactoryImpl implements QueryFilterFactory {
             getCounter().getAndSet(acceptedArtIds.size());
             reset();
             super.onLoadEnd();
+         }
+      }
+   }
+
+   private static class CriteriaMatchTracker {
+      private final Map<AttributeData, Set<MatchLocation>> matches = Maps.newHashMap();
+      private final Set<CriteriaAttributeKeywords> remainingCriteriaToMatch;
+
+      public CriteriaMatchTracker(Set<CriteriaAttributeKeywords> criteria) {
+         remainingCriteriaToMatch = Sets.newHashSet(criteria);
+      }
+
+      public void addMatches(AttributeData attr, Collection<MatchLocation> matches) {
+         if (Conditions.hasValues(matches)) {
+            Set<MatchLocation> set = this.matches.get(attr);
+            if (set == null) {
+               set = Sets.newHashSet();
+               this.matches.put(attr, set);
+            }
+            set.addAll(matches);
+         }
+      }
+
+      public void finish(LoadDataHandler handler) {
+         if (remainingCriteriaToMatch.isEmpty()) {
+            for (Entry<AttributeData, Set<MatchLocation>> entry : matches.entrySet()) {
+               Set<MatchLocation> locations = entry.getValue();
+               AttributeData attributeData = entry.getKey();
+               for (MatchLocation location : locations) {
+                  handler.onData(attributeData, location);
+               }
+            }
          }
       }
    }
