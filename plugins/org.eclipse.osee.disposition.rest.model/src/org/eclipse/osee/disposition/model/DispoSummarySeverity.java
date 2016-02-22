@@ -1,33 +1,42 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
+ * Contributostmt:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.disposition.model;
-
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
  */
+public enum DispoSummarySeverity {
+   IGNORE("Ignore"),
+   WARNING("Warning"),
+   ERROR("Error"),
+   UPDATE("Update"),
+   NEW("New");
 
-public interface DispoSet extends Identifiable<String> {
+   private String name;
 
-   String getImportPath();
+   DispoSummarySeverity() {
 
-   JSONArray getNotesList();
+   }
 
-   String getImportState();
+   DispoSummarySeverity(String name) {
+      this.name = name;
+   }
 
-   String getDispoType();
+   public void setName(String name) {
+      this.name = name;
+   }
 
-   JSONObject getOperationSummary();
+   //   @JsonValue
+   public String getName() {
+      return name;
+   }
+
 }

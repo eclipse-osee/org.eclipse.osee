@@ -25,6 +25,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
 import org.eclipse.osee.disposition.model.Note;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,6 +54,12 @@ public final class DispoUtil {
       return annotation.getResolutionType().equalsIgnoreCase(
          DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
             DispoStrings.Exception_Handling_Resolution);
+   }
+
+   public static String operationReportToString(OperationReport report) {
+      JSONObject reportAsJson = new JSONObject(report);
+
+      return reportAsJson.toString();
    }
 
    public static JSONObject getById(JSONArray list, String id) {
@@ -108,6 +115,8 @@ public final class DispoUtil {
          dispoSetData.setNotesList(dispoSet.getNotesList());
          dispoSetData.setGuid(dispoSet.getGuid());
          dispoSetData.setDispoType(dispoSet.getDispoType());
+         dispoSetData.setOperationSummary(dispoSet.getOperationSummary());
+         dispoSetData.setImportState(dispoSet.getImportState());
       } else {
          dispoSetData = null;
       }
@@ -282,6 +291,7 @@ public final class DispoUtil {
       JSONObject jsonObject = new JSONObject(dispoSet, true);
       try {
          jsonObject.put("notesList", dispoSet.getNotesList());
+         jsonObject.put("operationSummary", dispoSet.getOperationSummary());
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }

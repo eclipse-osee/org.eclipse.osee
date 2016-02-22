@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.IGNORE;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.UPDATE;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -24,8 +28,8 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
@@ -58,10 +62,10 @@ public class DispoSetCopier {
                   modifiedItems.add(newItem);
 
                   JSONArray destAnnotationsList = destItem.getAnnotationsList();
-                  report.addMessageForItem(destItem.getName(), "$$$$Had %s Dispositions$$$$\n",
-                     destAnnotationsList.length());
-                  report.addMessageForItem(destItem.getName(), "$$$$Now has %s Dispositions$$$$",
+                  String message = String.format("Had %s Dispositions now has %s", destAnnotationsList.length(),
                      newItem.getAnnotationsList().length());
+
+                  report.addEntry(destItem.getName(), message, UPDATE);
                }
             } else if (!Strings.isValid(destItem.getGuid()) && !sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
                /**
@@ -73,7 +77,7 @@ public class DispoSetCopier {
             }
 
          } else {
-            report.addMessageForItem(sourceItem.getName(), "No matching item found in the Destination Set");
+            report.addEntry(sourceItem.getName(), "No matching item found in the Destination Set", WARNING);
          }
       }
       return modifiedItems;
@@ -104,13 +108,13 @@ public class DispoSetCopier {
       try {
          boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
          if (!isSameDiscrepancies) {
-            report.addMessageForItem(destItem.getName(),
-               "Tried to copy from item id: [%s] but discrepancies were not the same. No Annotations were copied over.",
-               sourceItem.getGuid());
+            report.addEntry(destItem.getName(), String.format(
+               "Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid()), WARNING);
+
          }
          toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
       } catch (JSONException ex) {
-         report.addOtherMessage("Item[%s] has bad JSON. Exception Message:[%s]", sourceItem.getName(), ex.getMessage());
+         report.addEntry(sourceItem.getName(), "Bad JSON!", ERROR);
       }
 
       return toReturn;
@@ -139,22 +143,30 @@ public class DispoSetCopier {
              * user should be aware.Currently only for Coverage
              */
             if (!destDefaultAnntationLocations.contains(sourceLocation)) {
-               report.addMessageForItem(destItem.getName(),
-                  "Did not copy annotations for location(s) [%s] because they are default annotations",
-                  sourceAnnotation.getLocationRefs());
+               report.addEntry(destItem.getName(),
+                  String.format("Did not copy annotations for location(s) [%s] because they are default annotations",
+                     sourceAnnotation.getLocationRefs()),
+                  IGNORE);
+
             }
          } else if (destDefaultAnntationLocations.contains(sourceLocation)) {
             /**
              * isCoverageCopy is true when annotation copier is called by a coverage import, this means we need to also
              * check that the matching dest annotation isn't a DEFAULT resolution before copying over.
              */
-            report.addMessageForItem(destItem.getName(),
-               "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
-               sourceAnnotation.getLocationRefs());
+            report.addEntry(destItem.getName(),
+               String.format(
+                  "Did not copy annotations for location(s) [%s] because the destination item already has a default annotations at these locations",
+                  sourceAnnotation.getLocationRefs()),
+               IGNORE);
+
          } else if (newAnnotations.toString().contains(sourceAnnotation.getGuid())) {
-            report.addMessageForItem(destItem.getName(),
-               "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
-               sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid());
+            report.addEntry(destItem.getName(),
+               String.format(
+                  "Did not copy annotations for location(s) [%s] because the destination item already has this Annotation [%s]",
+                  sourceAnnotation.getLocationRefs(), sourceAnnotation.getGuid()),
+               IGNORE);
+
          } else {
             // Try to copy but check if Discrepancy is the same and present in the destination set
             if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destItem, sourceItem, sourceAnnotation,
@@ -172,8 +184,9 @@ public class DispoSetCopier {
                   if (locationRefAsInt > 0) {
                      newAnnotation.setLocationRefs(String.valueOf(locationRefAsInt * -1));
                   }
-                  report.addMessageForItem(destItem.getName(),
-                     "The annotation was copied over but is no longer needed: [%s]", locationRefs);
+                  report.addEntry(destItem.getName(),
+                     String.format("The annotation was copied over but is no longer needed: [%s]", locationRefs),
+                     WARNING);
                }
                connector.connectAnnotation(newAnnotation, newItem.getDiscrepanciesList());
                isChangesMade = true;
@@ -201,7 +214,7 @@ public class DispoSetCopier {
          newItem = destItem;
          newItem.setGuid(sourceItem.getGuid());
       } else {
-         report.addMessageForItem(destItem.getName(), "Nothing to copy");
+         report.addEntry(destItem.getName(), "Nothing to copy", IGNORE);
          newItem = null;
       }
       return newItem;
@@ -221,7 +234,7 @@ public class DispoSetCopier {
             }
          }
       } catch (JSONException ex) {
-         report.addMessageForItem(sourceItem.getName(), "Bad JSON!");
+         report.addEntry(sourceItem.getName(), "Bad JSON!", ERROR);
          return false;
       }
 
@@ -238,7 +251,7 @@ public class DispoSetCopier {
             Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancies.getJSONObject(key));
             toReturn.add(discrepancy.getText());
          } catch (JSONException ex) {
-            report.addMessageForItem(itemName, "Bad JSON!");
+            report.addEntry(itemName, "Bad JSON!", ERROR);
          }
       }
 

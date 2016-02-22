@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
@@ -31,14 +30,15 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
+import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.Note;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoImporterFactory.ImportFormat;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageAdapter;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
@@ -160,9 +160,8 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String editDispoSet(DispoProgram program, String setId, DispoSetData newSet) throws OseeCoreException {
+   public void editDispoSet(DispoProgram program, String setId, DispoSetData newSet) throws OseeCoreException {
       DispoSet dispSetToEdit = getQuery().findDispoSetsById(program, setId);
-      String reportUrl = "";
 
       if (dispSetToEdit != null) {
          if (newSet.getNotesList() != null) {
@@ -172,13 +171,12 @@ public class DispoApiImpl implements DispoApi {
          }
 
          if (newSet.getOperation() != null) {
-            reportUrl = runOperation(program, dispSetToEdit, newSet);
+            runOperation(program, dispSetToEdit, newSet);
          }
 
          ArtifactReadable author = getQuery().findUser();
          getWriter().updateDispoSet(author, program, dispSetToEdit.getGuid(), newSet);
       }
-      return reportUrl;
    }
 
    @Override
@@ -367,7 +365,7 @@ public class DispoApiImpl implements DispoApi {
       return getQuery().isUniqueSetName(program, name);
    }
 
-   private String runOperation(DispoProgram program, DispoSet setToEdit, DispoSetData newSet) {
+   private void runOperation(DispoProgram program, DispoSet setToEdit, DispoSetData newSet) {
       OperationReport report = new OperationReport();
       String operation = newSet.getOperation();
       ArtifactReadable author = getQuery().findUser();
@@ -392,7 +390,7 @@ public class DispoApiImpl implements DispoApi {
                // if the ID is non-empty then we are updating an item instead of creating a new one
                if (item.getGuid() == null) {
                   itemsToCreate.add(item);
-                  report.addNewItem(item.getName());
+                  report.addEntry(item.getName(), "", DispoSummarySeverity.NEW);
                } else {
                   itemsToEdit.add(item);
                }
@@ -421,31 +419,7 @@ public class DispoApiImpl implements DispoApi {
       newSet.setNotesList(newNotes);
 
       // Generate report
-      String reportUrl = generateReportArt(program, author, report, operation);
-      return reportUrl;
-   }
-
-   private String generateReportArt(DispoProgram program, ArtifactReadable author, OperationReport report, String title) {
-      StringBuilder sb = new StringBuilder();
-      sb.append(new Date().toString());
-      sb.append("\n");
-      Map<String, String> itemToSummaryMap = report.getItemToSummaryMap();
-      sb.append("*******NEW ITEMS*********\n");
-      for (String newItem : report.getNewItems()) {
-         sb.append(newItem);
-         sb.append("\n");
-      }
-
-      sb.append("\n\n*******MODIFIED ITEMS*********\n");
-      for (Entry<String, String> modifiedItem : itemToSummaryMap.entrySet()) {
-         sb.append(">>>>>>");
-         sb.append(modifiedItem.getKey());
-         sb.append(" - ");
-         sb.append(modifiedItem.getValue());
-         sb.append("\n");
-         sb.append("\n");
-      }
-      return getWriter().createDispoReport(program, author, sb.toString(), title);
+      getWriter().updateOperationSummary(author, program, setToEdit, report);
    }
 
    private HashMap<String, DispoItem> getItemsMap(DispoProgram program, DispoSet set) {
@@ -493,7 +467,7 @@ public class DispoApiImpl implements DispoApi {
    }
 
    @Override
-   public String copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params) {
+   public void copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params) {
       Map<String, ArtifactReadable> coverageUnits = getQuery().getCoverageUnits(sourceBranch, sourceCoverageGuid);
       List<DispoItem> destItems = getDispoItems(destDispProgram, destination.getGuid());
 
@@ -506,11 +480,11 @@ public class DispoApiImpl implements DispoApi {
          editDispoItems(destDispProgram, copyData, false);
       }
 
-      return generateReportArt(destDispProgram, getQuery().findUser(), report, "Import Coverage Package");
+      storageProvider.get().updateOperationSummary(null, destDispProgram, destination, report);
    }
 
    @Override
-   public String copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params) {
+   public void copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params) {
       List<DispoItem> sourceItems = getDispoItems(sourceProgram, sourceSet.getGuid());
       Map<String, Set<DispoItemData>> namesToDestItems = new HashMap<>();
       for (DispoItem itemArt : getDispoItems(program, destination.getGuid())) {
@@ -542,11 +516,11 @@ public class DispoApiImpl implements DispoApi {
       copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
       copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
 
-      if (!namesToToEditItems.isEmpty()) {
+      if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
          editDispoItems(program, namesToToEditItems.values(), false);
       }
 
-      return generateReportArt(program, getQuery().findUser(), report, "Copy Dispositions");
+      storageProvider.get().updateOperationSummary(null, program, destination, report);
    }
 
    @Override

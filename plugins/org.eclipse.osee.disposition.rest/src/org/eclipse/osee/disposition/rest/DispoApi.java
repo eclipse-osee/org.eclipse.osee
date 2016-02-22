@@ -54,15 +54,15 @@ public interface DispoApi {
 
    String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation, String userName);
 
-   String editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
+   void editDispoSet(DispoProgram program, String dispoSetId, DispoSetData newDispoSet);
 
    boolean editDispoItem(DispoProgram program, String itemId, DispoItemData newDispoItem);
 
    boolean editDispoAnnotation(DispoProgram program, String itemId, String annotationId, DispoAnnotationData newAnnotation, String userName);
 
-   String copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params);
+   void copyDispoSet(DispoProgram program, DispoSet destination, DispoProgram sourceProgram, DispoSet sourceSet, CopySetParams params);
 
-   String copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
+   void copyDispoSetCoverage(long sourceBranch, String sourceCoverageGuid, DispoProgram destDispProgram, DispoSet destination, CopySetParams params);
 
    // Deletes
 

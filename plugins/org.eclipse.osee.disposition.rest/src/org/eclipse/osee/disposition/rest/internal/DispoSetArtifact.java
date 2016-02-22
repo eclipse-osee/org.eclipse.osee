@@ -17,11 +17,12 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
  */
-public class DispoSetArtifact extends BaseIdentity<String>implements DispoSet {
+public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
 
    private final ArtifactReadable artifact;
 
@@ -51,13 +52,24 @@ public class DispoSetArtifact extends BaseIdentity<String>implements DispoSet {
    }
 
    @Override
+   public JSONObject getOperationSummary() {
+      String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.OperationSummary, "{}");
+      try {
+         JSONObject toReturn = new JSONObject(operationSummaryJson);
+         return toReturn;
+      } catch (JSONException ex) {
+         throw new OseeCoreException("Could not parse Operation Sumary Json", ex);
+      }
+   }
+
+   @Override
    public String toString() {
       return getName();
    }
 
    @Override
    public String getImportState() {
-      return artifact.getSoleAttributeAsString(DispoConstants.ImportState, "NOT_SET");
+      return artifact.getSoleAttributeAsString(DispoConstants.ImportState, "None");
    }
 
    @Override

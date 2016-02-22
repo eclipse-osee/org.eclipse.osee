@@ -59,7 +59,7 @@ public class OseeClientProperties extends OseeProperties {
    /**
     * Retrieves whether OSEE database initialization should use the schema names specified in the schema.xml files
     * instead of using the connection schema. Using the connection specified schema is the default behavior.
-    * 
+    *
     * @return <b>true</b> if the file specified schemas should be used.
     */
    public static boolean useSchemasSpecifiedInDbConfigFiles() {
@@ -68,7 +68,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the table data space to use during OSEE database initialization
-    * 
+    *
     * @return table data space
     */
    public static String getOseeTableDataSpaceForDbInit() {
@@ -77,7 +77,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the index data space to use during OSEE database initialization
-    * 
+    *
     * @return index data space
     */
    public static String getOseeIndexDataSpaceForDbInit() {
@@ -104,7 +104,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves whether OSEE database initialization should import database data as part of its tasks.
-    * 
+    *
     * @return <b>true</b> if database initialization should import database data as part of its tasks.
     */
    public static boolean isOseeImportAllowed() {
@@ -113,7 +113,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Gets whether local application server launch is required
-    * 
+    *
     * @return <b>true</b> if local application server launch is required. <b>false</b> if local application server
     * launch is not required.
     */
@@ -123,7 +123,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * Retrieves the specified port to use for the local HTTP server
-    * 
+    *
     * @return port to use
     */
    public static String getLocalHttpWorkerPort() {
@@ -135,9 +135,9 @@ public class OseeClientProperties extends OseeProperties {
     * Sets the application server address and port to use. This system property sets the URL used to reference
     * the application server.
     * </pre>
-    * 
+    *
     * <b>Format: </b> <code>http://address:port</code>
-    * 
+    *
     * @param application server URL to use
     */
    public static void setOseeApplicationServer(String value) {
@@ -149,13 +149,13 @@ public class OseeClientProperties extends OseeProperties {
     * Retrieves the application server address and port to use. When specified, this system property sets the URL used to reference
     * the application server.
     * </pre>
-    * 
+    *
     * <b>Format: </b> <code>http://address:port</code>
-    * 
+    *
     * @return application server URL
     */
    public static String getOseeApplicationServer() {
-      return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8089");
+      return getProperty(OseeClient.OSEE_APPLICATION_SERVER, "http://localhost:8092");
    }
 
    private static String getProperty(String name) {
@@ -168,7 +168,7 @@ public class OseeClientProperties extends OseeProperties {
 
    /**
     * A string representation of all the property setting specified by this class
-    * 
+    *
     * @return settings for all properties specified by this class
     */
    public static String getAllSettings() {

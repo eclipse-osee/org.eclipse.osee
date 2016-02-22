@@ -37,12 +37,18 @@
 		            multiSelect: false,
 		            columnDefs: 'columnDefs' // link to scope variable which we will define dynamically				
 		        }
+		        
+		        var isPrimary = function(importState) {
+		        	return row.entity.importState != "Import Warnings" && row.entity.importState != "Import Failed";
+		        }
 
 		        var editCellTmpl = '<input editable="true" >'
-		        var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
-		        var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
-		        var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
-
+			    var dellCellTmpl = '<button width="50px" class="btn btn-default btn-sm setDelete" ng-show="!readOnly" ng-click="deleteSet(row.entity)">X</button>';
+			    var importCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="importSet(row.entity)">Import</button>';
+			    var exportCellTmpl = '<button width="50px" class="btn btn-primary" ng-disabled="row.entity.processingImport" ng-click="exportSet(row.entity)">Export</button>';
+			    var lastOperationCellTmpl = '<id="stateButton" button width="99%" ng-disabled="row.entity.processingImport || row.entity.gettingDetails" ng-class="{btn: true, \'btn-primary\': \'isPrimary(row.entity.importState)\',' +
+			    '\'btn-warning\': row.entity.importState == \'Warnings\', \'btn-danger\': row.entity.importState == \'Failed\', \'btn-success\': row.entity.importState == \'OK\'}" ng-click="getSetImportDetails(row.entity)">{{row.entity.importState}}</button>';
+		         
 		        $scope.columnDefs1 = [{
 		            field: "",
 		            displayName: "Import",
@@ -55,14 +61,19 @@
 		        	width: 70,
 		        	cellTemplate: exportCellTmpl
 		        }, {
+		        	field: "",
+		            displayName: "Last Operation",
+		            width: 120,
+		        	cellTemplate: lastOperationCellTmpl
+		        }, {
 		            field: "name",
 		            displayName: "Name",
-		            width: 200,
+		            width: 140,
 		            enableCellEdit: false
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 460,
+		            width: 432,
 		            enableCellEdit: false
 		        }];
 
@@ -78,14 +89,19 @@
 		        	width: 70,
 		        	cellTemplate: exportCellTmpl
 		        },{
+		        	field: "",
+		            displayName: "Last Operation",
+		            width: 120,
+		        	cellTemplate: lastOperationCellTmpl
+		        }, {
 		            field: "name",
 		            displayName: "Name",
-		            width: 200,
+		            width: 140,
 		            enableCellEdit: true
 		        }, {
 		            field: "importPath",
 		            displayName: "Path",
-		            width: 413,
+		            width: 375,
 		            enableCellEdit: true
 		        }, {
 		            field: "delete",
@@ -155,10 +171,23 @@
 		            window.open(url);
 		        }
 		        
-		        
+      	        $scope.getSetImportDetails = function(set) {
+      	        		set.gettingDetails = true;
+      		        	Set.get({
+      		        		programId: $scope.programSelection,
+      		        		setId: set.guid
+      		        	}, function(data) {
+      		        		set.gettingDetails = false;
+      			        	$scope.operationSummary = data.operationSummary;
+      			        	set.importState = data.importState;
+      		        	}, function(data) {
+      		        		set.gettingDetails = false;
+      		        		alert("Could not update Set from Server");
+      		        	})
+      		        }
 		        
 		        $scope.updateProgram = function updateProgram() {
-		        		var loadingModal = $scope.showLoadingModal();
+		        	var loadingModal = $scope.showLoadingModal();
 		            $scope.loading = true;
 			        	$scope.items = {};
 			            Set.query({
@@ -192,6 +221,15 @@
 		            });
 
 		        }
+		        
+		        var populateReportField = function(set) {
+		        	Set.get({
+		                programId: $scope.programSelection,
+		                setId: set.guid
+		        	}, function(data) {
+		        		
+		        	});
+		        }
 
 
 		        $scope.importSet = function importSet(set) {
@@ -203,15 +241,11 @@
 		                programId: $scope.programSelection,
 		                setId: set.guid
 		            }, newSet, function(data){
-		            	var reportUrl = data.operationStatus;
-			            window.open(reportUrl);
-		            	console.log(data);
 		            	set.processingImport = false;
+		            	$scope.getSetImportDetails(set);
 		            }, function() {
-		            	console.log("Failed");
-		            	console.log(new Date().getTime());
 		            	set.processingImport = false;
-		            	alert("Could not Import");
+		            	$scope.getSetImportDetails(set);
 		            });
 		        };
 		        
@@ -267,6 +301,61 @@
 		            	alert("Oops...Something went wrong");
 		            });
 		        }
+		        
+		        // -------------------- Summary Grids ----------------------\\
+		        var filterBarPlugin = {
+		                init: function(scope, grid) {
+		                    filterBarPlugin.scope = scope;
+		                    filterBarPlugin.grid = grid;
+		                    $scope.$watch(function() {
+		                        var searchQuery = "";
+		                        angular.forEach(filterBarPlugin.scope.columns, function(col) {
+		                            if (col.visible && col.filterText) {
+		                                var filterText = (col.filterText.indexOf('*') == 0 ? col.filterText.replace('*', '') : "^" + col.filterText) + ";";
+		                                searchQuery += col.displayName + ": " + filterText;
+		                            }
+		                        });
+		                        return searchQuery;
+		                    }, function(searchQuery) {
+		                        filterBarPlugin.scope.$parent.filterText = searchQuery;
+		                        filterBarPlugin.grid.searchProvider.evalFilter();
+		                    });
+		                },
+		                scope: undefined,
+		                grid: undefined,
+		            };
+		        
+		        $scope.summaryGrid = {
+			            data: 'operationSummary.entries',
+			            enableHighlighting: true,
+			            enableColumnResize: true,
+			            enableRowReordering: true,
+			            multiSelect: false,
+			            headerRowHeight: 60, // give room for filter bar
+			            plugins: [filterBarPlugin],
+			            columnDefs: [{
+				        	field: "severity.name",
+				        	displayName: "Severity",
+				        	headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
+				        	width: 70
+				        },{
+				            field: "name",
+				            displayName: "Name",
+				            width: 350,
+				            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
+				            enableCellEdit: false
+				        },{
+				            field: "message",
+				            width: 782,
+				            displayName: "Message",
+				            headerCellTemplate: '/dispo/views/nameFilterTmpl.html',
+				            enableCellEdit: false
+				        }]
+			    }
+
+
+		        
+		        
 		        
 		        // Loading Modal
 		        $scope.showLoadingModal = function() {

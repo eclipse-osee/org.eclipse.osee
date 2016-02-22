@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 
 import static org.eclipse.osee.disposition.model.DispoStrings.Exception_Handling_Resolution;
 import static org.eclipse.osee.disposition.model.DispoStrings.Test_Unit_Resolution;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -30,11 +31,11 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -167,7 +168,7 @@ public class LisFileParser implements DispoImporterApi {
             }
          }
       } catch (JSONException ex) {
-         report.addMessageForItem(item.getName(), "Could not add Place Holder Annotations: %s", ex.getCause());
+         report.addEntry(item.getName(), String.format("Could not add Place Holder Annotations for: %s", item), ERROR);
       }
    }
 
@@ -200,7 +201,8 @@ public class LisFileParser implements DispoImporterApi {
           */
          instrumentedFiles = dataStore.getAllInstrumentedFiles();
       } catch (OseeCoreException ex) {
-         report.addOtherMessage("SQL error while reading functions for directory: [%s]", vCastDir);
+         report.addEntry("SQL", String.format("SQL error while reading functions for directory: [%s]", vCastDir),
+            ERROR);
       }
       return instrumentedFiles;
    }
@@ -210,9 +212,10 @@ public class LisFileParser implements DispoImporterApi {
       try {
          sourceFile = dataStore.getSourceFileJoin(instrumentedFile);
       } catch (OseeCoreException ex) {
-         report.addOtherMessage(
-            "SQL error while reading source_files for instrumented_file id: [%s]. Error Message: [%s]",
-            instrumentedFile.getId(), ex.getMessage());
+         report.addEntry("SQL",
+            String.format("SQL error while reading source_files for instrumented_file id: [%s]. Error Message: [%s]",
+               instrumentedFile.getId(), ex.getMessage()),
+            ERROR);
       }
 
       if (sourceFile != null) {
@@ -220,8 +223,10 @@ public class LisFileParser implements DispoImporterApi {
 
          String lisFileNameFullPath = instrumentedFile.getLISFile();
          if (!Strings.isValid(lisFileNameFullPath)) {
-            report.addOtherMessage(
-               "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")");
+            report.addEntry("SQL",
+               String.format(
+                  "Error: instrumented_file has invalid LIS_file value.  ID:(" + instrumentedFile.getId() + ")"),
+               ERROR);
          }
          String normalizedPath = lisFileNameFullPath.replaceAll("\\\\", "/");
          File lisFile = new File(normalizedPath);
@@ -232,9 +237,10 @@ public class LisFileParser implements DispoImporterApi {
          try {
             functions = dataStore.getFunctions(instrumentedFile);
          } catch (OseeCoreException ex) {
-            report.addOtherMessage(
-               "SQL error while reading functions for instrumented_file id: [%s]. Error Message: [%s]",
-               instrumentedFile.getId(), ex.getMessage());
+            report.addEntry("SQL",
+               String.format("SQL error while reading functions for instrumented_file id: [%s]. Error Message: [%s]",
+                  instrumentedFile.getId(), ex.getMessage()),
+               ERROR);
          }
 
          for (VCastFunction function : functions) {
@@ -261,9 +267,11 @@ public class LisFileParser implements DispoImporterApi {
       try {
          statementCoverageItems = dataStore.getStatementCoverageLines(function);
       } catch (OseeCoreException ex) {
-         report.addOtherMessage(
-            "SQL error while reading statement_coverages for instrumented_file id: [%s] and function id: [%s]. Error Message: [%s]",
-            instrumentedFile.getId(), function.getId(), ex.getMessage());
+         report.addEntry("SQL",
+            String.format(
+               "SQL error while reading statement_coverages for instrumented_file id: [%s] and function id: [%s]. Error Message: [%s]",
+               instrumentedFile.getId(), function.getId(), ex.getMessage()),
+            ERROR);
       }
 
       Map<String, JSONObject> discrepancies = new HashMap<>();
@@ -288,8 +296,9 @@ public class LisFileParser implements DispoImporterApi {
       try {
          lineData = lisFileParser.getSourceCodeForLine(functionNumber, lineNumber);
       } catch (Exception ex) {
-         report.addOtherMessage("Error parsing LIS file: [%s], on function [%s]", lisFile.getLISFile(),
-            function.getName());
+         report.addEntry("SQL",
+            String.format("Error parsing LIS file: [%s], on function [%s]", lisFile.getLISFile(), function.getName()),
+            ERROR);
       }
 
       if (lineData != null) {
@@ -324,7 +333,7 @@ public class LisFileParser implements DispoImporterApi {
 
       File resultsFile = new File(resultPathAbs);
       if (!resultsFile.exists()) {
-         report.addOtherMessage(String.format("Could not find DAT file [%s]", resultPathAbs));
+         report.addEntry("SQL", String.format("Could not find DAT file [%s]", resultPathAbs), ERROR);
       } else {
          //Start reading line by line
          BufferedReader br = null;
@@ -336,8 +345,8 @@ public class LisFileParser implements DispoImporterApi {
                if (Strings.isValid(resultsLine)) {
                   Result datFileSyntaxResult = VCastValidateDatFileSyntax.validateDatFileSyntax(resultsLine);
                   if (!datFileSyntaxResult.isTrue()) {
-                     report.addOtherMessage(String.format("This line [%s] is not in proper format. In DAT file [%s]",
-                        resultsFile.getName()));
+                     report.addEntry("SQL", String.format("This line [%s] is not in proper format. In DAT file [%s]",
+                        resultsFile.getName()), ERROR);
                   } else {
                      Matcher m = fileMethodLineNumberPattern.matcher(resultsLine);
                      if (m.find()) {

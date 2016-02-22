@@ -14,7 +14,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.disposition.model.DispoItem;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
+import org.eclipse.osee.disposition.model.OperationReport;
 
 /**
  * @author Angel Avila

@@ -26,6 +26,7 @@ import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.internal.importer.coverage.CoverageUtil;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
@@ -202,7 +203,6 @@ public class OrcsStorageImpl implements Storage {
    private ArtifactReadable findDispoArtifact(DispoProgram program, String setId, IArtifactType type) {
       return getQuery()//
       .fromBranch(program.getUuid())//
-      .andTypeEquals(type)//
       .andGuid(setId)//
       .getResults().getOneOrNull();
    }
@@ -541,5 +541,17 @@ public class OrcsStorageImpl implements Storage {
       }
 
       return toReturn;
+   }
+
+   @Override
+   public void updateOperationSummary(ArtifactReadable author, DispoProgram program, DispoSet set, OperationReport summary) {
+      ArtifactReadable dispoSet = findDispoArtifact(program, set.getGuid(), DispoConstants.DispoSet);
+      TransactionBuilder tx =
+         getTxFactory().createTransaction(program.getUuid(), author, "Update Dispo Operation Report");
+
+      tx.setSoleAttributeFromString(dispoSet, DispoConstants.ImportState, summary.getStatus().getName());
+      tx.setSoleAttributeFromString(dispoSet, DispoConstants.OperationSummary,
+         DispoUtil.operationReportToString(summary));
+      tx.commit();
    }
 }

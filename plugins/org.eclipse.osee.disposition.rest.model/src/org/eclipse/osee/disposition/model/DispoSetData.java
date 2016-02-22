@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -25,7 +26,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    private String operation;
    private JSONArray notesList;
    private String importState;
-   private String operationStatus;
+   private JSONObject operationSummary;
 
    public DispoSetData() {
 
@@ -44,10 +45,6 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       return operation;
    }
 
-   public String getOperationStatus() {
-      return operationStatus;
-   }
-
    public void setOperation(String operation) {
       this.operation = operation;
    }
@@ -56,8 +53,8 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.notesList = notesList;
    }
 
-   public void setOperationStatus(String operationStatus) {
-      this.operationStatus = operationStatus;
+   public void setOperationSummary(JSONObject operationSummary) {
+      this.operationSummary = operationSummary;
    }
 
    @Override
@@ -72,6 +69,11 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
 
    public void setImportState(String importState) {
       this.importState = importState;
+   }
+
+   @Override
+   public JSONObject getOperationSummary() {
+      return operationSummary;
    }
 
 }

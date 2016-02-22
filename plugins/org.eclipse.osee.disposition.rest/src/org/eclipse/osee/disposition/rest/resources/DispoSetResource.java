@@ -34,7 +34,6 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -132,7 +131,7 @@ public class DispoSetResource {
             jobject.put("guid", set.getGuid());
             jobject.put("name", set.getName());
             jobject.put("importPath", set.getImportPath());
-            jobject.put("notesList", set.getNotesList());
+            jobject.put("importState", set.getImportState());
             jarray.put(jobject);
          }
       }
@@ -160,15 +159,9 @@ public class DispoSetResource {
    @Consumes(MediaType.APPLICATION_JSON)
    public Response putDispoSet(@PathParam("setId") String setId, DispoSetData newDispositionSet) {
       Response.Status status;
-      String reportUrl = dispoApi.editDispoSet(program, setId, newDispositionSet);
-      DispoSetData responseSet = new DispoSetData();
-      responseSet.setOperationStatus(reportUrl);
-      if (Strings.isValid(reportUrl)) {
-         status = Status.OK;
-      } else {
-         status = Status.NOT_FOUND;
-      }
-      return Response.status(status).entity(responseSet).build();
+      dispoApi.editDispoSet(program, setId, newDispositionSet);
+      status = Status.OK;
+      return Response.status(status).build();
    }
 
    /**

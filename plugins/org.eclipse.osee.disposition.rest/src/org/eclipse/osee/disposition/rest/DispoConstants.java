@@ -28,6 +28,7 @@ public final class DispoConstants {
    public static final IAttributeType DispoType= TokenFactory.createAttributeType(0x1000000000000395L, "dispo.Dispo Config");
    public static final IAttributeType ImportPath= TokenFactory.createAttributeType(0x1000000000000389L, "dispo.Import Path");
    public static final IAttributeType ImportState= TokenFactory.createAttributeType(0x3000000000000196L, "dispo.Import State");
+   public static final IAttributeType OperationSummary= TokenFactory.createAttributeType(0x1000000000000397L, "dispo.Operation Summary");
    public static final IAttributeType DispoAnnotationsJson = TokenFactory.createAttributeType(0x1000000000000386L, "dispo.Annotations JSON");
    public static final IAttributeType DispoDiscrepanciesJson = TokenFactory.createAttributeType(0x1000000000000387L, "dispo.Discrepancies JSON");
    public static final IAttributeType DispoNotesJson = TokenFactory.createAttributeType(0x1000000000000388L, "dispo.Notes JSON");

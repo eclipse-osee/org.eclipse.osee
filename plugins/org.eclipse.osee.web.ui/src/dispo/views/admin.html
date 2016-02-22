@@ -22,15 +22,15 @@
                 </div>
             </div>
             
-            <div class="row" id=setCopyRow>
-                <div class="col-sm-10 col-sm-offset-2" id=setCopyContainer>
-                    <button ng-disabled="isCopying" ng-click="openCopySetModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=generateReportBtn>Merge Annotations</button>
+            <div class="row" id=mergeAnnotationsRow>
+                <div class="col-sm-10 col-sm-offset-2" id=mergetAnnotationsContainer>
+                    <button ng-disabled="isCopying" ng-click="openCopySetModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=mergetAnnotationsBtn>Merge Annotations</button>
                 </div>
             </div>
             
-            <div ng-show="false" class="row" id=setCopyRow>
-                <div class="col-sm-10 col-sm-offset-2" id=setCopyCoverageContainer>
-                    <button ng-click="openCopyCoverageModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=generateReportBtn>Import From Coverage</button>
+            <div ng-show="false" class="row" id=coverageCopyRow>
+                <div class="col-sm-10 col-sm-offset-2" id=coverageCopyContainer>
+                    <button ng-click="openCopyCoverageModal()" ng-show="sets.length > 0" class="btn btn-primary active" id=coverageCopyRowBtn>Import From Coverage</button>
                 </div>
             </div>
             
@@ -41,9 +41,15 @@
                 <button ng-disabled="programSelection == null" ng-click="toggleReadOnly()" class="btn pull-right">Edit</button>
             </div>
             <div class="row">
-                <div style="height: 600px;" class="gridStyle" ng-grid="gridOptions"></div>
+                <div style="height: 300px;" class="gridStyle" ng-grid="gridOptions"></div>
             </div>
         </div>
+    </div>
+    <div class="row">
+    	<div class="col-md-9 col-md-offset-1">
+            <div class="row" id="summaryContainer">
+                <div style="height: 400px;" class="gridStyle" ng-grid="summaryGrid"></div>
+            </div>
     </div>
  </div>
 

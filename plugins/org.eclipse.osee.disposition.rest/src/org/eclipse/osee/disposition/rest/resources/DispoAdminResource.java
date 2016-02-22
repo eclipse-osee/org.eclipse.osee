@@ -31,12 +31,10 @@ import org.eclipse.osee.disposition.model.CopySetParams;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoProgramImpl;
 import org.eclipse.osee.disposition.model.DispoSet;
-import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
 import org.eclipse.osee.disposition.rest.internal.report.ExportSet;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Angel Avila
@@ -115,17 +113,9 @@ public class DispoAdminResource {
    public Response getDispoSetCopyCoverage(@QueryParam("destinationSet") String destinationSet, @QueryParam("sourceBranch") Long sourceBranch, @QueryParam("sourcePackage") String sourcePackage, CopySetParams params) {
       Response.Status status;
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
-
-      String reportUrl = dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, program, destination, params);
-      DispoSetData responseSet = new DispoSetData();
-      responseSet.setOperationStatus(reportUrl);
-
-      if (Strings.isValid(reportUrl)) {
-         status = Status.OK;
-      } else {
-         status = Status.NOT_FOUND;
-      }
-      return Response.status(status).entity(responseSet).build();
+      dispoApi.copyDispoSetCoverage(sourceBranch, sourcePackage, program, destination, params);
+      status = Status.OK;
+      return Response.status(status).build();
    }
 
    @Path("/copy")
@@ -137,16 +127,8 @@ public class DispoAdminResource {
       final DispoSet destination = dispoApi.getDispoSetById(program, destinationSet);
       DispoProgramImpl sourceDispoProgram = new DispoProgramImpl("", Long.valueOf(sourceProgram));
       final DispoSet source = dispoApi.getDispoSetById(sourceDispoProgram, sourceSet);
-
-      String reportUrl = dispoApi.copyDispoSet(program, destination, sourceDispoProgram, source, params);
-      DispoSetData responseSet = new DispoSetData();
-      responseSet.setOperationStatus(reportUrl);
-
-      if (Strings.isValid(reportUrl)) {
-         status = Status.OK;
-      } else {
-         status = Status.NOT_FOUND;
-      }
-      return Response.status(status).entity(responseSet).build();
+      dispoApi.copyDispoSet(program, destination, sourceDispoProgram, source, params);
+      status = Status.OK;
+      return Response.status(status).build();
    }
 }

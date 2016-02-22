@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer.coverage;
 
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
+import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -21,8 +23,8 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -65,7 +67,7 @@ public class CoverageAdapter {
                   newStatus = dispoConnector.getItemStatus(newItem);
                   newItem.setStatus(newStatus);
                } catch (JSONException ex) {
-                  report.addMessageForItem(newItem.getName(), "Could not determine Status");
+                  report.addEntry(newItem.getName(), "Could not determine Status", ERROR);
                }
 
                modifiedItems.add(newItem);
@@ -91,7 +93,8 @@ public class CoverageAdapter {
             throw new OseeCoreException(ex);
          }
          if (!store.getId().equals(PROPERTY_STORE_ID)) {
-            report.addOtherMessage("Invalid store id [%s] for CoverageItem", store.getId());
+            report.addEntry("Property Store", String.format("Invalid store id [%s] for CoverageItem", store.getId()),
+               ERROR);
          }
 
          String textFromCoverage = store.get("name").trim();
@@ -121,7 +124,8 @@ public class CoverageAdapter {
 
             annotations.add(newAnnotation.getIndex(), newAnnotation);
          } else if (matchedDiscrepancy == null) {
-            report.addMessageForItem(source.getName(), "Could not find matching Discrepancy for [%s]", covearageItem);
+            report.addEntry(source.getName(),
+               String.format("Could not find matching Discrepancy for [%s]", covearageItem), WARNING);
          }
       }
 

@@ -32,7 +32,6 @@ import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -307,19 +306,11 @@ public class DispoApiTest {
       when(storage.findDispoSetsById(program, setId.getGuid())).thenReturn(dispoSet);
       when(dispoSet.getNotesList()).thenReturn(jsonArray);
 
-      String actual = dispoApi.editDispoSet(program, setId.getGuid(), newSet);
-      assertFalse(Strings.isValid(actual)); // No report generated
-
       JSONArray setToEditNotes = new JSONArray();
       newSet.setNotesList(setToEditNotes);
-      actual = dispoApi.editDispoSet(program, setId.getGuid(), newSet);
-      assertFalse(Strings.isValid(actual)); // No report generated
+      dispoApi.editDispoSet(program, setId.getGuid(), newSet);
       // Only should have merged Json Arrays once since the first newSet didn't have a Json Array
       verify(dataFactory, times(1)).mergeJsonArrays(eq(jsonArray), captor.capture());
-
-      when(storage.findDispoSetsById(program, setId.getGuid())).thenReturn(null);
-      actual = dispoApi.editDispoSet(program, setId.getGuid(), newSet);
-      assertFalse(Strings.isValid(actual));// No report generated
    }
 
    @Test

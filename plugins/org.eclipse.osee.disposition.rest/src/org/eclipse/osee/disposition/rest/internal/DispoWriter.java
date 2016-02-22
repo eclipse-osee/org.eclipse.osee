@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
@@ -38,6 +39,8 @@ public interface DispoWriter {
    void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data);
 
    void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag);
+   
+   void updateOperationSummary(ArtifactReadable author, DispoProgram program, DispoSet set, OperationReport summary);
 
    String createDispoReport(DispoProgram program, ArtifactReadable author, String contens, String operationTitle);
 }

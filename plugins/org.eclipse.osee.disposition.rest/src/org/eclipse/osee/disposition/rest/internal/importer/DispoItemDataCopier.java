@@ -20,8 +20,9 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
+import org.eclipse.osee.disposition.model.DispoSummarySeverity;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
-import org.eclipse.osee.disposition.rest.internal.report.OperationReport;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.json.JSONArray;
@@ -44,7 +45,7 @@ public class DispoItemDataCopier {
       updateTestPointNumbersForAnntations(idsToUpdate, sourceAnnotations, destItemDiscrepancies, message);
       destItem.setAnnotationsList(sourceAnnotations);
 
-      report.addMessageForItem(destItem.getName(), message.toString());
+      report.addEntry(destItem.getName(), message.toString(), DispoSummarySeverity.UPDATE);
    }
 
    private static void updateTestPointNumbersForAnntations(HashMap<String, Integer> idsToUpdate, JSONArray annotations, JSONObject discrepancies, StringBuilder message) throws JSONException {
@@ -201,7 +202,7 @@ public class DispoItemDataCopier {
          Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsObject);
          String normalizedText = discrepancy.getText().replaceFirst(".*?\\.", ""); // Want to exclude Point number from text we match with
 
-         Pair newPair = new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
+         Pair<Discrepancy, Boolean> newPair = new Pair<>(discrepancy, textToDiscrepancy.containsKey(normalizedText));
          textToDiscrepancy.put(normalizedText, newPair);
       }
 
