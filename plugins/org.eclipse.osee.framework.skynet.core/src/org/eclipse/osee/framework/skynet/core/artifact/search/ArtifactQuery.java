@@ -113,6 +113,10 @@ public class ArtifactQuery {
    public static Artifact getArtifactFromId(int artId, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
       return getOrCheckArtifactFromId(artId, branch, allowDeleted, QueryType.GET);
    }
+   
+   public static Artifact getArtifactFromId(Long artId, IOseeBranch branch, DeletionFlag allowDeleted) throws OseeCoreException {
+      return getOrCheckArtifactFromId(artId.intValue(), branch, allowDeleted, QueryType.GET);
+   }
 
    private static Artifact getOrCheckArtifactFromId(int artId, IOseeBranch branch, DeletionFlag allowDeleted, QueryType queryType) throws OseeCoreException {
       Artifact artifact = ArtifactCache.getActive(artId, branch);
