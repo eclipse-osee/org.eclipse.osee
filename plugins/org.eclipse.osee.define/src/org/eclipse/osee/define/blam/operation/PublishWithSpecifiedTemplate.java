@@ -10,20 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
+import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
@@ -31,14 +41,20 @@ import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDslEditorWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.util.SwtXWidgetRenderer;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * @author Jeff C. Phillips
@@ -46,8 +62,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
+   private IOseeBranch branch;
+   private boolean isSRSPublishing;
    private XBranchSelectWidget branchWidget;
    private XCombo slaveWidget;
+   private XDslEditorWidget orcsQueryWidget;
+   private XListDropViewer artifactsWidget;
    private final String USE_ARTIFACT_NAMES = "Use Artifact Names";
    private final String USE_PARAGRAPH_NUMBERS = "Use Paragraph Numbers";
    private final String UPDATE_PARAGRAPH_NUMBERS = "Update Paragraph Numbers (If authorized)";
@@ -58,6 +78,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private final String PUBLISH_AS_DIFF = "Publish As Diff";
    private final String WAS_BRANCH = "WAS Branch";
    private final String INCLUDE_ARTIFACT_UUIDS = "Include Artifact UUIDs";
+   private final String ORCS_QUERY = "Orcs Query";
 
    @Override
    public String getName() {
@@ -89,18 +110,23 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          throw new OseeArgumentException("Must select a Master Template");
       }
       Artifact slave = getTemplate(variableMap.getString(SLAVE_TEMPLATE));
-      IOseeBranch branch = null;
-      List<Artifact> artifacts;
+
+      List<Artifact> artifacts = null;
       try {
-         artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
+         if (!isSRSPublishing) {
+            if (orcsQueryWidget.getText().isEmpty()) {
+               artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
+            } else {
+               artifacts = getArtifactsFromOrcsQuery();
+            }
+         }
       } catch (NullPointerException e) {
-         throw new OseeArgumentException("Must provide an IS artifact.  Please add an IS artifact and rerun.");
+         throw new OseeArgumentException(
+            "Must provide an IS artifact or an Orcs Query.  Please add an IS artifact or an Orcs Query and rerun.");
       }
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
-      } else if (artifacts != null && artifacts.isEmpty()) {
-         artifacts = null;
-      } else {
+      } else if (!isSRSPublishing) {
          throw new OseeArgumentException("Must provide an artifact");
       }
 
@@ -149,6 +175,45 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       transaction.execute();
    }
 
+   private List<Artifact> getArtifactsFromOrcsQuery() {
+      Writer writer = new StringWriter();
+      OseeClient oseeClient = ServiceUtil.getOseeClient();
+
+      String orcsQuery = orcsQueryWidget.getText();
+      oseeClient.executeScript(orcsQuery, null, false, MediaType.APPLICATION_JSON_TYPE, writer);
+      String result = writer.toString();
+      parseQueryForBranchName(orcsQuery);
+
+      //Parse JSON returned from query
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      try {
+         JSONObject jsonObject = new JSONObject(result);
+         JSONArray results = jsonObject.getJSONArray("results");
+         if (results.length() >= 1 && branch != null) {
+            JSONArray artifactIds = results.getJSONObject(0).getJSONArray("artifacts");
+            JSONObject id = null;
+            for (int i = 0; i < artifactIds.length(); i++) {
+               id = artifactIds.getJSONObject(i);
+               Long artifactId = id.getLong("id");
+               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
+               artifacts.add(artifact);
+            }
+         }
+      } catch (JSONException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+      return artifacts;
+   }
+
+   private void parseQueryForBranchName(String orcsQuery) {
+      Pattern pattern = Pattern.compile("start from branch \"(.*?)\"");
+      Matcher matcher = pattern.matcher(orcsQuery);
+      if (matcher.find()) {
+         String branchName = matcher.group(1);
+         branch = BranchManager.getBranch(branchName);
+      }
+   }
+
    @Override
    public String getDescriptionUsage() {
       StringBuilder sb = new StringBuilder();
@@ -159,7 +224,9 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       sb.append("<li>Select the Document Link format(s)</li>");
       sb.append("<li>Choose artifact type(s) to exclude</li>");
       sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
-      sb.append("<li>Drag &amp; Drop the IS Artifacts into the box</li>");
+      sb.append(
+         "<li>Drag &amp; Drop the IS Artifacts into the box OR write an Orcs Query that returns a list of Artifact Ids</li>");
+      sb.append("NOTE: Providing IS Artifacts or an Orcs Query is not necessary for SRS Master/Slave Publishing");
       sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
       sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
       return sb.toString();
@@ -203,7 +270,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
          ")\" displayName=\"%s\" horizontalLabel=\"true\"/><XWidget xwidgetType=\"XLabel\" displayName=\" \" />",
          SLAVE_TEMPLATE));
       builder.append(String.format("<XWidget xwidgetType=\"XListDropViewer\" displayName=\"%s\" />", IS_ARTIFACTS));
-
+      builder.append(
+         String.format("<XWidget xwidgetType=\"XDslEditorWidget\" displayName=\"%s\"  defaultValue=\"", ORCS_QUERY));
+      builder.append("orcs");
+      builder.append("\" fill=\"vertically\"/>");
       builder.append("<XWidget xwidgetType=\"XLabel\" displayName=\"Generate Differences:\"/>");
       builder.append(String.format(
          "<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"%s\" />",
@@ -250,15 +320,28 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                // only enable slave template selection if Master is for SRS.
                if (masterCombo.get().contains("srsMaster")) {
                   slaveWidget.setEnabled(true);
+                  orcsQueryWidget.setEditable(false);
+                  orcsQueryWidget.set("");
+                  artifactsWidget.setEditable(false);
+                  isSRSPublishing = true;
                } else {
                   slaveWidget.setEnabled(false);
                   slaveWidget.set("");
+                  orcsQueryWidget.setEditable(true);
+                  artifactsWidget.setEditable(true);
+                  isSRSPublishing = false;
                }
             }
          });
       } else if (xWidget.getLabel().equals(SLAVE_TEMPLATE)) {
          slaveWidget = (XCombo) xWidget;
          slaveWidget.setEnabled(false);
+      } else if (xWidget.getLabel().equals(IS_ARTIFACTS)) {
+         artifactsWidget = (XListDropViewer) xWidget;
+         artifactsWidget.setEditable(true);
+      } else if (xWidget.getLabel().equals(ORCS_QUERY)) {
+         orcsQueryWidget = (XDslEditorWidget) xWidget;
+         orcsQueryWidget.setEditable(true);
       }
    }
 

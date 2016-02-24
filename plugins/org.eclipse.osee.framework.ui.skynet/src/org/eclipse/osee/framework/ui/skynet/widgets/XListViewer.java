@@ -271,6 +271,7 @@ public class XListViewer extends GenericXWidget {
       if(listViewer == null || listViewer.getTable().isDisposed()) {
          return;
       }
+      listViewer.refresh();
       validate();
    }
 

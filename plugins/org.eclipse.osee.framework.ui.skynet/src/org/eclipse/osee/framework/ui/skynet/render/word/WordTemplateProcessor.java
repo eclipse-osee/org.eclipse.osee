@@ -16,6 +16,8 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.PREVIEW;
 import java.io.InputStream;
+import java.io.StringWriter;
+import java.io.Writer;
 import java.nio.charset.CharacterCodingException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -26,6 +28,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import javax.ws.rs.core.MediaType;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -40,6 +43,7 @@ import org.eclipse.osee.define.report.api.PageOrientation;
 import org.eclipse.osee.define.report.api.ReportConstants;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -54,7 +58,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.word.WordUtil;
+import org.eclipse.osee.framework.ui.skynet.internal.ServiceUtil;
 import org.eclipse.osee.framework.ui.skynet.render.DataRightProvider;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
@@ -64,6 +68,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.util.WordUiUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.swt.program.Program;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -83,43 +88,43 @@ public class WordTemplateProcessor {
    private static final String NESTED_TEMPLATE = "NestedTemplate";
 
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
-   
+
    private static final Pattern headElementsPattern =
       Pattern.compile("<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
          Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   
+
    //The following REGEX are to be used once the Whole Word Content xml no longer contains custom xml tags
    //NOTE: will have to have new tag for extension processor to know where to insert link
    private static final Pattern headerPattern = Pattern.compile("<\\w+:?wordDocument.*?<\\w+:?body>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
    private static final Pattern footerPattern = Pattern.compile("<\\w+:?sectPr.*?<\\/w+:?wordDocument>",
       Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
-   
+
    private static final Program wordApp = Program.findProgram("doc");
    public static final String ATTRIBUTE_NAME = "AttributeName";
    public static final String ALL_ATTRIBUTES = "AllAttributes";
    public static final String RECURSE_ON_LOAD = "Recurse On Load";
    public static final String RECURSE_CHILDREN = "RecurseChildren";
    public static final String PUBLISH_AS_DIFF = "Publish As Diff";
-   
+
    private String slaveTemplate;
    private String slaveTemplateOptions;
-   
+
    private String elementType;
-   
+
    //Outlining Options
    private IAttributeType headingAttributeType;
    private boolean outlining;
    private boolean recurseChildren;
    private String outlineNumber;
    private String artifactName;
-   
+
    //Attribute Options
-   private String attributeLabel;   
+   private String attributeLabel;
    private String attributeType;
    private String formatPre;
    private String formatPost;
-   
+
    //Nested Template Options
    private String outlineType;
    private String sectionNumber;
@@ -127,7 +132,7 @@ public class WordTemplateProcessor {
    private String key;
    private String value;
    private int nestedCount;
-   
+
    private final List<AttributeElement> attributeElements = new LinkedList<>();
    final List<Artifact> nonTemplateArtifacts = new LinkedList<>();
    private final Set<String> ignoreAttributeExtensions = new HashSet<>();
@@ -139,7 +144,7 @@ public class WordTemplateProcessor {
    private final DataRightInput request;
    private final DataRightProvider provider;
    private IArtifactType[] excludeArtifactTypes;
-   
+
    public WordTemplateProcessor(WordTemplateRenderer renderer, DataRightProvider provider) {
       this.renderer = renderer;
       this.provider = provider;
@@ -187,7 +192,7 @@ public class WordTemplateProcessor {
             renderer.setOption(ALL_ATTRIBUTES, true);
          }
       }
-      
+
       excludeArtifactTypes = renderer.getArtifactTypesOption("EXCLUDE ARTIFACT TYPES").toArray(new IArtifactType[0]);
       IFile file =
          RenderingUtil.getRenderFile(renderer, COMMON, PREVIEW, "/", masterTemplateArtifact.getSafeName(), ".xml");
@@ -218,23 +223,23 @@ public class WordTemplateProcessor {
          wordMl = new WordMLProducer(charBak);
 
          templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
-         this.outlineNumber =
-            outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null, artifacts) : outlineNumber;
+         this.outlineNumber = outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
+            artifacts) : outlineNumber;
          templateContent = wordMl.setHeadingNumbers(this.outlineNumber, templateContent, outlineType);
 
          Matcher matcher = headElementsPattern.matcher(templateContent);
-         
+
          int lastEndIndex = 0;
          while (matcher.find()) {
             wordMl.addWordMl(templateContent.substring(lastEndIndex, matcher.start()));
             lastEndIndex = matcher.end();
-            
+
             JSONObject jsonObject = new JSONObject(templateOptions);
             elementType = jsonObject.getString("ElementType");
 
             if (elementType.equals(ARTIFACT)) {
                parseOutliningOptions(templateOptions);
-               if (artifacts == null) {       
+               if (artifacts == null) {
                   artifacts = renderer.getArtifactsOption(artifactName);
                }
                if (presentationType == PresentationType.SPECIALIZED_EDIT && artifacts.size() == 1) {
@@ -284,6 +289,7 @@ public class WordTemplateProcessor {
 
             String artifactName = renderer.getStringOption("Name");
             String artifactId = renderer.getStringOption("Id");
+            String orcsQuery = renderer.getStringOption("OrcsQuery");
             Branch branch = renderer.getBranchOption("Branch");
             List<Artifact> artifacts = null;
 
@@ -292,6 +298,11 @@ public class WordTemplateProcessor {
                   EXCLUDE_DELETED);
             } else if (Strings.isValid(artifactName)) {
                artifacts = ArtifactQuery.getArtifactListFromName(artifactName, branch, EXCLUDE_DELETED);
+            } else if (Strings.isValid(orcsQuery)) {
+               Writer writer = new StringWriter();
+               OseeClient oseeClient = ServiceUtil.getOseeClient();
+               oseeClient.executeScript(orcsQuery, null, false, MediaType.APPLICATION_JSON_TYPE, writer);
+               artifacts = parseOrcsQueryResult(writer.toString(), branch);
             }
 
             String subDocFileName = subDocName + ".xml";
@@ -313,6 +324,28 @@ public class WordTemplateProcessor {
       }
    }
 
+   private List<Artifact> parseOrcsQueryResult(String result, IOseeBranch branch) {
+      ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
+      try {
+         JSONObject jsonObject = new JSONObject(result);
+         JSONArray results = jsonObject.getJSONArray("results");
+         if (results.length() >= 1) {
+            JSONArray artifactIds = results.getJSONObject(0).getJSONArray("artifacts");
+            JSONObject id = null;
+            for (int i = 0; i < artifactIds.length(); i++) {
+               id = artifactIds.getJSONObject(i);
+               Long artifactId = id.getLong("id");
+               Artifact artifact = ArtifactQuery.getArtifactFromId(artifactId, branch, EXCLUDE_DELETED);
+               artifacts.add(artifact);
+            }
+         }
+      } catch (JSONException ex) {
+         OseeCoreException.wrapAndThrow(ex);
+      }
+
+      return artifacts;
+   }
+
    private void parseAttributeOptions(String templateOptions) {
       try {
          attributeElements.clear();
@@ -329,12 +362,12 @@ public class WordTemplateProcessor {
             formatPost = options.getString("FormatPost");
 
             AttributeElement temp = new AttributeElement();
-            
-            if(attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
-               temp.setElements(attributeType, attributeLabel, formatPre, formatPost);  
+
+            if (attributeType.equals("*") || AttributeTypeManager.typeExists(attributeType)) {
+               temp.setElements(attributeType, attributeLabel, formatPre, formatPost);
                attributeElements.add(temp);
             }
-            
+
          }
       } catch (JSONException ex) {
          OseeCoreException.wrapAndThrow(ex);
@@ -399,7 +432,7 @@ public class WordTemplateProcessor {
       if (attributeElements.isEmpty()) {
          parseAttributeOptions(templateOptions);
       }
-      
+
       if (renderer.getBooleanOption(PUBLISH_AS_DIFF)) {
          WordTemplateFileDiffer templateFileDiffer = new WordTemplateFileDiffer(renderer);
          templateFileDiffer.generateFileDifferences(artifacts, "/results/", outlineNumber, outlineType,
@@ -511,7 +544,8 @@ public class WordTemplateProcessor {
 
          int index = 0;
          for (Artifact artifact : allArtifacts) {
-            String classification = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
+            String classification =
+               artifact.getSoleAttributeValueAsString(CoreAttributeTypes.DataRightsClassification, "");
 
             PageOrientation orientation = WordRendererUtil.getPageOrientation(artifact);
             request.addData(artifact.getGuid(), classification, orientation, index);

@@ -99,7 +99,6 @@ public class XListDropViewer extends XListViewer implements IXWidgetInputAddable
                refresh();
             }
          }
-
       });
 
       MenuItem paste = new MenuItem(popupMenu, SWT.NONE);
