@@ -23,7 +23,8 @@ public enum Activity implements ActivityType {
    SRS_TRACE(80349535402L, INFO, "org.eclipse.osee.define.report.SrsTraceReport"),
    MSG_CONTINUATION(29566294587L, INFO, "org.eclipse.osee.activity"),
    IDE(88L, INFO, "osee.ide.client"),
-   XNAVIGATEITEM(45L, INFO, "osee.framework.XNavigateItem", "XNavigateItem [%s]");
+   XNAVIGATEITEM(45L, INFO, "osee.framework.XNavigateItem", "XNavigateItem [%s]"),
+   ACCESS_CONTROL_MODIFIED(99L, INFO, "osee.framework.access", "Access Control Modified [%s]");
 
    private final Long typeId;
    private final Long logLevel;

@@ -15,11 +15,14 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.osee.activity.api.Activity;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
@@ -39,6 +42,7 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.framework.skynet.core.internal.event.EventListenerRegistry;
+import org.eclipse.osee.framework.skynet.core.utility.ActivityLogJaxRsService;
 
 /**
  * Front end to OSEE events. Provides ability to add and remove different event listeners as well as the ability to kick
@@ -129,11 +133,21 @@ public final class OseeEventManager {
          OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s][%s]", accesstopicEvent,
             payload);
       }
+      try {
+         if (accesstopicEvent != AccessTopicEvent.USER_AUTHENTICATED) {
+            String message = String.format("USER_AUTHENTICATED [%s] Payload [%s]", UserManager.getUser().getUserId(),
+               EventUtil.getEventJacksonMapper().writeValueAsString(payload));
+            ActivityLogJaxRsService.create(Activity.ACCESS_CONTROL_MODIFIED, 0L, ActivityLog.COMPLETE_STATUS, message);
+         }
+      } catch (Exception ex) {
+         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error logging activity event [%s][%s]",
+            accesstopicEvent, payload);
+      }
    }
 
    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
    /////////////////////////////////// LEGACY EVENT MODEL - serialized jaxb object ///////////////////////////////////
-   ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+   /////////////////////////////////////////////T//////////////////////////////////////////////////////////////////////
 
    // Kick LOCAL remote-event event
    public static void kickLocalRemEvent(Object source, RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
