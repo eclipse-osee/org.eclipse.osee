@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
+import org.eclipse.osee.framework.core.event.EventType;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +28,10 @@ public class TopicEvent implements FrameworkEvent, HasNetworkSender {
    public TopicEvent(String topic) {
       this.topic = topic;
       properties = new HashMap<>();
+   }
+
+   public TopicEvent(AbstractTopicEvent topic, String key, String value) {
+      this(topic.getTopic(), key, value, topic.getEventType());
    }
 
    public TopicEvent(String topic, String key, String value, EventType eventType) {

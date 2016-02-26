@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.access.internal;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Handler for {@link AccessTopicEventType.ACCESS_BRANCH_MODIFIED}
+ * Handler for {@link AccessTopicEvent.ACCESS_BRANCH_MODIFIED}
  *
  * @author Donald G. Dunne
  */

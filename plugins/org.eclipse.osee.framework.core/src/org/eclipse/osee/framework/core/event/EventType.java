@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event.model;
+package org.eclipse.osee.framework.core.event;
 
 /**
  * @author Donald G. Dunne

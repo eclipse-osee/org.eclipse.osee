@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -152,7 +152,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
    @Override
    public void handleEvent(Event event) {
       try {
-         if (AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
+         if (AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
             for (final IArtifactEditorEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
                   AccessArtifactLockTopicEvent payload =

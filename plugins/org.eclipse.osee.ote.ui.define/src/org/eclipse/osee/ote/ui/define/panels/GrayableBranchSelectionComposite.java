@@ -12,12 +12,6 @@ package org.eclipse.osee.ote.ui.define.panels;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -33,11 +27,13 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  * @author Roberto E. Escobar
  */
-public class GrayableBranchSelectionComposite extends Composite implements IAccessControlEventListener {
+public class GrayableBranchSelectionComposite extends Composite implements EventHandler {
 
    private static final String GROUP_TEXT = "Upload results into OSEE";
    private static final String CHECK_BUTTON_TEXT = "Enable upload";
@@ -61,13 +57,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       createControl(this);
    }
 
-   @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
-         handleUserAuthenticated();
-      }
-   }
-
    private void createControl(Composite parent) {
       GridLayout gL = new GridLayout();
       gL.marginWidth = 0;
@@ -84,7 +73,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       createStatusBar(group);
       createSelectableArea(group);
       handleBranchSelectEnabled(false);
-      OseeEventManager.addListener(this);
    }
 
    private void createSelectableArea(Composite parent) {
@@ -196,12 +184,6 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
       });
    }
 
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      super.dispose();
-   }
-
    private void handleUserAuthenticated() {
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
@@ -215,5 +197,10 @@ public class GrayableBranchSelectionComposite extends Composite implements IAcce
 
    public boolean runOnEventInDisplayThread() {
       return true;
+   }
+
+   @Override
+   public void handleEvent(Event event) {
+      handleUserAuthenticated();
    }
 }

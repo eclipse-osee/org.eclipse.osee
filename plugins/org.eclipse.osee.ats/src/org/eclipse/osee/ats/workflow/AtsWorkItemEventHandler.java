@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow;
 
-import org.eclipse.osee.ats.api.util.AtsEvents;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditorArtifactEventManager;
@@ -27,9 +27,9 @@ public class AtsWorkItemEventHandler implements EventHandler {
    @Override
    public void handleEvent(Event event) {
       try {
-         if (event.getTopic().equals(AtsEvents.WORK_ITEM_MODIFIED)) {
+         if (event.getTopic().equals(AtsTopicEvent.WORK_ITEM_MODIFIED)) {
             for (Long workItemUuid : AtsObjects.uuidsToLong(";",
-               (String) event.getProperty(AtsEvents.WORK_ITEM_UUDS))) {
+               (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUDS_KEY))) {
                Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsUtilCore.getAtsBranch().getUuid());
                if (artifact != null) {
                   if (SMAEditorArtifactEventManager.isLoaded(artifact)) {

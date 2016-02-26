@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.event.EventUtil;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
@@ -159,7 +159,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
    @Override
    public void handleEvent(Event event) {
       try {
-         if (AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
+         if (AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
             for (final IArtifactExplorerEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
                   Displays.ensureInDisplayThread(new Runnable() {

@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 import org.eclipse.osee.framework.messaging.event.res.RemoteTopicEvent1;
-import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAccessControlEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteAttributeChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidRelation1;
@@ -32,8 +31,6 @@ import org.eclipse.osee.framework.messaging.event.res.msgs.RemotePersistEvent1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionChange1;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteTransactionEvent1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -58,33 +55,6 @@ public final class FrameworkEventUtil {
 
    private FrameworkEventUtil() {
       // Utility Class
-   }
-
-   public static RemoteAccessControlEvent1 getRemoteAccessControlEvent(AccessControlEvent accessControlEvent) {
-      RemoteAccessControlEvent1 event = new RemoteAccessControlEvent1();
-      event.setNetworkSender(getRemoteNetworkSender(accessControlEvent.getNetworkSender()));
-      event.setEventTypeGuid(accessControlEvent.getEventType().getGuid());
-      for (DefaultBasicGuidArtifact guidArt : accessControlEvent.getArtifacts()) {
-         event.getArtifacts().add(getRemoteBasicGuidArtifact(guidArt));
-      }
-      return event;
-   }
-
-   public static AccessControlEvent getAccessControlEvent(RemoteAccessControlEvent1 remEvent) {
-      AccessControlEventType accessControlEventType = AccessControlEventType.getByGuid(remEvent.getEventTypeGuid());
-      if (accessControlEventType != null) {
-         AccessControlEvent accessControlEvent = new AccessControlEvent();
-         accessControlEvent.setNetworkSender(getNetworkSender(remEvent.getNetworkSender()));
-         for (RemoteBasicGuidArtifact1 remGuidArt : remEvent.getArtifacts()) {
-            accessControlEvent.getArtifacts().add(getBasicGuidArtifact(remGuidArt));
-         }
-         accessControlEvent.setEventType(AccessControlEventType.getByGuid(remEvent.getEventTypeGuid()));
-         return accessControlEvent;
-      } else {
-         OseeLog.log(Activator.class, Level.WARNING,
-            "Unhandled AccessControl event type guid " + remEvent.getEventTypeGuid());
-      }
-      return null;
    }
 
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {

@@ -25,9 +25,8 @@ import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent.ArtifactEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
@@ -122,13 +121,12 @@ public final class OseeEventManager {
    }
 
    // Kick LOCAL and REMOTE topic event with payload
-   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload, AccessTopicEventType accessEventTopicType) {
+   public static void kickAccessTopicEvent(Object source, AccessTopicEventPayload payload, AccessTopicEvent accesstopicEvent) {
       try {
-         TopicEvent topicEvent =
-            EventUtil.createTopic(accessEventTopicType.getTopic(), payload, accessEventTopicType.getEventType());
+         TopicEvent topicEvent = EventUtil.createTopic(accesstopicEvent, payload);
          kickTopicEvent(source, topicEvent);
       } catch (Exception ex) {
-         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s][%s]", accessEventTopicType,
+         OseeLog.logf(OseeEventManager.class, Level.SEVERE, ex, "Error kicking event [%s][%s]", accesstopicEvent,
             payload);
       }
    }
@@ -145,11 +143,6 @@ public final class OseeEventManager {
    //Kick LOCAL and REMOTE branch events
    public static void kickBranchEvent(Object source, BranchEvent branchEvent) throws OseeCoreException {
       getEventService().send(source, branchEvent);
-   }
-
-   // Kick LOCAL and REMOTE access control events
-   public static void kickAccessControlArtifactsEvent(Object source, AccessControlEvent accessControlEvent) throws OseeCoreException {
-      getEventService().send(source, accessControlEvent);
    }
 
    // Kick LOCAL and REMOTE transaction deleted event

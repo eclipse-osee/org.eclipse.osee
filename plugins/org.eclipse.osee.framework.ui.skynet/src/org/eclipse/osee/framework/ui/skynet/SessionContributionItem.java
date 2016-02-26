@@ -18,10 +18,8 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
-import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.ui.plugin.OseeStatusContributionItem;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.dialogs.AuthenticationDialog;
@@ -35,7 +33,7 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Roberto E. Escobar
  */
-public final class SessionContributionItem extends OseeStatusContributionItem implements IAccessControlEventListener {
+public final class SessionContributionItem extends OseeStatusContributionItem {
 
    private static final String CONTRIBUTION_ITEM_ID = "session.contribution.item";
 
@@ -49,7 +47,6 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
       super(CONTRIBUTION_ITEM_ID);
       init();
       updateStatus(true);
-      OseeEventManager.addListener(this);
    }
 
    private void init() {
@@ -77,9 +74,9 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
                         @Override
                         public void run() {
                            try {
-                              AccessControlEvent event = new AccessControlEvent();
-                              event.setEventType(AccessControlEventType.UserAuthenticated);
-                              OseeEventManager.kickAccessControlArtifactsEvent(this, event);
+                              AccessTopicEventPayload payload = new AccessTopicEventPayload();
+                              OseeEventManager.kickAccessTopicEvent(SessionContributionItem.class, payload,
+                                 AccessTopicEvent.USER_AUTHENTICATED);
                            } catch (Exception ex) {
                               OseeLog.log(Activator.class, Level.SEVERE, ex);
                            }
@@ -93,24 +90,6 @@ public final class SessionContributionItem extends OseeStatusContributionItem im
          }
       });
 
-   }
-
-   @Override
-   public void dispose() {
-      OseeEventManager.removeListener(this);
-      super.dispose();
-   }
-
-   @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               updateStatus(ClientSessionManager.isSessionValid());
-            }
-         });
-      }
    }
 
    @Override

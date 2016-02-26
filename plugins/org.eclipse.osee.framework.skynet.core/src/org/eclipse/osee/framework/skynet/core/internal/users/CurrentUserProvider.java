@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.jaxrs.client.JaxRsClient;
 
@@ -122,9 +122,9 @@ public class CurrentUserProvider extends LazyObject<User> {
             }
          }
          if (ClientSessionManager.isSessionValid()) {
-            AccessControlEvent event = new AccessControlEvent();
-            event.setEventType(AccessControlEventType.UserAuthenticated);
-            OseeEventManager.kickAccessControlArtifactsEvent(this, event);
+            AccessTopicEventPayload payload = new AccessTopicEventPayload();
+            OseeEventManager.kickAccessTopicEvent(CurrentUserCreationCallable.class, payload,
+               AccessTopicEvent.USER_AUTHENTICATED);
          }
          return currentUser;
       }

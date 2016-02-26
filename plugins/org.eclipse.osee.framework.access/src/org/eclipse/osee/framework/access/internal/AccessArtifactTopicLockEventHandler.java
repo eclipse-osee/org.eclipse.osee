@@ -17,7 +17,7 @@ import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 
 /**
- * Handler for {@link AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED}
+ * Handler for {@link AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED}
  *
  * @author Donald G. Dunne
  */

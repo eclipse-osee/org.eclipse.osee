@@ -10,16 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.util;
 
+import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
+import org.eclipse.osee.framework.core.event.EventType;
+
 /**
  * @author Donald G. Dunne
  */
-public class AtsEvents {
+public class AtsTopicEvent extends AbstractTopicEvent {
 
-   public static final String WORK_ITEM_MODIFIED = "ats/workitem/modified";
-   public static final String WORK_ITEM_UUDS = "workItemUuids";
+   public static final AtsTopicEvent WORK_ITEM_MODIFIED =
+      new AtsTopicEvent(EventType.LocalAndRemote, "ats/workitem/modified");
+   public static final String WORK_ITEM_UUDS_KEY = "workItemUuids";
 
-   private AtsEvents() {
-      // utility class
+   private AtsTopicEvent(EventType eventType, String topic) {
+      super(eventType, topic);
    }
 
 }

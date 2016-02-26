@@ -78,13 +78,6 @@ public class ObjectFactory {
    }
 
    /**
-    * Create an instance of {@link RemoteAccessControlEvent1 }
-    */
-   public RemoteAccessControlEvent1 createRemoteAccessControlEvent1() {
-      return new RemoteAccessControlEvent1();
-   }
-
-   /**
     * Create an instance of {@link RemoteBasicGuidRelation1 }
     */
    public RemoteBasicGuidRelation1 createRemoteBasicGuidRelation1() {

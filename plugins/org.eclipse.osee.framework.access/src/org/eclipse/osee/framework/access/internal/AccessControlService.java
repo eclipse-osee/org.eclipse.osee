@@ -74,7 +74,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -503,7 +503,7 @@ public class AccessControlService implements IAccessControlService {
          persistPermissionForArtifact(data, artifactAccessObject, recurse, event);
          cacheAccessControlData(data);
 
-         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);
 
       } else if (data.getObject() instanceof BranchAccessObject) {
 
@@ -514,7 +514,7 @@ public class AccessControlService implements IAccessControlService {
 
          AccessTopicEventPayload event = new AccessTopicEventPayload();
          event.setBranchUuid(branchAccessObject.getBranchId());
-         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_BRANCH_MODIFIED);
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_BRANCH_MODIFIED);
 
       }
    }
@@ -676,7 +676,7 @@ public class AccessControlService implements IAccessControlService {
          event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
       }
  
-      OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_MODIFIED);
+      OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);
 
    }
 
@@ -735,7 +735,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
@@ -760,7 +760,7 @@ public class AccessControlService implements IAccessControlService {
          }
       }
       try {
-         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }
@@ -775,7 +775,7 @@ public class AccessControlService implements IAccessControlService {
       try {
          AccessTopicEventPayload event = new AccessTopicEventPayload();
          event.setBranchUuid(branch.getUuid());
-         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_BRANCH_MODIFIED);
+         OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_BRANCH_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);
       }

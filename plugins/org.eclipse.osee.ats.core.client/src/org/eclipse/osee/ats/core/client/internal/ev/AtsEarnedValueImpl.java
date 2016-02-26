@@ -17,7 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.ev.JaxWorkPackageData;
-import org.eclipse.osee.ats.api.util.AtsEvents;
+import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsAbstractEarnedValueImpl;
@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.EventType;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.logger.Log;
 
@@ -75,8 +74,8 @@ public class AtsEarnedValueImpl extends AtsAbstractEarnedValueImpl {
          workPackageEp.setWorkPackage(workPackage.getUuid(), data);
       }
 
-      TopicEvent event = new TopicEvent(AtsEvents.WORK_ITEM_MODIFIED, AtsEvents.WORK_ITEM_UUDS,
-         AtsObjects.toUuidsString(";", workItems), EventType.LocalAndRemote);
+      TopicEvent event = new TopicEvent(AtsTopicEvent.WORK_ITEM_MODIFIED, AtsTopicEvent.WORK_ITEM_UUDS_KEY,
+         AtsObjects.toUuidsString(";", workItems));
       OseeEventManager.kickTopicEvent(getClass(), event);
 
       services.getStoreService().reload(workItems);

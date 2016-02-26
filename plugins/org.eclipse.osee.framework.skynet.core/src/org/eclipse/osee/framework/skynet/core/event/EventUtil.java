@@ -13,11 +13,12 @@ package org.eclipse.osee.framework.skynet.core.event;
 import java.util.logging.Level;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.event.AbstractTopicEvent;
+import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.filter.BranchUuidEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.model.EventType;
 import org.eclipse.osee.framework.skynet.core.event.model.TopicEvent;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.service.event.Event;
@@ -105,6 +106,13 @@ public final class EventUtil {
       } catch (Exception ex) {
          throw new OseeWrappedException(ex, "Error reading topic json [%s]", event.toString());
       }
+   }
+
+   /**
+    * Create topic event given topic and oject to searialize to json property
+    */
+   public static TopicEvent createTopic(AbstractTopicEvent topic, Object event) {
+      return createTopic(topic.getTopic(), event, topic.getEventType());
    }
 
    /**

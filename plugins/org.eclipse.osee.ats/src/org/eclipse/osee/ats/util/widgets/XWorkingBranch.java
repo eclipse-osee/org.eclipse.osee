@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
@@ -71,7 +71,7 @@ import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * TopicHandler for {@link AccessTopicEventType.ACCESS_BRANCH_MODIFIED}
+ * TopicHandler for {@link AccessTopicEvent.ACCESS_BRANCH_MODIFIED}
  *
  * @author Megumi Telles
  * @author Donald G. Dunne
@@ -253,7 +253,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
 
       BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
       context.registerService(EventHandler.class.getName(), this,
-         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEventType.ACCESS_BRANCH_MODIFIED.getTopic()));
+         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
 
    }
 
@@ -476,8 +476,8 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
    public void handleEvent(org.osgi.service.event.Event event) {
       BranchId branch = teamArt.getBranch();
       if (branch != null) {
-         AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
-         if (accessEvent.isForBranch(branch)) {
+         AccessTopicEventPayload accessEvent = EventUtil.getTopicJson(event, AccessTopicEventPayload.class);
+         if (branch.getUuid().equals(accessEvent.getBranchUuid())) {
             refreshOnBranchEvent();
          }
       }

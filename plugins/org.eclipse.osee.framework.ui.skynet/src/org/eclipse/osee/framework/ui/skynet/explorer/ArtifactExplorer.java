@@ -47,10 +47,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
-import org.eclipse.osee.framework.skynet.core.event.listener.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListener;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
@@ -97,7 +94,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Ryan D. Brooks
  */
-public class ArtifactExplorer extends GenericViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IAccessControlEventListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
+public class ArtifactExplorer extends GenericViewPart implements IArtifactExplorerEventHandler, IRebuildMenuListener, IBranchEventListener, ISelectionProvider, IBranchProvider {
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.ArtifactExplorer";
    private static final String ROOT_UUID = "artifact.explorer.last.root_uuid";
    private static final String ROOT_BRANCH = "artifact.explorer.last.root_branch";
@@ -409,26 +406,6 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
    @Override
    public void setSelection(ISelection selection) {
       treeViewer.setSelection(selection);
-   }
-
-   @Override
-   public void handleAccessControlArtifactsEvent(Sender sender, AccessControlEvent accessControlEvent) {
-      try {
-         if (!accessControlEvent.isForBranch(branch)) {
-            return;
-         }
-         if (accessControlEvent.getEventType() == AccessControlEventType.UserAuthenticated) {
-            Displays.ensureInDisplayThread(new Runnable() {
-               @Override
-               public void run() {
-                  treeViewer.refresh();
-                  refreshBranchWarning();
-               }
-            });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 
    @Override

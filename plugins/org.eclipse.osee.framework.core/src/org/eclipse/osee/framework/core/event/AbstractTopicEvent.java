@@ -8,20 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.event.model;
+package org.eclipse.osee.framework.core.event;
 
 import org.osgi.service.event.Event;
 
 /**
- * 
  * @author Donald G. Dunne
  */
-public class AbstractTopicEventType {
+public class AbstractTopicEvent {
 
    private EventType eventType;
    private String topic;
 
-   protected AbstractTopicEventType(EventType eventType, String topic) {
+   protected AbstractTopicEvent(EventType eventType, String topic) {
       this.eventType = eventType;
       this.topic = topic;
    }

@@ -55,8 +55,8 @@ import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionManager;
 import org.eclipse.osee.framework.access.AccessControlManager;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.services.CmAccessControl;
@@ -661,18 +661,22 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return fromState;
    }
 
+   @Override
    public boolean isInWork() {
       return getStateDefinition().getStateType().isWorkingState();
    }
 
+   @Override
    public boolean isCompleted() {
       return getStateDefinition().getStateType().isCompletedState();
    }
 
+   @Override
    public boolean isCancelled() {
       return getStateDefinition().getStateType().isCancelledState();
    }
 
+   @Override
    public boolean isCompletedOrCancelled() {
       return isCompleted() || isCancelled();
    }

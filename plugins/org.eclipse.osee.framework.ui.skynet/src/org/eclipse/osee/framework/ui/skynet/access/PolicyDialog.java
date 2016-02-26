@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -258,7 +258,7 @@ public class PolicyDialog extends Dialog {
                AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
                event.setBranchUuid(artifact.getBranchId());
                event.addArtifact(artifact.getUuid());
-               OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED);
+               OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
                System.err.println("kicked access control event " + event);
             }
          } catch (Exception ex) {

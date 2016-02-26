@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.access.AccessControlData;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -22,20 +24,23 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.event.EventUtil;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessControlEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventType;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
+import org.osgi.framework.BundleContext;
+import org.osgi.service.event.EventConstants;
 import org.osgi.service.event.EventHandler;
 
 /**
- * TopicHandler for {@link AccessTopicEventType.ACCESS_BRANCH_MODIFIED}
+ * TopicHandler for {@link AccessTopicEvent.ACCESS_BRANCH_MODIFIED}
  *
  * @author Shawn F. Cook
  */
@@ -126,11 +131,21 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
    public void handleEvent(org.osgi.service.event.Event event) {
       BranchId branch = getTeamArt().getWorkingBranch();
       if (branch != null) {
-         AccessControlEvent accessEvent = EventUtil.getTopicJson(event, AccessControlEvent.class);
-         if (accessEvent.isForBranch(branch)) {
+         AccessTopicEventPayload accessEvent = EventUtil.getTopicJson(event, AccessTopicEventPayload.class);
+         if (branch.getUuid().equals(accessEvent.getBranchUuid())) {
             refreshWorkingBranchWidget();
          }
       }
+   }
+
+   @Override
+   protected void createControls(Composite parent, int horizontalSpan) {
+      super.createControls(parent, horizontalSpan);
+
+      BundleContext context = AtsClientService.get().getEventService().getBundleContext(Activator.PLUGIN_ID);
+      context.registerService(EventHandler.class.getName(), this,
+         AtsUtilCore.hashTable(EventConstants.EVENT_TOPIC, AccessTopicEvent.ACCESS_BRANCH_MODIFIED.getTopic()));
+
    }
 
 }
