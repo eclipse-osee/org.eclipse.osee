@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
-import com.google.common.collect.Lists;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -52,6 +51,7 @@ import org.eclipse.osee.orcs.transaction.TransactionFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import com.google.common.collect.Lists;
 
 /**
  * @author Ryan D. Brooks
@@ -219,7 +219,7 @@ public class WordUpdateArtifact {
          toReturn = atsServer.getQuery().andUuid(workflowUuid).andIsOfType(
             AtsArtifactTypes.TeamWorkflow).getResults().getExactlyOne();
       } catch (Exception ex) {
-         throw new OseeCoreException("Exception in getAssociatedWorkflowArt", ex);
+         throw new OseeCoreException(ex, "Exception in getAssociatedWorkflowArt: %s", workflowUuid);
       }
       return toReturn;
    }
