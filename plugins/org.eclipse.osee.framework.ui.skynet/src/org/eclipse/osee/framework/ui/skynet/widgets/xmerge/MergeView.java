@@ -165,16 +165,16 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
          if (mergeBranch == null) {
             close();
-         }
-         mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
-         if (sourceBranch != null) {
-            setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
-         } else if (commitTrans != null) {
-            setPartName("Merge Manager: " + commitTrans.getId());
          } else {
-            setPartName("Merge Manager");
+            mergeXWidget.setInputData(sourceBranch, destBranch, transactionId, this, commitTrans, showConflicts);
+            if (sourceBranch != null) {
+               setPartName("Merge Manager: " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName());
+            } else if (commitTrans != null) {
+               setPartName("Merge Manager: " + commitTrans.getId());
+            } else {
+               setPartName("Merge Manager");
+            }
          }
-
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
