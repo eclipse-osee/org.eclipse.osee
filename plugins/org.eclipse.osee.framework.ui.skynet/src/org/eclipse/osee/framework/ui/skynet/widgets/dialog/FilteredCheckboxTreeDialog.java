@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree.FilterableCheckboxTreeViewer;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -63,7 +64,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
       this.contentProvider = contentProvider;
       this.labelProvider = labelProvider;
       this.viewerSorter = viewerSorter;
-      this.patternFilter = new PatternFilter();
+      this.patternFilter = new ToStringContainsPatternFilter();
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
 
@@ -86,7 +87,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
 
    /**
     * Sets the input. Convenience method.
-    * 
+    *
     * @param object the input.
     */
    public final void setInput(Object input) {
@@ -98,7 +99,7 @@ public class FilteredCheckboxTreeDialog extends MessageDialog {
 
    /**
     * Sets the initial selection. Convenience method.
-    * 
+    *
     * @param object the initial selection.
     */
    public void setInitialSelections(Collection<? extends Object> initialSelections) {

@@ -11,11 +11,18 @@
 package org.eclipse.osee.framework.ui.swt;
 
 import java.util.logging.Level;
+import org.eclipse.jface.viewers.ContentViewer;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.swt.internal.Activator;
 import org.eclipse.ui.dialogs.PatternFilter;
 
+/**
+ * Matches lowercase label provider text (if valid), else matches lowercase toString.
+ *
+ * @author Donald G. Dunne
+ */
 public class ToStringContainsPatternFilter extends PatternFilter {
 
    private String text;
@@ -48,7 +55,15 @@ public class ToStringContainsPatternFilter extends PatternFilter {
          return true;
       }
       try {
-         return element.toString().toLowerCase().contains(text);
+         if (viewer instanceof ContentViewer && ((ContentViewer) viewer).getLabelProvider() instanceof ILabelProvider) {
+            String value = ((ILabelProvider) ((ContentViewer) viewer).getLabelProvider()).getText(element);
+            if (value == null) {
+               value = "";
+            }
+            return value.toLowerCase().contains(text);
+         } else {
+            return element.toString().toLowerCase().contains(text);
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
