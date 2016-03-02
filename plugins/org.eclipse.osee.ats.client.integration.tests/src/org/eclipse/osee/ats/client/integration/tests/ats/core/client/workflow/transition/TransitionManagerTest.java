@@ -364,7 +364,7 @@ public class TransitionManagerTest {
 
       // test transition to completed; all tasks are completed
       when(toStateDef.getStateType()).thenReturn(StateType.Completed);
-      when(taskService.getTaskArtifacts(teamWf)).thenReturn(Collections.singleton(task));
+      when(taskService.getTask(teamWf)).thenReturn(Collections.singleton(task));
       when(task.getStateMgr()).thenReturn(taskStateMgr);
       when(taskStateMgr.getStateType()).thenReturn(StateType.Completed);
       TransitionManager.validateTaskCompletion(results, teamWf, toStateDef, taskService);

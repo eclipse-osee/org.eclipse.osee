@@ -43,7 +43,7 @@ public interface IAtsTaskService {
 
    Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf, IStateToken relatedToState) throws OseeCoreException;
 
-   Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException;
+   Collection<IAtsTask> getTask(IAtsWorkItem workItem) throws OseeCoreException;
 
    Collection<IAtsTask> getTasks(IAtsTeamWorkflow teamWf) throws OseeCoreException;
 

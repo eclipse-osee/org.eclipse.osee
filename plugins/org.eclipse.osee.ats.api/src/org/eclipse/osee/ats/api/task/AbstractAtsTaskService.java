@@ -120,7 +120,7 @@ public abstract class AbstractAtsTaskService implements IAtsTaskService {
    }
 
    @Override
-   public Collection<IAtsTask> getTaskArtifacts(IAtsWorkItem workItem) throws OseeCoreException {
+   public Collection<IAtsTask> getTask(IAtsWorkItem workItem) throws OseeCoreException {
       if (workItem.isTeamWorkflow()) {
          return getTasks((IAtsTeamWorkflow) workItem);
       }

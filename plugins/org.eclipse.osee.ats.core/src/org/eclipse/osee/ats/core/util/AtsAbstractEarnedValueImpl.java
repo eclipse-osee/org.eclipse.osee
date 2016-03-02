@@ -152,7 +152,7 @@ public abstract class AtsAbstractEarnedValueImpl implements IAtsEarnedValueServi
          return 0;
       }
       double hours = 0;
-      for (IAtsTask task : services.getTaskService().getTaskArtifacts(workItem)) {
+      for (IAtsTask task : services.getTaskService().getTask(workItem)) {
          hours += getEstimatedHoursFromArtifact(task);
       }
       return hours;

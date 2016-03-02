@@ -425,7 +425,7 @@ public class TransitionManager implements IAtsTransitionManager {
          Set<IAtsTask> tasksToCheck = new HashSet<>();
          // If transitioning to completed/cancelled, all tasks must be completed/cancelled
          if (toStateDef.getStateType().isCompletedOrCancelledState()) {
-            tasksToCheck.addAll(taskService.getTaskArtifacts(workItem));
+            tasksToCheck.addAll(taskService.getTask(workItem));
          }
          // Else, just check current state tasks
          else {
