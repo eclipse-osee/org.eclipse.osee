@@ -24,25 +24,28 @@ import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 /**
  * Test Case for {@link AccountResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountResourceTest {
 
-   private static final String ACCOUNT_ID = "hello@hello.com";
+   private static final String NEW_USERNAME = "helloWorld";
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(93253L);
 
    //@formatter:off
    @Mock private AccountOps accountOps;
    @Mock private AccountInput accountInput;
    @Mock private AccountInfoData accountInfoData;
    @Mock private AccountDetailsData details;
-   
+
    @Mock private UriInfo uriInfo;
    //@formatter:on
 
@@ -53,16 +56,6 @@ public class AccountResourceTest {
       initMocks(this);
 
       resource = new AccountResource(accountOps, ACCOUNT_ID);
-   }
-
-   @Test
-   public void testCreateAccount() {
-      when(accountOps.createAccount(ACCOUNT_ID, accountInput)).thenReturn(accountInfoData);
-
-      AccountInfoData actual = resource.createAccount(accountInput);
-      assertEquals(accountInfoData, actual);
-
-      verify(accountOps).createAccount(ACCOUNT_ID, accountInput);
    }
 
    @Test
@@ -102,7 +95,7 @@ public class AccountResourceTest {
 
       // Ensure resource constructed correctly;
       actual.getAccountPreferences();
-      verify(accountOps).getAccountPreferencesData(ACCOUNT_ID);
+      verify(accountOps).getAccountPreferencesDataById(ACCOUNT_ID);
    }
 
    @Test
@@ -127,8 +120,8 @@ public class AccountResourceTest {
 
    @Test
    public void testGetSubscriptions() {
-      URI uri =
-         UriBuilder.fromPath("http://localhost:8089/oseex/accounts/{account-id}/subscriptions").build(ACCOUNT_ID);
+      URI uri = UriBuilder.fromPath("http://localhost:8089/oseex/accounts/{account-id}/subscriptions").build(
+         ACCOUNT_ID.getUuid());
       when(uriInfo.getRequestUri()).thenReturn(uri);
 
       Response response = resource.getSubscriptions(uriInfo);
@@ -139,7 +132,7 @@ public class AccountResourceTest {
       URI location = (URI) response.getMetadata().getFirst(HttpHeaders.LOCATION);
       URI expectedLocation =
          UriBuilder.fromUri(uri).path("..").path("..").path("..").path("subscriptions").path("for-account").path(
-            "{account-id}").build(ACCOUNT_ID);
+            "{account-id}").build(ACCOUNT_ID.getUuid());
       assertEquals(expectedLocation, location);
    }
 

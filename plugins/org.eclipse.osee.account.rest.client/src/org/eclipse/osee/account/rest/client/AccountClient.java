@@ -30,7 +30,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  * <li>User name</li>
  * <li>Display name</li>
  * </ol>
- * 
+ *
  * @author Roberto E. Escobar
  */
 public interface AccountClient {
@@ -47,22 +47,22 @@ public interface AccountClient {
 
    AccountInfoData createAccount(String userName, AccountInput input);
 
-   boolean deleteAccount(String uuid);
+   boolean deleteAccount(Long accountId);
 
    ResultSet<AccountSessionDetailsData> getAccountSessionDataByUniqueField(String accountId);
 
    ResultSet<AccountInfoData> getAllAccounts();
 
-   AccountDetailsData getAccountDetailsByUniqueField(String accountId);
+   AccountDetailsData getAccountDetailsById(Long accountId);
 
-   AccountPreferencesData getAccountPreferencesByUniqueField(String accountId);
+   AccountPreferencesData getAccountPreferencesById(Long accountId);
 
-   boolean setAccountActive(String accountId, boolean active);
+   boolean setAccountActive(Long accountId, boolean active);
 
-   boolean isAccountActive(String accountId);
+   boolean isAccountActive(Long accountId);
 
-   boolean setAccountPreferences(String accountId, Map<String, String> preferences);
+   boolean setAccountPreferences(Long accountId, Map<String, String> preferences);
 
-   ResultSet<UnsubscribeInfo> getUnsubscribeUris(String userUuid, Collection<String> groupNames);
+   ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames);
 
 }

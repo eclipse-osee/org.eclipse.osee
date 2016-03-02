@@ -19,17 +19,17 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AccountSessionDetailsData {
 
-   private long accountId;
+   private Long accountId;
    private Date createdOn;
    private Date lastAccessedOn;
    private String accessedFrom;
    private String accessDetails;
 
-   public long getAccountId() {
+   public Long getAccountId() {
       return accountId;
    }
 
-   public void setAccountId(long accountId) {
+   public void setAccountId(Long accountId) {
       this.accountId = accountId;
    }
 

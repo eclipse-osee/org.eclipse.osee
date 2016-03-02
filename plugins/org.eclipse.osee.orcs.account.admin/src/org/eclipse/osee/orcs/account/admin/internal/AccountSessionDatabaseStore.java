@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.executor.admin.CancellableCallable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -71,7 +73,7 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
    }
 
    @Override
-   public Callable<ResultSet<AccountSession>> getAccountSessionByAccountId(long accountId) {
+   public Callable<ResultSet<AccountSession>> getAccountSessionByAccountId(ArtifactId accountId) {
       return selectAccess(SELECT_BY_ACCOUNT_ID, accountId);
    }
 
@@ -96,7 +98,8 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
                   Date lastAccessedOn = chStmt.getTimestamp("last_accessed_on");
                   String accessedFrom = chStmt.getString("accessed_from");
                   String accessDetails = chStmt.getString("access_details");
-                  AccountSession session = factory.newAccountSession(accountId, sessionToken, createdOn, lastAccessedOn,
+                  ArtifactId artId = TokenFactory.createArtifactId(accountId);
+                  AccountSession session = factory.newAccountSession(artId, sessionToken, createdOn, lastAccessedOn,
                      accessedFrom, accessDetails);
                   list.add(session);
                }

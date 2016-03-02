@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
@@ -28,28 +29,28 @@ import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 public class AccountPreferencesResource {
 
    private final AccountOps accountOps;
-   private final String accountId;
+   private final ArtifactId accountId;
 
-   public AccountPreferencesResource(AccountOps accountOps, String accountId) {
+   public AccountPreferencesResource(AccountOps accountOps, ArtifactId accountId) {
       this.accountOps = accountOps;
       this.accountId = accountId;
    }
 
    /**
     * Get account preferences
-    * 
+    *
     * @return account preferences
     */
    @GET
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public AccountPreferencesData getAccountPreferences() {
-      return accountOps.getAccountPreferencesData(accountId);
+      return accountOps.getAccountPreferencesDataById(accountId);
    }
 
    /**
     * Sets all preferences to match the incoming preferences.
-    * 
+    *
     * @return response
     * @response.representation.200.doc successfully logged out
     * @response.representation.304.doc session not modified

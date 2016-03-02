@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.account.admin.internal;
 
 import java.util.concurrent.Callable;
 import org.eclipse.osee.account.admin.AccountSession;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -19,7 +20,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface AccountSessionStorage {
 
-   Callable<ResultSet<AccountSession>> getAccountSessionByAccountId(long accountId);
+   Callable<ResultSet<AccountSession>> getAccountSessionByAccountId(ArtifactId accountId);
 
    Callable<ResultSet<AccountSession>> getAccountSessionBySessionToken(String sessionToken);
 

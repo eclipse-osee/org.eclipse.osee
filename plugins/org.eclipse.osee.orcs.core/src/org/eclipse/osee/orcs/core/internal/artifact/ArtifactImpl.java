@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.core.internal.artifact;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -220,15 +219,4 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    public Long getUuid() {
       return Long.valueOf(getLocalId());
    }
-
-   @Override
-   public String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getUuid());
-   }
-
-   @Override
-   public ArtifactId getStoreObject() {
-      return this;
-   }
-
 }

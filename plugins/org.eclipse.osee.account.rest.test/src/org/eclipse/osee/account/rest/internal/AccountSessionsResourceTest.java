@@ -17,18 +17,20 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 /**
  * Test Case for {@link AccountSessionsResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountSessionsResourceTest {
 
-   private static final String ACCOUNT_ID = "hello@hello.com";
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(823952L);
 
    //@formatter:off
    @Mock private AccountOps accountOps;

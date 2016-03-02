@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
@@ -39,7 +38,7 @@ import org.eclipse.osee.orcs.data.AttributeReadable;
 /**
  * @author Megumi Telles
  */
-public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements ArtifactReadable {
+public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements ArtifactReadable {
 
    private final RelationManager relationManager;
 
@@ -283,18 +282,4 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact>implements Ar
    public Long getUuid() {
       return Long.valueOf(getLocalId());
    }
-
-   /*
-    * Provide easy way to display/report [name][uuid]
-    */
-   @Override
-   public final String toStringWithId() {
-      return String.format("[%s][%s]", getName(), getUuid());
-   }
-
-   @Override
-   public ArtifactId getStoreObject() {
-      return this;
-   }
-
 }

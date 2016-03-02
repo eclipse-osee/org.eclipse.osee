@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
  */
 public interface AccountPreferences extends Identity<String> {
 
-   long getId();
+   Long getId();
 
    Map<String, String> asMap();
 

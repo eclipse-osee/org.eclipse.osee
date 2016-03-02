@@ -28,17 +28,15 @@ import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.logger.Log;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 
 /**
  * Test Case for {@link SubscriptionAdminImpl}
@@ -47,12 +45,10 @@ import org.mockito.Mockito;
  */
 public class SubscriptionAdminImplTest {
 
-   private static final long ID = 123121412L;
-   private static final String GUID_STRING = GUID.create();
    private static final String GROUP_NAME = "group-name";
-   private static final String EMAIL = "atest@email.com";
-   private static final long ACCOUNT_ID = 21231L;
-   private static final long GROUP_ID = 7885741L;
+   private static final String ENCODED_UUID = "D1jfajgjoiasdajv32";
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(21231L);
+   private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(7885741L);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -76,7 +72,6 @@ public class SubscriptionAdminImplTest {
       manager = new SubscriptionAdminImpl();
       manager.setLogger(logger);
       manager.setSubscriptionStorage(storage);
-      manager.setAccountAdmin(accountManager);
       manager.start(Collections.<String, Object> emptyMap());
 
       when(subscription.getAccountId()).thenReturn(ACCOUNT_ID);
@@ -90,80 +85,17 @@ public class SubscriptionAdminImplTest {
    }
 
    @Test
-   public void testGetSubscriptionWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("subscription uuid cannot be null");
-      manager.getSubscription(null);
-   }
-
-   @Test
    public void testGetSubscription() {
-      manager.getSubscription(GUID_STRING);
+      manager.getSubscriptionGroupById(GROUP_ID);
 
-      verify(storage).getSubscription(GUID_STRING);
+      verify(storage).getSubscriptionGroupById(GROUP_ID);
    }
 
    @Test
-   public void testGetSubscriptionsByAccountUniqueField() {
-      when(account.getId()).thenReturn(ID);
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-      ResultSet<Subscription> subcriptionResultSet = ResultSets.singleton(subscription);
+   public void testGetSubscriptionById() {
+      manager.getSubscriptionGroupById(GROUP_ID);
 
-      when(accountManager.getAccountByUniqueField(EMAIL)).thenReturn(resultSet);
-      when(storage.getSubscriptionsByAccountLocalId(ID)).thenReturn(subcriptionResultSet);
-
-      ResultSet<Subscription> result = manager.getSubscriptionsByAccountUniqueField(EMAIL);
-      assertEquals(subscription, result.getExactlyOne());
-
-      verify(account).getId();
-      verify(storage).getSubscriptionsByAccountLocalId(ID);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupByUuidWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("group uuid cannot be null");
-      manager.getSubscriptionGroupByGuid(null);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupByUuiId() {
-      manager.getSubscriptionGroupByGuid(GUID_STRING);
-
-      verify(storage).getSubscriptionGroupByGuid(GUID_STRING);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupById() {
-      manager.getSubscriptionGroupByLocalId(ID);
-
-      verify(storage).getSubscriptionGroupByLocalId(ID);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupByNameWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("group name cannot be null");
-      manager.getSubscriptionGroupByName(null);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupByName() {
-      manager.getSubscriptionGroupByName(GROUP_NAME);
-
-      verify(storage).getSubscriptionGroupByName(GROUP_NAME);
-   }
-
-   @Test
-   public void testGetSubscriptionGroupByUniqueField() {
-      ResultSet<SubscriptionGroup> resultSet = ResultSets.singleton(group);
-
-      when(storage.getSubscriptionGroupByName(GROUP_NAME)).thenReturn(resultSet);
-
-      ResultSet<SubscriptionGroup> result = manager.getSubscriptionGroupByUniqueField(GROUP_NAME);
-      assertEquals(group, result.getExactlyOne());
-
-      verify(storage).getSubscriptionGroupByName(GROUP_NAME);
+      verify(storage).getSubscriptionGroupById(GROUP_ID);
    }
 
    @Test
@@ -174,108 +106,39 @@ public class SubscriptionAdminImplTest {
    }
 
    @Test
-   public void testDeleteSubscriptionGroupWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("subscription group unique field value cannot be null");
-      manager.deleteSubscriptionGroupByUniqueField(null);
-   }
+   public void testDeleteSubscription() {
+      manager.deleteSubscriptionById(GROUP_ID);
 
-   @Test
-   public void testDeleteSubscriptionGroupIdModified() {
-      ResultSet<SubscriptionGroup> resultSet = ResultSets.singleton(group);
-
-      when(storage.getSubscriptionGroupByName(GROUP_NAME)).thenReturn(resultSet);
-
-      boolean modified = manager.deleteSubscriptionGroupByUniqueField(GROUP_NAME);
-      assertTrue(modified);
-
-      verify(storage).getSubscriptionGroupByName(GROUP_NAME);
-      verify(storage).deleteSubscriptionGroup(group);
-   }
-
-   @Test
-   public void testDeleteSubscriptionGroupIdNotModified() {
-      @SuppressWarnings("unchecked")
-      ResultSet<SubscriptionGroup> resultSet = Mockito.mock(ResultSet.class);
-
-      when(storage.getSubscriptionGroupByName(GROUP_NAME)).thenReturn(resultSet);
-      when(resultSet.getOneOrNull()).thenReturn(null);
-
-      boolean modified = manager.deleteSubscriptionGroupByUniqueField(GROUP_NAME);
-      assertFalse(modified);
-
-      verify(storage, times(0)).deleteSubscriptionGroup(group);
-   }
-
-   @Test
-   public void testGetMembersByGuidWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("uuid cannot be null");
-      manager.getSubscriptionGroupMembersByGuid(null);
-   }
-
-   @Test
-   public void testGetMembersByGuiId() {
-      manager.getSubscriptionGroupMembersByGuid(GUID_STRING);
-
-      verify(storage).getSubscriptionGroupMembersByGuid(GUID_STRING);
+      verify(storage).deleteSubscriptionGroup(GROUP_ID);
    }
 
    @Test
    public void testGetMembersById() {
-      manager.getSubscriptionGroupMembersByLocalId(ID);
+      manager.getSubscriptionMembersOfSubscriptionById(GROUP_ID);
 
-      verify(storage).getSubscriptionGroupMembersByLocalId(ID);
-   }
-
-   @Test
-   public void testGetMembersByNameWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("group name cannot be null");
-      manager.getSubscriptionGroupMembersByName(null);
-   }
-
-   @Test
-   public void testGetMembersByName() {
-      manager.getSubscriptionGroupMembersByName(GROUP_NAME);
-
-      verify(storage).getSubscriptionGroupMembersByName(GROUP_NAME);
-   }
-
-   @Test
-   public void testGetMembersByUniqueField() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getSubscriptionGroupMembersByName(GROUP_NAME)).thenReturn(resultSet);
-
-      ResultSet<Account> result = manager.getSubscriptionGroupMembersByUniqueField(GROUP_NAME);
-      assertEquals(account, result.getExactlyOne());
-
-      verify(storage).getSubscriptionGroupMembersByName(GROUP_NAME);
+      verify(storage).getMembersOfSubscriptionGroupById(GROUP_ID);
    }
 
    @Test
    public void testSetSubscriptionActiveModified() {
-      when(storage.getSubscription(GUID_STRING)).thenReturn(subscription);
+      when(storage.getSubscriptionByEncodedId(ENCODED_UUID)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(true);
 
-      boolean modified = manager.setSubscriptionActive(GUID_STRING, false);
+      boolean modified = manager.setSubscriptionActive(subscription, false);
       assertTrue(modified);
 
-      verify(storage).getSubscription(GUID_STRING);
-      verify(storage).updateSubscription(ACCOUNT_ID, GROUP_ID, false);
+      verify(storage).updateSubscription(subscription, false);
    }
 
    @Test
    public void testSetSubscriptionActiveNotModified() {
-      when(storage.getSubscription(GUID_STRING)).thenReturn(subscription);
+      when(storage.getSubscriptionByEncodedId(ENCODED_UUID)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(true);
 
-      boolean modified = manager.setSubscriptionActive(GUID_STRING, true);
+      boolean modified = manager.setSubscriptionActive(subscription, true);
       assertFalse(modified);
 
-      verify(storage).getSubscription(GUID_STRING);
-      verify(storage, times(0)).updateSubscription(ACCOUNT_ID, GROUP_ID, true);
+      verify(storage, times(0)).updateSubscription(subscription, true);
    }
 
    @Test

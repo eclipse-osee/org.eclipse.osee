@@ -90,7 +90,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IAdaptable, IBasicGuidArtifact, ArtifactId {
+public class Artifact extends FullyNamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact, ArtifactId {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1741,11 +1741,6 @@ public class Artifact extends FullyNamedIdentity<String>implements IArtifact, IA
          // do nothing
       }
       return artifact;
-   }
-
-   @Override
-   public ArtifactId getStoreObject() {
-      return this;
    }
 
 }

@@ -11,6 +11,8 @@
 package org.eclipse.osee.orcs.account.admin.internal.oauth;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
@@ -107,45 +109,47 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
    }
 
    @Override
-   public void storeClient(OseePrincipal principal, OAuthClient client) {
+   public ArtifactId storeClient(OseePrincipal principal, OAuthClient client) {
+      ArtifactId clientArtId;
       ClientStorage clientStorage = getClientStorage();
 
-      boolean exists = clientStorage.exists(client.getGuid());
+      boolean exists = clientStorage.exists(client.getClientUuid());
       if (exists) {
          clientStorage.update(principal, client);
+         clientArtId = TokenFactory.createArtifactId(client.getClientUuid());
       } else {
-         clientStorage.insert(principal, client);
+         clientArtId = clientStorage.insert(principal, client);
       }
 
-      ArtifactReadable artifact = clientStorage.getClientByClientGuid(client.getGuid()).getExactlyOne();
-
-      long clientId = client.getClientUuid();
+      long clientId = clientArtId.getUuid();
+      ArtifactReadable artifact = clientStorage.getClientByClientUuid(clientId).getExactlyOne();
       long applicationId = artifact.getLocalId();
 
-      OAuthClientCredential credential = asCredential(client, applicationId);
+      OAuthClientCredential credential = asCredential(clientId, client, applicationId);
       if (credentialStorage.getByClientIdAndApplicationId(clientId, applicationId) != null) {
          credentialStorage.update(credential);
       } else {
          credentialStorage.insert(credential);
       }
+      return clientArtId;
    }
 
-   OAuthClientCredential asCredential(OAuthClient client, long applicationId) {
-      long clientId = client.getClientUuid();
+   OAuthClientCredential asCredential(Long clientUuid, OAuthClient client, Long applicationId) {
       long subjectId = client.getSubjectId();
 
       String clientKey = client.getClientId();
       String clientSecret = client.getClientSecret();
 
       List<String> clientCerts = client.getApplicationCertificates();
-      return credentialStorage.newCredential(clientId, applicationId, subjectId, clientKey, clientSecret, clientCerts);
+      return credentialStorage.newCredential(clientUuid, applicationId, subjectId, clientKey, clientSecret,
+         clientCerts);
    }
 
    @Override
    public void removeClient(OseePrincipal principal, OAuthClient client) {
       getClientStorage().delete(principal, client);
 
-      OAuthClientCredential credential = asCredential(client, -1L);
+      OAuthClientCredential credential = asCredential(client.getClientUuid(), client, -1L);
       credentialStorage.delete(credential);
    }
 
@@ -160,6 +164,20 @@ public class JdbcJaxRsOAuthStorage implements JaxRsOAuthStorage {
       OAuthClient client = null;
       ClientStorage clientStorage = getClientStorage();
       ArtifactReadable artifact = clientStorage.getClientByClientGuid(guid).getOneOrNull();
+      if (artifact != null) {
+         Integer applicationId = artifact.getLocalId();
+
+         OAuthClientCredential credential = credentialStorage.getByApplicationId(applicationId);
+         client = clientStorage.newClient(artifact, credential);
+      }
+      return client;
+   }
+
+   @Override
+   public OAuthClient getClientByClientUuid(Long uuid) {
+      OAuthClient client = null;
+      ClientStorage clientStorage = getClientStorage();
+      ArtifactReadable artifact = clientStorage.getClientByClientUuid(uuid).getOneOrNull();
       if (artifact != null) {
          Integer applicationId = artifact.getLocalId();
 

@@ -19,16 +19,13 @@ import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUT
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_LOGO_URI;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_PROPERTIES;
 import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_CLIENT_WEBSITE_URI;
-import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES_ARTIFACT;
-import com.google.common.io.InputSupplier;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import static org.eclipse.osee.orcs.account.admin.internal.oauth.OAuthTypes.OAUTH_TYPES;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,7 +40,9 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
-import org.eclipse.osee.orcs.utility.OrcsUtil;
+import com.google.common.io.InputSupplier;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 /**
  * @author Roberto E. Escobar
@@ -109,19 +108,24 @@ public class ClientStorage {
       return newQuery().andIsOfType(OAUTH_CLIENT).andGuid(guid).getResults();
    }
 
-   public boolean exists(String guid) {
-      return newQuery().andIsOfType(OAUTH_CLIENT).andGuid(guid).getCount() > 0;
+   public ResultSet<ArtifactReadable> getClientByClientUuid(Long uuid) {
+      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).getResults();
    }
 
-   public void insert(OseePrincipal principal, OAuthClient data) {
+   public boolean exists(Long uuid) {
+      return newQuery().andIsOfType(OAUTH_CLIENT).andUuid(uuid).getCount() > 0;
+   }
+
+   public ArtifactId insert(OseePrincipal principal, OAuthClient data) {
       TransactionBuilder tx = newTransaction(principal, "Create OAuth Client");
       ArtifactId artId = tx.createArtifact(OAUTH_CLIENT, data.getApplicationName(), data.getGuid());
       txSetClient(tx, artId, data);
       tx.commit();
+      return artId;
    }
 
    public void update(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = OrcsUtil.newArtifactId(data.getClientUuid(), data.getGuid(), data.getApplicationName());
+      ArtifactId artId = TokenFactory.createArtifactId(data.getClientUuid());
 
       TransactionBuilder tx = newTransaction(principal, "Update OAuth Client");
       tx.setName(artId, data.getApplicationName());
@@ -134,9 +138,9 @@ public class ClientStorage {
       tx.setSoleAttributeFromString(artId, CoreAttributeTypes.Description, data.getApplicationDescription());
       tx.setSoleAttributeFromString(artId, OAUTH_CLIENT_WEBSITE_URI, data.getApplicationWebUri());
       tx.setSoleAttributeFromString(artId, OAUTH_CLIENT_LOGO_URI, data.getApplicationLogoUri());
-      
+
       tx.setSoleAttributeValue(artId, OAUTH_CLIENT_IS_CONFIDENTIAL, data.isConfidential());
-      
+
       tx.setAttributesFromStrings(artId, OAUTH_CLIENT_AUTHORIZED_AUDIENCE, data.getRegisteredAudiences());
       tx.setAttributesFromStrings(artId, OAUTH_CLIENT_AUTHORIZED_GRANT_TYPE, data.getAllowedGrantTypes());
       tx.setAttributesFromStrings(artId, OAUTH_CLIENT_AUTHORIZED_REDIRECT_URI, data.getRedirectUris());
@@ -159,25 +163,20 @@ public class ClientStorage {
    }
 
    public void delete(OseePrincipal principal, OAuthClient data) {
-      ArtifactId artId = OrcsUtil.newArtifactId(data.getClientUuid(), data.getGuid(), data.getApplicationName());
+      ArtifactId artId = TokenFactory.createArtifactId(data.getClientUuid());
 
       TransactionBuilder tx = newTransaction(principal, "Delete OAuth Client");
       tx.deleteArtifact(artId);
       tx.commit();
    }
 
-   @SuppressWarnings("unchecked")
    private ResultSet<ArtifactReadable> getOAuthTypesDefinition() throws OseeCoreException {
-      return newQuery().andIds(OAUTH_TYPES_ARTIFACT).getResults();
+      return newQuery().andUuid(OAUTH_TYPES.getUuid()).andTypeEquals(OAUTH_TYPES.getArtifactType()).getResults();
    }
 
    public void storeTypes(InputSupplier<? extends InputStream> resource) {
       TransactionBuilder tx = newTransaction(null, "Initialize OAuth Type Definitions");
-
-      ArtifactId artifactId = OAUTH_TYPES_ARTIFACT;
-      if (!typesExist()) {
-         tx.createArtifact(CoreArtifactTypes.OseeTypeDefinition, artifactId.getName(), artifactId.getGuid());
-      }
+      ArtifactId artifactId = tx.createArtifact(OAUTH_TYPES);
       InputStream stream = null;
       try {
          stream = resource.getInput();
@@ -188,6 +187,7 @@ public class ClientStorage {
          Lib.close(stream);
       }
       tx.commit();
+
       reloadTypes();
    }
 

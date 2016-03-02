@@ -14,7 +14,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.lang.math.RandomUtils;
@@ -23,8 +22,6 @@ import org.eclipse.osee.account.rest.model.AccountDetailsData;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
-import org.eclipse.osee.account.rest.model.AccountSessionData;
-import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.x.server.integration.tests.util.IntegrationUtil;
 import org.junit.Before;
@@ -51,7 +48,7 @@ public class AccountClientTest {
    private String name;
    private String email;
    private boolean active;
-   private long accountId;
+   private Long accountId;
    private String guid;
    private Map<String, String> prefs;
 
@@ -95,44 +92,8 @@ public class AccountClientTest {
    }
 
    @Test
-   public void test_A_LogInOut() {
-      AccountSessionData session1 = client.login("none", email, "dummy");
-
-      assertEquals(accountId, session1.getAccountId());
-      assertNotNull(session1.getToken());
-
-      AccountSessionDetailsData access = client.getAccountSessionDataByUniqueField(email).getExactlyOne();
-
-      assertEquals(accountId, access.getAccountId());
-      assertNotNull(access.getAccessDetails());
-      assertNotNull(access.getAccessedFrom());
-      assertNotNull(access.getCreatedOn());
-      assertNotNull(access.getLastAccessedOn());
-
-      AccountSessionData session2 = client.login("none", email, "dummy");
-      assertEquals(accountId, session2.getAccountId());
-      assertNotNull(session2.getToken());
-
-      assertEquals(false, session1.getToken().equals(session2.getToken()));
-
-      ResultSet<AccountSessionDetailsData> result = client.getAccountSessionDataByUniqueField(email);
-      assertEquals(2, result.size());
-      Iterator<AccountSessionDetailsData> iterator = result.iterator();
-      AccountSessionDetailsData access1 = iterator.next();
-      AccountSessionDetailsData access2 = iterator.next();
-      assertEquals(accountId, access1.getAccountId());
-      assertEquals(accountId, access2.getAccountId());
-
-      assertEquals(true, client.logout(session1));
-      assertEquals(true, client.logout(session2));
-
-      ResultSet<AccountSessionDetailsData> result2 = client.getAccountSessionDataByUniqueField(email);
-      assertEquals(true, result2.isEmpty());
-   }
-
-   @Test
    public void test_B_GetAccountDetails() {
-      AccountDetailsData actual = client.getAccountDetailsByUniqueField(email);
+      AccountDetailsData actual = client.getAccountDetailsById(accountId);
 
       assertEquals(accountId, actual.getAccountId());
       assertEquals(guid, actual.getGuid());
@@ -150,7 +111,7 @@ public class AccountClientTest {
 
    @Test
    public void test_D_GetAccountPreferences() {
-      AccountPreferencesData actual = client.getAccountPreferencesByUniqueField(email);
+      AccountPreferencesData actual = client.getAccountPreferencesById(accountId);
 
       assertEquals(accountId, actual.getId());
       Map<String, String> actualMap = actual.getMap();
@@ -162,22 +123,22 @@ public class AccountClientTest {
 
    @Test
    public void test_E_Active() {
-      boolean actual = client.isAccountActive(email);
+      boolean actual = client.isAccountActive(accountId);
       assertEquals(active, actual);
 
-      boolean modified = client.setAccountActive(email, active);
+      boolean modified = client.setAccountActive(accountId, active);
       assertEquals(false, modified);
 
-      modified = client.setAccountActive(email, !active);
+      modified = client.setAccountActive(accountId, !active);
       assertEquals(true, modified);
 
-      actual = client.isAccountActive(email);
+      actual = client.isAccountActive(accountId);
       assertEquals(!active, actual);
 
-      modified = client.setAccountActive(email, active);
+      modified = client.setAccountActive(accountId, active);
       assertEquals(true, modified);
 
-      actual = client.isAccountActive(email);
+      actual = client.isAccountActive(accountId);
       assertEquals(active, actual);
    }
 
@@ -189,13 +150,13 @@ public class AccountClientTest {
       newPrefs.put("t", "9");
       newPrefs.put("u", "10");
 
-      boolean modified = client.setAccountPreferences(email, newPrefs);
+      boolean modified = client.setAccountPreferences(accountId, newPrefs);
       assertEquals(true, modified);
 
-      modified = client.setAccountPreferences(email, newPrefs);
+      modified = client.setAccountPreferences(accountId, newPrefs);
       assertEquals(false, modified);
 
-      AccountPreferencesData actual = client.getAccountPreferencesByUniqueField(email);
+      AccountPreferencesData actual = client.getAccountPreferencesById(accountId);
 
       assertEquals(accountId, actual.getId());
       Map<String, String> actualMap = actual.getMap();
@@ -210,10 +171,10 @@ public class AccountClientTest {
    public void test_G_DeleteAccount() {
       int beforeDelete = client.getAllAccounts().size();
 
-      boolean modified = client.deleteAccount(email);
+      boolean modified = client.deleteAccount(accountId);
       assertEquals(true, modified);
 
-      modified = client.deleteAccount(email);
+      modified = client.deleteAccount(accountId);
       assertEquals(false, modified);
 
       int afterDelete = client.getAllAccounts().size();

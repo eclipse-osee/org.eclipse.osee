@@ -16,8 +16,7 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -27,29 +26,15 @@ public interface AccountStorage {
 
    ResultSet<Account> getAllAccounts();
 
-   ResultSet<Account> getAccountByUserName(String username);
-
-   ResultSet<Account> getAccountByGuid(String guid);
-
-   ResultSet<Account> getAccountByUuid(String accountUuid);
-
-   ResultSet<Account> getAccountByLocalId(long accountId);
+   ResultSet<Account> getAccountById(ArtifactId accountUuid);
 
    ResultSet<Account> getAccountByEmail(String email);
 
-   ResultSet<Account> getAccountByName(String name);
+   ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId);
 
-   ResultSet<AccountPreferences> getAccountPreferencesById(long accountId);
+   ArtifactId createAccount(CreateAccountRequest request);
 
-   ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid);
-
-   Identifiable<String> createAccount(CreateAccountRequest request);
-
-   void setActive(Identifiable<String> account, boolean active);
-
-   void setAccountPreferences(Identity<String> account, Map<String, String> preferences);
-
-   void deleteAccount(Identifiable<String> account);
+   void setActive(ArtifactId accountId, boolean active);
 
    boolean userNameExists(String username);
 
@@ -57,7 +42,7 @@ public interface AccountStorage {
 
    boolean displayNameExists(String displayName);
 
-   ResultSet<AccountSession> getAccountSessionById(long accountId);
+   ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId);
 
    ResultSet<AccountSession> getAccountSessionBySessionToken(String sessionToken);
 
@@ -67,10 +52,12 @@ public interface AccountStorage {
 
    ResultSet<Account> getAnonymousAccount();
 
-   AccountWebPreferences getAccountWebPreferencesByGuid(String accountGuid);
+   AccountWebPreferences getAccountWebPreferencesById(ArtifactId accountId);
 
-   AccountWebPreferences getAccountWebPreferencesById(int accountId);
+   void setAccountWebPreferences(ArtifactId artifactId, String preferences);
 
-   void setAccountWebPreferences(String accountGuid, String newPreferences);
+   void setAccountPreferences(ArtifactId accountId, Map<String, String> preferences);
+
+   void deleteAccount(ArtifactId accountId);
 
 }

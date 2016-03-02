@@ -29,7 +29,7 @@ public class BootstrapAccount extends BaseIdentity<String>implements Account, Ac
    }
 
    @Override
-   public long getId() {
+   public Long getId() {
       return -1L;
    }
 

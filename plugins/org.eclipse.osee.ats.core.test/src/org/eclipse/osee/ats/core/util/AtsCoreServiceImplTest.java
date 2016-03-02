@@ -30,7 +30,6 @@ public class AtsCoreServiceImplTest {
 
    // @formatter:off
    @Mock private ArtifactId artifact;
-   @Mock private ArtifactId storeArtifact;
    @Mock private IAtsObject atsObject;
    @Mock private IAttributeResolver attrResolver;
    // @formatter:on
@@ -43,8 +42,7 @@ public class AtsCoreServiceImplTest {
    @Test
    public void testGetAtsId() {
       when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn(null);
-      when(artifact.getStoreObject()).thenReturn(storeArtifact);
-      when(storeArtifact.getGuid()).thenReturn("guid");
+      when(artifact.getGuid()).thenReturn("guid");
       String result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, "guid");
 
@@ -53,11 +51,11 @@ public class AtsCoreServiceImplTest {
       result = AtsCoreServiceImpl.getAtsId(attrResolver, atsObject);
       assertEquals(result, "guid");
 
-      when(attrResolver.getSoleAttributeValue(storeArtifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
+      when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
       result = AtsCoreServiceImpl.getAtsId(attrResolver, artifact);
       assertEquals(result, "ATS23");
 
-      when(attrResolver.getSoleAttributeValue(storeArtifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
+      when(attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null)).thenReturn("ATS23");
       assertEquals(result, "ATS23");
    }
 

@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
-import static org.eclipse.osee.disposition.rest.DispoConstants.DispoTypesArtifact;
-import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.OseeTypeDefinition;
+import static org.eclipse.osee.disposition.rest.DispoConstants.DISPO_ARTIFACT;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -97,9 +96,9 @@ public class OrcsStorageImpl implements Storage {
       orcsApi.getOrcsTypes().invalidateAll();
    }
 
-   @SuppressWarnings("unchecked")
    private ResultSet<ArtifactReadable> getDispoTypesArtifact() throws OseeCoreException {
-      return getQuery().fromBranch(getAdminBranch()).andIds(DispoConstants.DispoTypesArtifact).getResults();
+      return getQuery().fromBranch(getAdminBranch()).andUuid(DISPO_ARTIFACT.getUuid()).andTypeEquals(
+         DISPO_ARTIFACT.getArtifactType()).getResults();
    }
 
    @Override
@@ -117,10 +116,7 @@ public class OrcsStorageImpl implements Storage {
    public void storeTypes(IResource resource) {
       TransactionBuilder tx =
          getTxFactory().createTransaction(getAdminBranch(), getDispoUser(), "Initialize Dispo Types");
-      ArtifactId artifactId = DispoTypesArtifact;
-      if (!typesExist()) {
-         tx.createArtifact(OseeTypeDefinition, artifactId.getName(), artifactId.getGuid());
-      }
+      ArtifactId artifactId = tx.createArtifact(DISPO_ARTIFACT);
       InputStream stream = null;
       try {
          stream = resource.getContent();

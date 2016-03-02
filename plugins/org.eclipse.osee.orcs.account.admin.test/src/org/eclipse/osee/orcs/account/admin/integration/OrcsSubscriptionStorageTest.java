@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.account.admin.integration;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.HashMap;
@@ -23,7 +22,9 @@ import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.account.admin.internal.OrcsSubscriptionStorage;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
@@ -42,7 +43,7 @@ import org.mockito.Mock;
  */
 public class OrcsSubscriptionStorageTest {
 
-   private static final String SUBSCRIPTION_GROUP = "Subscription-Group1";
+   private static final String SUBSCRIPTION_GROUP_NAME = "Subscription-Group1";
 
    @Rule
    public TestRule osgi = OrcsIntegrationRule.integrationRule(this);
@@ -70,7 +71,7 @@ public class OrcsSubscriptionStorageTest {
    private boolean active;
    private Map<String, String> prefs;
 
-   private Identifiable<String> newAccount;
+   private ArtifactId newAccountId;
 
    @Before
    public void testSetup() {
@@ -94,61 +95,59 @@ public class OrcsSubscriptionStorageTest {
       when(request.getPreferences()).thenReturn(prefs);
       when(request.isActive()).thenReturn(active);
 
-      newAccount = accountStorage.createAccount(request);
+      newAccountId = accountStorage.createAccount(request);
    }
 
    @Test
    public void testSubscriptionAPI() {
-      Account account = accountStorage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
+      Account account = accountStorage.getAccountById(newAccountId).getExactlyOne();
 
-      long accountId = account.getId();
-      ResultSet<Subscription> results = storage.getSubscriptionsByAccountLocalId(accountId);
+      ResultSet<Subscription> results = storage.getSubscriptionsByAccountId(newAccountId);
       assertEquals(true, results.isEmpty());
 
-      assertEquals(false, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP));
+      assertEquals(false, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP_NAME));
 
-      SubscriptionGroup group = storage.createSubscriptionGroup(SUBSCRIPTION_GROUP);
-      assertNotNull(group);
+      SubscriptionGroupId groupId = storage.createSubscriptionGroup(SUBSCRIPTION_GROUP_NAME);
+      assertEquals(true, groupId.getUuid() > 0);
 
-      assertEquals(true, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP));
+      assertEquals(true, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP_NAME));
 
-      SubscriptionGroup group1 = storage.getSubscriptionGroups().getExactlyOne();
-      assertEquals(group, group1);
+      SubscriptionGroup group1Id = storage.getSubscriptionGroups().getExactlyOne();
+      assertEquals(groupId, group1Id.getId());
 
-      ResultSet<Account> members = storage.getSubscriptionGroupMembersByLocalId(group.getId());
+      ResultSet<Account> members = storage.getMembersOfSubscriptionGroupById(groupId);
       assertEquals(true, members.isEmpty());
 
-      Subscription subscription = storage.getSubscriptionsByAccountLocalId(account.getId()).getExactlyOne();
-      assertEquals(group.getId(), subscription.getGroupId());
-      assertEquals(group.getName(), subscription.getName());
-      assertEquals(account.getId(), subscription.getAccountId());
+      ArtifactId artId = TokenFactory.createArtifactId(account.getId());
+      Subscription subscription = storage.getSubscriptionsByAccountId(artId).getExactlyOne();
+      assertEquals(groupId, subscription.getGroupId());
+      assertEquals(account.getId(), subscription.getAccountId().getUuid());
       assertEquals(account.getName(), subscription.getAccountName());
 
       assertEquals(false, subscription.isActive());
 
       // Activate Subscription
-      storage.updateSubscription(subscription.getAccountId(), subscription.getGroupId(), true);
+      storage.updateSubscription(subscription, true);
 
-      String subscriptionUuid = subscription.getGuid();
-      subscription = storage.getSubscription(subscriptionUuid);
+      subscription = storage.getSubscriptionsByAccountId(artId).getExactlyOne();
       assertEquals(true, subscription.isActive());
 
-      members = storage.getSubscriptionGroupMembersByLocalId(group.getId());
+      members = storage.getMembersOfSubscriptionGroupById(groupId);
       assertEquals(1, members.size());
       Account member = members.getExactlyOne();
       assertEquals(account, member);
 
       // De-Activate Subscription
-      storage.updateSubscription(subscription.getAccountId(), subscription.getGroupId(), false);
+      storage.updateSubscription(subscription, false);
 
-      subscription = storage.getSubscription(subscriptionUuid);
+      subscription = storage.getSubscriptionsByAccountId(artId).getExactlyOne();
       assertEquals(false, subscription.isActive());
 
-      members = storage.getSubscriptionGroupMembersByLocalId(group.getId());
+      members = storage.getMembersOfSubscriptionGroupById(groupId);
       assertEquals(true, members.isEmpty());
 
-      storage.deleteSubscriptionGroup(group);
-      assertEquals(false, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP));
+      storage.deleteSubscriptionGroup(groupId);
+      assertEquals(false, storage.subscriptionGroupNameExists(SUBSCRIPTION_GROUP_NAME));
    }
 
 }

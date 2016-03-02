@@ -17,16 +17,16 @@ import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.account.admin.internal.SubscriptionUtil.ActiveDelegate;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.utility.OrcsUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -34,10 +34,9 @@ import org.eclipse.osee.orcs.utility.OrcsUtil;
 public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements SubscriptionStorage {
 
    @Override
-   public ResultSet<Subscription> getSubscriptionsByAccountLocalId(long accountId) {
-      int intAccountId = Long.valueOf(accountId).intValue();
+   public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
       ResultSet<ArtifactReadable> accountResults =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(intAccountId).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
       ArtifactReadable account = accountResults.getExactlyOne();
 
       ResultSet<ArtifactReadable> allGroups = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
@@ -50,9 +49,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    }
 
    @Override
-   public void updateSubscription(long accountId, long groupId, boolean activate) {
-      int intAccountId = Long.valueOf(accountId).intValue();
-      int intGroupId = Long.valueOf(groupId).intValue();
+   public void updateSubscription(Subscription subscription, boolean activate) {
+      Long intAccountId = subscription.getAccountId().getUuid();
+      Long intGroupId = subscription.getGroupId().getUuid();
 
       ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
       ArtifactReadable group =
@@ -71,8 +70,8 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    }
 
    @Override
-   public Subscription getSubscription(String subscriptionUuid) {
-      return SubscriptionUtil.fromEncodedUuid(subscriptionUuid, new LazyActiveDelegate());
+   public Subscription getSubscriptionByEncodedId(String encodedId) {
+      return SubscriptionUtil.fromEncodedUuid(encodedId, new LazyActiveDelegate());
    }
 
    private class LazyActiveDelegate implements ActiveDelegate {
@@ -81,10 +80,10 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       private volatile boolean isActive;
 
       @Override
-      public boolean isActive(long accountId, long groupId) {
+      public boolean isActive(ArtifactId accountId, SubscriptionGroupId groupId) {
          if (wasRun.compareAndSet(false, true)) {
-            int intAccountId = Long.valueOf(accountId).intValue();
-            int intGroupId = Long.valueOf(groupId).intValue();
+            int intAccountId = Long.valueOf(accountId.getUuid()).intValue();
+            int intGroupId = Long.valueOf(groupId.getUuid()).intValue();
 
             ArtifactReadable account = newQuery().andUuid(intAccountId).getResults().getExactlyOne();
             ArtifactReadable group = newQuery().andUuid(intGroupId).getResults().getExactlyOne();
@@ -100,31 +99,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       return getFactory().newAccountSubscriptionGroupResultSet(results);
    }
 
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByLocalId(long groupId) {
-      int intGroupId = Long.valueOf(groupId).intValue();
-      ResultSet<ArtifactReadable> results =
-         newQuery().andUuid(intGroupId).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
-      return getFactory().newAccountSubscriptionGroupResultSet(results);
-   }
-
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String name) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(name).getResults();
-      return getFactory().newAccountSubscriptionGroupResultSet(results);
-   }
-
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String guid) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andGuid(guid).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
-      return getFactory().newAccountSubscriptionGroupResultSet(results);
-   }
-
    @SuppressWarnings("unchecked")
    @Override
-   public SubscriptionGroup createSubscriptionGroup(String name) {
+   public SubscriptionGroupId createSubscriptionGroup(String name) {
       String comment = String.format("Create subscription group [%s]", name);
 
       TransactionBuilder tx = newTransaction(comment);
@@ -132,22 +109,42 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
       tx.commit();
 
       ArtifactReadable groupArt = newQuery().andIds(artId).getResults().getExactlyOne();
-      return getFactory().newAccountSubscriptionGroup(groupArt);
+      return new SubscriptionGroupId(groupArt.getUuid());
    }
 
    @Override
-   public void deleteSubscriptionGroup(SubscriptionGroup group) {
-      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), group.getGuid(), group.getName());
+   public boolean deleteSubscriptionGroup(SubscriptionGroupId subscriptionId) {
+      boolean toReturn = false;
 
-      String comment = String.format("Delete subscription group [%s]", group.getName());
-      TransactionBuilder tx = newTransaction(comment);
-      tx.deleteArtifact(artId);
-      tx.commit();
+      SubscriptionGroup subscriptionGroup = getSubscriptionGroupById(subscriptionId);
+
+      if (subscriptionGroup != null) {
+         ArtifactId subscriptionAsArtId = TokenFactory.createArtifactId(subscriptionId.getUuid());
+         String comment = String.format("Delete subscription group [%s]", subscriptionGroup.getName());
+         TransactionBuilder tx = newTransaction(comment);
+         tx.deleteArtifact(subscriptionAsArtId);
+         tx.commit();
+         toReturn = true;
+      }
+      return toReturn;
    }
 
    @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByLocalId(long groupId) {
-      int intGroupId = Long.valueOf(groupId).intValue();
+   public SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId groupId) {
+      ResultSet<ArtifactReadable> results =
+         newQuery().andUuid(groupId.getUuid()).andIsOfType(CoreArtifactTypes.SubscriptionGroup).getResults();
+      return getFactory().newAccountSubscriptionGroupResultSet(results).getExactlyOne();
+   }
+
+   @Override
+   public boolean subscriptionGroupNameExists(String groupName) {
+      int count = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(groupName).getCount();
+      return count > 0;
+   }
+
+   @Override
+   public ResultSet<Account> getSubscriptionMembersById(SubscriptionGroupId groupId) {
+      int intGroupId = Long.valueOf(groupId.getUuid()).intValue();
       ResultSet<ArtifactReadable> results =
          newQuery().andIsOfType(CoreArtifactTypes.User).andRelatedToLocalIds(CoreRelationTypes.Users_Artifact,
             intGroupId).getResults();
@@ -155,17 +152,9 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
    }
 
    @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByName(String name) {
+   public ResultSet<Account> getMembersOfSubscriptionGroupById(SubscriptionGroupId subscriptionId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(name).getResults();
-      ArtifactReadable group = results.getOneOrNull();
-      return getMembers(group);
-   }
-
-   @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByGuid(String guid) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andGuid(guid).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andUuid(subscriptionId.getUuid()).getResults();
       ArtifactReadable group = results.getOneOrNull();
       return getMembers(group);
    }
@@ -179,11 +168,5 @@ public class OrcsSubscriptionStorage extends AbstractOrcsStorage implements Subs
          toReturn = ResultSets.emptyResultSet();
       }
       return toReturn;
-   }
-
-   @Override
-   public boolean subscriptionGroupNameExists(String groupName) {
-      int count = newQuery().andIsOfType(CoreArtifactTypes.SubscriptionGroup).andNameEquals(groupName).getCount();
-      return count > 0;
    }
 }

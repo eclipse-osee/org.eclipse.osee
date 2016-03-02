@@ -32,7 +32,7 @@ import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
 import org.eclipse.osee.authentication.admin.AuthenticationRequestBuilder;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,7 +48,6 @@ public class AccountAdminImpl implements AccountAdmin {
    private AccountStorage storage;
    private AuthenticationAdmin authenticationAdmin;
 
-   private AccountResolver resolver;
    private Validator validator;
 
    public void setLogger(Log logger) {
@@ -67,7 +66,6 @@ public class AccountAdminImpl implements AccountAdmin {
       logger.trace("Starting OrcsAccountAdminImpl...");
 
       validator = Validators.newAccountValidator(logger, storage);
-      resolver = new AccountResolver(validator, this);
       update(props);
    }
 
@@ -93,69 +91,17 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public ResultSet<Account> getAccountById(long id) {
-      return getStorage().getAccountByLocalId(id);
+   public ResultSet<Account> getAccountById(ArtifactId accountId) {
+      return getStorage().getAccountById(accountId);
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(long id) {
-      return getStorage().getAccountPreferencesById(id);
+   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
+      return getStorage().getAccountPreferencesById(accountId);
    }
 
    @Override
-   public ResultSet<Account> getAccountById(Identifiable<String> id) {
-      Conditions.checkNotNull(id, "id");
-      return getAccountByGuid(id.getGuid());
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByGuid(String guid) {
-      Conditions.checkNotNull(guid, "guid");
-      return getStorage().getAccountByGuid(guid);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByUserName(String username) {
-      Conditions.checkNotNull(username, "username");
-      return getStorage().getAccountByUserName(username);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByEmail(String email) {
-      Conditions.checkNotNull(email, "email");
-      return getStorage().getAccountByEmail(email);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByName(String name) {
-      Conditions.checkNotNull(name, "name");
-      return getStorage().getAccountByName(name);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByUniqueField(String uniqueField) {
-      return resolver.resolveAccount(uniqueField);
-   }
-
-   @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid) {
-      Conditions.checkNotNull(guid, "guid");
-      return getStorage().getAccountPreferencesByGuid(guid);
-   }
-
-   @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(Identifiable<String> id) {
-      Conditions.checkNotNull(id, "id");
-      return getAccountPreferencesByGuid(id.getGuid());
-   }
-
-   @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesByUniqueField(String uniqueField) {
-      return resolver.resolveAccountPreferences(uniqueField);
-   }
-
-   @Override
-   public Identifiable<String> createAccount(CreateAccountRequest request) {
+   public ArtifactId createAccount(CreateAccountRequest request) {
       Conditions.checkNotNull(request, "create account request");
 
       Validator validator = getValidator();
@@ -167,144 +113,86 @@ public class AccountAdminImpl implements AccountAdmin {
    }
 
    @Override
-   public boolean setActive(Identifiable<String> id, boolean active) {
-      Conditions.checkNotNull(id, "account id");
-      ResultSet<Account> result = getAccountById(id);
-      return setActive(result, active);
-   }
-
-   @Override
-   public boolean setActive(String uniqueField, boolean active) {
-      ResultSet<Account> result = getAccountByUniqueField(uniqueField);
-      return setActive(result, active);
-   }
-
-   private boolean setActive(ResultSet<Account> result, boolean active) {
+   public boolean setActive(ArtifactId accountId, boolean active) {
       boolean modified = false;
-      Account account = result.getExactlyOne();
+      Account account = getAccountById(accountId).getOneOrNull();
       if (account.isActive() != active) {
-         getStorage().setActive(account, active);
+         getStorage().setActive(accountId, active);
          modified = true;
       }
       return modified;
    }
 
    @Override
-   public boolean deleteAccount(Identifiable<String> id) {
-      Conditions.checkNotNull(id, "account id");
-      ResultSet<Account> result = getAccountById(id);
-      return deleteAccount(result);
-   }
-
-   @Override
-   public boolean deleteAccount(String uniqueField) {
-      ResultSet<Account> result = getAccountByUniqueField(uniqueField);
-      return deleteAccount(result);
-   }
-
-   private boolean deleteAccount(ResultSet<Account> result) {
+   public boolean deleteAccount(ArtifactId accountId) {
       boolean modified = false;
+      ResultSet<Account> result = getAccountById(accountId);
       Account account = result.getOneOrNull();
       if (account != null) {
-         getStorage().deleteAccount(account);
+         getStorage().deleteAccount(accountId);
          modified = true;
       }
       return modified;
    }
 
    @Override
-   public boolean setAccountPreferences(Identifiable<String> id, Map<String, String> preferences) {
-      Conditions.checkNotNull(id, "account preference id");
-      Conditions.checkNotNull(preferences, "preferences");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(id);
-      return setAccountPreferences(result, preferences);
-   }
-
-   @Override
-   public boolean setAccountPreferences(String uniqueField, Map<String, String> preferences) {
-      Conditions.checkNotNull(preferences, "preferences");
-      ResultSet<AccountPreferences> result = getAccountPreferencesByUniqueField(uniqueField);
-      return setAccountPreferences(result, preferences);
-   }
-
-   private boolean setAccountPreferences(ResultSet<AccountPreferences> result, Map<String, String> preferences) {
+   public boolean setAccountPreferences(ArtifactId accountId, Map<String, String> preferences) {
       boolean modified = false;
+      Conditions.checkNotNull(preferences, "preferences");
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
       AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       if (Compare.isDifferent(original, preferences)) {
-         getStorage().setAccountPreferences(prefs, preferences);
+         getStorage().setAccountPreferences(accountId, preferences);
          modified = true;
       }
       return modified;
    }
 
    @Override
-   public boolean setAccountPreference(Identifiable<String> id, String key, String value) {
-      Conditions.checkNotNull(id, "account preference id");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(id);
-      return setAccountPreference(result, key, value);
-   }
-
-   @Override
-   public boolean setAccountPreference(String uniqueField, String key, String value) {
-      ResultSet<AccountPreferences> result = getAccountPreferencesByUniqueField(uniqueField);
-      return setAccountPreference(result, key, value);
-   }
-
-   @Override
-   public boolean setAccountWebPreference(String accountGuid, String key, String itemId, String newValue) {
-      Conditions.checkNotNull(key, "account preference key");
-      Conditions.checkNotNull(newValue, "account preference value", "Use delete account preference instead");
-
-      AccountWebPreferences allPreferences = getStorage().getAccountWebPreferencesByGuid(accountGuid);
-      String newPreferences = AccountUtil.updateSinglePreference(allPreferences, key, itemId, newValue);
-
+   public boolean setAccountPreference(ArtifactId accountId, String key, String value) {
       boolean modified = false;
-      if (Strings.isValid(newPreferences) && !newPreferences.equalsIgnoreCase(allPreferences.toString())) {
-         getStorage().setAccountWebPreferences(accountGuid, newPreferences);
-         modified = true;
-      }
-      return modified;
-   }
-
-   private boolean setAccountPreference(ResultSet<AccountPreferences> result, String key, String value) {
       Conditions.checkNotNull(key, "account preference key");
       Conditions.checkNotNull(value, "account preference value", "Use delete account preference instead");
-
-      boolean modified = false;
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
       AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.put(key, value);
       if (Compare.isDifferent(original, newPrefs)) {
-         getStorage().setAccountPreferences(prefs, newPrefs);
+         getStorage().setAccountPreferences(accountId, newPrefs);
          modified = true;
       }
       return modified;
    }
 
    @Override
-   public boolean deleteAccountPreference(Identifiable<String> id, String key) {
-      Conditions.checkNotNull(id, "account preference id");
-      ResultSet<AccountPreferences> result = getAccountPreferencesById(id);
-      return deleteAccountPreference(result, key);
+   public boolean setAccountWebPreference(ArtifactId accountId, String key, String itemId, String newValue) {
+      Conditions.checkNotNull(key, "account preference key");
+      Conditions.checkNotNull(newValue, "account preference value", "Use delete account preference instead");
+
+      AccountWebPreferences allPreferences = getStorage().getAccountWebPreferencesById(accountId);
+      String newPreferences = AccountUtil.updateSinglePreference(allPreferences, key, itemId, newValue);
+
+      boolean modified = false;
+      if (Strings.isValid(newPreferences) && !newPreferences.equalsIgnoreCase(allPreferences.toString())) {
+         getStorage().setAccountWebPreferences(accountId, newPreferences);
+         modified = true;
+      }
+      return modified;
    }
 
    @Override
-   public boolean deleteAccountPreference(String uniqueField, String key) {
-      ResultSet<AccountPreferences> result = getAccountPreferencesByUniqueField(uniqueField);
-      return deleteAccountPreference(result, key);
-   }
-
-   private boolean deleteAccountPreference(ResultSet<AccountPreferences> result, String key) {
-      Conditions.checkNotNull(key, "account preference key");
+   public boolean deleteAccountPreference(ArtifactId accountId, String key) {
       boolean modified = false;
+      Conditions.checkNotNull(key, "account preference key");
+      ResultSet<AccountPreferences> result = getAccountPreferencesById(accountId);
       AccountPreferences prefs = result.getExactlyOne();
       Map<String, String> original = prefs.asMap();
       HashMap<String, String> newPrefs = new HashMap<>(original);
       newPrefs.remove(key);
       if (Compare.isDifferent(original, newPrefs)) {
-         getStorage().setAccountPreferences(prefs, newPrefs);
+         getStorage().setAccountPreferences(accountId, newPrefs);
          modified = true;
       }
       return modified;
@@ -316,13 +204,13 @@ public class AccountAdminImpl implements AccountAdmin {
 
    @Override
    public AccountSession login(AccountLoginRequest request) {
-      String id = authenticate(request);
-      ResultSet<Account> result = getAccountByUniqueField(id);
+      String email = authenticate(request);
+      ResultSet<Account> result = getAccountByEmail(email);
       Account account = result.getAtMostOneOrNull();
       if (account == null) {
          throw new AccountLoginException(
-            "Login Error - Unable to find account for username[%s] using authentication scheme[%s] and userId[%s]",
-            request.getUserName(), request.getScheme(), id);
+            "Login Error - Unable to find account for username[%s] using authentication scheme[%s]",
+            request.getUserName(), request.getScheme());
       }
       String sessionToken = UUID.randomUUID().toString();
 
@@ -346,14 +234,7 @@ public class AccountAdminImpl implements AccountAdmin {
       .build();
 
       AuthenticatedUser authenticate = authenticationAdmin.authenticate(request);
-      return authenticate.getName();
-   }
-
-   @Override
-   public ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField) {
-      ResultSet<Account> result = getAccountByUniqueField(uniqueField);
-      Account account = result.getExactlyOne();
-      return storage.getAccountSessionById(account.getId());
+      return authenticate.getEmailAddress();
    }
 
    @Override
@@ -371,6 +252,17 @@ public class AccountAdminImpl implements AccountAdmin {
    @Override
    public ResultSet<Account> getAnonymousAccount() {
       return storage.getAnonymousAccount();
+   }
+
+   @Override
+   public ResultSet<Account> getAccountByEmail(String email) {
+      Conditions.checkNotNull(email, "email");
+      return getStorage().getAccountByEmail(email);
+   }
+
+   @Override
+   public ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId) {
+      return getStorage().getAccountSessionById(accountId);
    }
 
 }

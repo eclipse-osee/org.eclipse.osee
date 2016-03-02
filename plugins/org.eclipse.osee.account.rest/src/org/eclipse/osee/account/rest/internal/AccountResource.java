@@ -11,12 +11,9 @@
 package org.eclipse.osee.account.rest.internal;
 
 import java.net.URI;
-import javax.annotation.security.PermitAll;
 import javax.annotation.security.RolesAllowed;
-import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
-import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -27,8 +24,7 @@ import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountDetailsData;
-import org.eclipse.osee.account.rest.model.AccountInfoData;
-import org.eclipse.osee.account.rest.model.AccountInput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
@@ -37,30 +33,16 @@ import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 public class AccountResource {
 
    private final AccountOps accountOps;
-   private final String accountId;
+   private final ArtifactId accountId;
 
-   public AccountResource(AccountOps accountOps, String accountId) {
+   public AccountResource(AccountOps accountOps, ArtifactId accountId) {
       this.accountOps = accountOps;
       this.accountId = accountId;
    }
 
    /**
-    * Creates a new Account - all fields must be unique
-    * 
-    * @param accountInput Account data
-    * @return new account info data
-    */
-   @POST
-   @PermitAll
-   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
-   public AccountInfoData createAccount(AccountInput accountInput) {
-      return accountOps.createAccount(accountId, accountInput);
-   }
-
-   /**
     * Deletes the account
-    * 
+    *
     * @return response
     * @response.representation.200.doc account status set to active
     * @response.representation.304.doc account active status not modified
@@ -80,7 +62,7 @@ public class AccountResource {
 
    /**
     * Get account details
-    * 
+    *
     * @return account details
     */
    @GET
@@ -92,7 +74,7 @@ public class AccountResource {
 
    /**
     * Get All account subscriptions
-    * 
+    *
     * @return accountSubscriptions
     */
    @RolesAllowed(SystemRoles.ROLES_AUTHENTICATED)
@@ -101,7 +83,7 @@ public class AccountResource {
    public Response getSubscriptions(@Context UriInfo uriInfo) {
       URI requestUri = uriInfo.getRequestUri();
       URI uri = UriBuilder.fromUri(requestUri).path("../../../").path("subscriptions").path("for-account").path(
-         "{account-id}").build(accountId);
+         "{account-id}").build(accountId.getUuid());
       return Response.seeOther(uri).build();
    }
 

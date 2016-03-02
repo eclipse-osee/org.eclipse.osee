@@ -18,7 +18,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AccountSessionData {
 
-   private long accountId;
+   private Long accountId;
    private String token;
 
    public String getToken() {
@@ -29,11 +29,11 @@ public class AccountSessionData {
       this.token = token;
    }
 
-   public long getAccountId() {
+   public Long getAccountId() {
       return accountId;
    }
 
-   public void setAccountId(long accountId) {
+   public void setAccountId(Long accountId) {
       this.accountId = accountId;
    }
 

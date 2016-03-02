@@ -11,7 +11,6 @@
 package org.eclipse.osee.account.admin.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -22,6 +21,7 @@ import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
@@ -30,6 +30,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 
 /**
@@ -40,8 +41,6 @@ import org.mockito.Mock;
 public class AccountResolverTest {
 
    private static final String TEST_VALUE = "atest";
-   private static final String TEST_LOCAID_VALUE = "12334";
-   private static final long LOCAID_VALUE = 12334L;
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -99,18 +98,6 @@ public class AccountResolverTest {
    }
 
    @Test
-   public void testResolveAccountAsDisplayName() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.DISPLAY_NAME);
-      when(accountAdmin.getAccountByName(TEST_VALUE)).thenReturn(accountResult);
-
-      ResultSet<Account> actual = resolver.resolveAccount(TEST_VALUE);
-      assertEquals(accountResult, actual);
-
-      verify(validator).guessFormatType(TEST_VALUE);
-      verify(accountAdmin).getAccountByName(TEST_VALUE);
-   }
-
-   @Test
    public void testResolveAccountAsEmail() {
       when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.EMAIL);
       when(accountAdmin.getAccountByEmail(TEST_VALUE)).thenReturn(accountResult);
@@ -123,58 +110,6 @@ public class AccountResolverTest {
    }
 
    @Test
-   public void testResolveAccountAsLocalId() {
-      when(validator.guessFormatType(TEST_LOCAID_VALUE)).thenReturn(AccountField.LOCAL_ID);
-      when(accountAdmin.getAccountById(LOCAID_VALUE)).thenReturn(accountResult);
-
-      ResultSet<Account> actual = resolver.resolveAccount(TEST_LOCAID_VALUE);
-      assertEquals(accountResult, actual);
-
-      verify(validator).guessFormatType(TEST_LOCAID_VALUE);
-      verify(accountAdmin).getAccountById(LOCAID_VALUE);
-   }
-
-   @Test
-   public void testResolveAccountAsUnknown() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UNKNOWN);
-
-      ResultSet<Account> actual = resolver.resolveAccount(TEST_VALUE);
-      assertEquals(ResultSets.emptyResultSet(), actual);
-
-      verify(validator).guessFormatType(TEST_VALUE);
-
-      verify(accountAdmin, times(0)).getAccountByEmail(anyString());
-      verify(accountAdmin, times(0)).getAccountById(anyLong());
-      verify(accountAdmin, times(0)).getAccountByGuid(anyString());
-      verify(accountAdmin, times(0)).getAccountByName(anyString());
-      verify(accountAdmin, times(0)).getAccountByUserName(anyString());
-   }
-
-   @Test
-   public void testResolveAccountAsUserName() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.USERNAME);
-      when(accountAdmin.getAccountByUserName(TEST_VALUE)).thenReturn(accountResult);
-
-      ResultSet<Account> actual = resolver.resolveAccount(TEST_VALUE);
-      assertEquals(accountResult, actual);
-
-      verify(validator).guessFormatType(TEST_VALUE);
-      verify(accountAdmin).getAccountByUserName(TEST_VALUE);
-   }
-
-   @Test
-   public void testResolveAccountAsGuid() {
-      when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.GUID);
-      when(accountAdmin.getAccountByGuid(TEST_VALUE)).thenReturn(accountResult);
-
-      ResultSet<Account> actual = resolver.resolveAccount(TEST_VALUE);
-      assertEquals(accountResult, actual);
-
-      verify(validator).guessFormatType(TEST_VALUE);
-      verify(accountAdmin).getAccountByGuid(TEST_VALUE);
-   }
-
-   @Test
    public void testResolveAccountPrefsUnknown() {
       when(validator.guessFormatType(TEST_VALUE)).thenReturn(AccountField.UNKNOWN);
 
@@ -182,10 +117,7 @@ public class AccountResolverTest {
       assertEquals(ResultSets.emptyResultSet(), actual);
 
       verify(accountAdmin, times(0)).getAccountByEmail(anyString());
-      verify(accountAdmin, times(0)).getAccountById(anyLong());
-      verify(accountAdmin, times(0)).getAccountByGuid(anyString());
-      verify(accountAdmin, times(0)).getAccountByName(anyString());
-      verify(accountAdmin, times(0)).getAccountByUserName(anyString());
+      verify(accountAdmin, times(0)).getAccountById(Matchers.any(ArtifactId.class));
    }
 
    @Test

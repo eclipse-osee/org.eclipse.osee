@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  */
 public interface Account extends Identifiable<String> {
 
-   long getId();
+   Long getId();
 
    boolean isActive();
 

@@ -22,8 +22,7 @@ import org.junit.runners.Suite;
    AccountAdminImplTest.class,
    AccountResolverTest.class,
    ValidatorTestSuite.class,
-   SubscriptionAdminImplTest.class,
-   SubscriptionResolverTest.class})
+   SubscriptionAdminImplTest.class})
 public class InternalTestSuite {
    // Test Suite
 }

@@ -19,6 +19,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
@@ -27,16 +28,16 @@ import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 public class AccountActiveResource {
 
    private final AccountOps accountOps;
-   private final String accountId;
+   private final ArtifactId accountId;
 
-   public AccountActiveResource(AccountOps accountOps, String accountId) {
+   public AccountActiveResource(AccountOps accountOps, ArtifactId accountId) {
       this.accountOps = accountOps;
       this.accountId = accountId;
    }
 
    /**
     * Get account active status
-    * 
+    *
     * @return account active information
     */
    @GET
@@ -48,7 +49,7 @@ public class AccountActiveResource {
 
    /**
     * Set account status to active
-    * 
+    *
     * @return response
     * @response.representation.200.doc account status set to active
     * @response.representation.304.doc account active status not modified
@@ -68,7 +69,7 @@ public class AccountActiveResource {
 
    /**
     * Set account status to inactive
-    * 
+    *
     * @return response
     * @response.representation.200.doc account status set to inactive
     * @response.representation.304.doc account status not modified

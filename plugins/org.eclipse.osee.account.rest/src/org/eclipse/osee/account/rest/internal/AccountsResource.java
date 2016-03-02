@@ -11,7 +11,9 @@
 package org.eclipse.osee.account.rest.internal;
 
 import javax.annotation.security.PermitAll;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -22,6 +24,9 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.account.rest.model.AccountContexts;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
+import org.eclipse.osee.account.rest.model.AccountInput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
@@ -55,7 +60,8 @@ public class AccountsResource {
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Response getPreferences(@PathParam("id") Long id) {
-      return Response.ok().entity(accountOps.getAccountWebPreferencesData(id)).build();
+      ArtifactId artifactId = TokenFactory.createArtifactId(id);
+      return Response.ok().entity(accountOps.getAccountWebPreferencesData(artifactId)).build();
    }
 
    @PUT
@@ -63,7 +69,8 @@ public class AccountsResource {
    @PermitAll
    @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
    public Response editPreferences(@PathParam("id") String userUuid, @QueryParam("key") String key, @QueryParam("itemId") String itemId, String newValue) {
-      return Response.ok().entity(accountOps.editAccountWebPreferencesData(userUuid, key, itemId, newValue)).build();
+      ArtifactId artifactId = TokenFactory.createArtifactId(Long.valueOf(userUuid));
+      return Response.ok().entity(accountOps.editAccountWebPreferencesData(artifactId, key, itemId, newValue)).build();
    }
 
    /**
@@ -77,19 +84,24 @@ public class AccountsResource {
       return accountOps.getAllAccounts().toArray(new AccountInfoData[] {});
    }
 
-   @Path(AccountContexts.ACCOUNT_LOGIN)
-   public AccountLoginResource getLoginResource() {
-      return new AccountLoginResource(accountOps);
-   }
-
-   @Path(AccountContexts.ACCOUNT_LOGOUT)
-   public AccountLogoutResource getLogoutResource() {
-      return new AccountLogoutResource(accountOps);
+   /**
+    * Creates a new Account - all fields must be unique
+    *
+    * @param accountInput Account data
+    * @return new account info data
+    */
+   @POST
+   @PermitAll
+   @Path(AccountContexts.ACCOUNT_ID_TEMPLATE)
+   @Consumes({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   @Produces({MediaType.APPLICATION_JSON, MediaType.APPLICATION_XML})
+   public AccountInfoData createAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) String username, AccountInput accountInput) {
+      return accountOps.createAccount(username, accountInput);
    }
 
    @Path(AccountContexts.ACCOUNT_ID_TEMPLATE)
-   public AccountResource getAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) String accountId) {
-      return new AccountResource(accountOps, accountId);
+   public AccountResource getAccount(@PathParam(AccountContexts.ACCOUNT_ID_PARAM) Long accountId) {
+      ArtifactId artifactId = TokenFactory.createArtifactId(accountId);
+      return new AccountResource(accountOps, artifactId);
    }
-
 }

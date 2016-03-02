@@ -19,15 +19,15 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 @XmlRootElement
 public class AccountActiveData implements Identity<String> {
 
-   private long accountId;
+   private Long accountId;
    private boolean isActive;
    private String uuid;
 
-   public long getAccountId() {
+   public Long getAccountId() {
       return accountId;
    }
 
-   public void setAccountId(long accountId) {
+   public void setAccountId(Long accountId) {
       this.accountId = accountId;
    }
 

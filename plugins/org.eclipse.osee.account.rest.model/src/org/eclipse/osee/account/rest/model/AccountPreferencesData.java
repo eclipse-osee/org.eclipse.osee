@@ -20,14 +20,14 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class AccountPreferencesData {
 
-   private long id;
+   private Long id;
    private Map<String, String> preferences;
 
-   public long getId() {
+   public Long getId() {
       return id;
    }
 
-   public void setId(long id) {
+   public void setId(Long id) {
       this.id = id;
    }
 

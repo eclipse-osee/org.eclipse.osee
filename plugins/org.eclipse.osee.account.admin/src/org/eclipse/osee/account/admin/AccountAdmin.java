@@ -11,7 +11,7 @@
 package org.eclipse.osee.account.admin;
 
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -21,49 +21,21 @@ public interface AccountAdmin {
 
    ResultSet<Account> getAllAccounts();
 
-   ResultSet<Account> getAccountByUniqueField(String uniqueField);
-
-   ResultSet<Account> getAccountById(long id);
-
-   ResultSet<Account> getAccountById(Identifiable<String> id);
-
-   ResultSet<Account> getAccountByGuid(String guid);
-
-   ResultSet<Account> getAccountByUserName(String username);
+   ResultSet<Account> getAccountById(ArtifactId accountId);
 
    ResultSet<Account> getAccountByEmail(String email);
 
-   ResultSet<Account> getAccountByName(String name);
+   ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId);
 
-   ResultSet<AccountPreferences> getAccountPreferencesByUniqueField(String uniqueField);
+   ArtifactId createAccount(CreateAccountRequest request);
 
-   ResultSet<AccountPreferences> getAccountPreferencesById(long id);
+   boolean setActive(ArtifactId accountId, boolean active);
 
-   ResultSet<AccountPreferences> getAccountPreferencesById(Identifiable<String> id);
+   boolean setAccountPreferences(ArtifactId accountId, Map<String, String> preferences);
 
-   ResultSet<AccountPreferences> getAccountPreferencesByGuid(String id);
+   boolean setAccountPreference(ArtifactId accountId, String key, String value);
 
-   Identifiable<String> createAccount(CreateAccountRequest request);
-
-   boolean deleteAccount(Identifiable<String> id);
-
-   boolean deleteAccount(String uniqueField);
-
-   boolean setActive(Identifiable<String> id, boolean active);
-
-   boolean setActive(String uniqueField, boolean active);
-
-   boolean setAccountPreferences(Identifiable<String> id, Map<String, String> preferences);
-
-   boolean setAccountPreferences(String uniqueField, Map<String, String> preferences);
-
-   boolean setAccountPreference(Identifiable<String> id, String key, String value);
-
-   boolean setAccountPreference(String uniqueField, String key, String value);
-
-   boolean deleteAccountPreference(Identifiable<String> id, String key);
-
-   boolean deleteAccountPreference(String uniqueField, String key);
+   boolean deleteAccountPreference(ArtifactId accountId, String key);
 
    AccountSession login(AccountLoginRequest request);
 
@@ -71,10 +43,12 @@ public interface AccountAdmin {
 
    ResultSet<AccountSession> getAccountSessionBySessionToken(String token);
 
-   ResultSet<AccountSession> getAccountSessionByUniqueField(String uniqueField);
+   ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId);
 
    ResultSet<Account> getAnonymousAccount();
 
-   boolean setAccountWebPreference(String accountGuid, String key, String itemId, String newValue);
+   boolean setAccountWebPreference(ArtifactId accountId, String key, String itemId, String newValue);
+
+   boolean deleteAccount(ArtifactId accountId);
 
 }

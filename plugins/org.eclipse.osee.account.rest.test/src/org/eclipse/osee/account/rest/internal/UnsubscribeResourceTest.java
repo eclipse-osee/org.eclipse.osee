@@ -24,6 +24,9 @@ import java.net.URI;
 import javax.ws.rs.core.UriBuilder;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ViewModel;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +34,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link UnsubscribeResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class UnsubscribeResourceTest {
@@ -39,9 +42,9 @@ public class UnsubscribeResourceTest {
    private static final String SUBSCRIPTION_UUID = "D_UhOLi6D7q_MbOiUYny75bUWxYdlHI9yCLyosilpDMYxRhasnqYvwCOlNEPgvrk";
 
    private static final String GROUP_UUID = "sadjha322";
-   private static final long GROUP_ID = 37219891L;
+   private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(37219891L);
    private static final String GROUP_NAME = "group-1";
-   private static final long ACCOUNT_ID = 3129303L;
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(3129303L);
    private static final String ACCOUNT_NAME = "account-1";
 
    //@formatter:off
@@ -66,7 +69,7 @@ public class UnsubscribeResourceTest {
 
    @Test
    public void testGetUnsubscribePageActiveSubscription() {
-      when(manager.getSubscription(SUBSCRIPTION_UUID)).thenReturn(subscription);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_UUID)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(true);
       when(subscription.getGuid()).thenReturn(SUBSCRIPTION_UUID);
 
@@ -74,7 +77,7 @@ public class UnsubscribeResourceTest {
 
       ViewModel actual = resource.getUnsubscribePage(SUBSCRIPTION_UUID);
 
-      verify(manager).getSubscription(SUBSCRIPTION_UUID);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_UUID);
       verify(subscription).isActive();
       verify(subscription).getGuid();
 
@@ -86,12 +89,12 @@ public class UnsubscribeResourceTest {
 
    @Test
    public void testGetUnsubscribePageInActiveSubscription() {
-      when(manager.getSubscription(SUBSCRIPTION_UUID)).thenReturn(subscription);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_UUID)).thenReturn(subscription);
       when(subscription.isActive()).thenReturn(false);
 
       ViewModel actual = resource.getUnsubscribePage(SUBSCRIPTION_UUID);
 
-      verify(manager).getSubscription(SUBSCRIPTION_UUID);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_UUID);
       verify(subscription).isActive();
       verify(subscription, times(0)).getGuid();
 
@@ -102,12 +105,12 @@ public class UnsubscribeResourceTest {
 
    @Test
    public void testProcessUnsubscribePageSubscriptionRemoved() {
-      when(manager.getSubscription(SUBSCRIPTION_UUID)).thenReturn(subscription);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_UUID)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, false)).thenReturn(true);
 
       ViewModel actual = resource.processUnsubscribePage(SUBSCRIPTION_UUID);
 
-      verify(manager).getSubscription(SUBSCRIPTION_UUID);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_UUID);
       verify(manager).setSubscriptionActive(subscription, false);
 
       assertEquals(UnsubscribeResource.UNSUBSCRIBE_SUCCESS_TEMPLATE, actual.getViewId());
@@ -117,12 +120,12 @@ public class UnsubscribeResourceTest {
 
    @Test
    public void testProcessUnsubscribePageSubscriptionNoChange() {
-      when(manager.getSubscription(SUBSCRIPTION_UUID)).thenReturn(subscription);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_UUID)).thenReturn(subscription);
       when(manager.setSubscriptionActive(subscription, false)).thenReturn(false);
 
       ViewModel actual = resource.processUnsubscribePage(SUBSCRIPTION_UUID);
 
-      verify(manager).getSubscription(SUBSCRIPTION_UUID);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_UUID);
       verify(manager).setSubscriptionActive(subscription, false);
 
       assertEquals(UNSUBSCRIBE_NO_SUBSCRIPTION_TEMPLATE, actual.getViewId());

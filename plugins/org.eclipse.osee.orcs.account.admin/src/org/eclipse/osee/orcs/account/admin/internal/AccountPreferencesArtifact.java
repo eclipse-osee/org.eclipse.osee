@@ -39,7 +39,7 @@ public class AccountPreferencesArtifact extends BaseIdentity<String>implements A
    }
 
    @Override
-   public long getId() {
+   public Long getId() {
       return artifact.getUuid();
    }
 

@@ -15,6 +15,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 
 /**
@@ -23,16 +24,16 @@ import org.eclipse.osee.framework.jdk.core.type.SystemRoles;
 public class AccountSessionsResource {
 
    private final AccountOps accountOps;
-   private final String accountId;
+   private final ArtifactId accountId;
 
-   public AccountSessionsResource(AccountOps accountOps, String accountId) {
+   public AccountSessionsResource(AccountOps accountOps, ArtifactId accountId) {
       this.accountOps = accountOps;
       this.accountId = accountId;
    }
 
    /**
     * Get all sessions for this account
-    * 
+    *
     * @return account sessions
     */
    @GET

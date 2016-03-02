@@ -13,6 +13,8 @@ package org.eclipse.osee.account.admin.ds;
 import org.eclipse.osee.account.admin.Account;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionGroup;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -20,30 +22,24 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface SubscriptionStorage {
 
-   ResultSet<Subscription> getSubscriptionsByAccountLocalId(long accountId);
+   ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId);
 
-   Subscription getSubscription(String subscriptionUuid);
+   SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId subscriptionId);
 
-   void updateSubscription(long accountId, long groupId, boolean activate);
+   Subscription getSubscriptionByEncodedId(String encodedId);
+
+   void updateSubscription(Subscription subscription, boolean activate);
 
    ResultSet<SubscriptionGroup> getSubscriptionGroups();
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByLocalId(long groupId);
-
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String name);
-
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String guid);
-
    boolean subscriptionGroupNameExists(String groupName);
 
-   SubscriptionGroup createSubscriptionGroup(String name);
+   SubscriptionGroupId createSubscriptionGroup(String name);
 
-   void deleteSubscriptionGroup(SubscriptionGroup group);
+   ResultSet<Account> getMembersOfSubscriptionGroupById(SubscriptionGroupId subscriptionId);
 
-   ResultSet<Account> getSubscriptionGroupMembersByLocalId(long groupId);
+   boolean deleteSubscriptionGroup(SubscriptionGroupId subscriptionId);
 
-   ResultSet<Account> getSubscriptionGroupMembersByName(String name);
-
-   ResultSet<Account> getSubscriptionGroupMembersByGuid(String guid);
+   ResultSet<Account> getSubscriptionMembersById(SubscriptionGroupId subscriptionId);
 
 }

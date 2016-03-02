@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin;
 
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.Named;
 
@@ -18,11 +20,11 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  */
 public interface Subscription extends Identity<String>, Named {
 
-   long getAccountId();
+   ArtifactId getAccountId();
 
    String getAccountName();
 
-   long getGroupId();
+   SubscriptionGroupId getGroupId();
 
    boolean isActive();
 

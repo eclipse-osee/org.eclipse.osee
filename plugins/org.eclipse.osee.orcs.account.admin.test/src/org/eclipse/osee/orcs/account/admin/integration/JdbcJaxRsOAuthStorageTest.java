@@ -19,8 +19,8 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jaxrs.server.security.JaxRsOAuthStorage;
 import org.eclipse.osee.jaxrs.server.security.OAuthClient;
 import org.eclipse.osee.jaxrs.server.security.OAuthCodeGrant;
@@ -38,7 +38,7 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link JdbcJaxRsOAuthStorage}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class JdbcJaxRsOAuthStorageTest {
@@ -46,7 +46,7 @@ public class JdbcJaxRsOAuthStorageTest {
    private static final String AUTH_CODE_1 = "auth-code-1";
 
    public static final long CODE_UUID = 5679L;
-   public static final long CLIENT_ID = 912371L;
+   public static final long CLIENT_ID = 912371;
    public static final long SUBJECT_ID = 876523L;
    public static final long ISSUED_AT = 1231L;
    public static final long EXPIRES_IN = 9876L;
@@ -68,7 +68,6 @@ public class JdbcJaxRsOAuthStorageTest {
    private static final String RT_GRANT_TYPE_1 = "rt-grant-type-1";
    private static final OAuthTokenType RT_TYPE_1 = OAuthTokenType.REFRESH_TOKEN;
 
-   public static final String CLIENT_GUID = GUID.create();
    public static final List<String> APPLICATION_CERTIFICATE = Arrays.asList("certificate-1");
    public static final String APPLICATION_DESCRIPTION = "description-1";
    public static final String APPLICATION_LOGO_URI = "logo-uri-1";
@@ -149,7 +148,6 @@ public class JdbcJaxRsOAuthStorageTest {
 
       when(principal.getGuid()).thenReturn(-1L);
 
-      when(client.getGuid()).thenReturn(CLIENT_GUID);
       when(client.getClientUuid()).thenReturn(CLIENT_ID);
       when(client.getSubjectId()).thenReturn(SUBJECT_ID);
       when(client.getApplicationName()).thenReturn(APPLICATION_NAME);
@@ -173,15 +171,19 @@ public class JdbcJaxRsOAuthStorageTest {
 
    @Test
    public void testClientStorage() {
-      storage.storeClient(principal, client);
+      ArtifactId createdClientId = storage.storeClient(principal, client);
+      long createdClientUuid = Long.valueOf(createdClientId.getUuid());
+      when(client.getClientUuid()).thenReturn(createdClientUuid);
+      when(authCode.getClientId()).thenReturn(createdClientUuid);
+      when(accessToken.getClientId()).thenReturn(createdClientUuid);
+      when(refreshToken.getClientId()).thenReturn(createdClientUuid);
 
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
-      assertEquals(CLIENT_ID, clientUuid);
+      assertEquals(createdClientId.getUuid(), Long.valueOf(clientUuid));
 
-      OAuthClient actualClient = storage.getClientByClientGuid(CLIENT_GUID);
+      OAuthClient actualClient = storage.getClientByClientUuid(createdClientUuid);
 
-      assertEquals(CLIENT_GUID, actualClient.getGuid());
-      assertEquals(CLIENT_ID, actualClient.getClientUuid());
+      assertEquals(createdClientUuid, actualClient.getClientUuid());
       assertEquals(SUBJECT_ID, actualClient.getSubjectId());
       assertEquals(APPLICATION_NAME, actualClient.getApplicationName());
       assertEquals(APPLICATION_DESCRIPTION, actualClient.getApplicationDescription());
@@ -198,8 +200,7 @@ public class JdbcJaxRsOAuthStorageTest {
       assertEquals(applicationProperties, actualClient.getProperties());
 
       actualClient = storage.getClientByClientKey(CLIENT_KEY);
-      assertEquals(CLIENT_GUID, actualClient.getGuid());
-      assertEquals(CLIENT_ID, actualClient.getClientUuid());
+      assertEquals(createdClientUuid, actualClient.getClientUuid());
       assertEquals(SUBJECT_ID, actualClient.getSubjectId());
       assertEquals(APPLICATION_NAME, actualClient.getApplicationName());
       assertEquals(APPLICATION_DESCRIPTION, actualClient.getApplicationDescription());
@@ -220,7 +221,7 @@ public class JdbcJaxRsOAuthStorageTest {
       clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(-1L, clientUuid);
 
-      actualClient = storage.getClientByClientGuid(CLIENT_GUID);
+      actualClient = storage.getClientByClientUuid(createdClientUuid);
       assertNull(actualClient);
 
       actualClient = storage.getClientByClientKey(CLIENT_KEY);
@@ -229,21 +230,26 @@ public class JdbcJaxRsOAuthStorageTest {
 
    @Test
    public void testCascadeClientToTokenDeletion() {
-      storage.storeClient(principal, client);
+      ArtifactId createdClientArtId = storage.storeClient(principal, client);
+      long createdClientUuid = Long.valueOf(createdClientArtId.getUuid());
+      when(client.getClientUuid()).thenReturn(createdClientUuid);
+      when(authCode.getClientId()).thenReturn(createdClientUuid);
+      when(accessToken.getClientId()).thenReturn(createdClientUuid);
+      when(refreshToken.getClientId()).thenReturn(createdClientUuid);
       storage.storeCodeGrant(authCode);
       storage.storeToken(accessToken, refreshToken);
       storage.relateTokens(refreshToken, accessToken);
 
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
-      assertEquals(CLIENT_ID, clientUuid);
+      assertEquals(createdClientArtId.getUuid(), Long.valueOf(clientUuid));
 
-      OAuthClient actualClient = storage.getClientByClientGuid(CLIENT_GUID);
+      OAuthClient actualClient = storage.getClientByClientUuid(createdClientUuid);
       assertNotNull(actualClient);
 
-      OAuthToken accessToken = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      OAuthToken accessToken = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
       assertNotNull(accessToken);
 
-      OAuthToken refresh = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, RT_GRANT_TYPE_1);
+      OAuthToken refresh = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, RT_GRANT_TYPE_1);
       assertNotNull(refresh);
 
       storage.removeClient(principal, client);
@@ -251,19 +257,24 @@ public class JdbcJaxRsOAuthStorageTest {
       clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
       assertEquals(-1L, clientUuid);
 
-      actualClient = storage.getClientByClientGuid(CLIENT_GUID);
+      actualClient = storage.getClientByClientUuid(createdClientUuid);
       assertNull(actualClient);
 
-      accessToken = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      accessToken = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
       assertNull(accessToken);
 
-      refresh = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, RT_GRANT_TYPE_1);
+      refresh = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, RT_GRANT_TYPE_1);
       assertNull(refresh);
    }
 
    @Test
    public void testAuthCode() {
-      storage.storeClient(principal, client);
+      ArtifactId createdClientId = storage.storeClient(principal, client);
+      long createdClientUuid = Long.valueOf(createdClientId.getUuid());
+      when(client.getClientUuid()).thenReturn(createdClientUuid);
+      when(authCode.getClientId()).thenReturn(createdClientUuid);
+      when(accessToken.getClientId()).thenReturn(createdClientUuid);
+      when(refreshToken.getClientId()).thenReturn(createdClientUuid);
 
       OAuthCodeGrant actual = storage.getCodeGrant(AUTH_CODE_1);
       assertNull(actual);
@@ -273,7 +284,7 @@ public class JdbcJaxRsOAuthStorageTest {
       actual = storage.getCodeGrant(AUTH_CODE_1);
 
       assertEquals(CODE_UUID, actual.getUuid());
-      assertEquals(CLIENT_ID, actual.getClientId());
+      assertEquals(createdClientUuid, actual.getClientId());
       assertEquals(SUBJECT_ID, actual.getSubjectId());
       assertEquals(ISSUED_AT, actual.getIssuedAt());
       assertEquals(EXPIRES_IN, actual.getExpiresIn());
@@ -289,19 +300,24 @@ public class JdbcJaxRsOAuthStorageTest {
       assertNull(actual);
 
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
-      assertEquals(CLIENT_ID, clientUuid);
+      assertEquals(createdClientUuid, clientUuid);
    }
 
    @Test
    public void testAccessToken() {
-      storage.storeClient(principal, client);
+      ArtifactId createdClientId = storage.storeClient(principal, client);
+      long createdClientUuid = Long.valueOf(createdClientId.getUuid());
+      when(client.getClientUuid()).thenReturn(createdClientUuid);
+      when(authCode.getClientId()).thenReturn(createdClientUuid);
+      when(accessToken.getClientId()).thenReturn(createdClientUuid);
+      when(refreshToken.getClientId()).thenReturn(createdClientUuid);
 
       storage.storeToken(accessToken);
 
-      OAuthToken actual = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      OAuthToken actual = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
 
       assertEquals(AT_UUID, actual.getUuid());
-      assertEquals(CLIENT_ID, actual.getClientId());
+      assertEquals(createdClientUuid, actual.getClientId());
       assertEquals(SUBJECT_ID, actual.getSubjectId());
       assertEquals(ISSUED_AT, actual.getIssuedAt());
       assertEquals(EXPIRES_IN, actual.getExpiresIn());
@@ -314,24 +330,29 @@ public class JdbcJaxRsOAuthStorageTest {
 
       storage.removeTokenByKey(AT_KEY_1);
 
-      actual = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      actual = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
       assertNull(actual);
 
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
-      assertEquals(CLIENT_ID, clientUuid);
+      assertEquals(createdClientUuid, clientUuid);
    }
 
    @Test
    public void testAccessTokenWithRefreshToken() {
-      storage.storeClient(principal, client);
+      ArtifactId createdClientId = storage.storeClient(principal, client);
+      long createdClientUuid = Long.valueOf(createdClientId.getUuid());
+      when(client.getClientUuid()).thenReturn(createdClientUuid);
+      when(authCode.getClientId()).thenReturn(createdClientUuid);
+      when(accessToken.getClientId()).thenReturn(createdClientUuid);
+      when(refreshToken.getClientId()).thenReturn(createdClientUuid);
 
       storage.storeToken(accessToken, refreshToken);
       storage.relateTokens(refreshToken, accessToken);
 
-      OAuthToken token1 = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      OAuthToken token1 = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
 
       assertEquals(AT_UUID, token1.getUuid());
-      assertEquals(CLIENT_ID, token1.getClientId());
+      assertEquals(createdClientUuid, token1.getClientId());
       assertEquals(SUBJECT_ID, token1.getSubjectId());
       assertEquals(ISSUED_AT, token1.getIssuedAt());
       assertEquals(EXPIRES_IN, token1.getExpiresIn());
@@ -342,10 +363,10 @@ public class JdbcJaxRsOAuthStorageTest {
       assertEquals(AUDIENCE, token1.getAudience());
       assertEquals(RT_KEY_1, token1.getRefreshToken());
 
-      OAuthToken refresh = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, RT_GRANT_TYPE_1);
+      OAuthToken refresh = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, RT_GRANT_TYPE_1);
 
       assertEquals(RT_UUID, refresh.getUuid());
-      assertEquals(CLIENT_ID, refresh.getClientId());
+      assertEquals(createdClientUuid, refresh.getClientId());
       assertEquals(SUBJECT_ID, refresh.getSubjectId());
       assertEquals(ISSUED_AT, refresh.getIssuedAt());
       assertEquals(EXPIRES_IN, refresh.getExpiresIn());
@@ -360,7 +381,7 @@ public class JdbcJaxRsOAuthStorageTest {
       OAuthToken token2 = tokens.iterator().next();
 
       assertEquals(AT_UUID, token2.getUuid());
-      assertEquals(CLIENT_ID, token2.getClientId());
+      assertEquals(createdClientUuid, token2.getClientId());
       assertEquals(SUBJECT_ID, token2.getSubjectId());
       assertEquals(ISSUED_AT, token2.getIssuedAt());
       assertEquals(EXPIRES_IN, token2.getExpiresIn());
@@ -373,15 +394,15 @@ public class JdbcJaxRsOAuthStorageTest {
 
       storage.removeToken(tokens);
 
-      token1 = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, AT_GRANT_TYPE_1);
+      token1 = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, AT_GRANT_TYPE_1);
       assertNull(token1);
 
       storage.removeTokenByKey(RT_KEY_1);
 
-      refresh = storage.getPreauthorizedToken(CLIENT_ID, SUBJECT_ID, RT_GRANT_TYPE_1);
+      refresh = storage.getPreauthorizedToken(createdClientUuid, SUBJECT_ID, RT_GRANT_TYPE_1);
       assertNull(refresh);
 
       long clientUuid = storage.getClientUuidByKey(CLIENT_KEY);
-      assertEquals(CLIENT_ID, clientUuid);
+      assertEquals(createdClientUuid, clientUuid);
    }
 }

@@ -12,7 +12,6 @@ package org.eclipse.osee.account.admin.internal;
 
 import java.util.Map;
 import org.eclipse.osee.account.admin.Account;
-import org.eclipse.osee.account.admin.AccountAdmin;
 import org.eclipse.osee.account.admin.AccountField;
 import org.eclipse.osee.account.admin.Subscription;
 import org.eclipse.osee.account.admin.SubscriptionAdmin;
@@ -20,6 +19,8 @@ import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.admin.ds.SubscriptionStorage;
 import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.account.admin.internal.validator.Validators;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
@@ -31,9 +32,7 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
 
    private Log logger;
    private SubscriptionStorage storage;
-   private AccountAdmin accountAdmin;
 
-   private SubscriptionResolver resolver;
    private Validator validator;
 
    public void setLogger(Log logger) {
@@ -44,15 +43,9 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
       this.storage = storage;
    }
 
-   public void setAccountAdmin(AccountAdmin accountAdmin) {
-      this.accountAdmin = accountAdmin;
-   }
-
    public void start(Map<String, Object> props) {
       logger.trace("Starting SubscriptionsAdminImpl...");
-
       validator = Validators.newSubscriptionValidator(logger, storage);
-      resolver = new SubscriptionResolver(validator, this);
       update(props);
    }
 
@@ -72,36 +65,26 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
       return validator;
    }
 
-   private SubscriptionResolver getResolver() {
-      return resolver;
+   @Override
+   public SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId subscriptionId) {
+      return getStorage().getSubscriptionGroupById(subscriptionId);
    }
 
    @Override
-   public ResultSet<Subscription> getSubscriptionsByAccountUniqueField(String uniqueField) {
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(uniqueField);
-      Account account = result.getExactlyOne();
-      return getStorage().getSubscriptionsByAccountLocalId(account.getId());
+   public ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId) {
+      return getStorage().getSubscriptionsByAccountId(accountId);
    }
 
    @Override
-   public Subscription getSubscription(String subscriptionUuid) {
-      Conditions.checkNotNull(subscriptionUuid, "subscription uuid");
-      return getStorage().getSubscription(subscriptionUuid);
-   }
-
-   @Override
-   public boolean setSubscriptionActive(String subscriptionUuid, boolean active) {
-      Subscription subscription = getSubscription(subscriptionUuid);
-      return setSubscriptionActive(subscription, active);
+   public Subscription getSubscriptionsByEncodedId(String encodedId) {
+      return getStorage().getSubscriptionByEncodedId(encodedId);
    }
 
    @Override
    public boolean setSubscriptionActive(Subscription subscription, boolean active) {
       boolean modified = false;
       if (subscription != null && subscription.isActive() != active) {
-         long accountId = subscription.getAccountId();
-         long groupId = subscription.getGroupId();
-         getStorage().updateSubscription(accountId, groupId, active);
+         getStorage().updateSubscription(subscription, active);
          modified = true;
       }
       return modified;
@@ -113,7 +96,7 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
    }
 
    @Override
-   public SubscriptionGroup createSubscriptionGroup(String groupName) {
+   public SubscriptionGroupId createSubscriptionGroup(String groupName) {
       Conditions.checkNotNull(groupName, "group name");
 
       Validator validator = getValidator();
@@ -123,66 +106,13 @@ public class SubscriptionAdminImpl implements SubscriptionAdmin {
    }
 
    @Override
-   public boolean deleteSubscriptionGroupByUniqueField(String groupId) {
-      boolean modified = false;
-      ResultSet<SubscriptionGroup> results = getSubscriptionGroupByUniqueField(groupId);
-      SubscriptionGroup group = results.getOneOrNull();
-      if (group != null) {
-         getStorage().deleteSubscriptionGroup(group);
-         modified = true;
-      }
-      return modified;
+   public boolean deleteSubscriptionById(SubscriptionGroupId subscriptionId) {
+      return getStorage().deleteSubscriptionGroup(subscriptionId);
    }
 
    @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByUniqueField(String groupUniqueField) {
-      return getResolver().resolveSubscriptionGroup(groupUniqueField);
-   }
-
-   @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByUniqueField(String groupUniqueField) {
-      return getResolver().resolveSubscriptionGroupMembersByGroupUniqueField(groupUniqueField);
-   }
-
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByLocalId(long groupId) {
-      return getStorage().getSubscriptionGroupByLocalId(groupId);
-   }
-
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String groupName) {
-      Conditions.checkNotNull(groupName, "group name");
-      return getStorage().getSubscriptionGroupByName(groupName);
-   }
-
-   @Override
-   public ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String groupUuid) {
-      Conditions.checkNotNull(groupUuid, "group uuid");
-      return getStorage().getSubscriptionGroupByGuid(groupUuid);
-   }
-
-   @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByLocalId(long groupId) {
-      return getStorage().getSubscriptionGroupMembersByLocalId(groupId);
-   }
-
-   @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByName(String groupName) {
-      Conditions.checkNotNull(groupName, "group name");
-      return getStorage().getSubscriptionGroupMembersByName(groupName);
-   }
-
-   @Override
-   public ResultSet<Account> getSubscriptionGroupMembersByGuid(String groupUuid) {
-      Conditions.checkNotNull(groupUuid, "group uuid");
-      return getStorage().getSubscriptionGroupMembersByGuid(groupUuid);
-   }
-
-   @Override
-   public ResultSet<Subscription> getSubscriptionsByGuid(String guid) {
-      ResultSet<Account> result = accountAdmin.getAccountByGuid(guid);
-      Account account = result.getExactlyOne();
-      return getStorage().getSubscriptionsByAccountLocalId(account.getId());
+   public ResultSet<Account> getSubscriptionMembersOfSubscriptionById(SubscriptionGroupId subscriptionId) {
+      return getStorage().getMembersOfSubscriptionGroupById(subscriptionId);
    }
 
 }

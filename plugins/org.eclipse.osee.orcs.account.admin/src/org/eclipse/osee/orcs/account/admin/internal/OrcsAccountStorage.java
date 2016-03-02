@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.account.admin.internal;
 
-import com.google.common.base.Supplier;
-import com.google.common.base.Suppliers;
 import java.io.StringWriter;
 import java.util.Collections;
 import java.util.Map;
@@ -23,21 +21,20 @@ import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
-import org.eclipse.osee.orcs.utility.OrcsUtil;
+import com.google.common.base.Supplier;
+import com.google.common.base.Suppliers;
 
 /**
  * @author Roberto E. Escobar
@@ -92,29 +89,9 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<Account> getAccountByUserName(String username) {
+   public ResultSet<Account> getAccountById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).and(CoreAttributeTypes.UserId, username).getResults();
-      return getFactory().newAccountResultSet(results);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByGuid(String guid) {
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
-      return getFactory().newAccountResultSet(results);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByUuid(String accountUuid) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(Long.parseLong(accountUuid)).getResults();
-      return getFactory().newAccountResultSet(results);
-   }
-
-   @Override
-   public ResultSet<Account> getAccountByLocalId(long accountId) {
-      int id = Long.valueOf(accountId).intValue();
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
       return getFactory().newAccountResultSet(results);
    }
 
@@ -126,27 +103,14 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public ResultSet<Account> getAccountByName(String name) {
-      ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andNameEquals(name).getResults();
-      return getFactory().newAccountResultSet(results);
-   }
-
-   @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesById(long accountId) {
-      int id = Long.valueOf(accountId).intValue();
+   public ResultSet<AccountPreferences> getAccountPreferencesById(ArtifactId accountId) {
+      int id = Long.valueOf(accountId.getUuid()).intValue();
       ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(id).getResults();
       return getFactory().newAccountPreferencesResultSet(results);
    }
 
    @Override
-   public ResultSet<AccountPreferences> getAccountPreferencesByGuid(String guid) {
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
-      return getFactory().newAccountPreferencesResultSet(results);
-   }
-
-   @Override
-   public Identifiable<String> createAccount(CreateAccountRequest request) {
+   public ArtifactId createAccount(CreateAccountRequest request) {
       TransactionBuilder tx = newTransaction("Create Account");
       ArtifactId artId = tx.createArtifact(CoreArtifactTypes.User, request.getDisplayName());
       tx.setSoleAttributeFromString(artId, CoreAttributeTypes.Email, request.getEmail());
@@ -155,7 +119,7 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
       Map<String, String> preferences = request.getPreferences();
       if (preferences != null && !preferences.isEmpty()) {
-         String prefValue = asString(artId.getGuid(), preferences);
+         String prefValue = asString(artId, preferences);
          tx.createAttribute(artId, CoreAttributeTypes.UserSettings, prefValue);
       }
       tx.commit();
@@ -163,16 +127,14 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public void setActive(Identifiable<String> account, boolean active) {
-      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), account.getName());
-
+   public void setActive(ArtifactId accountId, boolean active) {
       TransactionBuilder tx = newTransaction("Update Account Active");
-      tx.setSoleAttributeValue(artId, CoreAttributeTypes.Active, active);
+      tx.setSoleAttributeValue(accountId, CoreAttributeTypes.Active, active);
       tx.commit();
    }
 
-   private String asString(String uuid, Map<String, String> preferences) {
-      PropertyStore settings = new PropertyStore(uuid);
+   private String asString(ArtifactId artId, Map<String, String> preferences) {
+      PropertyStore settings = new PropertyStore(Long.toString(artId.getUuid()));
       for (Entry<String, String> entry : preferences.entrySet()) {
          settings.put(entry.getKey(), entry.getValue());
       }
@@ -187,26 +149,23 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
    }
 
    @Override
-   public void setAccountPreferences(Identity<String> account, Map<String, String> preferences) {
-      String prefValue = asString(account.getGuid(), preferences);
+   public void setAccountPreferences(ArtifactId accountId, Map<String, String> preferences) {
+      String prefValue = asString(accountId, preferences);
 
-      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), "N/A");
       TransactionBuilder tx = newTransaction("User - Save Settings");
-      tx.setSoleAttributeFromString(artId, CoreAttributeTypes.UserSettings, prefValue);
+      tx.setSoleAttributeFromString(accountId, CoreAttributeTypes.UserSettings, prefValue);
       tx.commit();
    }
 
    @Override
-   public void deleteAccount(Identifiable<String> account) {
-      ArtifactId artId = OrcsUtil.newArtifactId(Lib.generateArtifactIdAsInt(), account.getGuid(), account.getName());
-
+   public void deleteAccount(ArtifactId accountId) {
       TransactionBuilder tx = newTransaction("Delete User");
-      tx.deleteArtifact(artId);
+      tx.deleteArtifact(accountId);
       tx.commit();
    }
 
    @Override
-   public ResultSet<AccountSession> getAccountSessionById(long accountId) {
+   public ResultSet<AccountSession> getAccountSessionById(ArtifactId accountId) {
       try {
          return sessionStore.getAccountSessionByAccountId(accountId).call();
       } catch (Exception ex) {
@@ -225,8 +184,8 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
 
    @Override
    public AccountSession createAccountSession(String sessionToken, Account account, String remoteAddress, String accessDetails) {
-      AccountSession session =
-         getFactory().newAccountSession(account.getId(), sessionToken, remoteAddress, accessDetails);
+      ArtifactId artId = TokenFactory.createArtifactId(account.getId());
+      AccountSession session = getFactory().newAccountSession(artId, sessionToken, remoteAddress, accessDetails);
       try {
          sessionStore.createAccountSession(Collections.singleton(session)).call();
          return session;
@@ -260,30 +219,23 @@ public class OrcsAccountStorage extends AbstractOrcsStorage implements AccountSt
          @Override
          public ResultSet<Account> get() {
             ResultSet<ArtifactReadable> results =
-               newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(SystemUser.Anonymous.getGuid()).getResults();
+               newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(SystemUser.Anonymous.getUuid()).getResults();
             return getFactory().newAccountResultSet(results);
          }
       };
    }
 
    @Override
-   public void setAccountWebPreferences(String guid, String preferences) {
-      ArtifactId artId = OrcsUtil.newArtifactId(1, guid, "name");
+   public void setAccountWebPreferences(ArtifactId artifactId, String preferences) {
       TransactionBuilder tx = newTransaction("User - Save Web Preferences");
-      tx.setSoleAttributeFromString(artId, CoreAttributeTypes.WebPreferences, preferences);
+      tx.setSoleAttributeFromString(artifactId, CoreAttributeTypes.WebPreferences, preferences);
       tx.commit();
    }
 
    @Override
-   public AccountWebPreferences getAccountWebPreferencesByGuid(String guid) {
-      ResultSet<ArtifactReadable> results = newQuery().andIsOfType(CoreArtifactTypes.User).andGuid(guid).getResults();
-      return getFactory().newAccountWebPreferences(results.getExactlyOne());
-   }
-
-   @Override
-   public AccountWebPreferences getAccountWebPreferencesById(int accountId) {
+   public AccountWebPreferences getAccountWebPreferencesById(ArtifactId accountId) {
       ResultSet<ArtifactReadable> results =
-         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId).getResults();
+         newQuery().andIsOfType(CoreArtifactTypes.User).andUuid(accountId.getUuid()).getResults();
       return getFactory().newAccountWebPreferences(results.getExactlyOne());
    }
 

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.jaxrs.server.security;
 
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 
 /**
@@ -21,9 +22,11 @@ public interface JaxRsOAuthStorage {
 
    OAuthClient getClientByClientGuid(String guid);
 
+   OAuthClient getClientByClientUuid(Long uuid);
+
    OAuthClient getClientByClientKey(String clientKey);
 
-   void storeClient(OseePrincipal principal, OAuthClient client);
+   ArtifactId storeClient(OseePrincipal principal, OAuthClient client);
 
    void removeClient(OseePrincipal principal, OAuthClient client);
 

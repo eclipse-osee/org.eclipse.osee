@@ -24,7 +24,7 @@ public class AccountInfoData implements Identity<String> {
    private String userName;
    private String email;
    private String uuid;
-   private long accountId;
+   private Long accountId;
    private boolean isActive;
    private Set<String> roles;
 
@@ -56,11 +56,11 @@ public class AccountInfoData implements Identity<String> {
       this.email = email;
    }
 
-   public long getAccountId() {
+   public Long getAccountId() {
       return accountId;
    }
 
-   public void setAccountId(long accountId) {
+   public void setAccountId(Long accountId) {
       this.accountId = accountId;
    }
 

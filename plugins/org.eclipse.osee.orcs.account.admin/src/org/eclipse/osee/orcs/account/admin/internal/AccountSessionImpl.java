@@ -18,7 +18,7 @@ import org.eclipse.osee.account.admin.AccountSession;
  */
 public class AccountSessionImpl implements AccountSession {
 
-   private long accountId;
+   private Long accountId;
    private String sessionToken;
    private Date createdOn;
    private Date lastAccessedOn;
@@ -26,7 +26,7 @@ public class AccountSessionImpl implements AccountSession {
    private String accessDetails;
 
    @Override
-   public long getAccountId() {
+   public Long getAccountId() {
       return accountId;
    }
 
@@ -55,7 +55,7 @@ public class AccountSessionImpl implements AccountSession {
       return accessDetails;
    }
 
-   public void setAccountId(long accountId) {
+   public void setAccountId(Long accountId) {
       this.accountId = accountId;
    }
 
@@ -107,7 +107,7 @@ public class AccountSessionImpl implements AccountSession {
       } else if (!sessionToken.equals(other.sessionToken)) {
          return false;
       }
-      if (accountId != other.accountId) {
+      if (!accountId.equals(other.accountId)) {
          return false;
       }
       return true;

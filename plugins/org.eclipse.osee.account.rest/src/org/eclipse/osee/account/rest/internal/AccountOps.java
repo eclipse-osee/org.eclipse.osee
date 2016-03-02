@@ -31,7 +31,7 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.AccountWebPreferences;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -64,13 +64,19 @@ public class AccountOps {
       };
    }
 
-   public List<AccountSessionDetailsData> getAccountSessionById(String accountId) {
-      ResultSet<AccountSession> result = accountAdmin.getAccountSessionByUniqueField(accountId);
+   public List<AccountSessionDetailsData> getAccountSessionById(ArtifactId accountId) {
+      ResultSet<AccountSession> result = accountAdmin.getAccountSessionById(accountId);
       List<AccountSessionDetailsData> toReturn = new ArrayList<>();
       for (AccountSession session : result) {
          toReturn.add(AccountDataUtil.asAccountAccessData(session));
       }
       return toReturn;
+   }
+
+   public AccountInfoData getAccountData(ArtifactId value) {
+      ResultSet<Account> result = accountAdmin.getAccountById(value);
+      Account account = result.getExactlyOne();
+      return AccountDataUtil.asAccountData(account);
    }
 
    public AccountSessionData doLogin(RequestInfo info, AccountLoginData input) {
@@ -100,22 +106,22 @@ public class AccountOps {
          .prefs(input.getPreferences()) //
          .build();
 
-      Identifiable<String> id = accountAdmin.createAccount(request);
-      ResultSet<Account> result = accountAdmin.getAccountByGuid(id.getGuid());
+      ArtifactId id = accountAdmin.createAccount(request);
+      ResultSet<Account> result = accountAdmin.getAccountById(id);
       Account account = result.getExactlyOne();
       return AccountDataUtil.asAccountData(account);
    }
 
-   public boolean deleteAccount(String accountId) {
+   public boolean deleteAccount(ArtifactId accountId) {
       return accountAdmin.deleteAccount(accountId);
    }
 
-   public boolean setAccountActive(String accountId, boolean active) {
+   public boolean setAccountActive(ArtifactId accountId, boolean active) {
       return accountAdmin.setActive(accountId, active);
    }
 
-   public AccountActiveData isActive(String accountId) {
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
+   public AccountActiveData isActive(ArtifactId accountId) {
+      ResultSet<Account> result = accountAdmin.getAccountById(accountId);
       Account account = result.getExactlyOne();
       return AccountDataUtil.asAccountActiveData(account);
    }
@@ -129,45 +135,45 @@ public class AccountOps {
       return toReturn;
    }
 
-   public AccountDetailsData getAccountDetailsData(String accountId) {
-      System.out.println("**********LOOKING FOR: " + accountId);
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(accountId);
+   public AccountDetailsData getAccountDetailsData(ArtifactId accountId) {
+      ResultSet<Account> result = accountAdmin.getAccountById(accountId);
       Account account = result.getExactlyOne();
       return AccountDataUtil.asAccountDetailsData(account);
    }
 
-   public AccountInfoData getAccountData(String value) {
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(value);
-      Account account = result.getExactlyOne();
-      return AccountDataUtil.asAccountData(account);
+   public boolean editAccountWebPreferencesData(ArtifactId accountId, String key, String itemId, String newValue) {
+      return accountAdmin.setAccountWebPreference(accountId, key, itemId, newValue);
    }
 
-   public boolean editAccountWebPreferencesData(String accountGuid, String key, String itemId, String newValue) {
-      return accountAdmin.setAccountWebPreference(accountGuid, key, itemId, newValue);
-   }
-
-   public AccountWebPreferences getDefaultAccountWebPreferencesData(String value) {
-      ResultSet<Account> result = accountAdmin.getAccountByGuid(value);
+   public AccountWebPreferences getDefaultAccountWebPreferencesData(ArtifactId accountId) {
+      ResultSet<Account> result = accountAdmin.getAccountById(accountId);
       Account account = result.getExactlyOne();
       AccountWebPreferences preferences = account.getWebPreferences();
       return preferences;
    }
 
-   public AccountWebPreferences getAccountWebPreferencesData(Long id) {
+   public AccountWebPreferences getAccountWebPreferencesData(ArtifactId id) {
       ResultSet<Account> result = accountAdmin.getAccountById(id);
       Account account = result.getExactlyOne();
       AccountWebPreferences preferences = account.getWebPreferences();
       return preferences;
    }
 
-   public AccountPreferencesData getAccountPreferencesData(String value) {
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(value);
+   public AccountPreferencesData getAccountPreferencesDataById(ArtifactId accountId) {
+      ResultSet<Account> result = accountAdmin.getAccountById(accountId);
       Account account = result.getExactlyOne();
       AccountPreferences preferences = account.getPreferences();
       return AccountDataUtil.asAccountPreferencesData(preferences);
    }
 
-   public boolean setAccountPreferences(String accountId, AccountPreferencesInput input) {
+   public AccountPreferencesData getAccountPreferencesDataByEmail(String email) {
+      ResultSet<Account> result = accountAdmin.getAccountByEmail(email);
+      Account account = result.getExactlyOne();
+      AccountPreferences preferences = account.getPreferences();
+      return AccountDataUtil.asAccountPreferencesData(preferences);
+   }
+
+   public boolean setAccountPreferences(ArtifactId accountId, AccountPreferencesInput input) {
       return accountAdmin.setAccountPreferences(accountId, input.getMap());
    }
 

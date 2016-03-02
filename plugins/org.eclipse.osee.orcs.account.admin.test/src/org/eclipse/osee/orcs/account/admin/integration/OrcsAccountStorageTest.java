@@ -23,7 +23,8 @@ import org.eclipse.osee.account.admin.AccountPreferences;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.account.admin.CreateAccountRequest;
 import org.eclipse.osee.account.admin.ds.AccountStorage;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.orcs.account.admin.internal.OrcsAccountStorage;
@@ -67,7 +68,7 @@ public class OrcsAccountStorageTest {
    private boolean active;
    private Map<String, String> prefs;
 
-   private Identifiable<String> newAccount;
+   private ArtifactId newAccountId;
 
    @Before
    public void testSetup() {
@@ -91,7 +92,7 @@ public class OrcsAccountStorageTest {
       when(request.getPreferences()).thenReturn(prefs);
       when(request.isActive()).thenReturn(active);
 
-      newAccount = storage.createAccount(request);
+      newAccountId = storage.createAccount(request);
    }
 
    @Test
@@ -102,85 +103,48 @@ public class OrcsAccountStorageTest {
 
    @Test
    public void testGetById() {
-      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
+      ResultSet<Account> result = storage.getAccountById(newAccountId);
       Account account1 = result.getExactlyOne();
-      assertAccount(account1, newAccount.getGuid(), name, email, username, active, prefs);
-   }
+      assertAccount(account1, newAccountId, name, email, username, active, prefs);
 
-   @Test
-   public void testGetByUuiId() {
-      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
-      Account account1 = result.getExactlyOne();
-      assertAccount(account1, newAccount.getGuid(), name, email, username, active, prefs);
-
-      ResultSet<Account> result2 = storage.getAccountByLocalId(account1.getId());
+      ArtifactId artId = TokenFactory.createArtifactId(account1.getId());
+      ResultSet<Account> result2 = storage.getAccountById(artId);
       Account account2 = result2.getExactlyOne();
       assertEquals(account1, account2);
-      assertAccount(account2, newAccount.getGuid(), name, email, username, active, prefs);
-   }
-
-   @Test
-   public void testGetByName() {
-      ResultSet<Account> result = storage.getAccountByName(name);
-      Account account = result.getExactlyOne();
-      assertAccount(account, newAccount.getGuid(), name, email, username, active, prefs);
+      assertAccount(account2, newAccountId, name, email, username, active, prefs);
    }
 
    @Test
    public void testGetByEmail() {
       ResultSet<Account> result = storage.getAccountByEmail(email);
       Account account = result.getExactlyOne();
-      assertAccount(account, newAccount.getGuid(), name, email, username, active, prefs);
-   }
-
-   @Test
-   public void testGetByUserName() {
-      ResultSet<Account> result = storage.getAccountByUserName(username);
-      Account account = result.getExactlyOne();
-      assertAccount(account, newAccount.getGuid(), name, email, username, active, prefs);
-   }
-
-   @Test
-   public void testGetAccountPrefsByUuid() {
-      AccountPreferences actual = storage.getAccountPreferencesByGuid(newAccount.getGuid()).getExactlyOne();
-      assertPrefs(actual, newAccount.getGuid(), prefs);
-
-      AccountPreferences actual2 = storage.getAccountPreferencesById(actual.getId()).getExactlyOne();
-      assertPrefs(actual2, newAccount.getGuid(), prefs);
-   }
-
-   @Test
-   public void testGetAccountPrefsByLocalId() {
-      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
-
-      AccountPreferences actual = storage.getAccountPreferencesById(account.getId()).getExactlyOne();
-      assertPrefs(actual, account.getGuid(), account.getId(), prefs);
+      assertAccount(account, newAccountId, name, email, username, active, prefs);
    }
 
    @Test
    public void testSetActive() {
-      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
-      assertAccount(account, newAccount.getGuid(), name, email, username, active, prefs);
+      Account account = storage.getAccountById(newAccountId).getExactlyOne();
+      assertAccount(account, newAccountId, name, email, username, active, prefs);
 
-      storage.setActive(newAccount, false);
+      storage.setActive(newAccountId, false);
 
-      account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
+      account = storage.getAccountById(newAccountId).getExactlyOne();
       assertFalse(account.isActive());
 
-      storage.setActive(newAccount, true);
+      storage.setActive(newAccountId, true);
 
-      account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
+      account = storage.getAccountById(newAccountId).getExactlyOne();
       assertTrue(account.isActive());
    }
 
    @Test
    public void testDeleteAccount() {
-      ResultSet<Account> result = storage.getAccountByGuid(newAccount.getGuid());
+      ResultSet<Account> result = storage.getAccountById(newAccountId);
       assertEquals(1, result.size());
 
-      storage.deleteAccount(newAccount);
+      storage.deleteAccount(newAccountId);
 
-      result = storage.getAccountByGuid(newAccount.getGuid());
+      result = storage.getAccountById(newAccountId);
       assertTrue(result.isEmpty());
    }
 
@@ -192,11 +156,11 @@ public class OrcsAccountStorageTest {
       expected.put("c", "z");
       expected.put("d", "false");
 
-      storage.setAccountPreferences(newAccount, expected);
+      storage.setAccountPreferences(newAccountId, expected);
 
-      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountById(newAccountId).getExactlyOne();
       AccountPreferences actual = account.getPreferences();
-      assertPrefs(actual, newAccount.getGuid(), account.getId(), expected);
+      assertPrefs(actual, newAccountId, account.getId(), expected);
    }
 
    @Test
@@ -205,7 +169,7 @@ public class OrcsAccountStorageTest {
       String address = "myAddress";
       String details = "myDetails";
 
-      Account account = storage.getAccountByGuid(newAccount.getGuid()).getExactlyOne();
+      Account account = storage.getAccountById(newAccountId).getExactlyOne();
 
       AccountSession actual = storage.createAccountSession(token, account, address, details);
       assertEquals(details, actual.getAccessDetails());
@@ -223,15 +187,15 @@ public class OrcsAccountStorageTest {
       assertEquals(true, storage.getAccountSessionBySessionToken(token).isEmpty());
    }
 
-   private static void assertPrefs(AccountPreferences expected, String uuid, long accountId, Map<String, String> prefs) {
+   private static void assertPrefs(AccountPreferences expected, ArtifactId artId, Long accountId, Map<String, String> prefs) {
       assertEquals(accountId, expected.getId());
-      assertPrefs(expected, uuid, prefs);
+      assertPrefs(expected, artId, prefs);
    }
 
-   private static void assertPrefs(AccountPreferences expected, String uuid, Map<String, String> prefs) {
+   private static void assertPrefs(AccountPreferences expected, ArtifactId artId, Map<String, String> prefs) {
       assertTrue(expected.getId() > 0L);
 
-      assertEquals(uuid, expected.getGuid());
+      assertEquals(artId.getUuid(), expected.getId());
 
       Map<String, String> actual = expected.asMap();
       if (prefs != null) {
@@ -247,15 +211,15 @@ public class OrcsAccountStorageTest {
       assertEquals(false, Compare.isDifferent(expected, actual));
    }
 
-   private static void assertAccount(Account account, String uuid, String name, String email, String username, boolean isActive, Map<String, String> prefs) {
+   private static void assertAccount(Account account, ArtifactId artId, String name, String email, String username, boolean isActive, Map<String, String> prefs) {
       assertTrue(account.getId() > 0L);
-      assertEquals(uuid, account.getGuid());
+      assertEquals(artId.getUuid(), account.getId());
 
       assertEquals(name, account.getName());
       assertEquals(email, account.getEmail());
       assertEquals(username, account.getUserName());
       assertEquals(isActive, account.isActive());
 
-      assertPrefs(account.getPreferences(), uuid, prefs);
+      assertPrefs(account.getPreferences(), artId, prefs);
    }
 }

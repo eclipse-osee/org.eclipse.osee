@@ -22,7 +22,7 @@ public class SubscriptionGroupData implements Identifiable<String> {
 
    private String uuid;
    private String name;
-   private long id;
+   private SubscriptionGroupId groupId;
 
    @Override
    public String getName() {
@@ -42,12 +42,12 @@ public class SubscriptionGroupData implements Identifiable<String> {
       this.uuid = uuid;
    }
 
-   public long getId() {
-      return id;
+   public SubscriptionGroupId getSubscriptionGroupId() {
+      return groupId;
    }
 
-   public void setId(long id) {
-      this.id = id;
+   public void setSubscriptionGroupId(SubscriptionGroupId id) {
+      this.groupId = id;
    }
 
    @Override

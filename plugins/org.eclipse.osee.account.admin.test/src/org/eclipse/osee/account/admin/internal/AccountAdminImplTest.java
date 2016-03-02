@@ -41,11 +41,11 @@ import org.eclipse.osee.account.admin.internal.validator.Validator;
 import org.eclipse.osee.authentication.admin.AuthenticatedUser;
 import org.eclipse.osee.authentication.admin.AuthenticationAdmin;
 import org.eclipse.osee.authentication.admin.AuthenticationRequest;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
 import org.junit.Before;
 import org.junit.Rule;
@@ -64,7 +64,6 @@ import org.mockito.Mockito;
 public class AccountAdminImplTest {
 
    private static final long ID = 123121412L;
-   private static final String GUID_STRING = GUID.create();
    private static final String USERNAME = "atest";
    private static final String EMAIL = "atest@email.com";
    private static final String NAME = "myName";
@@ -81,12 +80,13 @@ public class AccountAdminImplTest {
    @Mock private Account account;
    @Mock private AccountSession accountSession;
    @Mock private AccountPreferences preferences;
-   @Mock private Identifiable<String> newAccount;
    @Mock private AuthenticatedUser authenticatedUser;
    @Captor private ArgumentCaptor<Map<String, String>> newPrefsCaptor;
    @Captor private ArgumentCaptor<String> tokenCaptor;
    @Captor private ArgumentCaptor<AuthenticationRequest> authenticationRequestCaptor;
    // @formatter:on
+
+   private final ArtifactId newAccountId = TokenFactory.createArtifactId(123121412L);
 
    private AccountAdminImpl accountAdmin;
 
@@ -100,7 +100,7 @@ public class AccountAdminImplTest {
       accountAdmin.setAuthenticationAdmin(authenticationAdmin);
       accountAdmin.start(Collections.<String, Object> emptyMap());
 
-      when(newAccount.getGuid()).thenReturn(GUID_STRING);
+      when(account.getId()).thenReturn(newAccountId.getUuid());
    }
 
    @Test
@@ -110,52 +110,10 @@ public class AccountAdminImplTest {
    }
 
    @Test
-   public void testGetAccountByIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("id cannot be null");
-      accountAdmin.getAccountById(null);
-   }
-
-   @Test
-   public void testGetById() {
-      accountAdmin.getAccountById(newAccount);
-
-      verify(storage).getAccountByGuid(GUID_STRING);
-   }
-
-   @Test
-   public void testGetAccountByGuidWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("guid cannot be null");
-      accountAdmin.getAccountByGuid(null);
-   }
-
-   @Test
-   public void testGetByGuiId() {
-      accountAdmin.getAccountByGuid(GUID_STRING);
-
-      verify(storage).getAccountByGuid(GUID_STRING);
-   }
-
-   @Test
    public void testGetAccountById() {
-      accountAdmin.getAccountById(ID);
+      accountAdmin.getAccountById(newAccountId);
 
-      verify(storage).getAccountByLocalId(ID);
-   }
-
-   @Test
-   public void testGetAccountByUserNameWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("username cannot be null");
-      accountAdmin.getAccountByUserName(null);
-   }
-
-   @Test
-   public void testGetByUserName() {
-      accountAdmin.getAccountByUserName(USERNAME);
-
-      verify(storage).getAccountByUserName(USERNAME);
+      verify(storage).getAccountById(newAccountId);
    }
 
    @Test
@@ -173,52 +131,10 @@ public class AccountAdminImplTest {
    }
 
    @Test
-   public void testGetAccountByNameWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("name cannot be null");
-      accountAdmin.getAccountByName(null);
-   }
-
-   @Test
-   public void testGetByName() {
-      accountAdmin.getAccountByName(NAME);
-
-      verify(storage).getAccountByName(NAME);
-   }
-
-   @Test
-   public void testGetAccountPrefsByUuidWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("guid cannot be null");
-      accountAdmin.getAccountPreferencesByGuid(null);
-   }
-
-   @Test
-   public void testGetAccountPrefsByUuid() {
-      accountAdmin.getAccountPreferencesByGuid(GUID_STRING);
-
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-   }
-
-   @Test
-   public void testGetAccountPrefsByIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("id cannot be null");
-      accountAdmin.getAccountPreferencesById(null);
-   }
-
-   @Test
    public void testGetAccountPrefsById() {
-      accountAdmin.getAccountPreferencesById(newAccount);
+      accountAdmin.getAccountPreferencesById(newAccountId);
 
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-   }
-
-   @Test
-   public void testGetAccountPreferencesById() {
-      accountAdmin.getAccountPreferencesById(ID);
-
-      verify(storage).getAccountPreferencesById(ID);
+      verify(storage).getAccountPreferencesById(newAccountId);
    }
 
    @Test
@@ -240,58 +156,44 @@ public class AccountAdminImplTest {
    }
 
    @Test
-   public void testSetActiveIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account id cannot be null");
-      accountAdmin.setActive(nullID(), true);
-   }
-
-   @Test
    public void testSetActiveModified() {
       ResultSet<Account> resultSet = ResultSets.singleton(account);
 
-      when(storage.getAccountByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
       when(account.isActive()).thenReturn(true);
 
-      boolean modified = accountAdmin.setActive(newAccount, false);
+      boolean modified = accountAdmin.setActive(newAccountId, false);
       assertTrue(modified);
 
-      verify(storage).getAccountByGuid(GUID_STRING);
-      verify(storage).setActive(account, false);
+      verify(storage).getAccountById(newAccountId);
+      verify(storage).setActive(newAccountId, false);
    }
 
    @Test
    public void testSetActiveNotModified() {
       ResultSet<Account> resultSet = ResultSets.singleton(account);
 
-      when(storage.getAccountByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
       when(account.isActive()).thenReturn(true);
 
-      boolean modified = accountAdmin.setActive(newAccount, true);
+      boolean modified = accountAdmin.setActive(newAccountId, true);
       assertFalse(modified);
 
-      verify(storage).getAccountByGuid(GUID_STRING);
-      verify(storage, times(0)).setActive(account, true);
-   }
-
-   @Test
-   public void testDeleteAccountIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account id cannot be null");
-      accountAdmin.deleteAccount(nullID());
+      verify(storage).getAccountById(newAccountId);
+      verify(storage, times(0)).setActive(newAccountId, true);
    }
 
    @Test
    public void testDeleteAccountIdModified() {
       ResultSet<Account> resultSet = ResultSets.singleton(account);
 
-      when(storage.getAccountByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
 
-      boolean modified = accountAdmin.deleteAccount(newAccount);
+      boolean modified = accountAdmin.deleteAccount(newAccountId);
       assertTrue(modified);
 
-      verify(storage).getAccountByGuid(GUID_STRING);
-      verify(storage).deleteAccount(account);
+      verify(storage).getAccountById(newAccountId);
+      verify(storage).deleteAccount(newAccountId);
    }
 
    @Test
@@ -299,27 +201,20 @@ public class AccountAdminImplTest {
       @SuppressWarnings("unchecked")
       ResultSet<Account> resultSet = Mockito.mock(ResultSet.class);
 
-      when(storage.getAccountByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountById(newAccountId)).thenReturn(resultSet);
       when(resultSet.getOneOrNull()).thenReturn(null);
 
-      boolean modified = accountAdmin.deleteAccount(newAccount);
+      boolean modified = accountAdmin.deleteAccount(newAccountId);
       assertFalse(modified);
 
       verify(storage, times(0)).deleteAccount(null);
    }
 
    @Test
-   public void testSetAccountPreferencesIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account preference id cannot be null");
-      accountAdmin.setAccountPreferences(nullID(), Collections.<String, String> emptyMap());
-   }
-
-   @Test
    public void testSetAccountPreferencesPrefsWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("preferences cannot be null");
-      accountAdmin.setAccountPreferences(newAccount, null);
+      accountAdmin.setAccountPreferences(newAccountId, null);
    }
 
    @Test
@@ -332,14 +227,14 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(original);
 
-      boolean modified = accountAdmin.setAccountPreferences(newAccount, newMap);
+      boolean modified = accountAdmin.setAccountPreferences(newAccountId, newMap);
       assertTrue(modified);
 
-      verify(storage).setAccountPreferences(preferences, newMap);
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
+      verify(storage).setAccountPreferences(newAccountId, newMap);
+      verify(storage).getAccountPreferencesById(newAccountId);
       verify(preferences).asMap();
    }
 
@@ -353,36 +248,29 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(original);
 
-      boolean modified = accountAdmin.setAccountPreferences(newAccount, newMap);
+      boolean modified = accountAdmin.setAccountPreferences(newAccountId, newMap);
       assertFalse(modified);
 
-      verify(storage, times(0)).setAccountPreferences(newAccount, newMap);
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
+      verify(storage, times(0)).setAccountPreferences(newAccountId, newMap);
+      verify(storage).getAccountPreferencesById(newAccountId);
       verify(preferences).asMap();
-   }
-
-   @Test
-   public void testSetAccountPreferenceIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account preference id cannot be null");
-      accountAdmin.setAccountPreference(nullID(), "b", "value");
    }
 
    @Test
    public void testSetAccountPreferenceKeyWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("account preference key cannot be null");
-      accountAdmin.setAccountPreference(newAccount, null, "value");
+      accountAdmin.setAccountPreference(newAccountId, null, "value");
    }
 
    @Test
    public void testSetAccountPreferenceValueWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("account preference value cannot be null - Use delete account preference instead");
-      accountAdmin.setAccountPreference(newAccount, "b", null);
+      accountAdmin.setAccountPreference(newAccountId, "b", null);
    }
 
    @Test
@@ -394,14 +282,14 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(map);
 
-      boolean modified = accountAdmin.setAccountPreference(newAccount, "b", "123412");
+      boolean modified = accountAdmin.setAccountPreference(newAccountId, "b", "123412");
       assertTrue(modified);
 
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-      verify(storage).setAccountPreferences(eq(preferences), newPrefsCaptor.capture());
+      verify(storage).getAccountPreferencesById(newAccountId);
+      verify(storage).setAccountPreferences(eq(newAccountId), newPrefsCaptor.capture());
 
       Map<String, String> actual = newPrefsCaptor.getValue();
       assertEquals(3, actual.size());
@@ -419,28 +307,21 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(map);
 
-      boolean modified = accountAdmin.setAccountPreference(newAccount, "b", "123412");
+      boolean modified = accountAdmin.setAccountPreference(newAccountId, "b", "123412");
       assertFalse(modified);
 
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-      verify(storage, times(0)).setAccountPreferences(eq(newAccount), anyMapOf(String.class, String.class));
-   }
-
-   @Test
-   public void testDeleteAccountPreferenceIdWithNull() {
-      thrown.expect(OseeArgumentException.class);
-      thrown.expectMessage("account preference id cannot be null");
-      accountAdmin.deleteAccountPreference(nullID(), "b");
+      verify(storage).getAccountPreferencesById(newAccountId);
+      verify(storage, times(0)).setAccountPreferences(eq(newAccountId), anyMapOf(String.class, String.class));
    }
 
    @Test
    public void testDeleteAccountPreferenceKeyWithNull() {
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage("account preference key cannot be null");
-      accountAdmin.deleteAccountPreference(newAccount, null);
+      accountAdmin.deleteAccountPreference(newAccountId, null);
    }
 
    @Test
@@ -452,14 +333,14 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(map);
 
-      boolean modified = accountAdmin.deleteAccountPreference(newAccount, "b");
+      boolean modified = accountAdmin.deleteAccountPreference(newAccountId, "b");
       assertTrue(modified);
 
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-      verify(storage).setAccountPreferences(eq(preferences), newPrefsCaptor.capture());
+      verify(storage).getAccountPreferencesById(newAccountId);
+      verify(storage).setAccountPreferences(eq(newAccountId), newPrefsCaptor.capture());
 
       Map<String, String> actual = newPrefsCaptor.getValue();
       assertEquals(2, actual.size());
@@ -475,137 +356,26 @@ public class AccountAdminImplTest {
 
       ResultSet<AccountPreferences> resultSet = ResultSets.singleton(preferences);
 
-      when(storage.getAccountPreferencesByGuid(GUID_STRING)).thenReturn(resultSet);
+      when(storage.getAccountPreferencesById(newAccountId)).thenReturn(resultSet);
       when(preferences.asMap()).thenReturn(map);
 
-      boolean modified = accountAdmin.deleteAccountPreference(newAccount, "b");
+      boolean modified = accountAdmin.deleteAccountPreference(newAccountId, "b");
       assertFalse(modified);
 
-      verify(storage).getAccountPreferencesByGuid(GUID_STRING);
-      verify(storage, times(0)).setAccountPreferences(eq(newAccount), anyMapOf(String.class, String.class));
+      verify(storage).getAccountPreferencesById(newAccountId);
+      verify(storage, times(0)).setAccountPreferences(eq(newAccountId), anyMapOf(String.class, String.class));
    }
 
    @Test
-   public void testGetAccountByUniqueField() {
+   public void testGetAccountByEmail() {
       ResultSet<Account> resultSet = ResultSets.singleton(account);
 
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
 
-      ResultSet<Account> result = accountAdmin.getAccountByUniqueField(EMAIL);
+      ResultSet<Account> result = accountAdmin.getAccountByEmail(EMAIL);
       assertEquals(account, result.getExactlyOne());
 
       verify(storage).getAccountByEmail(EMAIL);
-   }
-
-   @Test
-   public void testGetAccountPreferencesByUniqueField() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByName(NAME)).thenReturn(resultSet);
-      when(account.getPreferences()).thenReturn(preferences);
-
-      ResultSet<AccountPreferences> result = accountAdmin.getAccountPreferencesByUniqueField(NAME);
-      assertEquals(preferences, result.getExactlyOne());
-
-      verify(storage).getAccountByName(NAME);
-   }
-
-   @Test
-   public void testDeleteAccountByUniqueField() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-
-      boolean actual = accountAdmin.deleteAccount(EMAIL);
-      assertEquals(true, actual);
-
-      verify(storage).getAccountByEmail(EMAIL);
-      verify(storage).deleteAccount(account);
-   }
-
-   @Test
-   public void testSetActiveByUniqueField() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-
-      boolean actual = accountAdmin.setActive(EMAIL, true);
-      assertEquals(true, actual);
-
-      verify(storage).getAccountByEmail(EMAIL);
-      verify(storage).setActive(account, true);
-   }
-
-   @Test
-   public void testSetAccountPreferencesByUniqueField() {
-      Map<String, String> original = new HashMap<>();
-      original.put("a", "1");
-      original.put("c", "3");
-
-      Map<String, String> newMap = new HashMap<>();
-      newMap.put("a", "1");
-
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(account.getPreferences()).thenReturn(preferences);
-      when(preferences.asMap()).thenReturn(original);
-
-      boolean actual = accountAdmin.setAccountPreferences(EMAIL, newMap);
-      assertEquals(true, actual);
-
-      verify(storage).getAccountByEmail(EMAIL);
-      verify(storage).setAccountPreferences(preferences, newMap);
-   }
-
-   @Test
-   public void testAccountPreferenceByUniqueField() {
-      Map<String, String> original = new HashMap<>();
-      original.put("a", "1");
-      original.put("c", "3");
-
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(account.getPreferences()).thenReturn(preferences);
-      when(preferences.asMap()).thenReturn(original);
-
-      boolean actual = accountAdmin.setAccountPreference(EMAIL, "b", "2");
-      assertEquals(true, actual);
-
-      verify(storage).getAccountByEmail(EMAIL);
-      verify(storage).setAccountPreferences(eq(preferences), newPrefsCaptor.capture());
-
-      Map<String, String> newValues = newPrefsCaptor.getValue();
-      assertEquals(3, newValues.size());
-      assertEquals("1", newValues.get("a"));
-      assertEquals("2", newValues.get("b"));
-      assertEquals("3", newValues.get("c"));
-   }
-
-   @Test
-   public void testDeleteAccountPreferenceByUniqueField() {
-      Map<String, String> original = new HashMap<>();
-      original.put("a", "1");
-      original.put("b", "2");
-      original.put("c", "3");
-
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(account.getPreferences()).thenReturn(preferences);
-      when(preferences.asMap()).thenReturn(original);
-
-      boolean actual = accountAdmin.deleteAccountPreference(EMAIL, "b");
-      assertEquals(true, actual);
-
-      verify(storage).getAccountByEmail(EMAIL);
-      verify(storage).setAccountPreferences(eq(preferences), newPrefsCaptor.capture());
-
-      Map<String, String> newValues = newPrefsCaptor.getValue();
-      assertEquals(2, newValues.size());
-      assertEquals("1", newValues.get("a"));
-      assertEquals("3", newValues.get("c"));
    }
 
    @Test
@@ -628,11 +398,11 @@ public class AccountAdminImplTest {
       .build();
 
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
-      when(authenticatedUser.getName()).thenReturn(EMAIL);
+      when(authenticatedUser.getEmailAddress()).thenReturn(EMAIL);
 
       thrown.expect(AccountLoginException.class);
       thrown.expectMessage(
-         "Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "] and userId[" + userName + "]");
+         "Login Error - Unable to find account for username[" + userName + "] using authentication scheme[" + scheme + "]");
       accountAdmin.login(request);
 
       verify(storage, times(0)).createAccountSession(anyString(), any(Account.class), anyString(), anyString());
@@ -658,7 +428,7 @@ public class AccountAdminImplTest {
       when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
       when(storage.createAccountSession(anyString(), eq(account), anyString(), anyString())).thenReturn(session);
       when(authenticationAdmin.authenticate(any(AuthenticationRequest.class))).thenReturn(authenticatedUser);
-      when(authenticatedUser.getName()).thenReturn(EMAIL);
+      when(authenticatedUser.getEmailAddress()).thenReturn(EMAIL);
 
       AccountLoginRequest request = AccountLoginRequestBuilder.newBuilder()//
       .userName(userName)//
@@ -731,22 +501,6 @@ public class AccountAdminImplTest {
    }
 
    @Test
-   public void testGetAccountAccessByUniqueField() {
-      ResultSet<Account> resultSet = ResultSets.singleton(account);
-      ResultSet<AccountSession> resultSet2 = ResultSets.singleton(accountSession);
-
-      when(storage.getAccountByEmail(EMAIL)).thenReturn(resultSet);
-      when(account.getId()).thenReturn(ID);
-      when(storage.getAccountSessionById(ID)).thenReturn(resultSet2);
-
-      ResultSet<AccountSession> actual = accountAdmin.getAccountSessionByUniqueField(EMAIL);
-      assertEquals(resultSet2, actual);
-
-      verify(account).getId();
-      verify(storage).getAccountSessionById(ID);
-   }
-
-   @Test
    public void testUpdateConfig() {
       String userNamePattern = "\\d+";
       String emailPattern = "(.*?)@gmail\\.com";
@@ -771,10 +525,6 @@ public class AccountAdminImplTest {
       assertEquals(true, validator.isValid(AccountField.EMAIL, "hello@gmail.com"));
       assertEquals(true, validator.isValid(AccountField.USERNAME, "1234"));
       assertEquals(true, validator.isValid(AccountField.DISPLAY_NAME, "abc def"));
-   }
-
-   private static Identifiable<String> nullID() {
-      return null;
    }
 
 }

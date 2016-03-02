@@ -36,7 +36,7 @@ public class AccountArtifact extends BaseIdentity<String>implements Account {
    }
 
    @Override
-   public long getId() {
+   public Long getId() {
       return artifact.getUuid();
    }
 

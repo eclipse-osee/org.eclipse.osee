@@ -6,7 +6,8 @@ Bundle-Version: 0.24.0.qualifier
 Fragment-Host: org.eclipse.osee.account.admin
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-Vendor: Eclipse Open System Engineering Environment
-Import-Package: org.hamcrest.core,
+Import-Package: org.eclipse.osee.orcs.utility,
+ org.hamcrest.core,
  org.junit,
  org.junit.rules,
  org.junit.runner,

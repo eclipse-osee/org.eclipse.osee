@@ -21,12 +21,14 @@ import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Test;
 import org.mockito.Mockito;
 
 /**
  * Test Case for {@link AccountDataUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountDataUtilTest {
@@ -51,7 +53,7 @@ public class AccountDataUtilTest {
 
       AccountSessionData actual = AccountDataUtil.asSessionData(access);
 
-      assertEquals(123L, actual.getAccountId());
+      assertEquals((Long) 123L, actual.getAccountId());
       assertEquals("t1", actual.getToken());
    }
 
@@ -60,8 +62,8 @@ public class AccountDataUtilTest {
       Subscription subscription = Mockito.mock(Subscription.class);
       when(subscription.getGuid()).thenReturn("ABCDE");
       when(subscription.getName()).thenReturn("group-1");
-      when(subscription.getGroupId()).thenReturn(98765L);
-      when(subscription.getAccountId()).thenReturn(123145L);
+      when(subscription.getGroupId()).thenReturn(new SubscriptionGroupId(98765L));
+      when(subscription.getAccountId()).thenReturn(TokenFactory.createArtifactId(123145L));
       when(subscription.getAccountName()).thenReturn("account-1");
       when(subscription.isActive()).thenReturn(true);
 
@@ -81,13 +83,13 @@ public class AccountDataUtilTest {
       SubscriptionGroup group = Mockito.mock(SubscriptionGroup.class);
       when(group.getGuid()).thenReturn("ABCDE");
       when(group.getName()).thenReturn("group-1");
-      when(group.getId()).thenReturn(98765L);
+      when(group.getId()).thenReturn(new SubscriptionGroupId(98765L));
 
       SubscriptionGroupData actual = AccountDataUtil.asSubscriptionGroupData(group);
 
       assertEquals("ABCDE", actual.getGuid());
       assertEquals("group-1", actual.getName());
-      assertEquals(98765L, actual.getId());
+      assertEquals((Long) 98765L, actual.getSubscriptionGroupId().getUuid());
 
       assertEquals(true, actual.matches(group));
       assertEquals(true, actual.equals(group));
@@ -108,7 +110,7 @@ public class AccountDataUtilTest {
       return access;
    }
 
-   private static void assertAccess(AccountSessionDetailsData actual, long id, Date created, Date accessed, String accessFrom, String accessDetails) {
+   private static void assertAccess(AccountSessionDetailsData actual, Long id, Date created, Date accessed, String accessFrom, String accessDetails) {
       assertEquals(accessDetails, actual.getAccessDetails());
       assertEquals(accessFrom, actual.getAccessedFrom());
       assertEquals(id, actual.getAccountId());

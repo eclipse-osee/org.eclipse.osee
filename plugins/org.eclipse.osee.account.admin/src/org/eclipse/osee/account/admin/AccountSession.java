@@ -17,7 +17,7 @@ import java.util.Date;
  */
 public interface AccountSession {
 
-   long getAccountId();
+   Long getAccountId();
 
    String getSessionToken();
 

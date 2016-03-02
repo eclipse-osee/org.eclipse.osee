@@ -23,6 +23,9 @@ import org.eclipse.osee.account.admin.SubscriptionGroup;
 import org.eclipse.osee.account.rest.model.AccountInfoData;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.account.rest.model.SubscriptionGroupData;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.type.ResultSets;
 import org.junit.Before;
@@ -33,31 +36,32 @@ import org.mockito.Mock;
 
 /**
  * Test Case for {@link SubscriptionsResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class SubscriptionsResourceTest {
 
-   private static final String SUBSCRIPTION_UUID = "D_UhOLi6D7q_MbOiUYny75bUWxYdlHI9yCLyosilpDMYxRhasnqYvwCOlNEPgvrk";
+   private static final String SUBSCRIPTION_ENCODED =
+      "D_UhOLi6D7q_MbOiUYny75bUWxYdlHI9yCLyosilpDMYxRhasnqYvwCOlNEPgvrk";
    private static final boolean SUBSCRIPTION_IS_ACTIVE = true;
 
    private static final String ACCOUNT_UUID = "asdksa";
    private static final String ACCOUNT_NAME = "account-1";
-   private static final long ACCOUNT_ID = 3129303L;
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(3129303L);
    private static final String ACCOUNT_USERNAME = "sadfaa";
    private static final String ACCOUNT_EMAIL = "hello@hello.com";
    private static final boolean ACCOUNT_IS_ACTIVE = true;
 
    private static final String GROUP_UUID = "sadjha322";
    private static final String GROUP_NAME = "group-1";
-   private static final long GROUP_ID = 37219891L;
+   private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(37219891L);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
 
    //@formatter:off
    @Mock private SubscriptionAdmin manager;
-   
+
    @Mock private Subscription subscription;
    @Mock private SubscriptionGroup group;
    @Mock private Account account;
@@ -71,6 +75,7 @@ public class SubscriptionsResourceTest {
 
       resource = new SubscriptionsResource(manager);
 
+      when(subscription.getGroupId()).thenReturn(GROUP_ID);
       when(subscription.getGuid()).thenReturn(GROUP_UUID);
       when(subscription.getName()).thenReturn(GROUP_NAME);
       when(subscription.getAccountName()).thenReturn(ACCOUNT_NAME);
@@ -82,7 +87,7 @@ public class SubscriptionsResourceTest {
 
       when(account.getGuid()).thenReturn(ACCOUNT_UUID);
       when(account.getName()).thenReturn(ACCOUNT_NAME);
-      when(account.getId()).thenReturn(ACCOUNT_ID);
+      when(account.getId()).thenReturn(ACCOUNT_ID.getUuid());
       when(account.getUserName()).thenReturn(ACCOUNT_USERNAME);
       when(account.getEmail()).thenReturn(ACCOUNT_EMAIL);
       when(account.isActive()).thenReturn(ACCOUNT_IS_ACTIVE);
@@ -91,70 +96,85 @@ public class SubscriptionsResourceTest {
    @Test
    public void testGetSubscriptions() {
       ResultSet<Subscription> results = ResultSets.singleton(subscription);
-      when(manager.getSubscriptionsByAccountUniqueField(ACCOUNT_UUID)).thenReturn(results);
+      when(manager.getSubscriptionsByAccountId(ACCOUNT_ID)).thenReturn(results);
 
-      SubscriptionData[] actual = resource.getSubscriptions(ACCOUNT_UUID);
+      SubscriptionData[] actual = resource.getSubscriptions(ACCOUNT_ID.getUuid());
 
       assertEquals(1, actual.length);
       SubscriptionData data = actual[0];
       checkSubscription(data, GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, SUBSCRIPTION_IS_ACTIVE);
-      verify(manager).getSubscriptionsByAccountUniqueField(ACCOUNT_UUID);
+      verify(manager).getSubscriptionsByAccountId(ACCOUNT_ID);
+   }
+
+   @Test
+   public void testGetSubscriptionEncoded() {
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
+
+      SubscriptionData actual = resource.getSubscriptionByEncoded(SUBSCRIPTION_ENCODED);
+
+      checkSubscription(actual, GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, SUBSCRIPTION_IS_ACTIVE);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED);
    }
 
    @Test
    public void testGetSubscription() {
-      when(manager.getSubscription(SUBSCRIPTION_UUID)).thenReturn(subscription);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
 
-      SubscriptionData actual = resource.getSubscription(SUBSCRIPTION_UUID);
+      SubscriptionData actual = resource.getSubscriptionByEncoded(SUBSCRIPTION_ENCODED);
 
       checkSubscription(actual, GROUP_UUID, GROUP_NAME, ACCOUNT_NAME, SUBSCRIPTION_IS_ACTIVE);
-      verify(manager).getSubscription(SUBSCRIPTION_UUID);
+      verify(manager).getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED);
    }
 
    @Test
    public void testSetSubscriptionActiveOk() {
-      when(manager.setSubscriptionActive(SUBSCRIPTION_UUID, true)).thenReturn(true);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
+      when(manager.setSubscriptionActive(subscription, true)).thenReturn(true);
 
-      Response response = resource.setSubscriptionActive(SUBSCRIPTION_UUID);
+      Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED);
       assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
-      verify(manager).setSubscriptionActive(SUBSCRIPTION_UUID, true);
+      verify(manager).setSubscriptionActive(subscription, true);
    }
 
    @Test
    public void testSetSubscriptionActiveNotModified() {
-      when(manager.setSubscriptionActive(SUBSCRIPTION_UUID, true)).thenReturn(false);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
+      when(manager.setSubscriptionActive(subscription, true)).thenReturn(false);
 
-      Response response = resource.setSubscriptionActive(SUBSCRIPTION_UUID);
+      Response response = resource.setSubscriptionActive(SUBSCRIPTION_ENCODED);
       assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
 
-      verify(manager).setSubscriptionActive(SUBSCRIPTION_UUID, true);
+      verify(manager).setSubscriptionActive(subscription, true);
    }
 
    @Test
    public void testSetSubscriptionInactiveOk() {
-      when(manager.setSubscriptionActive(SUBSCRIPTION_UUID, false)).thenReturn(true);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
+      when(manager.setSubscriptionActive(subscription, false)).thenReturn(true);
 
-      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_UUID);
+      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED);
       assertEquals(Status.OK.getStatusCode(), response.getStatus());
 
-      verify(manager).setSubscriptionActive(SUBSCRIPTION_UUID, false);
+      verify(manager).setSubscriptionActive(subscription, false);
    }
 
    @Test
    public void testSetSubscriptionInactiveMotModified() {
-      when(manager.setSubscriptionActive(SUBSCRIPTION_UUID, false)).thenReturn(false);
+      when(manager.getSubscriptionsByEncodedId(SUBSCRIPTION_ENCODED)).thenReturn(subscription);
+      when(manager.setSubscriptionActive(subscription, false)).thenReturn(false);
 
-      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_UUID);
+      Response response = resource.setSubscriptionInactive(SUBSCRIPTION_ENCODED);
       assertEquals(Status.NOT_MODIFIED.getStatusCode(), response.getStatus());
 
-      verify(manager).setSubscriptionActive(SUBSCRIPTION_UUID, false);
+      verify(manager).setSubscriptionActive(subscription, false);
    }
 
    @Test
    public void testGetSubscriptionGroups() {
       ResultSet<SubscriptionGroup> results = ResultSets.singleton(group);
       when(manager.getSubscriptionGroups()).thenReturn(results);
+      when(manager.getSubscriptionGroupById(GROUP_ID)).thenReturn(group);
 
       SubscriptionGroupData[] actual = resource.getSubscriptionGroups();
 
@@ -165,19 +185,9 @@ public class SubscriptionsResourceTest {
    }
 
    @Test
-   public void testGetSubscriptionGroup() {
-      ResultSet<SubscriptionGroup> results = ResultSets.singleton(group);
-      when(manager.getSubscriptionGroupByUniqueField(GROUP_UUID)).thenReturn(results);
-
-      SubscriptionGroupData actual = resource.getSubscriptionGroup(GROUP_UUID);
-
-      checkSubscriptionGroup(actual, GROUP_UUID, GROUP_NAME, GROUP_ID);
-      verify(manager).getSubscriptionGroupByUniqueField(GROUP_UUID);
-   }
-
-   @Test
    public void testCreateSubscriptionGroup() {
-      when(manager.createSubscriptionGroup(GROUP_NAME)).thenReturn(group);
+      when(manager.createSubscriptionGroup(GROUP_NAME)).thenReturn(GROUP_ID);
+      when(manager.getSubscriptionGroupById(GROUP_ID)).thenReturn(group);
 
       SubscriptionGroupData actual = resource.createSubscriptionGroup(GROUP_NAME);
 
@@ -187,35 +197,25 @@ public class SubscriptionsResourceTest {
 
    @Test
    public void testDeleteSubscriptionGroup() {
-      when(manager.deleteSubscriptionGroupByUniqueField(GROUP_UUID)).thenReturn(true);
+      when(manager.deleteSubscriptionById(GROUP_ID)).thenReturn(true);
 
-      Response actual = resource.deleteSubscriptionGroup(GROUP_UUID);
+      Response actual = resource.deleteSubscriptionGroup(GROUP_ID.getUuid());
       assertEquals(Status.OK.getStatusCode(), actual.getStatus());
 
-      verify(manager).deleteSubscriptionGroupByUniqueField(GROUP_UUID);
-   }
-
-   @Test
-   public void testDeleteSubscriptionGroupNotModified() {
-      when(manager.deleteSubscriptionGroupByUniqueField(GROUP_UUID)).thenReturn(false);
-
-      Response actual = resource.deleteSubscriptionGroup(GROUP_UUID);
-      assertEquals(Status.NOT_MODIFIED.getStatusCode(), actual.getStatus());
-
-      verify(manager).deleteSubscriptionGroupByUniqueField(GROUP_UUID);
+      verify(manager).deleteSubscriptionById(GROUP_ID);
    }
 
    @Test
    public void testGetSubscriptionGroupMembers() {
       ResultSet<Account> results = ResultSets.singleton(account);
-      when(manager.getSubscriptionGroupMembersByUniqueField(GROUP_UUID)).thenReturn(results);
+      when(manager.getSubscriptionMembersOfSubscriptionById(GROUP_ID)).thenReturn(results);
 
-      AccountInfoData[] actual = resource.getSubscriptionGroupMembers(GROUP_UUID);
+      AccountInfoData[] actual = resource.getSubscriptionGroupMembers(GROUP_ID.getUuid());
 
       assertEquals(1, actual.length);
       AccountInfoData data = actual[0];
       checkAccount(data, ACCOUNT_UUID, ACCOUNT_NAME, ACCOUNT_ID, ACCOUNT_USERNAME, ACCOUNT_EMAIL, ACCOUNT_IS_ACTIVE);
-      verify(manager).getSubscriptionGroupMembersByUniqueField(GROUP_UUID);
+      verify(manager).getSubscriptionMembersOfSubscriptionById(GROUP_ID);
    }
 
    private static void checkSubscription(SubscriptionData actual, String guid, String name, String accountName, boolean active) {
@@ -225,16 +225,16 @@ public class SubscriptionsResourceTest {
       assertEquals(active, actual.isActive());
    }
 
-   private static void checkSubscriptionGroup(SubscriptionGroupData actual, String guid, String name, long groupId) {
+   private static void checkSubscriptionGroup(SubscriptionGroupData actual, String guid, String name, SubscriptionGroupId groupId) {
       assertEquals(guid, actual.getGuid());
       assertEquals(name, actual.getName());
-      assertEquals(groupId, actual.getId());
+      assertEquals(groupId, actual.getSubscriptionGroupId());
    }
 
-   private static void checkAccount(AccountInfoData actual, String guid, String name, long accountId, String username, String email, boolean active) {
+   private static void checkAccount(AccountInfoData actual, String guid, String name, ArtifactId accountId, String username, String email, boolean active) {
       assertEquals(guid, actual.getGuid());
       assertEquals(name, actual.getName());
-      assertEquals(accountId, actual.getAccountId());
+      assertEquals(accountId.getUuid(), actual.getAccountId());
       assertEquals(username, actual.getUserName());
       assertEquals(email, actual.getEmail());
       assertEquals(active, actual.isActive());

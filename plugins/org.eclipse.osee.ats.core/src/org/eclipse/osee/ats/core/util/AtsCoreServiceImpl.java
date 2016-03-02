@@ -37,11 +37,10 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
    }
 
    protected static String getAtsId(IAttributeResolver attrResolver, ArtifactId artifact) {
-      ArtifactId art = artifact.getStoreObject();
-      Conditions.checkNotNull(art, "artifact");
-      String toReturn = attrResolver.getSoleAttributeValue(art, AtsAttributeTypes.AtsId, null);
+      Conditions.checkNotNull(artifact, "artifact");
+      String toReturn = attrResolver.getSoleAttributeValue(artifact, AtsAttributeTypes.AtsId, null);
       if (toReturn == null) {
-         toReturn = art.getGuid();
+         toReturn = artifact.getGuid();
       }
       return toReturn;
    }

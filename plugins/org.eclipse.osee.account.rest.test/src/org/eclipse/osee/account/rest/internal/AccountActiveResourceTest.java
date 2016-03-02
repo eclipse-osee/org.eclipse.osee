@@ -17,13 +17,14 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.account.rest.model.AccountActiveData;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 /**
  * Test Case for {@link AccountActiveResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountActiveResourceTest {
@@ -33,7 +34,7 @@ public class AccountActiveResourceTest {
    @Mock private AccountActiveData activeData;
    //@formatter:on
 
-   private String accountId;
+   private ArtifactId accountId;
    private AccountActiveResource resource;
 
    @Before

@@ -29,8 +29,8 @@ import org.eclipse.osee.authorization.admin.AuthorizationAdmin;
 import org.eclipse.osee.authorization.admin.AuthorizationRequest;
 import org.eclipse.osee.authorization.admin.AuthorizationRequestBuilder;
 import org.eclipse.osee.authorization.admin.AuthorizationUser;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseePrincipal;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -139,8 +139,8 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
             .email(subject.getEmailAddress())//
             .userName(subject.getUserName())//
             .build();
-            Identifiable<String> id = accountAdmin.createAccount(request);
-            account = accountAdmin.getAccountById(id).getExactlyOne();
+            ArtifactId accountId = accountAdmin.createAccount(request);
+            account = accountAdmin.getAccountById(accountId).getExactlyOne();
          } else {
             // or log in as anonymous ?
             throw new OseeCoreException("Account not found for [%s]", login);
@@ -162,7 +162,7 @@ public class JaxRsAuthenticatorImpl implements JaxRsAuthenticator {
       return toReturn;
    }
 
-   private static final class OseePrincipalImpl extends BaseIdentity<Long>implements OseePrincipal {
+   private static final class OseePrincipalImpl extends BaseIdentity<Long> implements OseePrincipal {
       private final String login;
       private final Account data;
       private final boolean authenticated;

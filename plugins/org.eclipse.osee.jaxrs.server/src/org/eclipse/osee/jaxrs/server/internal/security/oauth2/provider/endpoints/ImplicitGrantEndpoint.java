@@ -144,6 +144,8 @@ public class ImplicitGrantEndpoint extends ImplicitGrantService {
             .buildFromEncoded();
 
          secData.setApplicationLogoUri(newClientLogoUri.toString());
+      } else {
+         secData.setApplicationLogoUri(clientLogoUri.toString());
       }
 
       return secData;

@@ -17,7 +17,6 @@ Import-Package: org.apache.commons.httpclient,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.logging,
  org.eclipse.osgi.framework.console,
- org.osgi.framework,
  org.osgi.util.tracker
 Export-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

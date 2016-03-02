@@ -40,14 +40,14 @@ public class UnsubscribeResource {
 
    /**
     * Gets an Unsubscribe page to allow the user to select to unsubscribe
-    * 
+    *
     * @param subscriptionUuid
     */
    @Path("/ui/{subscription-uuid}")
    @GET
    @Produces(MediaType.TEXT_HTML)
    public ViewModel getUnsubscribePage(@PathParam("subscription-uuid") String subscriptionUuid) {
-      Subscription subscription = manager.getSubscription(subscriptionUuid);
+      Subscription subscription = manager.getSubscriptionsByEncodedId(subscriptionUuid);
       ViewModel page;
       if (subscription.isActive()) {
          String uuid = subscription.getGuid();
@@ -61,7 +61,7 @@ public class UnsubscribeResource {
 
    /**
     * Gets an Unsubscribe page to allow the user to select to unsubscribe
-    * 
+    *
     * @param subscriptionUuid
     */
    @Path("/ui/{subscription-uuid}/confirm")
@@ -69,7 +69,7 @@ public class UnsubscribeResource {
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.TEXT_HTML)
    public ViewModel processUnsubscribePage(@Encoded @PathParam("subscription-uuid") String subscriptionUuid) {
-      Subscription subscription = manager.getSubscription(subscriptionUuid);
+      Subscription subscription = manager.getSubscriptionsByEncodedId(subscriptionUuid);
       boolean modified = manager.setSubscriptionActive(subscription, false);
       ViewModel page;
       if (modified) {

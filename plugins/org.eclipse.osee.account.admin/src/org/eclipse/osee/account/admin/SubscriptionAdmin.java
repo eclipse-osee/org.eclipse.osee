@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.account.admin;
 
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -17,36 +19,19 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface SubscriptionAdmin {
 
-   ResultSet<Subscription> getSubscriptionsByAccountUniqueField(String accountUniqueField);
+   Subscription getSubscriptionsByEncodedId(String encodedId);
 
-   ResultSet<Subscription> getSubscriptionsByGuid(String guid);
+   ResultSet<Subscription> getSubscriptionsByAccountId(ArtifactId accountId);
 
-   Subscription getSubscription(String subscriptionUuid);
+   SubscriptionGroup getSubscriptionGroupById(SubscriptionGroupId subscriptionId);
 
    boolean setSubscriptionActive(Subscription subscription, boolean active);
 
-   boolean setSubscriptionActive(String subscriptionUuid, boolean active);
-
    ResultSet<SubscriptionGroup> getSubscriptionGroups();
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByUniqueField(String groupUniqueField);
+   SubscriptionGroupId createSubscriptionGroup(String groupName);
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByLocalId(long groupId);
+   boolean deleteSubscriptionById(SubscriptionGroupId subscriptionId);
 
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByName(String groupName);
-
-   ResultSet<SubscriptionGroup> getSubscriptionGroupByGuid(String groupUuid);
-
-   SubscriptionGroup createSubscriptionGroup(String groupName);
-
-   boolean deleteSubscriptionGroupByUniqueField(String groupId);
-
-   ResultSet<Account> getSubscriptionGroupMembersByUniqueField(String groupUniqueField);
-
-   ResultSet<Account> getSubscriptionGroupMembersByLocalId(long groupId);
-
-   ResultSet<Account> getSubscriptionGroupMembersByName(String groupName);
-
-   ResultSet<Account> getSubscriptionGroupMembersByGuid(String groupUuid);
-
+   ResultSet<Account> getSubscriptionMembersOfSubscriptionById(SubscriptionGroupId groupId);
 }

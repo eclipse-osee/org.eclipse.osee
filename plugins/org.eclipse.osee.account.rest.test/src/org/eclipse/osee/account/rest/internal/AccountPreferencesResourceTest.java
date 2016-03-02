@@ -20,18 +20,20 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
 /**
  * Test Case for {@link AccountPreferencesResource}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AccountPreferencesResourceTest {
 
-   private static final String ACCOUNT_ID = "hello@hello.com";
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(134522L);
 
    //@formatter:off
    @Mock private AccountOps accountOps;
@@ -50,12 +52,12 @@ public class AccountPreferencesResourceTest {
 
    @Test
    public void testGetAccountPreferences() {
-      when(accountOps.getAccountPreferencesData(ACCOUNT_ID)).thenReturn(preferences);
+      when(accountOps.getAccountPreferencesDataById(ACCOUNT_ID)).thenReturn(preferences);
 
       AccountPreferencesData actual = resource.getAccountPreferences();
 
       assertEquals(preferences, actual);
-      verify(accountOps).getAccountPreferencesData(ACCOUNT_ID);
+      verify(accountOps).getAccountPreferencesDataById(ACCOUNT_ID);
    }
 
    @Test

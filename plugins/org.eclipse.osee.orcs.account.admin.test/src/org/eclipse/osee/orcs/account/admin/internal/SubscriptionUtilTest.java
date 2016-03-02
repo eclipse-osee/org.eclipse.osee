@@ -14,6 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.account.admin.Subscription;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.orcs.account.admin.internal.SubscriptionUtil.ActiveDelegate;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.junit.Test;
@@ -26,10 +29,10 @@ import org.mockito.Mockito;
  */
 public class SubscriptionUtilTest {
 
-   private static final long ACCOUNT_ID = 3242L;
+   private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(3242L);
    private static final String ACCOUNT_NAME = "account-name";
 
-   private static final long GROUP_ID = 97012L;
+   private static final SubscriptionGroupId GROUP_ID = new SubscriptionGroupId(97012L);
    private static final String SUBSCRIPTION_NAME = "subscription-name";
 
    @Test
@@ -79,11 +82,11 @@ public class SubscriptionUtilTest {
       String encodedUuid = SubscriptionUtil.toEncodedUuid(ACCOUNT_ID, ACCOUNT_NAME, GROUP_ID, SUBSCRIPTION_NAME);
 
       ArtifactReadable accountArt = Mockito.mock(ArtifactReadable.class);
-      when(accountArt.getUuid()).thenReturn(ACCOUNT_ID);
+      when(accountArt.getUuid()).thenReturn(ACCOUNT_ID.getUuid());
       when(accountArt.getName()).thenReturn(ACCOUNT_NAME);
 
       ArtifactReadable subscriptionArt = Mockito.mock(ArtifactReadable.class);
-      when(subscriptionArt.getUuid()).thenReturn(GROUP_ID);
+      when(subscriptionArt.getUuid()).thenReturn(GROUP_ID.getUuid());
       when(subscriptionArt.getName()).thenReturn(SUBSCRIPTION_NAME);
 
       Subscription actual = SubscriptionUtil.fromArtifactData(accountArt, subscriptionArt, true);

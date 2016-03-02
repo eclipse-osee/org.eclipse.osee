@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-
 /**
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public interface IArtifactToken extends Identifiable<String>, HasArtifactType, HasUuid, HasBranch {
+public interface IArtifactToken extends ArtifactId, HasArtifactType {
    // composition interface requires no additional methods,fields
+
 }

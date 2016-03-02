@@ -11,6 +11,9 @@
 package org.eclipse.osee.orcs.account.admin.internal;
 
 import org.eclipse.osee.account.admin.Subscription;
+import org.eclipse.osee.account.rest.model.SubscriptionGroupId;
+import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
 import org.eclipse.osee.framework.jdk.core.util.EncryptUtility;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -24,11 +27,11 @@ public final class SubscriptionUtil {
 
    public static interface ActiveDelegate {
 
-      boolean isActive(long accountId, long groupId);
+      boolean isActive(ArtifactId accountId, SubscriptionGroupId groupId);
    }
 
-   public static String toEncodedUuid(long accountId, String accountDisplayName, long groupId, String subscriptionName) {
-      String rawData = String.format("%s:%s:%s:%s", accountId, accountDisplayName, groupId, subscriptionName);
+   public static String toEncodedUuid(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName) {
+      String rawData = String.format("%s:%s:%s:%s", accountId.getUuid(), accountDisplayName, groupId, subscriptionName);
       return EncryptUtility.encrypt(rawData, SUBSCRIPTION_SECRET);
    }
 
@@ -37,31 +40,36 @@ public final class SubscriptionUtil {
       String[] data = decrypted.split(":");
       int index = 0;
       int accountId = Integer.parseInt(data[index++]);
+      ArtifactId artId = TokenFactory.createArtifactId(Long.valueOf(accountId));
+
       String accountDisplayName = data[index++];
       int groupId = Integer.parseInt(data[index++]);
+      SubscriptionGroupId subscriptionId = new SubscriptionGroupId((long) groupId);
       String subscriptionName = data[index++];
-      return new DelegatingActiveSubscriptionImpl(subscriptionUuid, accountId, accountDisplayName, groupId,
+      return new DelegatingActiveSubscriptionImpl(subscriptionUuid, artId, accountDisplayName, subscriptionId,
          subscriptionName, delegate);
    }
 
-   public static Subscription fromData(long accountId, String accountDisplayName, long groupId, String subscriptionName, boolean isActive) {
+   public static Subscription fromData(ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName, boolean isActive) {
       String encodedUuid = toEncodedUuid(accountId, accountDisplayName, groupId, subscriptionName);
       return new SubscriptionImpl(encodedUuid, accountId, accountDisplayName, groupId, subscriptionName, isActive);
    }
 
    public static Subscription fromArtifactData(ArtifactReadable account, ArtifactReadable subscription, boolean isActive) {
       int accountId = account.getLocalId();
+      ArtifactId artId = TokenFactory.createArtifactId(Long.valueOf(accountId));
       String accountName = account.getName();
       int groupId = subscription.getLocalId();
+      SubscriptionGroupId subcriptionId = new SubscriptionGroupId((long) groupId);
       String subscriptionName = subscription.getName();
-      return fromData(accountId, accountName, groupId, subscriptionName, isActive);
+      return fromData(artId, accountName, subcriptionId, subscriptionName, isActive);
    }
 
    private static final class DelegatingActiveSubscriptionImpl extends SubscriptionImpl {
 
       private final ActiveDelegate provider;
 
-      private DelegatingActiveSubscriptionImpl(String encodedUuid, long accountId, String accountDisplayName, long groupId, String subscriptionName, ActiveDelegate provider) {
+      private DelegatingActiveSubscriptionImpl(String encodedUuid, ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName, ActiveDelegate provider) {
          super(encodedUuid, accountId, accountDisplayName, groupId, subscriptionName, false);
          this.provider = provider;
       }
@@ -72,14 +80,14 @@ public final class SubscriptionUtil {
       }
    }
 
-   private static class SubscriptionImpl extends NamedIdentity<String>implements Subscription {
+   private static class SubscriptionImpl extends NamedIdentity<String> implements Subscription {
 
-      private final long accountId;
+      private final ArtifactId accountId;
       private final String accountDisplayName;
-      private final long groupId;
+      private final SubscriptionGroupId groupId;
       private final boolean active;
 
-      private SubscriptionImpl(String encodedUuid, long accountId, String accountDisplayName, long groupId, String subscriptionName, boolean active) {
+      private SubscriptionImpl(String encodedUuid, ArtifactId accountId, String accountDisplayName, SubscriptionGroupId groupId, String subscriptionName, boolean active) {
          super(encodedUuid, subscriptionName);
          this.accountId = accountId;
          this.accountDisplayName = accountDisplayName;
@@ -88,7 +96,7 @@ public final class SubscriptionUtil {
       }
 
       @Override
-      public long getAccountId() {
+      public ArtifactId getAccountId() {
          return accountId;
       }
 
@@ -98,7 +106,7 @@ public final class SubscriptionUtil {
       }
 
       @Override
-      public long getGroupId() {
+      public SubscriptionGroupId getGroupId() {
          return groupId;
       }
 

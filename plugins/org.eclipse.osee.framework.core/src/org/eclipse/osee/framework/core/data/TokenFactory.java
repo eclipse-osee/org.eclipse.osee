@@ -49,6 +49,16 @@ public final class TokenFactory {
       return new AccessContextIdToken(guid, name);
    }
 
+   public static ArtifactId createArtifactId(Long uuid) {
+      return new ArtifactToken(uuid, null, null, null);
+   }
+
+   public static IArtifactToken createArtifactToken(long uuid, String name, IArtifactType artifactType) {
+      Conditions.checkExpressionFailOnTrue(uuid <= 0, "Artifact Token Uuid must be > 0 for token [%s] type [%s]", name,
+         artifactType);
+      return new ArtifactToken(uuid, null, name, artifactType);
+   }
+
    public static IArtifactToken createArtifactToken(long uuid, String guid, String name, IArtifactType artifactType) {
       Conditions.checkExpressionFailOnTrue(uuid <= 0, "Artifact Token Uuid must be > 0 for token [%s] type [%s]", name,
          artifactType);
@@ -215,7 +225,6 @@ public final class TokenFactory {
       public Long getUuid() {
          return uuid;
       }
-
    }
 
    private final static class AccessContextIdToken extends NamedIdentity<String> implements IAccessContextId {

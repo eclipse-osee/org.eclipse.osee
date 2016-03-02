@@ -116,7 +116,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public boolean deleteAccount(String accountId) {
+   public boolean deleteAccount(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).build(accountId);
       try {
          Response response = newTarget(uri).request().delete();
@@ -152,7 +152,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public AccountDetailsData getAccountDetailsByUniqueField(String accountId) {
+   public AccountDetailsData getAccountDetailsById(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).build(accountId);
       try {
          return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountDetailsData.class);
@@ -162,7 +162,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public AccountPreferencesData getAccountPreferencesByUniqueField(String accountId) {
+   public AccountPreferencesData getAccountPreferencesById(Long accountId) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(
          accountId);
       try {
@@ -173,7 +173,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public boolean setAccountActive(String accountId, boolean active) {
+   public boolean setAccountActive(Long accountId, boolean active) {
       URI uri =
          UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_ACTIVE).build(accountId);
 
@@ -187,7 +187,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public boolean isAccountActive(String accountId) {
+   public boolean isAccountActive(Long accountId) {
       URI uri =
          UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_ACTIVE).build(accountId);
 
@@ -218,7 +218,7 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public boolean setAccountPreferences(String accountId, Map<String, String> preferences) {
+   public boolean setAccountPreferences(Long accountId, Map<String, String> preferences) {
       URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_ID_TEMPLATE).path(ACCOUNT_PREFERENCES).build(
          accountId);
 
@@ -232,9 +232,9 @@ public class AccountClientImpl implements AccountClient {
       }
    }
 
-   private ResultSet<SubscriptionData> getSubscriptionsForAccount(String userId) {
+   private ResultSet<SubscriptionData> getSubscriptionsForAccount(Long accountId) {
       URI uri =
-         UriBuilder.fromUri(baseUri).path("subscriptions").path("for-account").path("{account-id}").build(userId);
+         UriBuilder.fromUri(baseUri).path("subscriptions").path("for-account").path("{account-id}").build(accountId);
       try {
          SubscriptionData[] data =
             newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(SubscriptionData[].class);
@@ -245,9 +245,9 @@ public class AccountClientImpl implements AccountClient {
    }
 
    @Override
-   public ResultSet<UnsubscribeInfo> getUnsubscribeUris(String userUuid, Collection<String> groupNames) {
+   public ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames) {
       ResultSet<UnsubscribeInfo> toReturn = ResultSets.emptyResultSet();
-      ResultSet<SubscriptionData> results = getSubscriptionsForAccount(userUuid);
+      ResultSet<SubscriptionData> results = getSubscriptionsForAccount(accountId);
       if (!results.isEmpty()) {
          List<UnsubscribeInfo> infos = new ArrayList<>();
 

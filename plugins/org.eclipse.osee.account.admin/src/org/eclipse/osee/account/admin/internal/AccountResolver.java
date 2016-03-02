@@ -34,10 +34,6 @@ public class AccountResolver {
       this.accountAdmin = accountAdmin;
    }
 
-   private long parseLocalId(String uniqueFieldValue) {
-      return Long.valueOf(uniqueFieldValue);
-   }
-
    public ResultSet<Account> resolveAccount(String uniqueFieldValue) {
       Conditions.checkNotNullOrEmpty(uniqueFieldValue, "account unique field value");
       ResultSet<Account> toReturn;
@@ -45,19 +41,6 @@ public class AccountResolver {
       switch (type) {
          case EMAIL:
             toReturn = accountAdmin.getAccountByEmail(uniqueFieldValue);
-            break;
-         case LOCAL_ID:
-            long id = parseLocalId(uniqueFieldValue);
-            toReturn = accountAdmin.getAccountById(id);
-            break;
-         case GUID:
-            toReturn = accountAdmin.getAccountByGuid(uniqueFieldValue);
-            break;
-         case DISPLAY_NAME:
-            toReturn = accountAdmin.getAccountByName(uniqueFieldValue);
-            break;
-         case USERNAME:
-            toReturn = accountAdmin.getAccountByUserName(uniqueFieldValue);
             break;
          default:
             toReturn = ResultSets.emptyResultSet();
