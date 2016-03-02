@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -177,6 +179,27 @@ public class QuickSearchOptionComposite extends Composite {
       if (configHandler != null) {
          Label label = new Label(mainComposite, SWT.NONE);
          label.setText(option.asLabel() + ":");
+         if (option == SearchOption.Attribute_Types) {
+            label.addMouseListener(new MouseAdapter() {
+
+               @Override
+               public void mouseUp(org.eclipse.swt.events.MouseEvent event) {
+                  if (event.button == 3) {
+                     try {
+                        // check search by attribute
+                        toReturn.setSelection(true);
+                        optionsMap.put(SearchOption.Attribute_Types, true);
+                        updateExactMatchOptions();
+                        // set attribute search by Name
+                        attributeSearchText.setText(CoreAttributeTypes.Name.getName());
+                        configHandler.loadFrom(new String[] {CoreAttributeTypes.Name.getGuid().toString()});
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+                     }
+                  }
+               }
+            });
+         }
 
          Button filterConfig = new Button(mainComposite, SWT.PUSH);
          String configToolTip = configHandler.getConfigToolTip();
@@ -339,7 +362,6 @@ public class QuickSearchOptionComposite extends Composite {
       Case_Sensitive(OseeHelpContext.QUICK_SEARCH_CASE_SENSITIVE, "Matches text containing the same case as input."),
       Exact_Match(OseeHelpContext.QUICK_SEARCH_EXACT_MATCH, "Matches each input character exactly, including case and order.");
 
-      private static String[] labels = null;
       private static Map<SearchOption, IOptionConfigurationHandler<?>> configurable = null;
       private final HelpContext helpContext;
       private final String toolTip;
