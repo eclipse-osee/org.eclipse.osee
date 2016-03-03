@@ -374,8 +374,8 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram lbaProgram, WorkType workType) {
-      return getWorkflows(lbaProgram, java.util.Collections.singleton(workType));
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType) {
+      return getWorkflows(program, java.util.Collections.singleton(workType));
    }
 
    @Override

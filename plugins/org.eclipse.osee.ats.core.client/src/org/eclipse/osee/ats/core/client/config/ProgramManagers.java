@@ -38,7 +38,7 @@ public abstract class ProgramManagers {
 
    @SuppressWarnings("rawtypes")
    public static Set<IAtsProgramManager> getAtsProgramManagers() {
-      Set<IAtsProgramManager> lbaProgramItems = new HashSet<>();
+      Set<IAtsProgramManager> programItems = new HashSet<>();
       IExtensionPoint point =
          Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.core.client.AtsProgramManager");
       if (point == null) {
@@ -59,7 +59,7 @@ public abstract class ProgramManagers {
                   try {
                      Class taskClass = bundle.loadClass(classname);
                      Object obj = taskClass.newInstance();
-                     lbaProgramItems.add((IAtsProgramManager) obj);
+                     programItems.add((IAtsProgramManager) obj);
                   } catch (Exception ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, "Error loading AtsProgramManager extension", ex);
                   }
@@ -67,6 +67,6 @@ public abstract class ProgramManagers {
             }
          }
       }
-      return lbaProgramItems;
+      return programItems;
    }
 }

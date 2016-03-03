@@ -48,8 +48,8 @@ public interface IAtsVersionService {
 
    IAtsVersion setTargetedVersion(IAtsTeamWorkflow teamWf, IAtsVersion version, IAtsChangeSet changes);
 
-   IAtsVersion createVersion(IAtsProgram lbaProgram, String versionName, IAtsChangeSet changes);
+   IAtsVersion createVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
-   IAtsVersion getVersion(IAtsProgram lbaProgram, String versionName, IAtsChangeSet changes);
+   IAtsVersion getVersion(IAtsProgram program, String versionName, IAtsChangeSet changes);
 
 }
