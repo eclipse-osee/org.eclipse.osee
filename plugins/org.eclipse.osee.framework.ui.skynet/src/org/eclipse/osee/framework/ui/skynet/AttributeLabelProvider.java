@@ -36,11 +36,14 @@ public class AttributeLabelProvider implements ITableLabelProvider {
       Attribute<?> attribute = (Attribute<?>) element;
       if (columnIndex == 0) {
          return attribute.getAttributeType().getName();
-      }
-      try {
-         return attribute.getDisplayableString();
-      } catch (OseeCoreException ex) {
-         return Lib.exceptionToString(ex);
+      } else if (columnIndex == 1) {
+         try {
+            return attribute.getDisplayableString();
+         } catch (OseeCoreException ex) {
+            return Lib.exceptionToString(ex);
+         }
+      } else {
+         return String.valueOf(attribute.getGammaId());
       }
    }
 
