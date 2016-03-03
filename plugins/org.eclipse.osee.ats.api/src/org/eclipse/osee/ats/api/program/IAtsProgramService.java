@@ -112,4 +112,6 @@ public interface IAtsProgramService {
 
    Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, WorkType workType);
 
+   Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program);
+
 }

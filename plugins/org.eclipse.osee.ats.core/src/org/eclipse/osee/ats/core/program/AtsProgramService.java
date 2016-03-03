@@ -341,6 +341,13 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
+   public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program) throws OseeCoreException {
+      Collection<IAtsTeamDefinition> workTypeTeamDefs = getTeamDefs(program);
+      return services.getQueryService().createQuery(WorkItemType.TeamWorkflow).andTeam(workTypeTeamDefs).getItems(
+         IAtsTeamWorkflow.class);
+   }
+
+   @Override
    public Collection<IAtsTeamWorkflow> getWorkflows(IAtsProgram program, Collection<WorkType> workTypes, IAtsWorkItem workItem) throws OseeCoreException {
       if (workTypes.contains(WorkType.All)) {
          throw new OseeArgumentException("Invalid option ALL for getWorkflow");

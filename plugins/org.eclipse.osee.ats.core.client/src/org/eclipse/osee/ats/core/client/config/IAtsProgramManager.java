@@ -22,8 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IAtsProgramManager {
 
-   public String getName(TeamWorkFlowArtifact teamArt);
-
    public boolean isApplicable(TeamWorkFlowArtifact teamArt);
 
    public IOperation createValidateReqChangesOp(TeamWorkFlowArtifact teamArt) throws OseeCoreException;

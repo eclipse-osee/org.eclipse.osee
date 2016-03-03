@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.api.query;
 
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
@@ -39,7 +38,7 @@ public interface IAtsQuery {
 
    <T extends IAtsWorkItem> Collection<T> getItems() throws OseeCoreException;
 
-   <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz);
+   <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz);
 
    IAtsQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOption) throws OseeCoreException;
 

@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -48,27 +49,27 @@ import org.eclipse.osee.framework.ui.swt.Displays;
  * @author Donald G. Dunne
  */
 public class CreateActionArtifactChangeReportJob extends Job {
-   private final Set<TeamWorkFlowArtifact> teamArts;
+   private final Set<IAtsTeamWorkflow> teamWfs;
    private final IAttributeType attributeType;
 
-   public CreateActionArtifactChangeReportJob(String jobName, Set<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType) {
+   public CreateActionArtifactChangeReportJob(String jobName, Set<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType) {
       super(jobName);
-      this.teamArts = teamArts;
+      this.teamWfs = teamWfs;
       this.attributeType = attributeType;
    }
 
    @Override
    public IStatus run(IProgressMonitor monitor) {
-      return runIt(monitor, getName(), teamArts, attributeType);
+      return runIt(monitor, getName(), teamWfs, attributeType);
    }
 
-   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType) {
+   public static IStatus runIt(IProgressMonitor monitor, String jobName, Collection<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType) {
       XResultData rd = new XResultData();
       try {
-         if (teamArts.isEmpty()) {
+         if (teamWfs.isEmpty()) {
             throw new OseeStateException("No Actions/Workflows Specified");
          }
-         retrieveData(monitor, teamArts, attributeType, rd);
+         retrieveData(monitor, teamWfs, attributeType, rd);
          if (rd.toString().equals("")) {
             rd.log("No Problems Found");
          }
@@ -97,16 +98,17 @@ public class CreateActionArtifactChangeReportJob extends Job {
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
     */
-   private static void retrieveData(IProgressMonitor monitor, Collection<TeamWorkFlowArtifact> teamArts, IAttributeType attributeType, XResultData rd) throws OseeCoreException {
+   private static void retrieveData(IProgressMonitor monitor, Collection<IAtsTeamWorkflow> teamWfs, IAttributeType attributeType, XResultData rd) throws OseeCoreException {
       monitor.subTask("Retrieving Actions");
 
       int x = 1;
       rd.addRaw(AHTML.beginMultiColumnTable(95));
       rd.addRaw(AHTML.addHeaderRowMultiColumnTable(
          new String[] {"ID", "Bulld", "UI", attributeType.getName(), "RPCR", "Change"}));
-      for (TeamWorkFlowArtifact teamArt : teamArts) {
+      for (IAtsTeamWorkflow teamWf : teamWfs) {
+         TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
          String rcprId = teamArt.getSoleAttributeValue(AtsAttributeTypes.LegacyPcrId, "");
-         String result = String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamArts.size(), rcprId,
+         String result = String.format("Processing %s/%s RPCR %s for \"%s\"", x, teamWfs.size(), rcprId,
             teamArt.getTeamDefinition().getName());
          monitor.subTask(result);
          rd.log("\nRPCR " + rcprId);

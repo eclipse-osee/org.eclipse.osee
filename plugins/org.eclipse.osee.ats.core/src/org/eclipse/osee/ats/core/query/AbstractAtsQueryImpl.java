@@ -19,7 +19,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
-import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -1005,7 +1004,7 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    }
 
    @Override
-   public <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz) {
+   public <T extends IAtsWorkItem> Collection<T> getItems(Class<T> clazz) {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
    }
 
