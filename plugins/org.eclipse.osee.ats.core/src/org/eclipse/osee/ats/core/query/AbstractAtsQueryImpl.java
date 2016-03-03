@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.Set;
+import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
@@ -44,6 +45,7 @@ import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -989,6 +991,22 @@ public abstract class AbstractAtsQueryImpl implements IAtsQuery {
    @Override
    public boolean exists() {
       return !getItemIds().isEmpty();
+   }
+
+   @Override
+   public IAtsQuery andTag(String... tags) {
+      List<String> values = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(tags);
+      return andAttr(CoreAttributeTypes.StaticId, values, QueryOption.EXACT_MATCH_OPTIONS);
+   }
+
+   @Override
+   public IAtsQuery andActive(boolean active) {
+      return andAttr(CoreAttributeTypes.Active, active ? "true" : "false");
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
    }
 
 }

@@ -34,6 +34,8 @@ public interface IAtsConfigQuery {
 
    <T extends IAtsConfigObject> Collection<T> getItems();
 
+   <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz);
+
    IAtsConfigQuery isOfType(IArtifactType artifactType);
 
    IAtsConfigQuery andAttr(IAttributeType attributeType, Collection<String> values, QueryOption... queryOptions) throws OseeCoreException;
@@ -53,5 +55,9 @@ public interface IAtsConfigQuery {
    <T extends ArtifactId> ResultSet<T> getResultArtifacts();
 
    IAtsConfigQuery andName(String name);
+
+   IAtsConfigQuery andTag(String... tags);
+
+   IAtsConfigQuery andActive(boolean active);
 
 }

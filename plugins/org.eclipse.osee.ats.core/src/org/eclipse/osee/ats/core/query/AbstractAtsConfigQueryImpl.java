@@ -266,7 +266,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
    public IAtsConfigQuery andName(String name) {
       return andAttr(CoreAttributeTypes.Name, name);
    }
-   
+
    @Override
    public IAtsConfigQuery andWorkType(Collection<WorkType> workTypes) {
       List<String> workTypeStrs = new LinkedList<>();
@@ -274,6 +274,22 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
          workTypeStrs.add(workType2.name());
       }
       return andAttr(AtsAttributeTypes.WorkType, workTypeStrs);
+   }
+
+   @Override
+   public IAtsConfigQuery andTag(String... tags) {
+      List<String> values = org.eclipse.osee.framework.jdk.core.util.Collections.getAggregate(tags);
+      return andAttr(CoreAttributeTypes.StaticId, values, QueryOption.EXACT_MATCH_OPTIONS);
+   }
+
+   @Override
+   public IAtsConfigQuery andActive(boolean active) {
+      return andAttr(CoreAttributeTypes.Active, active ? "true" : "false");
+   }
+
+   @Override
+   public <T extends IAtsConfigObject> Collection<T> getItems(Class<T> clazz) {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
    }
 
 }
