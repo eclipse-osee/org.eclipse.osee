@@ -188,11 +188,29 @@ public class AtsProgramService implements IAtsProgramService {
    }
 
    @Override
-   public IAtsProgram getProgram(IAtsWorkItem wi) {
-      IAtsTeamDefinition teamDefinition = wi.getParentTeamWorkflow().getTeamDefinition();
-      IAtsTeamDefinition topTeamDef = teamDefinition.getTeamDefinitionHoldingVersions();
-      IAtsProgram program = (IAtsProgram) services.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
-         AtsAttributeTypes.TeamDefinition, services.getStoreService().getGuid(topTeamDef)).getResults().getOneOrNull();
+   public IAtsProgram getProgram(IAtsWorkItem workItem) {
+      IAtsTeamDefinition teamDef = workItem.getParentTeamWorkflow().getTeamDefinition();
+      return getProgram(teamDef);
+   }
+
+   @Override
+   public IAtsProgram getProgram(IAtsTeamDefinition teamDef) {
+      IAtsProgram program = null;
+      Long programUuid =
+         services.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
+      if (programUuid != null) {
+         program = services.getProgramService().getProgram(programUuid);
+      }
+      if (program == null) {
+         IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
+         if (!teamDef.equals(topTeamDef)) {
+            program = getProgram(teamDef);
+         }
+      }
+      if (program == null) {
+         program = (IAtsProgram) services.getQueryService().createQuery(AtsArtifactTypes.Program).andAttr(
+            AtsAttributeTypes.TeamDefinition, services.getStoreService().getGuid(teamDef)).getResults().getOneOrNull();
+      }
       return program;
    }
 

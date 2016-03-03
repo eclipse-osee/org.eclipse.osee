@@ -32,8 +32,6 @@ public interface IAtsProgramManager {
 
    public Collection<IAtsProgram> getPrograms() throws OseeCoreException;
 
-   public void reloadCache() throws OseeCoreException;
-
    public String getXProgramComboWidgetName();
 
    public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;

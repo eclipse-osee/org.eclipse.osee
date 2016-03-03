@@ -47,6 +47,8 @@ public interface IAtsProgramService {
 
    IAtsProgram getProgram(IAtsInsertion insertion);
 
+   IAtsProgram getProgram(IAtsTeamDefinition iAtsTeamDefinition);
+
    // insertions
    Collection<IAtsInsertion> getInsertions(IAtsProgram program);
 
