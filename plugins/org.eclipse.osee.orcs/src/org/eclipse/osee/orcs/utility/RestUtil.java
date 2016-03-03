@@ -16,8 +16,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import java.util.ArrayList;
 import java.util.List;
+import javax.ws.rs.core.HttpHeaders;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.AttributeReadable;
@@ -116,6 +119,47 @@ public class RestUtil {
             }
          }
       }
+   }
+
+   public static String getClientId(HttpHeaders httpHeaders) {
+      String clientId = httpHeaders.getHeaderString("osee.client.id");
+      if (clientId == null) {
+         clientId = "";
+      }
+      return clientId;
+   }
+
+   public static String getAccountId(HttpHeaders httpHeaders) {
+      String clientId = httpHeaders.getHeaderString("osee.account.id");
+      if (clientId == null) {
+         clientId = "";
+      }
+      return clientId;
+   }
+
+   public static String getServerId(HttpHeaders httpHeaders) {
+      String clientId = httpHeaders.getHeaderString("osee.server.id");
+      if (clientId == null) {
+         clientId = "";
+      }
+      return clientId;
+   }
+
+   /**
+    * @return User by artId which is also accountId
+    */
+   public static ArtifactReadable getUserByAccountId(String accountId, OrcsApi orcsApi) {
+      ArtifactReadable userArt = null;
+      if (Strings.isNumeric(accountId)) {
+         userArt = getUserByAccountId(Long.valueOf(accountId), orcsApi);
+      }
+      return userArt;
+   }
+
+   public static ArtifactReadable getUserByAccountId(Long accountId, OrcsApi orcsApi) {
+      ArtifactReadable user = orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(
+         accountId.intValue()).getResults().getAtMostOneOrNull();
+      return user;
    }
 
 }
