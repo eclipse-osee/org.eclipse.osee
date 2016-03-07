@@ -77,7 +77,7 @@ public class ActivityIdColumnTest {
       ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();
-      col.getWorkPackages(teamWf1, workPackages);
+      col.getWorkPackage(teamWf1);
 
       Assert.assertEquals(1, workPackages.size());
       Assert.assertEquals(workPkg1, workPackages.iterator().next());
@@ -88,7 +88,7 @@ public class ActivityIdColumnTest {
       ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();
-      col.getWorkPackages(task1, workPackages);
+      col.getWorkPackage(task1);
 
       // Each work flow stores it's own work package, so none should be returned
       Assert.assertEquals(0, workPackages.size());

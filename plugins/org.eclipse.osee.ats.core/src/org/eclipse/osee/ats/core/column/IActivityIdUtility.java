@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import java.util.Collection;
-import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -21,6 +19,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IActivityIdUtility extends IAtsColumnUtility {
 
-   public abstract Collection<IAtsWorkPackage> getWorkPackages(IAtsObject atsObject, Set<IAtsWorkPackage> workPackages) throws OseeCoreException;
+   IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException;
+
+   String getWorkPackageId(Object object);
+
+   String getColumnText(IAtsWorkPackage workPackage);
 
 }

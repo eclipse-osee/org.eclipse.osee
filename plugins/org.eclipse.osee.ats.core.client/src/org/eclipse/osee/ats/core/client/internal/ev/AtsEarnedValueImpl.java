@@ -39,17 +39,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 public class AtsEarnedValueImpl implements IAtsEarnedValueService {
 
    @Override
-   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException {
-      WorkPackageArtifact wpa = null;
+   public String getWorkPackageId(IAtsWorkItem workItem) {
+      String guid = null;
       Artifact artifact = AtsClientService.get().getArtifact(workItem);
-      Conditions.checkNotNull(artifact, "workItem", "Can't Find Artifact matching [%s]", workItem.toString());
+      Conditions.checkNotNull(artifact, "workItem", "Can't Find Work Package matching %s", workItem.toStringWithId());
       if (artifact instanceof AbstractWorkflowArtifact) {
          AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-         String workPackageGuid = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, null);
-         if (Strings.isValid(workPackageGuid)) {
-            Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranch());
-            wpa = new WorkPackageArtifact(workPkgArt);
-         }
+         guid = awa.getSoleAttributeValue(AtsAttributeTypes.WorkPackageGuid, null);
+      }
+      return guid;
+   }
+
+   @Override
+   public IAtsWorkPackage getWorkPackage(IAtsWorkItem workItem) throws OseeCoreException {
+      WorkPackageArtifact wpa = null;
+      String workPackageGuid = getWorkPackageId(workItem);
+      if (Strings.isValid(workPackageGuid)) {
+         Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranch());
+         return new WorkPackageArtifact(workPkgArt);
       }
       return wpa;
    }
@@ -101,4 +108,5 @@ public class AtsEarnedValueImpl implements IAtsEarnedValueService {
       }
       return workPackageOptions;
    }
+
 }
