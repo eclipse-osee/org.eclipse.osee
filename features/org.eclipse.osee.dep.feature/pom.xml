@@ -5,14 +5,14 @@
 
 	<parent>
 		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.runtime.parent</artifactId>
+		<artifactId>org.eclipse.osee.dep.parent</artifactId>
 		<version>0.24.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.runtime.parent</relativePath>
+		<relativePath>../../plugins/org.eclipse.osee.dep.parent</relativePath>
 	</parent>
 
 	<artifactId>org.eclipse.osee.dep.feature</artifactId>
 	<packaging>eclipse-feature</packaging>
-	<name>OSEE Client External Feature (Incubation)</name>
+	<name>OSEE Client Dep Feature (Incubation)</name>
 
 	<build>
 		<plugins>
@@ -34,10 +34,10 @@
 								<plugin id="org.apache.xml.serializer" />								
 								<plugin id="org.aopalliance" />
 								<plugin id="jms.libraries" />
-								<plugin id="net.jini" />
 								<plugin id="org.json" />
 								<plugin id="org.apache.cxf.core.config" />
 								<plugin id="javax.ws.rs" />
+								<plugin id="javax.wsdl" />
 								<plugin id="com.google.gson" />
 								<plugin id="org.eclipse.xtext" />
 								<plugin id="org.antlr.runtime" />
@@ -47,8 +47,80 @@
 								<plugin id="org.eclipse.team.svn.core" />
 								<plugin id="ch.qos.logback.slf4j" />
 								<plugin id="org.jsoup" />
+								<plugin id="org.eclipse.swt" />
+								<plugin id="org.eclipse.wst.common.project.facet.core" />
+								<feature id="org.eclipse.graphiti.feature" />
+								<feature id="org.eclipse.graphiti.source.feature" />
+								<feature id="org.eclipse.equinox.server.jetty" />
+								<feature id="org.eclipse.core.runtime.feature" />
+								<feature id="org.eclipse.xtext.sdk" />
+								<feature id="org.eclipse.emf" />
+								<feature id="org.eclipse.sdk" />
+								<feature id="org.eclipse.xtend.sdk" />
+								<feature id="org.eclipse.xtext.docs" />
+								<feature id="org.eclipse.nebula.widgets.ganttchart.feature" />
+								<feature id="org.eclipse.nebula.widgets.xviewer.feature" />
+								<feature id="org.eclipse.equinox.executable" />
+								<feature id="org.eclipse.equinox.p2.discovery.feature" />
+								<feature id="org.eclipse.equinox.p2.sdk" />
+								<feature id="org.eclipse.equinox.core.sdk" />
+								<feature id="org.eclipse.equinox.core.feature" />
+								<feature id="org.eclipse.equinox.compendium.sdk" />
+								<feature id="org.eclipse.birt.osgi.runtime.sdk" />
+								<feature id="org.eclipse.ecf.core.feature" />
+								<feature id="org.eclipse.ecf.core.source.feature" />
+								<feature id="org.eclipse.ecf.core.ssl.feature" />
+								<feature id="org.eclipse.ecf.core.ssl.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.ssl.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.ssl.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.source.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature" />
+								<feature id="org.eclipse.ecf.filetransfer.httpclient4.ssl.source.feature" />
 							</excludes>
 						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>${maven-antrun-version}</version>
+				<dependencies>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>${ant-contrib-version}</version>
+						<exclusions>
+							<exclusion>
+								<groupId>ant</groupId>
+								<artifactId>ant</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+				</dependencies>
+				<executions>
+					<execution>
+						<id>rename-osee-repo</id>
+						<phase>package</phase>
+						<configuration>
+							<target>
+								<property name="plugin_classpath" refid="maven.plugin.classpath" />
+								<taskdef resource="net/sf/antcontrib/antlib.xml">
+									<classpath>
+										<pathelement path="${classpath}" />
+										<pathelement path="${plugin_classpath}" />
+									</classpath>
+								</taskdef>
+
+								<ant antfile="rename.xml" inheritRefs="true" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
 					</execution>
 				</executions>
 			</plugin>

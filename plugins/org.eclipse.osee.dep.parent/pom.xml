@@ -3,13 +3,6 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.eclipse.osee</groupId>
-		<artifactId>org.eclipse.osee.ide.parent</artifactId>
-		<version>0.24.0-SNAPSHOT</version>
-		<relativePath>../../plugins/org.eclipse.osee.ide.parent</relativePath>
-	</parent>
-
 	<groupId>org.eclipse.osee</groupId>
 	<artifactId>org.eclipse.osee.dep.parent</artifactId>
 	<packaging>pom</packaging>
@@ -20,5 +13,305 @@
 		<module>../../features/org.eclipse.osee.dep.feature</module>
 		<module>../../plugins/org.eclipse.osee.dep.p2</module>
 	</modules>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<tycho-version>0.22.0</tycho-version>
+		<tycho-extras-version>0.22.0</tycho-extras-version>
+
+		<build-alias>-DEV</build-alias>
+
+		<maven-antrun-version>1.6</maven-antrun-version>
+		<ant-contrib-version>1.0b3</ant-contrib-version>
+		<jsch-version>0.1.42</jsch-version>
+		<ant-jsch-version>1.8.2</ant-jsch-version>
+		<ant-commons-net-version>1.7.0</ant-commons-net-version>
+		<commons-net-version>1.4.1</commons-net-version>
+		<build-helper-maven-plugin-version>1.7</build-helper-maven-plugin-version>
+		<maven-resources-version>2.5</maven-resources-version>
+
+		<jaxdoclet-version>0.9.0</jaxdoclet-version>
+		<maven-clean-version>2.5</maven-clean-version>
+		<platform-version-name>mars</platform-version-name>
+<!-- 		<orbit-version>R20150124073747</orbit-version> -->
+		<orbit-version>R20130517111416</orbit-version>
+		<subversive-version>1.0</subversive-version>
+		<polarion-version>3.0</polarion-version>
+
+		<orbit-site>http://download.eclipse.org/tools/orbit/downloads/drops/${orbit-version}/repository</orbit-site>
+		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
+		<eclipse-ip-site>https://github.com/osee-dev/osee.external.releases/raw/master/org.eclipse.ip</eclipse-ip-site>
+		<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
+	</properties>
+
+	<licenses>
+		<license>
+			<name>Eclipse Public License v1.0</name>
+			<comments>
+       All rights reserved.
+
+       This program and the accompanying materials are made
+       available under the terms of the Eclipse Public License v1.0
+       which accompanies this distribution, and is available at
+       http://www.eclipse.org/legal/epl-v10.htm
+      </comments>
+		</license>
+	</licenses>
+
+	<organization>
+		<name>Eclipse Open System Engineering Environment</name>
+		<url>http://www.eclipse.org/osee</url>
+	</organization>
+
+ 	<repositories>
+		<repository>
+			<id>orbit</id>
+			<layout>p2</layout>
+			<url>${orbit-site}</url>
+		</repository>
+		<repository>
+			<id>eclipse</id>
+			<layout>p2</layout>
+			<url>${eclipse-site}</url>
+		</repository>
+		<repository>
+			<id>eclipse-ip</id>
+			<layout>p2</layout>
+			<url>${eclipse-ip-site}</url>
+		</repository>
+		<repository>
+			<id>nebula</id>
+			<layout>p2</layout>
+			<url>${nebula-site}</url>
+		</repository>
+	</repositories>
+	<build>
+	<extensions>
+	</extensions>
+		<sourceDirectory>src</sourceDirectory>
+		<plugins>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-maven-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<extensions>true</extensions>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-packaging-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<format>'v'yyyyMMddHHmm'${build-alias}'</format>
+					<archiveSite>true</archiveSite>
+					<environments>
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> -->
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>target-platform-configuration</artifactId>
+				<version>${tycho-version}</version>
+				<configuration>
+					<resolver>p2</resolver>
+					<environments>
+						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
+							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
+							</environment> -->
+						<environment>
+							<os>macosx</os>
+							<ws>cocoa</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86_64</arch>
+						</environment>
+						<environment>
+							<os>win32</os>
+							<ws>win32</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86</arch>
+						</environment>
+						<environment>
+							<os>linux</os>
+							<ws>gtk</ws>
+							<arch>x86_64</arch>
+						</environment>
+					</environments>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-source-plugin</artifactId>
+				<version>${tycho-version}</version>
+				<executions>
+					<execution>
+						<id>plugin-source</id>
+						<goals>
+							<goal>plugin-source</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		  <plugin>
+				<groupId>org.eclipse.tycho.extras</groupId>
+				<artifactId>tycho-source-feature-plugin</artifactId>
+				<version>${tycho-extras-version}</version>
+				<executions>
+					<execution>
+						<id>source-feature</id>
+						<phase>package</phase>
+						<goals>
+							<goal>source-feature</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<excludes>
+						<plugin id="sourcefeature.bundle.nosource" />
+						<feature id="sourcefeature.feature.nosource" />
+					</excludes>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.eclipse.tycho</groupId>
+				<artifactId>tycho-p2-plugin</artifactId>
+				<version>${tycho-extras-version}</version>
+				<executions>
+					<execution>
+						<id>default-p2-metadata-default</id>
+						<configuration>
+							<attachP2Metadata>false</attachP2Metadata>
+						</configuration>
+					</execution>
+					<execution>
+						<id>attach-p2-metadata</id>
+						<goals>
+							<goal>p2-metadata</goal>
+						</goals>
+						<phase>package</phase>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-compiler-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<source>1.8</source>
+						<target>1.8</target>
+						<encoding>UTF-8</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-source-plugin</artifactId>
+					<version>${tycho-version}</version>
+					<configuration>
+						<strictSrcIncludes>false</strictSrcIncludes>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho.extras</groupId>
+					<artifactId>tycho-source-feature-plugin</artifactId>
+					<version>${tycho-extras-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.eclipse.tycho</groupId>
+					<artifactId>tycho-p2-plugin</artifactId>
+					<version>${tycho-version}</version>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-resources-plugin</artifactId>
+					<version>${maven-resources-version}</version>
+					<configuration>
+						<encoding>ISO-8859-1</encoding>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>${maven-antrun-version}</version>
+					<dependencies>
+						<dependency>
+							<groupId>ant-contrib</groupId>
+							<artifactId>ant-contrib</artifactId>
+							<version>${ant-contrib-version}</version>
+							<exclusions>
+								<exclusion>
+									<groupId>ant</groupId>
+									<artifactId>ant</artifactId>
+								</exclusion>
+							</exclusions>
+						</dependency>
+						<dependency>
+							<groupId>com.jcraft</groupId>
+							<artifactId>jsch</artifactId>
+							<version>${jsch-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant-jsch</artifactId>
+							<version>${ant-jsch-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>commons-net</groupId>
+							<artifactId>commons-net</artifactId>
+							<version>${commons-net-version}</version>
+						</dependency>
+						<dependency>
+							<groupId>org.apache.ant</groupId>
+							<artifactId>ant-commons-net</artifactId>
+							<version>${ant-commons-net-version}</version>
+						</dependency>
+					</dependencies>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>build-helper-maven-plugin</artifactId>
+					<version>${build-helper-maven-plugin-version}</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+	</build>
 
 </project>

@@ -10,6 +10,7 @@
 	<version>0.24.0-SNAPSHOT</version>
 
 	<modules>
+		<module>../../plugins/org.eclipse.osee.dep.target</module>
 		<module>../../plugins/org.eclipse.osee.x.parent</module>
 		<module>../../plugins/org.eclipse.osee.ide.parent</module>
 	</modules>
@@ -85,7 +86,7 @@
 		<url>http://www.eclipse.org/osee</url>
 	</organization>
 
-	<repositories>
+<!-- 	<repositories>
 		<repository>
 			<id>orbit</id>
 			<layout>p2</layout>
@@ -96,7 +97,7 @@
 			<layout>p2</layout>
 			<url>${eclipse-site}</url>
 		</repository>
-	</repositories>
+	</repositories> -->
 <!-- 	<pluginRepositories> -->
 <!-- 		<pluginRepository> -->
 <!-- 			<id>cbi-jdt</id> -->
@@ -111,11 +112,6 @@
 <!-- 	</pluginRepositories> -->
 	<build>
 	<extensions>
-  <extension>
-	<groupId>io.takari.maven</groupId>
-	<artifactId>maven-timeline</artifactId>
-	<version>1.6</version>
-</extension>
 	</extensions>
 		<sourceDirectory>src</sourceDirectory>
 		<plugins>
@@ -169,15 +165,13 @@
 				<artifactId>target-platform-configuration</artifactId>
 				<version>${tycho-version}</version>
 				<configuration>
-					<filters>
-						<!-- Work around Equinox bug 348045 -->
-						<filter>
-							<type>p2-installable-unit</type>
-							<id>org.eclipse.equinox.servletbridge.extensionbundle</id>
-							<removeAll />
-						</filter>
-					</filters>
-					<resolver>p2</resolver>
+					<target>
+                    <artifact>
+                       <groupId>org.eclipse.osee</groupId>
+                        <artifactId>org.eclipse.osee.dep.target</artifactId>
+                        <version>0.24.0-SNAPSHOT</version>
+                     </artifact>
+                 </target>
 					<environments>
 						<!-- <environment> <os>macosx</os> <ws>carbon</ws> <arch>x86</arch> 
 							</environment> <environment> <os>macosx</os> <ws>cocoa</ws> <arch>x86</arch> 
@@ -392,6 +386,14 @@
 
 	<profiles>
 		<profile>
+			<id>osee-target-build</id>
+		   <activation>
+		   		<property>
+		   			<name>osee-target-build</name>
+	   			</property>
+		   </activation>
+		</profile>	
+		<profile>
 			<id>eclipse-platform</id>
 			<activation>
 				<property>
@@ -447,7 +449,7 @@
 			</reporting>
 		</profile>
 
-		<profile>
+	<!--  	<profile>
 			<id>client-external-p2</id>
 			<activation>
 				<property>
@@ -457,10 +459,10 @@
 			</activation>
 			<properties>
 				<nebula-site>http://download.eclipse.org/technology/nebula/snapshot</nebula-site>
-				<!--<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site> -->
+				<wikitext-site>http://download.eclipse.org/tools/mylyn/update/weekly</wikitext-site>
 				<subversive-site>http://download.eclipse.org/technology/subversive/${subversive-version}/update-site</subversive-site>
 				<polarion-site>http://community.polarion.com/projects/subversive/download/eclipse/${polarion-version}/update-site</polarion-site>
-				<!-- <egit-site>http://download.eclipse.org/egit/updates</egit-site> -->
+				<egit-site>http://download.eclipse.org/egit/updates</egit-site>
 			</properties>
 			<repositories>
 				<repository>
@@ -468,8 +470,8 @@
 					<layout>p2</layout>
 					<url>${nebula-site}</url>
 				</repository>
-				<!--<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
-					</repository> -->
+				<repository> <id>wikitext</id> <layout>p2</layout> <url>${wikitext-site}</url> 
+					</repository>
 				<repository>
 					<id>polarion</id>
 					<layout>p2</layout>
@@ -480,11 +482,12 @@
 					<layout>p2</layout>
 					<url>${subversive-site}</url>
 				</repository>
-				<!-- <repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> 
-					</repository> -->
+				<repository> <id>egit</id> <layout>p2</layout> <url>${egit-site}</url> 
+					</repository>
 			</repositories>
-		</profile>
+		</profile> -->
 
+<!-- 
 		<profile>
 			<id>osee-all</id>
 			<activation>
@@ -503,7 +506,8 @@
 				</repository>
 			</repositories>
 		</profile>
-
+ -->
+ 
 		<profile>
 			<id>osee-all-ide</id>
 			<activation>

@@ -1,0 +1,15 @@
+<project name="Rename osee repo" default="run">
+	<!-- *************************************************************** -->
+	<!-- MAIN RUN -->
+	<!-- *************************************************************** -->
+	<target name="run">
+			<echo message="basedir=${basedir}" />
+			<property name="repo-base" location="${basedir}/../../" />
+			<pathconvert targetos="unix" property="repo-base-unix">
+    			<path location="${repo-base}"/>
+			</pathconvert>
+			<echo message="replacing ${OSEE_REPO} with ${repo-base-unix}" />
+			<replace file="${basedir}/../../plugins/org.eclipse.osee.dep.target/org.eclipse.osee.dep.target.target" token="${OSEE_REPO}" value="${repo-base-unix}" />
+	</target>
+	
+</project>

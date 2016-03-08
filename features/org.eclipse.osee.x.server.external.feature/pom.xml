@@ -28,7 +28,6 @@
 								<plugin id="org.aopalliance" />
 								<plugin id="javax.servlet" />
 								<plugin id="com.google.gson" />
-								<plugin id="org.eclipse.jetty.continuation" />
 								<plugin id="org.eclipse.jetty.http" />
 								<plugin id="org.eclipse.jetty.io" />
 								<plugin id="org.eclipse.jetty.security" />
