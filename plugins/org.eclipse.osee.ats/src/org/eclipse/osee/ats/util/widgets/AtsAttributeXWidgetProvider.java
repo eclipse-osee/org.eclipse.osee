@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.util.XWidgetRendererItem;
 
 /**
  * Provides XFlatDam as default widget for specified attribute types
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider {
@@ -49,11 +49,14 @@ public class AtsAttributeXWidgetProvider extends DefaultAttributeXWidgetProvider
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.setXWidgetName("XTextFlatDam");
-      } else if (attributeType.getName().equals(AtsAttributeTypes.DslSheet.getName()) || attributeType.equals(
-         AtsAttributeTypes.TestToSourceLocator)) {
+      } else if (attributeType.matches(AtsAttributeTypes.DslSheet, AtsAttributeTypes.TestToSourceLocator)) {
          layouts = super.getDynamicXWidgetLayoutData(attributeType);
          XWidgetRendererItem layoutData = layouts.get(0);
          layoutData.getXOptionHandler().add(XOption.FILL_VERTICALLY);
+      } else if (attributeType.equals(AtsAttributeTypes.ProgramUuid)) {
+         layouts = super.getDynamicXWidgetLayoutData(attributeType);
+         XWidgetRendererItem layoutData = layouts.get(0);
+         layoutData.setXWidgetName("XProgramSelectionWidget");
       }
       return layouts;
    }

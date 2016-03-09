@@ -120,6 +120,8 @@ public class AtsWidgetProvider implements IXWidgetProvider {
          return new VersionMultiChoiceSelect();
       } else if (widgetName.equals(ClosureStateMultiChoiceSelect.WIDGET_ID)) {
          return new ClosureStateMultiChoiceSelect();
+      } else if (widgetName.equals(XProgramSelectionWidget.WIDGET_ID)) {
+         return new XProgramSelectionWidget();
       }
       return toReturn;
    }

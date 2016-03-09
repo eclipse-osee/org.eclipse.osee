@@ -385,7 +385,7 @@ attributeType "ats.Peer Review Id" extends StringAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "ats.Program Uuid" extends IntegerAttribute {
+attributeType "ats.Program Uuid" extends ArtifactReferenceAttribute {
 	uuid 0x10000089157000AA
 	dataProvider DefaultAttributeDataProvider
 	min 0
