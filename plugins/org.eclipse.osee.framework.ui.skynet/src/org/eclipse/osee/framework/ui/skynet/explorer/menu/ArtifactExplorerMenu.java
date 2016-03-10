@@ -22,6 +22,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -168,8 +169,9 @@ public class ArtifactExplorerMenu {
          copyMenuItem.setEnabled(isArtifact && permiss.isReadPermission());
 
          boolean clipboardEmpty = artifactClipboard.isEmpty();
-         pasteMenuItem.setEnabled(isArtifact && canModifyDH && !clipboardEmpty);
-         pasteSpecialMenuItem.setEnabled(isArtifact && canModifyDH && !clipboardEmpty);
+         boolean pasteEnabled = !clipboardEmpty && ((isArtifact && canModifyDH) || (obj == null && isBranchEditable));
+         pasteMenuItem.setEnabled(pasteEnabled);
+         pasteSpecialMenuItem.setEnabled(pasteEnabled);
          renameArtifactMenuItem.setEnabled(isArtifact && permiss.isWritePermission());
          findOnAnotherBranch.setEnabled(isArtifact);
          accessControlMenuItem.setEnabled(isArtifact);
@@ -663,10 +665,12 @@ public class ArtifactExplorerMenu {
       boolean performPaste = true;
       Artifact destinationArtifact = null;
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-      if (selection != null && !selection.isEmpty()) {
-         Object object = selection.getFirstElement();
-
-         if (object instanceof Artifact) {
+      if (selection != null) {
+         if (selection.isEmpty()) {
+            destinationArtifact =
+               ArtifactQuery.getArtifactFromToken(CoreArtifactTokens.DefaultHierarchyRoot, getBranch());
+         } else if (selection.getFirstElement() instanceof Artifact) {
+            Object object = selection.getFirstElement();
             Artifact artifact = (Artifact) object;
             if (!ArtifactTypeManager.isUserCreationAllowed(artifact.getArtifactType())) {
                throw new OseeArgumentException("Artifact Type [%s] can not be copied", artifact.getArtifactTypeName());
