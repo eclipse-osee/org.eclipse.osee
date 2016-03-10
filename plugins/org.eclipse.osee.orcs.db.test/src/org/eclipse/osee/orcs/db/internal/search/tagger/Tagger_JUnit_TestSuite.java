@@ -8,16 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.resource;
+package org.eclipse.osee.orcs.db.internal.search.tagger;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({AttributeProviderTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class ResourceTestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({TagEncoderTest.class, TagProcessorTest.class})
+public class Tagger_JUnit_TestSuite {
    // Test Suite
 }

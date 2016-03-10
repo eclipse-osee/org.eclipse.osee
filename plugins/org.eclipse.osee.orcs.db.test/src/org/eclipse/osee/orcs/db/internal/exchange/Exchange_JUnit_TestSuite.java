@@ -8,8 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.util;
+package org.eclipse.osee.orcs.db.internal.exchange;
 
+import org.eclipse.osee.orcs.db.internal.exchange.transformer.Transformer_JUnit_TestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -17,7 +18,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SecondPassMatcherTest.class, WordsUtilTest.class, SecondPassScannerTest.class})
-public class UtilityTestSuite {
+@Suite.SuiteClasses({Transformer_JUnit_TestSuite.class})
+public class Exchange_JUnit_TestSuite {
    // Test Suite
 }

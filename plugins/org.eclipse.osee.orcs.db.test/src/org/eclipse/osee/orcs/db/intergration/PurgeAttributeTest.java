@@ -40,7 +40,6 @@ import org.junit.rules.TestRule;
 public class PurgeAttributeTest {
 
    private static final ArtifactId Joe_Smith = ArtifactId.valueOf(61106791L);
-
    private static final String UNIQUE_ATTR_VALUE = "AEqvcQoyRV8zNDZSBVAA";
 
    @Rule
@@ -48,7 +47,6 @@ public class PurgeAttributeTest {
 
    @OsgiService
    public OrcsApi orcsApi;
-
    @OsgiService
    public JdbcService jdbcService;
    @OsgiService

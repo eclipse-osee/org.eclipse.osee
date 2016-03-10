@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.search.engines;
+package org.eclipse.osee.orcs.db.internal.proxy;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -18,9 +18,11 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   ArtifactQuerySqlContextFactoryImplTest.class,
-   BranchQuerySqlContextFactoryImplTest.class,
-   TxQuerySqlContextFactoryImplTest.class})
-public class EnginesTestSuite {
+   VarCharDataProxyTest.class,
+   DataResourceTest.class,
+   ResourceHandlerTest.class,
+   StorageTest.class,
+   UriDataProxyTest.class})
+public class Proxy_JUnit_TestSuite {
    // Test Suite
 }

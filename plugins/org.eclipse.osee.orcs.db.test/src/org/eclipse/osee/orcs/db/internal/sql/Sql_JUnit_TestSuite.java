@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.intergration;
+package org.eclipse.osee.orcs.db.internal.sql;
 
+import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({SqlJoinTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({LoaderTest.class, OseeInfoDataAccessorTest.class, PurgeAttributeTest.class})
-public class IntegrationTestSuite {
+public class Sql_JUnit_TestSuite {
    // Test Suite
 }

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search;
 
-import org.eclipse.osee.orcs.db.internal.search.engines.EnginesTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.handlers.HandlersTestSuite;
+import org.eclipse.osee.orcs.db.internal.search.engines.Engines_JUnit_TestSuite;
+import org.eclipse.osee.orcs.db.internal.search.handlers.Handlers_JUnit_TestSuite;
 import org.eclipse.osee.orcs.db.internal.search.indexer.callable.consumer.IndexingTaskDatabaseTxCallableTest;
 import org.eclipse.osee.orcs.db.internal.search.language.LanguageTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.tagger.TaggerTestSuite;
-import org.eclipse.osee.orcs.db.internal.search.util.UtilityTestSuite;
+import org.eclipse.osee.orcs.db.internal.search.tagger.Tagger_JUnit_TestSuite;
+import org.eclipse.osee.orcs.db.internal.search.util.Utility_Test_Suite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -24,12 +24,12 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-   EnginesTestSuite.class,
-   HandlersTestSuite.class,
+   Engines_JUnit_TestSuite.class,
+   Handlers_JUnit_TestSuite.class,
    LanguageTestSuite.class,
-   TaggerTestSuite.class,
+   Tagger_JUnit_TestSuite.class,
    IndexingTaskDatabaseTxCallableTest.class,
-   UtilityTestSuite.class})
-public class QueryTestSuite {
+   Utility_Test_Suite.class})
+public class Query_JUnit_TestSuite {
    // Test Suite
 }

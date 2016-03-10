@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,16 +8,18 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.transaction;
+package org.eclipse.osee.orcs.db.intergration;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 /**
+ * Integration test suite. DO NOT RUN WITH PDE JUnit launch. Use OrcsDbTestSuite.launch instead.
+ * 
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({DaoToSqlTest.class, TransactionWriterTest.class, TxSqlBuilderTest.class})
-public class TransactionTestSuite {
+@Suite.SuiteClasses({LoaderTest.class, OseeInfoDataAccessorTest.class, PurgeAttributeTest.class})
+public class OrcsDb_Integration_TestSuites {
    // Test Suite
 }

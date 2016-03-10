@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.exchange;
+package org.eclipse.osee.orcs.db.internal.change;
 
-import org.eclipse.osee.orcs.db.internal.exchange.transformer.TransformerTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({ComputeNetChangeTest.class, ChangeItemConflictTest.class})
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({TransformerTestSuite.class})
-public class ExchangeTestSuite {
+public class Change_JUnit_TestSuite {
    // Test Suite
 }

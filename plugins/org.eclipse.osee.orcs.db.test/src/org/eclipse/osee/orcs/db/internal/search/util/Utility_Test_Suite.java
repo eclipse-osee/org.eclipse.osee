@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.sql;
+package org.eclipse.osee.orcs.db.internal.search.util;
 
-import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses({SqlJoinTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */
-public class SqlTestSuite {
+@RunWith(Suite.class)
+@Suite.SuiteClasses({SecondPassMatcherTest.class, WordsUtilTest.class, SecondPassScannerTest.class})
+public class Utility_Test_Suite {
    // Test Suite
 }

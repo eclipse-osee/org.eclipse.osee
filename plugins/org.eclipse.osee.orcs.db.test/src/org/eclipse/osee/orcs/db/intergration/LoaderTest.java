@@ -32,7 +32,11 @@ import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcService;
+import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.OrcsTypes;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
@@ -62,6 +66,11 @@ public class LoaderTest {
    @Rule
    public TestRule db = integrationRule(this);
 
+   @OsgiService
+   public OrcsApi orcsApi;
+   @OsgiService
+   public JdbcService jdbcService;
+
    // @formatter:off
    @OsgiService private OrcsDataStore dataStore;
    @Mock private LoadDataHandler builder;
@@ -84,12 +93,17 @@ public class LoaderTest {
    private final int UserGroupsId = CoreArtifactTokens.UserGroups.getUuid().intValue();
    private final String UserGroupsGuid = CoreArtifactTokens.UserGroups.getGuid();
    private final TransactionId tx5 = TransactionId.valueOf(5);
-   private final TransactionId tx6 = TransactionId.valueOf(6);
    private final TransactionId tx7 = TransactionId.valueOf(7);
    private final TransactionId tx10 = TransactionId.valueOf(10);
 
    @Before
    public void setUp() throws OseeCoreException {
+      JdbcClient jdbcClient = jdbcService.getClient();
+
+      if (jdbcClient.getConfig().isProduction()) {
+         throw new OseeStateException("Test should not be run against a Production Database");
+      }
+
       MockitoAnnotations.initMocks(this);
 
       when(types.getArtifactTypes()).thenReturn(artTypes);

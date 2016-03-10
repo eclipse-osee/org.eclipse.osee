@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2012 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.loader;
+package org.eclipse.osee.orcs.db.internal.transaction;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -17,11 +17,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({
-   AttributeDataProxyFactoryTest.class,
-   DataFactoryImplTest.class,
-   DataLoaderFactoryImplTest.class,
-   LoaderSqlHandlerFactoryUtilTest.class})
-public class LoaderTestSuite {
+@Suite.SuiteClasses({DaoToSqlTest.class, TransactionWriterTest.class, TxSqlBuilderTest.class})
+public class Transaction_JUnit_TestSuite {
    // Test Suite
 }

@@ -8,21 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db.internal.proxy;
+package org.eclipse.osee.orcs.db.internal.resource;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses({AttributeProviderTest.class})
 /**
  * @author Roberto E. Escobar
  */
-@RunWith(Suite.class)
-@Suite.SuiteClasses({
-   VarCharDataProxyTest.class,
-   DataResourceTest.class,
-   ResourceHandlerTest.class,
-   StorageTest.class,
-   UriDataProxyTest.class})
-public class ProxyTestSuite {
+public class Resource_JUnit_TestSuite {
    // Test Suite
 }

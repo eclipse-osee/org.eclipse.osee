@@ -8,10 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.orcs.db;
+package org.eclipse.osee.orcs.db.internal.loader;
 
-import org.eclipse.osee.orcs.db.intergration.IntegrationTestSuite;
-import org.eclipse.osee.orcs.db.internal.InternalTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -19,7 +17,11 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({InternalTestSuite.class, IntegrationTestSuite.class})
-public class OrcsDbTestSuite {
+@Suite.SuiteClasses({
+   AttributeDataProxyFactoryTest.class,
+   DataFactoryImplTest.class,
+   DataLoaderFactoryImplTest.class,
+   LoaderSqlHandlerFactoryUtilTest.class})
+public class Loader_JUnit_TestSuite {
    // Test Suite
 }
