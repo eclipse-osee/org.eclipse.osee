@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
-import org.eclipse.osee.framework.core.enums.DemoBranches;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.column.AtsAttributeValueColumnFactory;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
+import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.framework.core.model.type.AttributeType;
+import org.eclipse.osee.framework.core.util.XResultData;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
+import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 
 /**
  * @author Donald G. Dunne
@@ -33,18 +37,44 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) {
-      TaskArtifact taskArt = (TaskArtifact) ArtifactQuery.getArtifactFromId(167072066, AtsUtilCore.getAtsBranch());
 
-      Artifact robotReq = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.SoftwareRequirement, "Robot API",
-         DemoBranches.SAW_Bld_1);
+      XResultData results = new XResultData(false);
 
-      taskArt.addAttribute(AtsAttributeTypes.TaskToChangedArtifactReference, robotReq);
-      taskArt.persist(getClass().getSimpleName());
+      WorldXViewerFactory factory = new WorldXViewerFactory();
+      for (XViewerColumn column : factory.getColumns()) {
+         if (column instanceof XViewerAtsAttributeValueColumn) {
+            XViewerAtsAttributeValueColumn attrColumn = (XViewerAtsAttributeValueColumn) column;
 
-      System.err.println("dirty (false) " + taskArt.isDirty());
-      Artifact robotReq2 = taskArt.getSoleAttributeValue(AtsAttributeTypes.TaskToChangedArtifactReference, null);
+            AttributeType attrType = AttributeTypeManager.getTypeByGuid(attrColumn.getAttributeType().getGuid());
 
-      System.err.println(String.format("Robot Artifact  [%s]", robotReq2));
+            AtsAttributeValueColumn valueColumn = new AtsAttributeValueColumn();
+            valueColumn.setAttrTypeId(attrType.getId());
+            valueColumn.setAttrTypeName(attrType.getName());
+            valueColumn.setWidth(column.getWidth());
+            valueColumn.setAlign(AtsAttributeValueColumnFactory.getColumnAlign(column.getAlign()));
+            valueColumn.setVisible(column.isShow());
+            valueColumn.setSortDataType(column.getSortDataType().name());
+            valueColumn.setColumnMultiEdit(column.isMultiColumnEditable());
+            valueColumn.setDescription(column.getDescription());
+            valueColumn.setNamespace("org.eclipse.osee.ats.WorldXViewer");
+            valueColumn.setName(column.getName());
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonInString = "";
+            try {
+               jsonInString = mapper.writeValueAsString(valueColumn);
+            } catch (Exception ex) {
+               ex.printStackTrace();
+            }
+
+            if (Strings.isValid(jsonInString)) {
+               results.log(jsonInString);
+               results.log("\n\n");
+            }
+         }
+      }
+
+      XResultDataUI.report(results, "views.json");
    }
 
 }

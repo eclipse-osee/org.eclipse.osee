@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column.ev;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
 
@@ -28,9 +26,9 @@ public class WorkPackageGuidColumnUI extends AbstractWorkPackageRelatedColumnUI 
    }
 
    private WorkPackageGuidColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageGuid", "Work Package Guid", 80, SWT.LEFT, false,
-         SortDataType.String, true,
-         AtsClientService.get().getColumnService().getWorkPackageGuidColumn().getDescription());
+      super(AtsColumnId.WorkPackageGuid, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageGuid", "Work Package Guid",
+         80, SWT.LEFT, false, SortDataType.String, true,
+         "Provides Work Package guid from the selected Work Package related to the selected workflow.");
    }
 
    /**
@@ -44,13 +42,4 @@ public class WorkPackageGuidColumnUI extends AbstractWorkPackageRelatedColumnUI 
       return newXCol;
    }
 
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
-      if (element instanceof IAtsObject) {
-         result =
-            AtsClientService.get().getColumnService().getWorkPackageGuidColumn().getColumnText((IAtsObject) element);
-      }
-      return result;
-   }
 }

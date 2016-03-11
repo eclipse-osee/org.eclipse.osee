@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2015 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,21 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import org.eclipse.osee.ats.api.IAtsObject;
-
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsColumnService {
+public enum AtsColumnId {
 
-   String getColumnText(AtsColumnId columnId, IAtsObject atsObject);
+   ActivityId("ats.column.activityId"),
+   Team("ats.column.team"),
+   Title("framework.artifact.name.Title"),
+   WorkPackageName("ats.column.workPackageName"),
+   WorkPackageId("ats.column.workPackageId"),
+   WorkPackageType("ats.column.workPackageType"),
+   WorkPackageProgram("ats.column.workPackageProgram"),
+   WorkPackageGuid("ats.column.workPackageGuid");
 
-   String getColumnText(String id, IAtsObject atsObject);
+   private final String id;
 
-   IAtsColumn getColumn(String id);
+   private AtsColumnId(String id) {
+      this.id = id;
+   }
 
-   IAtsColumn getColumn(AtsColumnId columnId);
-
-   void add(String id, IAtsColumn column);
+   public String getId() {
+      return id;
+   }
 
 }

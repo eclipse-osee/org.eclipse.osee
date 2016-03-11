@@ -17,10 +17,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -44,10 +41,5 @@ public abstract class AbstractWorkPackageUtilityTest {
    }
 
    public abstract IAtsColumn getUtil();
-
-   @Test
-   public void testGetDescription() {
-      Assert.assertTrue(Strings.isValid(getUtil().getDescription()));
-   }
 
 }

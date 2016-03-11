@@ -1,96 +1,101 @@
 {
-    "attrColumns": [
-        {
-            "align": "Left",
-            "attrTypeId": 1728793301637070003,
-            "attrTypeName": "ats.Points Numeric",
-            "columnMultiEdit": true,
-            "description": "Numeric Point Value",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "Float",
-            "visible": false,
-            "width": 40
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 6025996821081174931,
-            "attrTypeName": "ats.IPT",
-            "columnMultiEdit": true,
-            "description": "Integrated Product Team",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 60
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 1152922093379125418,
-            "attrTypeName": "ats.Originating PCR Id",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 60
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 1152922093378076842,
-            "attrTypeName": "ats.Duplicated PCR Id",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 60
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 1152921949227188394,
-            "attrTypeName": "ats.Applicable To Program",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 60
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 1152922093379715242,
-            "attrTypeName": "ats.Rationale",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 100
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 1152922093370736810,
-            "attrTypeName": "ats.PCR Tool Id",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "String",
-            "visible": false,
-            "width": 60
-        },
-        {
-            "align": "Left",
-            "attrTypeId": 2421093774890249189,
-            "name": "Unplanned Work",
-            "attrTypeName": "ats.Unplanned Work",
-            "columnMultiEdit": true,
-            "description": "",
-            "namespace": "org.eclipse.osee.ats.WorldXViewer",
-            "sortDataType": "Boolean",
-            "booleanOnTrueShow": "UnPlanned",
-            "booleanOnFalseShow": "",
-            "booleanNotSetShow": "",
-            "visible": false,
-            "width": 20
-        }
-    ]
+	"attrColumns": [{
+		"id": "framework.artifact.name.Title",
+		"name": "Title",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"attrTypeId": 1152921504606847088,
+		"attrTypeName": "Name",
+		"width": 150,
+		"align": "Left",
+		"visible": true,
+		"sortDataType": "String",
+		"columnMultiEdit": true,
+		"description": "",
+		"color": null,
+		"actionRollup": true
+	}, {
+		"align": "Left",
+		"attrTypeId": 1728793301637070003,
+		"attrTypeName": "ats.Points Numeric",
+		"columnMultiEdit": true,
+		"description": "Numeric Point Value",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "Float",
+		"visible": false,
+		"width": 40
+	}, {
+		"align": "Left",
+		"attrTypeId": 6025996821081174931,
+		"attrTypeName": "ats.IPT",
+		"columnMultiEdit": true,
+		"description": "Integrated Product Team",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 60
+	}, {
+		"align": "Left",
+		"attrTypeId": 1152922093379125418,
+		"attrTypeName": "ats.Originating PCR Id",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 60
+	}, {
+		"align": "Left",
+		"attrTypeId": 1152922093378076842,
+		"attrTypeName": "ats.Duplicated PCR Id",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 60
+	}, {
+		"align": "Left",
+		"attrTypeId": 1152921949227188394,
+		"attrTypeName": "ats.Applicable To Program",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 60
+	}, {
+		"align": "Left",
+		"attrTypeId": 1152922093379715242,
+		"attrTypeName": "ats.Rationale",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 100
+	}, {
+		"align": "Left",
+		"attrTypeId": 1152922093370736810,
+		"attrTypeName": "ats.PCR Tool Id",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "String",
+		"visible": false,
+		"width": 60
+	}, {
+		"align": "Left",
+		"attrTypeId": 2421093774890249189,
+		"name": "Unplanned Work",
+		"attrTypeName": "ats.Unplanned Work",
+		"columnMultiEdit": true,
+		"description": "",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"sortDataType": "Boolean",
+		"booleanOnTrueShow": "UnPlanned",
+		"booleanOnFalseShow": "",
+		"booleanNotSetShow": "",
+		"visible": false,
+		"width": 20
+	}]
 }

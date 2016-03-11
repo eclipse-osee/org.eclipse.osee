@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.PriorityUtil;
 import org.eclipse.osee.ats.core.client.workflow.note.NoteItem;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
@@ -81,7 +82,7 @@ public class SMAPrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsClientService.get().getColumnService().getTeamColumn().getColumnText(sma)),
+            AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.instance.getAssigneeStr(sma)),
          //

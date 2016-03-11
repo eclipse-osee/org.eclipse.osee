@@ -49,6 +49,7 @@ public final class UserResource {
          obj.put("name", user.getName());
          obj.put("email", user.getEmail());
          obj.put("active", user.isActive());
+         obj.put("accountId", user.getStoreObject().getUuid());
          arr.put(obj);
       }
       return RestUtil.jsonToPretty(arr, false);

@@ -10,12 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.internal.column.ev;
 
-import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
-import org.eclipse.osee.ats.api.review.IAtsReviewService;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.column.IActivityIdUtility;
-import org.eclipse.osee.ats.core.column.IAtsColumnService;
+import java.util.HashMap;
+import java.util.Map;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 
 /**
@@ -23,78 +26,76 @@ import org.eclipse.osee.ats.core.internal.column.TeamColumn;
  */
 public class AtsColumnService implements IAtsColumnService {
 
-   private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private WorkPackageIdColumn workPackageIdUtility;
-   private ActivityIdColumn activityIdUtility;
-   private WorkPackageNameColumn workPackageNameUtility;
-   private WorkPackageTypeColumn workPackageTypeUtility;
-   private WorkPackageProgramColumn workPackageProgramUtility;
-   private IAtsColumn workPackageGuidUtility;
-   private TeamColumn teamColumnUtility;
-   private final IAtsWorkItemService workItemService;
-   private final IAtsReviewService reviewService;
    public static final String CELL_ERROR_PREFIX = "!Error";
+   private Map<String, IAtsColumn> columnIdToAtsColumn;
+   private final IAtsServices services;
 
-   public AtsColumnService(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
-      this.reviewService = reviewService;
-      this.workItemService = workItemService;
-      this.earnedValueServiceProvider = earnedValueServiceProvider;
+   public AtsColumnService(IAtsServices services) {
+      this.services = services;
    }
 
    @Override
-   public IAtsColumn getTeamColumn() {
-      if (teamColumnUtility == null) {
-         teamColumnUtility = new TeamColumn(workItemService, reviewService);
-      }
-      return teamColumnUtility;
+   public String getColumnText(AtsColumnId column, IAtsObject atsObject) {
+      return getColumnText(column.getId(), atsObject);
    }
 
    @Override
-   public IActivityIdUtility getActivityIdColumn() {
-      if (activityIdUtility == null) {
-         activityIdUtility = new ActivityIdColumn(earnedValueServiceProvider);
+   public String getColumnText(String id, IAtsObject atsObject) {
+      String result = "";
+      IAtsColumn column = getColumn(id);
+      if (column == null) {
+         result = "column not supported";
+      } else {
+         result = column.getColumnText(atsObject);
       }
-      return activityIdUtility;
+      return result;
    }
 
    @Override
-   public IAtsColumn getWorkPackageNameColumn() {
-      if (workPackageNameUtility == null) {
-         workPackageNameUtility = new WorkPackageNameColumn(earnedValueServiceProvider);
+   public IAtsColumn getColumn(String id) {
+      if (columnIdToAtsColumn == null) {
+         columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
       }
-      return workPackageNameUtility;
+      IAtsColumn column = columnIdToAtsColumn.get(id);
+      if (column == null) {
+         for (AtsAttributeValueColumn attrCol : services.getConfigurations().getViews().getAttrColumns()) {
+            if (id.equals(attrCol.getId())) {
+               column = new AtsAttributeValueColumnHandler(attrCol, services);
+               add(id, column);
+               break;
+            }
+         }
+      }
+      if (column == null) {
+         if (id.equals(AtsColumnId.Team.getId())) {
+            column = new TeamColumn(services.getReviewService());
+         } else if (id.equals(AtsColumnId.ActivityId.getId())) {
+            column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
+            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
+            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageType.getId())) {
+            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageProgram.getId())) {
+            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
+            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
+         }
+         // Add to cache even if not found so don't need to look again
+         add(id, column);
+      }
+      return column;
    }
 
    @Override
-   public IAtsColumn getWorkPackageIdColumn() {
-      if (workPackageIdUtility == null) {
-         workPackageIdUtility = new WorkPackageIdColumn(earnedValueServiceProvider);
-      }
-      return workPackageIdUtility;
+   public void add(String id, IAtsColumn column) {
+      columnIdToAtsColumn.put(id, column);
    }
 
    @Override
-   public IAtsColumn getWorkPackageTypeColumn() {
-      if (workPackageTypeUtility == null) {
-         workPackageTypeUtility = new WorkPackageTypeColumn(earnedValueServiceProvider);
-      }
-      return workPackageTypeUtility;
-   }
-
-   @Override
-   public IAtsColumn getWorkPackageProgramColumn() {
-      if (workPackageProgramUtility == null) {
-         workPackageProgramUtility = new WorkPackageProgramColumn(earnedValueServiceProvider);
-      }
-      return workPackageProgramUtility;
-   }
-
-   @Override
-   public IAtsColumn getWorkPackageGuidColumn() {
-      if (workPackageGuidUtility == null) {
-         workPackageGuidUtility = new WorkPackageGuidColumn(earnedValueServiceProvider);
-      }
-      return workPackageGuidUtility;
+   public IAtsColumn getColumn(AtsColumnId columnId) {
+      return getColumn(columnId.getId());
    }
 
 }

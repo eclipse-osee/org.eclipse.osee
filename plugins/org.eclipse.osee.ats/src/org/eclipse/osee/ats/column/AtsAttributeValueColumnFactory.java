@@ -23,13 +23,8 @@ public class AtsAttributeValueColumnFactory {
       col.setNamespace(namespace);
       col.setAttrTypeId(inCol.getAttributeType().getGuid());
       col.setAttrTypeName(inCol.getAttributeType().getName());
-      if (inCol.getAlign() == SWT.LEFT) {
-         col.setAlign(ColumnAlign.Left);
-      } else if (inCol.getAlign() == SWT.CENTER) {
-         col.setAlign(ColumnAlign.Center);
-      } else if (inCol.getAlign() == SWT.RIGHT) {
-         col.setAlign(ColumnAlign.Right);
-      }
+      ColumnAlign colAlign = getColumnAlign(inCol.getAlign());
+      col.setAlign(colAlign);
       col.setColumnMultiEdit(inCol.isMultiColumnEditable());
       col.setDescription(inCol.getDescription());
       col.setSortDataType(inCol.getSortDataType().name());
@@ -40,5 +35,16 @@ public class AtsAttributeValueColumnFactory {
       col.setWidth(inCol.getWidth());
 
       return col;
+   }
+
+   public static ColumnAlign getColumnAlign(int colNum) {
+      if (colNum == SWT.LEFT) {
+         return ColumnAlign.Left;
+      } else if (colNum == SWT.CENTER) {
+         return ColumnAlign.Center;
+      } else if (colNum == SWT.RIGHT) {
+         return ColumnAlign.Right;
+      }
+      return null;
    }
 }

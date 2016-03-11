@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal;
 
+import org.eclipse.osee.ats.api.config.AtsConfigEndpointApi;
 import org.eclipse.osee.ats.api.ev.AtsWorkPackageEndpointApi;
 import org.eclipse.osee.ats.api.notify.AtsNotifyEndpointApi;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
@@ -31,6 +32,7 @@ public class AtsClientService {
    private static AtsNotifyEndpointApi notifyEp;
    private static AtsRuleEndpointApi ruleEp;
    private static AtsWorkPackageEndpointApi workPackageEp;
+   private static AtsConfigEndpointApi configEp;
 
    public void setAtsClient(IAtsClient atsClient) {
       AtsClientService.atsClient = atsClient;
@@ -76,6 +78,13 @@ public class AtsClientService {
          workPackageEp = getAtsTarget().newProxy(AtsWorkPackageEndpointApi.class);
       }
       return workPackageEp;
+   }
+
+   public static AtsConfigEndpointApi getConfigEndpoint() {
+      if (configEp == null) {
+         configEp = getAtsTarget().newProxy(AtsConfigEndpointApi.class);
+      }
+      return configEp;
    }
 
 }

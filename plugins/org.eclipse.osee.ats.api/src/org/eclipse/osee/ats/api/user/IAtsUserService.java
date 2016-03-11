@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Non-artifact based user service
- * 
+ *
  * @author Donald G. Dunne
  */
 public interface IAtsUserService {
@@ -48,5 +48,7 @@ public interface IAtsUserService {
    void releaseUser();
 
    Collection<IAtsUser> getSubscribed(IAtsWorkItem workItem);
+
+   IAtsUser getUserById(long accountId);
 
 }

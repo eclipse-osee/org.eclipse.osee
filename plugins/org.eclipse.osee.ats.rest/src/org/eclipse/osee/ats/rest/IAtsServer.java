@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
 import org.eclipse.osee.ats.api.review.IAtsReviewServiceProvider;
 import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsBranchServiceProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemServiceProvider;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
@@ -43,7 +45,7 @@ import org.eclipse.osee.orcs.search.QueryBuilder;
 /**
  * @author Donald G Dunne
  */
-public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider {
+public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFactoryProvider, IAtsConfigProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemServiceProvider, IAtsWorkDefinitionServiceProvider, IArtifactProvider, IAtsEarnedValueServiceProvider {
 
    OrcsApi getOrcsApi() throws OseeCoreException;
 
@@ -102,5 +104,7 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
 
    @Override
    ArtifactReadable getArtifact(IArtifactToken token);
+
+   IAtsColumnService getColumnService();
 
 }

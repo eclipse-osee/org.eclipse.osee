@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.api.workdef;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
@@ -81,5 +83,11 @@ public interface IAttributeResolver {
    String getSoleAttributeValueAsString(ArtifactId artifact, IAttributeType worktype, String defaultReturnValue);
 
    int getAttributeCount(IAtsWorkItem workItem, IAttributeType attributeType);
+
+   default public String getAttributesToStringUniqueList(IAtsObject atsObject, IAttributeType attributeType, String separator) {
+      Set<String> strs = new HashSet<>();
+      strs.addAll(getAttributesToStringList(atsObject, attributeType));
+      return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);
+   }
 
 }

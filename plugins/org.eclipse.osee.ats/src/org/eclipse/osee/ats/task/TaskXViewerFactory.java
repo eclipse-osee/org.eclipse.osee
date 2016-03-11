@@ -25,8 +25,9 @@ import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
 import org.eclipse.osee.ats.column.StateColumn;
-import org.eclipse.osee.ats.column.TitleColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
@@ -42,10 +43,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns =
-      Arrays.asList(TitleColumn.getInstance(), StateColumn.getInstance(), AssigneeColumnUI.getInstance(),
-         PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(), ResolutionColumn.getInstance(),
-         EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(), RelatedToStateColumn.getInstance(),
-         NotesColumn.getInstance());
+      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), StateColumn.getInstance(),
+         AssigneeColumnUI.getInstance(), PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(),
+         ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(),
+         RelatedToStateColumn.getInstance(), NotesColumn.getInstance());
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {
@@ -59,7 +60,7 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          registerColumns(newCol);
       }
       // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
+      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
          if (!TaskViewerVisibleColumns.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);

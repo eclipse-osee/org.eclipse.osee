@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -166,7 +167,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IAtsStateFactory atsStateFactory;
    private IAtsWorkStateFactory workStateFactory;
    private IAtsLogFactory logFactory;
-   private IAtsColumnService columnUtilities;
+   private IAtsColumnService columnServices;
    private IAtsUtilService utilService;
    private JdbcService jdbcService;
    private IAtsWorkItemFactory workItemFactory;
@@ -588,18 +589,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
 
    @Override
    public IAtsColumnService getColumnService() {
-      final IAtsEarnedValueService fEarnedValueService = earnedValueService;
-      if (columnUtilities == null) {
-         columnUtilities = AtsCoreFactory.getColumnService(getReviewService(), getWorkItemService(),
-            new IAtsEarnedValueServiceProvider() {
-
-               @Override
-               public IAtsEarnedValueService getEarnedValueService() throws OseeStateException {
-                  return fEarnedValueService;
-               }
-            });
+      if (columnServices == null) {
+         columnServices = AtsCoreFactory.getColumnService(getServices());
       }
-      return columnUtilities;
+      return columnServices;
    }
 
    @Override
@@ -841,6 +834,16 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public IAtsEventService getEventService() {
       return eventService;
+   }
+
+   @Override
+   public AtsConfigurations getConfigurations() {
+      return AtsClientService.getConfigEndpoint().get();
+   }
+
+   @Override
+   public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
+      return this;
    }
 
 }

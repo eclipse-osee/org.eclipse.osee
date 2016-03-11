@@ -70,10 +70,4 @@ public class ActivityIdColumn implements IActivityIdUtility {
       }
       return workPackage;
    }
-
-   @Override
-   public String getDescription() {
-      return "Provides Activity Id and Name from the selected Work Package related to the selected workflow.";
-   }
-
 }

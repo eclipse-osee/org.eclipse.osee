@@ -24,8 +24,8 @@ import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
-import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
@@ -48,7 +48,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
 
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
-      WorldXViewerUtil.addColumn(this, TitleColumn.getInstance(), 339, sprintCols);
+      WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 339, sprintCols);
       WorldXViewerUtil.addColumn(this, StateColumn.getInstance(), 74, sprintCols);
       WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, sprintCols);
@@ -65,7 +65,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerUtil.addColumn(this, new AtsIdColumn(true), 50, sprintCols);
 
       // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
+      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
          if (!sprintCols.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);

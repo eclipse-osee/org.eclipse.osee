@@ -26,10 +26,10 @@ import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -56,8 +56,8 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    }
 
    private ActivityIdColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".activityId", "Activity Id", 80, SWT.LEFT, false,
-         SortDataType.String, true, "");
+      super(AtsColumnId.ActivityId.getId(), "Activity Id", 80, SWT.LEFT, false, SortDataType.String, true,
+         "Provides Activity Id and Name from the selected Work Package related to the selected workflow.");
    }
 
    /**
@@ -75,7 +75,8 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnService().getActivityIdColumn().getColumnText((IAtsObject) element);
+         result = AtsClientService.get().getColumnService().getColumn(AtsColumnId.ActivityId).getColumnText(
+            (IAtsObject) element);
       }
       return result;
    }

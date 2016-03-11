@@ -41,6 +41,7 @@ import org.eclipse.osee.ats.rest.internal.workitem.AtsRuleEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsTaskEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.AtsWorkPackageEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.workitem.StateResource;
+import org.eclipse.osee.ats.rest.internal.world.WorldResource;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
@@ -100,6 +101,7 @@ public class AtsApplication extends Application {
       singletons.add(new ConvertResource(atsServer));
       singletons.add(new CpaResource(orcsApi, atsServer, cpaRegistry));
       singletons.add(new UserResource(atsServer.getUserService()));
+      singletons.add(new WorldResource(atsServer));
 
       // Endpoints
       singletons.add(new AgileEndpointImpl(atsServer, registry));

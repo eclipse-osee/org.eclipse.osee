@@ -32,9 +32,4 @@ public class WorkPackageProgramColumn extends AbstractRelatedWorkPackageColumn {
       }
    }
 
-   @Override
-   public String getDescription() {
-      return "Provides Work Package Program from the selected Work Package related to the selected workflow.";
-   }
-
 }

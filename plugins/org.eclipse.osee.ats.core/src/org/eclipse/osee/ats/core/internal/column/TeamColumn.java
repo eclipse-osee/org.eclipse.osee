@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -31,11 +30,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TeamColumn implements IAtsColumn {
 
-   private final IAtsWorkItemService workItemService;
    private final IAtsReviewService reviewService;
 
-   public TeamColumn(IAtsWorkItemService workItemService, IAtsReviewService reviewService) {
-      this.workItemService = workItemService;
+   public TeamColumn(IAtsReviewService reviewService) {
       this.reviewService = reviewService;
    }
 
@@ -66,11 +63,6 @@ public class TeamColumn implements IAtsColumn {
          return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
-   }
-
-   @Override
-   public String getDescription() {
-      return "Team that has been assigned to work this Action";
    }
 
 }

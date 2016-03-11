@@ -18,6 +18,8 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -30,9 +32,11 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -58,6 +62,35 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
       super(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
+   public XViewerAtsAttributeValueColumn(AtsAttributeValueColumn column) {
+      super(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getId(), column.getName(),
+         column.getWidth(), getSwtAlign(column), column.isVisible(), getSortDataType(column),
+         column.isColumnMultiEdit(), column.getDescription());
+   }
+
+   private static SortDataType getSortDataType(AtsAttributeValueColumn column) {
+      SortDataType result = SortDataType.String;
+      try {
+         result = SortDataType.valueOf(column.getSortDataType());
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return result;
+   }
+
+   private static int getSwtAlign(AtsAttributeValueColumn column) {
+      if (column.getAlign() == ColumnAlign.Left) {
+         return SWT.LEFT;
+      }
+      if (column.getAlign() == ColumnAlign.Center) {
+         return SWT.CENTER;
+      }
+      if (column.getAlign() == ColumnAlign.Right) {
+         return SWT.RIGHT;
+      }
+      return SWT.LEFT;
+   }
+
    protected XViewerAtsAttributeValueColumn() {
       super();
    }
@@ -80,6 +113,9 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
+         if (element instanceof Artifact && ((Artifact) element).isDeleted()) {
+            return "<deleted>";
+         }
          if (isBooleanShow() && column.getSortDataType() == SortDataType.Boolean) {
             if (element instanceof AbstractWorkflowArtifact) {
                Boolean value = ((AbstractWorkflowArtifact) element).getSoleAttributeValue(getAttributeType(), null);

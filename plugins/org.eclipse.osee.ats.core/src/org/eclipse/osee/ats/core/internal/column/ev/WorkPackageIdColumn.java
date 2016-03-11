@@ -28,9 +28,4 @@ public class WorkPackageIdColumn extends AbstractRelatedWorkPackageColumn {
       return workPkg.getWorkPackageId();
    }
 
-   @Override
-   public String getDescription() {
-      return "Provides Work Package Id from the selected Work Package related to the selected workflow.";
-   }
-
 }

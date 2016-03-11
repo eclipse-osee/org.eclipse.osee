@@ -11,12 +11,9 @@
 package org.eclipse.osee.ats.core.util;
 
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
-import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
@@ -44,8 +41,8 @@ public final class AtsCoreFactory {
       return new AtsLogFactory();
    }
 
-   public static IAtsColumnService getColumnService(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
-      return new AtsColumnService(reviewService, workItemService, earnedValueServiceProvider);
+   public static IAtsColumnService getColumnService(IAtsServices services) {
+      return new AtsColumnService(services);
    }
 
    public static IAtsWorkStateFactory getWorkStateFactory(IAtsUserService userService) {

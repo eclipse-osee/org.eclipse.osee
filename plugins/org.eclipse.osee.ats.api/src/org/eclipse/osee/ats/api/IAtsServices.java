@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
@@ -106,5 +108,9 @@ public interface IAtsServices {
    IAtsQueryService getQueryService();
 
    IAtsEarnedValueService getEarnedValueService();
+
+   AtsConfigurations getConfigurations();
+
+   IAtsEarnedValueServiceProvider getEarnedValueServiceProvider();
 
 }

@@ -45,4 +45,6 @@ public interface IAtsStoreService {
     */
    Set<IArtifactType> getTeamWorkflowArtifactTypes();
 
+   IAttributeType getAttributeType(long attrTypeId);
+
 }

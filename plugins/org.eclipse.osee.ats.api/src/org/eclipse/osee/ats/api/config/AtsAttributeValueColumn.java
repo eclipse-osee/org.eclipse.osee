@@ -12,6 +12,9 @@ package org.eclipse.osee.ats.api.config;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.ats.api.util.ColorColumn;
+import org.eclipse.osee.ats.api.util.ColumnType;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Donald G. Dunne
@@ -19,6 +22,7 @@ import org.eclipse.osee.ats.api.util.ColorColumn;
 @XmlRootElement
 public class AtsAttributeValueColumn {
    private String name;
+   private String id;
    private String namespace;
    private long attrTypeId;
    private String attrTypeName;
@@ -32,6 +36,28 @@ public class AtsAttributeValueColumn {
    private boolean columnMultiEdit;
    private String description;
    private ColorColumn color;
+   private boolean actionRollup;
+
+   public AtsAttributeValueColumn() {
+      // For JaxRs Instantitaion
+   }
+
+   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description, boolean actionRollup) {
+      this(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
+      this.actionRollup = actionRollup;
+   }
+
+   public AtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, String align, boolean show, ColumnType sortDataType, boolean multiColumnEditable, String description) {
+      this.id = id;
+      this.name = name;
+      this.width = width;
+      this.align = ColumnAlign.valueOf(align);
+      this.visible = show;
+      this.sortDataType = sortDataType.name();
+      this.columnMultiEdit = multiColumnEditable;
+      this.description = description;
+      this.actionRollup = false;
+   }
 
    public long getAttrTypeId() {
       return attrTypeId;
@@ -148,6 +174,28 @@ public class AtsAttributeValueColumn {
 
    public void setColor(ColorColumn color) {
       this.color = color;
+   }
+
+   public boolean isActionRollup() {
+      return actionRollup;
+   }
+
+   public void setActionRollup(boolean actionRollup) {
+      this.actionRollup = actionRollup;
+   }
+
+   public String getId() {
+      String result = null;
+      if (Strings.isValid(id)) {
+         result = id;
+      } else if (Strings.isValid(attrTypeName)) {
+         result = attrTypeName;
+      }
+      return result;
+   }
+
+   public void setId(String id) {
+      this.id = id;
    }
 
 }

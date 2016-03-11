@@ -27,9 +27,4 @@ public class WorkPackageNameColumn extends AbstractRelatedWorkPackageColumn {
       return workPkg.getName();
    }
 
-   @Override
-   public String getDescription() {
-      return "Provides Work Package Name from the selected Work Package related to the selected workflow.";
-   }
-
 }

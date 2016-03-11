@@ -24,9 +24,11 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
+import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
 import org.eclipse.osee.ats.api.query.IAtsQueryService;
@@ -57,6 +59,7 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.program.AtsProgramService;
 import org.eclipse.osee.ats.core.util.ActionFactory;
@@ -69,6 +72,7 @@ import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.AgileService;
+import org.eclipse.osee.ats.rest.internal.config.AtsConfigEndpointImpl;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertBaselineGuidToBaselineUuid;
 import org.eclipse.osee.ats.rest.internal.convert.ConvertFavoriteBranchGuidToUuid;
 import org.eclipse.osee.ats.rest.internal.notify.AtsNotificationEventProcessor;
@@ -154,6 +158,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private final Map<String, IAtsDatabaseConversion> externalConversions =
       new ConcurrentHashMap<String, IAtsDatabaseConversion>();
    private IArtifactResolver artifactResolver;
+   private IAtsColumnService columnServices;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -611,6 +616,25 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    @Override
    public IAtsEarnedValueService getEarnedValueService() {
       return earnedValueService;
+   }
+
+   @Override
+   public AtsConfigurations getConfigurations() {
+      AtsConfigEndpointImpl configEp = new AtsConfigEndpointImpl(this, orcsApi, logger);
+      return configEp.get();
+   }
+
+   @Override
+   public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
+      return this;
+   }
+
+   @Override
+   public IAtsColumnService getColumnService() {
+      if (columnServices == null) {
+         columnServices = AtsCoreFactory.getColumnService(getServices());
+      }
+      return columnServices;
    }
 
 }

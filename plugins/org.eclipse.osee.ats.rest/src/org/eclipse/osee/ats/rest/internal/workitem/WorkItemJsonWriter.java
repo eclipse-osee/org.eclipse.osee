@@ -118,8 +118,10 @@ public class WorkItemJsonWriter implements MessageBodyWriter<IAtsWorkItem> {
          writer.writeStringField("CreatedDate", DateUtil.get(workItem.getCreatedDate(), DateUtil.MMDDYY));
          writer.writeStringField("CreatedBy", workItem.getCreatedBy().getName());
          IAtsTeamWorkflow teamWf = workItem.getParentTeamWorkflow();
-         String version = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
-         writer.writeStringField("TargetedVersion", version);
+         if (teamWf != null) {
+            String version = atsServer.getWorkItemService().getTargetedVersionStr(teamWf);
+            writer.writeStringField("TargetedVersion", version);
+         }
       }
       writer.writeEndObject();
    }

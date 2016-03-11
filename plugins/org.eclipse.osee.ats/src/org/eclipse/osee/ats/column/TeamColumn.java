@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.swt.SWT;
 
 /**
@@ -30,7 +30,7 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    }
 
    private TeamColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".team", "Team", 50, SWT.LEFT, true, SortDataType.String, false,
+      super(AtsColumnId.Team.getId(), "Team", 50, SWT.LEFT, true, SortDataType.String, false,
          "Team that has been assigned to work this Action.");
    }
 
@@ -49,7 +49,8 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnService().getTeamColumn().getColumnText((IAtsObject) element);
+         result =
+            AtsClientService.get().getColumnService().getColumn(AtsColumnId.Team).getColumnText((IAtsObject) element);
       }
       return result;
    }

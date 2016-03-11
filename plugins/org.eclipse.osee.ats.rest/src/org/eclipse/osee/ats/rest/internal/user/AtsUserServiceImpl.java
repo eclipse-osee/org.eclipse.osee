@@ -158,4 +158,11 @@ public class AtsUserServiceImpl extends AbstractAtsUserService {
       return arts;
    }
 
+   @Override
+   public IAtsUser getUserById(long accountId) {
+      ArtifactReadable userArt = orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).andUuid(
+         accountId).getResults().getAtMostOneOrNull();
+      return getUserById(userArt.getSoleAttributeValue(CoreAttributeTypes.UserId, null));
+   }
+
 }

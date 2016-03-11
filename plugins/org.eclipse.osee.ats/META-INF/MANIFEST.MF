@@ -19,7 +19,8 @@ Require-Bundle: org.eclipse.gef,
  org.eclipse.birt.chart.engine,
  org.eclipse.search,
  org.eclipse.core.jobs,
- org.eclipse.osee.ats.api
+ org.eclipse.osee.ats.api,
+ org.codehaus.jackson.mapper
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.osee.ats,
  org.eclipse.osee.ats.access,
@@ -67,6 +68,7 @@ Import-Package: com.google.common.cache,
  javax.mail.internet,
  javax.ws.rs.client;version="2.0.0",
  javax.ws.rs.core,
+ org.codehaus.jackson,
  org.eclipse.nebula.widgets.xviewer,
  org.eclipse.nebula.widgets.xviewer.action,
  org.eclipse.nebula.widgets.xviewer.customize,

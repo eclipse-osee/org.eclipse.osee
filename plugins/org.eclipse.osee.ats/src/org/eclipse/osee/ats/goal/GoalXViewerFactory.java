@@ -26,9 +26,10 @@ import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumn;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
-import org.eclipse.osee.ats.column.TitleColumn;
 import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
 import org.eclipse.osee.ats.world.WorldXViewerUtil;
@@ -43,9 +44,10 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
-         TitleColumn.getInstance(), TypeColumn.getInstance(), StateColumn.getInstance(), PriorityColumn.getInstance(),
-         ChangeTypeColumn.getInstance(), AssigneeColumnUI.getInstance(), new AtsIdColumn(true),
-         CreatedDateColumn.getInstance(), TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
+         new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), TypeColumn.getInstance(),
+         StateColumn.getInstance(), PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
+         AssigneeColumnUI.getInstance(), new AtsIdColumn(true), CreatedDateColumn.getInstance(),
+         TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
       return columns;
    }
    private final Integer[] widths = new Integer[] {
@@ -75,7 +77,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
          registerColumns(newCol);
       }
       // Add remaining columns from world columns
-      for (XViewerColumn worldCol : WorldXViewerFactory.WorldViewColumns) {
+      for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {
          if (!goalViewerVisibleColumns.contains(worldCol)) {
             XViewerColumn newCol = worldCol.copy();
             newCol.setShow(false);

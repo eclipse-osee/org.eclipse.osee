@@ -19,11 +19,14 @@ import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -47,8 +50,11 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
 
-   public AbstractWorkPackageRelatedColumnUI(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   private final AtsColumnId atsColumnId;
+
+   public AbstractWorkPackageRelatedColumnUI(AtsColumnId atsColumnId, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
+      this.atsColumnId = atsColumnId;
    }
 
    @Override
@@ -115,4 +121,14 @@ public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColum
          }
       }
    }
+
+   @Override
+   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String result = "";
+      if (element instanceof IAtsObject) {
+         result = AtsClientService.get().getColumnService().getColumn(atsColumnId).getColumnText((IAtsObject) element);
+      }
+      return result;
+   }
+
 }

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * @author Donald G. Dunne
@@ -141,6 +142,11 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public boolean isAttributeTypeValid(ArtifactId artifact, IAttributeType attributeType) {
       return ((Artifact) artifact).isAttributeTypeValid(attributeType);
+   }
+
+   @Override
+   public IAttributeType getAttributeType(long attrTypeId) {
+      return AttributeTypeManager.getTypeByGuid(attrTypeId);
    }
 
 }
