@@ -95,7 +95,7 @@ public class TraceInformationAccumulator {
 
       traceWriter.writeCell(softwareRequirement.getLocalId());
 
-      traceWriter.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SafetyCriticality, "none"));
+      traceWriter.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "none"));
 
       int size = 0;
 

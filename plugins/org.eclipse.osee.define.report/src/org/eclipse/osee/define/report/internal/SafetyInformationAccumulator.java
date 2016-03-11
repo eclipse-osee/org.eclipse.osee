@@ -155,7 +155,7 @@ public final class SafetyInformationAccumulator {
 
    private void processSubsystemFunction(ArtifactReadable subsystemFunction) throws IOException {
       writer.writeCell(subsystemFunction.getName(), SafetyReportGenerator.SUBSYSTEM_FUNCTION_INDEX);
-      String criticality = subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SafetyCriticality, "V");
+      String criticality = subsystemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory, "NH");
       writer.writeCell(criticality);
 
       for (ArtifactReadable subsystemRequirement : subsystemRequirements.get(subsystemFunction)) {
@@ -171,7 +171,7 @@ public final class SafetyInformationAccumulator {
       writer.writeCell(subsystemRequirement.getName());
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
-         CoreRelationTypes.Design__Design, CoreAttributeTypes.SafetyCriticality);
+         CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory);
 
       for (ArtifactReadable softwareRequirement : softwareRequirements.get(subsystemRequirement)) {
          processSoftwareRequirement(softwareRequirement, currentCriticality);
@@ -180,7 +180,7 @@ public final class SafetyInformationAccumulator {
    }
 
    private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, IRelationTypeSide relType, IAttributeType attrType) throws IOException {
-      String current = art.getSoleAttributeAsString(CoreAttributeTypes.DevelopmentAssuranceLevel, "");
+      String current = art.getSoleAttributeAsString(CoreAttributeTypes.LegacyDAL, "");
       /**
        * check to see if the safety criticality of the child at least equal to the parent /* since the test below tests
        * according to lexical order, > 0 result means parent has lower criticality
@@ -205,8 +205,8 @@ public final class SafetyInformationAccumulator {
       String parentCriticality = "E";
 
       for (ArtifactReadable parent : tracedToRequirements) {
-         parentCriticality = parent.getSoleAttributeAsString(attrType, "V");
-         if (attrType.equals(CoreAttributeTypes.SafetyCriticality)) {
+         parentCriticality = parent.getSoleAttributeAsString(attrType, "NH");
+         if (attrType.equals(CoreAttributeTypes.SeverityCategory)) {
             parentCriticality = convertSafetyCriticalityToDAL(parentCriticality);
          }
 
@@ -230,7 +230,7 @@ public final class SafetyInformationAccumulator {
    private void processSoftwareRequirement(ArtifactReadable softwareRequirement, String criticality) throws IOException {
       writer.writeCell(softwareRequirement.getName(), SafetyReportGenerator.SOFTWARE_REQUIREMENT_INDEX);
       String softwareRequirementDAL = writeCriticalityWithDesignCheck(softwareRequirement, criticality,
-         CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.DevelopmentAssuranceLevel);
+         CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.LegacyDAL);
 
       writer.writeCell(calculateBoeingEquivalentSWQualLevel(softwareRequirementDAL,
          softwareRequirement.getAttributeCount(CoreAttributeTypes.Partition)));

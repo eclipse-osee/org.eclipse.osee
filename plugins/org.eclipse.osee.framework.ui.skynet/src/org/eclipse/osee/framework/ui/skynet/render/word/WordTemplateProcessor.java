@@ -582,7 +582,7 @@ public class WordTemplateProcessor {
       renderer.setOption("allAttrs", allAttrs);
       // This is for SRS Publishing. Do not publish unspecified attributes
       if (!allAttrs && (attributeType.equals(CoreAttributeTypes.Partition) || attributeType.equals(
-         CoreAttributeTypes.SafetyCriticality))) {
+         CoreAttributeTypes.SeverityCategory))) {
          if (artifact.isAttributeTypeValid(CoreAttributeTypes.Partition)) {
             for (Attribute<?> partition : artifact.getAttributes(CoreAttributeTypes.Partition)) {
                if (partition == null || partition.getValue() == null || partition.getValue().equals("Unspecified")) {

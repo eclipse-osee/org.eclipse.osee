@@ -105,12 +105,12 @@ public class SafetyReportGenerator {
             accumulator.reset(systemFunction);
             accumulator.buildSubsystemsRequirementsMap(systemFunction);
             String criticality;
-            if (systemFunction.getAttributes(CoreAttributeTypes.SafetyCriticality).size() != 1) {
+            if (systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory).size() != 1) {
                logger.debug("found too many attributes on %s", systemFunction.toString());
                criticality = systemFunction.getAttributes(
-                  CoreAttributeTypes.SafetyCriticality).iterator().next().getDisplayableString();
+                  CoreAttributeTypes.SeverityCategory).iterator().next().getDisplayableString();
             } else {
-               criticality = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SafetyCriticality);
+               criticality = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
             }
 
             writer.writeCell(criticality);

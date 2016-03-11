@@ -662,8 +662,7 @@ attributeType "Access Context Id" extends StringAttribute {
 
 artifactType "Requirement" extends "Artifact" {
 	uuid 0x0000000000000015
-	attribute "Development Assurance Level"
-	attribute "Severity Category"
+	attribute "Legacy DAL"
 	attribute "Qualification Method"
 	attribute "Subsystem"
 	attribute "Technical Performance Parameter"
@@ -750,6 +749,10 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
 	uuid 0x0000000000000018
+	attribute "IDAL"
+	attribute "IDAL Rational"
+	attribute "Software Control Category"
+	attribute "Software Control Category Rational"
 }
 
 artifactType "Plain Text" extends "Artifact" {
@@ -825,6 +828,8 @@ abstract artifactType "Abstract Subsystem Requirement" extends "Requirement" {
 	attribute "Verification Level"
 	attribute "Verification Event"
 	attribute "Effectivity"
+	attribute "FDAL"
+	attribute "FDAL Rational"
 }
 
 artifactType "Subsystem Requirement - MS Word" extends "Abstract Subsystem Requirement" , "MS Word Template" {
@@ -846,7 +851,10 @@ artifactType "Hardware Requirement" extends "Requirement" , "MS Word Template" {
 
 abstract artifactType "Function" extends "MS Word Template" {
 	uuid 0x0000000000000022
-	attribute "Safety Criticality"
+	attribute "Severity Category"
+	attribute "Software Safety Impact"
+	attribute "FDAL"
+	attribute "FDAL Rational"
 }
 
 artifactType "System Function" extends "Function" , "System Design" {
@@ -892,8 +900,7 @@ artifactType "Test Information Sheet" extends "MS Word Template" , "Test Unit" {
 
 artifactType "Design" extends "MS Word Template" {
 	uuid 0x000000000000015A
-	attribute "Development Assurance Level"
-	attribute "Safety Criticality"
+	attribute "Legacy DAL"
 	attribute "Severity Category"
 	attribute "Data Rights Classification"
 	attribute "Data Rights Basis"
@@ -1091,7 +1098,7 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
 	mediaType "text/plain"
 }
 
-oseeEnumType "enum.req.safety.criticality" {
+oseeEnumType "enum.req.severity.category" {
 	uuid 0x3000000000000180
 	entry "I"
 	entryGuid "CArJmMT4W0M7RHz21FQA"
@@ -1101,19 +1108,66 @@ oseeEnumType "enum.req.safety.criticality" {
 	entryGuid "CArJmMXNMQmB_pYCUmgA"
 	entry "IV"
 	entryGuid "CArJmMZEHicX8fSbRWQA"
-	entry "V"
+	entry "NH"
 	entryGuid "CArJmMa0N3h90kh02XwA"
+	entry "Unspecified"
+	entryGuid "CArJmMc0N2j19kh03mzA"
 }
 
-attributeType "Safety Criticality" extends EnumeratedAttribute {
+attributeType "Severity Category" extends EnumeratedAttribute {
 	uuid 0x100000000000008A
 	dataProvider DefaultAttributeDataProvider
 	min 1
 	max 1
 	taggerId DefaultAttributeTaggerProvider
-	enumType "enum.req.safety.criticality"
-	description "Criticality Classification"
-	defaultValue "V"
+	enumType "enum.req.severity.category"
+	description "Severity Category Classification"
+	defaultValue "Unspecified"
+	mediaType "text/plain"
+}
+
+oseeEnumType "enum.req.software.control.category" {
+	uuid 0x344479B3ADA36B79
+	entry "1(AT)"
+	entryGuid ""
+	entry "2(SAT)"
+	entryGuid ""
+	entry "3(RFT)"
+	entryGuid ""
+	entry "4(IN)"
+	entryGuid ""
+	entry "5(NSI)"
+	entryGuid ""
+	entry "Unspecified"
+	entryGuid ""
+}
+
+attributeType "Software Control Category" extends EnumeratedAttribute {
+	uuid 0x1B2DA4398EAB9207
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	taggerId DefaultAttributeTaggerProvider
+	enumType "enum.req.software.control.category"
+	description "Software Control Category Classification"
+	defaultValue "Unspecified"
+	mediaType "text/plain"
+}
+
+attributeType "Software Control Category Rational" extends StringAttribute {
+	uuid 0x0A6BD62623697536
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "Software Safety Impact" extends BooleanAttribute {
+	uuid 0x7372557095E8C6DD
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	description "Software Safety Impact"
 	mediaType "text/plain"
 }
 
@@ -1215,20 +1269,49 @@ oseeEnumType "enum.req.development.assurance.level" {
    entryGuid "ABbb5PXLXUOTQZMjxngA"	
 }
 
-attributeType "Development Assurance Level" extends EnumeratedAttribute {
+attributeType "Legacy DAL" extends EnumeratedAttribute {
 	uuid 0x1000000000000090
 	dataProvider DefaultAttributeDataProvider
-	min 1
+	min 0
 	max 1
 	enumType "enum.req.development.assurance.level"
-	description "Development Assurance Level"
+	description "Legacy Development Assurance Level (original DAL)"
 	defaultValue "Unspecified"
 	mediaType "text/plain"
 }
 
+attributeType "FDAL" extends EnumeratedAttribute {
+	uuid 0x6F21FCC037B495A4
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.development.assurance.level"
+	description "Functional Development Assurance Level"
+	defaultValue "Unspecified"
+	mediaType "text/plain"
+}
 
-attributeType "Severity Category" extends StringAttribute {
-	uuid 0x0B473ECCDBFF0E6D
+attributeType "FDAL Rational" extends StringAttribute {
+	uuid 0x0CDAC9ABD75FE496
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/plain"
+}
+
+attributeType "IDAL" extends EnumeratedAttribute {
+	uuid 0x2442AB12730CE62B
+	dataProvider DefaultAttributeDataProvider
+	min 1
+	max 1
+	enumType "enum.req.development.assurance.level"
+	description "Item Development Assurance Level"
+	defaultValue "Unspecified"
+	mediaType "text/plain"
+}
+
+attributeType "IDAL Rational" extends StringAttribute {
+	uuid 0x22F0D27FE668912D
 	dataProvider DefaultAttributeDataProvider
 	min 0
 	max 1

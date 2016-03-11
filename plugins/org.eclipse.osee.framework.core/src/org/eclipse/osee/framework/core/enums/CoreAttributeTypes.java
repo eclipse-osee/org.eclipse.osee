@@ -42,7 +42,6 @@ public final class CoreAttributeTypes {
    public static final IAttributeType DefaultMailServer = TokenFactory.createAttributeType(0x1000000000000057L, "osee.config.Default Mail Server");
    public static final IAttributeType DefaultGroup = TokenFactory.createAttributeType(0x100000000000006EL, "Default Group");
    public static final IAttributeType Description = TokenFactory.createAttributeType(0x1000000000000072L, "Description");
-   public static final IAttributeType DevelopmentAssuranceLevel = TokenFactory.createAttributeType(0x1000000000000090L, "Development Assurance Level");
    public static final IAttributeType Dictionary = TokenFactory.createAttributeType(0x100000000000006BL, "Dictionary");
    public static final IAttributeType Effectivity = TokenFactory.createAttributeType(0x1000000000000084L, "Effectivity");
    public static final IAttributeType Email = TokenFactory.createAttributeType(0x100000000000006AL, "Email");
@@ -50,6 +49,8 @@ public final class CoreAttributeTypes {
    public static final IAttributeType FavoriteBranch = TokenFactory.createAttributeType(0x1000000000000062L, "Favorite Branch");
    public static final IAttributeType FaxPhone = TokenFactory.createAttributeType(0x1000000000000069L, "Fax Phone");
    public static final IAttributeType FunctionalCategory = TokenFactory.createAttributeType(0x100000000000037FL, "Functional Category");
+   public static final IAttributeType FunctionalDAL = TokenFactory.createAttributeType(0x6F21FCC037B495A4L, "Functional Development Assurance Level");
+   public static final IAttributeType FunctionalDALRational = TokenFactory.createAttributeType(0x0CDAC9ABD75FE496L, "Functional Development Assurance Level Rational");
    public static final IAttributeType GeneralStringData = TokenFactory.createAttributeType(0x1000000000000078L, "General String Data");
    public static final IAttributeType GfeCfe = TokenFactory.createAttributeType(0x10000000000000A8L, "GFE / CFE");
    public static final IAttributeType GraphitiDiagram = TokenFactory.createAttributeType(0x1000000000000157L, "Graphiti Diagram");
@@ -58,6 +59,9 @@ public final class CoreAttributeTypes {
    public static final IAttributeType HTMLContent = TokenFactory.createAttributeType(0x100000000000037DL, "HTML Content");
    public static final IAttributeType ImageContent = TokenFactory.createAttributeType(0x100000000000037CL, "Image Content");
    public static final IAttributeType IdValue = TokenFactory.createAttributeType(0x100004651100057L, "ID Value");
+   public static final IAttributeType ItemDAL = TokenFactory.createAttributeType(0x2442AB12730CE62BL, "Item Development Assurance Level");
+   public static final IAttributeType ItemDALRational = TokenFactory.createAttributeType(0x22F0D27FE668912DL, "Item Development Assurance Level Rational");
+   public static final IAttributeType LegacyDAL = TokenFactory.createAttributeType(0x1000000000000090L, "Legacy Development Assurance Level");
    public static final IAttributeType LegacyId = TokenFactory.createAttributeType(0x1000000000000083L, "Legacy Id");
    public static final IAttributeType MobilePhone = TokenFactory.createAttributeType(0x1000000000000068L, "Mobile Phone");
    public static final IAttributeType Name = TokenFactory.createAttributeType(0x1000000000000070L, "Name");
@@ -72,7 +76,10 @@ public final class CoreAttributeTypes {
    public static final IAttributeType RendererOptions = TokenFactory.createAttributeType(0x0000000000000388L, "Renderer Options");
    public static final IAttributeType RelationOrder = TokenFactory.createAttributeType(0x1000000000000071L, "Relation Order");
    public static final IAttributeType Sfha = TokenFactory.createAttributeType(0x10000000000000A4L, "SFHA");
-   public static final IAttributeType SafetyCriticality = TokenFactory.createAttributeType(0x100000000000008AL, "Safety Criticality");
+   public static final IAttributeType SeverityCategory = TokenFactory.createAttributeType(0x100000000000008AL, "Severity Category");
+   public static final IAttributeType SoftwareControlCategory = TokenFactory.createAttributeType(0x1B2DA4398EAB9207L, "Software Control Category");
+   public static final IAttributeType SoftwareControlCategoryRational = TokenFactory.createAttributeType(0x0A6BD62623697536L, "Software Control Category Rational");
+   public static final IAttributeType SoftwareSafetyImpact = TokenFactory.createAttributeType(0x7372557095E8C6DDL, "Software Safety Impact");
    public static final IAttributeType State = TokenFactory.createAttributeType(0x100000000000005EL, "State");
    public static final IAttributeType StaticId = TokenFactory.createAttributeType(0x1000000000000077L, "Static Id");
    public static final IAttributeType Street = TokenFactory.createAttributeType(0x100000000000005DL, "Street");

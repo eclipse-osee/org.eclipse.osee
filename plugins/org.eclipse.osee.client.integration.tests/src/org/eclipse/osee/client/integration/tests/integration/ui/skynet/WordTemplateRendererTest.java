@@ -86,13 +86,19 @@ public class WordTemplateRendererTest {
    private static String MASTER_TEMPLATE_STRING_IDONLY;
    private static String MASTER_TEMPLATE_STRING_IDANDNAME;
    private static String SLAVE_TEMPLATE_STRING;
-   
-   private static String RECURSIVE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String SINGLE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS =  "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
-   private static String MASTER_RENDERER_OPTIONS = "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}]}";
-   private static String MASTER_ID_RENDERER_OPTIONS = "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}]}";
-   private static String SLAVE_RENDERER_OPTIONS = "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r><w:t>Partition:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Development Assurance Level\", \"Label\" : \"<w:r><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+
+   private static String RECURSIVE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String SINGLE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Word Template Content\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String SINGLE_ATTRIBUTE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [ {\"Outlining\" : true, \"RecurseChildren\" : false, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"Default\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"*\",  \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
+   private static String MASTER_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Communication Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Navigation Subsystem Crew Interface\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Name\", \"Value\" : \"Aircraft Systems Management Subsystem Crew Interface\"}]}";
+   private static String MASTER_ID_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"NestedTemplate\", \"NestedTemplates\" : [{\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.1\", \"SubDocName\" : \"Communication Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"249\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.2\", \"SubDocName\" : \"Navigation Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"250\"}, {\"OutlineType\" : \"\", \"SectionNumber\" : \"3.2.3\", \"SubDocName\" : \"Aircraft Systems Management Subsystem Crew Interface\", \"Key\" : \"Id\", \"Value\" : \"251\"}]}";
+   private static String SLAVE_RENDERER_OPTIONS =
+      "{\"ElementType\" : \"Artifact\", \"OutliningOptions\" : [{\"Outlining\" : true, \"RecurseChildren\" : true, \"HeadingAttributeType\" : \"Name\", \"ArtifactName\" : \"srsProducer.objects\", \"OutlineNumber\" : \"\" }], \"AttributeOptions\" : [{\"AttrType\" : \"Partition\", \"Label\" : \"<w:r><w:t>Partition:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Development Assurance Level\", \"Label\" : \"<w:r><w:t>Development Assurance Level:</w:t></w:r>\", \"FormatPre\" : \">x<\", \"FormatPost\" : \"\"}, {\"AttrType\" : \"Word Template Content\", \"Label\" : \"\", \"FormatPre\" : \"\", \"FormatPost\" : \"\"}]}";
 
    private IOseeBranch rootBranch;
    private IOseeBranch updateBranch;
@@ -645,11 +651,12 @@ public class WordTemplateRendererTest {
          ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsMaster Template ID and name");
       masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent,
          MASTER_TEMPLATE_STRING_IDANDNAME);
-      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, MASTER_ID_RENDERER_OPTIONS);
+      masterTemplate_idAndName.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions,
+         MASTER_ID_RENDERER_OPTIONS);
       slaveTemplate = ArtifactTypeManager.addArtifact(CoreArtifactTypes.RendererTemplate, branch, "srsSlave Template");
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.WholeWordContent, SLAVE_TEMPLATE_STRING);
       slaveTemplate.setSoleAttributeFromString(CoreAttributeTypes.RendererOptions, SLAVE_RENDERER_OPTIONS);
-      
+
       folder.addChild(recurseTemplate);
       folder.addChild(singleTemplate);
       folder.addChild(singleTemplateAttrib);
@@ -751,7 +758,7 @@ public class WordTemplateRendererTest {
       intro.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1");
       background.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "This is the background of the doc" + endWordString);
-      background.setSoleAttributeValue(CoreAttributeTypes.SafetyCriticality, "III");
+      background.setSoleAttributeValue(CoreAttributeTypes.SeverityCategory, "III");
       background.setSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "1.1");
       scope.setSoleAttributeValue(CoreAttributeTypes.WordTemplateContent,
          beginWordString + "The scope is the entire test" + endWordString);
