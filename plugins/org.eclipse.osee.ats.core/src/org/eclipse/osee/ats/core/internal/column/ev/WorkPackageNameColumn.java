@@ -12,29 +12,24 @@ package org.eclipse.osee.ats.core.internal.column.ev;
 
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorkPackageTypeUtility extends AbstractRelatedWorkPackageColumn {
+public class WorkPackageNameColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageTypeUtility(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public WorkPackageNameColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       super(earnedValueServiceProvider);
    }
 
    @Override
    protected String getColumnValue(IAtsWorkPackage workPkg) {
-      try {
-         return workPkg.getWorkPackageType().name();
-      } catch (OseeCoreException ex) {
-         return AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
-      }
+      return workPkg.getName();
    }
 
    @Override
    public String getDescription() {
-      return "Provides Work Package Type from the selected Work Package related to the selected workflow.";
+      return "Provides Work Package Name from the selected Work Package related to the selected workflow.";
    }
 
 }

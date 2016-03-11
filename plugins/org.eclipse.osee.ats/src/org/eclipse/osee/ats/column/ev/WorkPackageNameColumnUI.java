@@ -30,7 +30,7 @@ public class WorkPackageNameColumnUI extends AbstractWorkPackageRelatedColumnUI 
    private WorkPackageNameColumnUI() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageName", "Work Package Name", 80, SWT.LEFT, false,
          SortDataType.String, true,
-         AtsClientService.get().getColumnUtilities().getWorkPackageNameUtility().getDescription());
+         AtsClientService.get().getColumnService().getWorkPackageNameColumn().getDescription());
    }
 
    /**
@@ -49,7 +49,7 @@ public class WorkPackageNameColumnUI extends AbstractWorkPackageRelatedColumnUI 
       String result = "";
       if (element instanceof IAtsObject) {
          result =
-            AtsClientService.get().getColumnUtilities().getWorkPackageNameUtility().getColumnText((IAtsObject) element);
+            AtsClientService.get().getColumnService().getWorkPackageNameColumn().getColumnText((IAtsObject) element);
       }
       return result;
    }

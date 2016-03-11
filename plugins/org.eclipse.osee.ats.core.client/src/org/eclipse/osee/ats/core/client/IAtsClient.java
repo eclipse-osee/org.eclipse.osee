@@ -52,7 +52,7 @@ import org.eclipse.osee.ats.core.client.internal.IArtifactProvider;
 import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProvider;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -133,7 +133,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    IAtsLogFactory getLogFactory();
 
-   IAtsColumnUtilities getColumnUtilities();
+   IAtsColumnService getColumnService();
 
    IAtsUtilService getUtilService();
 

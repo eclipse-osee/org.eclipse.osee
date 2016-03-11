@@ -20,8 +20,8 @@ import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsWorkStateFactory;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnUtilities;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
+import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsStateFactory;
 import org.eclipse.osee.ats.core.internal.state.AtsWorkStateFactory;
@@ -44,8 +44,8 @@ public final class AtsCoreFactory {
       return new AtsLogFactory();
    }
 
-   public static IAtsColumnUtilities getColumnUtilities(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
-      return new AtsColumnUtilities(reviewService, workItemService, earnedValueServiceProvider);
+   public static IAtsColumnService getColumnService(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+      return new AtsColumnService(reviewService, workItemService, earnedValueServiceProvider);
    }
 
    public static IAtsWorkStateFactory getWorkStateFactory(IAtsUserService userService) {

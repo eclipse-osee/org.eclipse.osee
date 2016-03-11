@@ -14,85 +14,85 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.core.column.IActivityIdUtility;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
-import org.eclipse.osee.ats.core.internal.column.TeamColumnUtility;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
+import org.eclipse.osee.ats.core.column.IAtsColumn;
+import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsColumnUtilities implements IAtsColumnUtilities {
+public class AtsColumnService implements IAtsColumnService {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
-   private WorkPackageIdUtility workPackageIdUtility;
-   private ActivityIdUtility activityIdUtility;
-   private WorkPackageNameUtility workPackageNameUtility;
-   private WorkPackageTypeUtility workPackageTypeUtility;
-   private WorkPackageProgramUtility workPackageProgramUtility;
-   private IAtsColumnUtility workPackageGuidUtility;
-   private TeamColumnUtility teamColumnUtility;
+   private WorkPackageIdColumn workPackageIdUtility;
+   private ActivityIdColumn activityIdUtility;
+   private WorkPackageNameColumn workPackageNameUtility;
+   private WorkPackageTypeColumn workPackageTypeUtility;
+   private WorkPackageProgramColumn workPackageProgramUtility;
+   private IAtsColumn workPackageGuidUtility;
+   private TeamColumn teamColumnUtility;
    private final IAtsWorkItemService workItemService;
    private final IAtsReviewService reviewService;
    public static final String CELL_ERROR_PREFIX = "!Error";
 
-   public AtsColumnUtilities(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public AtsColumnService(IAtsReviewService reviewService, IAtsWorkItemService workItemService, IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.reviewService = reviewService;
       this.workItemService = workItemService;
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
 
    @Override
-   public IAtsColumnUtility getTeamUtility() {
+   public IAtsColumn getTeamColumn() {
       if (teamColumnUtility == null) {
-         teamColumnUtility = new TeamColumnUtility(workItemService, reviewService);
+         teamColumnUtility = new TeamColumn(workItemService, reviewService);
       }
       return teamColumnUtility;
    }
 
    @Override
-   public IActivityIdUtility getActivityIdUtility() {
+   public IActivityIdUtility getActivityIdColumn() {
       if (activityIdUtility == null) {
-         activityIdUtility = new ActivityIdUtility(earnedValueServiceProvider);
+         activityIdUtility = new ActivityIdColumn(earnedValueServiceProvider);
       }
       return activityIdUtility;
    }
 
    @Override
-   public IAtsColumnUtility getWorkPackageNameUtility() {
+   public IAtsColumn getWorkPackageNameColumn() {
       if (workPackageNameUtility == null) {
-         workPackageNameUtility = new WorkPackageNameUtility(earnedValueServiceProvider);
+         workPackageNameUtility = new WorkPackageNameColumn(earnedValueServiceProvider);
       }
       return workPackageNameUtility;
    }
 
    @Override
-   public IAtsColumnUtility getWorkPackageIdUtility() {
+   public IAtsColumn getWorkPackageIdColumn() {
       if (workPackageIdUtility == null) {
-         workPackageIdUtility = new WorkPackageIdUtility(earnedValueServiceProvider);
+         workPackageIdUtility = new WorkPackageIdColumn(earnedValueServiceProvider);
       }
       return workPackageIdUtility;
    }
 
    @Override
-   public IAtsColumnUtility getWorkPackageTypeUtility() {
+   public IAtsColumn getWorkPackageTypeColumn() {
       if (workPackageTypeUtility == null) {
-         workPackageTypeUtility = new WorkPackageTypeUtility(earnedValueServiceProvider);
+         workPackageTypeUtility = new WorkPackageTypeColumn(earnedValueServiceProvider);
       }
       return workPackageTypeUtility;
    }
 
    @Override
-   public IAtsColumnUtility getWorkPackageProgramUtility() {
+   public IAtsColumn getWorkPackageProgramColumn() {
       if (workPackageProgramUtility == null) {
-         workPackageProgramUtility = new WorkPackageProgramUtility(earnedValueServiceProvider);
+         workPackageProgramUtility = new WorkPackageProgramColumn(earnedValueServiceProvider);
       }
       return workPackageProgramUtility;
    }
 
    @Override
-   public IAtsColumnUtility getWorkPackageGuidUtility() {
+   public IAtsColumn getWorkPackageGuidColumn() {
       if (workPackageGuidUtility == null) {
-         workPackageGuidUtility = new WorkPackageGuidUtility(earnedValueServiceProvider);
+         workPackageGuidUtility = new WorkPackageGuidColumn(earnedValueServiceProvider);
       }
       return workPackageGuidUtility;
    }

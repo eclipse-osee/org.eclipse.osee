@@ -30,7 +30,7 @@ public class WorkPackageProgramColumnUI extends AbstractWorkPackageRelatedColumn
    private WorkPackageProgramColumnUI() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageProgram", "Work Package Program", 80, SWT.LEFT, false,
          SortDataType.String, true,
-         AtsClientService.get().getColumnUtilities().getWorkPackageProgramUtility().getDescription());
+         AtsClientService.get().getColumnService().getWorkPackageProgramColumn().getDescription());
    }
 
    /**
@@ -48,7 +48,7 @@ public class WorkPackageProgramColumnUI extends AbstractWorkPackageRelatedColumn
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnUtilities().getWorkPackageProgramUtility().getColumnText(
+         result = AtsClientService.get().getColumnService().getWorkPackageProgramColumn().getColumnText(
             (IAtsObject) element);
       }
       return result;

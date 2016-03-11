@@ -57,7 +57,7 @@ public class TeamColumnUtilityTest {
 
    @Test
    public void testGetColumnText() throws Exception {
-      TeamColumnUtility utility = new TeamColumnUtility(workItemService, reviewService);
+      TeamColumn utility = new TeamColumn(workItemService, reviewService);
 
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(teamWf));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(review));

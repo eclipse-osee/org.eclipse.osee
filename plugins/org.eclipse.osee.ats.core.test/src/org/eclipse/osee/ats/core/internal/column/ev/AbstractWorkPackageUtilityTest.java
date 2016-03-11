@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
+import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.junit.Assert;
@@ -43,7 +43,7 @@ public abstract class AbstractWorkPackageUtilityTest {
       when(earnedValueService.getWorkPackage(workItem)).thenReturn(workPkg);
    }
 
-   public abstract IAtsColumnUtility getUtil();
+   public abstract IAtsColumn getUtil();
 
    @Test
    public void testGetDescription() {

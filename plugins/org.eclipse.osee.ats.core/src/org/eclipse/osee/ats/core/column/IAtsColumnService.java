@@ -13,19 +13,19 @@ package org.eclipse.osee.ats.core.column;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsColumnUtilities {
+public interface IAtsColumnService {
 
-   IActivityIdUtility getActivityIdUtility();
+   IActivityIdUtility getActivityIdColumn();
 
-   IAtsColumnUtility getWorkPackageIdUtility();
+   IAtsColumn getWorkPackageIdColumn();
 
-   IAtsColumnUtility getWorkPackageNameUtility();
+   IAtsColumn getWorkPackageNameColumn();
 
-   IAtsColumnUtility getWorkPackageTypeUtility();
+   IAtsColumn getWorkPackageTypeColumn();
 
-   IAtsColumnUtility getWorkPackageProgramUtility();
+   IAtsColumn getWorkPackageProgramColumn();
 
-   IAtsColumnUtility getWorkPackageGuidUtility();
+   IAtsColumn getWorkPackageGuidColumn();
 
-   IAtsColumnUtility getTeamUtility();
+   IAtsColumn getTeamColumn();
 }

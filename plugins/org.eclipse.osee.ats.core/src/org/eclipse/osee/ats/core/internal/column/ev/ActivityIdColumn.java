@@ -22,11 +22,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  *
  * @author Donald G. Dunne
  */
-public class ActivityIdUtility implements IActivityIdUtility {
+public class ActivityIdColumn implements IActivityIdUtility {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
 
-   public ActivityIdUtility(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public ActivityIdColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       this.earnedValueServiceProvider = earnedValueServiceProvider;
    }
 
@@ -45,7 +45,7 @@ public class ActivityIdUtility implements IActivityIdUtility {
             result = getText(workPackage);
          }
       } catch (OseeCoreException ex) {
-         return AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
    }

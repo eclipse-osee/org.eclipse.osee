@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column.ev;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
@@ -29,22 +25,17 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.column.WorkPackageFilterTreeDialog;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.ev.WorkPackageArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -84,32 +75,10 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         String workPackageGuid =
-            AtsClientService.get().getColumnUtilities().getActivityIdUtility().getWorkPackageId(element);
-         if (Strings.isValid(workPackageGuid)) {
-            try {
-               IAtsWorkPackage workPackage = workPackageGuidToWorkPackage.get(workPackageGuid);
-               result = AtsClientService.get().getColumnUtilities().getActivityIdUtility().getColumnText(workPackage);
-            } catch (Exception ex) {
-               throw new OseeWrappedException(ex);
-            }
-         }
+         result = AtsClientService.get().getColumnService().getActivityIdColumn().getColumnText((IAtsObject) element);
       }
       return result;
    }
-
-   // Cache work packages by guid so don't have to re search/create objects constantly.
-   private static final LoadingCache<String, IAtsWorkPackage> workPackageGuidToWorkPackage =
-      CacheBuilder.newBuilder().expireAfterWrite(10, TimeUnit.MINUTES).build(
-         new CacheLoader<String, IAtsWorkPackage>() {
-
-            @Override
-            public IAtsWorkPackage load(String workPackageGuid) throws Exception {
-               Artifact workPkgArt = ArtifactQuery.getArtifactFromId(workPackageGuid, AtsUtilCore.getAtsBranch());
-               return new WorkPackageArtifact(workPkgArt);
-            }
-
-         });
 
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {

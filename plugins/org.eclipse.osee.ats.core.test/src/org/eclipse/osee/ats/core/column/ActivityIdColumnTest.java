@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.column.ev.ActivityIdUtility;
+import org.eclipse.osee.ats.core.internal.column.ev.ActivityIdColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +30,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 /**
- * Test case for {@link ActivityIdUtility}
+ * Test case for {@link ActivityIdColumn}
  * 
  * @author Donald G. Dunne
  */
@@ -74,7 +74,7 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackages_teamWf1() throws OseeCoreException {
-      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
+      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();
       col.getWorkPackage(teamWf1);
@@ -85,7 +85,7 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackages_task() throws OseeCoreException {
-      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
+      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
 
       Set<IAtsWorkPackage> workPackages = new HashSet<>();
       col.getWorkPackage(task1);
@@ -96,7 +96,7 @@ public class ActivityIdColumnTest {
 
    @Test
    public void testGetWorkPackageStr() {
-      ActivityIdUtility col = new ActivityIdUtility(earnedValueServiceProvider);
+      ActivityIdColumn col = new ActivityIdColumn(earnedValueServiceProvider);
 
       Assert.assertEquals("ActId 1 - ActId 1 Name", col.getColumnText(teamWf1));
       String workPackageStr = col.getColumnText(action);

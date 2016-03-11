@@ -81,7 +81,7 @@ public class SMAPrint extends Action {
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Current State: ", sma.getCurrentStateName()),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Team: ",
-            AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText(sma)),
+            AtsClientService.get().getColumnService().getTeamColumn().getColumnText(sma)),
          //
          AHTML.getLabelValueStr(AHTML.LABEL_FONT, "Assignees: ", AssigneeColumn.instance.getAssigneeStr(sma)),
          //

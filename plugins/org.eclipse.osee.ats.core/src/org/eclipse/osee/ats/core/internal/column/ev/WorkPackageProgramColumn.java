@@ -17,9 +17,9 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public class WorkPackageProgramUtility extends AbstractRelatedWorkPackageColumn {
+public class WorkPackageProgramColumn extends AbstractRelatedWorkPackageColumn {
 
-   public WorkPackageProgramUtility(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
+   public WorkPackageProgramColumn(IAtsEarnedValueServiceProvider earnedValueServiceProvider) {
       super(earnedValueServiceProvider);
    }
 
@@ -28,7 +28,7 @@ public class WorkPackageProgramUtility extends AbstractRelatedWorkPackageColumn 
       try {
          return workPkg.getWorkPackageProgram();
       } catch (OseeCoreException ex) {
-         return AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
    }
 

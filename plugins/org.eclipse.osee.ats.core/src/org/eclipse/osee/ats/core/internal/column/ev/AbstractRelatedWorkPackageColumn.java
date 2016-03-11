@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
+import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * 
  * @author Donald G. Dunne
  */
-public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumnUtility {
+public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumn {
 
    private final IAtsEarnedValueServiceProvider earnedValueServiceProvider;
 
@@ -42,7 +42,7 @@ public abstract class AbstractRelatedWorkPackageColumn implements IAtsColumnUtil
             }
          }
       } catch (OseeCoreException ex) {
-         result = AtsColumnUtilities.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         result = AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return result;
    }

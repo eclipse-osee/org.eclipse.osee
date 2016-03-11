@@ -49,7 +49,7 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       String result = "";
       if (element instanceof IAtsObject) {
-         result = AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText((IAtsObject) element);
+         result = AtsClientService.get().getColumnService().getTeamColumn().getColumnText((IAtsObject) element);
       }
       return result;
    }

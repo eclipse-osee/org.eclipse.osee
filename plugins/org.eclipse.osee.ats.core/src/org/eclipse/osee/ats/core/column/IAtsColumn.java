@@ -15,7 +15,7 @@ import org.eclipse.osee.ats.api.IAtsObject;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsColumnUtility {
+public interface IAtsColumn {
 
    public String getColumnText(IAtsObject atsObject);
 

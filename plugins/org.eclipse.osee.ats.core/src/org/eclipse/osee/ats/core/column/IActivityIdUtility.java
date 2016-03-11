@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IActivityIdUtility extends IAtsColumnUtility {
+public interface IActivityIdUtility extends IAtsColumn {
 
    IAtsWorkPackage getWorkPackage(IAtsObject atsObject) throws OseeCoreException;
 

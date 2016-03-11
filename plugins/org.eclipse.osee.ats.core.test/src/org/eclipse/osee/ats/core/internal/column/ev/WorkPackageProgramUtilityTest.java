@@ -11,26 +11,26 @@
 package org.eclipse.osee.ats.core.internal.column.ev;
 
 import static org.mockito.Mockito.when;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtility;
+import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * Test case for {@link WorkPackageProgramUtility}
+ * Test case for {@link WorkPackageProgramColumn}
  * 
  * @author Donald G. Dunne
  */
 public class WorkPackageProgramUtilityTest extends AbstractWorkPackageUtilityTest {
 
-   WorkPackageProgramUtility util;
+   WorkPackageProgramColumn util;
 
    @Override
    @Before
    public void setup() throws OseeCoreException {
       super.setup();
-      util = new WorkPackageProgramUtility(earnedValueServiceProvider);
+      util = new WorkPackageProgramColumn(earnedValueServiceProvider);
    }
 
    @Test
@@ -43,7 +43,7 @@ public class WorkPackageProgramUtilityTest extends AbstractWorkPackageUtilityTes
    }
 
    @Override
-   public IAtsColumnUtility getUtil() {
+   public IAtsColumn getUtil() {
       return util;
    }
 

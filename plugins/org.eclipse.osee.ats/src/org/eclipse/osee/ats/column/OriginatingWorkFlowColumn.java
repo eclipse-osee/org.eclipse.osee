@@ -80,7 +80,7 @@ public class OriginatingWorkFlowColumn extends XViewerAtsColumn implements IXVie
    public static String getWorldViewOriginatingWorkflowStr(Artifact actionArt) throws OseeCoreException {
       Set<String> strs = new HashSet<>();
       for (TeamWorkFlowArtifact team : getWorldViewOriginatingWorkflows(actionArt)) {
-         strs.add(AtsClientService.get().getColumnUtilities().getTeamUtility().getColumnText(team));
+         strs.add(AtsClientService.get().getColumnService().getTeamColumn().getColumnText(team));
       }
       return Collections.toString(";", strs);
    }

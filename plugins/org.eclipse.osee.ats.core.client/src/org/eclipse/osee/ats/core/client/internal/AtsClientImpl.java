@@ -100,7 +100,7 @@ import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClien
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
-import org.eclipse.osee.ats.core.column.IAtsColumnUtilities;
+import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
@@ -166,7 +166,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IAtsStateFactory atsStateFactory;
    private IAtsWorkStateFactory workStateFactory;
    private IAtsLogFactory logFactory;
-   private IAtsColumnUtilities columnUtilities;
+   private IAtsColumnService columnUtilities;
    private IAtsUtilService utilService;
    private JdbcService jdbcService;
    private IAtsWorkItemFactory workItemFactory;
@@ -587,10 +587,10 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    }
 
    @Override
-   public IAtsColumnUtilities getColumnUtilities() {
+   public IAtsColumnService getColumnService() {
       final IAtsEarnedValueService fEarnedValueService = earnedValueService;
       if (columnUtilities == null) {
-         columnUtilities = AtsCoreFactory.getColumnUtilities(getReviewService(), getWorkItemService(),
+         columnUtilities = AtsCoreFactory.getColumnService(getReviewService(), getWorkItemService(),
             new IAtsEarnedValueServiceProvider() {
 
                @Override
