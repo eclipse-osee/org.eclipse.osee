@@ -44,6 +44,10 @@ public final class CoreArtifactTypes {
    public static final IArtifactType IndirectSoftwareRequirement = TokenFactory.createArtifactType(0x0000000000000019L, "Indirect Software Requirement");
    public static final IArtifactType InterfaceRequirement = TokenFactory.createArtifactType(0x0000000000000020L, "Interface Requirement");
    public static final IArtifactType ImplementationDetails = TokenFactory.createArtifactType(0x000000000000001AL, "Implementation Details");
+   public static final IArtifactType ImplementationDetailsProcedure = TokenFactory.createArtifactType(0x000000000001111AL, "Implementation Details Procedure");
+   public static final IArtifactType ImplementationDetailsFunction = TokenFactory.createArtifactType(0x000000000002221AL, "Implementation Details Function");
+   public static final IArtifactType ImplementationDetailsDrawing = TokenFactory.createArtifactType(0x000000000003331AL, "Implementation Details Drawing");
+   public static final IArtifactType ImplementationDetailsDataDefinition = TokenFactory.createArtifactType(0x000000000004441AL, "Implementation Details Data Definition");
    public static final IArtifactType ModelDiagram = TokenFactory.createArtifactType(0x0000000000000062L, "Model Diagram");
    public static final IArtifactType OseeApp = TokenFactory.createArtifactType(0x0000000000000059L, "OSEE App");
    public static final IArtifactType OseeTypeDefinition = TokenFactory.createArtifactType(0x000000000000003CL, "Osee Type Definition");

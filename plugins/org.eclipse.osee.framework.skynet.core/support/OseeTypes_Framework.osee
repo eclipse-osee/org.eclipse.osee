@@ -738,6 +738,22 @@ artifactType "Implementation Details" extends "Indirect Software Requirement" {
 	uuid 0x000000000000001A
 }
 
+artifactType "Implementation Details Procedure" extends "Implementation Details" {
+	uuid 0x000000000001111A
+}
+
+artifactType "Implementation Details Function" extends "Implementation Details" {
+	uuid 0x000000000002221A
+}
+
+artifactType "Implementation Details Drawing" extends "Implementation Details" {
+	uuid 0x000000000003331A
+}
+
+artifactType "Implementation Details Data Definition" extends "Implementation Details" {
+	uuid 0x000000000004441A
+}
+
 artifactType "Software Requirement Procedure" extends "Indirect Software Requirement" {
 	uuid 0x000000000000001B
 }
