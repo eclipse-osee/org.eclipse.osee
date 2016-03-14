@@ -11,7 +11,9 @@ package org.eclipse.osee.framework.ui.skynet;
 
 import java.net.URI;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
@@ -40,6 +42,11 @@ import org.eclipse.swt.graphics.Image;
  */
 public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
 
+   private static List<IArtifactType> laserArtifactTypes =
+      Arrays.asList(CoreArtifactTypes.SystemDesign, CoreArtifactTypes.SupportingContent,
+         CoreArtifactTypes.IndirectSoftwareRequirement, CoreArtifactTypes.TestProcedureWML,
+         CoreArtifactTypes.InterfaceRequirement, CoreArtifactTypes.SystemFunction, CoreArtifactTypes.SubsystemFunction);
+
    @Override
    public void init() throws OseeCoreException {
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.RootArtifact, FrameworkImage.ROOT_HIERARCHY, this);
@@ -60,6 +67,28 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          FrameworkImage.IMPLEMENTATION_DETAILS_DRAWING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDataDefinition,
          FrameworkImage.IMPLEMENTATION_DETAILS_DATA_DEFINITION, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.HardwareRequirement, FrameworkImage.hardware_requirement,
+         this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareDesign, FrameworkImage.software_design, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDataDefinition,
+         FrameworkImage.SOFTWARE_REQUIREMENT_DATA_DEFINITION, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementDrawing,
+         FrameworkImage.SOFTWARE_REQUIERMENT_DRAWING, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementFunction,
+         FrameworkImage.SOFTWARE_REQUIERMENT_FUNCTION, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirementProcedure,
+         FrameworkImage.SOFTWARE_REQUIERMENT_PROCEDURE, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SoftwareRequirement, FrameworkImage.software_requirement,
+         this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemDesign, FrameworkImage.subsystem_design, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SubsystemRequirementMSWord,
+         FrameworkImage.subsystem_requirement, this);
+      ArtifactImageManager.registerBaseImage(CoreArtifactTypes.SystemRequirementMSWord,
+         FrameworkImage.system_requirement, this);
+      for (IArtifactType artifactType : laserArtifactTypes) {
+         ArtifactImageManager.registerBaseImage(artifactType, FrameworkImage.LASER, this);
+      }
+
       readDynamicImagesFromUrl();
 
       ArtifactImageManager.registerOverrideImageProvider(this, CoreArtifactTypes.User);
