@@ -196,10 +196,10 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public IAtsProgram getProgram(IAtsTeamDefinition teamDef) {
       IAtsProgram program = null;
-      Long programUuid =
-         services.getAttributeResolver().getSoleAttributeValue(teamDef, AtsAttributeTypes.ProgramUuid, null);
-      if (programUuid != null) {
-         program = services.getProgramService().getProgram(programUuid);
+      String programUuid =
+         services.getAttributeResolver().getSoleAttributeValueAsString(teamDef, AtsAttributeTypes.ProgramUuid, null);
+      if (Strings.isValid(programUuid)) {
+         program = services.getProgramService().getProgram(Long.parseLong(programUuid));
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
