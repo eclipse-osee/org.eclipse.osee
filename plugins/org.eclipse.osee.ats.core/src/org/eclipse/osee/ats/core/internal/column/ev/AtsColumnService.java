@@ -18,9 +18,9 @@ import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
-import org.eclipse.osee.ats.core.column.ImplementersColumn;
 import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 
 /**
@@ -72,7 +72,9 @@ public class AtsColumnService implements IAtsColumnService {
          if (id.equals(AtsColumnId.Team.getId())) {
             column = new TeamColumn(services.getReviewService());
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
-            column = new AssigneeColumn(ImplementersColumn.instance);
+            column = AssigneeColumn.instance;
+         } else if (id.equals(AtsColumnId.AtsId.getId())) {
+            column = AtsIdColumn.instance;
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
             column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {

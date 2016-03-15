@@ -10,31 +10,32 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.core.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class AtsIdColumn extends XViewerValueColumn {
+public class AtsIdColumnUI extends XViewerValueColumn {
 
-   public static AtsIdColumn instance = new AtsIdColumn();
+   public static AtsIdColumnUI instance = new AtsIdColumnUI();
 
-   public static AtsIdColumn getInstance() {
+   public static AtsIdColumnUI getInstance() {
       return instance;
    }
 
-   public AtsIdColumn() {
+   public AtsIdColumnUI() {
       this(false);
    }
 
-   public AtsIdColumn(boolean show) {
-      super("ats.id", "ATS ID", 75, SWT.LEFT, show, SortDataType.String, false, "ATS ID");
+   public AtsIdColumnUI(boolean show) {
+      super(AtsColumnId.AtsId.name(), "ATS ID", 75, SWT.LEFT, show, SortDataType.String, false, "ATS ID");
    }
 
    /**
@@ -42,27 +43,22 @@ public class AtsIdColumn extends XViewerValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public AtsIdColumn copy() {
-      AtsIdColumn newXCol = new AtsIdColumn(isShow());
+   public AtsIdColumnUI copy() {
+      AtsIdColumnUI newXCol = new AtsIdColumnUI(isShow());
       super.copy(this, newXCol);
       return newXCol;
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
       try {
-         if (element instanceof IAtsWorkItem) {
-            result = ((IAtsWorkItem) element).getAtsId();
-         } else if (element instanceof IAtsAction) {
-            result = ((IAtsAction) element).getAtsId();
-         } else if (element instanceof IAtsObject) {
-            result = String.valueOf(((IAtsObject) element).getUuid());
+         if (element instanceof IAtsObject) {
+            return AssigneeColumn.instance.getAssigneeStr((IAtsObject) element);
          }
-      } catch (Exception ex) {
-         result = XViewerCells.getCellExceptionString(ex);
+      } catch (OseeCoreException ex) {
+         return LogUtil.getCellExceptionString(ex);
       }
-      return result;
+      return "";
    }
 
 }

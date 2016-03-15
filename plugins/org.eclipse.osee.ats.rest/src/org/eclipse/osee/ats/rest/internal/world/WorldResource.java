@@ -58,17 +58,21 @@ public class WorldResource {
       sb.append(AHTML.heading(2, "MY World - " + userById.getName()));
       sb.append(AHTML.beginMultiColumnTable(97, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Team", "State", "Priority", "Change Type", "Assignee",
-         "Title", "AI", "Created", "Targted Version", "Notes")));
+         "Title", "AI", "Created", "Targted Version", "Notes", "ID")));
       Collection<IAtsWorkItem> myWorldItems =
          atsServer.getQueryService().createQuery(WorkItemType.WorkItem).andAssignee(userById).getItems(
             IAtsWorkItem.class);
       for (IAtsWorkItem workItem : myWorldItems) {
          sb.append(AHTML.addRowMultiColumnTable(getTeam(workItem), getState(workItem), getPriority(workItem),
             getChangeType(workItem), getAssignee(workItem), getTitle(workItem), getAI(workItem),
-            getCreatedDate(workItem), getTargetedVersion(workItem), getNotes(workItem)));
+            getCreatedDate(workItem), getTargetedVersion(workItem), getNotes(workItem), getId(workItem)));
       }
       sb.append(AHTML.endMultiColumnTable());
       return sb.toString();
+   }
+
+   private String getId(IAtsWorkItem workItem) {
+      return atsServer.getColumnService().getColumnText(AtsColumnId.AtsId, workItem);
    }
 
    private String getAI(IAtsWorkItem workItem) {

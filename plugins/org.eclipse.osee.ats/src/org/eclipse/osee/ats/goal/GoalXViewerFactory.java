@@ -17,7 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
-import org.eclipse.osee.ats.column.AtsIdColumn;
+import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
@@ -46,7 +46,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
          new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), TypeColumn.getInstance(),
          StateColumn.getInstance(), PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
-         AssigneeColumnUI.getInstance(), new AtsIdColumn(true), CreatedDateColumn.getInstance(),
+         AssigneeColumnUI.getInstance(), new AtsIdColumnUI(true), CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(), NotesColumn.getInstance());
       return columns;
    }

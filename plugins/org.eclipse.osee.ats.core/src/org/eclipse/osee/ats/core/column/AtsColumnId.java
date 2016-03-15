@@ -17,6 +17,7 @@ public enum AtsColumnId {
 
    ActivityId("ats.column.activityId"),
    Assignees("ats.column.assignees"),
+   AtsId("ats.id"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),
    WorkPackageName("ats.column.workPackageName"),
