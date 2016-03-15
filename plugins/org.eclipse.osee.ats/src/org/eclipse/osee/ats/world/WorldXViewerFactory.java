@@ -53,7 +53,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn[] getWorldViewColumns() {
       return new XViewerColumn[] {
          TypeColumn.getInstance(),
-         StateColumn.getInstance(),
+         StateColumnUI.getInstance(),
          PriorityColumn.getInstance(),
          ChangeTypeColumn.getInstance(),
          AssigneeColumnUI.getInstance(),

@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
-import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -43,7 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns =
-      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), StateColumn.getInstance(),
+      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), StateColumnUI.getInstance(),
          AssigneeColumnUI.getInstance(), PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(),
          ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(),
          RelatedToStateColumn.getInstance(), NotesColumn.getInstance());

@@ -39,6 +39,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) {
 
       XResultData results = new XResultData(false);
+      results.addRaw("[");
 
       WorldXViewerFactory factory = new WorldXViewerFactory();
       for (XViewerColumn column : factory.getColumns()) {
@@ -69,11 +70,11 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
             if (Strings.isValid(jsonInString)) {
                results.log(jsonInString);
-               results.log("\n\n");
+               results.log(",\n");
             }
          }
       }
-
+      results.addRaw("]");
       XResultDataUI.report(results, "views.json");
    }
 

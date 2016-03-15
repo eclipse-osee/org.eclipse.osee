@@ -24,7 +24,8 @@ public enum AtsColumnId {
    WorkPackageId("ats.column.workPackageId"),
    WorkPackageType("ats.column.workPackageType"),
    WorkPackageProgram("ats.column.workPackageProgram"),
-   WorkPackageGuid("ats.column.workPackageGuid");
+   WorkPackageGuid("ats.column.workPackageGuid"),
+   State("ats.column.state");
 
    private final String id;
 

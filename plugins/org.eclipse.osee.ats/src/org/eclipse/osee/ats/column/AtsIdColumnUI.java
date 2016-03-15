@@ -13,8 +13,8 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
@@ -53,7 +53,7 @@ public class AtsIdColumnUI extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsObject) {
-            return AssigneeColumn.instance.getAssigneeStr((IAtsObject) element);
+            return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.AtsId, (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

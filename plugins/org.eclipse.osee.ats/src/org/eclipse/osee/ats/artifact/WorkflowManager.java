@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.column.CancelledDateColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
-import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
@@ -139,7 +139,7 @@ public class WorkflowManager {
          artifactsToReturn.addAll(awas);
       } else {
          for (Artifact awa : awas) {
-            if (StateColumn.getInstance().getColumnText(awa, null, 0).equals(selectedState)) {
+            if (StateColumnUI.getInstance().getColumnText(awa, null, 0).equals(selectedState)) {
                artifactsToReturn.add(awa);
             }
          }

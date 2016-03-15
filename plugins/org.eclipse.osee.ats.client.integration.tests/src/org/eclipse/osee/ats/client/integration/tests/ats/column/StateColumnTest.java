@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
@@ -33,11 +33,11 @@ public class StateColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(TeamState.Implement.getName(),
-         StateColumn.getInstance().getColumnText(reqArt, StateColumn.getInstance(), 0));
+         StateColumnUI.getInstance().getColumnText(reqArt, StateColumnUI.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals(TeamState.Implement.getName(),
-         StateColumn.getInstance().getColumnText(actionArt, StateColumn.getInstance(), 0));
+         StateColumnUI.getInstance().getColumnText(actionArt, StateColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

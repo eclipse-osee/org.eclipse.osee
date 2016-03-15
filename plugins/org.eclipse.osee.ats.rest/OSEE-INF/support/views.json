@@ -1,5 +1,21 @@
 {
-	"attrColumns": [{
+	"attrColumns": [
+		{
+		"name": "Points Numeric",
+		"id": "ats.Points Numeric",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"attrTypeId": 1728793301637070003,
+		"attrTypeName": "ats.Points Numeric",
+		"width": 40,
+		"align": "Left",
+		"visible": false,
+		"sortDataType": "Float",
+		"columnMultiEdit": true,
+		"description": "Numeric Point Value",
+		"color": null,
+		"actionRollup": false
+	},
+	{
 		"id": "framework.artifact.name.Title",
 		"name": "Title",
 		"namespace": "org.eclipse.osee.ats.WorldXViewer",

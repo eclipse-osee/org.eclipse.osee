@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
+import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 
 /**
@@ -77,6 +78,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = AtsIdColumn.instance;
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
             column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.State.getId())) {
+            column = StateColumn.instance;
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
             column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {

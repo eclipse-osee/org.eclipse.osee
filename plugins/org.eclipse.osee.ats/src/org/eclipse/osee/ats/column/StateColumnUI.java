@@ -10,20 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
@@ -32,17 +27,16 @@ import org.eclipse.swt.graphics.Color;
 /**
  * @author Donald G. Dunne
  */
-public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class StateColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
 
-   public static StateColumn instance = new StateColumn();
+   public static StateColumnUI instance = new StateColumnUI();
 
-   public static StateColumn getInstance() {
+   public static StateColumnUI getInstance() {
       return instance;
    }
 
-   private StateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".state", "State", 75, SWT.LEFT, true, SortDataType.String, false,
-         null);
+   private StateColumnUI() {
+      super(AtsColumnId.State.name(), "State", 75, SWT.LEFT, true, SortDataType.String, false, null);
    }
 
    /**
@@ -50,8 +44,8 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public StateColumn copy() {
-      StateColumn newXCol = new StateColumn();
+   public StateColumnUI copy() {
+      StateColumnUI newXCol = new StateColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -59,14 +53,8 @@ public class StateColumn extends XViewerAtsColumn implements IXViewerValueColumn
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof AbstractWorkflowArtifact) {
-            return ((AbstractWorkflowArtifact) element).getCurrentStateName();
-         } else if (Artifacts.isOfType(element, AtsArtifactTypes.Action)) {
-            Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               strs.add(team.getCurrentStateName());
-            }
-            return Collections.toString(";", strs);
+         if (element instanceof IAtsObject) {
+            return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.State, (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

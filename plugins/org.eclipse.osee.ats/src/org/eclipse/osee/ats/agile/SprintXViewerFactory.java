@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
-import org.eclipse.osee.ats.column.StateColumn;
+import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -49,7 +49,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       // Add default Sprint columns
       WorldXViewerUtil.addColumn(this, SprintOrderColumn.getInstance(), 45, sprintCols);
       WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 339, sprintCols);
-      WorldXViewerUtil.addColumn(this, StateColumn.getInstance(), 74, sprintCols);
+      WorldXViewerUtil.addColumn(this, StateColumnUI.getInstance(), 74, sprintCols);
       WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, sprintCols);

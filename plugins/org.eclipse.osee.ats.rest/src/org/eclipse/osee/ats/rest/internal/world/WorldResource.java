@@ -113,7 +113,7 @@ public class WorldResource {
    }
 
    private String getState(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getCurrentStateName();
+      return atsServer.getColumnService().getColumnText(AtsColumnId.State, workItem);
    }
 
    private String getTeam(IAtsWorkItem workItem) {
