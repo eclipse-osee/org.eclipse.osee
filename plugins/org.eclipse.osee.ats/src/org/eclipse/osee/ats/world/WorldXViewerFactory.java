@@ -67,7 +67,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),
          DescriptionColumn.getInstance(),
-         LegacyPcrIdColumn.getInstance(),
+         getConfigColumn(AtsColumnToken.LegacyPcrIdColumn),
          DecisionColumn.getInstance(),
          ResolutionColumn.getInstance(),
          GroupsColumn.getInstance(),

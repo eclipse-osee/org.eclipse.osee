@@ -1,6 +1,21 @@
 {
 	"attrColumns": [
-		{
+	{
+		"name": "Legacy PCR Id",
+		"id": "ats.Legacy PCR Id",
+		"namespace": "org.eclipse.osee.ats.WorldXViewer",
+		"attrTypeId": 1152921504606847219,
+		"attrTypeName": "ats.Legacy PCR Id",
+		"width": 40,
+		"align": "Left",
+		"visible": false,
+		"sortDataType": "String",
+		"columnMultiEdit": false,
+		"description": "Field to register problem change report id from legacy items imported into ATS.",
+		"color": null,
+		"actionRollup": false
+	},
+	{
 		"name": "Points Numeric",
 		"id": "ats.Points Numeric",
 		"namespace": "org.eclipse.osee.ats.WorldXViewer",

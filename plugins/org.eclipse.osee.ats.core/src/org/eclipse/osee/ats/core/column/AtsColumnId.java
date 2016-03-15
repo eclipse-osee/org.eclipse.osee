@@ -19,6 +19,7 @@ public enum AtsColumnId {
    ActivityId("ats.column.activityId"),
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
+   LegacyPcrId("ats.Legacy PCR Id"),
    State("ats.column.state"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),
