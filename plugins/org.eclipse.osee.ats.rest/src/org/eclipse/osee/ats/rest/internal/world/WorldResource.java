@@ -97,7 +97,7 @@ public class WorldResource {
    }
 
    private String getAssignee(IAtsWorkItem workItem) {
-      return workItem.getStateMgr().getAssigneesStr();
+      return atsServer.getColumnService().getColumnText(AtsColumnId.Assignees, workItem);
    }
 
    private String getChangeType(IAtsWorkItem workItem) {

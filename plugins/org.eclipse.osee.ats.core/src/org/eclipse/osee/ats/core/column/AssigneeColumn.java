@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
+import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -27,13 +28,24 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public class AssigneeColumn {
+public class AssigneeColumn implements IAtsColumn {
 
    public static AssigneeColumn instance = new AssigneeColumn(ImplementersColumn.instance);
    private final ImplementersStringProvider implementStrProvider;
 
    public AssigneeColumn(ImplementersStringProvider implementStrProvider) {
       this.implementStrProvider = implementStrProvider;
+   }
+
+   @Override
+   public String getColumnText(IAtsObject atsObject) {
+      String result = "";
+      try {
+         result = getAssigneeStr(atsObject);
+      } catch (OseeCoreException ex) {
+         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+      }
+      return result;
    }
 
    public String getAssigneeStr(IAtsObject atsObject) throws OseeCoreException {

@@ -16,6 +16,7 @@ package org.eclipse.osee.ats.core.column;
 public enum AtsColumnId {
 
    ActivityId("ats.column.activityId"),
+   Assignees("ats.column.assignees"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),
    WorkPackageName("ats.column.workPackageName"),
