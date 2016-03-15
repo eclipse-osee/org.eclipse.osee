@@ -27,18 +27,18 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link ActionableItemsColumn}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ActionableItemsColumnTest {
 
    // @formatter:off
    @Mock private IAtsAction action;
-   
+
    @Mock private IAtsTeamWorkflow teamWf1;
    @Mock private IAtsActionableItem aia1;
    @Mock private IAtsActionableItem aia2;
-   
+
    @Mock private IAtsTeamWorkflow teamWf2;
    @Mock private IAtsActionableItem aia3;
    // @formatter:on
@@ -118,7 +118,7 @@ public class ActionableItemsColumnTest {
       when(aia1.getName()).thenReturn("AI 1");
       when(aia2.getName()).thenReturn("AI 2");
 
-      String results = ActionableItemsColumn.getActionableItemsStr(teamWf1);
+      String results = new ActionableItemsColumn().getActionableItemsStr(teamWf1);
 
       Assert.assertTrue(results.contains("AI 1"));
       Assert.assertTrue(results.contains("AI 2"));

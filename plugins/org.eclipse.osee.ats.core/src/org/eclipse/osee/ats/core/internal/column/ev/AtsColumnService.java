@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
@@ -70,7 +71,9 @@ public class AtsColumnService implements IAtsColumnService {
          }
       }
       if (column == null) {
-         if (id.equals(AtsColumnId.Team.getId())) {
+         if (id.equals(AtsColumnId.ActionableItem.getId())) {
+            column = ActionableItemsColumn.instance;
+         } else if (id.equals(AtsColumnId.Team.getId())) {
             column = new TeamColumn(services.getReviewService());
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
             column = AssigneeColumn.instance;

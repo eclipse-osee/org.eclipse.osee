@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -29,13 +30,22 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  *
  * @author Donald G. Dunne
  */
-public class ActionableItemsColumn {
+public class ActionableItemsColumn implements IAtsColumn {
 
-   public static String getColumnText(IAtsObject atsObject) throws OseeCoreException {
-      return getActionableItemsStr(atsObject);
+   public static ActionableItemsColumn instance = new ActionableItemsColumn();
+
+   @Override
+   public String getColumnText(IAtsObject atsObject) throws OseeCoreException {
+      String result = "";
+      try {
+         result = getActionableItemsStr(atsObject);
+      } catch (OseeCoreException ex) {
+         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+      }
+      return result;
    }
 
-   public static String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
+   public String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
       List<IAtsActionableItem> ais = new ArrayList<>();
       ais.addAll(getActionableItems(atsObject));
       java.util.Collections.sort(ais, new Comparator<IAtsActionableItem>() {

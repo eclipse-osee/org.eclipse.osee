@@ -15,17 +15,18 @@ package org.eclipse.osee.ats.core.column;
  */
 public enum AtsColumnId {
 
+   ActionableItem("ats.column.actionableItems"),
    ActivityId("ats.column.activityId"),
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
+   State("ats.column.state"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),
    WorkPackageName("ats.column.workPackageName"),
    WorkPackageId("ats.column.workPackageId"),
    WorkPackageType("ats.column.workPackageType"),
    WorkPackageProgram("ats.column.workPackageProgram"),
-   WorkPackageGuid("ats.column.workPackageGuid"),
-   State("ats.column.state");
+   WorkPackageGuid("ats.column.workPackageGuid");
 
    private final String id;
 

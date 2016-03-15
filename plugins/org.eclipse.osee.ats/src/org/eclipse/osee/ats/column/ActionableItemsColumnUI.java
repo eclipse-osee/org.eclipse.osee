@@ -17,8 +17,9 @@ import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.swt.SWT;
 
@@ -34,7 +35,7 @@ public class ActionableItemsColumnUI extends XViewerAtsAttributeValueColumn {
    }
 
    private ActionableItemsColumnUI() {
-      super(AtsAttributeTypes.ActionableItem, WorldXViewerFactory.COLUMN_NAMESPACE + ".actionableItems",
+      super(AtsAttributeTypes.ActionableItem, AtsColumnId.ActionableItem.name(),
          AtsAttributeTypes.ActionableItem.getUnqualifiedName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
    }
 
@@ -51,18 +52,20 @@ public class ActionableItemsColumnUI extends XViewerAtsAttributeValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String result = "";
       if (element instanceof IAtsObject) {
          try {
-            return ActionableItemsColumn.getColumnText((IAtsObject) element);
+            result = AtsClientService.get().getColumnService().getColumnText(AtsColumnId.ActionableItem,
+               ((IAtsObject) element));
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
       }
-      return "";
+      return result;
    }
 
    public static String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {
-      return ActionableItemsColumn.getActionableItemsStr(atsObject);
+      return ActionableItemsColumnUI.getActionableItemsStr(atsObject);
    }
 
    public static Collection<IAtsActionableItem> getActionableItems(IAtsObject atsObject) throws OseeCoreException {
