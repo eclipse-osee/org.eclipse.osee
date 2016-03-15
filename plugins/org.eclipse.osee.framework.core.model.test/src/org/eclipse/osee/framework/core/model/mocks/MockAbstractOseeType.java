@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.model.AbstractOseeIdType;
 /**
  * @author Roberto E. Escobar
  */
-public class MockAbstractOseeType extends AbstractOseeIdType<Long> {
+public class MockAbstractOseeType extends AbstractOseeIdType {
 
    public MockAbstractOseeType(Long guid, String name) {
       super(guid, name);

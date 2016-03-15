@@ -60,7 +60,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private ArtifactTypeCache artifactTypeCache;
    private RelationTypeCache relationTypeCache;
 
-   private List<IOseeCache<?, ?>> caches;
+   private List<IOseeCache<?>> caches;
 
    public void setJdbcService(JdbcService jdbcService) {
       this.jdbcService = jdbcService;
@@ -140,9 +140,9 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    }
 
    @Override
-   public IOseeCache<?, ?> getCache(OseeCacheEnum cacheId) {
+   public IOseeCache<?> getCache(OseeCacheEnum cacheId) {
       Conditions.checkNotNull(cacheId, "cache id to find");
-      for (IOseeCache<?, ?> cache : caches) {
+      for (IOseeCache<?> cache : caches) {
          if (cache.getCacheId().equals(cacheId)) {
             return cache;
          }

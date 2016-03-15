@@ -46,7 +46,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       super(branchData, cache);
    }
 
-   private final static class BranchDataAccessor extends MockOseeDataAccessor<Long, Branch> {
+   private final static class BranchDataAccessor extends MockOseeDataAccessor<Branch> {
 
       private final List<Branch> data;
 
@@ -56,7 +56,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       }
 
       @Override
-      public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
+      public void load(IOseeCache<Branch> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

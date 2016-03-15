@@ -33,12 +33,12 @@ import org.junit.runners.MethodSorters;
  * @author Roberto E. Escobar
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public abstract class AbstractOseeCacheTest<T extends AbstractOseeType<Long>> {
+public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
    private final List<T> data;
-   private final AbstractOseeCache<Long, T> cache;
+   private final AbstractOseeCache<T> cache;
    private final TypeComparator comparator;
 
-   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<Long, T> typeCache) {
+   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<T> typeCache) {
       this.comparator = new TypeComparator();
       this.data = artifactTypes;
       this.cache = typeCache;
@@ -160,7 +160,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType<Long>> {
       String originalName = item1.getName();
       cache.decache(item1);
 
-      ((AbstractOseeType<?>) item1).setName(item2.getName());
+      ((AbstractOseeType) item1).setName(item2.getName());
 
       if (cache.isNameUniquenessEnforced()) {
          try {
@@ -187,7 +187,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType<Long>> {
 
          checkEquals(item2, actual.iterator().next());
       }
-      ((AbstractOseeType<?>) item1).setName(originalName);
+      ((AbstractOseeType) item1).setName(originalName);
    }
 
    @Test
@@ -201,7 +201,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType<Long>> {
 
          Assert.assertEquals(0, cache.size());
          if (cache instanceof IOseeLoadingCache) {
-            Assert.assertTrue(((IOseeLoadingCache<?, ?>) cache).reloadCache());
+            Assert.assertTrue(((IOseeLoadingCache<?>) cache).reloadCache());
          }
          Assert.assertEquals(fullCacheSize, cache.size());
       }

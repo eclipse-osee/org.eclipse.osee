@@ -20,7 +20,7 @@ import org.junit.Assert;
 /**
  * @author Roberto E. Escobar
  */
-public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDataAccessor<K, T> {
+public class MockOseeDataAccessor<T extends IOseeStorable> implements IOseeDataAccessor<T> {
 
    private boolean wasLoadCalled = false;
    private boolean wasStoreCalled = false;
@@ -42,7 +42,7 @@ public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDa
    }
 
    @Override
-   public void load(IOseeCache<K, T> cache) throws OseeCoreException {
+   public void load(IOseeCache<T> cache) throws OseeCoreException {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }

@@ -99,7 +99,7 @@ public final class MockDataFactory {
       if (value == 0) {
          value++;
       }
-      MockOseeDataAccessor<Long, Branch> accessor = new MockOseeDataAccessor<>();
+      MockOseeDataAccessor<Branch> accessor = new MockOseeDataAccessor<>();
       BranchCache cache = new BranchCache(accessor, new TransactionCache());
       return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42, type,
          cache);

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeCache<KEY, TYPE> {
+public interface IOseeCache<TYPE> {
 
    OseeCacheEnum getCacheId();
 
@@ -37,7 +37,7 @@ public interface IOseeCache<KEY, TYPE> {
 
    TYPE getById(Number typeId) throws OseeCoreException;
 
-   TYPE getByGuid(KEY guid) throws OseeCoreException;
+   TYPE getByGuid(Long guid) throws OseeCoreException;
 
    Collection<TYPE> getAllDirty() throws OseeCoreException;
 

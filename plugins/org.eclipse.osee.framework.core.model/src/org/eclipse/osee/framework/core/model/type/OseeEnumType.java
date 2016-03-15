@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * Test: @link OseeEnumTypeTest
- * 
+ *
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeIdType<Long> {
+public class OseeEnumType extends AbstractOseeIdType {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 

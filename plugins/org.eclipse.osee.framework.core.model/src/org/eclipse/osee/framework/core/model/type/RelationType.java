@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 /**
  * @author Robert A. Fisher
  */
-public final class RelationType extends AbstractOseeIdType<Long>implements IRelationType {
+public final class RelationType extends AbstractOseeIdType implements IRelationType {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
@@ -115,5 +115,10 @@ public final class RelationType extends AbstractOseeIdType<Long>implements IRela
 
    public String getDefaultOrderTypeGuid() {
       return getFieldValueLogException("", RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
+   }
+
+   @Override
+   public Long getGuid() {
+      return getId();
    }
 }

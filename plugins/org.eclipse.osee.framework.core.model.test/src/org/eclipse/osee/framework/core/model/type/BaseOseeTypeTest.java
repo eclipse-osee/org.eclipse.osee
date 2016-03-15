@@ -19,7 +19,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link AbstractOseeTest}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)

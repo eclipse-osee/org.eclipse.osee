@@ -38,7 +38,7 @@ public class BranchFactory implements IOseeTypeFactory {
       return toReturn;
    }
 
-   public Branch createOrUpdate(AbstractOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
+   public Branch createOrUpdate(AbstractOseeCache<Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getByGuid(uuid);
       if (branch == null) {
@@ -54,7 +54,7 @@ public class BranchFactory implements IOseeTypeFactory {
       return branch;
    }
 
-   public Branch createOrUpdate(IOseeCache<Long, Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState, boolean inheritAccessControl) throws OseeCoreException {
+   public Branch createOrUpdate(IOseeCache<Branch> cache, long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, StorageState storageState, boolean inheritAccessControl) throws OseeCoreException {
       Conditions.checkNotNull(cache, "BranchCache");
       Branch branch = cache.getById(uuid);
       if (branch == null) {

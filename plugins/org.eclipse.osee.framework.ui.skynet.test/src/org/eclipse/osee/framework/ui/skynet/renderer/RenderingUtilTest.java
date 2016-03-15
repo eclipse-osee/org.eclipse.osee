@@ -30,7 +30,7 @@ import org.junit.Test;
  */
 public class RenderingUtilTest {
 
-   private static AbstractOseeCache<Long, Branch> cache;
+   private static AbstractOseeCache<Branch> cache;
    private static Branch branch;
 
    @BeforeClass
@@ -98,7 +98,7 @@ public class RenderingUtilTest {
       return URLEncoder.encode(guid, "UTF-8");
    }
 
-   private static Branch createBranch(AbstractOseeCache<Long, Branch> cache, String name, long uuid) throws OseeCoreException {
+   private static Branch createBranch(AbstractOseeCache<Branch> cache, String name, long uuid) throws OseeCoreException {
       Branch branch = new BranchFactory().create(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false, false);
       Assert.assertNotNull(branch);
       return branch;

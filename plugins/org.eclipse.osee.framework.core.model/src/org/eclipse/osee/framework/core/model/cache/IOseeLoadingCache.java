@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.model.cache;
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeLoadingCache<KEY, TYPE> extends IOseeCache<KEY, TYPE> {
+public interface IOseeLoadingCache<TYPE> extends IOseeCache<TYPE> {
 
    long getLastLoaded();
 

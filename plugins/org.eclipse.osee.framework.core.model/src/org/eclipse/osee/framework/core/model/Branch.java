@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType<Long>implements WriteableBranch, IAdaptable {
+public class Branch extends AbstractOseeType implements WriteableBranch, IAdaptable {
 
    private final Collection<Branch> childBranches = new HashSet<>();
 

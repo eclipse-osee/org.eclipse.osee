@@ -21,19 +21,16 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType<KEY> extends NamedId implements IOseeStorable {
+public abstract class AbstractOseeType extends NamedId implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
 
-   private StorageState itemState;
-   private final Map<String, IOseeField<?>> fieldMap;
+   private StorageState itemState = StorageState.CREATED;
+   private final Map<String, IOseeField<?>> fieldMap = new HashMap<>();
 
-   protected AbstractOseeType(Long guid, String name) {
-      super(guid, name);
-      this.fieldMap = new HashMap<>();
-      this.itemState = StorageState.CREATED;
-
+   protected AbstractOseeType(Long id, String name) {
+      super(id, name);
       addField(UNIQUE_ID_FIELD_KEY, new UniqueIdField());
       addField(NAME_FIELD_KEY, new OseeField<String>(name));
    }
@@ -144,5 +141,4 @@ public abstract class AbstractOseeType<KEY> extends NamedId implements IOseeStor
    public boolean isIdValid() {
       return !UNPERSISTED_VALUE.equals(TypeUtil.getId(this));
    }
-
 }

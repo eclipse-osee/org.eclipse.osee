@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType extends AbstractOseeIdType<Long>implements IAttributeType {
+public class AttributeType extends AbstractOseeIdType implements IAttributeType {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";
@@ -161,5 +161,10 @@ public class AttributeType extends AbstractOseeIdType<Long>implements IAttribute
 
    public boolean isEnumerated() {
       return getOseeEnumTypeId() != -1;
+   }
+
+   @Override
+   public Long getGuid() {
+      return getId();
    }
 }

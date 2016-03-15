@@ -422,7 +422,7 @@ public class DslToTypeLoader implements TypesLoader {
          copy(relTypes, dest);
       }
 
-      private <T extends IOseeStorable> void copy(IOseeCache<Long, T> src, IOseeCache<Long, T> dest) {
+      private <T extends IOseeStorable> void copy(IOseeCache<T> src, IOseeCache<T> dest) {
          synchronized (dest) {
             dest.decacheAll();
             for (T type : src.getAll()) {

@@ -44,7 +44,7 @@ public class AttributeTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<Long, AttributeType> getCache() throws OseeCoreException {
+   public static AbstractOseeCache<AttributeType> getCache() throws OseeCoreException {
       return getCacheService().getAttributeTypeCache();
    }
 

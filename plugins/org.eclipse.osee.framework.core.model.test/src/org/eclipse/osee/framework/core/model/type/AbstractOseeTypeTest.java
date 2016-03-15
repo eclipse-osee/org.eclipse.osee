@@ -20,7 +20,7 @@ import org.junit.Test;
 /**
  * @author Roberto E. Escobar
  */
-public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
+public class AbstractOseeTypeTest<K, T extends AbstractOseeType> {
 
    private final T type;
    private final String name;
@@ -42,11 +42,6 @@ public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
 
    protected K getExpectedGuid() {
       return guid;
-   }
-
-   @Test
-   public void testSetGetGuid() {
-      Assert.assertEquals(getExpectedGuid(), type.getId());
    }
 
    @Test

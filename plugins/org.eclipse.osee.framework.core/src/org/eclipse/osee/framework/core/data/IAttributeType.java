@@ -18,5 +18,4 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
  * @author Ryan D. Brooks
  */
 public interface IAttributeType extends Identifiable<Long>, FullyNamed, HasDescription {
-   // composition interface requires no additional methods,fields
 }

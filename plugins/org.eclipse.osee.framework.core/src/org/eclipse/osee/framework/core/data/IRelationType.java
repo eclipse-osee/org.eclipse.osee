@@ -10,12 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.FullyNamed;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Ryan D. Brooks
  */
-public interface IRelationType extends Identifiable<Long>, FullyNamed {
-   // composition interface requires no additional methods,fields
+public interface IRelationType extends Identifiable<Long> {
+
 }

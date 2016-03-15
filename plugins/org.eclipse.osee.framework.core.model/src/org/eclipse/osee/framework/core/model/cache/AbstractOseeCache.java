@@ -28,12 +28,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
+public abstract class AbstractOseeCache<T extends AbstractOseeType> implements IOseeCache<T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true, CopyOnWriteArrayList.class);
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
    private final ConcurrentHashMap<Long, T> guidToTypeMap = new ConcurrentHashMap<>();
@@ -68,9 +67,9 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       return guidToTypeMap.size();
    }
 
-   public boolean existsByGuid(K guid) throws OseeCoreException {
+   public boolean existsByGuid(Long id) throws OseeCoreException {
       ensurePopulated();
-      return guidToTypeMap.containsKey(guid);
+      return guidToTypeMap.containsKey(id);
    }
 
    @Override
@@ -206,17 +205,12 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    }
 
    @Override
-   public T getByGuid(K guid) throws OseeCoreException {
+   public T getByGuid(Long guid) throws OseeCoreException {
       ensurePopulated();
-      if (guid instanceof String) {
-         if (!GUID.isValid((String) guid)) {
-            throw new OseeArgumentException("[%s] is not a valid guid", guid);
-         }
-      }
       return guidToTypeMap.get(guid);
    }
 
-   public T get(Identity<K> token) throws OseeCoreException {
+   public T get(Identity<Long> token) throws OseeCoreException {
       ensurePopulated();
       return getByGuid(token.getGuid());
    }
@@ -238,11 +232,11 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       storeItems(getAllDirty());
    }
 
-   public void storeByGuid(Collection<K> guids) throws OseeCoreException {
+   public void storeByGuid(Collection<Long> guids) throws OseeCoreException {
       ensurePopulated();
       Conditions.checkNotNull(guids, "guids to store");
       Collection<T> items = new HashSet<>();
-      for (K guid : guids) {
+      for (Long guid : guids) {
          T type = getByGuid(guid);
          if (type == null) {
             throw new OseeTypeDoesNotExist(String.format("Item was not found [%s]", guid));
@@ -273,7 +267,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       }
    }
 
-   public void cacheFrom(AbstractOseeCache<K, T> source) throws OseeCoreException {
+   public void cacheFrom(AbstractOseeCache<T> source) throws OseeCoreException {
       for (T type : source.getAll()) {
          cache(type);
       }

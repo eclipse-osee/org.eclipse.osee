@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeLoadingCache<K, T extends AbstractOseeType<K>> extends AbstractOseeCache<K, T>implements IOseeLoadingCache<K, T> {
-   private final IOseeDataAccessor<K, T> dataAccessor;
+public abstract class AbstractOseeLoadingCache<T extends AbstractOseeType> extends AbstractOseeCache<T> implements IOseeLoadingCache<T> {
+   private final IOseeDataAccessor<T> dataAccessor;
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
 
-   protected AbstractOseeLoadingCache(OseeCacheEnum cacheId, IOseeDataAccessor<K, T> dataAccessor, boolean uniqueName) {
+   protected AbstractOseeLoadingCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
       super(cacheId, uniqueName);
       this.lastLoaded = 0;
       this.wasLoaded = new AtomicBoolean(false);

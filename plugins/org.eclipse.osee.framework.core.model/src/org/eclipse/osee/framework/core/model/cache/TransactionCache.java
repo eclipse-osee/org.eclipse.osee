@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionCache implements IOseeLoadingCache<String, TransactionRecord> {
+public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    private ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache =
@@ -114,7 +114,7 @@ public class TransactionCache implements IOseeLoadingCache<String, TransactionRe
    }
 
    @Override
-   public TransactionRecord getByGuid(String guid) throws OseeCoreException {
+   public TransactionRecord getByGuid(Long guid) throws OseeCoreException {
       throw new OseeStateException("TransactionCache.getByGuid() is not implemented...");
    }
 

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
  */
 public class OseeEnumTypeManager {
 
-   public static AbstractOseeCache<Long, OseeEnumType> getCache() throws OseeCoreException {
+   public static AbstractOseeCache<OseeEnumType> getCache() throws OseeCoreException {
       return ServiceUtil.getOseeCacheService().getEnumTypeCache();
    }
 

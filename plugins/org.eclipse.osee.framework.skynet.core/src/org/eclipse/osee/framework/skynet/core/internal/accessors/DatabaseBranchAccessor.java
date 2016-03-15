@@ -35,7 +35,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
+public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    private static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final String SELECT_BRANCHES = "SELECT * FROM osee_branch";
@@ -57,7 +57,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Long, Branch> {
    }
 
    @Override
-   public void load(IOseeCache<Long, Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       Map<Branch, Long> childToParent = new HashMap<>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<>();

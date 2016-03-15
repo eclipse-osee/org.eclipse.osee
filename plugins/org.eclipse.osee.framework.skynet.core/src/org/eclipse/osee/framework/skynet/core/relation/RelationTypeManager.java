@@ -35,11 +35,11 @@ public class RelationTypeManager {
       return ServiceUtil.getOseeCacheService();
    }
 
-   public static AbstractOseeCache<Long, RelationType> getCache() throws OseeCoreException {
+   public static AbstractOseeCache<RelationType> getCache() throws OseeCoreException {
       return getCacheService().getRelationTypeCache();
    }
 
-   public static AbstractOseeCache<Long, ArtifactType> getArtifactTypeCache() throws OseeCoreException {
+   public static AbstractOseeCache<ArtifactType> getArtifactTypeCache() throws OseeCoreException {
       return getCacheService().getArtifactTypeCache();
    }
 

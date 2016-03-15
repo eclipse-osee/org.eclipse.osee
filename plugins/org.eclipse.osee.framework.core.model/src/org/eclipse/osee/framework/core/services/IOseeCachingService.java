@@ -39,7 +39,7 @@ public interface IOseeCachingService {
 
    Collection<?> getCaches();
 
-   IOseeCache<?, ?> getCache(OseeCacheEnum cacheId);
+   IOseeCache<?> getCache(OseeCacheEnum cacheId);
 
    void reloadTypes();
 

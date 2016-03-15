@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.model.AbstractOseeType;
 /**
  * @author Roberto E. Escobar
  */
-public class AbstractOseeTypeCacheTest<T extends AbstractOseeType<Long>> extends AbstractOseeCacheTest<T> {
+public class AbstractOseeTypeCacheTest<T extends AbstractOseeType> extends AbstractOseeCacheTest<T> {
 
-   public AbstractOseeTypeCacheTest(List<T> artifactTypes, AbstractOseeCache<Long, T> typeCache) {
+   public AbstractOseeTypeCacheTest(List<T> artifactTypes, AbstractOseeCache<T> typeCache) {
       super(artifactTypes, typeCache);
    }
 

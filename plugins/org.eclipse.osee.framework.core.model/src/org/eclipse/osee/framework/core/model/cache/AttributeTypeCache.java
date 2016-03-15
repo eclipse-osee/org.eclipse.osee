@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.model.type.AttributeType;
 /**
  * @author Roberto E. Escobar
  */
-public class AttributeTypeCache extends AbstractOseeCache<Long, AttributeType> {
+public class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
 
    public AttributeTypeCache() {
       super(OseeCacheEnum.ATTRIBUTE_TYPE_CACHE, true);
