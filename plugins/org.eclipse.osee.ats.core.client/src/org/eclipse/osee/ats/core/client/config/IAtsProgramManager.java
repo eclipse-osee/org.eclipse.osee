@@ -34,7 +34,7 @@ public interface IAtsProgramManager {
 
    public IAtsProgram getProgram(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
-   public IArtifactToken getWcafeReviewAssigneeUserGroup() throws OseeCoreException;
+   public IArtifactToken getReviewAssigneeUserGroup(TeamWorkFlowArtifact teamArt) throws OseeCoreException;
 
    public IArtifactToken getPidsReviewAssigneeUserGroup() throws OseeCoreException;
 
