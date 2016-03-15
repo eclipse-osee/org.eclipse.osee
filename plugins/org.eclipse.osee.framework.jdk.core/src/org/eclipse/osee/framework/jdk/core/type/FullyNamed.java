@@ -10,9 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.type;
 
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Ryan D. Brooks
  */
 public interface FullyNamed extends Named {
-   public abstract String getUnqualifiedName();
+   default String getUnqualifiedName() {
+      String name = getName();
+      if (Strings.isValid(name)) {
+         int index = name.lastIndexOf('.');
+         name = name.substring(index + 1);
+      }
+      return name;
+   }
 }

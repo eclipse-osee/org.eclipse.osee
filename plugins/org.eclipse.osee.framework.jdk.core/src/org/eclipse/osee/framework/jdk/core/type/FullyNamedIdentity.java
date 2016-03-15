@@ -11,12 +11,10 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-
 /**
  * @author Ryan D. Brooks
  */
-public class FullyNamedIdentity<T> extends NamedIdentity<T>implements FullyNamed, HasDescription {
+public class FullyNamedIdentity<T> extends NamedIdentity<T> implements FullyNamed, HasDescription {
    private final String description;
 
    public FullyNamedIdentity(T guid, String name) {
@@ -26,16 +24,6 @@ public class FullyNamedIdentity<T> extends NamedIdentity<T>implements FullyNamed
    public FullyNamedIdentity(T guid, String name, String description) {
       super(guid, name);
       this.description = description;
-   }
-
-   @Override
-   public String getUnqualifiedName() {
-      String name = getName();
-      if (Strings.isValid(name)) {
-         int index = name.lastIndexOf('.');
-         name = name.substring(index + 1);
-      }
-      return name;
    }
 
    @Override

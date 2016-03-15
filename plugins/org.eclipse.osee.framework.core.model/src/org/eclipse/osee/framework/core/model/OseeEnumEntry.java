@@ -88,14 +88,4 @@ public class OseeEnumEntry implements FullyNamed, HasDescription {
    public String getName() {
       return name;
    }
-
-   @Override
-   public String getUnqualifiedName() {
-      String name = getName();
-      if (Strings.isValid(name)) {
-         int index = name.lastIndexOf('.');
-         name = name.substring(index + 1);
-      }
-      return name;
-   }
 }
