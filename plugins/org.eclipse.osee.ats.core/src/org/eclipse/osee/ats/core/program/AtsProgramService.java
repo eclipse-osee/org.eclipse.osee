@@ -204,7 +204,7 @@ public class AtsProgramService implements IAtsProgramService {
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
          if (!teamDef.equals(topTeamDef)) {
-            program = getProgram(teamDef);
+            program = getProgram(teamDef.getParentTeamDef());
          }
       }
       if (program == null) {
