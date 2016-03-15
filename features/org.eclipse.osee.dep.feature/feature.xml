@@ -44,6 +44,18 @@
    <includes
          id="org.eclipse.equinox.server.jetty"
          version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.equinox.sdk"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.egit"
+         version="0.0.0"/>
+         
+   <includes
+         id="org.eclipse.m2e.feature"
+         version="0.0.0"/>
 
    <includes
          id="org.eclipse.jdt"

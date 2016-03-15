@@ -64,10 +64,12 @@
 								<feature id="org.eclipse.equinox.p2.discovery.feature" />
 								<feature id="org.eclipse.equinox.p2.sdk" />
 								<feature id="org.eclipse.equinox.core.sdk" />
+								<feature id="org.eclipse.equinox.sdk" />
 								<feature id="org.eclipse.equinox.core.feature" />
 								<feature id="org.eclipse.equinox.compendium.sdk" />
 								<feature id="org.eclipse.birt.osgi.runtime.sdk" />
 								<feature id="org.eclipse.ecf.core.feature" />
+								<feature id="org.eclipse.m2e.feature" />
 								<feature id="org.eclipse.ecf.core.source.feature" />
 								<feature id="org.eclipse.ecf.core.ssl.feature" />
 								<feature id="org.eclipse.ecf.core.ssl.source.feature" />
