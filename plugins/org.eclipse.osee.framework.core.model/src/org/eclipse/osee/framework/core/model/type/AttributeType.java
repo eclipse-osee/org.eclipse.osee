@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Type information for attributes.
- * 
+ *
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
@@ -108,18 +108,13 @@ public class AttributeType extends AbstractOseeIdType<Long>implements IAttribute
       setField(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, enumType);
    }
 
-   @Override
-   public String toString() {
-      return getName();
-   }
-
    public String getFileTypeExtension() {
       return getFieldValueLogException("", ATTRIBUTE_FILE_EXTENSION_FIELD_KEY);
    }
 
    /**
     * Get the registered tagger id for this attribute type
-    * 
+    *
     * @return tagger id
     */
    public String getTaggerId() {
@@ -128,7 +123,7 @@ public class AttributeType extends AbstractOseeIdType<Long>implements IAttribute
 
    /**
     * Get the media type for this attribute type
-    * 
+    *
     * @return format id
     */
    public String getMediaType() {
@@ -137,7 +132,7 @@ public class AttributeType extends AbstractOseeIdType<Long>implements IAttribute
 
    /**
     * Whether this attribute type has a media type.
-    * 
+    *
     * @return <b>true</b> if this attribute type has a media type. <b>false</b> if this is attribute does not have a
     * media type.
     */
@@ -152,7 +147,7 @@ public class AttributeType extends AbstractOseeIdType<Long>implements IAttribute
 
    /**
     * Whether this attribute type is taggable.
-    * 
+    *
     * @return <b>true</b> if this attribute type is taggable. <b>false</b> if this is not taggable.
     */
    public boolean isTaggable() {

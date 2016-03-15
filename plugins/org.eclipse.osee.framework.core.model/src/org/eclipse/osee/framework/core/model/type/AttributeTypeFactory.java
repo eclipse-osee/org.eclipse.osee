@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -48,25 +46,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       if (attributeType == null) {
          attributeType = create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
             defaultValue, minOccurrences, maxOccurrences, description, taggerId, mediaType);
-         attributeType.setId(guid);
          attributeType.setOseeEnumType(oseeEnumType);
-         cache.cache(attributeType);
-      } else {
-         attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId, mediaType);
-      }
-      return attributeType;
-   }
-
-   public AttributeType createOrUpdate(IOseeCache<Long, AttributeType> cache, long uniqueId, StorageState storageState, Long guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId, String mediaType) throws OseeCoreException {
-      Conditions.checkNotNull(cache, "AttributeTypeCache");
-      AttributeType attributeType = cache.getById(uniqueId);
-      if (attributeType == null) {
-         attributeType = create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, minOccurrences, maxOccurrences, description, taggerId, mediaType);
-         attributeType.setOseeEnumType(oseeEnumType);
-         attributeType.setId(uniqueId);
-         attributeType.setStorageState(storageState);
          cache.cache(attributeType);
       } else {
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,

@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.type;
 
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -32,22 +30,6 @@ public final class ArtifactTypeFactory implements IOseeTypeFactory {
       ArtifactType artifactType = cache.getByGuid(guid);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);
-         artifactType.setId(guid);
-         cache.cache(artifactType);
-      } else {
-         artifactType.setName(name);
-         artifactType.setAbstract(isAbstract);
-      }
-      return artifactType;
-   }
-
-   public ArtifactType createOrUpdate(IOseeCache<Long, ArtifactType> cache, long uniqueId, StorageState storageState, Long guid, boolean isAbstract, String name) throws OseeCoreException {
-      Conditions.checkNotNull(cache, "ArtifactTypeCache");
-      ArtifactType artifactType = cache.getById(uniqueId);
-      if (artifactType == null) {
-         artifactType = create(guid, isAbstract, name);
-         artifactType.setId(uniqueId);
-         artifactType.setStorageState(storageState);
          cache.cache(artifactType);
       } else {
          artifactType.setName(name);

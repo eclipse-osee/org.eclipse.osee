@@ -29,16 +29,16 @@ import org.junit.runners.MethodSorters;
 
 /**
  * Test Case for {@link AbstractOseeCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
+public abstract class AbstractOseeCacheTest<T extends AbstractOseeType<Long>> {
    private final List<T> data;
-   private final AbstractOseeCache<K, T> cache;
+   private final AbstractOseeCache<Long, T> cache;
    private final TypeComparator comparator;
 
-   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<K, T> typeCache) {
+   public AbstractOseeCacheTest(List<T> artifactTypes, AbstractOseeCache<Long, T> typeCache) {
       this.comparator = new TypeComparator();
       this.data = artifactTypes;
       this.cache = typeCache;
@@ -60,7 +60,7 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    @org.junit.Test
    public void testExistByGuid() throws OseeCoreException {
       for (T expected : data) {
-         Assert.assertTrue(cache.existsByGuid(expected.getGuid()));
+         Assert.assertTrue(cache.existsByGuid(expected.getId()));
       }
       Assert.assertFalse(cache.existsByGuid(createKey()));
    }
@@ -68,7 +68,7 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
    @org.junit.Test
    public void testCacheByGuid() throws OseeCoreException {
       for (T expected : data) {
-         T actual = cache.getByGuid(expected.getGuid());
+         T actual = cache.getByGuid(expected.getId());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }
@@ -118,12 +118,12 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
 
    private void checkCached(T item, boolean isInCacheExpected) throws OseeCoreException {
       if (isInCacheExpected) {
-         Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
+         Assert.assertEquals(item, cache.getByGuid(item.getId()));
          Assert.assertEquals(item, cache.getById(TypeUtil.getId(item)));
          Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
          Assert.assertTrue(cache.getAll().contains(item));
       } else {
-         Assert.assertNull(cache.getByGuid(item.getGuid()));
+         Assert.assertNull(cache.getByGuid(item.getId()));
          Assert.assertNull(cache.getById(TypeUtil.getId(item)));
          Assert.assertNull(cache.getUniqueByName(item.getName()));
          Assert.assertFalse(cache.getAll().contains(item));
@@ -212,7 +212,7 @@ public abstract class AbstractOseeCacheTest<K, T extends AbstractOseeType<K>> {
       cache.storeByGuid(Collections.singleton(createKey()));
    }
 
-   protected abstract K createKey();
+   protected abstract Long createKey();
 
    @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)

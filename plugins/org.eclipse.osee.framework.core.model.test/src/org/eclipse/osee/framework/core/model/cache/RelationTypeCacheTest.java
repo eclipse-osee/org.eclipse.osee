@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link RelationTypeCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationType> {
@@ -32,11 +32,10 @@ public class RelationTypeCacheTest extends AbstractOseeTypeCacheTest<RelationTyp
       data = new ArrayList<>();
 
       cache = new RelationTypeCache();
-      int typeId = 100;
+      long typeId = 100;
       for (int index = 0; index < 10; index++) {
-         RelationType item = MockDataFactory.createRelationType(index, null, null);
+         RelationType item = MockDataFactory.createRelationType(index, null, null, typeId++);
          data.add(item);
-         item.setId(typeId++);
          cache.cache(item);
       }
    }

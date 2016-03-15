@@ -31,6 +31,9 @@ public class BaseId implements Id {
       if (obj instanceof Id) {
          return ((Id) obj).getId().equals(id);
       }
+      if (obj instanceof Identity<?>) {
+         return id.equals(((Identity<?>) obj).getGuid());
+      }
       return false;
    }
 

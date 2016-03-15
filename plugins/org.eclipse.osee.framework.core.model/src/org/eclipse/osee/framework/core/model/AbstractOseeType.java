@@ -16,12 +16,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.internal.fields.UniqueIdField;
-import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY>implements IOseeStorable {
+public abstract class AbstractOseeType<KEY> extends NamedId implements IOseeStorable {
 
    public static final String NAME_FIELD_KEY = "osee.name.field";
    public static final String UNIQUE_ID_FIELD_KEY = "osee.unique.id.field";
@@ -29,7 +29,7 @@ public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY>imple
    private StorageState itemState;
    private final Map<String, IOseeField<?>> fieldMap;
 
-   protected AbstractOseeType(KEY guid, String name) {
+   protected AbstractOseeType(Long guid, String name) {
       super(guid, name);
       this.fieldMap = new HashMap<>();
       this.itemState = StorageState.CREATED;
@@ -107,11 +107,6 @@ public abstract class AbstractOseeType<KEY> extends FullyNamedIdentity<KEY>imple
    @Override
    public void setName(String name) {
       setFieldLogException(NAME_FIELD_KEY, name);
-   }
-
-   @Override
-   public String toString() {
-      return String.format("%s - [%s]", getName(), getGuid());
    }
 
    @Override

@@ -22,10 +22,10 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link BranchCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
-public class BranchCacheTest extends AbstractOseeCacheTest<Long, Branch> {
+public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
    private static List<Branch> branchData;
    private static BranchCache cache;

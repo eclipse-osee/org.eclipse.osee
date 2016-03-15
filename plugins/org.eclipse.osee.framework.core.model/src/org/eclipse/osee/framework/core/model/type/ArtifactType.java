@@ -153,7 +153,7 @@ public class ArtifactType extends AbstractOseeIdType<Long>implements IArtifactTy
    /**
     * Determines if this artifact type equals, or is a sub-type of, the artifact type specified by the
     * <code>otherType</code> parameter.
-    * 
+    *
     * @param otherType artifact types to check against
     * @return whether this artifact type inherits from otherType
     */
@@ -181,10 +181,5 @@ public class ArtifactType extends AbstractOseeIdType<Long>implements IArtifactTy
          }
       }
       return result;
-   }
-
-   @Override
-   public String toString() {
-      return getName();
    }
 }

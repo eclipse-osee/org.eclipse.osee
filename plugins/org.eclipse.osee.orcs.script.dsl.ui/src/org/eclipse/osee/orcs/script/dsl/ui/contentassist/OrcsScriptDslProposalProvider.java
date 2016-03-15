@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver;
 import org.eclipse.osee.orcs.script.dsl.IFieldResolver.OsField;
 import org.eclipse.osee.orcs.script.dsl.OrcsScriptUtil;
@@ -31,7 +32,7 @@ import org.eclipse.xtext.ui.editor.contentassist.ICompletionProposalAcceptor;
 
 /**
  * see http://www.eclipse.org/Xtext/documentation.html#contentAssist on how to customize content assistant
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposalProvider {
@@ -51,8 +52,8 @@ public class OrcsScriptDslProposalProvider extends AbstractOrcsScriptDslProposal
       if (acceptor.canAcceptMoreProposals()) {
          Image image = imageProvider.getBranchImage();
 
-         Iterable<? extends Identifiable<Long>> entries = provider.getBranches();
-         for (Identifiable<Long> entry : entries) {
+         Iterable<? extends NamedId> entries = provider.getBranches();
+         for (NamedId entry : entries) {
             ICompletionProposal proposal = createCompletionProposal(OrcsScriptUtil.quote(entry.getName()),
                new StyledString(entry.getName()), image, Integer.MIN_VALUE, context.getPrefix(), context);
             acceptor.accept(proposal);

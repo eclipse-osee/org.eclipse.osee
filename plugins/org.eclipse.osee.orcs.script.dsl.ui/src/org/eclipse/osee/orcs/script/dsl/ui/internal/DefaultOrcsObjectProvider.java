@@ -14,6 +14,7 @@ import com.google.common.collect.Iterables;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
 
@@ -30,8 +31,8 @@ public class DefaultOrcsObjectProvider implements IOrcsObjectProvider {
       new ExtensionDefinedObjects<IOrcsObjectProvider>(EXTENSION_POINT_ID, EXTENSION_ELEMENT, CLASSNAME, true);
 
    @Override
-   public Iterable<? extends Identifiable<Long>> getBranches() {
-      List<Identifiable<Long>> toReturn = new ArrayList<>();
+   public Iterable<? extends NamedId> getBranches() {
+      List<NamedId> toReturn = new ArrayList<>();
       for (IOrcsObjectProvider provider : getProviders()) {
          Iterables.addAll(toReturn, provider.getBranches());
       }

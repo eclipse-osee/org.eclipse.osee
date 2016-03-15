@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implements IOseeCache<K, T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<>(true, CopyOnWriteArrayList.class);
    private final ConcurrentHashMap<Long, T> idToTypeMap = new ConcurrentHashMap<>();
-   private final ConcurrentHashMap<K, T> guidToTypeMap = new ConcurrentHashMap<>();
+   private final ConcurrentHashMap<Long, T> guidToTypeMap = new ConcurrentHashMap<>();
 
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
@@ -85,7 +85,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
    public void decache(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
-      guidToTypeMap.remove(type.getGuid());
+      guidToTypeMap.remove(type.getId());
       decacheByName(type);
       if (type.isIdValid()) {
          idToTypeMap.remove(TypeUtil.getId(type));
@@ -129,7 +129,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       nameToTypeMap.put(type.getName(), type);
-      guidToTypeMap.putIfAbsent(type.getGuid(), type);
+      guidToTypeMap.putIfAbsent(type.getId(), type);
       cacheById(type);
       if (isNameUniquenessEnforced()) {
          checkNameUnique(type);
@@ -152,7 +152,7 @@ public abstract class AbstractOseeCache<K, T extends AbstractOseeType<K>> implem
       //      }
       if (cachedTypes.size() > 1) {
          throw new OseeStateException("Item [%s:%s] does not have a unique name. Matching types [%s]", type.getName(),
-            type.getGuid(), itemsFound);
+            type.getId(), itemsFound);
       }
    }
 

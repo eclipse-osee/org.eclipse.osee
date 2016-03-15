@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.script.dsl.ui.integration.internal;
 import java.util.Collections;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.script.dsl.ui.IOrcsObjectProvider;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
@@ -29,9 +30,9 @@ public class OrcsObjectProviderImpl implements IOrcsObjectProvider {
    }
 
    @Override
-   public Iterable<? extends Identifiable<Long>> getBranches() {
+   public Iterable<? extends NamedId> getBranches() {
       IOseeCachingService caches = getCache();
-      return caches != null ? caches.getBranchCache().getAll() : Collections.<Identifiable<Long>> emptyList();
+      return caches != null ? caches.getBranchCache().getAll() : Collections.<NamedId> emptyList();
    }
 
    @Override

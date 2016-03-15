@@ -21,7 +21,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link OseeEnumTypeCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumType> {
@@ -35,9 +35,9 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
 
       cache = new OseeEnumTypeCache();
 
-      int typeId = 100;
+      long typeId = 100;
       for (int index = 0; index < 10; index++) {
-         OseeEnumType item = MockDataFactory.createEnumType(index);
+         OseeEnumType item = MockDataFactory.createEnumType(typeId++, index);
          List<OseeEnumEntry> entries = new ArrayList<>();
          for (int j = 1; j <= 5; j++) {
             OseeEnumEntry enumEntry = MockDataFactory.createEnumEntry(index + j);
@@ -46,7 +46,6 @@ public class OseeEnumTypeCacheTest extends AbstractOseeTypeCacheTest<OseeEnumTyp
          item.setEntries(entries);
 
          data.add(item);
-         item.setId(typeId++);
          cache.cache(item);
       }
    }

@@ -19,7 +19,7 @@ import org.junit.BeforeClass;
 
 /**
  * Test Case for {@link AttributeTypeCache}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeType> {
@@ -33,11 +33,10 @@ public class AttributeTypeCacheTest extends AbstractOseeTypeCacheTest<AttributeT
 
       attrCache = new AttributeTypeCache();
 
-      int typeId = 100;
+      long typeId = 100;
       for (int index = 0; index < 10; index++) {
-         AttributeType item = MockDataFactory.createAttributeType(index, null);
+         AttributeType item = MockDataFactory.createAttributeType(index, null, typeId++);
          attributeTypes.add(item);
-         item.setId(typeId++);
          attrCache.cache(item);
       }
    }

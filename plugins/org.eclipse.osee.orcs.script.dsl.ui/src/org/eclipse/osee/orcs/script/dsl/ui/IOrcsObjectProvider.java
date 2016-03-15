@@ -11,13 +11,14 @@
 package org.eclipse.osee.orcs.script.dsl.ui;
 
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IOrcsObjectProvider {
 
-   Iterable<? extends Identifiable<Long>> getBranches();
+   Iterable<? extends NamedId> getBranches();
 
    Iterable<? extends Identifiable<Long>> getArtifactTypes();
 

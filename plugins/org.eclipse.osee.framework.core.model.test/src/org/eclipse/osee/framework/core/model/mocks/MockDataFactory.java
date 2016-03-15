@@ -109,20 +109,28 @@ public final class MockDataFactory {
       return new OseeEnumEntry("entry_" + index, Math.abs(index * 37), "description");
    }
 
-   public static OseeEnumType createEnumType(int index) {
-      return new OseeEnumType(random.nextLong(), "enum_" + index);
+   public static OseeEnumType createEnumType(Long id, int index) {
+      return new OseeEnumType(id, "enum_" + index);
    }
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
-      AttributeType type = new AttributeType(random.nextLong(), "attrType_" + index, "baseClass_" + index,
-         "providerId_" + index, "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index,
-         "tag_" + index, "mediaType_" + index);
+      return createAttributeType(index, oseeEnumType, random.nextLong());
+   }
+
+   public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType, Long id) throws OseeCoreException {
+      AttributeType type =
+         new AttributeType(id, "attrType_" + index, "baseClass_" + index, "providerId_" + index, "ext_" + index,
+            "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index, "mediaType_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
    }
 
    public static ArtifactType createArtifactType(int index) {
-      return new ArtifactType(random.nextLong(), "art_" + index, index % 2 == 0);
+      return createArtifactType(index, random.nextLong());
+   }
+
+   public static ArtifactType createArtifactType(int index, Long id) {
+      return new ArtifactType(id, "art_" + index, index % 2 == 0);
    }
 
    public static ArtifactType createBaseArtifactType() {
@@ -130,11 +138,15 @@ public final class MockDataFactory {
    }
 
    public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB) {
+      return createRelationType(index, artTypeA, artTypeB, random.nextLong());
+   }
+
+   public static RelationType createRelationType(int index, IArtifactType artTypeA, IArtifactType artTypeB, Long id) {
       RelationTypeMultiplicity multiplicity =
          RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
       String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
-      return new RelationType(random.nextLong(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
-         artTypeB, multiplicity, order);
+      return new RelationType(id, "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA, artTypeB,
+         multiplicity, order);
    }
 
 }

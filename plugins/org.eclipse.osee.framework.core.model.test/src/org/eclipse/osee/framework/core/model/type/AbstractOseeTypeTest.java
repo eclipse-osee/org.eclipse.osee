@@ -46,7 +46,7 @@ public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
 
    @Test
    public void testSetGetGuid() {
-      Assert.assertEquals(getExpectedGuid(), type.getGuid());
+      Assert.assertEquals(getExpectedGuid(), type.getId());
    }
 
    @Test
@@ -82,7 +82,7 @@ public class AbstractOseeTypeTest<K, T extends AbstractOseeType<K>> {
 
    @Test
    public void testToString() {
-      Assert.assertEquals(String.format("%s - [%s]", name, guid), type.toString());
+      Assert.assertEquals(name, type.toString());
    }
 
 }
