@@ -239,4 +239,9 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
       return getArtifact(artifact).getAttributeValues(attributeType);
    }
 
+   @Override
+   public Collection<String> getAttributesToStringList(ArtifactId artifact, IAttributeType attributeType) {
+      return ((ArtifactReadable) artifact).getAttributeValues(attributeType);
+   }
+
 }

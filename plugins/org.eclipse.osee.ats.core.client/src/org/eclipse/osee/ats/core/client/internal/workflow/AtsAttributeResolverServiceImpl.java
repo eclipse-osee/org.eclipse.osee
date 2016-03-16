@@ -89,6 +89,11 @@ public class AtsAttributeResolverServiceImpl implements IAttributeResolver {
    }
 
    @Override
+   public Collection<String> getAttributesToStringList(ArtifactId artifact, IAttributeType attributeType) {
+      return ((Artifact) artifact).getAttributesToStringList(attributeType);
+   }
+
+   @Override
    public boolean isAttributeTypeValid(IAtsWorkItem workItem, IAttributeType attributeType) throws OseeCoreException {
       return AtsClientService.get().getArtifact(workItem).isAttributeTypeValid(attributeType);
    }

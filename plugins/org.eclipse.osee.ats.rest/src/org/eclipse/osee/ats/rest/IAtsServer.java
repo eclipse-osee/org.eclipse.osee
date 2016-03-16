@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
+import org.eclipse.osee.ats.core.util.XViewerCustomization;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -106,5 +107,11 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    ArtifactReadable getArtifact(IArtifactToken token);
 
    IAtsColumnService getColumnService();
+
+   XViewerCustomization getCustomizationByGuid(String customize_guid);
+
+   Collection<XViewerCustomization> getCustomizations(String namespace);
+
+   Collection<XViewerCustomization> getCustomizationsGlobal(String namespace);
 
 }

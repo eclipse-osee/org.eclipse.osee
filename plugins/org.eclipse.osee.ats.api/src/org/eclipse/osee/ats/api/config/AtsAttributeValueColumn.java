@@ -55,8 +55,14 @@ public class AtsAttributeValueColumn {
       this.visible = show;
       this.sortDataType = sortDataType.name();
       this.columnMultiEdit = multiColumnEditable;
-      this.description = description;
+      if (Strings.isValid(description)) {
+         this.description = description;
+      } else {
+         this.description = attributeType.getDescription();
+      }
       this.actionRollup = false;
+      this.attrTypeId = attributeType.getGuid();
+      this.attrTypeName = attributeType.getName();
    }
 
    public long getAttrTypeId() {

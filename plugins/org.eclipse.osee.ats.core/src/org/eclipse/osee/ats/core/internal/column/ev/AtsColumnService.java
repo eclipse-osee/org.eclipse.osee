@@ -15,6 +15,7 @@ import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
@@ -56,13 +57,35 @@ public class AtsColumnService implements IAtsColumnService {
    }
 
    @Override
+   public String getColumnText(AtsConfigurations configurations, AtsColumnId column, IAtsObject atsObject) {
+      return getColumnText(configurations, column.getId(), atsObject);
+   }
+
+   @Override
+   public String getColumnText(AtsConfigurations configurations, String id, IAtsObject atsObject) {
+      String result = "";
+      IAtsColumn column = getColumn(configurations, id);
+      if (column == null) {
+         result = "column not supported";
+      } else {
+         result = column.getColumnText(atsObject);
+      }
+      return result;
+   }
+
+   @Override
    public IAtsColumn getColumn(String id) {
+      return getColumn(services.getConfigurations(), id);
+   }
+
+   @Override
+   public IAtsColumn getColumn(AtsConfigurations configurations, String id) {
       if (columnIdToAtsColumn == null) {
          columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
       }
       IAtsColumn column = columnIdToAtsColumn.get(id);
       if (column == null) {
-         for (AtsAttributeValueColumn attrCol : services.getConfigurations().getViews().getAttrColumns()) {
+         for (AtsAttributeValueColumn attrCol : configurations.getViews().getAttrColumns()) {
             if (id.equals(attrCol.getId())) {
                column = new AtsAttributeValueColumnHandler(attrCol, services);
                add(id, column);
@@ -94,9 +117,9 @@ public class AtsColumnService implements IAtsColumnService {
          } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
             column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
          }
-         // Add to cache even if not found so don't need to look again
-         add(id, column);
       }
+      // Add to cache even if not found so don't need to look again
+      add(id, column);
       return column;
    }
 

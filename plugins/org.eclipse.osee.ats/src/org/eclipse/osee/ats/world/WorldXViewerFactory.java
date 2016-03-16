@@ -179,15 +179,20 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    }
 
    private static XViewerColumn getConfigColumn(AtsAttributeValueColumn titleColumn) {
+      XViewerColumn result = null;
       if (atsConfigurations == null) {
          atsConfigurations = AtsClientService.getConfigEndpoint().get();
       }
       for (AtsAttributeValueColumn column : atsConfigurations.getViews().getAttrColumns()) {
          if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(titleColumn.getId())) {
-            return new XViewerAtsAttributeValueColumn(column);
+            result = new XViewerAtsAttributeValueColumn(column);
+            break;
          }
       }
-      return null;
+      if (result == null) {
+         result = new XViewerAtsAttributeValueColumn(titleColumn);
+      }
+      return result;
    }
 
    public WorldXViewerFactory() {

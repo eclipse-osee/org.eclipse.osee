@@ -90,4 +90,6 @@ public interface IAttributeResolver {
       return org.eclipse.osee.framework.jdk.core.util.Collections.toString(separator, strs);
    }
 
+   Collection<String> getAttributesToStringList(ArtifactId customizeStoreArt, IAttributeType xviewercustomization);
+
 }

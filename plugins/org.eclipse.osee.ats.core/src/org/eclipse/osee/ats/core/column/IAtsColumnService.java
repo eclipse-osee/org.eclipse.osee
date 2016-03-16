@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.config.AtsConfigurations;
 
 /**
  * @author Donald G. Dunne
@@ -26,5 +27,11 @@ public interface IAtsColumnService {
    IAtsColumn getColumn(AtsColumnId columnId);
 
    void add(String id, IAtsColumn column);
+
+   IAtsColumn getColumn(AtsConfigurations configurations, String id);
+
+   String getColumnText(AtsConfigurations configurations, AtsColumnId column, IAtsObject atsObject);
+
+   String getColumnText(AtsConfigurations configurations, String id, IAtsObject atsObject);
 
 }

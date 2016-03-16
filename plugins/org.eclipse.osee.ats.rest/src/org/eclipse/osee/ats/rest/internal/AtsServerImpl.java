@@ -67,6 +67,8 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
+import org.eclipse.osee.ats.core.util.XViewerCustomization;
+import org.eclipse.osee.ats.core.util.XViewerCustomizationAttributeXmlParser;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
@@ -98,8 +100,10 @@ import org.eclipse.osee.ats.rest.util.IAtsNotifierServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
+import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.ItemDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -635,6 +639,73 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          columnServices = AtsCoreFactory.getColumnService(getServices());
       }
       return columnServices;
+   }
+
+   @Override
+   public XViewerCustomization getCustomizationByGuid(String customize_guid) {
+      XViewerCustomization cust = null;
+      ArtifactReadable customizeStoreArt =
+         orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(CoreAttributeTypes.XViewerCustomization,
+            customize_guid, QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
+      if (customizeStoreArt != null) {
+         for (String custXml : getAttributeResolver().getAttributesToStringList(customizeStoreArt,
+            CoreAttributeTypes.XViewerCustomization)) {
+            if (custXml.contains(customize_guid)) {
+               XViewerCustomizationAttributeXmlParser parser = new XViewerCustomizationAttributeXmlParser(custXml);
+               cust = parser.getCustomization();
+               break;
+            }
+         }
+      }
+      return cust;
+   }
+
+   private List<ArtifactId> getCustomizeArts() {
+      List<ArtifactId> customizationArts = getGlobalCustomizeArts();
+      for (ArtifactId artifact : getQuery().andIsOfType(CoreArtifactTypes.User).getResults()) {
+         customizationArts.add(artifact);
+      }
+      return customizationArts;
+   }
+
+   private List<ArtifactId> getGlobalCustomizeArts() {
+      List<ArtifactId> customizationArts = new ArrayList<>();
+      for (ArtifactId artifact : orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andIsOfType(
+         CoreArtifactTypes.XViewerGlobalCustomization).getResults()) {
+         customizationArts.add(artifact);
+      }
+      return customizationArts;
+   }
+
+   @Override
+   public Collection<XViewerCustomization> getCustomizations(String namespace) {
+      List<XViewerCustomization> customizations = new ArrayList<>();
+      for (ArtifactId customizationArt : getCustomizeArts()) {
+         addCustomizationsFromArts(namespace, customizations, customizationArt);
+      }
+      return customizations;
+   }
+
+   private void addCustomizationsFromArts(String namespace, List<XViewerCustomization> customizations, ArtifactId customizationArt) {
+      for (String custXml : getAttributeResolver().getAttributesToStringList(customizationArt,
+         CoreAttributeTypes.XViewerCustomization)) {
+         if (custXml.contains("\"" + namespace + "\"")) {
+            XViewerCustomizationAttributeXmlParser parser = new XViewerCustomizationAttributeXmlParser(custXml);
+            XViewerCustomization cust = parser.getCustomization();
+            if (cust != null) {
+               customizations.add(cust);
+            }
+         }
+      }
+   }
+
+   @Override
+   public Collection<XViewerCustomization> getCustomizationsGlobal(String namespace) {
+      List<XViewerCustomization> customizations = new ArrayList<>();
+      for (ArtifactId customizationArt : getGlobalCustomizeArts()) {
+         addCustomizationsFromArts(namespace, customizations, customizationArt);
+      }
+      return customizations;
    }
 
 }
