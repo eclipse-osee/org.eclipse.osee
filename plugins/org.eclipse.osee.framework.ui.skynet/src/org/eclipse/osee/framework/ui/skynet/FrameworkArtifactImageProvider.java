@@ -9,15 +9,31 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
  ******************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
+import java.util.logging.Level;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.UriBuilder;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
+import org.eclipse.osee.framework.ui.skynet.util.DynamicImage;
+import org.eclipse.osee.framework.ui.skynet.util.DynamicImages;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
+import org.eclipse.osee.jaxrs.client.JaxRsClient;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -44,8 +60,64 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          FrameworkImage.IMPLEMENTATION_DETAILS_DRAWING, this);
       ArtifactImageManager.registerBaseImage(CoreArtifactTypes.ImplementationDetailsDataDefinition,
          FrameworkImage.IMPLEMENTATION_DETAILS_DATA_DEFINITION, this);
+      readDynamicImagesFromUrl();
 
       ArtifactImageManager.registerOverrideImageProvider(this, CoreArtifactTypes.User);
+   }
+
+   private void readDynamicImagesFromUrl() {
+
+      try {
+         String appServer = OseeClientProperties.getOseeApplicationServer();
+         URI uri = UriBuilder.fromUri(appServer).path("images.json").build();
+
+         // first, retrieve the images.json file to see if there are any images
+         String imagesJson = JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+         if (Strings.isValid(imagesJson)) {
+
+            ObjectMapper mapper = new ObjectMapper();
+
+            // read images.xml
+            DynamicImages images = mapper.readValue(imagesJson, DynamicImages.class);
+
+            // for each image
+            for (DynamicImage dynamicImage : images.getImages()) {
+
+               try {
+                  // get image from url
+                  if (Strings.isValid(dynamicImage.getImageUrl())) {
+
+                     URL url = new URL(dynamicImage.getImageUrl());
+                     Image image = ImageDescriptor.createFromURL(url).createImage();
+                     if (image != null) {
+                        // get artifact type
+                        IArtifactType artifactType = null;
+                        if (Strings.isNumeric(dynamicImage.getArtifactTypeUuid())) {
+                           artifactType =
+                              ArtifactTypeManager.getTypeByGuid(Long.valueOf(dynamicImage.getArtifactTypeUuid()));
+                        }
+                        if (artifactType == null && Strings.isValid(dynamicImage.getArtifactTypeName())) {
+                           artifactType = ArtifactTypeManager.getType(dynamicImage.getArtifactTypeName());
+                        }
+                        if (artifactType != null) {
+                           // register image for artifact type
+                           ArtifactImageManager.registerBaseImage(artifactType, ImageManager.createKeyedImage(
+                              artifactType.getGuid().toString(), ImageDescriptor.createFromImage(image)), this);
+                        }
+                     }
+                  }
+               } catch (Exception ex) {
+                  OseeLog.logf(FrameworkArtifactImageProvider.class, Level.SEVERE, ex, "Error processing image [%s]",
+                     dynamicImage);
+               }
+            }
+         }
+
+      } catch (Exception ex) {
+         OseeLog.logf(FrameworkArtifactImageProvider.class, Level.SEVERE, ex,
+            "Error processing dynamic artifact images.");
+      }
+
    }
 
    @Override
@@ -53,14 +125,16 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
       Artifact aArtifact = artifact.getFullArtifact();
       if (aArtifact.isDeleted()) {
          return null;
-      } else if (((User) aArtifact).isSystemUser()) {
-         return ImageManager.setupImage(FrameworkImage.USER_GREY);
-      } else if (!((User) aArtifact).isActive()) {
-         return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
-      } else if (((User) aArtifact).equals(UserManager.getUser())) {
-         return ImageManager.setupImage(FrameworkImage.USER_RED);
       }
-
+      if (aArtifact.isOfType(CoreArtifactTypes.User)) {
+         if (((User) aArtifact).isSystemUser()) {
+            return ImageManager.setupImage(FrameworkImage.USER_GREY);
+         } else if (!((User) aArtifact).isActive()) {
+            return ImageManager.setupImage(FrameworkImage.USER_YELLOW);
+         } else if (((User) aArtifact).equals(UserManager.getUser())) {
+            return ImageManager.setupImage(FrameworkImage.USER_RED);
+         }
+      }
       return super.setupImage(artifact);
    }
 

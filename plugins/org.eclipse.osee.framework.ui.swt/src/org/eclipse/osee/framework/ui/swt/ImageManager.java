@@ -79,7 +79,8 @@ public final class ImageManager {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {
             if (!imageKey.contains("nothere.gif")) {
-               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]", imageEnum.getImageKey());
+               OseeLog.logf(Activator.class, Level.SEVERE, "Unable to load the image for [%s]",
+                  imageEnum.getImageKey());
             }
             return setupImage(MISSING);
          }
@@ -107,6 +108,10 @@ public final class ImageManager {
 
    public static ImageDescriptor createImageDescriptor(String symbolicBundleName, String imagePath, String imageFileName) {
       return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imagePath + File.separator + imageFileName);
+   }
+
+   public static KeyedImage createKeyedImage(String imageKey, ImageDescriptor descriptor) {
+      return new KeyedImagePair(imageKey, descriptor);
    }
 
    private static final class KeyedImagePair implements KeyedImage {

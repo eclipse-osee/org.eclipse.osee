@@ -1,0 +1,16 @@
+// Example of images.json file.  If images.json file exists, the client will use this file
+// to register images for any artifact types specified.  Simply provide the imageUrl, artifact type
+// name and uuid and these images will be used.  
+// 1. Copy this file and rename it to images.json
+// 2. Remove these comments, they are not valid json
+// 3. Edit for your artifact types and image urls  
+// 4. Restart the org.eclipse.osee.web.ui bundle or server for it to take affect.
+{
+	"images": [
+	{
+		"imageUrl": "http://osee.msc.az.boeing.com/libs/images/my_image.gif",
+		"artifactTypeName": "Implementation Details Procedure",
+		"artifactTypeUuid": "69914"
+	}
+	]
+}
