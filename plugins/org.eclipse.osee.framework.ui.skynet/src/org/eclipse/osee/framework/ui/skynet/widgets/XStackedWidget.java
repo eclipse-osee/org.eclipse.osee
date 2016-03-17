@@ -239,7 +239,7 @@ public abstract class XStackedWidget<T> extends XLabel {
                if (currentPage > totalPages) {
                   currentPage = totalPages;
                }
-               currentPageLabel.setText(String.format("Page %s of %s  -  Page Id (%s)", currentPage, totalPages,
+               currentPageLabel.setText(String.format("Page %s of %s  -  Attribute Id (%s)", currentPage, totalPages,
                   stackedControl.getCurrentPageId()));
             }
          }
