@@ -38,9 +38,10 @@ public interface DispoWriter {
 
    void updateDispoItem(ArtifactReadable author, DispoProgram program, String dispoItemId, DispoItem data);
 
-   void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag);
-   
+   void updateDispoItems(ArtifactReadable author, DispoProgram program, Collection<DispoItem> data, boolean resetRerunFlag, String operation);
+
    void updateOperationSummary(ArtifactReadable author, DispoProgram program, DispoSet set, OperationReport summary);
 
    String createDispoReport(DispoProgram program, ArtifactReadable author, String contens, String operationTitle);
+
 }

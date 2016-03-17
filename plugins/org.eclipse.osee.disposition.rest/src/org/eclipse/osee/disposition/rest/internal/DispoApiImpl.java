@@ -198,11 +198,11 @@ public class DispoApiImpl implements DispoApi {
       return wasUpdated;
    }
 
-   private boolean editDispoItems(DispoProgram program, Collection<DispoItem> dispoItems, boolean resetRerunFlag) {
+   private boolean editDispoItems(DispoProgram program, Collection<DispoItem> dispoItems, boolean resetRerunFlag, String operation) {
       boolean wasUpdated = false;
 
       ArtifactReadable author = getQuery().findUser();
-      getWriter().updateDispoItems(author, program, dispoItems, resetRerunFlag);
+      getWriter().updateDispoItems(author, program, dispoItems, resetRerunFlag, operation);
       wasUpdated = true;
       return wasUpdated;
    }
@@ -400,17 +400,12 @@ public class DispoApiImpl implements DispoApi {
                createDispoItems(program, setToEdit.getGuid(), itemsToCreate);
             }
             if (itemsToEdit.size() > 0) {
-               editDispoItems(program, itemsToEdit, true);
+               editDispoItems(program, itemsToEdit, true, "Import");
             }
 
          } catch (Exception ex) {
             throw new OseeCoreException(ex);
          }
-      } else if (operation.equals("cleanPCRTypes")) {
-         List<DispoItem> dispoItems = getDispoItems(program, setToEdit.getGuid());
-         List<DispoItem> toModify = DispoSetDataCleaner.cleanUpPcrTypes(dispoItems);
-
-         getWriter().updateDispoItems(author, program, toModify, false);
       }
 
       // Create the Note to document the Operation
@@ -476,8 +471,10 @@ public class DispoApiImpl implements DispoApi {
       CoverageAdapter coverageAdapter = new CoverageAdapter(dispoConnector);
       List<DispoItem> copyData = coverageAdapter.copyData(coverageUnits, destItems, report);
 
+      String operation =
+         String.format("Copy From Legacy Coverage - Branch [%s] and Source Set [%s]", sourceBranch, sourceCoverageGuid);
       if (!copyData.isEmpty()) {
-         editDispoItems(destDispProgram, copyData, false);
+         editDispoItems(destDispProgram, copyData, false, operation);
       }
 
       storageProvider.get().updateOperationSummary(null, destDispProgram, destination, report);
@@ -516,8 +513,10 @@ public class DispoApiImpl implements DispoApi {
       copier.copyAssignee(namesToDestItems, sourceItems, namesToToEditItems, params.getAssigneeParam());
       copier.copyNotes(namesToDestItems, sourceItems, namesToToEditItems, params.getNoteParam());
 
+      String operation =
+         String.format("Copy Set from Program [%s] and Set [%s]", sourceProgram.getUuid(), sourceSet.getGuid());
       if (!namesToToEditItems.isEmpty() && !report.getStatus().isFailed()) {
-         editDispoItems(program, namesToToEditItems.values(), false);
+         editDispoItems(program, namesToToEditItems.values(), false, operation);
       }
 
       storageProvider.get().updateOperationSummary(null, program, destination, report);
