@@ -183,4 +183,7 @@ public interface BranchEndpoint {
    @Path("{branch-uuid}/txs/{tx-ids}")
    Response purgeTxs(@PathParam("branch-uuid") long branchUuid, @PathParam("tx-ids") String txIds);
 
+   @PUT
+   @Path("log/{comment}")
+   Response logBranchActivity(@PathParam("comment") String comment);
 }

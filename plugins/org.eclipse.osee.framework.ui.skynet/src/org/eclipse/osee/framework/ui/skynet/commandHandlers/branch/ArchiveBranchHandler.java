@@ -44,13 +44,16 @@ public class ArchiveBranchHandler extends CommandHandler {
 
       for (Branch branch : branches) {
          BranchArchivedState state = branch.getArchiveState();
-         branch.setArchived(!state.isArchived());
-      }
-      BranchManager.persist(branches);
-
-      for (Branch branch : branches) {
+         if (state.equals(BranchArchivedState.ARCHIVED)) {
+            branch.setArchived(false);
+            BranchManager.updateBranchArchivedState(null, branch.getUuid(), BranchArchivedState.UNARCHIVED);
+         } else {
+            branch.setArchived(true);
+            BranchManager.updateBranchArchivedState(null, branch.getUuid(), BranchArchivedState.ARCHIVED);
+         }
          OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getUuid()));
       }
+
       return null;
    }
 }

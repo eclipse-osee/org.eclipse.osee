@@ -23,6 +23,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Roberto E. Escobar
@@ -48,6 +51,14 @@ public class UpdateBranchOperation extends AbstractOperation {
       if (originalBranch != null && !BranchManager.hasMergeBranches(
          originalBranch) && !originalBranch.getBranchState().isCommitted()) {
          performUpdate(monitor, originalBranch);
+
+         OseeClient client = ServiceUtil.getOseeClient();
+         BranchEndpoint proxy = client.getBranchEndpoint();
+
+         proxy.logBranchActivity(String.format(
+            "Branch Operation Update Branch {branchUUID: %s, branchName: %s parentBranchUUID: %s parentBranchName: %s ",
+            originalBranch.getUuid(), originalBranch.getName(), BranchManager.getParentBranch(originalBranch).getUuid(),
+            BranchManager.getParentBranch(originalBranch).getName()));
       }
    }
 

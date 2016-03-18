@@ -122,7 +122,7 @@ public class RenameBranchHandler extends CommandHandler {
       String oldName = selectedBranch.getName();
       selectedBranch.setName(newLabel);
       try {
-         BranchManager.persist(selectedBranch);
+         BranchManager.updateBranchName(selectedBranch.getUuid(), newLabel);
       } catch (Exception ex) {
          selectedBranch.setName(oldName);
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

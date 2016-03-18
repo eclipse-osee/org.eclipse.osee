@@ -31,10 +31,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -42,12 +44,15 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jaxrs.OseeWebApplicationException;
@@ -75,21 +80,37 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 import org.eclipse.osee.orcs.transaction.CompareResults;
 import org.eclipse.osee.orcs.transaction.TransactionBuilder;
 import org.eclipse.osee.orcs.transaction.TransactionFactory;
+import org.eclipse.osee.orcs.utility.RestUtil;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchEndpointImpl implements BranchEndpoint {
 
+   private static long BRANCH_OPERATION_TYPEID = 61L;
+
    private final OrcsApi orcsApi;
    private final IResourceManager resourceManager;
+   private ActivityLog activityLog;
 
    @Context
    private UriInfo uriInfo;
 
-   public BranchEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager) {
+   @Context
+   private HttpHeaders httpHeaders;
+
+   public BranchEndpointImpl(OrcsApi orcsApi, IResourceManager resourceManager, ActivityLog activityLog) {
       this.orcsApi = orcsApi;
       this.resourceManager = resourceManager;
+      this.activityLog = activityLog;
+   }
+
+   public HttpHeaders getHeaders() {
+      return httpHeaders;
+   }
+
+   public void setHeaders(HttpHeaders httpHeaders) {
+      this.httpHeaders = httpHeaders;
    }
 
    public void setUriInfo(UriInfo uriInfo) {
@@ -258,6 +279,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       CompareResults data = new CompareResults();
       data.setChanges(changes);
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format("Branch Operation Compare Branches {sourceTx: %s, destTx: %s}", sourceTx.toString(),
+               destinationTx.toString()));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return data;
    }
 
@@ -295,6 +323,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       UriInfo uriInfo = getUriInfo();
       URI uri = getBranchLocation(uriInfo, result);
+
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format(
+               "Branch Operation Create Branch {branchUUID: %s, branchName: %s accountId: %s serverId: %s clientId: %s}",
+               branchUuid, data.getBranchName(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               RestUtil.getClientId(httpHeaders)));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
       return Response.created(uri).entity(asBranch(result)).build();
    }
 
@@ -338,7 +377,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       UriInfo uriInfo = getUriInfo();
       URI location = getTxLocation(uriInfo, tx);
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format(
+               "Branch Operation Commit Branch {branchUUID: %s srcBranch: %s destBranch: %s accountId: %s serverId: %s clientId: %s}",
+               branchUuid, srcBranch.toString(), destBranch.toString(), RestUtil.getAccountId(httpHeaders),
+               RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return Response.created(location).entity(asTransaction(tx)).build();
+
    }
 
    private URI getTxLocation(UriInfo uriInfo, TransactionReadable tx) {
@@ -357,6 +406,14 @@ public class BranchEndpointImpl implements BranchEndpoint {
          Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.ARCHIVE);
          executeCallable(op);
          modified = true;
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format("Branch Operation Archive Branch {branchUUID: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                  RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       return asResponse(modified);
    }
@@ -401,6 +458,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
          int deleteResult = resourceManager.delete(locator);
          switch (deleteResult) {
             case IResourceManager.OK:
+               try {
+                  activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+                     String.format("Branch Operation Delete Branch Exachange Resource {resource: %s, locator %s}", path,
+                        locator.getLocation()));
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+               }
                modified = true;
                break;
             case IResourceManager.FAIL:
@@ -429,6 +493,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
       UriInfo uriInfo = getUriInfo();
       URI location = getExchangeExportUri(uriInfo, exportURI, options.isCompress());
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format(
+               "Branch Operation Export Branches {branchUUID(s): %s accountId: %s serverId: %s, clientId: %s}",
+               branches.toString(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               RestUtil.getClientId(httpHeaders)));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return Response.created(location).build();
    }
 
@@ -464,6 +537,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
       } else {
          response = Response.ok().build();
       }
+
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format(
+               "Branch Operation Import Branches {branchUUID(s): %s accountId: %s serverId: %s clientId: %s}",
+               branches.toString(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               RestUtil.getClientId(httpHeaders)));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
       return response;
    }
 
@@ -522,6 +606,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
          Callable<?> op = getBranchOps().changeBranchName(branch, newName);
          executeCallable(op);
          modified = true;
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Set Branch Name {branchUUID: %s prevName: %s newName: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, branch.getName(), newName, RestUtil.getAccountId(httpHeaders),
+                  RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       return asResponse(modified);
    }
@@ -531,6 +624,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
       if (isDifferent(branch.getBranchType(), newType)) {
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Set Branch Type {branchUUID: %s prevType: %s newType: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, branch.getBranchType(), newType, RestUtil.getAccountId(httpHeaders),
+                  RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
          Callable<?> op = getBranchOps().changeBranchType(branch, newType);
          executeCallable(op);
          modified = true;
@@ -546,6 +648,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
          Callable<?> op = getBranchOps().changeBranchState(branch, newState);
          executeCallable(op);
          modified = true;
+
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Branch State Changed {branchUUID: %s prevState: %s newState: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, branch.getBranchType(), newState, RestUtil.getAccountId(httpHeaders),
+                  RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       return asResponse(modified);
    }
@@ -555,6 +667,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
       BranchReadable branch = getBranchById(branchUuid);
       boolean modified = false;
       if (isDifferent(branch.getAssociatedArtifactId(), artifactId)) {
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Associate Branch to Artifact {branchUUID: %s prevArt: %s newArt: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, branch.getAssociatedArtifactId(), artifactId, RestUtil.getAccountId(httpHeaders),
+                  RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
          ArtifactReadable artifact = newQuery().fromBranch(COMMON_ID).andUuid(artifactId).getResults().getExactlyOne();
          Callable<?> op = getBranchOps().associateBranchToArtifact(branch, artifact);
          executeCallable(op);
@@ -568,6 +689,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
       TransactionReadable tx = getTxByBranchAndId(branchUuid, txId);
       boolean modified = false;
       if (Compare.isDifferent(tx.getComment(), comment)) {
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Set Tx Comment {branchUUID: %s prevComment: %s newComment: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, tx.getComment(), comment, RestUtil.getAccountId(httpHeaders),
+                  RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
          TransactionFactory txFactory = newTxFactory();
          txFactory.setTransactionComment(tx, comment);
          modified = true;
@@ -584,6 +714,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
          executeCallable(op);
          modified = true;
       }
+
+      try {
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+            String.format("Branch Operation Purge Branch {branchUUID: %s, accountId: %s serverId: %s clientId: %s}",
+               branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+               RestUtil.getClientId(httpHeaders)));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
       return asResponse(modified);
    }
 
@@ -597,6 +736,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
          Callable<?> op = getBranchOps().archiveUnarchiveBranch(branch, ArchiveOperation.UNARCHIVE);
          executeCallable(op);
          modified = true;
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Unarchive Branch {branchUUID: %s accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                  RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       return asResponse(modified);
    }
@@ -614,6 +762,15 @@ public class BranchEndpointImpl implements BranchEndpoint {
          Callable<?> op = getBranchOps().unassociateBranch(branch);
          executeCallable(op);
          modified = true;
+         try {
+            activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+               String.format(
+                  "Branch Operation Unassociate Branch {branchUUID: %s, accountId: %s serverId: %s clientId: %s}",
+                  branchUuid, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                  RestUtil.getClientId(httpHeaders)));
+         } catch (OseeCoreException ex) {
+            OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
       return asResponse(modified);
    }
@@ -631,6 +788,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
             Callable<?> op = newTxFactory().purgeTransaction(list);
             executeCallable(op);
             modified = true;
+
+            try {
+               activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS,
+                  String.format(
+                     "Branch Operation Purge Txs {branchUUID: %s, txsToDelete: %s accountId: %s serverId: %s clientId: %s}",
+                     branchUuid, txIds, RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
+                     RestUtil.getClientId(httpHeaders)));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       }
       return asResponse(modified);
@@ -704,4 +871,17 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return query.getResults();
    }
 
+   @Override
+   public Response logBranchActivity(String comment) {
+      try {
+         comment += String.format(" accountId: %s serverId: %s clientId: %s", RestUtil.getAccountId(httpHeaders),
+            RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders));
+
+         activityLog.createEntry(BRANCH_OPERATION_TYPEID, ActivityLog.INITIAL_STATUS, comment);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      return Response.ok().build();
+   }
 }

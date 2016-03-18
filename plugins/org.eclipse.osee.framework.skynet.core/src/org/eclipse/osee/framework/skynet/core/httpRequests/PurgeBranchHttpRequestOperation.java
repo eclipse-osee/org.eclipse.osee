@@ -68,6 +68,10 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
             branch.setArchived(true);
             BranchManager.decache(branch);
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branchUuid));
+         } else {
+            branch.setBranchState(currentState);
+            branch.setArchived(archivedState.isArchived());
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchUuid));
          }
       } catch (Exception ex) {
          try {

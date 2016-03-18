@@ -45,7 +45,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
          if (MessageDialog.openConfirm(Displays.getActiveShell(), "Set Associated Artifact",
             "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
             selectedBranch.setAssociatedArtifactId(Integer.parseInt(artId));
-            BranchManager.persist(selectedBranch);
+            BranchManager.setAssociatedArtifactId(selectedBranch, Integer.parseInt(artId));
          }
       }
 

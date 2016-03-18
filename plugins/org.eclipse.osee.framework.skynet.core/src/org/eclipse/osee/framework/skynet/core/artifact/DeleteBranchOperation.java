@@ -21,6 +21,9 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
+import org.eclipse.osee.orcs.rest.client.OseeClient;
+import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 
 /**
  * @author Roberto E. Escobar
@@ -41,6 +44,8 @@ public class DeleteBranchOperation extends AbstractOperation {
       BranchArchivedState originalArchivedState = branch.getArchiveState();
 
       ArtifactCache.deCache(this.branch);
+      OseeClient client = ServiceUtil.getOseeClient();
+      BranchEndpoint proxy = client.getBranchEndpoint();
 
       try {
          branch.setBranchState(BranchState.DELETE_IN_PROGRESS);
@@ -50,6 +55,10 @@ public class DeleteBranchOperation extends AbstractOperation {
 
          branch.setBranchState(BranchState.DELETED);
          BranchManager.persist(branch);
+
+         proxy.logBranchActivity(
+            String.format("Branch Operation Branch State Changed {branchUUID: %s prevState: %s newState: %s ",
+               branch.getUuid(), originalState, BranchState.DELETED));
       } catch (Exception ex) {
          try {
             branch.setBranchState(originalState);

@@ -58,7 +58,9 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CommitBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.CreateBranchHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.PurgeBranchHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateAssociatedArtifactHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchArchivedStateHttpRequestOperation;
+import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchNameHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchStateHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.httpRequests.UpdateBranchTypeHttpRequestOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -285,6 +287,11 @@ public final class BranchManager {
    public static void updateBranchArchivedState(IProgressMonitor monitor, final long branchUuid, final BranchArchivedState state) throws OseeCoreException {
       IOperation operation = new UpdateBranchArchivedStateHttpRequestOperation(branchUuid, state.isArchived());
       Operations.executeWorkAndCheckStatus(operation, monitor);
+   }
+
+   public static void updateBranchName(final Long branchUuid, String newBranchName) {
+      IOperation operation = new UpdateBranchNameHttpRequestOperation(branchUuid, newBranchName);
+      Operations.executeWorkAndCheckStatus(operation);
    }
 
    /**
@@ -554,6 +561,12 @@ public final class BranchManager {
    public static boolean isChangeManaged(IOseeBranch branch) throws OseeCoreException {
       Integer associatedArtifactId = getAssociatedArtifactId(branch);
       return associatedArtifactId > 0 && !associatedArtifactId.equals(SystemUser.OseeSystem);
+   }
+
+   public static void setAssociatedArtifactId(IOseeBranch branch, Integer artifactId) {
+      getBranch(branch).setAssociatedArtifactId(artifactId);
+      IOperation operation = new UpdateAssociatedArtifactHttpRequestOperation(branch, artifactId);
+      Operations.executeWorkAndCheckStatus(operation);
    }
 
    public static Integer getAssociatedArtifactId(IOseeBranch branch) {
