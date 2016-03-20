@@ -13,11 +13,11 @@ package org.eclipse.osee.orcs.db.internal.resource;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT_ID;
 import java.net.URL;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.jdbc.AbstractJdbcMigrationResource;
-import org.eclipse.osee.orcs.db.internal.IdentityManager;
 
 public class OseeDatastoreMigrationResource extends AbstractJdbcMigrationResource {
 
@@ -35,7 +35,7 @@ public class OseeDatastoreMigrationResource extends AbstractJdbcMigrationResourc
 
    @Override
    public void addPlaceholders(Map<String, String> placeholders) {
-      placeholders.put(TX_SEQ_PLACEHOLDER, IdentityManager.TRANSACTION_ID_SEQ);
+      placeholders.put(TX_SEQ_PLACEHOLDER, OseeData.TRANSACTION_ID_SEQ);
       placeholders.put(SYS_ROOT_TYPE_PLACEHOLDER, String.valueOf(BranchType.SYSTEM_ROOT.getValue()));
       placeholders.put(SYS_ROOT_STATE_PLACEHOLDER, String.valueOf(BranchState.MODIFIED.getValue()));
       placeholders.put(SYS_ROOT_NAME_PLACEHOLDER, CoreBranches.SYSTEM_ROOT.getName());

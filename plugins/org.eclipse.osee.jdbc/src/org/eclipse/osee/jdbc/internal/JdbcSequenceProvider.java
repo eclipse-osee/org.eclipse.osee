@@ -11,6 +11,7 @@
 package org.eclipse.osee.jdbc.internal;
 
 import java.util.HashMap;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -37,7 +38,6 @@ public class JdbcSequenceProvider {
 
    private final class JdbcSequenceTx extends JdbcTransaction {
 
-      private static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
       private static final String QUERY_SEQUENCE = "SELECT last_sequence FROM osee_sequence WHERE sequence_name = ?";
       public static final String INSERT_SEQUENCE =
          "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
@@ -104,7 +104,7 @@ public class JdbcSequenceProvider {
          SequenceRange range = getRange(sequenceName);
          range.lastAvailable = 0;
          int initalValue = 0;
-         if (sequenceName.equals(ART_ID_SEQ)) {
+         if (sequenceName.equals(OseeData.ART_ID_SEQ)) {
             initalValue = 200000;
          }
          client.runPreparedUpdate(connection, INSERT_SEQUENCE, initalValue, sequenceName);

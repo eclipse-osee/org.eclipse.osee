@@ -22,6 +22,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeHousekeepingRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -69,7 +70,7 @@ import org.junit.Test;
  * @author Donald G. Dunne
  */
 public class ArtifactEventTest {
-   private static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
+
    @Rule
    public OseeClientIntegrationRule integration = new OseeClientIntegrationRule(OSEE_CLIENT_DEMO);
 
@@ -869,7 +870,7 @@ public class ArtifactEventTest {
     * @throws OseeDataStoreException
     */
    private int getIncrementingRelationId() throws OseeCoreException {
-      return (int) ConnectionHandler.getNextSequence(REL_LINK_ID_SEQ, true);
+      return (int) ConnectionHandler.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);
    }
 
    private static final class ArtifactEventListener implements IArtifactEventListener {

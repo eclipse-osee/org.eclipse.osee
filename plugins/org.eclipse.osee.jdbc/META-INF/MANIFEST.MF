@@ -8,6 +8,7 @@ Bundle-Vendor: Eclipse Open System Engineering Environment
 Import-Package: org.apache.commons.dbcp,
  org.apache.commons.pool,
  org.apache.commons.pool.impl,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.jdk.core.util.network,

@@ -17,14 +17,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IdentityManager extends IdentityLocator {
 
-   public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
-   public static final String ATTR_ID_SEQ = "SKYNET_ATTR_ID_SEQ";
-   public static final String REL_LINK_ID_SEQ = "SKYNET_REL_LINK_ID_SEQ";
-   public static final String GAMMA_ID_SEQ = "SKYNET_GAMMA_ID_SEQ";
-
-   public static final String BRANCH_ID_SEQ = "SKYNET_BRANCH_ID_SEQ";
-   public static final String TRANSACTION_ID_SEQ = "SKYNET_TRANSACTION_ID_SEQ";
-
    int getNextTransactionId();
 
    int getNextArtifactId();

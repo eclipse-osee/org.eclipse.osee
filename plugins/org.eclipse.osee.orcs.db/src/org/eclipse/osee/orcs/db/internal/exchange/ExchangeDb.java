@@ -15,8 +15,8 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.exchange.handler.ExportItem;
 
 /**
@@ -102,12 +102,12 @@ public final class ExchangeDb {
 
    static List<IdTranslator> createTranslators(JdbcClient service) {
       List<IdTranslator> translators = new ArrayList<>();
-      translators.add(new IdTranslator(service, IdentityManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
-      translators.add(new IdTranslator(service, IdentityManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
-      translators.add(new IdTranslator(service, IdentityManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new IdTranslator(service, IdentityManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new IdTranslator(service, IdentityManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
-      translators.add(new IdTranslator(service, IdentityManager.REL_LINK_ID_SEQ, RELATION_ID));
+      translators.add(new IdTranslator(service, OseeData.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
+      translators.add(new IdTranslator(service, OseeData.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
+      translators.add(new IdTranslator(service, OseeData.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new IdTranslator(service, OseeData.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new IdTranslator(service, OseeData.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new IdTranslator(service, OseeData.REL_LINK_ID_SEQ, RELATION_ID));
       return translators;
    }
 }

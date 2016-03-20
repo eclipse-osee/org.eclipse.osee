@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
  * @author Donald G. Dunne
  */
 public abstract class ArtifactFactory {
-   public static final String ART_ID_SEQ = "SKYNET_ART_ID_SEQ";
    private final Set<IArtifactType> artifactTypeNames = new HashSet<>(5);
 
    protected ArtifactFactory(IArtifactType... artifactTypes) {
@@ -77,7 +77,7 @@ public abstract class ArtifactFactory {
    }
 
    public static int getNextArtifactId(Long uuid) {
-      return uuid == null ? (int) ConnectionHandler.getNextSequence(ART_ID_SEQ, true) : uuid.intValue();
+      return uuid == null ? (int) ConnectionHandler.getNextSequence(OseeData.ART_ID_SEQ, true) : uuid.intValue();
    }
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, IOseeBranch branch, ModificationType modificationType) throws OseeCoreException {

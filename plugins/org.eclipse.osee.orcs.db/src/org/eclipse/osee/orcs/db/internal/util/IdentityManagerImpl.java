@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.util;
 
+import org.eclipse.osee.framework.core.data.OseeData;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -33,7 +34,7 @@ public class IdentityManagerImpl implements IdentityManager {
    @Override
    public int getNextTransactionId() {
       //keep transaction id's sequential in the face of concurrent transaction by multiple users
-      return (int) client.getNextSequence(TRANSACTION_ID_SEQ, false);
+      return (int) client.getNextSequence(OseeData.TRANSACTION_ID_SEQ, false);
    }
 
    @Override
@@ -43,17 +44,17 @@ public class IdentityManagerImpl implements IdentityManager {
 
    @Override
    public int getNextAttributeId() {
-      return (int) client.getNextSequence(ATTR_ID_SEQ, true);
+      return (int) client.getNextSequence(OseeData.ATTR_ID_SEQ, true);
    }
 
    @Override
    public int getNextRelationId() {
-      return (int) client.getNextSequence(REL_LINK_ID_SEQ, true);
+      return (int) client.getNextSequence(OseeData.REL_LINK_ID_SEQ, true);
    }
 
    @Override
    public long getNextGammaId() {
-      return (int) client.getNextSequence(GAMMA_ID_SEQ, true);
+      return (int) client.getNextSequence(OseeData.GAMMA_ID_SEQ, true);
    }
 
    @Override
