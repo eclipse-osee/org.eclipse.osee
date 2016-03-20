@@ -14,6 +14,7 @@ import java.io.File;
 import java.sql.DatabaseMetaData;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -26,7 +27,6 @@ import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 
 public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
@@ -69,7 +69,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    @Override
    public String getValue(String key) throws OseeCoreException {
       String toReturn = null;
-      if (ResourceConstants.BINARY_DATA_PATH.equals(key)) {
+      if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
          toReturn = getOseeApplicationServerData();
       } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
          toReturn = String.valueOf(areHintsSupported());
@@ -88,9 +88,9 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    @Override
    public boolean putValue(String key, String value) throws OseeCoreException {
       boolean wasUpdated = false;
-      if (ResourceConstants.BINARY_DATA_PATH.equals(key)) {
-         throw new OseeStateException(BINARY_DATA_ERROR_MSG, ResourceConstants.BINARY_DATA_PATH,
-            ResourceConstants.BINARY_DATA_PATH);
+      if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
+         throw new OseeStateException(BINARY_DATA_ERROR_MSG, OseeClient.OSEE_APPLICATION_SERVER_DATA,
+            OseeClient.OSEE_APPLICATION_SERVER_DATA);
       } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
          throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
       } else if (SqlProvider.SQL_RECURSIVE_WITH_KEY.equals(key)) {
@@ -109,7 +109,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    /**
     * Check Tag Queue on start up. Entries found in the tag queue are tagged by the server on start up.
-    * 
+    *
     * @return whether tag queue should be checked upon server start-up.
     */
    public static boolean isCheckTagQueueOnStartupAllowed() {
@@ -118,7 +118,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
    /**
     * Get location for OSEE application server binary data
-    * 
+    *
     * @return OSEE application server binary data path
     */
    public String getOseeApplicationServerData() {
@@ -136,7 +136,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    private String internalGetOseeApplicationServerData() {
-      String toReturn = System.getProperty(ResourceConstants.BINARY_DATA_PATH);
+      String toReturn = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       if (!Strings.isValid(toReturn)) {
          String userHome = System.getProperty("user.home");
          if (Strings.isValid(userHome)) {

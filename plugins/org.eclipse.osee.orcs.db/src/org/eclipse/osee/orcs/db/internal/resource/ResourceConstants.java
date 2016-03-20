@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.resource;
 
 import java.io.File;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.SystemPreferences;
 
@@ -27,8 +28,6 @@ public final class ResourceConstants {
    public static final String EXCHANGE_RESOURCE_PROTOCOL = "exchange";
    public static final String ATTRIBUTE_RESOURCE_PROTOCOL = "attr";
 
-   public static final String BINARY_DATA_PATH = "osee.application.server.data";
-
    public static String getExchangeDataPath(SystemPreferences preferences) throws OseeCoreException {
       String binaryDataPath = getBinaryDataPath(preferences);
       return binaryDataPath + File.separator + ResourceConstants.EXCHANGE_RESOURCE_PROTOCOL + File.separator;
@@ -40,6 +39,6 @@ public final class ResourceConstants {
    }
 
    public static String getBinaryDataPath(SystemPreferences preferences) throws OseeCoreException {
-      return preferences.getValue(ResourceConstants.BINARY_DATA_PATH);
+      return preferences.getValue(OseeClient.OSEE_APPLICATION_SERVER_DATA);
    }
 }

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.server;
 
 import java.io.File;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.logger.Log;
@@ -19,7 +20,6 @@ import org.eclipse.osee.logger.Log;
  * @author Roberto E. Escobar
  */
 public class OseeServerProperties {
-   private static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
    private static final String OSGI_PORT_PROPERTY = "org.osgi.service.http.port";
    private static final String OSGI_SECURE_PORT_PROPERTY = "org.osgi.service.http.port.secure";
 
@@ -32,7 +32,7 @@ public class OseeServerProperties {
    }
 
    private static String internalGetOseeApplicationServerData() {
-      String toReturn = System.getProperty(OSEE_APPLICATION_SERVER_DATA);
+      String toReturn = System.getProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA);
       if (toReturn == null) {
          String userHome = System.getProperty("user.home");
          if (Strings.isValid(userHome)) {
@@ -44,7 +44,7 @@ public class OseeServerProperties {
 
    /**
     * Get location for OSEE application server binary data
-    * 
+    *
     * @return OSEE application server binary data path
     */
    public static String getOseeApplicationServerData(Log logger) {
@@ -65,7 +65,7 @@ public class OseeServerProperties {
 
    /**
     * Retrieve the application server port
-    * 
+    *
     * @return the application server port
     */
    public static int getOseeApplicationServerPort() {
@@ -78,7 +78,7 @@ public class OseeServerProperties {
 
    /**
     * Retrieve the application server scheme
-    * 
+    *
     * @return the application server scheme
     */
    public static String getOseeApplicationServerScheme() {
@@ -91,7 +91,7 @@ public class OseeServerProperties {
 
    /**
     * Retrieve the connection info file location
-    * 
+    *
     * @return connection info file URI
     */
    public static String getOseeConnectionInfoUri() {
@@ -100,7 +100,7 @@ public class OseeServerProperties {
 
    /**
     * Authentication Protocol to use
-    * 
+    *
     * @return client/server authentication protocol.
     */
    public static String getAuthenticationProtocol() {
@@ -109,7 +109,7 @@ public class OseeServerProperties {
 
    /**
     * Authentication Protocol to use
-    * 
+    *
     * @param client/server authentication protocol.
     */
    public static void setAuthenticationProtocol(String protocol) {

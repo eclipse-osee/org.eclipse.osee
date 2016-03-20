@@ -19,6 +19,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -38,7 +39,7 @@ import org.junit.rules.TemporaryFolder;
 
 /**
  * Test Case for {@link AttributeProvider}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeProviderTest {
@@ -79,7 +80,7 @@ public class AttributeProviderTest {
       MockSystemPreferences preferences = new MockSystemPreferences() {
          @Override
          public String getValue(String key) {
-            Assert.assertEquals(ResourceConstants.BINARY_DATA_PATH, key);
+            Assert.assertEquals(OseeClient.OSEE_APPLICATION_SERVER_DATA, key);
             return null;
          }
       };
@@ -97,7 +98,7 @@ public class AttributeProviderTest {
       SystemPreferences preferences = new MockSystemPreferences() {
          @Override
          public String getValue(String key) {
-            Assert.assertEquals(ResourceConstants.BINARY_DATA_PATH, key);
+            Assert.assertEquals(OseeClient.OSEE_APPLICATION_SERVER_DATA, key);
             return folder.getRoot().getAbsolutePath();
          }
       };

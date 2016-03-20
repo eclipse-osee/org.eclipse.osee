@@ -21,6 +21,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -81,7 +82,7 @@ public class TestDatabase {
 
       String dbPath = getDbHomePath(tempFolder, "hsql");
 
-      System.setProperty("osee.application.server.data", tempFolder.getAbsolutePath());
+      System.setProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA, tempFolder.getAbsolutePath());
 
       ConfigurationAdmin configAdmin = OsgiUtil.getConfigAdmin();
 
@@ -149,7 +150,7 @@ public class TestDatabase {
             throw new OseeCoreException(ex);
          }
       }
-      System.setProperty("osee.application.server.data", "");
+      System.setProperty(OseeClient.OSEE_APPLICATION_SERVER_DATA, "");
       boolean isDead = jdbcService != null ? !jdbcService.isServerAlive(2000L) : true;
       if (isDead) {
          if (tempFolder != null) {

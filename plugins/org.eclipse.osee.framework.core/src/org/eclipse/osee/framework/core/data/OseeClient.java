@@ -15,7 +15,8 @@ package org.eclipse.osee.framework.core.data;
  */
 public class OseeClient {
 
-   public static String OSEE_APPLICATION_SERVER = "osee.application.server";
+   public static final String OSEE_APPLICATION_SERVER = "osee.application.server";
+   public static final String OSEE_APPLICATION_SERVER_DATA = "osee.application.server.data";
 
    private OseeClient() {
       // utility class

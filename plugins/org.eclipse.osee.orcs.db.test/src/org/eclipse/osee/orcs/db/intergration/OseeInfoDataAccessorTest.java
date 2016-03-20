@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.intergration;
 
+import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;
-import org.eclipse.osee.orcs.db.internal.resource.ResourceConstants;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 
 /**
@@ -30,7 +30,7 @@ public class OseeInfoDataAccessorTest {
       OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
       accessor.setLogger(new MockLog());
 
-      accessor.putValue(ResourceConstants.BINARY_DATA_PATH, "dummy");
+      accessor.putValue(OseeClient.OSEE_APPLICATION_SERVER_DATA, "dummy");
    }
 
    @org.junit.Test(expected = OseeStateException.class)
