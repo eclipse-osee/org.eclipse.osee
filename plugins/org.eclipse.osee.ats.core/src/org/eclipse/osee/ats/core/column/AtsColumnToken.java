@@ -21,10 +21,14 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnToken {
 
-   public static AtsAttributeValueColumn TitleColumn = new AtsAttributeValueColumn(CoreAttributeTypes.Name,
-      "framework.artifact.name.Title", "Title", 150, ColumnAlign.Left.name(), true, ColumnType.String, true, "", true);
    public static AtsAttributeValueColumn LegacyPcrIdColumn = new AtsAttributeValueColumn(AtsAttributeTypes.LegacyPcrId,
       AtsColumnId.LegacyPcrId.getId(), AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, ColumnAlign.Left.name(),
       false, ColumnType.String, false, "");
-
+   public static AtsAttributeValueColumn TitleColumn = new AtsAttributeValueColumn(CoreAttributeTypes.Name,
+      "framework.artifact.name.Title", "Title", 150, ColumnAlign.Left.name(), true, ColumnType.String, true, "", true);
+   public static AtsAttributeValueColumn PercentCompleteWorkflowColumn = new AtsAttributeValueColumn(
+      AtsAttributeTypes.PercentComplete, AtsColumnId.PercentCompleteWorkflow.getId(),
+      AtsAttributeTypes.PercentComplete.getUnqualifiedName(), 40, ColumnAlign.Center.name(), false, ColumnType.Percent,
+      false,
+      "Percent Complete for full workflow (if work definition configured for single percent).\n\nAmount entered from user.");
 }

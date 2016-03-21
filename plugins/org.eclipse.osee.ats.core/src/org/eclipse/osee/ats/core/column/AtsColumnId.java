@@ -20,6 +20,7 @@ public enum AtsColumnId {
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
    LegacyPcrId("ats.column.legacyPcr"),
+   PercentCompleteWorkflow("ats.column.workflowPercentComplete"),
    State("ats.column.state"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),

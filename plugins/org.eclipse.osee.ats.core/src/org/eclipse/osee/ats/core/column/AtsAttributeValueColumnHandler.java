@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -68,6 +69,10 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
          return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
       return "";
+   }
+
+   public static String getColumnText(IAtsObject atsObject, IAttributeType attributeType, boolean isActionRollup, IAtsServices services) {
+      return getColumnText(atsObject, attributeType.getGuid(), isActionRollup, services);
    }
 
 }

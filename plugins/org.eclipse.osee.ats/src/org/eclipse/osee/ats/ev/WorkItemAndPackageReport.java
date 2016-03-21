@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
-import org.eclipse.osee.ats.column.PercentCompleteWorkflowColumn;
+import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -103,7 +103,8 @@ public class WorkItemAndPackageReport extends XNavigateItemAction {
                   workItemArt.getSoleAttributeValue(AtsAttributeTypes.AtsId, ""),
                   item.getParentTeamWorkflow().getTeamDefinition().getName(),
                   item.getStateMgr().getCurrentStateName(),
-                  PercentCompleteWorkflowColumn.getInstance().getColumnText(workItemArt, null, 0),
+                  AtsAttributeValueColumnHandler.getColumnText(item, AtsAttributeTypes.PercentComplete, false,
+                     AtsClientService.get().getServices()),
                   PercentCompleteTotalColumn.getInstance().getColumnText(workItemArt, null, 0),
                   item.getStateMgr().getAssigneesStr(),
                   data.getCountryName(),

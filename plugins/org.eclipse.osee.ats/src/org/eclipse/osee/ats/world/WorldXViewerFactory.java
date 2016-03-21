@@ -101,7 +101,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteStateTasksColumn.getInstance(),
          PercentCompleteStateReviewColumn.getInstance(),
          PercentCompleteTotalColumn.getInstance(),
-         PercentCompleteWorkflowColumn.getInstance(),
+         getConfigColumn(AtsColumnToken.PercentCompleteWorkflowColumn),
          HoursSpentSMAStateColumn.getInstance(),
          HoursSpentStateTasksColumn.getInstance(),
          HoursSpentStateReviewColumn.getInstance(),
@@ -172,9 +172,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          InsertionColumnUI.getInstance(),
          InsertionActivityColumnUI.getInstance(),
          ColorTeamColumnUI.getInstance(),
-      RelatedArtifactChangedColumn.getInstance(),
-      RelatedArtifactLastModifiedByColumn.getInstance(),
-      RelatedArtifactLastModifiedDateColumn.getInstance(),
+         RelatedArtifactChangedColumn.getInstance(),
+         RelatedArtifactLastModifiedByColumn.getInstance(),
+         RelatedArtifactLastModifiedDateColumn.getInstance(),
          new UuidColumn(false)};
    }
 
