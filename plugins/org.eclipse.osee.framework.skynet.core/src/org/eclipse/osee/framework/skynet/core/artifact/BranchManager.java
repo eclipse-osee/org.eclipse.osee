@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -138,7 +139,7 @@ public final class BranchManager {
       return Collections.castAll(getCache().getByName(branchName));
    }
 
-   public static Branch getBranch(IOseeBranch branch) throws OseeCoreException {
+   public static Branch getBranch(BranchId branch) throws OseeCoreException {
       if (branch instanceof Branch) {
          return (Branch) branch;
       } else {
@@ -149,9 +150,9 @@ public final class BranchManager {
    /**
     * Do not call this method unless absolutely neccessary due to performance impacts.
     */
-   public static synchronized void checkAndReload(Long uuid) throws OseeCoreException {
-      if (!branchExists(uuid)) {
-         loadBranchToCache(uuid);
+   public static synchronized void checkAndReload(BranchId branch) throws OseeCoreException {
+      if (!branchExists(branch)) {
+         loadBranchToCache(branch.getId());
       }
    }
 
@@ -182,7 +183,7 @@ public final class BranchManager {
       }
    }
 
-   public static boolean branchExists(IOseeBranch branchToken) throws OseeCoreException {
+   public static boolean branchExists(BranchId branchToken) throws OseeCoreException {
       return getCache().get(branchToken) != null;
    }
 
@@ -244,8 +245,8 @@ public final class BranchManager {
       return branch;
    }
 
-   public static void reloadBranch(long uuid) {
-      loadBranchToCache(uuid);
+   public static void reloadBranch(BranchId branch) {
+      loadBranchToCache(branch.getId());
    }
 
    public static Collection<Branch> getAll() {
@@ -569,7 +570,7 @@ public final class BranchManager {
       Operations.executeWorkAndCheckStatus(operation);
    }
 
-   public static Integer getAssociatedArtifactId(IOseeBranch branch) {
+   public static Integer getAssociatedArtifactId(BranchId branch) {
       return getBranch(branch).getAssociatedArtifactId();
    }
 

@@ -91,8 +91,8 @@ public class AtsTaskService extends AbstractAtsTaskService {
 
       for (JaxAtsTask task : jaxTasks.getTasks()) {
          String guid = ArtifactQuery.getGuidFromUuid(task.getUuid(), AtsUtilCore.getAtsBranch());
-         artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added,
-            AtsUtilCore.getAtsBranch().getUuid(), AtsArtifactTypes.Task.getGuid(), guid));
+         artifactEvent.getArtifacts().add(new EventBasicGuidArtifact(EventModType.Added, AtsUtilCore.getAtsBranch(),
+            AtsArtifactTypes.Task.getGuid(), guid));
          artUuids.add(task.getUuid());
 
          RelationLink relation = getRelation(teamWf, task);
@@ -115,7 +115,7 @@ public class AtsTaskService extends AbstractAtsTaskService {
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(), artifact.getGuid());
+      return new DefaultBasicGuidArtifact(artifact.getBranch(), artifact.getArtTypeGuid(), artifact.getGuid());
    }
 
    private RelationLink getRelation(Artifact teamWf, JaxAtsTask task) {

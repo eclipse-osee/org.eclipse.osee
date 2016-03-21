@@ -13,6 +13,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -20,7 +21,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemotePersistEvent1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemotePersistEvent1">
  *   &lt;complexContent>
@@ -62,20 +63,15 @@ public class RemotePersistEvent1 extends RemoteEvent {
 
    /**
     * Gets the value of the branchGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getBranchGuid() {
       return branchGuid;
    }
 
-   /**
-    * Sets the value of the branchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchGuid(BranchId branch) {
+      this.branchGuid = branch.getId().toString();
    }
 
    /**
@@ -100,7 +96,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     * the artifacts property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getArtifacts().add(newItem);
     * </pre>
@@ -122,7 +118,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     * the relations property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getRelations().add(newItem);
     * </pre>
@@ -144,7 +140,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
     * the relationReorders property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getRelationReorders().add(newItem);
     * </pre>
@@ -160,7 +156,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
 
    /**
     * Gets the value of the networkSender property.
-    * 
+    *
     * @return possible object is {@link RemoteNetworkSender1 }
     */
    @Override
@@ -170,7 +166,7 @@ public class RemotePersistEvent1 extends RemoteEvent {
 
    /**
     * Sets the value of the networkSender property.
-    * 
+    *
     * @param value allowed object is {@link RemoteNetworkSender1 }
     */
    public void setNetworkSender(RemoteNetworkSender1 value) {

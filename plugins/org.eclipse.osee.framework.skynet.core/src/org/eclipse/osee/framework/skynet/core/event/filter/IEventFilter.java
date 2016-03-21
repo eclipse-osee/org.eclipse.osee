@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 
@@ -22,7 +23,7 @@ public interface IEventFilter {
    /**
     * return true if events for this branch should be passed through to listeners
     */
-   public boolean isMatch(Long branchUuid);
+   public boolean isMatch(BranchId branch);
 
    /**
     * return true if events for this this guid artifact should be passed through to listeners

@@ -77,7 +77,7 @@ public final class AccessEventListener implements IBranchEventListener, IAccessC
    public void handleBranchEvent(Sender sender, final BranchEvent branchEvent) {
       try {
          if (branchEvent.getEventType() == BranchEventType.Deleted) {
-            accessControlCacheHandler.updateAccessListForBranchObject(service, branchEvent.getBranchUuid());
+            accessControlCacheHandler.updateAccessListForBranchObject(service, branchEvent.getSourceBranch());
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);

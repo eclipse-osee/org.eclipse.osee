@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -71,12 +72,11 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
    /**
     * @return true if branch is not null, matches the branch for the event and is not deleted or purged
     */
-   private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, Long branchUuidFromEvent) {
+   private boolean isArtifactExplorerValidForEvents(ArtifactExplorer artifactExplorer, BranchId brancFromEvent) {
       boolean toReturn = false;
       if (artifactExplorer != null) {
          Branch branch = artifactExplorer.getBranch();
-         toReturn =
-            branch != null && branchUuidFromEvent.equals(branch.getUuid()) && !branch.isDeleted() && !branch.isPurged();
+         toReturn = branch != null && brancFromEvent.equals(branch) && !branch.isDeleted() && !branch.isPurged();
       }
       return toReturn;
    }
@@ -93,7 +93,7 @@ public class ArtifactExplorerEventManager implements IArtifactEventListener, Eve
       for (IArtifactExplorerEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             handlers.remove(handler);
-         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranchUuid())) {
+         } else if (isArtifactExplorerValidForEvents(handler.getArtifactExplorer(), artifactEvent.getBranch())) {
             handlersToProcess.add(handler);
          }
       }

@@ -86,8 +86,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       BranchState currentState = sourceBranch.getBranchState();
       sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
 
-      BranchEvent branchEvent =
-         new BranchEvent(BranchEventType.Committing, sourceBranch.getUuid(), destinationBranch.getUuid());
+      BranchEvent branchEvent = new BranchEvent(BranchEventType.Committing, sourceBranch, destinationBranch);
       OseeEventManager.kickBranchEvent(getClass(), branchEvent);
 
       OseeClient client = ServiceUtil.getOseeClient();
@@ -105,8 +104,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          }
       } catch (Exception ex) {
          sourceBranch.setBranchState(currentState);
-         OseeEventManager.kickBranchEvent(getClass(),
-            new BranchEvent(BranchEventType.CommitFailed, sourceBranch.getUuid()));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.CommitFailed, sourceBranch));
          throw JaxRsExceptions.asOseeException(ex);
       }
    }
@@ -143,7 +141,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          TransactionManager.cacheCommittedArtifactTransaction(associatedArtifact, newTransaction);
       }
 
-      BranchManager.reloadBranch(sourceBranch.getUuid());
+      BranchManager.reloadBranch(sourceBranch);
 
       if (!skipChecksAndEvents) {
          Collection<Change> changes = new ArrayList<>();
@@ -153,7 +151,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       }
 
       OseeEventManager.kickBranchEvent(getClass(),
-         new BranchEvent(BranchEventType.Committed, sourceBranch.getUuid(), destinationBranch.getUuid()));
+         new BranchEvent(BranchEventType.Committed, sourceBranch, destinationBranch));
    }
 
    private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {
@@ -196,7 +194,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
 
                   EventModifiedBasicGuidArtifact artEvent = artEventMap.get(artifactId);
                   if (artEvent == null) {
-                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranchId(),
+                     artEvent = new EventModifiedBasicGuidArtifact(newTransaction.getBranch(),
                         change.getArtifactType().getGuid(), changedArtifact.getGuid(),
                         new ArrayList<org.eclipse.osee.framework.skynet.core.event.model.AttributeChange>());
                      artifactEvent.getArtifacts().add(artEvent);

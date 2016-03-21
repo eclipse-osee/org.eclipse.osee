@@ -39,7 +39,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@link FrameworkEventToRemoteEventListener}
- * 
+ *
  * @author Shawn F. Cook
  */
 public class FrameworkEventToRemoteEventListenerTest {
@@ -113,10 +113,10 @@ public class FrameworkEventToRemoteEventListenerTest {
    private RemotePersistEvent1 createRemoteEvent(Artifact modifiedArt) {
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       remoteEvent.setNetworkSender(networkSender);
-      remoteEvent.setBranchGuid(String.valueOf(BRANCH.getUuid()));
+      remoteEvent.setBranchGuid(BRANCH);
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranchGuid(String.valueOf(BRANCH.getUuid()));
+      remGuidArt.setBranch(BRANCH);
       remGuidArt.setArtTypeGuid(modifiedArt.getArtTypeGuid());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 

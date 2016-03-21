@@ -50,7 +50,7 @@ public final class UpdateBranchTypeHttpRequestOperation extends AbstractOperatio
          if (Status.OK.getStatusCode() == response.getStatus()) {
             Branch branch = BranchManager.getBranch(branchUuid);
             branch.setBranchType(type);
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.TypeUpdated, branch));
          }
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);

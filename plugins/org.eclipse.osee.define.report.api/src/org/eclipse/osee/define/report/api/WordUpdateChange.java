@@ -12,16 +12,15 @@ package org.eclipse.osee.define.report.api;
 
 import java.util.LinkedList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 
 /**
  * @author David W. Miller
  */
-@XmlRootElement
 public class WordUpdateChange {
-   Integer tx;
-   Long branchUuid;
-   List<WordArtifactChange> changedArts = new LinkedList<>();
+   private Integer tx;
+   private List<WordArtifactChange> changedArts = new LinkedList<>();
+   private BranchId branch;
 
    public Integer getTx() {
       return tx;
@@ -31,12 +30,12 @@ public class WordUpdateChange {
       this.tx = tx;
    }
 
-   public Long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
-   public void setBranchUuid(Long branchUuid) {
-      this.branchUuid = branchUuid;
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
    }
 
    public List<WordArtifactChange> getChangedArts() {

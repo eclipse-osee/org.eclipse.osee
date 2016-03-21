@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.skynet.core.event.model;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkEventUtil;
 
 /**
  * @author Donald G. Dunne
@@ -29,20 +29,20 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
    private final EventModType eventModType;
 
    public EventBasicGuidArtifact(EventModType eventModType, DefaultBasicGuidArtifact guidArt) {
-      this(eventModType, guidArt.getBranchId(), guidArt.getArtTypeGuid(), guidArt.getGuid());
+      this(eventModType, guidArt.getBranch(), guidArt.getArtTypeGuid(), guidArt.getGuid());
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, Artifact artifact) {
-      this(eventModType, artifact.getBranchId(), artifact.getArtifactType().getGuid(), artifact.getGuid());
+      this(eventModType, artifact.getBranch(), artifact.getArtifactType().getGuid(), artifact.getGuid());
    }
 
    public EventBasicGuidArtifact(EventModType eventModType, IBasicGuidArtifact basicGuidArtifact) {
-      this(eventModType, basicGuidArtifact.getBranchId(), basicGuidArtifact.getArtTypeGuid(),
+      this(eventModType, basicGuidArtifact.getBranch(), basicGuidArtifact.getArtTypeGuid(),
          basicGuidArtifact.getGuid());
    }
 
-   public EventBasicGuidArtifact(EventModType eventModType, Long branchUuid, Long artTypeGuid, String guid) {
-      super(branchUuid, artTypeGuid, guid);
+   public EventBasicGuidArtifact(EventModType eventModType, BranchId branch, Long artTypeGuid, String guid) {
+      super(branch, artTypeGuid, guid);
       this.eventModType = eventModType;
    }
 
@@ -67,15 +67,14 @@ public class EventBasicGuidArtifact extends DefaultBasicGuidArtifact {
       }
       Set<EventBasicGuidArtifact> eventArts = new HashSet<>();
       for (RemoteBasicGuidArtifact1 guidArt : basicGuidArtifacts) {
-         eventArts.add(new EventBasicGuidArtifact(eventModType,
-            FrameworkEventUtil.getBranchUuidFromRemoteEvent(guidArt.getBranchGuid()), guidArt.getArtTypeGuid(),
+         eventArts.add(new EventBasicGuidArtifact(eventModType, guidArt.getBranch(), guidArt.getArtTypeGuid(),
             guidArt.getArtGuid()));
       }
       return eventArts;
    }
 
    public DefaultBasicGuidArtifact getBasicGuidArtifact() {
-      return new DefaultBasicGuidArtifact(getBranchId(), getArtTypeGuid(), getGuid());
+      return new DefaultBasicGuidArtifact(getBranch(), getArtTypeGuid(), getGuid());
    }
 
    @Override

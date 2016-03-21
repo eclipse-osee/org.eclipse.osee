@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteTransactionChange1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteTransactionChange1">
  *   &lt;complexContent>
@@ -47,20 +47,15 @@ public class RemoteTransactionChange1 extends RemoteEvent {
 
    /**
     * Gets the value of the branchGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getBranchGuid() {
       return branchGuid;
    }
 
-   /**
-    * Sets the value of the branchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchGuid(Long branchId) {
+      this.branchGuid = branchId.toString();
    }
 
    /**
@@ -85,7 +80,7 @@ public class RemoteTransactionChange1 extends RemoteEvent {
     * the artifacts property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getArtifacts().add(newItem);
     * </pre>

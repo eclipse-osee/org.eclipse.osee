@@ -31,7 +31,7 @@ public interface HasBranch {
       return other == null ? false : getBranchId().equals(other.getBranchId());
    }
 
-   default boolean isOnBranch(IOseeBranch branch) {
-      return getBranchId().equals(branch.getUuid());
+   default boolean isOnBranch(BranchId branch) {
+      return branch != null && getBranchId().equals(branch.getId());
    }
 }

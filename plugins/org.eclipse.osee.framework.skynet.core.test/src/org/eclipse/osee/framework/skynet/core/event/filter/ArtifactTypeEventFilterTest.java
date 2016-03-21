@@ -5,11 +5,13 @@
  */
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -41,12 +43,11 @@ public class ArtifactTypeEventFilterTest {
 
    @Test
    public void testArtifactEventFilters_artifactTypeAndInherited() throws Exception {
-      long branchUuid = Lib.generateUuid();
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getGuid())).thenReturn(
          CoreArtifactTypes.Requirement);
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
-      EventBasicGuidArtifact guidArt = new EventBasicGuidArtifact(EventModType.Added, branchUuid,
-         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArt =
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
       List<EventBasicGuidArtifact> guidArts = Arrays.asList(guidArt);
       Assert.assertTrue("Should match cause same artifact type", typeFilter.isMatchArtifacts(guidArts));
 
@@ -74,9 +75,9 @@ public class ArtifactTypeEventFilterTest {
 
       when(typeProvider.getTypeByGuid(CoreArtifactTypes.Requirement.getGuid())).thenReturn(
          CoreArtifactTypes.Requirement);
-      EventBasicGuidArtifact guidArtA = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
-         CoreArtifactTypes.Requirement.getGuid(), GUID.create());
-      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, Lib.generateUuid(),
+      EventBasicGuidArtifact guidArtA =
+         new EventBasicGuidArtifact(EventModType.Added, COMMON, CoreArtifactTypes.Requirement.getGuid(), GUID.create());
+      EventBasicGuidArtifact guidArtB = new EventBasicGuidArtifact(EventModType.Added, COMMON,
          CoreArtifactTypes.SoftwareRequirement.getGuid(), GUID.create());
 
       List<IBasicGuidRelation> relations = new ArrayList<>();
@@ -96,9 +97,7 @@ public class ArtifactTypeEventFilterTest {
    @Test
    public void testBranchMatch_isMatch() throws Exception {
       ArtifactTypeEventFilter typeFilter = new ArtifactTypeEventFilter(typeProvider, CoreArtifactTypes.Requirement);
-      Assert.assertTrue(typeFilter.isMatch(234324L));
-      Assert.assertTrue(typeFilter.isMatch(0L));
-      Assert.assertTrue(typeFilter.isMatch(-123123L));
+      Assert.assertTrue(typeFilter.isMatch(COMMON));
+      Assert.assertTrue(typeFilter.isMatch(CoreBranches.SYSTEM_ROOT));
    }
-
 }

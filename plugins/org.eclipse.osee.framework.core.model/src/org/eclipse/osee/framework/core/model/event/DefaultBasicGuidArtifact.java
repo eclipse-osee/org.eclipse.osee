@@ -10,25 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.event;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 
 /**
  * @author Donald G. Dunne
  */
-public class DefaultBasicGuidArtifact extends BaseIdentity<String>implements IBasicGuidArtifact {
-   private final Long branchUuid;
+public class DefaultBasicGuidArtifact extends BaseIdentity<String> implements IBasicGuidArtifact {
+   private final BranchId branch;
    private Long artTypeGuid;
 
-   public DefaultBasicGuidArtifact(Long branchUuid, Long artTypeGuid, String artGuid) {
+   public DefaultBasicGuidArtifact(BranchId branch, Long artTypeGuid, String artGuid) {
       super(artGuid);
-      this.branchUuid = branchUuid;
+      this.branch = branch;
       this.artTypeGuid = artTypeGuid;
    }
 
    @Override
    public Long getBranchId() {
-      return branchUuid;
+      return branch.getId();
    }
 
    @Override
@@ -63,11 +64,7 @@ public class DefaultBasicGuidArtifact extends BaseIdentity<String>implements IBa
          }
          equals = artTypeGuid.equals(other.getArtTypeGuid());
 
-         if (equals && branchUuid == null || other.getBranchId() == null) {
-            equals = false;
-         } else if (equals) {
-            equals = isOnSameBranch(other);
-         }
+         equals &= isOnSameBranch(other);
 
          if (equals && getGuid() == null || other.getGuid() == null) {
             equals = false;

@@ -490,13 +490,13 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       if (branch == null) {
          return;
       }
-      if (branch.getUuid().equals(branchEvent.getBranchUuid())) {
+      if (branch.equals(branchEvent.getSourceBranch())) {
          if (branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) {
             SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
          } else {
             refreshBranchWarning();
          }
-      } else if (branch.getUuid().equals(branchEvent.getDestinationBranchUuid())) {
+      } else if (branch.equals(branchEvent.getDestinationBranch())) {
          if (branchEvent.getEventType() == BranchEventType.Committed) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override

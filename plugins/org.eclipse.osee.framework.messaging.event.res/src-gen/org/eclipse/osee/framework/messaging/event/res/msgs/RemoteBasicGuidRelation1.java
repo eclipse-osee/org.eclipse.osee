@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteBasicGuidRelation1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteBasicGuidRelation1">
  *   &lt;complexContent>
@@ -72,7 +73,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Gets the value of the modTypeGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getModTypeGuid() {
@@ -81,7 +82,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Sets the value of the modTypeGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setModTypeGuid(String value) {
@@ -90,7 +91,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Gets the value of the branchGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getBranchGuid() {
@@ -99,11 +100,11 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Sets the value of the branchGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchGuid(BranchId branch) {
+      this.branchGuid = branch.getId().toString();
    }
 
    /**
@@ -164,7 +165,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Gets the value of the artA property.
-    * 
+    *
     * @return possible object is {@link RemoteBasicGuidArtifact1 }
     */
    public RemoteBasicGuidArtifact1 getArtA() {
@@ -173,7 +174,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Sets the value of the artA property.
-    * 
+    *
     * @param value allowed object is {@link RemoteBasicGuidArtifact1 }
     */
    public void setArtA(RemoteBasicGuidArtifact1 value) {
@@ -196,7 +197,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Gets the value of the artB property.
-    * 
+    *
     * @return possible object is {@link RemoteBasicGuidArtifact1 }
     */
    public RemoteBasicGuidArtifact1 getArtB() {
@@ -205,7 +206,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Sets the value of the artB property.
-    * 
+    *
     * @param value allowed object is {@link RemoteBasicGuidArtifact1 }
     */
    public void setArtB(RemoteBasicGuidArtifact1 value) {
@@ -214,7 +215,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Gets the value of the rationale property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getRationale() {
@@ -223,7 +224,7 @@ public class RemoteBasicGuidRelation1 extends RemoteEvent {
 
    /**
     * Sets the value of the rationale property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setRationale(String value) {

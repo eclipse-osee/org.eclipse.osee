@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.codehaus.jackson.annotate.JsonCreator;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.Identity;
 
@@ -28,7 +29,12 @@ public interface BranchId extends Identity<Long>, HasUuid, Id {
       return getId();
    };
 
-   default Long getBranchId() {
-      return getId();
+   public static BranchId valueOf(String id) {
+      return valueOf(Long.valueOf(id));
+   }
+
+   @JsonCreator
+   public static BranchId valueOf(long id) {
+      return TokenFactory.createBranch(id);
    }
 }

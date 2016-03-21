@@ -90,8 +90,8 @@ public final class FrameworkEventUtil {
    public static RemoteBranchEvent1 getRemoteBranchEvent(BranchEvent branchEvent) {
       RemoteBranchEvent1 event = new RemoteBranchEvent1();
       event.setEventTypeGuid(branchEvent.getEventType().getGuid());
-      event.setBranchGuid(getBranchGuidStringForRemoteEvent(branchEvent.getBranchUuid()));
-      event.setDestinationBranchGuid(getBranchGuidStringForRemoteEvent(branchEvent.getDestinationBranchUuid()));
+      event.setBranch(branchEvent.getSourceBranch());
+      event.setDestinationBranch(branchEvent.getDestinationBranch());
       event.setNetworkSender(getRemoteNetworkSender(branchEvent.getNetworkSender()));
       return event;
    }
@@ -99,8 +99,8 @@ public final class FrameworkEventUtil {
    public static BranchEvent getBranchEvent(RemoteBranchEvent1 branchEvent) {
       BranchEventType branchEventType = BranchEventType.getByGuid(branchEvent.getEventTypeGuid());
       if (branchEventType != null) {
-         BranchEvent event = new BranchEvent(branchEventType, getBranchUuidFromRemoteEvent(branchEvent.getBranchGuid()),
-            getBranchUuidFromRemoteEvent(branchEvent.getDestinationBranchGuid()));
+         BranchEvent event =
+            new BranchEvent(branchEventType, branchEvent.getBranch(), branchEvent.getDestinationBranch());
          event.setNetworkSender(getNetworkSender(branchEvent.getNetworkSender()));
          return event;
       } else {
@@ -115,7 +115,7 @@ public final class FrameworkEventUtil {
       event.setEventTypeGuid(transEvent.getEventType().getGuid());
       for (TransactionChange change : transEvent.getTransactionChanges()) {
          RemoteTransactionChange1 remChange = new RemoteTransactionChange1();
-         remChange.setBranchGuid(getBranchGuidStringForRemoteEvent(change.getBranchUuid()));
+         remChange.setBranchGuid(change.getBranchUuid());
          remChange.setTransactionId(change.getTransactionId());
          List<RemoteBasicGuidArtifact1> remChangeArts = remChange.getArtifacts();
          for (DefaultBasicGuidArtifact guidArt : change.getArtifacts()) {
@@ -146,7 +146,7 @@ public final class FrameworkEventUtil {
    public static RemotePersistEvent1 getRemotePersistEvent(ArtifactEvent transEvent) {
       RemotePersistEvent1 event = new RemotePersistEvent1();
       event.setNetworkSender(getRemoteNetworkSender(transEvent.getNetworkSender()));
-      event.setBranchGuid(getBranchGuidStringForRemoteEvent(transEvent.getBranchUuid()));
+      event.setBranchGuid(transEvent.getBranch());
       event.setTransactionId(transEvent.getTransactionId());
       for (EventBasicGuidArtifact guidArt : transEvent.getArtifacts()) {
          if (guidArt.getModType() == EventModType.Modified) {
@@ -218,7 +218,7 @@ public final class FrameworkEventUtil {
    public static RemoteBasicGuidRelation1 getRemoteBasicGuidRelation1(EventBasicGuidRelation guidRel) {
       RemoteBasicGuidRelation1 remEvent = new RemoteBasicGuidRelation1();
       remEvent.setGammaId(guidRel.getGammaId());
-      remEvent.setBranchGuid(getBranchGuidStringForRemoteEvent(guidRel.getBranchId()));
+      remEvent.setBranchGuid(guidRel.getBranch());
       remEvent.setRelTypeGuid(guidRel.getRelTypeGuid());
       remEvent.setRelationId(guidRel.getRelationId());
       remEvent.setArtAId(guidRel.getArtAId());
@@ -232,7 +232,7 @@ public final class FrameworkEventUtil {
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(DefaultBasicGuidArtifact guidArt) {
       RemoteBasicGuidArtifact1 event = new RemoteBasicGuidArtifact1();
-      event.setBranchGuid(getBranchGuidStringForRemoteEvent(guidArt.getBranchId()));
+      event.setBranch(guidArt.getBranch());
       event.setArtTypeGuid(guidArt.getArtTypeGuid());
       event.setArtGuid(guidArt.getGuid());
       return event;
@@ -240,7 +240,7 @@ public final class FrameworkEventUtil {
 
    public static RemoteBasicGuidRelationReorder1 getRemoteBasicGuidRelationReorder1(DefaultBasicUuidRelationReorder guidOrderRel) {
       RemoteBasicGuidRelationReorder1 event = new RemoteBasicGuidRelationReorder1();
-      event.setBranchGuid(getBranchGuidStringForRemoteEvent(guidOrderRel.getBranchId()));
+      event.setBranchGuid(guidOrderRel.getBranch());
       event.setRelTypeGuid(guidOrderRel.getRelTypeGuid());
       event.setModTypeGuid(guidOrderRel.getModType().getGuid());
       event.setParentArt(getRemoteBasicGuidArtifact(guidOrderRel.getParentArt()));
@@ -251,24 +251,12 @@ public final class FrameworkEventUtil {
     * Before 0.17.0, events pass string branch guid for events. After 0.17.0, events will pass long branch uuid for
     * events.
     */
-   private static String getBranchGuidStringForRemoteEvent(long branchUuid) {
-      String result = "";
-      if (branchUuid > 0) {
-         result = String.valueOf(branchUuid);
+   public static Long getBranchUuidFromRemoteEvent(String remoteBranchId) {
+      Long id = 0L;
+      if (Strings.isNumeric(remoteBranchId)) {
+         id = Long.valueOf(remoteBranchId);
       }
-      return result;
-   }
-
-   /**
-    * Before 0.17.0, events pass string branch guid for events. After 0.17.0, events will pass long branch uuid for
-    * events.
-    */
-   public static long getBranchUuidFromRemoteEvent(String remoteBranchGuid) {
-      long result = 0;
-      if (Strings.isValid(remoteBranchGuid)) {
-         result = Long.valueOf(remoteBranchGuid);
-      }
-      return result;
+      return id;
    }
 
    public static EventBasicGuidRelation getEventBasicGuidRelation(RemoteBasicGuidRelation1 guidRel) {
@@ -288,13 +276,13 @@ public final class FrameworkEventUtil {
    }
 
    public static EventBasicGuidArtifact getEventBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventBasicGuidArtifact(modType, getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
-         remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
+      return new EventBasicGuidArtifact(modType, remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
+         remGuidArt.getArtGuid());
    }
 
    public static EventChangeTypeBasicGuidArtifact getEventChangeTypeBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
-      return new EventChangeTypeBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
-         remGuidArt.getArtTypeGuid(), remGuidArt.getToArtTypeGuid(), remGuidArt.getArtGuid());
+      return new EventChangeTypeBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
+         remGuidArt.getToArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
    public static EventModifiedBasicGuidArtifact getEventModifiedBasicGuidArtifact(EventModType modType, RemoteBasicGuidArtifact1 remGuidArt) {
@@ -302,23 +290,22 @@ public final class FrameworkEventUtil {
       for (RemoteAttributeChange1 remAttrChg : remGuidArt.getAttributes()) {
          attributeChanges.add(getAttributeChange(remAttrChg));
       }
-      return new EventModifiedBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
-         remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid(), attributeChanges);
+      return new EventModifiedBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(),
+         remGuidArt.getArtGuid(), attributeChanges);
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(RemoteBasicGuidArtifact1 remGuidArt) {
-      return new DefaultBasicGuidArtifact(getBranchUuidFromRemoteEvent(remGuidArt.getBranchGuid()),
-         remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
+      return new DefaultBasicGuidArtifact(remGuidArt.getBranch(), remGuidArt.getArtTypeGuid(), remGuidArt.getArtGuid());
    }
 
    public static DefaultBasicGuidArtifact getBasicGuidArtifact(Artifact artifact) {
-      return new DefaultBasicGuidArtifact(artifact.getBranchId(), artifact.getArtTypeGuid(), artifact.getGuid());
+      return new DefaultBasicGuidArtifact(artifact.getBranch(), artifact.getArtTypeGuid(), artifact.getGuid());
    }
 
    public static RemoteBasicGuidArtifact1 getRemoteBasicGuidArtifact(String modTypeGuid, DefaultBasicGuidArtifact guidArt, Collection<AttributeChange> attributeChanges) {
       RemoteBasicGuidArtifact1 remoteGuidArt = new RemoteBasicGuidArtifact1();
       remoteGuidArt.setArtGuid(guidArt.getGuid());
-      remoteGuidArt.setBranchGuid(getBranchGuidStringForRemoteEvent(guidArt.getBranchId()));
+      remoteGuidArt.setBranch(guidArt.getBranch());
       remoteGuidArt.setArtTypeGuid(guidArt.getArtTypeGuid());
       remoteGuidArt.setModTypeGuid(modTypeGuid);
       if (attributeChanges != null) {

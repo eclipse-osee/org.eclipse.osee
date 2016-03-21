@@ -16,8 +16,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
@@ -35,7 +37,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       UPDATE_ARTIFACTS;
    }
 
-   private final Long branchUuid;
+   private final BranchId branch;
    private int transactionId;
    private NetworkSender networkSender;
    private final List<EventBasicGuidArtifact> artifacts = new ArrayList<>();
@@ -44,25 +46,25 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final ArtifactEventType reloadEvent;
 
-   public ArtifactEvent(IOseeBranch branch) {
-      this(branch.getUuid());
+   public ArtifactEvent(BranchId branch) {
+      this(branch, ArtifactEventType.UPDATE_ARTIFACTS);
    }
 
    public ArtifactEvent(Long branchUuid) {
-      this(branchUuid, ArtifactEventType.UPDATE_ARTIFACTS);
+      this(TokenFactory.createBranch(branchUuid));
    }
 
-   public ArtifactEvent(Long branchUuid, ArtifactEventType reloadEvent) {
+   public ArtifactEvent(BranchId branch, ArtifactEventType reloadEvent) {
       this.reloadEvent = reloadEvent;
-      this.branchUuid = branchUuid;
+      this.branch = branch;
    }
 
    public boolean isReloadEvent() {
       return ArtifactEventType.RELOAD_ARTIFACTS == reloadEvent;
    }
 
-   public Long getBranchUuid() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public Set<DefaultBasicUuidRelationReorder> getRelationOrderRecords() {
@@ -70,7 +72,7 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    }
 
    public boolean isForBranch(IOseeBranch branch) {
-      return getBranchUuid().equals(branch.getUuid());
+      return getBranch().equals(branch.getUuid());
    }
 
    public int getTransactionId() {
@@ -258,8 +260,8 @@ public class ArtifactEvent implements FrameworkEvent, HasNetworkSender {
    @Override
    public String toString() {
       try {
-         return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branchUuid, transactionId,
-            getArtifactsString(artifacts), getRelationsString(relations), networkSender);
+         return String.format("ArtifactEvent: BG[%s] TrId[%d] ARTS[%s] RELS[%s] Sender[%s]", branch.getId(),
+            transactionId, getArtifactsString(artifacts), getRelationsString(relations), networkSender);
       } catch (Exception ex) {
          return String.format("ArtifactEvent exception: " + ex.getLocalizedMessage());
       }

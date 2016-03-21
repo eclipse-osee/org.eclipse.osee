@@ -79,7 +79,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
    private void postProcessChange(WordUpdateChange change) {
       // Collect attribute events
       Integer tx = change.getTx();
-      ArtifactEvent artifactEvent = new ArtifactEvent(change.getBranchUuid());
+      ArtifactEvent artifactEvent = new ArtifactEvent(change.getBranch());
       artifactEvent.setTransactionId(tx);
 
       for (Artifact artifact : artifacts) {
@@ -88,7 +88,7 @@ public class UpdateArtifactOperation extends AbstractOperation {
             artifact.reloadAttributesAndRelations();
             Collection<AttributeChange> attrChanges = getAttributeChanges(artifact, artChange);
             if (!attrChanges.isEmpty()) {
-               EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranchId(),
+               EventModifiedBasicGuidArtifact guidArt = new EventModifiedBasicGuidArtifact(artifact.getBranch(),
                   artifact.getArtifactType().getGuid(), artifact.getGuid(), attrChanges);
                artifactEvent.getArtifacts().add(guidArt);
             }

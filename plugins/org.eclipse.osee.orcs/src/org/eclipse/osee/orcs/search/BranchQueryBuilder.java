@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -42,9 +43,9 @@ public interface BranchQueryBuilder<T> {
 
    T andUuids(Collection<Long> uuids) throws OseeCoreException;
 
-   T andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException;
+   T andIds(Collection<? extends BranchId> ids) throws OseeCoreException;
 
-   T andIds(IOseeBranch... ids) throws OseeCoreException;
+   T andIds(BranchId... ids) throws OseeCoreException;
 
    T andIsOfType(BranchType... branchType) throws OseeCoreException;
 

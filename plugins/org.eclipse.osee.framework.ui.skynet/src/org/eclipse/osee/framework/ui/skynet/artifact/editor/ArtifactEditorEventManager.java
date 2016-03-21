@@ -139,7 +139,7 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
             for (IArtifactEditorEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
                   if (branchEvent.getEventType() == BranchEventType.Committing || branchEvent.getEventType() == BranchEventType.Committed) {
-                     if (handler.getArtifactFromEditorInput().getBranch().getGuid() == branchEvent.getBranchUuid()) {
+                     if (handler.getArtifactFromEditorInput().isOnBranch(branchEvent.getSourceBranch())) {
                         handler.closeEditor();
                      }
                   }
@@ -155,7 +155,8 @@ public class ArtifactEditorEventManager implements IArtifactEventListener, IBran
          if (AccessTopicEventType.ACCESS_ARTIFACT_LOCK_MODIFIED.matches(event)) {
             for (final IArtifactEditorEventHandler handler : handlers) {
                if (!handler.isDisposed()) {
-                  AccessArtifactLockTopicEvent payload = EventUtil.getTopicJson(event, AccessArtifactLockTopicEvent.class);
+                  AccessArtifactLockTopicEvent payload =
+                     EventUtil.getTopicJson(event, AccessArtifactLockTopicEvent.class);
                   if (payload.matches(handler.getArtifactFromEditorInput())) {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override

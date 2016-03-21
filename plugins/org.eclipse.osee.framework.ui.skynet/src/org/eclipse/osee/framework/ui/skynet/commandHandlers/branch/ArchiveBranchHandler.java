@@ -51,7 +51,7 @@ public class ArchiveBranchHandler extends CommandHandler {
             branch.setArchived(true);
             BranchManager.updateBranchArchivedState(null, branch.getUuid(), BranchArchivedState.ARCHIVED);
          }
-         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch.getUuid()));
+         OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Committed, branch));
       }
 
       return null;

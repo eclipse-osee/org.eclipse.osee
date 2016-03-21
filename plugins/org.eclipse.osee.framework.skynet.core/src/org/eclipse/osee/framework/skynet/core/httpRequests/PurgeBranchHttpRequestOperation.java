@@ -56,7 +56,7 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
 
       branch.setBranchState(BranchState.PURGE_IN_PROGRESS);
       branch.setArchived(true);
-      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branchUuid));
+      OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purging, branch));
 
       OseeClient client = ServiceUtil.getOseeClient();
       BranchEndpoint proxy = client.getBranchEndpoint();
@@ -67,17 +67,17 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
             branch.setBranchState(BranchState.PURGED);
             branch.setArchived(true);
             BranchManager.decache(branch);
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Purged, branch));
          } else {
             branch.setBranchState(currentState);
             branch.setArchived(archivedState.isArchived());
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branch));
          }
       } catch (Exception ex) {
          try {
             branch.setBranchState(currentState);
             branch.setArchived(archivedState.isArchived());
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.StateUpdated, branch));
          } catch (Exception ex2) {
             log(ex2);
          }

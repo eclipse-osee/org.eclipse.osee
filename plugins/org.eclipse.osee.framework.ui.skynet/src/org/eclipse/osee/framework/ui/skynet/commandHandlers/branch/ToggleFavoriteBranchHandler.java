@@ -36,7 +36,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
       UserManager.getUser().toggleFavoriteBranch(selectedBranch);
       OseeEventManager.kickBranchEvent(this,
-         new BranchEvent(BranchEventType.FavoritesUpdated, selectedBranch.getUuid()));
+         new BranchEvent(BranchEventType.FavoritesUpdated, selectedBranch));
 
       return null;
    }

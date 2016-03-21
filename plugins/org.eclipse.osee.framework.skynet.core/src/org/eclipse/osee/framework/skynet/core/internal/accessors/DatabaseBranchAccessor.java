@@ -188,7 +188,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       for (Branch branch : branches) {
          if (branch.getBranchState().isDeleted()) {
             try {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch.getUuid()));
+               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch));
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -196,7 +196,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
          try {
             if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch.getUuid()));
+               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch));
             }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);

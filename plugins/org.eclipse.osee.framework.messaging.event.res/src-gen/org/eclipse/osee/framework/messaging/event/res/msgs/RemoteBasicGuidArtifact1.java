@@ -12,7 +12,11 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -20,7 +24,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteBasicGuidArtifact1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteBasicGuidArtifact1">
  *   &lt;complexContent>
@@ -58,10 +62,12 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
    @XmlElement(required = true)
    protected List<RemoteAttributeChange1> attributes;
    protected long toArtTypeGuid;
+   @XmlTransient
+   private BranchId branch;
 
    /**
     * Gets the value of the modTypeGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getModTypeGuid() {
@@ -70,7 +76,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    /**
     * Sets the value of the modTypeGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setModTypeGuid(String value) {
@@ -79,20 +85,24 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    /**
     * Gets the value of the branchGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getBranchGuid() {
       return branchGuid;
    }
 
-   /**
-    * Sets the value of the branchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public BranchId getBranch() {
+      if (branch == null && Strings.isNumeric(branchGuid)) {
+         branch = TokenFactory.createBranch(Long.valueOf(branchGuid));
+      }
+
+      return branch;
+   }
+
+   public void setBranch(BranchId branch) {
+      this.branch = branch;
+      this.branchGuid = branch.getId().toString();
    }
 
    /**
@@ -111,7 +121,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    /**
     * Gets the value of the artGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getArtGuid() {
@@ -120,7 +130,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
 
    /**
     * Sets the value of the artGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setArtGuid(String value) {
@@ -135,7 +145,7 @@ public class RemoteBasicGuidArtifact1 extends RemoteEvent {
     * the attributes property.
     * <p>
     * For example, to add a new item, do as follows:
-    * 
+    *
     * <pre>
     * getAttributes().add(newItem);
     * </pre>

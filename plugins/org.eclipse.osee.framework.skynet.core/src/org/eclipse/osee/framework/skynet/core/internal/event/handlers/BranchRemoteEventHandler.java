@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.event.handlers;
 import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Committed;
 import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Deleted;
 import static org.eclipse.osee.framework.skynet.core.event.model.BranchEventType.Purged;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -42,11 +43,11 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
 
    private void updateBranches(Sender sender, BranchEvent branchEvent) {
       BranchEventType eventType = branchEvent.getEventType();
-      Long branchUuid = branchEvent.getBranchUuid();
+      BranchId branchId = branchEvent.getSourceBranch();
       try {
          if (BranchManager.isLoaded()) {
-            if (BranchManager.branchExists(branchUuid)) {
-               Branch branch = BranchManager.getBranch(branchUuid);
+            if (BranchManager.branchExists(branchId)) {
+               Branch branch = BranchManager.getBranch(branchId);
                if (eventType == Committed) {
                   Artifact artifact = BranchManager.getAssociatedArtifact(branch);
                   TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(artifact);

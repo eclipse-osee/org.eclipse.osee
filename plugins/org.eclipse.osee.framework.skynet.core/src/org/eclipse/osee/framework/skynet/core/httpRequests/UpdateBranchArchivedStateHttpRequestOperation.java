@@ -49,16 +49,14 @@ public final class UpdateBranchArchivedStateHttpRequestOperation extends Abstrac
          if (Status.OK.getStatusCode() == response.getStatus()) {
             Branch branch = BranchManager.getBranch(branchUuid);
             branch.setArchived(true);
-            OseeEventManager.kickBranchEvent(getClass(),
-               new BranchEvent(BranchEventType.ArchiveStateUpdated, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
          }
       } else {
          Response response = proxy.unarchiveBranch(branchUuid);
          if (Status.OK.getStatusCode() == response.getStatus()) {
             Branch branch = BranchManager.getBranch(branchUuid);
             branch.setArchived(false);
-            OseeEventManager.kickBranchEvent(getClass(),
-               new BranchEvent(BranchEventType.ArchiveStateUpdated, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.ArchiveStateUpdated, branch));
          }
       }
    }

@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 /**
  * Common location for event handling for SMAEditors in order to keep number of registrations and processing to a
  * minimum.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class SMAEditorBranchEventManager implements IBranchEventListener {
@@ -70,14 +71,14 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
       }
       for (final ISMAEditorEventHandler handler : handlers) {
          try {
-            safelyProcessHandler(branchEvent.getEventType(), branchEvent.getBranchUuid());
+            safelyProcessHandler(branchEvent.getEventType(), branchEvent.getSourceBranch());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, "Error processing event handler - " + handler, ex);
          }
       }
    }
 
-   private void safelyProcessHandler(BranchEventType branchEventType, Long branchUuid) {
+   private void safelyProcessHandler(BranchEventType branchEventType, BranchId branch) {
       for (final ISMAEditorEventHandler handler : handlers) {
          if (handler.isDisposed()) {
             OseeLog.log(Activator.class, Level.SEVERE, "Unexpected handler disposed but not unregistered.");
@@ -98,7 +99,7 @@ public class SMAEditorBranchEventManager implements IBranchEventListener {
                   if (awa instanceof TeamWorkFlowArtifact) {
                      TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) awa;
                      IOseeBranch assocBranch = AtsClientService.get().getBranchService().getWorkingBranch(teamArt);
-                     if (assocBranch != null && branchUuid.equals(assocBranch.getUuid())) {
+                     if (branch.equals(assocBranch)) {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override
                            public void run() {

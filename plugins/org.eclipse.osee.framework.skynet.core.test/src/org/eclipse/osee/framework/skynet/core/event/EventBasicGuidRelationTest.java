@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
@@ -27,9 +28,9 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEqualsEventBasicGuidRelation() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(Lib.generateUuid(), 0x01L, GUID.create());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, 0x01L, GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 = new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchId(),
          0x02L, 234, 333, 34, eventArt1, 33, eventArt2);
@@ -93,9 +94,9 @@ public class EventBasicGuidRelationTest {
 
    @Test
    public void testEventBasicGuidRelationIs() {
-      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(Lib.generateUuid(), 0x03L, GUID.create());
+      DefaultBasicGuidArtifact eventArt1 = new DefaultBasicGuidArtifact(COMMON, 0x03L, GUID.create());
       DefaultBasicGuidArtifact eventArt2 =
-         new DefaultBasicGuidArtifact(eventArt1.getBranchId(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
+         new DefaultBasicGuidArtifact(eventArt1.getBranch(), eventArt1.getArtTypeGuid(), eventArt1.getGuid());
 
       EventBasicGuidRelation eventRel1 = new EventBasicGuidRelation(RelationEventType.Added, eventArt1.getBranchId(),
          0x04L, 234, 333, 34, eventArt1, 33, eventArt2);

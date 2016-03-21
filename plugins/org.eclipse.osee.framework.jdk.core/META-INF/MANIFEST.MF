@@ -29,4 +29,8 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.commons.codec.binary,
- org.apache.xml.serialize
+ org.codehaus.jackson,
+ org.codehaus.jackson.map,
+ org.codehaus.jackson.map.annotate,
+ org.codehaus.jackson.map.ser.std
+

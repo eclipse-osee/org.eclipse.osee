@@ -11,19 +11,26 @@
 
 package org.eclipse.osee.framework.jdk.core.type;
 
+import org.codehaus.jackson.map.annotate.JsonSerialize;
+
 /**
  * @author Ryan D. Brooks
  */
+@JsonSerialize(using = IdSerializer.class)
 public interface Id {
 
    Long getId();
 
-   default boolean matches(BaseId... identities) {
-      for (BaseId identity : identities) {
+   default boolean matches(Id... identities) {
+      for (Id identity : identities) {
          if (equals(identity)) {
             return true;
          }
       }
       return false;
+   }
+
+   default boolean equals(Long id) {
+      return getId().equals(id);
    }
 }

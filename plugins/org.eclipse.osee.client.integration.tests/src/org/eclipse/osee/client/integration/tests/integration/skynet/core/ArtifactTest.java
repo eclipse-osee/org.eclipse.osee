@@ -14,7 +14,7 @@ package org.eclipse.osee.client.integration.tests.integration.skynet.core;
 import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import static org.eclipse.osee.framework.core.enums.CoreArtifactTypes.GeneralData;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_1;
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.client.demo.DemoTypes;
@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -107,19 +106,19 @@ public final class ArtifactTest {
       art.persist("test");
 
       DefaultBasicGuidArtifact equalGuid =
-         new DefaultBasicGuidArtifact(Lib.generateUuid(), CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
       Assert.assertEquals(art.hashCode(), equalGuid.hashCode());
 
       DefaultBasicGuidArtifact equalGuidArtType =
-         new DefaultBasicGuidArtifact(Lib.generateUuid(), GeneralData.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(SYSTEM_ROOT, GeneralData.getGuid(), art.getGuid());
       Assert.assertEquals(art.hashCode(), equalGuidArtType.hashCode());
 
       DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid =
-         new DefaultBasicGuidArtifact(COMMON_ID, GeneralData.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(COMMON, GeneralData.getGuid(), art.getGuid());
       Assert.assertEquals(art.hashCode(), equalGuidArtTypeBranchUuid.hashCode());
 
       DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid =
-         new DefaultBasicGuidArtifact(COMMON_ID, GeneralData.getGuid(), GUID.create());
+         new DefaultBasicGuidArtifact(COMMON, GeneralData.getGuid(), GUID.create());
       Assert.assertNotSame(art.hashCode(), equalArtTypeBranchUuidNotGuid.hashCode());
    }
 
@@ -129,19 +128,19 @@ public final class ArtifactTest {
       art.persist("test");
 
       DefaultBasicGuidArtifact equalGuid =
-         new DefaultBasicGuidArtifact(Lib.generateUuid(), CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(SYSTEM_ROOT, CoreArtifactTypes.SoftwareDesign.getGuid(), art.getGuid());
       Assert.assertNotSame(art, equalGuid);
 
       DefaultBasicGuidArtifact equalGuidArtType =
-         new DefaultBasicGuidArtifact(Lib.generateUuid(), GeneralData.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(SYSTEM_ROOT, GeneralData.getGuid(), art.getGuid());
       Assert.assertNotSame(art, equalGuidArtType);
 
       DefaultBasicGuidArtifact equalGuidArtTypeBranchUuid =
-         new DefaultBasicGuidArtifact(COMMON_ID, GeneralData.getGuid(), art.getGuid());
+         new DefaultBasicGuidArtifact(COMMON, GeneralData.getGuid(), art.getGuid());
       Assert.assertEquals(art, equalGuidArtTypeBranchUuid);
 
       DefaultBasicGuidArtifact equalArtTypeBranchUuidNotGuid =
-         new DefaultBasicGuidArtifact(COMMON_ID, GeneralData.getGuid(), GUID.create());
+         new DefaultBasicGuidArtifact(COMMON, GeneralData.getGuid(), GUID.create());
       Assert.assertNotSame(art, equalArtTypeBranchUuidNotGuid);
    }
 

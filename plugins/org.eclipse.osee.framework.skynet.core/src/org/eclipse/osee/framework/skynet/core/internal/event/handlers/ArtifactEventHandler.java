@@ -35,7 +35,7 @@ public class ArtifactEventHandler implements EventHandlerLocal<IArtifactEventLis
       if (filters != null) {
          for (IEventFilter eventFilter : filters) {
             // If this branch doesn't match, don't pass events through
-            if (!eventFilter.isMatch(event.getBranchUuid())) {
+            if (!eventFilter.isMatch(event.getBranch())) {
                return;
             }
             // Process artifacts and relations only if there were any in this ArtifactEvent

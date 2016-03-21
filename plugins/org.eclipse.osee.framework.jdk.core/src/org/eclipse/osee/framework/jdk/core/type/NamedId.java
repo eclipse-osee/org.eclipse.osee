@@ -33,6 +33,6 @@ public class NamedId extends BaseId implements Named {
 
    @Override
    public String toString() {
-      return getName();
+      return name == null ? super.toString() : name;
    }
 }

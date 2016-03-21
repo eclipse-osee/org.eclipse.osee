@@ -72,7 +72,7 @@ public class XWorkingBranchButtonFavorites extends XWorkingBranchButtonAbstract 
             isFavorite ? "Favorite" : "NOT Favorite");
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Toggle Branch as Favorite", message)) {
             user.toggleFavoriteBranch(branch);
-            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch.getUuid()));
+            OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.FavoritesUpdated, branch));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

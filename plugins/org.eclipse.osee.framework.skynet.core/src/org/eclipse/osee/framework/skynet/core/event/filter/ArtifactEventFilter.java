@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -22,22 +23,22 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class ArtifactEventFilter implements IEventFilter {
 
    private final String filterArtifactGuid;
-   private final Long filterBranchUuid;
+   private final BranchId filterBranch;
 
    public ArtifactEventFilter(Artifact artifact) {
       filterArtifactGuid = artifact.getGuid();
-      filterBranchUuid = artifact.getBranchId();
+      filterBranch = artifact.getBranch();
    }
 
    @Override
-   public boolean isMatch(Long branchUuid) {
-      return branchUuid.equals(filterBranchUuid);
+   public boolean isMatch(BranchId branch) {
+      return branch.equals(filterBranch);
    }
 
    @Override
    public boolean isMatchArtifacts(List<? extends IBasicGuidArtifact> guidArts) {
       for (IBasicGuidArtifact art : guidArts) {
-         if (art.getGuid().equals(filterArtifactGuid) && art.isOnBranch(filterBranchUuid)) {
+         if (art.getGuid().equals(filterArtifactGuid) && art.isOnBranch(filterBranch)) {
             return true;
          }
       }

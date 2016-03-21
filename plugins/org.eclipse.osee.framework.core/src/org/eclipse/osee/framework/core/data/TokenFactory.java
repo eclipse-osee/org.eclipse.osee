@@ -86,6 +86,10 @@ public final class TokenFactory {
       return new BranchToken(branchId, null);
    }
 
+   public static BranchId createBranch() {
+      return new BranchToken(Lib.generateUuid(), null);
+   }
+
    public static IRelationSorterId createSorterId(String guid, String name) {
       return new SorterIdToken(guid, name);
    }

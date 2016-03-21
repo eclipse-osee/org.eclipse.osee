@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -18,7 +19,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteBasicGuidRelationReorder1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteBasicGuidRelationReorder1">
  *   &lt;complexContent>
@@ -52,7 +53,7 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
 
    /**
     * Gets the value of the modTypeGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getModTypeGuid() {
@@ -61,7 +62,7 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
 
    /**
     * Sets the value of the modTypeGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setModTypeGuid(String value) {
@@ -70,20 +71,15 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
 
    /**
     * Gets the value of the branchGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getBranchGuid() {
       return branchGuid;
    }
 
-   /**
-    * Sets the value of the branchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public void setBranchGuid(BranchId branch) {
+      this.branchGuid = branch.getId().toString();
    }
 
    /**
@@ -102,7 +98,7 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
 
    /**
     * Gets the value of the parentArt property.
-    * 
+    *
     * @return possible object is {@link RemoteBasicGuidArtifact1 }
     */
    public RemoteBasicGuidArtifact1 getParentArt() {
@@ -111,7 +107,7 @@ public class RemoteBasicGuidRelationReorder1 extends RemoteEvent {
 
    /**
     * Sets the value of the parentArt property.
-    * 
+    *
     * @param value allowed object is {@link RemoteBasicGuidArtifact1 }
     */
    public void setParentArt(RemoteBasicGuidArtifact1 value) {

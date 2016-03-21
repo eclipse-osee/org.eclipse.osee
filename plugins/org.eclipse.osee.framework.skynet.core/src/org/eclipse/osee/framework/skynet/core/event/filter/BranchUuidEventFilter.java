@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.event.filter;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -30,11 +31,9 @@ public class BranchUuidEventFilter implements IEventFilter {
    }
 
    @Override
-   public boolean isMatch(Long branchUuid) {
+   public boolean isMatch(BranchId branch) {
       if (branchToken != null) {
-         if (branchUuid.equals(branchToken.getUuid())) {
-            return true;
-         }
+         return branchToken.equals(branch);
       }
       return false;
    }

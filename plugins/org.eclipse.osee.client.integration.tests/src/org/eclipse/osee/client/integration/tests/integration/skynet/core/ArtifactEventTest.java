@@ -342,12 +342,11 @@ public class ArtifactEventTest {
       remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
 
-      String branchGuid = COMMON_ID.toString();
-      remoteEvent.setBranchGuid(branchGuid);
+      remoteEvent.setBranchGuid(COMMON);
 
       RemoteBasicGuidArtifact1 remGuidArt = new RemoteBasicGuidArtifact1();
       remGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      remGuidArt.setBranchGuid(branchGuid);
+      remGuidArt.setBranch(COMMON);
       remGuidArt.setArtTypeGuid(CoreArtifactTypes.GeneralData.getGuid());
       remGuidArt.setArtGuid(modifiedArt.getGuid());
 
@@ -356,19 +355,17 @@ public class ArtifactEventTest {
    }
 
    private RemotePersistEvent1 getFakeGeneralDataArtifactRemoteEventForArtifactRelationModified(int relationId, RelationEventType relationEventType, IRelationType relType, Artifact artA, Artifact artB) throws OseeCoreException {
-      String branchGuid = COMMON_ID.toString();
-
       // Create fake remote event that would come in from another client
       RemotePersistEvent1 remoteEvent = new RemotePersistEvent1();
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
-      remoteEvent.setBranchGuid(branchGuid);
+      remoteEvent.setBranchGuid(COMMON);
 
       RemoteBasicGuidRelation1 remGuidRel = new RemoteBasicGuidRelation1();
       remGuidRel.setModTypeGuid(relationEventType.getGuid());
 
-      remGuidRel.setBranchGuid(branchGuid);
+      remGuidRel.setBranchGuid(COMMON);
       remGuidRel.setGammaId(incrementingGammaId++);
       remGuidRel.setRelTypeGuid(relType.getGuid());
       remGuidRel.setRelationId(relationId);
@@ -595,16 +592,16 @@ public class ArtifactEventTest {
       // Set sender to something other than this client so event system will think came from another client
       remoteEvent.setNetworkSender(networkSender);
       remoteEvent.setTransactionId(1000);
-      remoteEvent.setBranchGuid(COMMON_ID.toString());
+      remoteEvent.setBranchGuid(COMMON);
 
       RemoteBasicGuidRelationReorder1 remoteReorder = new RemoteBasicGuidRelationReorder1();
-      remoteReorder.setBranchGuid(COMMON_ID.toString());
+      remoteReorder.setBranchGuid(COMMON);
       remoteReorder.setModTypeGuid(RelationOrderModType.Absolute.getGuid());
       remoteReorder.setRelTypeGuid(CoreRelationTypes.Default_Hierarchical__Child.getGuid());
 
       RemoteBasicGuidArtifact1 parentRemGuidArt = new RemoteBasicGuidArtifact1();
       parentRemGuidArt.setModTypeGuid(EventModType.Modified.getGuid());
-      parentRemGuidArt.setBranchGuid(COMMON_ID.toString());
+      parentRemGuidArt.setBranch(COMMON);
       parentRemGuidArt.setArtTypeGuid(CoreArtifactTypes.GeneralData.getGuid());
       parentRemGuidArt.setArtGuid(GUID.create());
 

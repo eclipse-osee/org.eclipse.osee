@@ -33,6 +33,7 @@ import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -196,12 +197,11 @@ public class WordUpdateArtifact {
    }
 
    private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactReadable userId) {
-      long branchUuid = tx.getBranchId();
       updateChange.setTx(tx.getLocalId());
-      updateChange.setBranchUuid(branchUuid);
+      updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {
-            ArtifactReadable assocArt = getAssociatedWorkflowArt(branchUuid);
+            ArtifactReadable assocArt = getAssociatedWorkflowArt(tx.getBranch());
             IAtsTeamWorkflow safetyWf = getSafetyWorkflow(assocArt);
             if (safetyWf == null) {
                IAtsTeamWorkflow teamWf = atsServer.getWorkItemFactory().getTeamWf(assocArt);
@@ -213,9 +213,9 @@ public class WordUpdateArtifact {
       }
    }
 
-   private ArtifactReadable getAssociatedWorkflowArt(long branchUuid) {
+   private ArtifactReadable getAssociatedWorkflowArt(BranchId branchId) {
       ArtifactReadable toReturn = null;
-      BranchReadable branch = queryFactory.branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
+      BranchReadable branch = queryFactory.branchQuery().andIds(branchId).getResults().getExactlyOne();
       long workflowUuid = branch.getAssociatedArtifactId();
       try {
          toReturn = atsServer.getQuery().andUuid(workflowUuid).andIsOfType(

@@ -91,7 +91,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
             long branchUuid = getBranchUuid(response);
             newBranch = BranchManager.getBranch(branchUuid);
-            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, branchUuid));
+            OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
          }
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);

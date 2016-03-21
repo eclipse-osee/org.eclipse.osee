@@ -11,6 +11,9 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -18,7 +21,7 @@ import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
  * Java class for RemoteBranchEvent1 complex type.
  * <p>
  * The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="RemoteBranchEvent1">
  *   &lt;complexContent>
@@ -52,7 +55,7 @@ public class RemoteBranchEvent1 extends RemoteEvent {
 
    /**
     * Gets the value of the eventTypeGuid property.
-    * 
+    *
     * @return possible object is {@link String }
     */
    public String getEventTypeGuid() {
@@ -61,52 +64,41 @@ public class RemoteBranchEvent1 extends RemoteEvent {
 
    /**
     * Sets the value of the eventTypeGuid property.
-    * 
+    *
     * @param value allowed object is {@link String }
     */
    public void setEventTypeGuid(String value) {
       this.eventTypeGuid = value;
    }
 
-   /**
-    * Gets the value of the branchGuid property.
-    * 
-    * @return possible object is {@link String }
-    */
    public String getBranchGuid() {
       return branchGuid;
    }
 
-   /**
-    * Sets the value of the branchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchGuid(String value) {
-      this.branchGuid = value;
+   public BranchId getBranch() {
+      return TokenFactory.createBranch(Long.valueOf(branchGuid));
    }
 
-   /**
-    * Gets the value of the destinationBranchGuid property.
-    * 
-    * @return possible object is {@link String }
-    */
+   public void setBranch(BranchId banch) {
+      this.branchGuid = banch.getId().toString();
+   }
+
    public String getDestinationBranchGuid() {
       return destinationBranchGuid;
    }
 
-   /**
-    * Sets the value of the destinationBranchGuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setDestinationBranchGuid(String value) {
-      this.destinationBranchGuid = value;
+   public BranchId getDestinationBranch() {
+      return Strings.isNumeric(destinationBranchGuid) ? TokenFactory.createBranch(
+         Long.valueOf(destinationBranchGuid)) : null;
+   }
+
+   public void setDestinationBranch(BranchId branch) {
+      this.destinationBranchGuid = branch == null ? null : branch.getId().toString();
    }
 
    /**
     * Gets the value of the networkSender property.
-    * 
+    *
     * @return possible object is {@link RemoteNetworkSender1 }
     */
    @Override
@@ -116,7 +108,7 @@ public class RemoteBranchEvent1 extends RemoteEvent {
 
    /**
     * Sets the value of the networkSender property.
-    * 
+    *
     * @param value allowed object is {@link RemoteNetworkSender1 }
     */
    public void setNetworkSender(RemoteNetworkSender1 value) {

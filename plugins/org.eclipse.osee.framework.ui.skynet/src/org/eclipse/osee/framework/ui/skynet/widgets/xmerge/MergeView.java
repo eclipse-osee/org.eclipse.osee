@@ -19,11 +19,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -269,13 +271,12 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       showConflicts = show;
    }
 
-   private boolean isApplicableEvent(Long branchUuid, Branch mergeBranch) {
-      return Conditions.in(branchUuid, mergeBranch.getUuid()) || isApplicableSourceOrDestEvent(branchUuid);
+   private boolean isApplicableEvent(BranchId branch, BranchId mergeBranch) {
+      return mergeBranch.equals(branch) || isApplicableSourceOrDestEvent(branch);
    }
 
-   private boolean isApplicableSourceOrDestEvent(Long branchUuid) {
-      return Conditions.notNull(sourceBranch, destBranch) && Conditions.in(branchUuid, sourceBranch.getUuid(),
-         destBranch.getUuid());
+   private boolean isApplicableSourceOrDestEvent(Id branch) {
+      return branch.matches(sourceBranch, destBranch);
    }
 
    protected MergeBranch getMergeBranchForView() {
@@ -295,17 +296,17 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                case Deleted:
                   break;
                case Purged:
-                  if (mergeBranch.getUuid().equals(branchEvent.getBranchUuid())) {
+                  if (mergeBranch.equals(branchEvent.getSourceBranch())) {
                      close();
                   }
                case Committed:
-                  if (isApplicableSourceOrDestEvent(branchEvent.getBranchUuid())) {
+                  if (isApplicableSourceOrDestEvent(branchEvent.getSourceBranch())) {
                      getSite().getPage().hideView(MergeView.this);
                   }
                   break;
                default:
                   if (isApplicableSourceOrDestEvent(
-                     branchEvent.getBranchUuid()) && mergeXWidget != null && Widgets.isAccessible(
+                     branchEvent.getSourceBranch()) && mergeXWidget != null && Widgets.isAccessible(
                         mergeXWidget.getXViewer().getTree())) {
                      mergeXWidget.refresh();
                   }
@@ -348,10 +349,10 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       Branch mergeBranch = null;
       try {
          mergeBranch = BranchManager.getMergeBranch(sourceBranch, destBranch);
-         if (mergeBranch == null || !mergeBranch.getUuid().equals(artifactEvent.getBranchUuid())) {
+         if (mergeBranch == null || !mergeBranch.equals(artifactEvent.getBranch())) {
             return;
          }
-         if (!isApplicableEvent(artifactEvent.getBranchUuid(), mergeBranch)) {
+         if (!isApplicableEvent(artifactEvent.getBranch(), mergeBranch)) {
             return;
          }
       } catch (OseeCoreException ex1) {

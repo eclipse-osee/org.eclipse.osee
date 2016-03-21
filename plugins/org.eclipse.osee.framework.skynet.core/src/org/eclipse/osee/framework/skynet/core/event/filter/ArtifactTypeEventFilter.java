@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.IBasicGuidRelation;
@@ -83,7 +84,7 @@ public class ArtifactTypeEventFilter implements IEventFilter {
    }
 
    @Override
-   public boolean isMatch(Long branchUuid) {
+   public boolean isMatch(BranchId branch) {
       return true;
    }
 

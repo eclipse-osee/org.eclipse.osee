@@ -10,76 +10,38 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event.model;
 
+import org.eclipse.osee.framework.core.data.BranchId;
+
 public class BranchEvent implements FrameworkEvent, HasNetworkSender {
 
-   private long branchUuid;
-   private long destinationBranchUuid;
-   private BranchEventType eventType;
+   private final BranchId sourceBranch;
+   private final BranchId destinationBranch;
+   private final BranchEventType eventType;
    private NetworkSender networkSender;
 
-   public BranchEvent(BranchEventType branchEventType, long branchUuid) {
-      this.branchUuid = branchUuid;
+   public BranchEvent(BranchEventType branchEventType, BranchId sourceBranch) {
+      this(branchEventType, sourceBranch, null);
+   }
+
+   public BranchEvent(BranchEventType branchEventType, BranchId sourceBranchUuid, BranchId destinationBranch) {
+      this.sourceBranch = sourceBranchUuid;
+      this.destinationBranch = destinationBranch;
       this.eventType = branchEventType;
    }
 
-   public BranchEvent(BranchEventType branchEventType, long sourceBranchUuid, long destinationBranchUuid) {
-      this.branchUuid = sourceBranchUuid;
-      this.destinationBranchUuid = destinationBranchUuid;
-      this.eventType = branchEventType;
+   public BranchId getSourceBranch() {
+      return sourceBranch;
    }
 
-   /**
-    * Gets the value of the branchUuid property.
-    * 
-    * @return possible object is {@link String }
-    */
-   public long getBranchUuid() {
-      return branchUuid;
+   public BranchId getDestinationBranch() {
+      return destinationBranch;
    }
 
-   // TODO: add comment to describe purpose of destinationBranch
-   /**
-    * Gets the value of the destinationBranchUuid property.
-    * 
-    * @return possible object is {@link String }
-    */
-   public long getDestinationBranchUuid() {
-      return destinationBranchUuid;
-   }
-
-   /**
-    * Sets the value of the BranchUuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setBranchUuid(long value) {
-      this.branchUuid = value;
-   }
-
-   /**
-    * Sets the value of the destinationBranchUuid property.
-    * 
-    * @param value allowed object is {@link String }
-    */
-   public void setDestinationBranchUuid(long value) {
-      this.destinationBranchUuid = value;
-   }
-
-   /**
-    * Gets the value of the networkSender property.
-    * 
-    * @return possible object is {@link NetworkSender }
-    */
    @Override
    public NetworkSender getNetworkSender() {
       return networkSender;
    }
 
-   /**
-    * Sets the value of the networkSender property.
-    * 
-    * @param value allowed object is {@link NetworkSender }
-    */
    @Override
    public void setNetworkSender(NetworkSender value) {
       this.networkSender = value;
@@ -88,9 +50,4 @@ public class BranchEvent implements FrameworkEvent, HasNetworkSender {
    public BranchEventType getEventType() {
       return eventType;
    }
-
-   public void setEventType(BranchEventType eventType) {
-      this.eventType = eventType;
-   }
-
 }

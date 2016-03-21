@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -115,15 +116,15 @@ public class BranchQueryBuilderImpl<T> implements BranchQueryBuilder<T> {
    }
 
    @Override
-   public T andIds(IOseeBranch... ids) throws OseeCoreException {
+   public T andIds(BranchId... ids) throws OseeCoreException {
       return andIds(Arrays.asList(ids));
    }
 
    @Override
-   public T andIds(Collection<? extends IOseeBranch> ids) throws OseeCoreException {
+   public T andIds(Collection<? extends BranchId> ids) throws OseeCoreException {
       Set<Long> allIds = new HashSet<>();
-      for (IOseeBranch token : ids) {
-         allIds.add(token.getUuid());
+      for (BranchId token : ids) {
+         allIds.add(token.getId());
       }
       return andUuids(allIds);
    }

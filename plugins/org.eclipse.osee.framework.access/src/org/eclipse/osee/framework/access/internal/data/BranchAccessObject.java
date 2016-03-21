@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.access.internal.data;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.access.AccessObject;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
@@ -51,8 +52,8 @@ public class BranchAccessObject extends AccessObject {
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchUuid);
    }
 
-   public static BranchAccessObject getBranchAccessObject(IOseeBranch branch) throws OseeCoreException {
-      return getBranchAccessObject(branch.getUuid());
+   public static BranchAccessObject getBranchAccessObject(BranchId branch) throws OseeCoreException {
+      return getBranchAccessObject(branch.getId());
    }
 
    public static BranchAccessObject getBranchAccessObject(long branchUuid) {

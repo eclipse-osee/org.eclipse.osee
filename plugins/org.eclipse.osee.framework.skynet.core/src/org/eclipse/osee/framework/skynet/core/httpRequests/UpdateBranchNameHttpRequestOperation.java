@@ -30,8 +30,8 @@ import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
  */
 public class UpdateBranchNameHttpRequestOperation extends AbstractOperation {
 
-   private long branchUuid;
-   private String newBranchName;
+   private final long branchUuid;
+   private final String newBranchName;
 
    public UpdateBranchNameHttpRequestOperation(long branchUuid, String newBranchName) {
       super("Update branch name " + branchUuid, Activator.PLUGIN_ID);
@@ -48,7 +48,7 @@ public class UpdateBranchNameHttpRequestOperation extends AbstractOperation {
       if (Status.OK.getStatusCode() == response.getStatus()) {
          Branch branch = BranchManager.getBranch(branchUuid);
          branch.setName(newBranchName);
-         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Renamed, branchUuid));
+         OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Renamed, branch));
       }
    }
 
