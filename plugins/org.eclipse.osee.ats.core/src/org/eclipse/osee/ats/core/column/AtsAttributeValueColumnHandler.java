@@ -40,20 +40,24 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
 
    @Override
    public String getColumnText(IAtsObject atsObject) {
+      return getColumnText(atsObject, column.getAttrTypeId(), column.isActionRollup(), services);
+   }
+
+   public static String getColumnText(IAtsObject atsObject, long attrTypeId, boolean isActionRollup, IAtsServices services) {
       try {
          if (services.getStoreService().isDeleted(atsObject)) {
             return "<deleted>";
          }
          if (atsObject instanceof IAtsWorkItem) {
             return services.getAttributeResolver().getAttributesToStringUniqueList(atsObject,
-               services.getStoreService().getAttributeType(column.getAttrTypeId()), ";");
+               services.getStoreService().getAttributeType(attrTypeId), ";");
          }
-         if (column.isActionRollup() && (atsObject instanceof IAtsAction)) {
+         if (isActionRollup && (atsObject instanceof IAtsAction)) {
             Collection<IAtsTeamWorkflow> teams = ((IAtsAction) atsObject).getTeamWorkflows();
             Set<String> strs = new HashSet<>();
             strs.add(atsObject.getName());
             for (IAtsTeamWorkflow team : teams) {
-               String str = getColumnText(team);
+               String str = getColumnText(team, attrTypeId, isActionRollup, services);
                if (Strings.isValid(str)) {
                   strs.add(str);
                }
@@ -63,7 +67,7 @@ public class AtsAttributeValueColumnHandler implements IAtsColumn {
       } catch (Exception ex) {
          return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
       }
-      return null;
+      return "";
    }
 
 }

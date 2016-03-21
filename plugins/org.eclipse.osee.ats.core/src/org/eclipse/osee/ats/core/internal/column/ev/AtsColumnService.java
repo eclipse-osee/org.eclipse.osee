@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.core.column.ActionableItemsColumn;
 import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
@@ -96,6 +97,8 @@ public class AtsColumnService implements IAtsColumnService {
       if (column == null) {
          if (id.equals(AtsColumnId.ActionableItem.getId())) {
             column = ActionableItemsColumn.instance;
+         } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
          } else if (id.equals(AtsColumnId.Team.getId())) {
             column = new TeamColumn(services.getReviewService());
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
