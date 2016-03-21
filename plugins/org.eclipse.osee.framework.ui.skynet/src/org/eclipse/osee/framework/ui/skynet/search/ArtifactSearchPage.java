@@ -53,8 +53,10 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.NamedLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTree;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.HyperLinkLabel;
+import org.eclipse.osee.framework.ui.swt.ToStringContainsPatternFilter;
 import org.eclipse.search.ui.IReplacePage;
 import org.eclipse.search.ui.ISearchPage;
 import org.eclipse.search.ui.ISearchPageContainer;
@@ -99,12 +101,12 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
    private Composite attributeTypeControls;
    private FilteredCheckboxTree attributeTypeList;
+   private FilteredTree attributeValueList;
 
    private XBranchSelectWidget branchSelect;
 
    private SearchFilter ATTRIBUTE_VALUE_FILTER;
    private static int lastSearchTypeListSelected = 2; // Attribute
-   private static int lastAttributeTypeListSelected = 0; // Name
 
    private final Matcher storageStringMatcher = storageStringPattern.matcher("");
    private final Matcher notSearchPrimitiveMatcher = notSearchPrimitivePattern.matcher("");
@@ -257,52 +259,46 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
    }
 
    private void createAttributeSearchControls(Composite optionsComposite) {
-      Composite attributeControls = new Composite(optionsComposite, SWT.NONE);
-      attributeControls.setLayout(new GridLayout(2, false));
-      attributeControls.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-      Label typeLabel = new Label(attributeControls, SWT.HORIZONTAL);
-      typeLabel.setText("Attribute Type:");
+      attributeTypeControls = new Composite(optionsComposite, SWT.MULTI);
+      attributeTypeControls.setLayout(new GridLayout(1, true));
 
-      final ComboViewer attributeTypeList = new ComboViewer(attributeControls, SWT.DROP_DOWN | SWT.READ_ONLY);
-      attributeTypeList.setContentProvider(new SearchContentProvider());
-      attributeTypeList.setLabelProvider(new StringLabelProvider());
-      attributeTypeList.setSorter(new ToStringViewerSorter());
+      Label typeLabel = new Label(attributeTypeControls, SWT.HORIZONTAL);
+      typeLabel.setText("Attribute Types:");
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 125;
 
-      Label valueLabel = new Label(attributeControls, SWT.HORIZONTAL);
+      attributeValueList = new FilteredTree(attributeTypeControls,
+         SWT.SINGLE | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, new ToStringContainsPatternFilter(), true);
+      attributeValueList.getViewer().getTree().setLayoutData(gd);
+      attributeValueList.getViewer().setContentProvider(new ArrayTreeContentProvider());
+      attributeValueList.getViewer().setLabelProvider(new StringLabelProvider());
+      attributeValueList.getViewer().setSorter(new ToStringViewerSorter());
+
+      Label valueLabel = new Label(attributeTypeControls, SWT.HORIZONTAL);
       valueLabel.setText("Attribute Value:");
-      Text attributeValue = new Text(attributeControls, SWT.BORDER);
+      Text attributeValue = new Text(attributeTypeControls, SWT.BORDER);
       attributeValue.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
       Collection<IAttributeType> taggableTypes = AttributeTypeManager.getTaggableTypes();
-      try {
-         for (IAttributeType type : AttributeTypeManager.getValidAttributeTypes(getSelectedBranch())) {
-            if (taggableTypes.contains(type)) {
-               attributeTypeList.add(type);
-               attributeTypeList.setData(type.getName(), type);
-            }
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error encountered while getting list of attribute types",
-            ex);
-      }
-      attributeTypeList.getCombo().setVisibleItemCount(Math.min(attributeTypeList.getCombo().getItemCount(), 15));
-      attributeTypeList.getCombo().select(lastAttributeTypeListSelected);
-      attributeTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
-         @Override
-         public void selectionChanged(SelectionChangedEvent event) {
-            lastAttributeTypeListSelected = attributeTypeList.getCombo().getSelectionIndex();
-         }
-      });
-
+      attributeValueList.getViewer().setInput(taggableTypes);
       attributeValue.addModifyListener(new ModifyListener() {
+
          @Override
          public void modifyText(ModifyEvent e) {
             addButton.setEnabled(ATTRIBUTE_VALUE_FILTER.isValid());
          }
       });
 
-      new Label(attributeControls, SWT.NONE); // spacerLabelSoTheNextOneWillBeInColumnTwo
+      attributeValueList.getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
 
-      ATTRIBUTE_VALUE_FILTER = new AttributeValueFilter(attributeControls, attributeTypeList, attributeValue);
+         @Override
+         public void selectionChanged(SelectionChangedEvent event) {
+            addButton.setEnabled(ATTRIBUTE_VALUE_FILTER.isValid());
+         }
+      });
+
+      new Label(attributeTypeControls, SWT.NONE); // spacerLabelSoTheNextOneWillBeInColumnTwo
+      ATTRIBUTE_VALUE_FILTER = new AttributeValueFilter(attributeTypeControls, attributeValueList, attributeValue);
+
       addToSearchTypeList(ATTRIBUTE_VALUE_FILTER);
    }
 
@@ -392,7 +388,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
       addButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(searchTypeList.getCombo().getText());
+            String text = searchTypeList.getCombo().getText();
+            SearchFilter searchFilter = (SearchFilter) searchTypeList.getData(text);
             searchFilter.addFilterTo(filterviewer);
             attributeTypeList.clearChecked();
             artifactTypeList.clearChecked();

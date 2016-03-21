@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.search;
 
-import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.AttributeValueSearch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.ui.skynet.search.filter.FilterTableViewer;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredTree;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Text;
 
@@ -22,23 +24,26 @@ import org.eclipse.swt.widgets.Text;
  * @author Ryan D. Brooks
  */
 public class AttributeValueFilter extends SearchFilter {
-   private final ComboViewer attributeTypeList;
+   private final FilteredTree filteredTree;
    private final Text attributeValue;
 
-   public AttributeValueFilter(Control optionsControl, ComboViewer attributeTypeList, Text attributeValue) {
+   public AttributeValueFilter(Control optionsControl, FilteredTree filteredTree, Text attributeValue) {
       super("Attribute Value", optionsControl);
-      this.attributeTypeList = attributeTypeList;
+      this.filteredTree = filteredTree;
       this.attributeValue = attributeValue;
    }
 
    @Override
    public void addFilterTo(FilterTableViewer filterViewer) {
-      String typeName = attributeTypeList.getCombo().getText();
-      String value = attributeValue.getText();
+      ISelection selection = filteredTree.getViewer().getSelection();
+      if (selection.isEmpty()) {
+         return;
+      }
+      IAttributeType attributeType =
+         (IAttributeType) ((StructuredSelection) filteredTree.getViewer().getSelection()).getFirstElement();
 
-      IAttributeType attributeType = (IAttributeType) attributeTypeList.getData(typeName);
-      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, value);
-      filterViewer.addItem(primitive, getFilterName(), typeName, value);
+      ISearchPrimitive primitive = new AttributeValueSearch(attributeType, attributeValue.getText());
+      filterViewer.addItem(primitive, getFilterName(), attributeType.toString(), "");
    }
 
    @Override

@@ -26,13 +26,8 @@ public class AttributeValueSearch implements ISearchPrimitive {
    public AttributeValueSearch(IAttributeType attributeType, String attributeValue) {
       Conditions.checkNotNull(attributeType, "attributeType");
       Conditions.checkNotNullOrEmpty(attributeValue, "attributeValue");
-      this.attributeValue = attributeValue;
       this.attributeType = attributeType;
-   }
-
-   @Override
-   public String toString() {
-      return "Attribute value: " + attributeType + " \"" + attributeValue + "\"";
+      this.attributeValue = attributeValue;
    }
 
    @Override
@@ -53,6 +48,11 @@ public class AttributeValueSearch implements ISearchPrimitive {
    @Override
    public void addToQuery(QueryBuilderArtifact builder) {
       builder.and(attributeType, attributeValue, QueryOption.CONTAINS_MATCH_OPTIONS);
+   }
+
+   @Override
+   public String toString() {
+      return "AttributeValueSearch [attributeType=" + attributeType + ", value=" + attributeValue + "]";
    }
 
 }
