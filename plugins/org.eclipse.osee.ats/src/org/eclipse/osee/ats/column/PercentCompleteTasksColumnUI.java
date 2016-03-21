@@ -12,30 +12,28 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.core.client.action.ActionManager;
-import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
-public class PercentCompleteTasksColumn extends XViewerAtsColumn implements IXViewerValueColumn {
+public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IXViewerValueColumn {
 
-   public static PercentCompleteTasksColumn instance = new PercentCompleteTasksColumn();
+   public static PercentCompleteTasksColumnUI instance = new PercentCompleteTasksColumnUI();
 
-   public static PercentCompleteTasksColumn getInstance() {
+   public static PercentCompleteTasksColumnUI getInstance() {
       return instance;
    }
 
-   private PercentCompleteTasksColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".taskPercentComplete", "Task Percent Complete", 40, SWT.CENTER,
-         false, SortDataType.Percent, false,
+   private PercentCompleteTasksColumnUI() {
+      super(AtsColumnId.PercentCompleteTasks.getId(), "Task Percent Complete", 40, SWT.CENTER, false,
+         SortDataType.Percent, false,
          "Percent Complete for the tasks related to the workflow.\n\nCalculation: total percent of all tasks / number of tasks");
    }
 
@@ -44,8 +42,8 @@ public class PercentCompleteTasksColumn extends XViewerAtsColumn implements IXVi
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public PercentCompleteTasksColumn copy() {
-      PercentCompleteTasksColumn newXCol = new PercentCompleteTasksColumn();
+   public PercentCompleteTasksColumnUI copy() {
+      PercentCompleteTasksColumnUI newXCol = new PercentCompleteTasksColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -53,36 +51,14 @@ public class PercentCompleteTasksColumn extends XViewerAtsColumn implements IXVi
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
-         if (element instanceof Artifact) {
-            return String.valueOf(getPercentCompleteFromTasks((Artifact) element));
+         if (element instanceof IAtsObject) {
+            return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.PercentCompleteTasks,
+               (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
       return "";
-   }
-
-   /**
-    * Return Percent Complete ONLY on tasks. Total Percent / # Tasks
-    */
-   public static int getPercentCompleteFromTasks(Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.Action)) {
-         double percent = 0;
-         for (TeamWorkFlowArtifact team : ActionManager.getTeams(artifact)) {
-            if (!team.isCancelled()) {
-               percent += getPercentCompleteFromTasks(team);
-            }
-         }
-         if (percent == 0) {
-            return 0;
-         }
-         Double rollPercent = percent / ActionManager.getTeams(artifact).size();
-         return rollPercent.intValue();
-      }
-      if (artifact instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) artifact).getPercentCompleteFromTasks();
-      }
-      return 0;
    }
 
 }

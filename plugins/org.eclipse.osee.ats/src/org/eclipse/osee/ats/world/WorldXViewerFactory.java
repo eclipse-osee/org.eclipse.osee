@@ -165,7 +165,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          RemainingPointsWorkflowColumn.getInstance(),
          RemainingPointsTotalColumn.getInstance(),
          PercentCompleteReviewsColumn.getInstance(),
-         PercentCompleteTasksColumn.getInstance(),
+         PercentCompleteTasksColumnUI.getInstance(),
          PercentCompleteTasksReviewsColumn.getInstance(),
          CountryColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),

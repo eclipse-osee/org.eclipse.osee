@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
+import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 
@@ -38,6 +39,57 @@ public class AtsColumnService implements IAtsColumnService {
 
    public AtsColumnService(IAtsServices services) {
       this.services = services;
+   }
+
+   @Override
+   public IAtsColumn getColumn(AtsConfigurations configurations, String id) {
+      if (columnIdToAtsColumn == null) {
+         columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
+      }
+      IAtsColumn column = columnIdToAtsColumn.get(id);
+      if (column == null) {
+         for (AtsAttributeValueColumn attrCol : configurations.getViews().getAttrColumns()) {
+            if (id.equals(attrCol.getId())) {
+               column = new AtsAttributeValueColumnHandler(attrCol, services);
+               add(id, column);
+               break;
+            }
+         }
+      }
+      if (column == null) {
+         if (id.equals(AtsColumnId.ActionableItem.getId())) {
+            column = ActionableItemsColumn.instance;
+         } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
+         } else if (id.equals(AtsColumnId.Team.getId())) {
+            column = new TeamColumn(services.getReviewService());
+         } else if (id.equals(AtsColumnId.Assignees.getId())) {
+            column = AssigneeColumn.instance;
+         } else if (id.equals(AtsColumnId.AtsId.getId())) {
+            column = AtsIdColumn.instance;
+         } else if (id.equals(AtsColumnId.ActivityId.getId())) {
+            column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.State.getId())) {
+            column = StateColumn.instance;
+         } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
+         } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
+            column = new PercentCompleteTasksColumn(services);
+         } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
+            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
+            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageType.getId())) {
+            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageProgram.getId())) {
+            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
+            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
+         }
+      }
+      // Add to cache even if not found so don't need to look again
+      add(id, column);
+      return column;
    }
 
    @Override
@@ -77,55 +129,6 @@ public class AtsColumnService implements IAtsColumnService {
    @Override
    public IAtsColumn getColumn(String id) {
       return getColumn(services.getConfigurations(), id);
-   }
-
-   @Override
-   public IAtsColumn getColumn(AtsConfigurations configurations, String id) {
-      if (columnIdToAtsColumn == null) {
-         columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
-      }
-      IAtsColumn column = columnIdToAtsColumn.get(id);
-      if (column == null) {
-         for (AtsAttributeValueColumn attrCol : configurations.getViews().getAttrColumns()) {
-            if (id.equals(attrCol.getId())) {
-               column = new AtsAttributeValueColumnHandler(attrCol, services);
-               add(id, column);
-               break;
-            }
-         }
-      }
-      if (column == null) {
-         if (id.equals(AtsColumnId.ActionableItem.getId())) {
-            column = ActionableItemsColumn.instance;
-         } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
-         } else if (id.equals(AtsColumnId.Team.getId())) {
-            column = new TeamColumn(services.getReviewService());
-         } else if (id.equals(AtsColumnId.Assignees.getId())) {
-            column = AssigneeColumn.instance;
-         } else if (id.equals(AtsColumnId.AtsId.getId())) {
-            column = AtsIdColumn.instance;
-         } else if (id.equals(AtsColumnId.ActivityId.getId())) {
-            column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
-         } else if (id.equals(AtsColumnId.State.getId())) {
-            column = StateColumn.instance;
-         } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
-            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
-         } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
-            column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
-         } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
-            column = new WorkPackageIdColumn(services.getEarnedValueServiceProvider());
-         } else if (id.equals(AtsColumnId.WorkPackageType.getId())) {
-            column = new WorkPackageTypeColumn(services.getEarnedValueServiceProvider());
-         } else if (id.equals(AtsColumnId.WorkPackageProgram.getId())) {
-            column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider());
-         } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
-            column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
-         }
-      }
-      // Add to cache even if not found so don't need to look again
-      add(id, column);
-      return column;
    }
 
    @Override

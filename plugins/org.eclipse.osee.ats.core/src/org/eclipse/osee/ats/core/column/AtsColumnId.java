@@ -21,6 +21,7 @@ public enum AtsColumnId {
    AtsId("ats.id"),
    LegacyPcrId("ats.column.legacyPcr"),
    PercentCompleteWorkflow("ats.column.workflowPercentComplete"),
+   PercentCompleteTasks("ats.column.taskPercentComplete"),
    State("ats.column.state"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),
