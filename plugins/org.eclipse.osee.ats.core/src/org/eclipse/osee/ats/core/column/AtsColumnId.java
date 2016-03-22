@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.core.column;
 /**
  * @author Donald G. Dunne
  */
-public enum AtsColumnId {
+public enum AtsColumnId implements IAtsColumnId {
 
    ActionableItem("ats.column.actionableItems"),
    ActivityId("ats.column.activityId"),
@@ -37,6 +37,7 @@ public enum AtsColumnId {
       this.id = id;
    }
 
+   @Override
    public String getId() {
       return id;
    }

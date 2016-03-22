@@ -18,19 +18,19 @@ import org.eclipse.osee.ats.api.config.AtsConfigurations;
  */
 public interface IAtsColumnService {
 
-   String getColumnText(AtsColumnId columnId, IAtsObject atsObject);
+   String getColumnText(IAtsColumnId columnId, IAtsObject atsObject);
 
    String getColumnText(String id, IAtsObject atsObject);
 
    IAtsColumn getColumn(String id);
 
-   IAtsColumn getColumn(AtsColumnId columnId);
+   IAtsColumn getColumn(IAtsColumnId columnId);
 
    void add(String id, IAtsColumn column);
 
    IAtsColumn getColumn(AtsConfigurations configurations, String id);
 
-   String getColumnText(AtsConfigurations configurations, AtsColumnId column, IAtsObject atsObject);
+   String getColumnText(AtsConfigurations configurations, IAtsColumnId column, IAtsObject atsObject);
 
    String getColumnText(AtsConfigurations configurations, String id, IAtsObject atsObject);
 

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.core.column.IAtsColumnId;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -50,9 +50,9 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public abstract class AbstractWorkPackageRelatedColumnUI extends XViewerAtsColumn implements IMultiColumnEditProvider, IXViewerValueColumn, IAltLeftClickProvider {
 
-   private final AtsColumnId atsColumnId;
+   private final IAtsColumnId atsColumnId;
 
-   public AbstractWorkPackageRelatedColumnUI(AtsColumnId atsColumnId, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public AbstractWorkPackageRelatedColumnUI(IAtsColumnId atsColumnId, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.atsColumnId = atsColumnId;
    }

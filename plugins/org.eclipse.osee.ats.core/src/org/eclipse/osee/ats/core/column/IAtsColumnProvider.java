@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
-import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsColumn {
+public interface IAtsColumnProvider {
 
-   public static final String CELL_ERROR_PREFIX = "!Error";
-
-   public String getColumnText(IAtsObject atsObject);
+   public IAtsColumn getColumn(String id, IAtsServices services);
 
 }

@@ -23,6 +23,8 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
+import org.eclipse.osee.ats.core.column.IAtsColumnId;
+import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
@@ -87,13 +89,22 @@ public class AtsColumnService implements IAtsColumnService {
             column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
          }
       }
+      // Add columns provided through OSGI services
+      if (column == null) {
+         for (IAtsColumnProvider provider : AtsColumnProviderCollector.getColumnProviders()) {
+            column = provider.getColumn(id, services);
+            if (column != null) {
+               break;
+            }
+         }
+      }
       // Add to cache even if not found so don't need to look again
       add(id, column);
       return column;
    }
 
    @Override
-   public String getColumnText(AtsColumnId column, IAtsObject atsObject) {
+   public String getColumnText(IAtsColumnId column, IAtsObject atsObject) {
       return getColumnText(column.getId(), atsObject);
    }
 
@@ -110,7 +121,7 @@ public class AtsColumnService implements IAtsColumnService {
    }
 
    @Override
-   public String getColumnText(AtsConfigurations configurations, AtsColumnId column, IAtsObject atsObject) {
+   public String getColumnText(AtsConfigurations configurations, IAtsColumnId column, IAtsObject atsObject) {
       return getColumnText(configurations, column.getId(), atsObject);
    }
 
@@ -137,7 +148,7 @@ public class AtsColumnService implements IAtsColumnService {
    }
 
    @Override
-   public IAtsColumn getColumn(AtsColumnId columnId) {
+   public IAtsColumn getColumn(IAtsColumnId columnId) {
       return getColumn(columnId.getId());
    }
 
