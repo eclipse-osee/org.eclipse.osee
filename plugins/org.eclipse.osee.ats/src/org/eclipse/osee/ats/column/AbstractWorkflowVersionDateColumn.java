@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.column;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
@@ -29,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * This class provides for a Date where the value is either stored in Workflow or Version or both.
@@ -37,7 +38,7 @@ import org.eclipse.swt.SWT;
 public abstract class AbstractWorkflowVersionDateColumn extends XViewerAtsAttributeValueColumn {
 
    public AbstractWorkflowVersionDateColumn(String id, IAttributeType attributeType) {
-      super(attributeType, id, attributeType.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
+      super(attributeType, id, attributeType.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date, true, "");
    }
 
    @Override

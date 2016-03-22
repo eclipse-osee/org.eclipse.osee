@@ -140,6 +140,7 @@ public class CreateGoalTestDemoArtifacts extends XNavigateItemAction {
       for (IAtsTask task : createTasks) {
          facilitiesGoal.addMember((Artifact) task.getStoreObject());
          sawCodeGoal.addMember((Artifact) task.getStoreObject());
+         changes.add(task);
       }
       changes.execute();
 

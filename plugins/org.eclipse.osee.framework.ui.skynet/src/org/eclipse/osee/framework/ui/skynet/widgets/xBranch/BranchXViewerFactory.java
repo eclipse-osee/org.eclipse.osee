@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Jeff C. Phillips
@@ -23,29 +23,29 @@ import org.eclipse.swt.SWT;
 public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public final static XViewerColumn branchName = new XViewerColumn("framework.branch.branchName", "Branch Name", 250,
-      SWT.LEFT, true, SortDataType.String, false, null);
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn branchType =
-      new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, true, SortDataType.String, true, null);
-   public final static XViewerColumn branchState =
-      new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, true, SortDataType.String, true, null);
-   public final static XViewerColumn timeStamp =
-      new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.Date, false, null);
-   public final static XViewerColumn author =
-      new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
-   public final static XViewerColumn comment =
-      new XViewerColumn("framework.branch.comment", "Comment", 250, SWT.LEFT, true, SortDataType.String, false, null);
+      new XViewerColumn("framework.branch.type", "Type", 100, XViewerAlign.Left, true, SortDataType.String, true, null);
+   public final static XViewerColumn branchState = new XViewerColumn("framework.branch.state", "State", 100,
+      XViewerAlign.Left, true, SortDataType.String, true, null);
+   public final static XViewerColumn timeStamp = new XViewerColumn("framework.branch.itemType", "Time Stamp", 150,
+      XViewerAlign.Left, true, SortDataType.Date, false, null);
+   public final static XViewerColumn author = new XViewerColumn("framework.branch.author", "Author", 100,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
+   public final static XViewerColumn comment = new XViewerColumn("framework.branch.comment", "Comment", 250,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public final static XViewerColumn associatedArtifact = new XViewerColumn("framework.branch.assocArt",
-      "Associated Artifact", 100, SWT.LEFT, false, SortDataType.String, false, null);
-   public final static XViewerColumn branchUuid =
-      new XViewerColumn("framework.branch.uuid", "Branch UUID", 200, SWT.LEFT, false, SortDataType.String, false, null);
+      "Associated Artifact", 100, XViewerAlign.Left, false, SortDataType.String, false, null);
+   public final static XViewerColumn branchUuid = new XViewerColumn("framework.branch.uuid", "Branch UUID", 200,
+      XViewerAlign.Left, false, SortDataType.String, false, null);
    public final static XViewerColumn parentBranch = new XViewerColumn("framework.branch.parentBranch", "Parent Branch",
-      100, SWT.LEFT, false, SortDataType.String, false, null);
+      100, XViewerAlign.Left, false, SortDataType.String, false, null);
    public final static XViewerColumn archivedState = new XViewerColumn("framework.branch.archived", "Archived State",
-      100, SWT.LEFT, false, SortDataType.String, true, null);
+      100, XViewerAlign.Left, false, SortDataType.String, true, null);
    public final static XViewerColumn inheritAccessControl = new XViewerColumn("framework.branch.inherit.access.control",
-      "Inherit Access Control", 100, SWT.LEFT, false, SortDataType.Boolean, false, null);
+      "Inherit Access Control", 100, XViewerAlign.Left, false, SortDataType.Boolean, false, null);
    public final static XViewerColumn transaction = new XViewerColumn("framework.branch.transaction", "Transaction", 100,
-      SWT.LEFT, true, SortDataType.Integer, false, null);
+      XViewerAlign.Left, true, SortDataType.Integer, false, null);
 
    public final static String NAMESPACE = "osee.skynet.gui.BranchXViewer";
 

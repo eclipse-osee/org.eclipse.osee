@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +43,7 @@ public class AnnualCostAvoidanceColumn extends XViewerAtsColumn implements IXVie
    }
 
    private AnnualCostAvoidanceColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance", "Annual Cost Avoidance", 50, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".annualCostAvoidance", "Annual Cost Avoidance", 50, XViewerAlign.Left, false,
          SortDataType.Float, false,
          "Hours that would be saved for the first year if this change were completed.\n\n" + "(Weekly Benefit Hours * 52 weeks) - Remaining Hours\n\n" + "If number is high, benefit is great given hours remaining.");
    }

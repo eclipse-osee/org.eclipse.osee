@@ -17,11 +17,11 @@ import org.eclipse.osee.ats.api.agile.IAgileSprint;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
-import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.workflow.AbstractWorkItemFactory;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileBacklog;
 import org.eclipse.osee.ats.rest.internal.agile.model.AgileSprint;
@@ -39,12 +39,13 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
 /**
  * @author Donald G. Dunne
  */
-public class WorkItemFactory implements IAtsWorkItemFactory {
+public class WorkItemFactory extends AbstractWorkItemFactory {
 
    private final Log logger;
    private final IAtsServer atsServer;
 
    public WorkItemFactory(Log logger, IAtsServer atsServer) {
+      super(atsServer.getServices());
       this.logger = logger;
       this.atsServer = atsServer;
    }

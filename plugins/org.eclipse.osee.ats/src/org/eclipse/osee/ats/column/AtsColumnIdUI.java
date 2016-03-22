@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -29,7 +30,7 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColu
 
    public AtsColumnIdUI(AtsColumnIdValueColumn columnIdColumn, IAtsServices services) {
       super(columnIdColumn.getId(), columnIdColumn.getName(), columnIdColumn.getWidth(),
-         getSwtAlign(columnIdColumn.getAlign()), columnIdColumn.isVisible(),
+         getXViewerAlign(columnIdColumn.getAlign()), columnIdColumn.isVisible(),
          SortDataType.valueOf(columnIdColumn.getSortDataType()), columnIdColumn.isColumnMultiEdit(),
          columnIdColumn.getDescription());
       this.columnIdColumn = columnIdColumn;
@@ -56,17 +57,14 @@ public class AtsColumnIdUI extends XViewerAtsColumn implements IXViewerValueColu
       return result;
    }
 
-   public static int getSwtAlign(ColumnAlign align) {
-      if (align == ColumnAlign.Left) {
-         return SWT.LEFT;
-      }
+   public static XViewerAlign getXViewerAlign(ColumnAlign align) {
       if (align == ColumnAlign.Center) {
-         return SWT.CENTER;
+         return XViewerAlign.Center;
       }
       if (align == ColumnAlign.Right) {
-         return SWT.RIGHT;
+         return XViewerAlign.Right;
       }
-      return SWT.LEFT;
+      return XViewerAlign.Left;
    }
 
 }

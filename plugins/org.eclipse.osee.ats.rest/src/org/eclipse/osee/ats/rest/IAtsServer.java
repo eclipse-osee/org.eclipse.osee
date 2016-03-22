@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.rest;
 
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileService;
@@ -35,7 +36,6 @@ import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
-import org.eclipse.osee.ats.core.util.XViewerCustomization;
 import org.eclipse.osee.ats.rest.util.IArtifactProvider;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -106,10 +106,10 @@ public interface IAtsServer extends IAtsServices, IAtsNotifier, IAtsConfigItemFa
    @Override
    ArtifactReadable getArtifact(IArtifactToken token);
 
-   XViewerCustomization getCustomizationByGuid(String customize_guid);
+   CustomizeData getCustomizationByGuid(String customize_guid);
 
-   Collection<XViewerCustomization> getCustomizations(String namespace);
+   Collection<CustomizeData> getCustomizations(String namespace);
 
-   Collection<XViewerCustomization> getCustomizationsGlobal(String namespace);
+   Collection<CustomizeData> getCustomizationsGlobal(String namespace);
 
 }

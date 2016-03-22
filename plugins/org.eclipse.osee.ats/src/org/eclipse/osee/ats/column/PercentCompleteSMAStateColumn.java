@@ -11,14 +11,15 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.core.client.workflow.PercentCompleteSMAStateUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +33,7 @@ public class PercentCompleteSMAStateColumn extends XViewerAtsColumn implements I
    }
 
    private PercentCompleteSMAStateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40, SWT.CENTER,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".statePercentComplete", "State Percent Complete", 40, XViewerAlign.Center,
          false, SortDataType.Percent, false,
          "Percent Complete for the changes to the current state.\n\nAmount entered from user.");
    }

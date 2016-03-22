@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.editor.history.column.AuthorColumn;
 import org.eclipse.osee.ats.editor.history.column.DateColumn;
 import org.eclipse.osee.ats.editor.history.column.EventColumn;

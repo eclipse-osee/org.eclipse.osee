@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class ValidationRequiredColumn extends XViewerAtsAttributeValueColumn {
 
    private ValidationRequiredColumn() {
       super(AtsAttributeTypes.ValidationRequired, WorldXViewerFactory.COLUMN_NAMESPACE + ".validationRequired",
-         AtsAttributeTypes.ValidationRequired.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, false,
+         AtsAttributeTypes.ValidationRequired.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.String, false,
          "If set, Originator will be asked to perform a review to\nensure changes are as expected.");
    }
 

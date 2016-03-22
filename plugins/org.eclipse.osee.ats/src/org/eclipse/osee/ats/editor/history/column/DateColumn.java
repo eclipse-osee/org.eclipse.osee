@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class DateColumn extends XViewerValueColumn {
    }
 
    public DateColumn() {
-      super("ats.history.Date", "Date", 120, SWT.LEFT, true, SortDataType.Date, false, "");
+      super("ats.history.Date", "Date", 120, XViewerAlign.Left, true, SortDataType.Date, false, "");
    }
 
    /**

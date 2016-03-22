@@ -17,9 +17,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.ui.skynet.util.DbConnectionUtility;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.ArtifactNameColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.AttributeColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -98,7 +98,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
 
    public static XViewerColumn getAttributeColumn(IAttributeType attributeType) throws OseeCoreException {
       return new AttributeColumn("attribute." + attributeType.getName(), attributeType.getName(), attributeType, 75,
-         SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
+         XViewerAlign.Left, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
 
    /**

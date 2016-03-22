@@ -12,9 +12,8 @@ package org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.xscript;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.ScriptTask;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;

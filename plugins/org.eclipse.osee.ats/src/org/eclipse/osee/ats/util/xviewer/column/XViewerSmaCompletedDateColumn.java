@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -29,11 +30,11 @@ public class XViewerSmaCompletedDateColumn extends XViewerValueColumn {
    }
 
    public XViewerSmaCompletedDateColumn(String name) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, SWT.LEFT, true, SortDataType.Date, false,
-         "Date this workflow transitioned to the Completed state.");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + "completeDate", name, 80, XViewerAlign.Left, true, SortDataType.Date,
+         false, "Date this workflow transitioned to the Completed state.");
    }
 
-   public XViewerSmaCompletedDateColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerSmaCompletedDateColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 

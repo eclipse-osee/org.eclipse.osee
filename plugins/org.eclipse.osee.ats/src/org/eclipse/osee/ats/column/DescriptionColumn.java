@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +27,7 @@ public class DescriptionColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private DescriptionColumn() {
-      super(AtsAttributeTypes.Description, 150, SWT.LEFT, false, SortDataType.String, true, "");
+      super(AtsAttributeTypes.Description, 150, XViewerAlign.Left, false, SortDataType.String, true, "");
    }
 
    /**

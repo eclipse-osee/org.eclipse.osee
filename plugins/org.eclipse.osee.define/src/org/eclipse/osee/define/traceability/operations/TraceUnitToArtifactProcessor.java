@@ -20,8 +20,9 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.AbstractSourceTagger;
 import org.eclipse.osee.define.traceability.CodeUnitTagger;
@@ -57,7 +58,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Roberto E. Escobar
@@ -323,7 +323,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private List<XViewerColumn> createColumns(String... columnNames) {
          List<XViewerColumn> columns = new ArrayList<>();
          for (String name : columnNames) {
-            columns.add(new XViewerColumn(name, name, 80, SWT.LEFT, true, SortDataType.String, false, ""));
+            columns.add(new XViewerColumn(name, name, 80, XViewerAlign.Left, true, SortDataType.String, false, ""));
          }
          return columns;
       }

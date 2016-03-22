@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.team;
 
+import java.util.Collection;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.IAgileBacklog;
 import org.eclipse.osee.ats.api.agile.IAgileItem;
@@ -46,5 +47,7 @@ public interface IAtsWorkItemFactory {
    IAgileBacklog getAgileBacklog(ArtifactId artifact);
 
    IAgileItem getAgileItem(ArtifactId artifact);
+
+   Collection<IAtsWorkItem> getWorkItems(Collection<? extends ArtifactId> artifacts);
 
 }

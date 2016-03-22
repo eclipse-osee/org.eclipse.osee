@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column.ev;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class WorkPackageGuidColumnUI extends AbstractWorkPackageRelatedColumnUI 
 
    private WorkPackageGuidColumnUI() {
       super(AtsColumnId.WorkPackageGuid, WorldXViewerFactory.COLUMN_NAMESPACE + ".workPackageGuid", "Work Package Guid",
-         80, SWT.LEFT, false, SortDataType.String, true,
+         80, XViewerAlign.Left, false, SortDataType.String, true,
          "Provides Work Package guid from the selected Work Package related to the selected workflow.");
    }
 

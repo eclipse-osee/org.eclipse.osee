@@ -16,6 +16,8 @@ import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
@@ -35,7 +37,7 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
    Map<Long, String> multiMembersValueMap = new HashMap<>();
    boolean loading = false;
 
-   public AbstractMembersOrderColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public AbstractMembersOrderColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
@@ -56,7 +58,7 @@ public abstract class AbstractMembersOrderColumn extends XViewerAtsColumn implem
    public String getText(Object obj, Long key, String cachedValue) {
       String result = "";
       if (!loading) {
-         XViewer xViewer = getXViewer();
+         XViewer xViewer = (XViewer) getXViewer();
          if (obj instanceof Artifact && xViewer instanceof WorldXViewer) {
             WorldXViewer worldXViewer = (WorldXViewer) xViewer;
             CollectorArtifact parentMembersArtifact = (CollectorArtifact) getParentMembersArtifact(worldXViewer);

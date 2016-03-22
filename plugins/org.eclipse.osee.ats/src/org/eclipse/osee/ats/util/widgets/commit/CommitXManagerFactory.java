@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.commit;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -21,25 +21,25 @@ import org.eclipse.swt.SWT;
 public class CommitXManagerFactory extends SkynetXViewerFactory {
 
    public static XViewerColumn Empty_Col =
-      new XViewerColumn("osee.commit.empty", "Empty", 0, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Action_Col = new XViewerColumn("osee.commit.action", "Action", 180, SWT.LEFT, true,
-      SortDataType.String, false, "Provides the action(s) available.  Double click row to perform action.");
+      new XViewerColumn("osee.commit.empty", "Empty", 0, XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn Action_Col = new XViewerColumn("osee.commit.action", "Action", 180, XViewerAlign.Left,
+      true, SortDataType.String, false, "Provides the action(s) available.  Double click row to perform action.");
    public static XViewerColumn Status_Col =
-      new XViewerColumn("osee.commit.status", "Status", 180, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Merge_Col = new XViewerColumn("osee.commit.merge", "Merge Branch Exists", 30, SWT.LEFT,
-      true, SortDataType.String, false, "Will show merge icon if merge branch exists");
+      new XViewerColumn("osee.commit.status", "Status", 180, XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn Merge_Col = new XViewerColumn("osee.commit.merge", "Merge Branch Exists", 30,
+      XViewerAlign.Left, true, SortDataType.String, false, "Will show merge icon if merge branch exists");
    public static XViewerColumn Dest_Branch_Col = new XViewerColumn("osee.commit.name", "Destination Branch", 150,
-      SWT.LEFT, true, SortDataType.String, false, null);
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Dest_Branch_Create_Date_Col = new XViewerColumn("osee.commit.name.createDate",
-      "Destination Branch Creation Date", 110, SWT.LEFT, true, SortDataType.Date, false, null);
+      "Destination Branch Creation Date", 110, XViewerAlign.Left, true, SortDataType.Date, false, null);
    public static XViewerColumn Version_Col = new XViewerColumn("osee.commit.shortName", "Destination Version", 80,
-      SWT.LEFT, true, SortDataType.String, false, null);
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Configuring_Object_Col = new XViewerColumn("osee.commit.configObj", "Configuring Object",
-      100, SWT.LEFT, true, SortDataType.String, false, null);
-   public static XViewerColumn Commit_Date =
-      new XViewerColumn("osee.commit.commitDate", "Commit Date", 110, SWT.LEFT, true, SortDataType.Date, false, null);
+      100, XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn Commit_Date = new XViewerColumn("osee.commit.commitDate", "Commit Date", 110,
+      XViewerAlign.Left, true, SortDataType.Date, false, null);
    public static XViewerColumn Commit_Comment = new XViewerColumn("osee.commit.commitComment", "Commit Comment", 200,
-      SWT.LEFT, true, SortDataType.String, false, null);
+      XViewerAlign.Left, true, SortDataType.String, false, null);
 
    public CommitXManagerFactory() {
       super("osee.skynet.gui.CommitXViewer");

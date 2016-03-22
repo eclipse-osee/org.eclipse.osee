@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.editor.log.column;
 
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.internal.Activator;
@@ -20,7 +22,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,7 +36,7 @@ public class LogEventColumn extends XViewerValueColumn {
    }
 
    public LogEventColumn() {
-      super("ats.log.Event", "Event", 115, SWT.LEFT, true, SortDataType.String, false, "");
+      super("ats.log.Event", "Event", 115, XViewerAlign.Left, true, SortDataType.String, false, "");
    }
 
    /**

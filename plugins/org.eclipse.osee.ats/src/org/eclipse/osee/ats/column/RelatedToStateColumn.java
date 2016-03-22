@@ -18,7 +18,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -38,7 +40,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -57,7 +58,8 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
 
    private RelatedToStateColumn() {
       super(AtsAttributeTypes.RelatedToState, WorldXViewerFactory.COLUMN_NAMESPACE + ".relatedToState",
-         AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.String, true, "");
+         AtsAttributeTypes.RelatedToState.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.String, true,
+         "");
    }
 
    /**
@@ -150,7 +152,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
          if (Artifacts.isOfType(treeItem, AtsArtifactTypes.Task)) {
             TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
             boolean modified = promptChangeRelatedToState(taskArt, isPersistViewer());
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                taskArt.persist("persist related-to-state via alt-left-click");
             }

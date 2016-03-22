@@ -12,13 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import java.util.Date;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +27,7 @@ import org.eclipse.swt.SWT;
 public class LastModifiedDateColumn extends XViewerValueColumn {
 
    public LastModifiedDateColumn(boolean show) {
-      super("framework.lastModDate", "Last Modified Date", 50, SWT.LEFT, show, SortDataType.Date, false,
+      super("framework.lastModDate", "Last Modified Date", 50, XViewerAlign.Left, show, SortDataType.Date, false,
          "Retrieves date of last attribute update of this artifact.");
    }
 

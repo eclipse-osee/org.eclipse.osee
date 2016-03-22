@@ -11,13 +11,14 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.CountryColumn;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -31,7 +32,7 @@ public class CountryColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    private CountryColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".country", "Country", 80, SWT.LEFT, false, SortDataType.String,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".country", "Country", 80, XViewerAlign.Left, false, SortDataType.String,
          false, "Country specified by related Work Package.  (I) if inherited from parent.");
    }
 

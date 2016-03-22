@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
@@ -21,7 +23,6 @@ import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
 /**
@@ -36,7 +37,7 @@ public class StateColumnUI extends XViewerAtsColumn implements IXViewerValueColu
    }
 
    private StateColumnUI() {
-      super(AtsColumnId.State.name(), "State", 75, SWT.LEFT, true, SortDataType.String, false, null);
+      super(AtsColumnId.State.getId(), "State", 75, XViewerAlign.Left, true, SortDataType.String, false, null);
    }
 
    /**

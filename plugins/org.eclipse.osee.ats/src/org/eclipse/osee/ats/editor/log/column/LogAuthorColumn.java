@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.log.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
 import org.eclipse.osee.ats.core.workflow.log.AtsLogUtility;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class LogAuthorColumn extends XViewerValueColumn {
    }
 
    public LogAuthorColumn() {
-      super("ats.log.Author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, "");
+      super("ats.log.Author", "Author", 100, XViewerAlign.Left, true, SortDataType.String, false, "");
    }
 
    /**

@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
@@ -27,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -42,7 +43,7 @@ public class ActionableItemOwner extends XViewerAtsColumn implements IXViewerVal
    }
 
    protected ActionableItemOwner() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".aiOwner", "Actionable Item Owner", 80, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".aiOwner", "Actionable Item Owner", 80, XViewerAlign.Left, false,
          SortDataType.String, false, null);
    }
 

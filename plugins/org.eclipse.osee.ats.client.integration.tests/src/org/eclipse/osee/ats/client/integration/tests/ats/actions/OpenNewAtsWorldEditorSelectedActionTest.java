@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;

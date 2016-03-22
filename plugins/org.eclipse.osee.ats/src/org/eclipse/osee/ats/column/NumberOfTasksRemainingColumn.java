@@ -14,7 +14,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -42,7 +43,7 @@ public class NumberOfTasksRemainingColumn extends XViewerAtsColumn implements IX
    }
 
    private NumberOfTasksRemainingColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".numberOfTasksRemain", "Number of Tasks Remaining", 40, SWT.CENTER,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".numberOfTasksRemain", "Number of Tasks Remaining", 40, XViewerAlign.Center,
          false, SortDataType.Integer, false, null);
    }
 

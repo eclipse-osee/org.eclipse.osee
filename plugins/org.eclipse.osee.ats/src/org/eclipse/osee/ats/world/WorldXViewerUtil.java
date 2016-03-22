@@ -13,22 +13,21 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.column.StateAssigneesColumn;
 import org.eclipse.osee.ats.column.StateCompletedColumn;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.workdef.AtsWorkDefinitionSheetProviders;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -82,8 +81,8 @@ public class WorldXViewerUtil {
          try {
             AttributeType attrType = AttributeTypeManager.getTypeByGuid(column.getAttrTypeId());
             XViewerAtsAttributeValueColumn valueColumn = new XViewerAtsAttributeValueColumn(attrType, column.getWidth(),
-               getSwtAlign(column.getAlign()), column.isVisible(), SortDataType.valueOf(column.getSortDataType()),
-               column.isColumnMultiEdit(), column.getDescription());
+               AtsUtil.getXViewerAlign(column.getAlign()), column.isVisible(),
+               SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(), column.getDescription());
             valueColumn.setBooleanNotSetShow(column.getBooleanNotSetShow());
             valueColumn.setBooleanOnFalseShow(column.getBooleanOnFalseShow());
             valueColumn.setBooleanOnTrueShow(column.getBooleanOnTrueShow());
@@ -94,17 +93,6 @@ public class WorldXViewerUtil {
          }
       }
       return configColumns;
-   }
-
-   private static int getSwtAlign(ColumnAlign align) {
-      if (align == ColumnAlign.Left) {
-         return SWT.LEFT;
-      } else if (align == ColumnAlign.Center) {
-         return SWT.CENTER;
-      } else if (align == ColumnAlign.Right) {
-         return SWT.RIGHT;
-      }
-      return 0;
    }
 
    public static void registerStateColumns(XViewerFactory factory) {

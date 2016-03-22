@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -28,7 +29,7 @@ public class PercentReworkColumn extends XViewerAtsAttributeValueColumn {
 
    private PercentReworkColumn() {
       super(AtsAttributeTypes.PercentRework, WorldXViewerFactory.COLUMN_NAMESPACE + ".percentRework",
-         AtsAttributeTypes.PercentRework.getUnqualifiedName(), 40, SWT.CENTER, false, SortDataType.Percent, false, "");
+         AtsAttributeTypes.PercentRework.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Percent, false, "");
    }
 
    /**

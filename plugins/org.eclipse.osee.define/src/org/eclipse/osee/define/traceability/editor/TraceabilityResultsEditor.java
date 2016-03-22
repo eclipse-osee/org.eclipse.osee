@@ -14,9 +14,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab.
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.SWT;
 
 /**
  * @author John R. Misinco
@@ -52,9 +52,10 @@ public class TraceabilityResultsEditor extends AbstractOperation {
          }
       }
       List<XViewerColumn> artColumns = Arrays.asList(
-         new XViewerColumn("Requirement", "Requirement", 500, SWT.LEFT, true, SortDataType.String, false,
+         new XViewerColumn("Requirement", "Requirement", 500, XViewerAlign.Left, true, SortDataType.String, false,
             "Requirement Artifact"),
-         new XViewerColumn("Relation", "Relation", 75, SWT.LEFT, true, SortDataType.String, false, "Relation Type"));
+         new XViewerColumn("Relation", "Relation", 75, XViewerAlign.Left, true, SortDataType.String, false,
+            "Relation Type"));
 
       final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {

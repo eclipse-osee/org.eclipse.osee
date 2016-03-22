@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +42,7 @@ public class StateCompletedColumn extends XViewerAtsColumn implements IXViewerVa
 
    public StateCompletedColumn(String stateName) {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + "." + stateName + ".stateCompleted",
-         String.format("State [%s] Completed", stateName), 80, SWT.LEFT, false, SortDataType.String, false,
+         String.format("State [%s] Completed", stateName), 80, XViewerAlign.Left, false, SortDataType.String, false,
          String.format("Date state [%s] was completed", stateName));
       this.stateName = stateName;
    }

@@ -11,12 +11,13 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +31,7 @@ public class TeamColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    }
 
    private TeamColumn() {
-      super(AtsColumnId.Team.getId(), "Team", 50, SWT.LEFT, true, SortDataType.String, false,
+      super(AtsColumnId.Team.getId(), "Team", 50, XViewerAlign.Left, true, SortDataType.String, false,
          "Team that has been assigned to work this Action.");
    }
 

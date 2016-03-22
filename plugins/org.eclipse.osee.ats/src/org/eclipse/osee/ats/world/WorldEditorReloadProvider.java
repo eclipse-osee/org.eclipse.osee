@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;

@@ -18,14 +18,15 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Roberto E. Escobar
@@ -41,8 +42,8 @@ public class HierarchyIndexColumn extends XViewerValueColumn {
    }
 
    private HierarchyIndexColumn() {
-      super("framework.hierarchy.index", "Hierarchy Index", 50, SWT.LEFT, false, SortDataType.Paragraph_Number, false,
-         "Hierarchy Index");
+      super("framework.hierarchy.index", "Hierarchy Index", 50, XViewerAlign.Left, false, SortDataType.Paragraph_Number,
+         false, "Hierarchy Index");
    }
 
    /**

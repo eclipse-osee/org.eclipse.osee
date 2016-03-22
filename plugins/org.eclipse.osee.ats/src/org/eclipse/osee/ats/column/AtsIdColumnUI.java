@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +36,7 @@ public class AtsIdColumnUI extends XViewerValueColumn {
    }
 
    public AtsIdColumnUI(boolean show) {
-      super(AtsColumnId.AtsId.name(), "ATS ID", 75, SWT.LEFT, show, SortDataType.String, false, "ATS ID");
+      super(AtsColumnId.AtsId.getId(), "ATS ID", 75, XViewerAlign.Left, show, SortDataType.String, false, "ATS ID");
    }
 
    /**

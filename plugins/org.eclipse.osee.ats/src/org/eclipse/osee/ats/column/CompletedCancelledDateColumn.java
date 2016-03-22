@@ -14,7 +14,9 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +40,7 @@ public class CompletedCancelledDateColumn extends XViewerAtsColumn implements IX
    }
 
    private CompletedCancelledDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cmpCnclDate", "Completed or Cancelled Date", 80, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cmpCnclDate", "Completed or Cancelled Date", 80, XViewerAlign.Left, false,
          SortDataType.Date, false, "Date action to completed or cancelled.");
    }
 

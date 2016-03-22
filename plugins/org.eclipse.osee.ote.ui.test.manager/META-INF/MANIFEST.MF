@@ -47,6 +47,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.apache.xml.serialize,
  org.eclipse.jdt.core,
+ org.eclipse.nebula.widgets.xviewer.core.model,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.ote.ui.builder,
  org.eclipse.osee.ote.version,

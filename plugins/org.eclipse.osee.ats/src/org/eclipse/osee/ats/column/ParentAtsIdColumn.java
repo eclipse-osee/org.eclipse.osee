@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -21,7 +23,6 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +36,7 @@ public class ParentAtsIdColumn extends XViewerAtsColumn implements IXViewerValue
    }
 
    private ParentAtsIdColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentatsid", "Parent ATS ID", 75, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".parentatsid", "Parent ATS ID", 75, XViewerAlign.Left, false,
          SortDataType.String, false, "ATS ID of Parent Action or Team Workflow");
    }
 

@@ -10,30 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.access;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 
 public enum PolicyTableColumns {
-   dummyColumn("---", 0, 1 << 14, true, SortDataType.String, false, ""),
-   delete("", 25, 1 << 24, true, SortDataType.String, false, ""),
-   userName("User Name", 160, 1 << 14, true, SortDataType.String, false, ""),
-   totalAccess("Access Level", 80, 1 << 14, true, SortDataType.String, false, ""),
-   branchAccess("Branch", 75, 1 << 14, true, SortDataType.String, false, ""),
-   artifactType("Artifact Type", 80, 1 << 14, true, SortDataType.String, false, ""),
-   artifact("Artifact", 75, 1 << 14, true, SortDataType.String, false, "");
+   dummyColumn("---", 0, XViewerAlign.Left, true, SortDataType.String, false, ""),
+   delete("", 25, XViewerAlign.Center, true, SortDataType.String, false, ""),
+   userName("User Name", 160, XViewerAlign.Left, true, SortDataType.String, false, ""),
+   totalAccess("Access Level", 80, XViewerAlign.Left, true, SortDataType.String, false, ""),
+   branchAccess("Branch", 75, XViewerAlign.Left, true, SortDataType.String, false, ""),
+   artifactType("Artifact Type", 80, XViewerAlign.Left, true, SortDataType.String, false, ""),
+   artifact("Artifact", 75, XViewerAlign.Left, true, SortDataType.String, false, "");
 
    private final String label;
    private final int width;
-   private final int SWT;
+   private final XViewerAlign align;
    private final boolean show;
    private final SortDataType sortType;
    private final boolean multiColumnEditable;
    private final String description;
 
-   private PolicyTableColumns(String label, int width, int SWT, boolean show, SortDataType sortType, boolean multiColumnEditable, String description) {
+   private PolicyTableColumns(String label, int width, XViewerAlign align, boolean show, SortDataType sortType, boolean multiColumnEditable, String description) {
       this.label = label;
       this.width = width;
-      this.SWT = SWT;
+      this.align = align;
       this.show = show;
       this.sortType = sortType;
       this.multiColumnEditable = multiColumnEditable;
@@ -44,11 +45,11 @@ public enum PolicyTableColumns {
       XViewerColumn toReturn = null;
       if (this.equals(PolicyTableColumns.totalAccess)) {
          toReturn =
-            new XViewerColumn(this.toString(), label, width, SWT, show, sortType, multiColumnEditable, description);
+            new XViewerColumn(this.toString(), label, width, align, show, sortType, multiColumnEditable, description);
          toReturn.setMultiColumnEditable(true);
       } else {
          toReturn =
-            new XViewerColumn(this.toString(), label, width, SWT, show, sortType, multiColumnEditable, description);
+            new XViewerColumn(this.toString(), label, width, align, show, sortType, multiColumnEditable, description);
       }
       return toReturn;
    }

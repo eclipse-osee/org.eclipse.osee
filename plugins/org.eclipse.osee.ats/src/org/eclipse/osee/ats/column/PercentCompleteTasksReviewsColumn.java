@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -25,7 +27,6 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -40,7 +41,7 @@ public class PercentCompleteTasksReviewsColumn extends XViewerAtsColumn implemen
 
    private PercentCompleteTasksReviewsColumn() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".taskReviewPercentComplete", "Task and Review Percent Complete", 40,
-         SWT.CENTER, false, SortDataType.Percent, false,
+         XViewerAlign.Center, false, SortDataType.Percent, false,
          "Percent Complete for the tasks and reviews related to the workflow.\n\nCalculation: total percent of all tasks and reviews / number of tasks and reviews");
    }
 

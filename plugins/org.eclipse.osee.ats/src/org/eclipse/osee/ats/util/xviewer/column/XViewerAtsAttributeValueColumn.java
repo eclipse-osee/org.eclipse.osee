@@ -17,14 +17,17 @@ import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -53,18 +55,18 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
    String booleanOnFalseShow = null;
    String booleanNotSetShow = null;
 
-   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, attributeType.getName(), attributeType.getUnqualifiedName(), width, align, show,
          sortDataType, multiColumnEditable, description);
    }
 
-   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeValueColumn(IAttributeType attributeType, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(attributeType, id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
    public XViewerAtsAttributeValueColumn(AtsAttributeValueColumn column) {
       super(AttributeTypeManager.getTypeByGuid(column.getAttrTypeId()), column.getId(), column.getName(),
-         column.getWidth(), getSwtAlign(column), column.isVisible(), getSortDataType(column),
+         column.getWidth(), AtsUtil.getXViewerAlign(column.getAlign()), column.isVisible(), getSortDataType(column),
          column.isColumnMultiEdit(), column.getDescription());
    }
 
@@ -76,19 +78,6 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
          // do nothing
       }
       return result;
-   }
-
-   private static int getSwtAlign(AtsAttributeValueColumn column) {
-      if (column.getAlign() == ColumnAlign.Left) {
-         return SWT.LEFT;
-      }
-      if (column.getAlign() == ColumnAlign.Center) {
-         return SWT.CENTER;
-      }
-      if (column.getAlign() == ColumnAlign.Right) {
-         return SWT.RIGHT;
-      }
-      return SWT.LEFT;
    }
 
    protected XViewerAtsAttributeValueColumn() {
@@ -178,9 +167,9 @@ public class XViewerAtsAttributeValueColumn extends XViewerAtsAttributeColumn im
             String.format("No selected items valid for attribute [%s] editing", getAttributeType()));
          return;
       }
-      PromptChangeUtil.promptChangeAttribute(awas, getAttributeType(), isPersistViewer(getXViewer()),
-         isMultiLineStringAttribute());
-      getXViewer().update(awas.toArray(), null);
+      PromptChangeUtil.promptChangeAttribute(awas, getAttributeType(),
+         AtsAttributeColumnUtility.isPersistViewer((XViewer) getXViewer()), isMultiLineStringAttribute());
+      ((XViewer) getXViewer()).update(awas.toArray(), null);
    }
 
    /**

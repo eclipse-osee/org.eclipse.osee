@@ -13,8 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.results.example;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -63,11 +63,11 @@ public final class XViewerExample extends XNavigateItemAction {
                bigRows.add(new ResultsXViewerRow(new String[] {"Date " + x, "hello", "world"}));
             }
             List<XViewerColumn> columns = Arrays.asList(
-               new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true, SortDataType.String,
-                  false, ""),
-               new XViewerColumn(Columns.String1.name(), Columns.String1.name(), 80, SWT.LEFT, true,
+               new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, XViewerAlign.Left, true,
+                  SortDataType.String, false, ""),
+               new XViewerColumn(Columns.String1.name(), Columns.String1.name(), 80, XViewerAlign.Left, true,
                   SortDataType.Integer, false, ""),
-               new XViewerColumn(Columns.String2.name(), Columns.String2.name(), 80, SWT.LEFT, true,
+               new XViewerColumn(Columns.String2.name(), Columns.String2.name(), 80, XViewerAlign.Left, true,
                   SortDataType.Integer, false, ""));
             List<IResultsEditorTab> tabs = new ArrayList<>();
             tabs.add(new ResultsEditorTableTab("15,000 entries", columns, rows));

@@ -18,8 +18,9 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -323,7 +324,7 @@ public class ResultsEditorConverterTest {
       public List<XViewerColumn> getTableColumns() {
          List<XViewerColumn> xColumns = new ArrayList<>();
          for (String col : columns) {
-            xColumns.add(new XViewerColumn("", col, 0, 0, true, SortDataType.String, false, ""));
+            xColumns.add(new XViewerColumn("", col, 0, XViewerAlign.Left, true, SortDataType.String, false, ""));
          }
          return xColumns;
       }

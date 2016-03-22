@@ -18,7 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -36,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeArtifactDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -52,8 +53,8 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
    }
 
    private GroupsColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".groups", "Groups", 100, SWT.LEFT, false, SortDataType.String, true,
-         "Groups");
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".groups", "Groups", 100, XViewerAlign.Left, false,
+         SortDataType.String, true, "Groups");
    }
 
    /**
@@ -83,7 +84,7 @@ public class GroupsColumn extends XViewerAtsColumn implements IXViewerValueColum
                return false;
             }
             boolean modified = promptChangeGroups(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist groups via alt-left-click");
             }

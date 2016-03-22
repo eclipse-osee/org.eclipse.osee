@@ -40,8 +40,9 @@ import org.eclipse.birt.chart.model.layout.Legend;
 import org.eclipse.birt.chart.model.layout.Plot;
 import org.eclipse.birt.chart.model.type.LineSeries;
 import org.eclipse.birt.chart.model.type.impl.LineSeriesImpl;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,7 +61,6 @@ import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -123,11 +123,12 @@ public class ResultsEditorExample extends XNavigateItemAction {
             String.valueOf(chartValueStrsGoal.get(x))}));
       }
       List<XViewerColumn> columns = Arrays.asList(
-         new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, SWT.LEFT, true, SortDataType.Date, false, ""),
-         new XViewerColumn(Columns.Priority_123_Open_Bugs.name(), Columns.Priority_123_Open_Bugs.name(), 80, SWT.LEFT,
-            true, SortDataType.Integer, false, ""),
-         new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, SWT.LEFT, true, SortDataType.Integer, false,
-            ""));
+         new XViewerColumn(Columns.Date.name(), Columns.Date.name(), 80, XViewerAlign.Left, true, SortDataType.Date,
+            false, ""),
+         new XViewerColumn(Columns.Priority_123_Open_Bugs.name(), Columns.Priority_123_Open_Bugs.name(), 80,
+            XViewerAlign.Left, true, SortDataType.Integer, false, ""),
+         new XViewerColumn(Columns.Goal.name(), Columns.Goal.name(), 80, XViewerAlign.Left, true, SortDataType.Integer,
+            false, ""));
 
       return new ResultsEditorTableTab("Data", columns, rows);
 
@@ -139,9 +140,9 @@ public class ResultsEditorExample extends XNavigateItemAction {
 
    private IResultsEditorTab createArtifactTab() {
       List<XViewerColumn> artColumns = Arrays.asList(
-         new XViewerColumn("Artifact", "Artifact", 200, SWT.LEFT, true, SortDataType.String, false,
+         new XViewerColumn("Artifact", "Artifact", 200, XViewerAlign.Left, true, SortDataType.String, false,
             "Requirement Artifact"),
-         new XViewerColumn("GUID", "GUID", 200, SWT.LEFT, true, SortDataType.String, false, "TestScript Name"));
+         new XViewerColumn("GUID", "GUID", 200, XViewerAlign.Left, true, SortDataType.String, false, "TestScript Name"));
 
       List<IResultsXViewerRow> artRows = new ArrayList<>();
       List<Artifact> userArts = null;

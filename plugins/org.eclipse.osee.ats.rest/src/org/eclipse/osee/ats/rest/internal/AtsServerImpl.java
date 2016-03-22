@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
@@ -68,8 +69,6 @@ import org.eclipse.osee.ats.core.util.AtsCoreFactory;
 import org.eclipse.osee.ats.core.util.AtsCoreServiceImpl;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
-import org.eclipse.osee.ats.core.util.XViewerCustomization;
-import org.eclipse.osee.ats.core.util.XViewerCustomizationAttributeXmlParser;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
@@ -645,8 +644,8 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public XViewerCustomization getCustomizationByGuid(String customize_guid) {
-      XViewerCustomization cust = null;
+   public CustomizeData getCustomizationByGuid(String customize_guid) {
+      CustomizeData cust = null;
       ArtifactReadable customizeStoreArt =
          orcsApi.getQueryFactory().fromBranch(AtsUtilCore.getAtsBranch()).and(CoreAttributeTypes.XViewerCustomization,
             customize_guid, QueryOption.CONTAINS_MATCH_OPTIONS).getResults().getAtMostOneOrNull();
@@ -654,8 +653,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          for (String custXml : getAttributeResolver().getAttributesToStringList(customizeStoreArt,
             CoreAttributeTypes.XViewerCustomization)) {
             if (custXml.contains(customize_guid)) {
-               XViewerCustomizationAttributeXmlParser parser = new XViewerCustomizationAttributeXmlParser(custXml);
-               cust = parser.getCustomization();
+               cust = new CustomizeData(custXml);
                break;
             }
          }
@@ -681,30 +679,27 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<XViewerCustomization> getCustomizations(String namespace) {
-      List<XViewerCustomization> customizations = new ArrayList<>();
+   public Collection<CustomizeData> getCustomizations(String namespace) {
+      List<CustomizeData> customizations = new ArrayList<>();
       for (ArtifactId customizationArt : getCustomizeArts()) {
          addCustomizationsFromArts(namespace, customizations, customizationArt);
       }
       return customizations;
    }
 
-   private void addCustomizationsFromArts(String namespace, List<XViewerCustomization> customizations, ArtifactId customizationArt) {
+   private void addCustomizationsFromArts(String namespace, List<CustomizeData> customizations, ArtifactId customizationArt) {
       for (String custXml : getAttributeResolver().getAttributesToStringList(customizationArt,
          CoreAttributeTypes.XViewerCustomization)) {
          if (custXml.contains("\"" + namespace + "\"")) {
-            XViewerCustomizationAttributeXmlParser parser = new XViewerCustomizationAttributeXmlParser(custXml);
-            XViewerCustomization cust = parser.getCustomization();
-            if (cust != null) {
-               customizations.add(cust);
-            }
+            CustomizeData data = new CustomizeData(custXml);
+            customizations.add(data);
          }
       }
    }
 
    @Override
-   public Collection<XViewerCustomization> getCustomizationsGlobal(String namespace) {
-      List<XViewerCustomization> customizations = new ArrayList<>();
+   public Collection<CustomizeData> getCustomizationsGlobal(String namespace) {
+      List<CustomizeData> customizations = new ArrayList<>();
       for (ArtifactId customizationArt : getGlobalCustomizeArts()) {
          addCustomizationsFromArts(namespace, customizations, customizationArt);
       }

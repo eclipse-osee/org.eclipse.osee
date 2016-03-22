@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.history.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class TransactionColumn extends XViewerValueColumn {
    }
 
    public TransactionColumn() {
-      super("ats.history.Transaction", "Transaction", 80, SWT.LEFT, true, SortDataType.Integer, false, "");
+      super("ats.history.Transaction", "Transaction", 80, XViewerAlign.Left, true, SortDataType.Integer, false, "");
    }
 
    /**

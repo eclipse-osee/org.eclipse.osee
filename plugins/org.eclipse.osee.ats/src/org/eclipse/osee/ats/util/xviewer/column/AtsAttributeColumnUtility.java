@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.IAttributeColumn;
+import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * @author Donald G. Dunne
@@ -51,7 +54,7 @@ public class AtsAttributeColumnUtility {
                   useArt.persist("persist attribute via alt-left-click");
                }
                if (modified) {
-                  ((XViewerColumn) columnData).getTreeViewer().update(useArt, null);
+                  ((XViewer) ((XViewerColumn) columnData).getXViewer()).update(useArt, null);
                   return true;
                }
             }
@@ -61,6 +64,16 @@ public class AtsAttributeColumnUtility {
       }
 
       return false;
+   }
+
+   public static boolean isPersistViewer(TreeColumn treeColumn) {
+      return isPersistViewer((XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer());
+   }
+
+   public static boolean isPersistViewer(XViewer xViewer) {
+      return xViewer != null && //
+      xViewer instanceof IPersistAltLeftClickProvider //
+      && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
    }
 
 }

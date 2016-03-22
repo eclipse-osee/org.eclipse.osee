@@ -18,7 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -40,7 +42,6 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -57,7 +58,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
    }
 
    private AssigneeColumnUI() {
-      super(AtsColumnId.Assignees.name(), "Assignees", 100, SWT.LEFT, true, SortDataType.String, true, "");
+      super(AtsColumnId.Assignees.getId(), "Assignees", 100, XViewerAlign.Left, true, SortDataType.String, true, "");
    }
 
    /**
@@ -88,7 +89,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
             }
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) useArt;
             boolean modified = promptChangeAssignees(Arrays.asList(awa), isPersistViewer());
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                AtsChangeSet.execute("persist assignees via alt-left-click", awa);
             }

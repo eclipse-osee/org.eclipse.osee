@@ -11,8 +11,10 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,7 +35,7 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
     */
    @Override
    public AttributeColumn copy() {
-      AttributeColumn newXCol = new AttributeColumn(this.getXViewer(), this.toXml());
+      AttributeColumn newXCol = new AttributeColumn((XViewer) this.getXViewer(), this.toXml());
       this.copy(this, newXCol);
       return newXCol;
    }
@@ -50,7 +52,7 @@ public class AttributeColumn extends XViewerValueColumn implements IAttributeCol
       super(xViewer, xml);
    }
 
-   public AttributeColumn(String id, String name, IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public AttributeColumn(String id, String name, IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.attributeType = attributeType;
    }

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -22,7 +23,8 @@ import org.eclipse.swt.SWT;
 public class UuidColumn extends XViewerValueColumn {
 
    public UuidColumn(boolean show) {
-      super("framework.uuid", "Uuid", 75, SWT.LEFT, show, SortDataType.String, false, "Universally Unique Identifier");
+      super("framework.uuid", "Uuid", 75, XViewerAlign.Left, show, SortDataType.String, false,
+         "Universally Unique Identifier");
    }
 
    /**

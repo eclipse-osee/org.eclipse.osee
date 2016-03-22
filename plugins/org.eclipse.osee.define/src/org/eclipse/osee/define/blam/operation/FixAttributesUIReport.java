@@ -17,8 +17,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.Activator;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.define.blam.operation.FixAttributeOperation.Display;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.table.IResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.progress.UIJob;
 
 /**
@@ -59,7 +59,7 @@ public class FixAttributesUIReport implements Display {
    }
 
    private void addColumn(List<XViewerColumn> columns, String name) {
-      columns.add(new XViewerColumn(name, name, 120, SWT.LEFT, true, SortDataType.String, false, ""));
+      columns.add(new XViewerColumn(name, name, 120, XViewerAlign.Left, true, SortDataType.String, false, ""));
    }
 
    private void openReport(final ReportProvider report) {

@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.column;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -26,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -41,7 +42,7 @@ public class EndDateColumn extends XViewerAtsAttributeValueColumn {
 
    private EndDateColumn() {
       super(AtsAttributeTypes.EndDate, WorldXViewerFactory.COLUMN_NAMESPACE + ".endDate",
-         AtsAttributeTypes.EndDate.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.Date, true, "");
+         AtsAttributeTypes.EndDate.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date, true, "");
    }
 
    /**

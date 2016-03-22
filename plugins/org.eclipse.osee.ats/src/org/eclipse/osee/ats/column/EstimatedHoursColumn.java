@@ -11,7 +11,9 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.workflow.EstimatedHoursUtil;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -20,7 +22,6 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -35,7 +36,7 @@ public class EstimatedHoursColumn extends XViewerAtsAttributeValueColumn {
 
    private EstimatedHoursColumn() {
       super(AtsAttributeTypes.EstimatedHours, WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedHours",
-         AtsAttributeTypes.EstimatedHours.getUnqualifiedName(), 40, SWT.CENTER, false, SortDataType.Float, true, "");
+         AtsAttributeTypes.EstimatedHours.getUnqualifiedName(), 40, XViewerAlign.Center, false, SortDataType.Float, true, "");
    }
 
    /**

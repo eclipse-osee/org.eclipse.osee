@@ -11,6 +11,8 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.ReviewFormalType;
 import org.eclipse.osee.ats.internal.Activator;
@@ -19,7 +21,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -33,7 +34,7 @@ public class ReviewFormalTypeColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private ReviewFormalTypeColumn() {
-      super(AtsAttributeTypes.ReviewFormalType, 22, SWT.CENTER, true, SortDataType.String, true, "");
+      super(AtsAttributeTypes.ReviewFormalType, 22, XViewerAlign.Center, false, SortDataType.String, true, "");
    }
 
    /**

@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -24,14 +25,15 @@ public class ArtifactNameColumn extends XViewerValueColumn {
    private final boolean addDeletedLabel;
 
    public ArtifactNameColumn(boolean show) {
-      this(false, "framework.artifact.name", "Name", 150, SWT.LEFT, show, SortDataType.String, false, null);
+      this(false, "framework.artifact.name", "Name", 150, XViewerAlign.Left, show, SortDataType.String, false, null);
    }
 
    public ArtifactNameColumn(boolean show, boolean addDeletedLabel) {
-      this(addDeletedLabel, "framework.artifact.name", "Name", 150, SWT.LEFT, show, SortDataType.String, false, null);
+      this(addDeletedLabel, "framework.artifact.name", "Name", 150, XViewerAlign.Left, show, SortDataType.String, false,
+         null);
    }
 
-   public ArtifactNameColumn(boolean addDeletedLabel, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public ArtifactNameColumn(boolean addDeletedLabel, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.addDeletedLabel = addDeletedLabel;
    }

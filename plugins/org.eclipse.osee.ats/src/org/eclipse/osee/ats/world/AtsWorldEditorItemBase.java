@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;

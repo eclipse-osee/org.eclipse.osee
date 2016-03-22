@@ -11,8 +11,10 @@
 package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -22,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -37,8 +38,9 @@ public class OperationalImpactWorkaroundDesciptionColumn extends XViewerValueCol
    }
 
    private OperationalImpactWorkaroundDesciptionColumn() {
-      super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150, SWT.LEFT,
-         false, SortDataType.String, true, "What is the workaround for the operational impact to the product.");
+      super("ats.Operational Impact Workaround Description", "Operational Impact Workaround Description", 150,
+         XViewerAlign.Left, false, SortDataType.String, true,
+         "What is the workaround for the operational impact to the product.");
    }
 
    /**

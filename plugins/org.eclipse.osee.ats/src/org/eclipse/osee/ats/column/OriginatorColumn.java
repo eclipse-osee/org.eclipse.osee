@@ -18,7 +18,9 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -40,7 +42,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -57,7 +58,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
    }
 
    private OriginatorColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".originator", "Originator", 80, SWT.LEFT, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".originator", "Originator", 80, XViewerAlign.Left, false,
          SortDataType.String, true, null);
    }
 
@@ -88,7 +89,7 @@ public class OriginatorColumn extends XViewerAtsColumn implements IXViewerValueC
                return false;
             }
             boolean modified = promptChangeOriginator(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist goals via alt-left-click");
             }

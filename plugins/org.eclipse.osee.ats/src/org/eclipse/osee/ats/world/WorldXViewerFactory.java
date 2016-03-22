@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.world;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.agile.AgileFeatureGroupColumn;
 import org.eclipse.osee.ats.agile.SprintColumn;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;

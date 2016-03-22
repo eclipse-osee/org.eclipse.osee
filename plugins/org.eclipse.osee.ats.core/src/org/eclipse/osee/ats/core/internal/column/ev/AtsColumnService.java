@@ -55,16 +55,22 @@ public class AtsColumnService implements IAtsColumnService {
       if (columnIdToAtsColumn == null) {
          columnIdToAtsColumn = new HashMap<String, IAtsColumn>();
       }
+
+      // Get from cache
       IAtsColumn column = columnIdToAtsColumn.get(id);
-      if (column == null) {
-         for (AtsAttributeValueColumn attrCol : configurations.getViews().getAttrColumns()) {
-            if (id.equals(attrCol.getId())) {
-               column = new AtsAttributeValueColumnHandler(attrCol, services);
-               add(id, column);
-               break;
-            }
+      if (column != null) {
+         return column;
+      }
+
+      // Add from database configurations
+      for (AtsAttributeValueColumn attrCol : configurations.getViews().getAttrColumns()) {
+         if (id.equals(attrCol.getId())) {
+            column = new AtsAttributeValueColumnHandler(attrCol, services);
+            break;
          }
       }
+
+      // Add from coded columns
       if (column == null) {
          if (id.equals(AtsColumnId.ActionableItem.getId())) {
             column = new ActionableItemsColumn(services);

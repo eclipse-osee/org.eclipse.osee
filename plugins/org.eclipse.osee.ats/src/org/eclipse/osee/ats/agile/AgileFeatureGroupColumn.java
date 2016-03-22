@@ -21,7 +21,9 @@ import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.agile.AgileEndpointApi;
 import org.eclipse.osee.ats.api.agile.IAgileFeatureGroup;
@@ -51,7 +53,6 @@ import org.eclipse.osee.framework.ui.plugin.util.StringLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.util.StringNameSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -67,7 +68,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
    }
 
    private AgileFeatureGroupColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".agileFeatureGroup", "Feature Group", 40, SWT.LEFT, true,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".agileFeatureGroup", "Feature Group", 40, XViewerAlign.Left, false,
          SortDataType.String, true, "Agile Feature Group for this Item.");
    }
 
@@ -88,7 +89,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
             boolean modified = promptChangeFeatureGroup(Arrays.asList(awa));
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                awa.persist("persist goals via alt-left-click");
             }
@@ -226,7 +227,7 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
          }
 
          promptChangeFeatureGroup(awas);
-         getXViewer().update(awas.toArray(), null);
+         ((XViewer) getXViewer()).update(awas.toArray(), null);
          return;
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

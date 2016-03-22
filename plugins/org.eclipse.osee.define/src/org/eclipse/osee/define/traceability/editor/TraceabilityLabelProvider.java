@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.traceability.editor;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;

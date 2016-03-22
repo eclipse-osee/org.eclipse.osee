@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,13 +49,13 @@ public class XViewerAtsAttributeColumn extends XViewerAtsColumn implements IAttr
       super();
    }
 
-   public XViewerAtsAttributeColumn(IAttributeType attributeType, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeColumn(IAttributeType attributeType, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable,
          Strings.isValid(description) ? description : attributeType.getDescription());
       this.attributeType = attributeType;
    }
 
-   public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsAttributeColumn(IAttributeType attributeType, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       this(attributeType, generateId(attributeType.getUnqualifiedName()), attributeType.getUnqualifiedName(), width,
          align, show, sortDataType, multiColumnEditable, description);
    }

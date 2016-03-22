@@ -25,7 +25,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -263,9 +263,8 @@ public class TestRunXViewer extends XViewer {
             if (!name.equals(Artifact.UNNAMED)) {
                Artifact dispoArtifact = null;
                try {
-                  dispoArtifact =
-                     ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
-                        artifact.getBranch());
+                  dispoArtifact = ArtifactQuery.getArtifactFromTypeAndName(CoreArtifactTypes.TestRunDisposition, name,
+                     artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
                   dispoArtifact =
                      ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestRunDisposition, artifact.getBranch());
@@ -278,9 +277,8 @@ public class TestRunXViewer extends XViewer {
          }
       }
       try {
-         returnValue =
-            ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TestDisposition, dispositionArtifacts, true,
-               false);
+         returnValue = ArtifactPromptChange.promptChangeAttribute(OteAttributeTypes.TestDisposition,
+            dispositionArtifacts, true, false);
          refresh();
       } catch (Exception ex) {
          OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);

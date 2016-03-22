@@ -20,8 +20,10 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
+import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -396,6 +398,26 @@ public final class AtsUtil {
 
    public static void openAction(IAtsAction action, AtsOpenOption atsOpenOption) {
       openATSAction((Artifact) action.getStoreObject(), atsOpenOption);
+   }
+
+   public static XViewerAlign getXViewerAlign(ColumnAlign columnAlign) {
+      if (columnAlign == ColumnAlign.Center) {
+         return XViewerAlign.Center;
+      }
+      if (columnAlign == ColumnAlign.Right) {
+         return XViewerAlign.Right;
+      }
+      return XViewerAlign.Left;
+   }
+
+   public static ColumnAlign getColumnAlign(XViewerAlign xViewerAlign) {
+      if (xViewerAlign == XViewerAlign.Center) {
+         return ColumnAlign.Center;
+      }
+      if (xViewerAlign == XViewerAlign.Right) {
+         return ColumnAlign.Right;
+      }
+      return ColumnAlign.Left;
    }
 
 }

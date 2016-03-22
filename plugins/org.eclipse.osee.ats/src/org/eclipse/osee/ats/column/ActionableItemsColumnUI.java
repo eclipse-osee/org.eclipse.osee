@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -21,7 +23,6 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +37,8 @@ public class ActionableItemsColumnUI extends XViewerAtsAttributeValueColumn {
 
    private ActionableItemsColumnUI() {
       super(AtsAttributeTypes.ActionableItem, AtsColumnId.ActionableItem.name(),
-         AtsAttributeTypes.ActionableItem.getUnqualifiedName(), 80, SWT.LEFT, true, SortDataType.String, false, "");
+         AtsAttributeTypes.ActionableItem.getUnqualifiedName(), 80, XViewerAlign.Left, true, SortDataType.String, false,
+         "");
    }
 
    /**

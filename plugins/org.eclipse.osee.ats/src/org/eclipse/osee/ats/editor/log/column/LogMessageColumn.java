@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.log.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogItem;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class LogMessageColumn extends XViewerValueColumn {
    }
 
    public LogMessageColumn() {
-      super("ats.log.Message", "Message", 175, SWT.LEFT, true, SortDataType.String, false, "");
+      super("ats.log.Message", "Message", 175, XViewerAlign.Left, true, SortDataType.String, false, "");
    }
 
    /**

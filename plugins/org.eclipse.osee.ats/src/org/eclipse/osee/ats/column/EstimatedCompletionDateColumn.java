@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.Date;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -47,7 +48,7 @@ public class EstimatedCompletionDateColumn extends XViewerAtsAttributeValueColum
    private EstimatedCompletionDateColumn() {
       super(AtsAttributeTypes.EstimatedCompletionDate,
          WorldXViewerFactory.COLUMN_NAMESPACE + ".estimatedCompletionDate",
-         AtsAttributeTypes.EstimatedCompletionDate.getUnqualifiedName(), 80, SWT.LEFT, false, SortDataType.Date, true,
+         AtsAttributeTypes.EstimatedCompletionDate.getUnqualifiedName(), 80, XViewerAlign.Left, false, SortDataType.Date, true,
          "");
    }
 

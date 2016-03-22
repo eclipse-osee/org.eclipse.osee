@@ -12,33 +12,33 @@ package org.eclipse.osee.ote.ui.test.manager.pages.scriptTable.xscript;
 
 import java.io.File;
 import java.util.logging.Level;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.FileStoreCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
  */
 public class XScriptTableFactory extends XViewerFactory {
    private static String COLUMN_NAMESPACE = "xviewer.script.table";
-   public static XViewerColumn RUN = new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 42, SWT.LEFT, true,
+   public static XViewerColumn RUN = new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 42, XViewerAlign.Left, true,
       SortDataType.Boolean, false, null);
-   public static XViewerColumn TEST = new XViewerColumn(COLUMN_NAMESPACE + ".test", "Test", 275, SWT.LEFT, true,
-      SortDataType.String, false, null);
-   public static XViewerColumn STATUS = new XViewerColumn(COLUMN_NAMESPACE + ".status", "Status", 125, SWT.LEFT, true,
-      SortDataType.String, false, null);
-   public static XViewerColumn RESULT = new XViewerColumn(COLUMN_NAMESPACE + ".result", "Result", 125, SWT.LEFT, true,
-      SortDataType.String, false, null);
+   public static XViewerColumn TEST = new XViewerColumn(COLUMN_NAMESPACE + ".test", "Test", 275, XViewerAlign.Left,
+      true, SortDataType.String, false, null);
+   public static XViewerColumn STATUS = new XViewerColumn(COLUMN_NAMESPACE + ".status", "Status", 125,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
+   public static XViewerColumn RESULT = new XViewerColumn(COLUMN_NAMESPACE + ".result", "Result", 125,
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn OUPUT_FILE = new XViewerColumn(COLUMN_NAMESPACE + ".outfile", "Output File", 70,
-      SWT.LEFT, true, SortDataType.String, false, null);
+      XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn TEST_LOCATION = new XViewerColumn(COLUMN_NAMESPACE + ".testlocation", "Test Location",
-      160, SWT.LEFT, true, SortDataType.String, false, null);
+      160, XViewerAlign.Left, true, SortDataType.String, false, null);
 
    private final FileStoreCustomizations propertyStoreCustomizations;
 

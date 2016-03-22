@@ -15,7 +15,9 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -44,7 +45,7 @@ public class CancelledDateColumn extends XViewerAtsColumn implements IXViewerVal
    }
 
    private CancelledDateColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cancelledDate", "Cancelled Date", 80, SWT.CENTER, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".cancelledDate", "Cancelled Date", 80, XViewerAlign.Center, false,
          SortDataType.Date, false, null);
    }
 

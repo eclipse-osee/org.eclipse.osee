@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.util.IColumn;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -20,7 +21,7 @@ import org.eclipse.swt.SWT;
 public class XViewerIColumnAdapter extends XViewerColumn {
 
    public XViewerIColumnAdapter(IColumn column) {
-      super(column.getId(), column.getName(), 80, SWT.LEFT, true, SortDataType.valueOf(column.getDataType().name()),
-         false, column.getDescription());
+      super(column.getId(), column.getName(), 80, XViewerAlign.Left, true,
+         SortDataType.valueOf(column.getDataType().name()), false, column.getDescription());
    }
 }

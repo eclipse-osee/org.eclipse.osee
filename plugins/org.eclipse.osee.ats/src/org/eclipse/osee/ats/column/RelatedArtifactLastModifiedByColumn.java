@@ -11,14 +11,15 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Morgan E. Cook
@@ -33,7 +34,7 @@ public class RelatedArtifactLastModifiedByColumn extends XViewerAtsColumn implem
 
    private RelatedArtifactLastModifiedByColumn() {
       super(WorldXViewerFactory.COLUMN_NAMESPACE + ".RelatedArtifactLastModifiedByColumn",
-         "Related Artifact Last Modified By", 75, SWT.LEFT, true, SortDataType.String, false,
+         "Related Artifact Last Modified By", 75, XViewerAlign.Left, false, SortDataType.String, false,
          "Shows the last person to modify the related artifact");
    }
 

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.task;
 
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.world.WorldEditorProvider;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 

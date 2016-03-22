@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.artifact.MembersManager;
@@ -26,7 +28,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -49,7 +50,7 @@ public class GoalOrderColumn extends AbstractMembersOrderColumn {
    }
 
    protected GoalOrderColumn(boolean backlog, String id, String name) {
-      super(id, name, DEFAULT_WIDTH, SWT.LEFT, false, SortDataType.Integer, true,
+      super(id, name, DEFAULT_WIDTH, XViewerAlign.Left, false, SortDataType.Integer, true,
          "Order of item within displayed " + (backlog ? "Backlog" : "Goal") + ".  Editing this field changes order.");
       this.backlog = backlog;
    }
@@ -73,7 +74,7 @@ public class GoalOrderColumn extends AbstractMembersOrderColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         XViewer xViewer = getXViewer();
+         XViewer xViewer = (XViewer) getXViewer();
          IXViewerFactory xViewerFactory = xViewer.getXViewerFactory();
          GoalArtifact parentGoalArtifact = null;
          if (xViewerFactory instanceof GoalXViewerFactory) {

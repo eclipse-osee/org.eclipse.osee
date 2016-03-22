@@ -10,15 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.xviewer.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.review.AbstractReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.role.UserRoleManager;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -38,11 +39,11 @@ public class XViewerReviewRoleColumn extends XViewerValueColumn {
    }
 
    public XViewerReviewRoleColumn(IAtsUser user) {
-      super("ats.column.role", "Role", 75, SWT.LEFT, true, SortDataType.String, false, null);
+      super("ats.column.role", "Role", 75, XViewerAlign.Left, true, SortDataType.String, false, null);
       this.user = user;
    }
 
-   public XViewerReviewRoleColumn(IAtsUser user, String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerReviewRoleColumn(IAtsUser user, String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
       this.user = user;
    }

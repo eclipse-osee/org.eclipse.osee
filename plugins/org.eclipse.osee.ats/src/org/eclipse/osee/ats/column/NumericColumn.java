@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +33,7 @@ public class NumericColumn extends XViewerAtsAttributeValueColumn {
    }
 
    public NumericColumn(IAttributeType attributeType) {
-      super(attributeType, 40, SWT.LEFT, false, SortDataType.Float, true, "");
+      super(attributeType, 40, XViewerAlign.Left, false, SortDataType.Float, true, "");
    }
 
    private NumericColumn() {

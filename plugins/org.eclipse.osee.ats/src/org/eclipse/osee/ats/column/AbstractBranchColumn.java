@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -28,7 +30,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -36,8 +37,8 @@ import org.eclipse.swt.SWT;
 public abstract class AbstractBranchColumn extends XViewerAtsColumn implements IXViewerValueColumn {
 
    public AbstractBranchColumn(String idPostfix, String name) {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + idPostfix, name, 40, SWT.CENTER, false, SortDataType.String, false,
-         null);
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + idPostfix, name, 40, XViewerAlign.Center, false, SortDataType.String,
+         false, null);
    }
 
    @Override

@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -44,7 +45,7 @@ public abstract class AbstractNumericTotalColumn extends XViewerAtsColumn implem
    private final IAttributeType pointsAttrType;
 
    public AbstractNumericTotalColumn(String id, String name, String description, String calulationStr, IAttributeType pointsAttrType) {
-      super(id, name, 40, SWT.CENTER, false, SortDataType.Float, false, description);
+      super(id, name, 40, XViewerAlign.Center, false, SortDataType.Float, false, description);
       this.calulationStr = calulationStr;
       this.pointsAttrType = pointsAttrType;
    }

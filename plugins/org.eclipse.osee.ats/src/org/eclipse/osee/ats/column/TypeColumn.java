@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.column;
 
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
@@ -20,7 +22,6 @@ import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -35,7 +36,7 @@ public class TypeColumn extends XViewerAtsColumn implements IXViewerValueColumn 
    }
 
    private TypeColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".type", "Type", 150, SWT.LEFT, true, SortDataType.String, false,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".type", "Type", 150, XViewerAlign.Left, true, SortDataType.String, false,
          null);
    }
 

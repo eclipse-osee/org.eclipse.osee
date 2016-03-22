@@ -11,14 +11,15 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +33,7 @@ public class PercentCompleteTasksColumnUI extends XViewerAtsColumn implements IX
    }
 
    private PercentCompleteTasksColumnUI() {
-      super(AtsColumnId.PercentCompleteTasks.getId(), "Task Percent Complete", 40, SWT.CENTER, false,
+      super(AtsColumnId.PercentCompleteTasks.getId(), "Task Percent Complete", 40, XViewerAlign.Center, false,
          SortDataType.Percent, false,
          "Percent Complete for the tasks related to the workflow.\n\nCalculation: total percent of all tasks / number of tasks");
    }

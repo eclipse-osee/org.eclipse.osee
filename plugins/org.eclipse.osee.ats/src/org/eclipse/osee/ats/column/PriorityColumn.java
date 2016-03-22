@@ -15,7 +15,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
@@ -30,7 +32,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -46,7 +47,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private PriorityColumn() {
-      super(AtsAttributeTypes.PriorityType, 20, SWT.LEFT, true, SortDataType.String, true, "");
+      super(AtsAttributeTypes.PriorityType, 20, XViewerAlign.Left, true, SortDataType.String, true, "");
    }
 
    /**
@@ -107,7 +108,7 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
             }
 
             boolean modified = promptChangePriority(Arrays.asList((TeamWorkFlowArtifact) useArt), isPersistViewer());
-            XViewer xViewer = ((XViewerColumn) treeColumn.getData()).getTreeViewer();
+            XViewer xViewer = (XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer();
             if (modified && isPersistViewer(xViewer)) {
                useArt.persist("persist priority via alt-left-click");
             }

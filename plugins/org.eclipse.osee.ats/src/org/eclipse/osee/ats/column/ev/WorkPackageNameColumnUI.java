@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column.ev;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +26,7 @@ public class WorkPackageNameColumnUI extends AbstractWorkPackageRelatedColumnUI 
    }
 
    private WorkPackageNameColumnUI() {
-      super(AtsColumnId.WorkPackageName, AtsColumnId.WorkPackageName.getId(), "Work Package Name", 80, SWT.LEFT, false,
+      super(AtsColumnId.WorkPackageName, AtsColumnId.WorkPackageName.getId(), "Work Package Name", 80, XViewerAlign.Left, false,
          SortDataType.String, true,
          "Provides Work Package Name from the selected Work Package related to the selected workflow.");
    }

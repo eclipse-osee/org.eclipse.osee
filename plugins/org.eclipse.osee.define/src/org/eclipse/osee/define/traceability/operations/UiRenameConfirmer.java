@@ -17,10 +17,11 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.define.internal.Activator;
 import org.eclipse.osee.define.traceability.operations.TraceResourceDropOperation.RenameConfirmer;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
@@ -108,9 +109,9 @@ public class UiRenameConfirmer implements RenameConfirmer {
       private static String COLUMN_NAMESPACE = "xviewer.rename.dialog.table";
 
       public static XViewerColumn FROM_NAME_COLUMN = new XViewerColumn(COLUMN_NAMESPACE + ".from.name", "From Name",
-         200, SWT.LEFT, true, SortDataType.String, false, null);
+         200, XViewerAlign.Left, true, SortDataType.String, false, null);
       public static XViewerColumn TO_NAME_COLUMN = new XViewerColumn(COLUMN_NAMESPACE + ".to.name", "To Name", 200,
-         SWT.LEFT, true, SortDataType.String, false, null);
+         XViewerAlign.Left, true, SortDataType.String, false, null);
 
       public XTableFactory() {
          super(COLUMN_NAMESPACE);

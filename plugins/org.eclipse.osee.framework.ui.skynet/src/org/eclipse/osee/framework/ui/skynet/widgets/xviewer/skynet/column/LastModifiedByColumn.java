@@ -10,14 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -25,7 +26,7 @@ import org.eclipse.swt.SWT;
 public class LastModifiedByColumn extends XViewerValueColumn {
 
    public LastModifiedByColumn(boolean show) {
-      super("framework.lastModBy", "Last Modified By", 50, SWT.LEFT, show, SortDataType.String, false,
+      super("framework.lastModBy", "Last Modified By", 50, XViewerAlign.Left, show, SortDataType.String, false,
          "Retrieves user of last attribute update of this artifact.");
    }
 

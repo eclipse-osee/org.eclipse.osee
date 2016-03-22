@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.swt.SWT;
 
@@ -23,7 +25,7 @@ public class AtsAttributeValueColumnFactory {
       col.setNamespace(namespace);
       col.setAttrTypeId(inCol.getAttributeType().getGuid());
       col.setAttrTypeName(inCol.getAttributeType().getName());
-      ColumnAlign colAlign = getColumnAlign(inCol.getAlign());
+      ColumnAlign colAlign = AtsUtil.getColumnAlign(inCol.getAlign());
       col.setAlign(colAlign);
       col.setColumnMultiEdit(inCol.isMultiColumnEditable());
       col.setDescription(inCol.getDescription());
@@ -37,13 +39,13 @@ public class AtsAttributeValueColumnFactory {
       return col;
    }
 
-   public static ColumnAlign getColumnAlign(int colNum) {
+   public static XViewerAlign getColumnAlign(int colNum) {
       if (colNum == SWT.LEFT) {
-         return ColumnAlign.Left;
+         return XViewerAlign.Left;
       } else if (colNum == SWT.CENTER) {
-         return ColumnAlign.Center;
+         return XViewerAlign.Center;
       } else if (colNum == SWT.RIGHT) {
-         return ColumnAlign.Right;
+         return XViewerAlign.Right;
       }
       return null;
    }

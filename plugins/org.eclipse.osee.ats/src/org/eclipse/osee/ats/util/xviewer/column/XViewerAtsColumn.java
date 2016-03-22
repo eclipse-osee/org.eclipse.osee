@@ -16,7 +16,9 @@ import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.TreeColumn;
 
 /**
  * Eventually, when all ATS columns are converted to value columns, this class should implement IAltLeftClickProvider,
@@ -46,7 +47,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       super();
    }
 
-   public XViewerAtsColumn(String id, String name, int width, int align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
+   public XViewerAtsColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {
       super(id, name, width, align, show, sortDataType, multiColumnEditable, description);
    }
 
@@ -54,18 +55,12 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
       super(xViewer, xml);
    }
 
-   protected boolean isPersistViewer(TreeColumn treeColumn) {
-      return isPersistViewer(((XViewerColumn) treeColumn.getData()).getTreeViewer());
-   }
-
    protected boolean isPersistViewer() {
-      return isPersistViewer(getXViewer());
+      return isPersistViewer((XViewer) getXViewer());
    }
 
    protected boolean isPersistViewer(XViewer xViewer) {
-      return xViewer != null && //
-      xViewer instanceof IPersistAltLeftClickProvider //
-      && ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
+      return AtsAttributeColumnUtility.isPersistViewer(xViewer);
    }
 
    public Image getColumnImage(Object element, XViewerColumn column, int columnIndex) {
@@ -95,7 +90,7 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
    }
 
    protected boolean isPersistAltLeftClick() {
-      XViewer xViewer = getXViewer();
+      XViewer xViewer = (XViewer) getXViewer();
       if (xViewer instanceof IPersistAltLeftClickProvider) {
          return ((IPersistAltLeftClickProvider) xViewer).isAltLeftClickPersist();
       }

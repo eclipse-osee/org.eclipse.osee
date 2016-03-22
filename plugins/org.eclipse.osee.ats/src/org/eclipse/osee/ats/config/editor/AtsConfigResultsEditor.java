@@ -14,9 +14,10 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab.
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.osee.framework.ui.skynet.results.table.xresults.ResultsXViewer;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -48,10 +48,10 @@ public class AtsConfigResultsEditor extends AbstractOperation {
       for (IAtsConfigObject obj : configObjects) {
          artRows.add(new ResultsXViewerRow(new String[] {obj.getName(), ""}, obj));
       }
-      List<XViewerColumn> artColumns =
-         Arrays.asList(new XViewerColumn("Type", "Type", 175, SWT.LEFT, true, SortDataType.String, false, "Type"),
-            new XViewerColumn("Name", "Name", 300, SWT.LEFT, true, SortDataType.String, false, "Name"),
-            new XViewerColumn("Guid", "Guid", 150, SWT.LEFT, true, SortDataType.String, false, "Guid"));
+      List<XViewerColumn> artColumns = Arrays.asList(
+         new XViewerColumn("Type", "Type", 175, XViewerAlign.Left, true, SortDataType.String, false, "Type"),
+         new XViewerColumn("Name", "Name", 300, XViewerAlign.Left, true, SortDataType.String, false, "Name"),
+         new XViewerColumn("Guid", "Guid", 150, XViewerAlign.Left, true, SortDataType.String, false, "Guid"));
 
       final List<IResultsEditorTab> toReturn = new LinkedList<>();
       IResultsEditorLabelProvider provider = new IResultsEditorLabelProvider() {

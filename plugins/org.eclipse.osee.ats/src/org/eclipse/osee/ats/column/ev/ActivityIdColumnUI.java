@@ -19,7 +19,10 @@ import org.eclipse.jface.window.Window;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
@@ -37,7 +40,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -56,7 +58,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
    }
 
    private ActivityIdColumnUI() {
-      super(AtsColumnId.ActivityId.getId(), "Activity Id", 80, SWT.LEFT, false, SortDataType.String, true,
+      super(AtsColumnId.ActivityId.getId(), "Activity Id", 80, XViewerAlign.Left, false, SortDataType.String, true,
          "Provides Activity Id and Name from the selected Work Package related to the selected workflow.");
    }
 
@@ -96,7 +98,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
             if (useAwa != null) {
                modified = promptChangeActivityId(useAwa, false);
                if (modified) {
-                  ((XViewerColumn) treeColumn.getData()).getTreeViewer().update(useAwa, null);
+                  ((XViewer) ((XViewerColumn) treeColumn.getData()).getXViewer()).update(useAwa, null);
                }
             }
          }

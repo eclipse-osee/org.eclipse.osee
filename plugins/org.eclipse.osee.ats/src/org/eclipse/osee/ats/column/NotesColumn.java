@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.column;
 
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +28,7 @@ public class NotesColumn extends XViewerAtsAttributeValueColumn {
    }
 
    private NotesColumn() {
-      super(AtsAttributeTypes.SmaNote, WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", "Notes", 80, SWT.LEFT, true,
+      super(AtsAttributeTypes.SmaNote, WorldXViewerFactory.COLUMN_NAMESPACE + ".notes", "Notes", 80, XViewerAlign.Left, true,
          SortDataType.String, true, "");
    }
 

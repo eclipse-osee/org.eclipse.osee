@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import java.util.Collection;
 import org.eclipse.jface.action.Action;
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.api.version.IAtsVersion;

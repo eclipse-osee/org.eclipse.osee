@@ -14,6 +14,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.nebula.widgets.xviewer.IXViewerPreComputedColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.core.column.ColorTeamColumn;
@@ -22,7 +24,6 @@ import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -39,7 +40,7 @@ public class ColorTeamColumnUI extends XViewerAtsColumn implements IXViewerPreCo
    }
 
    public ColorTeamColumnUI() {
-      super(ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, SWT.LEFT, false, SortDataType.String, true,
+      super(ColorTeamColumn.ATS_COLOR_TEAM_COLUMN_ID, "Color Team", 45, XViewerAlign.Left, false, SortDataType.String, true,
          "Color Team associated by related Work Package");
    }
 

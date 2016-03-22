@@ -11,14 +11,15 @@
 package org.eclipse.osee.ats.column;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.core.column.BacklogColumn;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -32,7 +33,7 @@ public class BacklogColumnUI extends XViewerAtsColumn implements IXViewerValueCo
    }
 
    private BacklogColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".backlog", "Backlog", 100, SWT.LEFT, false, SortDataType.String,
+      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".backlog", "Backlog", 100, XViewerAlign.Left, false, SortDataType.String,
          true,
          "Backlog that this item belongs to.  (BL) if Agile Backlog, else Goal (which are sometimes used as backlogs)");
    }

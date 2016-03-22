@@ -11,12 +11,13 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.swt.SWT;
 
 /**
  * @author Donald G. Dunne
@@ -30,7 +31,7 @@ public class ArtifactTokenColumn extends XViewerValueColumn {
    }
 
    public ArtifactTokenColumn() {
-      super("framework.artToken", "Artifact Token", 50, SWT.LEFT, false, SortDataType.String, false,
+      super("framework.artToken", "Artifact Token", 50, XViewerAlign.Left, false, SortDataType.String, false,
          "Artifact Token formatted as needed for ORCS Writer.");
    }
 

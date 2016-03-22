@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.agile;
 
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.MembersManager;
 import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
@@ -25,7 +27,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -43,7 +44,7 @@ public class SprintOrderColumn extends AbstractMembersOrderColumn {
    private SprintManager sprintManager;
 
    private SprintOrderColumn() {
-      super(COLUMN_ID, "Sprint Order", 45, SWT.LEFT, false, SortDataType.Integer, true,
+      super(COLUMN_ID, "Sprint Order", 45, XViewerAlign.Left, false, SortDataType.Integer, true,
          "Order of item within displayed sprint.  Editing this field changes order.");
    }
 
@@ -57,7 +58,7 @@ public class SprintOrderColumn extends AbstractMembersOrderColumn {
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
-         XViewer xViewer = getXViewer();
+         XViewer xViewer = (XViewer) getXViewer();
          IXViewerFactory xViewerFactory = xViewer.getXViewerFactory();
          SprintArtifact parentSprintArtifact = null;
          if (xViewerFactory instanceof SprintXViewerFactory) {

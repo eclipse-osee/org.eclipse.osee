@@ -11,9 +11,8 @@
 package org.eclipse.osee.ats.util;
 
 import org.codehaus.jackson.map.ObjectMapper;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
-import org.eclipse.osee.ats.column.AtsAttributeValueColumnFactory;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
@@ -52,7 +51,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             valueColumn.setAttrTypeId(attrType.getId());
             valueColumn.setAttrTypeName(attrType.getName());
             valueColumn.setWidth(column.getWidth());
-            valueColumn.setAlign(AtsAttributeValueColumnFactory.getColumnAlign(column.getAlign()));
+            valueColumn.setAlign(AtsUtil.getColumnAlign(column.getAlign()));
             valueColumn.setVisible(column.isShow());
             valueColumn.setSortDataType(column.getSortDataType().name());
             valueColumn.setColumnMultiEdit(column.isMultiColumnEditable());

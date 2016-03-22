@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.Collection;
-import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.world.search.NextVersionSearchItem;
 import org.eclipse.osee.ats.world.search.VersionTargetedForTeamSearchItem;
