@@ -16,6 +16,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
 import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
@@ -55,16 +56,19 @@ public class AssigneeColumn implements IAtsColumn {
          List<IAtsUser> pocs = new ArrayList<>();
          List<IAtsUser> implementers = new ArrayList<>();
          for (IAtsWorkItem action : hasActions.getActions()) {
-            if (action.getStateMgr().getStateType().isCompletedOrCancelled()) {
-               for (IAtsUser user : action.getImplementers()) {
-                  if (!implementers.contains(user)) {
-                     implementers.add(user);
+            StateType stateType = action.getStateMgr().getStateType();
+            if (stateType != null) {
+               if (stateType.isCompletedOrCancelled()) {
+                  for (IAtsUser user : action.getImplementers()) {
+                     if (!implementers.contains(user)) {
+                        implementers.add(user);
+                     }
                   }
-               }
-            } else {
-               for (IAtsUser user : action.getAssignees()) {
-                  if (!pocs.contains(user)) {
-                     pocs.add(user);
+               } else {
+                  for (IAtsUser user : action.getAssignees()) {
+                     if (!pocs.contains(user)) {
+                        pocs.add(user);
+                     }
                   }
                }
             }
@@ -75,10 +79,13 @@ public class AssigneeColumn implements IAtsColumn {
             pocs) + (implementers.isEmpty() ? "" : "(" + AtsObjects.toString("; ", implementers) + ")");
       } else if (atsObject instanceof IAtsWorkItem) {
          IAtsWorkItem workItem = (IAtsWorkItem) atsObject;
-         if (workItem.getStateMgr().getStateType().isCompletedOrCancelled()) {
-            String implementers = implementStrProvider.getImplementersStr(workItem);
-            if (Strings.isValid(implementers)) {
-               return "(" + implementers + ")";
+         StateType stateType = workItem.getStateMgr().getStateType();
+         if (stateType != null) {
+            if (stateType.isCompletedOrCancelled()) {
+               String implementers = implementStrProvider.getImplementersStr(workItem);
+               if (Strings.isValid(implementers)) {
+                  return "(" + implementers + ")";
+               }
             }
          }
          if (atsObject instanceof HasAssignees) {
