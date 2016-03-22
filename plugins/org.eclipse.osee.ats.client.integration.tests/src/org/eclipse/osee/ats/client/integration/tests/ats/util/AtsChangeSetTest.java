@@ -58,7 +58,7 @@ public class AtsChangeSetTest {
    public void testSetAttributeById_ArtifactId() {
       Attribute<?> staticIdAttr = null;
       for (Attribute<?> attr : folderArt.getAttributes()) {
-         if (attr.getAttributeType().getId() == CoreAttributeTypes.StaticId.getGuid()) {
+         if (attr.getAttributeType().getId().equals(CoreAttributeTypes.StaticId.getGuid())) {
             staticIdAttr = attr;
             break;
          }
