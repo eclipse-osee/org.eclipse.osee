@@ -176,6 +176,10 @@ public final class Conditions {
       assertEquals(value1, value2, "Expected %d; Actual %d", value1, value2);
    }
 
+   public static void assertEquals(String expected, String actual) {
+      assertTrue(expected.equals(actual), "Expected %1; Actual %2", expected, actual);
+   }
+
    public static void assertTrue(boolean value, String message, Object... data) {
       if (!value) {
          throw new OseeArgumentException(message, data);

@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.task;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
@@ -35,9 +36,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeAdapter;
  */
 public class AtsTaskToChangedArtifactReferenceAttributeAdapter implements AttributeAdapter<Artifact> {
 
+   private static final List<IAttributeType> TASK_CHANGED_ARTIFACT_REFERENCE_ATTR =
+      Arrays.asList(AtsAttributeTypes.TaskToChangedArtifactReference);
+
    @Override
    public Collection<IAttributeType> getSupportedTypes() {
-      return Arrays.asList(AtsAttributeTypes.TaskToChangedArtifactReference);
+      return TASK_CHANGED_ARTIFACT_REFERENCE_ATTR;
    }
 
    @Override
