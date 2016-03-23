@@ -53,7 +53,8 @@ import org.eclipse.swt.widgets.ToolItem;
 public abstract class ScriptPage extends TestManagerPage {
 
    private static final String NOT_CONNECTED = "<< NOT_CONNECTED >>";
-
+   private static final int ABORT_BTN_TIMER = 5000;
+   
    public enum UpdateableLabel {
       HOSTLABEL,
       CONFIGPATHLABEL;
@@ -250,7 +251,7 @@ public abstract class ScriptPage extends TestManagerPage {
             abortBatchButton.setEnabled(false);
             abortButton.setEnabled(false);
             Timer timer = new Timer();
-            timer.schedule(new EnabledAbortsTimer(), 30000);
+            timer.schedule(new EnabledAbortsTimer(), ABORT_BTN_TIMER);
          }
       });
       abortButton.addListener(SWT.MouseUp, new Listener() {
@@ -261,7 +262,7 @@ public abstract class ScriptPage extends TestManagerPage {
                abortBatchButton.setEnabled(false);
                abortButton.setEnabled(false);
                Timer timer = new Timer();
-               timer.schedule(new EnabledAbortsTimer(), 30000);
+               timer.schedule(new EnabledAbortsTimer(), ABORT_BTN_TIMER);
             }
          }
       });
@@ -278,7 +279,7 @@ public abstract class ScriptPage extends TestManagerPage {
             abortBatchButton.setEnabled(false);
             abortButton.setEnabled(false);
             Timer timer = new Timer();
-            timer.schedule(new EnabledAbortsTimer(), 30000);
+            timer.schedule(new EnabledAbortsTimer(), ABORT_BTN_TIMER);
          }
       });
       abortBatchButton.addListener(SWT.MouseUp, new Listener() {
@@ -289,7 +290,7 @@ public abstract class ScriptPage extends TestManagerPage {
                abortBatchButton.setEnabled(false);
                abortButton.setEnabled(false);
                Timer timer = new Timer();
-               timer.schedule(new EnabledAbortsTimer(), 30000);
+               timer.schedule(new EnabledAbortsTimer(), ABORT_BTN_TIMER);
             }
          }
       });

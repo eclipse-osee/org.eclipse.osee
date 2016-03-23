@@ -126,21 +126,21 @@ public class TestRunThread extends OseeTestThread {
          throw new TestException("", Level.SEVERE);
       }
       if(OtePropertiesCore.abortMultipleInterrupt.getBooleanValue()){
-         int count = 0;
-         do{
-            this.interrupt();
-            try{
-               this.join(10);
-            } catch (InterruptedException ex){
-            }
-            count++;
-         } while (this.isAlive() && count < 200);
+    	  this.interrupt();
+    	  try{
+    		  this.join(1000*60);
+    	  } catch (InterruptedException ex){
+    	  }
       } else {
-         this.interrupt();
-         try{
-            this.join(1000*60);
-         } catch (InterruptedException ex){
-         }
+    	  int count = 0;
+    	  do{
+    		  this.interrupt();
+    		  try{
+    			  this.join(10);
+    		  } catch (InterruptedException ex){
+    		  }
+    		  count++;
+    	  } while (this.isAlive() && count < 200);
       }
       if (this.isAlive()) {
          OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,

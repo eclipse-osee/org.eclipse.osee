@@ -276,22 +276,20 @@ public class OTETestEnvironmentClient {
       
       @Override
       public boolean cancelAll(boolean mayInterruptIfRunning) {
-         BooleanResponse booleanResponse = new BooleanResponse();
          RunTestsCancel cancel = new RunTestsCancel();
          cancel.CANCEL_ALL.setValue(true);
          cancel.GUID.setValue(guid);
-         booleanResponse = sendit.synchSendAndResponse(booleanResponse, cancel, 20000);
-         return booleanResponse.VALUE.getValue();
+         sendit.asynchSend(cancel);
+         return true;
       }
 
       @Override
       public boolean cancelSingle(boolean mayInterruptIfRunning) {
-         BooleanResponse booleanResponse = new BooleanResponse();
          RunTestsCancel cancel = new RunTestsCancel();
          cancel.CANCEL_ALL.setValue(false);
          cancel.GUID.setValue(guid);
-         booleanResponse = sendit.synchSendAndResponse(booleanResponse, cancel, 20000);
-         return booleanResponse.VALUE.getValue();
+         sendit.asynchSend(cancel);
+         return true;
       }
 
       @Override
