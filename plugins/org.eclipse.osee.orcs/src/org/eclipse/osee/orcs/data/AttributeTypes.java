@@ -55,4 +55,6 @@ public interface AttributeTypes extends IdentityCollection<Long, IAttributeType>
 
    boolean isFloatingType(IAttributeType attrType);
 
+   IAttributeType getByName(String attrTypeName);
+
 }

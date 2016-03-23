@@ -219,4 +219,16 @@ public class AttributeTypesImpl implements AttributeTypes {
       String baseType = getBaseAttributeTypeId(attrType);
       return baseType != null && baseType.toLowerCase().contains("floatingpoint");
    }
+
+   @Override
+   public IAttributeType getByName(String attrTypeName) {
+      IAttributeType attrType = null;
+      for (IAttributeType type : getAll()) {
+         if (type.getName().equals(attrTypeName)) {
+            attrType = type;
+            break;
+         }
+      }
+      return attrType;
+   }
 }

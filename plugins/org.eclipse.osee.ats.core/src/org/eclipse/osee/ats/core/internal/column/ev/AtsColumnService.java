@@ -22,13 +22,17 @@ import org.eclipse.osee.ats.core.column.AtsAttributeValueColumnHandler;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
+import org.eclipse.osee.ats.core.column.AttributeColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnId;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.IAtsColumnService;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
+import org.eclipse.osee.ats.core.column.TitleColumn;
+import org.eclipse.osee.ats.core.column.UuidColumn;
 import org.eclipse.osee.ats.core.internal.column.TeamColumn;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 
 /**
  * @author Donald G. Dunne
@@ -60,19 +64,19 @@ public class AtsColumnService implements IAtsColumnService {
       }
       if (column == null) {
          if (id.equals(AtsColumnId.ActionableItem.getId())) {
-            column = ActionableItemsColumn.instance;
+            column = new ActionableItemsColumn(services);
          } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
          } else if (id.equals(AtsColumnId.Team.getId())) {
             column = new TeamColumn(services.getReviewService());
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
-            column = AssigneeColumn.instance;
+            column = new AssigneeColumn(services);
          } else if (id.equals(AtsColumnId.AtsId.getId())) {
-            column = AtsIdColumn.instance;
+            column = new AtsIdColumn(services);
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
             column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.State.getId())) {
-            column = StateColumn.instance;
+            column = new StateColumn(services);
          } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
          } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
@@ -87,6 +91,12 @@ public class AtsColumnService implements IAtsColumnService {
             column = new WorkPackageProgramColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.WorkPackageGuid.getId())) {
             column = new WorkPackageGuidColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.Name.getId())) {
+            column = new TitleColumn(services);
+         } else if (id.equals(AtsColumnId.Title.getId())) {
+            column = new TitleColumn(services);
+         } else if (id.equals(AtsColumnId.Uuid.getId())) {
+            column = new UuidColumn(services);
          }
       }
       // Add columns provided through OSGI services
@@ -95,6 +105,15 @@ public class AtsColumnService implements IAtsColumnService {
             column = provider.getColumn(id, services);
             if (column != null) {
                break;
+            }
+         }
+      }
+      // Add columns defined as attribute, if valid attribute
+      if (column == null) {
+         if (id.startsWith("attribute.")) {
+            IAttributeType attrType = services.getStoreService().getAttributeType(id.replaceFirst("attribute\\.", ""));
+            if (attrType != null) {
+               column = new AttributeColumn(services, attrType);
             }
          }
       }

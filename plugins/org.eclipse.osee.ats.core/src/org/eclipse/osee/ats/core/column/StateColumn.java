@@ -13,37 +13,31 @@ package org.eclipse.osee.ats.core.column;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
- * Return current list of assignees sorted if in Working state or string of implementors surrounded by ()
- *
  * @author Donald G. Dunne
  */
-public class StateColumn implements IAtsColumn {
+public class StateColumn extends AbstractServicesColumn {
 
-   public static StateColumn instance = new StateColumn();
+   public StateColumn(IAtsServices services) {
+      super(services);
+   }
 
    @Override
-   public String getColumnText(IAtsObject atsObject) {
-      String result = "";
-      try {
-         if (atsObject instanceof IAtsWorkItem) {
-            return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName();
-         } else if (atsObject instanceof IAtsAction) {
-            Set<String> strs = new HashSet<>();
-            for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
-               strs.add(team.getStateMgr().getCurrentStateName());
-            }
-            return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", strs);
+   public String getText(IAtsObject atsObject) throws Exception {
+      if (atsObject instanceof IAtsWorkItem) {
+         return ((IAtsWorkItem) atsObject).getStateMgr().getCurrentStateName();
+      } else if (atsObject instanceof IAtsAction) {
+         Set<String> strs = new HashSet<>();
+         for (IAtsTeamWorkflow team : ((IAtsAction) atsObject).getTeamWorkflows()) {
+            strs.add(team.getStateMgr().getCurrentStateName());
          }
-      } catch (OseeCoreException ex) {
-         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
+         return org.eclipse.osee.framework.jdk.core.util.Collections.toString(";", strs);
       }
-      return result;
+      return "";
    }
 }

@@ -16,38 +16,21 @@ import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Donald G. Dunne
  */
-public class PercentCompleteTasksColumn implements IAtsColumn {
-
-   private static PercentCompleteTasksColumn instance;
-   private final IAtsServices services;
+public class PercentCompleteTasksColumn extends AbstractServicesColumn {
 
    public PercentCompleteTasksColumn(IAtsServices services) {
-      this.services = services;
-   }
-
-   public PercentCompleteTasksColumn getInstance(IAtsServices services) {
-      if (instance == null) {
-         instance = new PercentCompleteTasksColumn(services);
-      }
-      return instance;
+      super(services);
    }
 
    @Override
-   public String getColumnText(IAtsObject atsObject) {
-      String result = "";
-      try {
-         result = String.valueOf(getPercentCompleteFromTasks(atsObject, services));
-      } catch (OseeCoreException ex) {
-         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
-      }
-      return result;
+   public String getText(IAtsObject atsObject) throws Exception {
+      return String.valueOf(getPercentCompleteFromTasks(atsObject, services));
    }
 
    /**

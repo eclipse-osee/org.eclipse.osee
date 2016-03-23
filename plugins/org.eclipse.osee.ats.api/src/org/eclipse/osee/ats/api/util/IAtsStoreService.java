@@ -47,4 +47,6 @@ public interface IAtsStoreService {
 
    IAttributeType getAttributeType(long attrTypeId);
 
+   IAttributeType getAttributeType(String attrTypeName);
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -25,13 +25,13 @@ public class AtsColumnProviderCollector {
    }
 
    public void addColumnProvider(IAtsColumnProvider columnProvider) {
-      if (columnProviders == null) {
-         columnProviders = new CopyOnWriteArrayList<IAtsColumnProvider>();
-      }
-      columnProviders.add(columnProvider);
+      getColumnProviders().add(columnProvider);
    }
 
    public static List<IAtsColumnProvider> getColumnProviders() {
+      if (columnProviders == null) {
+         columnProviders = new CopyOnWriteArrayList<IAtsColumnProvider>();
+      }
       return columnProviders;
    }
 

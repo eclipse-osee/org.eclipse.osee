@@ -14,12 +14,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -29,24 +29,23 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  *
  * @author Donald G. Dunne
  */
-public class AssigneeColumn implements IAtsColumn {
+public class AssigneeColumn extends AbstractServicesColumn {
 
+   private static ImplementersStringProvider implementStrProvider;
    public static AssigneeColumn instance = new AssigneeColumn(ImplementersColumn.instance);
-   private final ImplementersStringProvider implementStrProvider;
 
    public AssigneeColumn(ImplementersStringProvider implementStrProvider) {
-      this.implementStrProvider = implementStrProvider;
+      super(null);
+      AssigneeColumn.implementStrProvider = implementStrProvider;
+   }
+
+   public AssigneeColumn(IAtsServices services) {
+      super(services);
    }
 
    @Override
-   public String getColumnText(IAtsObject atsObject) {
-      String result = "";
-      try {
-         result = getAssigneeStr(atsObject);
-      } catch (OseeCoreException ex) {
-         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
-      }
-      return result;
+   public String getText(IAtsObject atsObject) {
+      return getAssigneeStr(atsObject);
    }
 
    public String getAssigneeStr(IAtsObject atsObject) throws OseeCoreException {
@@ -82,7 +81,7 @@ public class AssigneeColumn implements IAtsColumn {
          StateType stateType = workItem.getStateMgr().getStateType();
          if (stateType != null) {
             if (stateType.isCompletedOrCancelled()) {
-               String implementers = implementStrProvider.getImplementersStr(workItem);
+               String implementers = getImplementersStringProvider().getImplementersStr(workItem);
                if (Strings.isValid(implementers)) {
                   return "(" + implementers + ")";
                }
@@ -93,5 +92,12 @@ public class AssigneeColumn implements IAtsColumn {
          }
       }
       return "";
+   }
+
+   private ImplementersStringProvider getImplementersStringProvider() {
+      if (implementStrProvider == null) {
+         implementStrProvider = new ImplementersColumn();
+      }
+      return implementStrProvider;
    }
 }

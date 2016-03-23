@@ -118,7 +118,7 @@ public class ActionableItemsColumnTest {
       when(aia1.getName()).thenReturn("AI 1");
       when(aia2.getName()).thenReturn("AI 2");
 
-      String results = new ActionableItemsColumn().getActionableItemsStr(teamWf1);
+      String results = new ActionableItemsColumn(null).getActionableItemsStr(teamWf1);
 
       Assert.assertTrue(results.contains("AI 1"));
       Assert.assertTrue(results.contains("AI 2"));

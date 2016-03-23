@@ -12,31 +12,23 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
- * Return current list of assignees sorted if in Working state or string of implementors surrounded by ()
- *
  * @author Donald G. Dunne
  */
-public class AtsIdColumn extends AbstractServicesColumn {
+public class AttributeColumn extends AbstractServicesColumn {
 
-   public AtsIdColumn(IAtsServices services) {
+   private final IAttributeType attrType;
+
+   public AttributeColumn(IAtsServices services, IAttributeType attrType) {
       super(services);
+      this.attrType = attrType;
    }
 
    @Override
-   public String getText(IAtsObject atsObject) throws Exception {
-      String result = "";
-      if (atsObject instanceof IAtsWorkItem) {
-         result = ((IAtsWorkItem) atsObject).getAtsId();
-      } else if (atsObject instanceof IAtsAction) {
-         result = ((IAtsAction) atsObject).getAtsId();
-      } else {
-         result = String.valueOf(atsObject.getUuid());
-      }
-      return result;
+   public String getText(IAtsObject atsObject) {
+      return Collections.toString("; ", services.getAttributeResolver().getAttributesToStringList(atsObject, attrType));
    }
-
 }

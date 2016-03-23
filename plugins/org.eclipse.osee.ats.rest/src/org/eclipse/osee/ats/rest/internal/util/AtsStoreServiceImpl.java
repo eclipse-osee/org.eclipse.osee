@@ -140,4 +140,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
       return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getByUuid(attrTypeId);
    }
 
+   @Override
+   public IAttributeType getAttributeType(String attrTypeName) {
+      return atsServer.getOrcsApi().getOrcsTypes().getAttributeTypes().getByName(attrTypeName);
+   }
+
 }

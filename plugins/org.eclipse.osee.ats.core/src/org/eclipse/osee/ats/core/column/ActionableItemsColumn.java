@@ -17,12 +17,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItemProvider;
 import org.eclipse.osee.ats.api.team.IAtsTeamWorkflowProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.internal.column.ev.AtsColumnService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -30,19 +30,15 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  *
  * @author Donald G. Dunne
  */
-public class ActionableItemsColumn implements IAtsColumn {
+public class ActionableItemsColumn extends AbstractServicesColumn {
 
-   public static ActionableItemsColumn instance = new ActionableItemsColumn();
+   public ActionableItemsColumn(IAtsServices services) {
+      super(services);
+   }
 
    @Override
-   public String getColumnText(IAtsObject atsObject) throws OseeCoreException {
-      String result = "";
-      try {
-         result = getActionableItemsStr(atsObject);
-      } catch (OseeCoreException ex) {
-         return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();
-      }
-      return result;
+   public String getText(IAtsObject atsObject) throws Exception {
+      return getActionableItemsStr(atsObject);
    }
 
    public String getActionableItemsStr(IAtsObject atsObject) throws OseeCoreException {

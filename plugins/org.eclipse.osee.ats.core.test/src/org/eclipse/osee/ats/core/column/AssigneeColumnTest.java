@@ -42,14 +42,20 @@ public class AssigneeColumnTest extends AbstractUserTest {
    @Mock private AtsActionGroup group;
    // @formatter:on
 
+   private AssigneeColumn column;
+   private ImplementersColumn implementersColumn;
+
    @Override
    @Before
    public void setup() {
       super.setup();
 
       when(workItem.getStateMgr()).thenReturn(stateMgr);
-
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
+
+      implementersColumn = new ImplementersColumn();
+      column = new AssigneeColumn(implementersColumn);
+
    }
 
    @org.junit.Test
@@ -78,8 +84,8 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
       when(stateMgr.getStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
-      Assert.assertEquals("(steve)", AssigneeColumn.instance.getAssigneeStr(workItem));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertEquals("(steve)", column.getAssigneeStr(workItem));
+      Assert.assertTrue(column.getAssigneeStr(workItem).contains("steve"));
 
       // add alice as completedFromState assignee
       implementersToReturn.add(steve);
