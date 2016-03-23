@@ -60,6 +60,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -114,6 +115,7 @@ import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionCache;
+import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -185,6 +187,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private Log logger;
    List<IAtsSearchDataProvider> searchDataProviders;
    private IAtsEventService eventService;
+   private IAtsImplementerService implementerService;
 
    public AtsClientImpl() {
       searchDataProviders = new ArrayList<>();
@@ -844,6 +847,14 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public IAtsEarnedValueServiceProvider getEarnedValueServiceProvider() {
       return this;
+   }
+
+   @Override
+   public IAtsImplementerService getImplementerService() {
+      if (implementerService == null) {
+         implementerService = new AtsImplementersService(this);
+      }
+      return implementerService;
    }
 
 }

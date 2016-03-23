@@ -16,6 +16,8 @@ import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
+import org.eclipse.osee.ats.api.review.IAtsDecisionReview;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
@@ -77,11 +79,6 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public List<IAtsUser> getAssignees() throws OseeCoreException {
       return getStateMgr().getAssignees();
-   }
-
-   @Override
-   public List<IAtsUser> getImplementers() throws OseeCoreException {
-      throw new OseeStateException("Not implemented");
    }
 
    @Override
@@ -302,6 +299,21 @@ public class WorkItem extends AtsObject implements IAtsWorkItem {
    @Override
    public boolean isCancelled() {
       return getStateMgr().getStateType().isCancelled();
+   }
+
+   @Override
+   public List<IAtsUser> getImplementers() throws OseeCoreException {
+      return atsClient.getImplementerService().getImplementers(this);
+   }
+
+   @Override
+   public boolean isDecisionReview() {
+      return this instanceof IAtsDecisionReview;
+   }
+
+   @Override
+   public boolean isPeerReview() {
+      return this instanceof IAtsPeerToPeerReview;
    }
 
 }

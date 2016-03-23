@@ -81,4 +81,8 @@ public interface IAtsWorkItem extends IAtsObject, HasAssignees {
 
    boolean isCancelled();
 
+   boolean isDecisionReview();
+
+   boolean isPeerReview();
+
 }

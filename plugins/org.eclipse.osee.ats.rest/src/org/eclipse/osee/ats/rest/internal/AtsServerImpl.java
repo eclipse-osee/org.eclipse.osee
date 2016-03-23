@@ -55,6 +55,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.log.IAtsLogFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
@@ -70,6 +71,7 @@ import org.eclipse.osee.ats.core.util.IAtsActionFactory;
 import org.eclipse.osee.ats.core.util.XViewerCustomization;
 import org.eclipse.osee.ats.core.util.XViewerCustomizationAttributeXmlParser;
 import org.eclipse.osee.ats.core.workdef.AtsWorkDefinitionAdminImpl;
+import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -154,6 +156,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    private IAtsQueryService atsQueryService;
    private IAtsTaskService taskService;
    private IAtsEarnedValueService earnedValueService;
+   private IAtsImplementerService implementerService;
 
    private volatile boolean emailEnabled = true;
    private boolean loggedNotificationDisabled = false;
@@ -706,6 +709,14 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          addCustomizationsFromArts(namespace, customizations, customizationArt);
       }
       return customizations;
+   }
+
+   @Override
+   public IAtsImplementerService getImplementerService() {
+      if (implementerService == null) {
+         implementerService = new AtsImplementersService(this);
+      }
+      return implementerService;
    }
 
 }

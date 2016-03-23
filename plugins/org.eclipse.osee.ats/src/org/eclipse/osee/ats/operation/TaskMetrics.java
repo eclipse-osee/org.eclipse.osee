@@ -28,7 +28,6 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.core.column.ImplementersColumn;
 import org.eclipse.osee.ats.core.util.PercentCompleteTotalUtil;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -129,7 +128,7 @@ public class TaskMetrics extends AbstractBlam {
 
       List<IAtsUser> assignees = task.getStateMgr().getAssignees();
       if (assignees.isEmpty()) {
-         assignees = ImplementersColumn.instance.getImplementers(task);
+         assignees = AtsClientService.get().getImplementerService().getImplementers(task);
       }
       for (IAtsUser user : assignees) {
          int percentComplete =

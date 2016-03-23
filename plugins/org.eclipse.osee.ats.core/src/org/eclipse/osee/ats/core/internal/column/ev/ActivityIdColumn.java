@@ -43,7 +43,9 @@ public class ActivityIdColumn implements IActivityIdUtility {
          IAtsWorkPackage workPackage = null;
          if (atsObject instanceof IAtsWorkItem) {
             workPackage = earnedValueServiceProvider.getEarnedValueService().getWorkPackage((IAtsWorkItem) atsObject);
-            result = getText(workPackage);
+            if (workPackage != null) {
+               result = getText(workPackage);
+            }
          }
       } catch (OseeCoreException ex) {
          return AtsColumnService.CELL_ERROR_PREFIX + " - " + ex.getLocalizedMessage();

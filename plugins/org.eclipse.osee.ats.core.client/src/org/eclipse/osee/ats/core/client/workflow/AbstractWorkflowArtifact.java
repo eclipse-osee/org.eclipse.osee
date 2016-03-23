@@ -123,25 +123,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
 
    @Override
    public List<IAtsUser> getImplementers() throws OseeCoreException {
-      List<IAtsUser> implementers = new ArrayList<>();
-      if (isCompleted()) {
-         String completedFromState = getSoleAttributeValue(AtsAttributeTypes.CompletedFromState, "");
-         if (Strings.isValid(completedFromState)) {
-            IAtsStateDefinition stateDef = getWorkDefinition().getStateByName(completedFromState);
-            if (stateDef != null) {
-               for (IAtsUser user : getStateMgr().getAssignees(stateDef)) {
-                  if (!implementers.contains(user)) {
-                     implementers.add(user);
-                  }
-               }
-            } else {
-               OseeLog.log(Activator.class, Level.SEVERE,
-                  String.format("Invalid CompletedFromState [%s] for Worklfow [%s] and WorkDefinition [%s]",
-                     completedFromState, toStringWithId(), getWorkDefinition().getName()));
-            }
-         }
-      }
-      return implementers;
+      return AtsClientService.get().getImplementerService().getImplementers(this);
    }
 
    public double getWorldViewWeeklyBenefit() throws OseeCoreException {
@@ -731,6 +713,16 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
    @Override
    public boolean isTeamWorkflow() {
       return this.isOfType(AtsArtifactTypes.TeamWorkflow);
+   }
+
+   @Override
+   public boolean isDecisionReview() {
+      return this.isOfType(AtsArtifactTypes.DecisionReview);
+   }
+
+   @Override
+   public boolean isPeerReview() {
+      return this.isOfType(AtsArtifactTypes.PeerToPeerReview);
    }
 
    @Override

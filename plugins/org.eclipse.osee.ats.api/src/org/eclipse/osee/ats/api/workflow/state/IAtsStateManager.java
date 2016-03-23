@@ -111,7 +111,7 @@ public interface IAtsStateManager extends WorkStateFactory {
 
    void clearAssignees() throws OseeCoreException;
 
-   Collection<? extends IAtsUser> getAssignees(IStateToken state) throws OseeCoreException;
+   Collection<IAtsUser> getAssignees(IStateToken state) throws OseeCoreException;
 
    boolean isStateVisited(IStateToken state) throws OseeCoreException;
 

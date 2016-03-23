@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.column.AssigneeColumn;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
@@ -158,7 +157,7 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof IAtsObject) {
-            return AssigneeColumn.instance.getAssigneeStr((IAtsObject) element);
+            return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, (IAtsObject) element);
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);

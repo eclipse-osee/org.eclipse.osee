@@ -13,9 +13,9 @@ package org.eclipse.osee.ats.column;
 import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.column.ImplementersColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.swt.SWT;
@@ -32,8 +32,8 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
    }
 
    private ImplementorColumnUI() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".implementer", "Implementer", 80, SWT.LEFT, false,
-         SortDataType.String, false, "User assigned to the Implementation of the changes.");
+      super(AtsColumnId.Implementers.name(), "Implementer", 80, SWT.LEFT, false, SortDataType.String, false,
+         "User assigned to the Implementation of the changes.");
    }
 
    /**
@@ -52,7 +52,8 @@ public class ImplementorColumnUI extends XViewerAtsColumn implements IXViewerVal
       String result = "";
       if (element instanceof IAtsObject) {
          try {
-            result = ImplementersColumn.instance.getImplementersStr((IAtsObject) element);
+            result =
+               AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Implementers, (IAtsObject) element);
          } catch (OseeCoreException ex) {
             result = LogUtil.getCellExceptionString(ex);
          }

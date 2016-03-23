@@ -14,9 +14,10 @@ import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.AbstractUserTest;
@@ -40,27 +41,26 @@ public class AssigneeColumnTest extends AbstractUserTest {
    @Mock private IAtsWorkItem workItem2;
    @Mock private IAtsStateManager stateMgr2;
    @Mock private AtsActionGroup group;
+   @Mock private IAtsServices services;
+   @Mock private IAtsUserService userService;
    // @formatter:on
 
-   private AssigneeColumn column;
-   private ImplementersColumn implementersColumn;
+   AssigneeColumn assigneeColumn;
 
    @Override
    @Before
    public void setup() {
       super.setup();
-
       when(workItem.getStateMgr()).thenReturn(stateMgr);
       when(workItem2.getStateMgr()).thenReturn(stateMgr2);
-
-      implementersColumn = new ImplementersColumn();
-      column = new AssigneeColumn(implementersColumn);
+      when(services.getUserService()).thenReturn(userService);
+      assigneeColumn = new AssigneeColumn(services);
 
    }
 
    @org.junit.Test
    public void testGetAssigneeStr_null() throws OseeCoreException {
-      Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(null));
+      Assert.assertEquals("", assigneeColumn.getAssigneeStr(null));
    }
 
    @org.junit.Test
@@ -70,7 +70,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
 
-      Assert.assertEquals("joe; steve; alice", AssigneeColumn.instance.getAssigneeStr(workItem));
+      Assert.assertEquals("joe; steve; alice", assigneeColumn.getAssigneeStr(workItem));
    }
 
    @org.junit.Test
@@ -78,14 +78,14 @@ public class AssigneeColumnTest extends AbstractUserTest {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
-      Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
+      Assert.assertEquals("", assigneeColumn.getAssigneeStr(workItem));
 
       List<IAtsUser> implementersToReturn = new ArrayList<>();
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
       when(stateMgr.getStateType()).thenReturn(StateType.Completed);
       when(workItem.getCompletedBy()).thenReturn(steve);
-      Assert.assertEquals("(steve)", column.getAssigneeStr(workItem));
-      Assert.assertTrue(column.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertEquals("(steve)", assigneeColumn.getAssigneeStr(workItem));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
       // add alice as completedFromState assignee
       implementersToReturn.add(steve);
@@ -93,13 +93,13 @@ public class AssigneeColumnTest extends AbstractUserTest {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
       // add duplicate steve as state assigne and ensure doesn't duplicate in string
       implementStateImplementers.add(steve);
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
    }
 
    @org.junit.Test
@@ -107,13 +107,13 @@ public class AssigneeColumnTest extends AbstractUserTest {
       List<IAtsUser> assigneesToReturn = new ArrayList<>();
       when(stateMgr.getStateType()).thenReturn(StateType.Working);
       when(workItem.getAssignees()).thenReturn(assigneesToReturn);
-      Assert.assertEquals("", AssigneeColumn.instance.getAssigneeStr(workItem));
+      Assert.assertEquals("", assigneeColumn.getAssigneeStr(workItem));
 
       List<IAtsUser> implementersToReturn = new ArrayList<>();
       when(workItem.getImplementers()).thenReturn(implementersToReturn);
       when(stateMgr.getStateType()).thenReturn(StateType.Cancelled);
       when(workItem.getCancelledBy()).thenReturn(steve);
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
       // add alice as completedFromState assignee
       implementersToReturn.add(steve);
@@ -121,13 +121,13 @@ public class AssigneeColumnTest extends AbstractUserTest {
       List<IAtsUser> implementStateImplementers = new ArrayList<>();
       implementStateImplementers.add(alice);
       when(stateMgr.getAssigneesForState("Implement")).thenReturn(implementStateImplementers);
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
 
       // add duplicate steve as state assigne and ensure doesn't duplicate in string
       implementStateImplementers.add(steve);
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("alice"));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(workItem).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("alice"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(workItem).contains("steve"));
    }
 
    @org.junit.Test
@@ -147,7 +147,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       group.addAction(workItem);
       group.addAction(workItem2);
 
-      Assert.assertEquals("(joe)", AssigneeColumn.instance.getAssigneeStr(group));
+      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(group));
    }
 
    @org.junit.Test
@@ -159,7 +159,7 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem2.getImplementers()).thenReturn(Arrays.asList(joe));
 
-      Assert.assertEquals("(joe)", AssigneeColumn.instance.getAssigneeStr(group));
+      Assert.assertEquals("(joe)", assigneeColumn.getAssigneeStr(group));
    }
 
    @org.junit.Test
@@ -171,8 +171,8 @@ public class AssigneeColumnTest extends AbstractUserTest {
       when(workItem2.getStateMgr().getStateType()).thenReturn(StateType.Cancelled);
       when(workItem2.getImplementers()).thenReturn(Arrays.asList(joe));
 
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(group).contains("joe"));
-      Assert.assertTrue(AssigneeColumn.instance.getAssigneeStr(group).contains("steve"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(group).contains("joe"));
+      Assert.assertTrue(assigneeColumn.getAssigneeStr(group).contains("steve"));
    }
 
    @org.junit.Test
@@ -192,19 +192,12 @@ public class AssigneeColumnTest extends AbstractUserTest {
       group.addAction(workItem);
       group.addAction(workItem2);
 
-      Assert.assertEquals("steve", AssigneeColumn.instance.getAssigneeStr(group));
+      Assert.assertEquals("steve", assigneeColumn.getAssigneeStr(group));
    }
 
    @org.junit.Test
    public void testGetAssigneesStr_invalidImplementersString() throws OseeCoreException {
-      AssigneeColumn column = new AssigneeColumn(new ImplementersStringProvider() {
-
-         @Override
-         public String getImplementersStr(IAtsObject atsObject) {
-            return null;
-         }
-      });
-
+      AssigneeColumn column = new AssigneeColumn((IAtsServices) null);
       when(stateMgr.getStateType()).thenReturn(StateType.Cancelled);
       Assert.assertEquals("", column.getAssigneeStr(workItem));
    }

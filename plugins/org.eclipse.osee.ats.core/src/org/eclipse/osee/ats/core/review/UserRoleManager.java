@@ -11,9 +11,11 @@
 package org.eclipse.osee.ats.core.review;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.review.Role;
@@ -47,11 +49,13 @@ public class UserRoleManager {
    public void ensureLoaded() throws OseeCoreException {
       if (roles == null) {
          roles = new ArrayList<>();
-         for (String xml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.Role)) {
-            roleMatcher.reset(xml);
-            while (roleMatcher.find()) {
-               UserRole item = new UserRole(roleMatcher.group());
-               roles.add(item);
+         if (attrResolver != null) {
+            for (String xml : attrResolver.getAttributesToStringList(workItem, AtsAttributeTypes.Role)) {
+               roleMatcher.reset(xml);
+               while (roleMatcher.find()) {
+                  UserRole item = new UserRole(roleMatcher.group());
+                  roles.add(item);
+               }
             }
          }
       }
@@ -82,4 +86,17 @@ public class UserRoleManager {
       return users;
    }
 
+   public static List<IAtsUser> getRoleUsers(IAtsWorkItem workItem, Collection<UserRole> roles, IAtsUserService userService) throws OseeCoreException {
+      List<IAtsUser> users = new ArrayList<>();
+      for (UserRole uRole : roles) {
+         if (!users.contains(userService.getUserById(uRole.getUserId()))) {
+            users.add(userService.getUserById(uRole.getUserId()));
+         }
+      }
+      return users;
+   }
+
+   public static List<UserRole> getUserRoles(IAtsWorkItem workItem, IAtsServices services) {
+      return new UserRoleManager(services.getAttributeResolver(), services.getUserService(), workItem).getUserRoles();
+   }
 }

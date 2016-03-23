@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.internal.log.AtsLogFactory;
 import org.eclipse.osee.ats.core.internal.state.StateManager;
 import org.eclipse.osee.ats.core.util.AtsUserGroup;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.jdk.core.type.Named;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
@@ -264,6 +265,21 @@ public class MockWorkItem implements IAtsWorkItem {
    @Override
    public boolean isCancelled() {
       return getStateMgr().getStateType().isCancelled();
+   }
+
+   @Override
+   public int compareTo(Named o) {
+      return 0;
+   }
+
+   @Override
+   public boolean isDecisionReview() {
+      return false;
+   }
+
+   @Override
+   public boolean isPeerReview() {
+      return false;
    }
 
 }

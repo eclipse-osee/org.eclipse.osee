@@ -35,7 +35,8 @@ public enum AtsColumnId implements IAtsColumnId {
    WorkPackageId("ats.column.workPackageId"),
    WorkPackageType("ats.column.workPackageType"),
    WorkPackageProgram("ats.column.workPackageProgram"),
-   WorkPackageGuid("ats.column.workPackageGuid");
+   WorkPackageGuid("ats.column.workPackageGuid"),
+   Implementers("ats.column.implementer"),;
 
    private final String id;
 

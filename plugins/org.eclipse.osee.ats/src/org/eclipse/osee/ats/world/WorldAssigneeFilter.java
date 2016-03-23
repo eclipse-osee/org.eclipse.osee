@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.api.IAtsObject;
-import org.eclipse.osee.ats.core.column.AssigneeColumn;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,7 +36,8 @@ public class WorldAssigneeFilter extends ViewerFilter {
    public boolean select(Viewer viewer, Object parentElement, Object element) {
       try {
          if (element instanceof IAtsObject) {
-            return p.matcher(AssigneeColumn.instance.getAssigneeStr((IAtsObject) element)).find();
+            return p.matcher(AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees,
+               (IAtsObject) element)).find();
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

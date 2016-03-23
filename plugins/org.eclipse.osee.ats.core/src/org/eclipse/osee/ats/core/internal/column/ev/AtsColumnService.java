@@ -29,6 +29,7 @@ import org.eclipse.osee.ats.core.column.AttributeColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
+import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
@@ -77,12 +78,18 @@ public class AtsColumnService implements IAtsColumnService {
             column = new AtsIdColumn(services);
          } else if (id.equals(AtsColumnId.ActivityId.getId())) {
             column = new ActivityIdColumn(services.getEarnedValueServiceProvider());
+         } else if (id.equals(AtsColumnId.Implementers.getId())) {
+            column = new ImplementerColumn(services);
          } else if (id.equals(AtsColumnId.State.getId())) {
             column = new StateColumn(services);
+         } else if (id.equals(AtsColumnId.Name.getId()) || id.equals(AtsColumnId.Title.getId())) {
+            column = new TitleColumn(services);
          } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
          } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
             column = new PercentCompleteTasksColumn(services);
+         } else if (id.equals(AtsColumnId.Uuid.getId())) {
+            column = new UuidColumn(services);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
             column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {
@@ -97,8 +104,6 @@ public class AtsColumnService implements IAtsColumnService {
             column = new TitleColumn(services);
          } else if (id.equals(AtsColumnId.Title.getId())) {
             column = new TitleColumn(services);
-         } else if (id.equals(AtsColumnId.Uuid.getId())) {
-            column = new UuidColumn(services);
          } else if (id.equals(AtsColumnId.Insertion.getId())) {
             column = new InsertionColumn(services);
          } else if (id.equals(AtsColumnId.InsertionActivity.getId())) {

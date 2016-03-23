@@ -20,7 +20,9 @@ import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workflow.HasActions;
 import org.eclipse.osee.ats.api.workflow.HasAssignees;
+import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -31,13 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class AssigneeColumn extends AbstractServicesColumn {
 
-   private static ImplementersStringProvider implementStrProvider;
-   public static AssigneeColumn instance = new AssigneeColumn(ImplementersColumn.instance);
-
-   public AssigneeColumn(ImplementersStringProvider implementStrProvider) {
-      super(null);
-      AssigneeColumn.implementStrProvider = implementStrProvider;
-   }
+   private static IAtsImplementerService implementStrProvider;
 
    public AssigneeColumn(IAtsServices services) {
       super(services);
@@ -54,17 +50,17 @@ public class AssigneeColumn extends AbstractServicesColumn {
          // ensure consistent order by using lists
          List<IAtsUser> pocs = new ArrayList<>();
          List<IAtsUser> implementers = new ArrayList<>();
-         for (IAtsWorkItem action : hasActions.getActions()) {
-            StateType stateType = action.getStateMgr().getStateType();
+         for (IAtsWorkItem workItem : hasActions.getActions()) {
+            StateType stateType = workItem.getStateMgr().getStateType();
             if (stateType != null) {
                if (stateType.isCompletedOrCancelled()) {
-                  for (IAtsUser user : action.getImplementers()) {
+                  for (IAtsUser user : workItem.getImplementers()) {
                      if (!implementers.contains(user)) {
                         implementers.add(user);
                      }
                   }
                } else {
-                  for (IAtsUser user : action.getAssignees()) {
+                  for (IAtsUser user : workItem.getAssignees()) {
                      if (!pocs.contains(user)) {
                         pocs.add(user);
                      }
@@ -94,9 +90,9 @@ public class AssigneeColumn extends AbstractServicesColumn {
       return "";
    }
 
-   private ImplementersStringProvider getImplementersStringProvider() {
+   private IAtsImplementerService getImplementersStringProvider() {
       if (implementStrProvider == null) {
-         implementStrProvider = new ImplementersColumn();
+         implementStrProvider = new AtsImplementersService(services);
       }
       return implementStrProvider;
    }

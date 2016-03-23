@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.api.workdef.IRelationResolver;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
+import org.eclipse.osee.ats.api.workflow.IAtsImplementerService;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
 import org.eclipse.osee.ats.api.workflow.transition.ITransitionListener;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -113,6 +114,8 @@ public interface IAtsServices {
    AtsConfigurations getConfigurations();
 
    IAtsEarnedValueServiceProvider getEarnedValueServiceProvider();
+
+   IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
 

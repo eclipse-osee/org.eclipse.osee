@@ -178,7 +178,7 @@ public class StateManager implements IAtsStateManager {
    @Override
    public StateType getStateType() throws OseeCoreException {
       IAtsStateDefinition stateDefinition = workItem.getStateDefinition();
-      if(stateDefinition == null) {
+      if (stateDefinition == null) {
          return null;
       }
       return stateDefinition.getStateType();
@@ -494,7 +494,7 @@ public class StateManager implements IAtsStateManager {
    }
 
    @Override
-   public Collection<? extends IAtsUser> getAssignees(IStateToken state) {
+   public Collection<IAtsUser> getAssignees(IStateToken state) {
       return getAssignees(state.getName());
    }
 
