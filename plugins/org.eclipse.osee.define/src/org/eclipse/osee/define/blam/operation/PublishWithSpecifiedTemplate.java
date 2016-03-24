@@ -63,7 +63,7 @@ import org.json.JSONObject;
 public class PublishWithSpecifiedTemplate extends AbstractBlam {
    private List<Artifact> templates;
    private IOseeBranch branch;
-   private boolean isSRSPublishing;
+
    private XBranchSelectWidget branchWidget;
    private XCombo slaveWidget;
    private XDslEditorWidget orcsQueryWidget;
@@ -113,12 +113,10 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       List<Artifact> artifacts = null;
       try {
-         if (!isSRSPublishing) {
-            if (orcsQueryWidget.getText().isEmpty()) {
-               artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
-            } else {
-               artifacts = getArtifactsFromOrcsQuery();
-            }
+         if (orcsQueryWidget.getText().isEmpty()) {
+            artifacts = variableMap.getArtifacts(IS_ARTIFACTS);
+         } else {
+            artifacts = getArtifactsFromOrcsQuery();
          }
       } catch (NullPointerException e) {
          throw new OseeArgumentException(
@@ -126,7 +124,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       }
       if (artifacts != null && !artifacts.isEmpty()) {
          branch = artifacts.get(0).getBranch();
-      } else if (!isSRSPublishing) {
+      } else {
          throw new OseeArgumentException("Must provide an artifact");
       }
 
@@ -323,13 +321,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
                   orcsQueryWidget.setEditable(false);
                   orcsQueryWidget.set("");
                   artifactsWidget.setEditable(false);
-                  isSRSPublishing = true;
                } else {
                   slaveWidget.setEnabled(false);
                   slaveWidget.set("");
                   orcsQueryWidget.setEditable(true);
                   artifactsWidget.setEditable(true);
-                  isSRSPublishing = false;
                }
             }
          });
