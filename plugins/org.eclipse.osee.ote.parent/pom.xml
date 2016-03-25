@@ -94,7 +94,7 @@
 		<eclipse-site>http://download.eclipse.org/releases/${platform-version-name}</eclipse-site>
 		<itemis-site>http://download.itemis.com/updates/releases/${xtext-version}</itemis-site>
 
-		<osee-create-help-docs>true</osee-create-help-docs>
+		<osee-create-help-docs>false</osee-create-help-docs>
 
 		<osee-application-server-launch-ant>../../plugins/org.eclipse.osee.parent/tools/osee-application-server.xml</osee-application-server-launch-ant>
 
