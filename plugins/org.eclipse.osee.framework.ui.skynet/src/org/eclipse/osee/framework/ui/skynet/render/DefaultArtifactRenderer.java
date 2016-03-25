@@ -124,7 +124,7 @@ public class DefaultArtifactRenderer implements IRenderer {
    @Override
    public void renderAttribute(IAttributeType attributeType, Artifact artifact, PresentationType presentationType, Producer producer, AttributeElement attributeElement, String footer) throws OseeCoreException {
       WordMLProducer wordMl = (WordMLProducer) producer;
-      String format = attributeElement.getFormat();
+      String format = attributeElement.getFormatPre();
       boolean allAttrs = getBooleanOption("allAttrs");
 
       wordMl.startParagraph();
@@ -146,7 +146,7 @@ public class DefaultArtifactRenderer implements IRenderer {
          wordMl.addWordMl(data);
       } else {
          String valueList = artifact.getAttributesToString(attributeType);
-         if (attributeElement.getFormat().contains(">x<")) {
+         if (attributeElement.getFormatPre().contains(">x<")) {
             wordMl.addWordMl(format.replace(">x<", ">" + Xml.escape(valueList).toString() + "<"));
          } else {
             wordMl.addTextInsideParagraph(valueList);

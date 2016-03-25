@@ -224,7 +224,6 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       sb.append("<li>Select Master or Master/Slave (for SRS) template.  Only use non-recursive templates</li>");
       sb.append(
          "<li>Drag &amp; Drop the IS Artifacts into the box OR write an Orcs Query that returns a list of Artifact Ids</li>");
-      sb.append("NOTE: Providing IS Artifacts or an Orcs Query is not necessary for SRS Master/Slave Publishing");
       sb.append("<li>Decide to Publish as Diff and select WAS branch as desired</li>");
       sb.append("<br/>Click the play button at the top right or in the Execute section.</form>");
       return sb.toString();

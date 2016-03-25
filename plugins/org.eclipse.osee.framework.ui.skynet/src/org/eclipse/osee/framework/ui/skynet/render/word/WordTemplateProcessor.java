@@ -223,6 +223,7 @@ public class WordTemplateProcessor {
          wordMl = new WordMLProducer(charBak);
 
          templateContent = templateContent.replaceAll(PGNUMTYPE_START_1, "");
+
          this.outlineNumber = outlineNumber == null ? peekAtFirstArtifactToGetParagraphNumber(templateContent, null,
             artifacts) : outlineNumber;
          templateContent = wordMl.setHeadingNumbers(this.outlineNumber, templateContent, outlineType);
@@ -280,6 +281,9 @@ public class WordTemplateProcessor {
             options = nestedTemplateOptions.getJSONObject(nestedCount);
             nestedCount++;
             outlineType = options.getString("OutlineType");
+            if (outlineType.isEmpty()) {
+               outlineType = null;
+            }
             sectionNumber = options.getString("SectionNumber");
             subDocName = options.getString("SubDocName");
             key = options.getString("Key");
@@ -384,7 +388,6 @@ public class WordTemplateProcessor {
          recurseChildren = options.getBoolean("RecurseChildren");
          String headingAttrType = options.getString("HeadingAttributeType");
          headingAttributeType = AttributeTypeManager.getType(headingAttrType);
-         outlineNumber = options.getString("OutlineNumber");
          artifactName = options.getString("ArtifactName");
 
       } catch (JSONException ex) {
