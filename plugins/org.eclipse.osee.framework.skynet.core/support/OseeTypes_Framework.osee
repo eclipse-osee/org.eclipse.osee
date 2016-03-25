@@ -730,6 +730,8 @@ oseeEnumType "enum.data.rights.classification" {
 	entryGuid "ABeDQMSA8Hs_1dxoYIgA"
 	entry "Proprietary"
 	entryGuid "AOigVM2W3WUomEpjlrgA"
+	entry "Limited Rights"
+	entryGuid "ABcLZ6zfUUzjdDa8p6wC"
 }
 
 abstract artifactType "Direct Software Requirement" extends "Abstract Software Requirement" {
@@ -847,6 +849,7 @@ artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" 
 
 artifactType "Hardware Requirement" extends "Requirement" , "MS Word Template" {
 	uuid 0x0000000000000021
+	attribute "Data Rights Classification"
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
