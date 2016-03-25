@@ -17,6 +17,7 @@ import org.eclipse.osee.ote.help.ui.util.HelpTestUtil;
 import org.eclipse.osee.ote.help.ui.util.HtmlParser;
 import org.eclipse.osee.ote.help.ui.util.TocParser;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,7 @@ public class HelpTableOfContentTest {
       parser.parse();
    }
 
+   @Ignore
    @Test
    public void testAllTocReferencesExist() throws Exception {
       for (String reference : parser.getEntries()) {
@@ -42,6 +44,7 @@ public class HelpTableOfContentTest {
       }
    }
 
+   @Ignore
    @Test
    public void testTocReferencesValid() throws Exception {
       HtmlParser htmlParser = new HtmlParser(PLUGIN_ID);

@@ -23,6 +23,7 @@ import org.eclipse.osee.ote.help.ui.util.ContextParser.ContextEntry;
 import org.eclipse.osee.ote.help.ui.util.HelpTestUtil;
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -61,6 +62,7 @@ public class HelpContextTest {
       }
    }
 
+   @Ignore
    @Test
    public void testHrefFiles() throws Exception {
       for (ContextEntry entry : parser.getEntries()) {
