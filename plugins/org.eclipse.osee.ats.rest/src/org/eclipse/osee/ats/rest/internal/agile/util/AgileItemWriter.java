@@ -61,6 +61,12 @@ public class AgileItemWriter {
                }
             }
          }
+      } else if (newItem.isRemoveFeatures()) {
+         for (ArtifactReadable awa : atsServer.getArtifacts(newItem.getUuids())) {
+            for (ArtifactReadable feature : awa.getRelated(AtsRelationTypes.AgileFeatureToItem_FeatureGroup)) {
+               changes.unrelate(feature, AtsRelationTypes.AgileFeatureToItem_FeatureGroup, awa);
+            }
+         }
       }
 
       if (newItem.isSetSprint()) {

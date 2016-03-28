@@ -153,9 +153,13 @@ public class AgileFeatureGroupColumn extends XViewerAtsColumn implements IXViewe
       }
 
       JaxAgileItem updateItem = new JaxAgileItem();
-      updateItem.setSetFeatures(true);
-      for (Object obj : dialog.getResult()) {
-         updateItem.getFeatures().add(((JaxAgileFeatureGroup) obj).getUuid());
+      if (dialog.getResult().length == 0) {
+         updateItem.setRemoveFeatures(true);
+      } else {
+         updateItem.setSetFeatures(true);
+         for (Object obj : dialog.getResult()) {
+            updateItem.getFeatures().add(((JaxAgileFeatureGroup) obj).getUuid());
+         }
       }
       for (AbstractWorkflowArtifact awa : awas) {
          updateItem.getUuids().add(Long.valueOf(awa.getArtId()));

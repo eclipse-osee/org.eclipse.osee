@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api.config;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.map.ser.std.ToStringSerializer;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.framework.jdk.core.type.UuidIdentity;
 
 /**
@@ -93,14 +94,19 @@ public class JaxAtsObject {
       if (obj == null) {
          return false;
       }
-      if (!(obj instanceof JaxAtsObject)) {
-         return false;
+      if (obj instanceof JaxAtsObject) {
+         JaxAtsObject other = (JaxAtsObject) obj;
+         if (other.getUuid() == uuid) {
+            return true;
+         }
       }
-      JaxAtsObject other = (JaxAtsObject) obj;
-      if (other.getUuid() != uuid) {
-         return false;
+      if (obj instanceof IAtsObject) {
+         IAtsObject other = (IAtsObject) obj;
+         if (other.getUuid().equals(uuid)) {
+            return true;
+         }
       }
-      return true;
+      return false;
    }
 
    public String getDescription() {

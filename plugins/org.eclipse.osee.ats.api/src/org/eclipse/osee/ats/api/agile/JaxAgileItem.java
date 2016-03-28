@@ -25,6 +25,7 @@ public class JaxAgileItem {
    private long sprintUuid = 0;
    private long backlogUuid = 0;
    private boolean setFeatures = false;
+   private boolean removeFeatures = false;
    private boolean setSprint = false;
    private boolean setBacklog = false;
 
@@ -74,6 +75,14 @@ public class JaxAgileItem {
 
    public void setBacklogUuid(long backlogUuid) {
       this.backlogUuid = backlogUuid;
+   }
+
+   public boolean isRemoveFeatures() {
+      return removeFeatures;
+   }
+
+   public void setRemoveFeatures(boolean removeFeatures) {
+      this.removeFeatures = removeFeatures;
    }
 
 }

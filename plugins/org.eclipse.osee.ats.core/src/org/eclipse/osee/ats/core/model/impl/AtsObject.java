@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.model.impl;
 
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.config.JaxAtsObject;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.UuidNamedIdentity;
 
@@ -56,29 +57,23 @@ public class AtsObject extends UuidNamedIdentity implements IAtsObject {
    }
 
    @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = super.hashCode();
-      result = prime * result + (int) (getUuid() ^ getUuid() >>> 32);
-      return result;
-   }
-
-   @Override
    public boolean equals(Object obj) {
       if (this == obj) {
          return true;
       }
-      if (!super.equals(obj)) {
-         return false;
+      if (obj instanceof IAtsObject) {
+         IAtsObject other = (IAtsObject) obj;
+         if (getUuid().equals(other.getUuid())) {
+            return true;
+         }
       }
-      if (!(obj instanceof IAtsObject)) {
-         return false;
+      if (obj instanceof JaxAtsObject) {
+         JaxAtsObject other = (JaxAtsObject) obj;
+         if (getUuid().equals(other.getUuid())) {
+            return true;
+         }
       }
-      IAtsObject other = (IAtsObject) obj;
-      if (getUuid().equals(other.getUuid())) {
-         return true;
-      }
-      return false;
+      return super.equals(obj);
    }
 
 }
