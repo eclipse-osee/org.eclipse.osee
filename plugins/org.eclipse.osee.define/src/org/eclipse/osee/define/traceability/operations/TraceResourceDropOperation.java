@@ -132,8 +132,7 @@ public class TraceResourceDropOperation extends AbstractOperation {
       }
 
       if (testUnitArtifact == null) {
-         testUnitArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, null, tag);
-         testUnitArtifact.setName(name);
+         testUnitArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.TestCase, branch, name, tag);
          handler.addArtifact(testUnitArtifact);
          if (tagSource) {
             tagger.addSourceTag(fileUri, testUnitArtifact.getGuid());

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.database.init.internal.OseeTypesSetup;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -73,8 +72,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          SkynetTransaction transaction1 = TransactionManager.createTransaction(COMMON, "Add Types to Common Branch");
 
          for (Entry<String, URL> entry : typeMap.entrySet()) {
-            Artifact artifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, COMMON,
-               entry.getKey(), GUID.create());
+            Artifact artifact =
+               ArtifactTypeManager.addArtifact(CoreArtifactTypes.OseeTypeDefinition, COMMON, entry.getKey());
             artifact.setSoleAttributeValue(CoreAttributeTypes.Active, true);
             InputStream inputStream = null;
             try {

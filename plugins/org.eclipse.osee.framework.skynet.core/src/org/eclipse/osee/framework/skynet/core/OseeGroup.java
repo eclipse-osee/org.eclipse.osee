@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTokens;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -109,8 +109,7 @@ public class OseeGroup {
          }
          if (groupArtifact == null) {
             Artifact userGroupsFolder = getOrCreateUserGroupsFolder(COMMON);
-            groupArtifact =
-               ArtifactTypeManager.addArtifact(CoreArtifactTypes.UserGroup, COMMON, token.getName(), token.getGuid());
+            groupArtifact = ArtifactTypeManager.addArtifact(token, COMMON);
             userGroupsFolder.addChild(groupArtifact);
          }
          ArtifactCache.cacheByTextId(cacheKey, groupArtifact);

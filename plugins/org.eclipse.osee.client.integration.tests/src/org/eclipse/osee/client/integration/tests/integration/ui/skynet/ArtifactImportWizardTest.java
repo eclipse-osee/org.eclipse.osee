@@ -69,7 +69,7 @@ public final class ArtifactImportWizardTest {
 
    /**
     * setup artifact tree of this form:
-    * 
+    *
     * <pre>
     * myRootArtifact
     *              |
@@ -80,28 +80,24 @@ public final class ArtifactImportWizardTest {
     *              |
     *              `--B
     * </pre>
-    * 
+    *
     * Where myRootArtifact real name is "ArtifactImportWizardTest_Root"
     */
    @Before
    public void setUp() throws Exception {
-      myRootArtifact = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1,
-         "ArtifactImportWizardTest_Root", "ArtifatImpWizaTestGUID");
+      myRootArtifact =
+         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, "ArtifactImportWizardTest_Root");
 
       OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1).addChild(myRootArtifact);
 
-      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A",
-         "AAAAAAAAAAAAAAAAAAAAAA");
+      Artifact artifactA = ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "A");
       myRootArtifact.addChild(artifactA);
 
-      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "C",
-         "CCCCCCCCCCCCCCCCCCCCCC"));
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "C"));
 
-      artifactA.addChild(
-         ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D", "DDDDDDDDDDDDDDDDDDDDDD"));
+      artifactA.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.Requirement, SAW_Bld_1, "D"));
 
-      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "B",
-         "BBBBBBBBBBBBBBBBBBBBBB"));
+      myRootArtifact.addChild(ArtifactTypeManager.addArtifact(CoreArtifactTypes.SoftwareRequirement, SAW_Bld_1, "B"));
 
       myRootArtifact.persist("ArtifactImportWizardTest");
    }

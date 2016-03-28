@@ -57,7 +57,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * Test Case for {@link WordOutlineExtractorDelegate} <br/>
  * Tests parsing mechanism to determine if all artifacts have been picked up. <br/>
- * 
+ *
  * @author Karol M. Wilk
  */
 @RunWith(Parameterized.class)
@@ -77,7 +77,7 @@ public final class WordOutlineAndStyleTest {
     *    3.0   Ignored
     * 4.0   D
     * </pre>
-    * 
+    *
     * All artifacts have same style.
     */
    private static final String CASE_1 = "WordOutlineAndStyle_case1.xml";
@@ -89,7 +89,7 @@ public final class WordOutlineAndStyleTest {
     *    2.0   A_2
     * 2.0   B
     * </pre>
-    * 
+    *
     * A and B have a Heading8 style, while A_1 and A_2 are styled as list items.
     */
    private static final String CASE_2 = "WordOutlineAndStyle_case2.xml";
@@ -100,7 +100,7 @@ public final class WordOutlineAndStyleTest {
     * 2.0   B
     * 3.0   C
     * </pre>
-    * 
+    *
     * C's style is Normal should be treated as part of the body. This tests testing against last paragraph </br>
     * number that follows the sequence but not the style of paragraph numbers. A and B are of the same style.
     */
@@ -122,7 +122,7 @@ public final class WordOutlineAndStyleTest {
    public void setUp() throws Exception {
       Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(SAW_Bld_1);
       String name = WordOutlineAndStyleTest.class.getSimpleName() + "_Folder";
-      folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, name, GUID.create());
+      folder = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, SAW_Bld_1, name);
       root.addChild(folder);
       root.persist(name);
    }
