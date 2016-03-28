@@ -17,9 +17,8 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 /**
  * @author Ryan D. Brooks
  */
-public interface BranchId extends Identity<Long>, HasUuid, Id {
+public interface BranchId extends Identity<Long>, Id {
 
-   @Override
    default Long getUuid() {
       return getId();
    }

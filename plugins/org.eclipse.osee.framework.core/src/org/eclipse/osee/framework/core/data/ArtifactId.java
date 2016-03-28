@@ -15,7 +15,9 @@ import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 /**
  * @author Megumi Telles
  */
-public interface ArtifactId extends Identifiable<String>, HasUuid, HasBranch {
+public interface ArtifactId extends Identifiable<String>, HasBranch {
+
+   public Long getUuid();
 
    default String toStringWithId() {
       return String.format("[%s][%s]", getName(), getUuid());

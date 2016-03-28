@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.data.HasUuid;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.UuidBaseIdentityJaxRs;
 import org.eclipse.osee.framework.skynet.core.attribute.service.AttributeAdapterService;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 
-public abstract class IdentityReferenceAttribute<T extends HasUuid> extends CharacterBackedAttribute<T> {
+public abstract class IdentityReferenceAttribute<T extends Id> extends CharacterBackedAttribute<T> {
 
    @Override
    public T getValue() throws OseeCoreException {

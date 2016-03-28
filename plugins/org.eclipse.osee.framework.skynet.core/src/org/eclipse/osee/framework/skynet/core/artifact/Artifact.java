@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -60,6 +59,7 @@ import org.eclipse.osee.framework.core.model.type.RelationType;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -91,7 +91,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * @author Ryan D. Brooks
  */
 
-public class Artifact extends FullyNamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact, ArtifactId {
+public class Artifact extends FullyNamedIdentity<String> implements IArtifact, IAdaptable, IBasicGuidArtifact, Id {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1733,11 +1733,6 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       return types;
    }
 
-   @Override
-   public Long getUuid() {
-      return Long.valueOf(getArtId());
-   }
-
    public Artifact getRelatedArtifactOrNull(IRelationTypeSide relationSide) {
       Artifact artifact = null;
       try {
@@ -1748,4 +1743,13 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
       return artifact;
    }
 
+   @Override
+   public Long getUuid() {
+      return getId();
+   }
+
+   @Override
+   public Long getId() {
+      return Long.valueOf(getArtId());
+   }
 }
