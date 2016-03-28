@@ -39,7 +39,7 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
    @Override
    public ActivityEntry getEntry(Long entryId) {
       Conditions.checkNotNull(entryId, "activity entry id");
-      final ActivityEntry entry = new ActivityEntry();
+      final ActivityEntry entry = new ActivityEntry(entryId);
       final MutableBoolean found = new MutableBoolean(false);
       activityLog.queryEntry(entryId, new ActivityDataHandler() {
 
@@ -49,7 +49,6 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
             entry.setAccountId(accountId);
             entry.setClientId(clientId);
             entry.setDuration(duration);
-            entry.setGuid(entryId);
             entry.setMessageArgs(messageArgs);
             entry.setParentId(parentId);
             entry.setServerId(serverId);
@@ -67,8 +66,7 @@ public final class ActivityLogResource implements ActivityLogEndpoint {
    @Override
    public ActivityEntryId createEntry(Long typeId, Long parentId, Integer status, String message) {
       Long entryId = activityLog.createEntry(typeId, parentId, status, message);
-      ActivityEntryId entity = new ActivityEntryId();
-      entity.setGuid(entryId);
+      ActivityEntryId entity = new ActivityEntryId(entryId);
       return entity;
    }
 

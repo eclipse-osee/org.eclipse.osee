@@ -55,7 +55,7 @@ public class ActivityLogJaxRsService {
    public static void update(ActivityEntryId entryId, Integer statusId) {
       ActivityLogEndpoint activityEp = get();
       if (activityEp != null) {
-         activityEp.updateEntry(entryId.getGuid(), statusId);
+         activityEp.updateEntry(entryId.getId(), statusId);
       }
    }
 

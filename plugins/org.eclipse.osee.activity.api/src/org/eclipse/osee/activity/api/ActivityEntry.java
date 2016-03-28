@@ -27,6 +27,10 @@ public class ActivityEntry extends ActivityEntryId {
    private Integer status;
    private String messageArgs;
 
+   public ActivityEntry(Long id) {
+      super(id);
+   }
+
    public Long getParentId() {
       return parentId;
    }
@@ -101,7 +105,7 @@ public class ActivityEntry extends ActivityEntryId {
 
    @Override
    public String toString() {
-      return "ActivityEntry [" + super.getGuid() + ", parentId=" + parentId + ", typeId=" + typeId + ", accountId=" + accountId + ", serverId=" + serverId + ", clientId=" + clientId + ", startTime=" + startTime + ", duration=" + duration + ", status=" + status + ", messageArgs=" + messageArgs + "]";
+      return "ActivityEntry [" + getId() + ", parentId=" + parentId + ", typeId=" + typeId + ", accountId=" + accountId + ", serverId=" + serverId + ", clientId=" + clientId + ", startTime=" + startTime + ", duration=" + duration + ", status=" + status + ", messageArgs=" + messageArgs + "]";
    }
 
 }

@@ -11,47 +11,15 @@
 package org.eclipse.osee.activity.api;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.Identity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 
 /**
  * @author Ryan D. Brooks
  */
 @XmlRootElement
-public class ActivityEntryId implements Identity<Long> {
+public class ActivityEntryId extends BaseId {
 
-   private Long id;
-
-   public void setGuid(long id) {
-      this.id = id;
-   }
-
-   @Override
-   public Long getGuid() {
-      return id;
-   }
-
-   @Override
-   public int hashCode() {
-      return getGuid().hashCode();
-   }
-
-   @SuppressWarnings("unchecked")
-   @Override
-   public boolean equals(Object obj) {
-      boolean equal = false;
-      if (obj instanceof Identity) {
-         Identity<Long> identity = (Identity<Long>) obj;
-         if (getGuid() == identity.getGuid()) {
-            equal = true;
-         } else if (getGuid() != null) {
-            equal = getGuid().equals(identity.getGuid());
-         }
-      }
-      return equal;
-   }
-
-   @Override
-   public String toString() {
-      return "ActivityEntryId [id=" + id + "]";
+   public ActivityEntryId(Long id) {
+      super(id);
    }
 }
