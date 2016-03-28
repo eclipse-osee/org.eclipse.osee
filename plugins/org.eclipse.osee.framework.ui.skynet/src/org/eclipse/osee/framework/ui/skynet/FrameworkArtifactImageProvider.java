@@ -102,7 +102,12 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          URI uri = UriBuilder.fromUri(appServer).path("images.json").build();
 
          // first, retrieve the images.json file to see if there are any images
-         String imagesJson = JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+         String imagesJson = null;
+         try {
+            imagesJson = JaxRsClient.newClient().target(uri).request(MediaType.TEXT_PLAIN).get(String.class);
+         } catch (Exception ex) {
+            // do nothing if does't exist
+         }
          if (Strings.isValid(imagesJson)) {
 
             ObjectMapper mapper = new ObjectMapper();
