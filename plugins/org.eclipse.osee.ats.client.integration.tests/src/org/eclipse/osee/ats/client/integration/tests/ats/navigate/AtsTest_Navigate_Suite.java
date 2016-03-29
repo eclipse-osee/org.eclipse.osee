@@ -21,7 +21,7 @@ import org.junit.runners.Suite;
  * @author Roberto E. Escobar
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({SubscribeUtilityTest.class, AtsNavigateItemsToTaskEditorTest.class})
+@Suite.SuiteClasses({SubscribeUtilityTest.class})
 public class AtsTest_Navigate_Suite {
 
    @BeforeClass

@@ -32,9 +32,6 @@
 <stringAttribute key="product" value="org.eclipse.osee.framework.ui.product.osee"/>
 <booleanAttribute key="restart" value="false"/>
 <setAttribute key="selected_features">
-<setEntry value="de.itemis.xtext.antlr.feature:default"/>
-<setEntry value="de.itemis.xtext.antlr.sdk:default"/>
-<setEntry value="de.itemis.xtext.antlr.source.feature:default"/>
 <setEntry value="org.eclipse.cvs.source:default"/>
 <setEntry value="org.eclipse.cvs:default"/>
 <setEntry value="org.eclipse.draw2d:default"/>
@@ -85,7 +82,6 @@
 <setEntry value="org.eclipse.osee.core.plugin.feature:default"/>
 <setEntry value="org.eclipse.osee.core.runtime.feature:default"/>
 <setEntry value="org.eclipse.osee.core.ui.feature:default"/>
-<setEntry value="org.eclipse.osee.coverage.feature:default"/>
 <setEntry value="org.eclipse.osee.define.feature:default"/>
 <setEntry value="org.eclipse.osee.external.feature:default"/>
 <setEntry value="org.eclipse.osee.framework.feature:default"/>
