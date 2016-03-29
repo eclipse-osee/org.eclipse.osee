@@ -284,7 +284,7 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
 
    @Override
    public IAtsConfigQuery andActive(boolean active) {
-      return andAttr(CoreAttributeTypes.Active, active ? "true" : "false");
+      return andAttr(AtsAttributeTypes.Active, active ? "true" : "false");
    }
 
    @Override
