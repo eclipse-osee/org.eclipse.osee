@@ -104,9 +104,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    @Override
    public IDynamicWidgetLayoutListener getDynamicWidgetLayoutListener() {
-      if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
-         return ((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem();
-      }
       return null;
    }
 
@@ -126,9 +123,6 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage {
 
    @Override
    public String getXWidgetsXml() throws OseeCoreException {
-      if (taskEditor.getTaskEditorProvider() instanceof TaskEditorParameterSearchItemProvider) {
-         return ((TaskEditorParameterSearchItemProvider) taskEditor.getTaskEditorProvider()).getWorldSearchItem().getParameterXWidgetXml();
-      }
       return null;
    }
 

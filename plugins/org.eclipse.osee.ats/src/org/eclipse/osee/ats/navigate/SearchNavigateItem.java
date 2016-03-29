@@ -12,9 +12,6 @@ package org.eclipse.osee.ats.navigate;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.ats.task.TaskEditor;
-import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
-import org.eclipse.osee.ats.task.TaskEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
@@ -76,14 +73,6 @@ public class SearchNavigateItem extends XNavigateItem {
                tableLoadOptions));
          } else {
             AWorkbench.popup("ERROR", "Unhandled WorldEditor navigate item");
-         }
-      } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
-         if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
-            TaskEditor.open(new TaskEditorParameterSearchItemProvider(
-               (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
-               tableLoadOptions));
-         } else {
-            AWorkbench.popup("ERROR", "Unhandled TaskEditor navigate item");
          }
       } else {
          AWorkbench.popup("ERROR", "Unhandled navigate item");

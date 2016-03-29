@@ -33,9 +33,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
-import org.eclipse.osee.ats.world.WorldEditorParameterSearchItemProvider;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -203,19 +201,6 @@ public class TaskEditor extends AbstractArtifactEditor implements IAtsMetricsPro
       ITaskEditorProvider provider = getTaskEditorProvider();
       setPartName(provider.getTaskEditorLabel(SearchType.Search));
 
-      if (provider instanceof TaskEditorParameterSearchItemProvider && ((TaskEditorParameterSearchItemProvider) provider).isFirstTime()) {
-         setPartName(provider.getName());
-         setTableTitle(WorldEditorParameterSearchItemProvider.ENTER_OPTIONS_AND_SELECT_SEARCH, false);
-         return;
-      }
-      if (provider instanceof TaskEditorParameterSearchItemProvider) {
-         Result result =
-            ((TaskEditorParameterSearchItemProvider) provider).getWorldSearchItem().isParameterSelectionValid();
-         if (result.isFalse()) {
-            AWorkbench.popup(result);
-            return;
-         }
-      }
       if (loading) {
          AWorkbench.popup("Already Loading, Please Wait");
          return;
