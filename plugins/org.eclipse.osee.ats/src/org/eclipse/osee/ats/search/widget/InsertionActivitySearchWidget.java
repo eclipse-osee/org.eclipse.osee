@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.search.widget;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 
 /**
  * @author Donald G. Dunne
@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 public class InsertionActivitySearchWidget extends AbstractXComboViewerSearchWidget<IAtsInsertionActivity> {
 
    public static final String INSERTION_ACTIVITY = "Insertion Activity";
-   private InsertionSearchWidget insertionActivityWidget;
+   private InsertionSearchWidget insertionyWidget;
 
    public InsertionActivitySearchWidget(WorldEditorParameterSearchItem searchItem) {
       super(INSERTION_ACTIVITY, searchItem);
@@ -49,28 +49,28 @@ public class InsertionActivitySearchWidget extends AbstractXComboViewerSearchWid
 
    @Override
    public Collection<IAtsInsertionActivity> getInput() {
-      if (insertionActivityWidget == null || insertionActivityWidget.get() == null) {
+      if (insertionyWidget == null || insertionyWidget.get() == null) {
          return java.util.Collections.emptyList();
       }
       return Collections.castAll(
-         AtsClientService.get().getProgramService().getInsertionActivities(insertionActivityWidget.get()));
+         AtsClientService.get().getProgramService().getInsertionActivities(insertionyWidget.get()));
    }
 
    public void setInsertionWidget(InsertionSearchWidget insertionWidget) {
-      this.insertionActivityWidget = insertionWidget;
-      insertionWidget.getWidget().addSelectionChangedListener(new ISelectionChangedListener() {
+      this.insertionyWidget = insertionWidget;
+      insertionyWidget.getWidget().getCombo().addModifyListener(new ModifyListener() {
 
          @Override
-         public void selectionChanged(SelectionChangedEvent event) {
+         public void modifyText(ModifyEvent e) {
             setup(getWidget());
          }
-
       });
+
    }
 
    @Override
    public String getInitialText() {
-      if (insertionActivityWidget == null || insertionActivityWidget.get() == null) {
+      if (insertionyWidget == null || insertionyWidget.get() == null) {
          return "--select insertion--";
       } else {
          return "";

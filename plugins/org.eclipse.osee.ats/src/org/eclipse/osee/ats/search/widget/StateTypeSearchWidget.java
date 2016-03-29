@@ -89,7 +89,7 @@ public class StateTypeSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public Collection<String> getInput() {
-      return Arrays.asList("Working", "Completed", "Cancelled", "Working/Completed", "Working/Cancelled",
+      return Arrays.asList(CLEAR, "Working", "Completed", "Cancelled", "Working/Completed", "Working/Cancelled",
          "Completed/Cancelled");
    }
 }

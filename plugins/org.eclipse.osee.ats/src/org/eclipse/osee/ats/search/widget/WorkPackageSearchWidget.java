@@ -12,14 +12,14 @@ package org.eclipse.osee.ats.search.widget;
 
 import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 
 /**
  * @author Donald G. Dunne
@@ -57,13 +57,12 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
 
    public void setInsertionActivityWidget(InsertionActivitySearchWidget insertionActivityWidget) {
       this.insertionActivityWidget = insertionActivityWidget;
-      insertionActivityWidget.getWidget().addSelectionChangedListener(new ISelectionChangedListener() {
+      insertionActivityWidget.getWidget().getCombo().addModifyListener(new ModifyListener() {
 
          @Override
-         public void selectionChanged(SelectionChangedEvent event) {
+         public void modifyText(ModifyEvent e) {
             setup(getWidget());
          }
-
       });
    }
 

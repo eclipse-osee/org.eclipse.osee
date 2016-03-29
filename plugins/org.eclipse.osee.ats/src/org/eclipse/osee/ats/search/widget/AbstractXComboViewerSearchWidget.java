@@ -10,20 +10,27 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.search.widget;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.WorldEditorParameterSearchItem;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.ui.skynet.ToStringViewerSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.XComboViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object> extends AbstractSearchWidget<XComboViewer, Object> {
+
+   public static final String CLEAR = "--clear--";
 
    public AbstractXComboViewerSearchWidget(String name, WorldEditorParameterSearchItem searchItem) {
       super(name, "XComboViewer", searchItem);
@@ -33,7 +40,9 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    public ObjectType get() {
       XComboViewer combo = getWidget();
       if (combo != null) {
-         return (ObjectType) combo.getSelected();
+         if (!(combo.getSelected() instanceof String)) {
+            return (ObjectType) combo.getSelected();
+         }
       }
       return null;
    }
@@ -52,7 +61,13 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    public void setup(XWidget widget) {
       if (widget != null) {
          XComboViewer combo = (XComboViewer) widget;
-         combo.setInput(Collections.castAll(getInput()));
+         List<Object> input = new ArrayList<Object>();
+         input.addAll(Collections.castAll(getInput()));
+         if (!input.contains(CLEAR)) {
+            input.add(CLEAR);
+         }
+         combo.setInput(input);
+         combo.setSorter(new ToStringViewerSorter(true));
          combo.getCombo().setText(getInitialText());
          if (!listenerAdded) {
             listenerAdded = true;
@@ -68,6 +83,17 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
 
             });
             combo.getLabelWidget().setToolTipText("Right-click to clear");
+            combo.addSelectionListener(new SelectionAdapter() {
+
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  super.widgetSelected(e);
+                  if (combo.getSelected().toString().equals(CLEAR)) {
+                     handleRightClickLabel();
+                  }
+               }
+
+            });
          }
       }
    }

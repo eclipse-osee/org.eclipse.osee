@@ -83,6 +83,9 @@ public class XComboViewer extends GenericXWidget {
 
    public void setSorter(ViewerSorter sorter) {
       this.sorter = sorter;
+      if (comboViewer != null) {
+         comboViewer.setSorter(sorter);
+      }
    }
 
    public void setInput(Collection<Object> input) {

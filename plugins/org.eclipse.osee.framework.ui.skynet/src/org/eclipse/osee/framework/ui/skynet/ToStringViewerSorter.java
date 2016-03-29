@@ -19,8 +19,18 @@ import org.eclipse.osee.framework.jdk.core.type.Named;
  */
 public class ToStringViewerSorter extends ViewerSorter {
 
+   private final boolean showDashedFirst;
+
    public ToStringViewerSorter() {
+      this(false);
+   }
+
+   /**
+    * @param dashedFirst sorts entries with "--" first in list. Supports entries like "--clear--" or "--all--".
+    */
+   public ToStringViewerSorter(boolean showDashedFirst) {
       super();
+      this.showDashedFirst = showDashedFirst;
    }
 
    @SuppressWarnings("unchecked")
@@ -28,6 +38,15 @@ public class ToStringViewerSorter extends ViewerSorter {
    public int compare(Viewer viewer, Object e1, Object e2) {
       String s1 = e1 instanceof Named ? ((Named) e1).getName() : e1.toString();
       String s2 = e2 instanceof Named ? ((Named) e2).getName() : e2.toString();
+      if (showDashedFirst) {
+         if (s1.startsWith("-") && !s2.startsWith("-")) {
+            return -1;
+         }
+         if (!s1.startsWith("-") && s2.startsWith("-")) {
+            return 1;
+         }
+      }
       return getComparator().compare(s1, s2);
    }
+
 }
