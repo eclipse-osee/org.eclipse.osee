@@ -226,8 +226,6 @@ public class WordMLProducer extends Producer {
       endParagraph();
 
       startParagraph();
-      append("<w:r>");
-      append("</w:r>");
       //The listnum also acts a template delimiter to know when to remove unwanted content.
       addWordMl(LISTNUM_FIELD);
       endParagraph();
