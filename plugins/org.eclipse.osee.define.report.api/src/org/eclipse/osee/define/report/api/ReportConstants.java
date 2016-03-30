@@ -35,7 +35,7 @@ public class ReportConstants {
    static final String NEW_PAGE_TEMPLATE =
       "<w:p><w:pPr><w:spacing w:after=\"0\"/>" + SECTION_TEMPLATE + "</w:pPr></w:p>";
    public static final String PAGE_ADDS =
-      "%s <w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/>";
+      "%s <w:pgMar w:top=\"1440\" w:right=\"1440\" w:bottom=\"1440\" w:left=\"1440\" w:header=\"432\" w:footer=\"432\" w:gutter=\"0\"/><w:cols w:space=\"720\"/>";
    public static final String INS = "</w:ins>";
    public static final String[] WXML_CHARS = new String[] {"&", "<", ">", "\""};
    public static final String[] WXML_ESCAPES = new String[] {"&amp;", "&lt;", "&gt;", "&quot;"};
