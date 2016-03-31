@@ -43,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
-import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
@@ -143,13 +142,10 @@ public class ConflictManagerInternal {
 
       TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
-      String disableChecks = OseeInfo.getValue("osee.disable.multiplicity.conflicts");
-      if ("false".equals(disableChecks)) {
-         // check for multiplicity conflicts
-         Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
-         loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, baselineTransaction,
-            conflictBuilders, artIdSet);
-      }
+      // check for multiplicity conflicts
+      Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
+      loadMultiplicityConflicts(singleMultiplicityTypes, sourceBranch, destinationBranch, baselineTransaction,
+         conflictBuilders, artIdSet);
 
       loadArtifactVersionConflicts(ServiceUtil.getSql(OseeSql.CONFLICT_GET_ARTIFACTS_DEST), sourceBranch,
          destinationBranch, baselineTransaction, conflictBuilders, artIdSet, artIdSetDontShow, artIdSetDontAdd, monitor,
