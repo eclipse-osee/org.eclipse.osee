@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
-import org.eclipse.osee.ats.api.workdef.IStateToken;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
@@ -42,9 +42,7 @@ import org.eclipse.osee.ats.goal.GoalMemberProvider;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.navigate.VisitedItems;
-import org.eclipse.osee.ats.task.IXTaskViewer;
 import org.eclipse.osee.ats.task.TaskComposite;
-import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -67,7 +65,6 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEdit
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.swt.Displays;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -92,15 +89,15 @@ import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportable, ISMAEditorEventHandler, ISelectedAtsArtifacts, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private AbstractWorkflowArtifact awa;
    private SMAWorkFlowTab workFlowTab;
    private SMAMembersTab membersTab;
+   private SMATasksTab taskTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
    private boolean privilegedEditModeEnabled = false;
-   private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
    private final List<ISMAEditorListener> editorListeners = new ArrayList<>();
    SMAEditorOutlinePage outlinePage;
 
@@ -159,7 +156,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       return aei;
    }
 
-   @SuppressWarnings("rawtypes")
+   @SuppressWarnings({"rawtypes", "unchecked"})
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == IContentOutlinePage.class) {
@@ -205,8 +202,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
 
    private void createTaskTab() throws PartInitException {
       if (isTaskable()) {
-         taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
-         addPage(taskTabXWidgetActionPage);
+         taskTab = new SMATasksTab(this, (IAtsTeamWorkflow) awa, AtsClientService.get());
+         addPage(taskTab);
       }
    }
 
@@ -284,6 +281,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       }
       if (membersTab != null) {
          membersTab.dispose();
+      }
+      if (taskTab != null) {
+         taskTab.dispose();
       }
       super.dispose();
    }
@@ -417,6 +417,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          if (membersTab != null) {
             membersTab.refresh();
          }
+         if (taskTab != null) {
+            taskTab.refresh();
+         }
          if (attributesComposite != null) {
             attributesComposite.refreshArtifact(awa);
          }
@@ -545,48 +548,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
       });
    }
 
-   @Override
-   public AbstractWorkflowArtifact getAwa() {
-      return awa;
-   }
-
-   @Override
-   public String getCurrentStateName() {
-      return awa.getStateMgr().getCurrentStateName();
-   }
-
-   @Override
-   public IDirtiableEditor getEditor() {
-      return this;
-   }
-
-   @Override
-   public String getTabName() {
-      return "Tasks";
-   }
-
-   @Override
-   public Collection<TaskArtifact> getTaskArtifacts(IStateToken state) throws OseeCoreException {
-      if (awa instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) awa).getTaskArtifacts(state);
-      }
-      return Collections.emptyList();
-   }
-
-   @Override
-   public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      if (awa instanceof TeamWorkFlowArtifact) {
-         return ((TeamWorkFlowArtifact) awa).getTaskArtifacts();
-      }
-      return Collections.emptyList();
-   }
-
-   @Override
    public boolean isTaskable() {
       return awa instanceof TeamWorkFlowArtifact;
    }
 
-   @Override
    public boolean isTasksEditable() {
       boolean editable = true;
       if (!(awa instanceof TeamWorkFlowArtifact) || awa.isCompletedOrCancelled()) {
@@ -631,16 +596,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    }
 
    @Override
-   public void handleRefreshAction() {
-      // do nothing
-   }
-
-   @Override
-   public boolean isRefreshActionHandled() {
-      return false;
-   }
-
-   @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
       return awa.getManHrsPerDayPreference();
    }
@@ -650,7 +605,7 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
    }
 
    public TaskComposite getTaskComposite() {
-      return taskTabXWidgetActionPage.getTaskComposite();
+      return taskTab.getTaskComposite();
    }
 
    @Override
@@ -708,8 +663,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
                if (membersTab != null && membersTab.getMembersSection() != null) {
                   provider = membersTab.getWorldXViewer();
                }
-            } else if (page.equals(taskTabXWidgetActionPage)) {
-               provider = taskTabXWidgetActionPage.getTaskComposite().getTaskXViewer();
+            } else if (page.equals(taskTab)) {
+               if (taskTab.getTaskComposite() != null) {
+                  provider = taskTab.getTaskComposite().getWorldXViewer();
+               }
             } else {
                String title = getPageText(newPageIndex);
                if (title.equalsIgnoreCase("metrics")) {
@@ -729,6 +686,10 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtyReportabl
          return Arrays.asList((TaskArtifact) awa);
       }
       return java.util.Collections.emptyList();
+   }
+
+   public AbstractWorkflowArtifact getAwa() {
+      return awa;
    }
 
 }

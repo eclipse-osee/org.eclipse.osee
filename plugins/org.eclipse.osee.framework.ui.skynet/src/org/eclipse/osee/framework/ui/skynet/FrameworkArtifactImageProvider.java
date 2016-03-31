@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -143,8 +144,10 @@ public class FrameworkArtifactImageProvider extends ArtifactImageProvider {
          }
 
       } catch (Exception ex) {
-         OseeLog.logf(FrameworkArtifactImageProvider.class, Level.SEVERE, ex,
-            "Error processing dynamic artifact images.");
+         if (!(ex instanceof NotFoundException)) {
+            OseeLog.logf(FrameworkArtifactImageProvider.class, Level.SEVERE, ex,
+               "Error processing dynamic artifact images.");
+         }
       }
 
    }

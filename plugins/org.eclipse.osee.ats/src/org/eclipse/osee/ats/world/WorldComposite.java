@@ -30,8 +30,11 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction.IOpenNewAtsWorldEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction.IOpenNewAtsWorldEditorSelectedHandler;
+import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
 import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
@@ -42,6 +45,8 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.task.ITaskEditorProvider;
+import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
@@ -72,21 +77,19 @@ import org.eclipse.swt.widgets.Control;
 /**
  * @author Donald G. Dunne
  */
-public class WorldComposite extends ScrolledComposite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IRefreshActionHandler {
+public class WorldComposite extends ScrolledComposite implements ISelectedAtsArtifacts, IWorldViewerEventHandler, IOpenNewAtsWorldEditorHandler, IOpenNewAtsWorldEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IOpenNewAtsTaskEditorSelectedHandler, IRefreshActionHandler, ITaskAddActionHandler {
 
    private final WorldXViewer worldXViewer;
    private final Set<Artifact> worldArts = new HashSet<>(200);
    private final Set<Artifact> otherArts = new HashSet<>(200);
    protected IWorldEditor iWorldEditor;
-   private final String id;
 
-   public WorldComposite(String id, IWorldEditor worldEditor, Composite parent, int style) {
-      this(id, worldEditor, null, parent, style, true);
+   public WorldComposite(IWorldEditor worldEditor, Composite parent, int style) {
+      this(worldEditor, null, parent, style, true);
    }
 
-   public WorldComposite(String id, final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style, boolean createDragAndDrop) {
+   public WorldComposite(final IWorldEditor worldEditor, IXViewerFactory xViewerFactory, Composite parent, int style, boolean createDragAndDrop) {
       super(parent, style);
-      this.id = id;
       this.iWorldEditor = worldEditor;
 
       setLayout(new GridLayout(1, true));
@@ -98,16 +101,13 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
       if (DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
 
-         worldXViewer = new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
-            xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
+         worldXViewer = createXViewer(xViewerFactory, mainComp);
          worldXViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
          worldXViewer.setContentProvider(new WorldContentProvider(worldXViewer));
          worldXViewer.setLabelProvider(new WorldLabelProvider(worldXViewer));
 
-         if (createDragAndDrop) {
-            new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
-         }
+         setupDragAndDropSupport(createDragAndDrop);
 
          setContent(mainComp);
          setExpandHorizontal(true);
@@ -118,6 +118,17 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
       } else {
          worldXViewer = null;
       }
+   }
+
+   protected void setupDragAndDropSupport(boolean createDragAndDrop) {
+      if (createDragAndDrop) {
+         new WorldViewDragAndDrop(this, WorldEditor.EDITOR_ID);
+      }
+   }
+
+   protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
+      return new WorldXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+         xViewerFactory != null ? xViewerFactory : new WorldXViewerFactory(), null);
    }
 
    public double getManHoursPerDayPreference() throws OseeCoreException {
@@ -363,7 +374,7 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
 
    @Override
    public String toString() {
-      return String.format("WorldComposite [%s][%s]", id, iWorldEditor.getCurrentTitleLabel());
+      return String.format("WorldComposite [%s]", iWorldEditor.getCurrentTitleLabel());
    }
 
    @Override
@@ -397,6 +408,16 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
          }
       }
       return tasks;
+   }
+
+   @Override
+   public ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException {
+      return (ITaskEditorProvider) getWorldEditorProviderCopy();
+   }
+
+   @Override
+   public void taskAddActionHandler() {
+      ((TaskXViewer) worldXViewer).handleNewTask();
    }
 
 }

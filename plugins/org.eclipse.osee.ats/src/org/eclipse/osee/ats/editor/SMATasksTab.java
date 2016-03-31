@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.editor;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -29,71 +28,76 @@ import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.nebula.widgets.xviewer.customize.FilterData;
-import org.eclipse.nebula.widgets.xviewer.customize.SortingData;
+import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
+import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
+import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
-import org.eclipse.osee.ats.core.client.artifact.CollectorArtifact;
-import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
-import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.goal.RemoveFromCollectorAction;
-import org.eclipse.osee.ats.goal.RemoveFromCollectorAction.RemovedFromCollectorHandler;
-import org.eclipse.osee.ats.goal.SetCollectorOrderAction;
+import org.eclipse.osee.ats.core.util.AtsObjects;
+import org.eclipse.osee.ats.export.AtsExportAction;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.task.IXTaskViewer;
+import org.eclipse.osee.ats.task.TaskComposite;
+import org.eclipse.osee.ats.task.TaskXViewerFactory;
 import org.eclipse.osee.ats.world.IMenuActionProvider;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.IWorldViewerEventHandler;
+import org.eclipse.osee.ats.world.WorldAssigneeFilter;
+import org.eclipse.osee.ats.world.WorldCompletedFilter;
 import org.eclipse.osee.ats.world.WorldComposite;
-import org.eclipse.osee.ats.world.WorldViewDragAndDrop;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerEventManager;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.event.model.EventModType;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
-import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
-import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
-import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ExceptionComposite;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.osee.framework.ui.swt.KeyedImage;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
-import org.eclipse.swt.dnd.DND;
-import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -102,23 +106,31 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider {
+public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsArtifacts, IWorldViewerEventHandler, IMenuActionProvider, IXTaskViewer {
    private IManagedForm managedForm;
    private Composite bodyComp;
    private ScrolledForm scrolledForm;
-   private WorldComposite worldComposite;
+   private TaskComposite taskComposite;
    private LoadingComposite loadingComposite;
-   public final static String ID = "ats.members.tab";
+   public final static String ID = "ats.tasks.tab";
    private final SMAEditor editor;
-   private static Map<String, Integer> guidToScrollLocation = new HashMap<>();
+   private static Map<Long, Integer> guidToScrollLocation = new HashMap<>();
    private final ReloadJobChangeAdapter reloadAdapter;
-   private final IMemberProvider provider;
+   private final IAtsClient client;
+   private final IAtsTeamWorkflow teamWf;
+   private final TeamWorkFlowArtifact teamArt;
+   private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
+   private WorldAssigneeFilter worldAssigneeFilter = null;
+   private Action filterCompletedAction, filterMyAssigneeAction;
 
-   public SMAMembersTab(SMAEditor editor, IMemberProvider provider) {
-      super(editor, ID, provider.getMembersName());
+   public SMATasksTab(SMAEditor editor, IAtsTeamWorkflow teamWf, IAtsClient client) {
+      super(editor, ID, "Tasks");
       this.editor = editor;
-      this.provider = provider;
+      this.teamWf = teamWf;
+      this.client = client;
       reloadAdapter = new ReloadJobChangeAdapter(editor);
+      teamArt = (TeamWorkFlowArtifact) teamWf.getStoreObject();
+      setPartName(getTabName());
    }
 
    @Override
@@ -134,8 +146,6 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                storeScrollLocation();
             }
          });
-         updateTitleBar();
-
          bodyComp = scrolledForm.getBody();
          GridLayout gridLayout = new GridLayout(1, true);
          bodyComp.setLayout(gridLayout);
@@ -145,22 +155,13 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          setLoading(true);
          refreshData();
          WorldXViewerEventManager.add(this);
+
+         scrolledForm.setText("Team Workflow Tasks");
+         scrolledForm.setImage(ImageManager.getImage(AtsImage.TASK));
+
+         managedForm.reflow(true);
       } catch (Exception ex) {
          handleException(ex);
-      }
-   }
-
-   private void updateTitleBar() throws OseeCoreException {
-      if (Widgets.isAccessible(scrolledForm)) {
-         String titleString = editor.getTitleStr();
-         String displayableTitle = Strings.escapeAmpersands(titleString);
-         if (!scrolledForm.getText().equals(displayableTitle)) {
-            scrolledForm.setText(displayableTitle);
-         }
-         KeyedImage image = provider.getImageKey();
-         if (!ImageManager.getImage(image).equals(scrolledForm.getImage())) {
-            scrolledForm.setImage(ImageManager.getImage(image));
-         }
       }
    }
 
@@ -175,8 +176,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    public void refreshData() {
       if (Widgets.isAccessible(bodyComp)) {
          List<IOperation> ops = AtsBulkLoad.getConfigLoadingOperations();
-         IOperation operation =
-            Operations.createBuilder("Load " + provider.getMembersName() + " Tab").addAll(ops).build();
+         IOperation operation = Operations.createBuilder("Load Tasks Tab").addAll(ops).build();
          Operations.executeAsJob(operation, false, Job.LONG, reloadAdapter);
       }
    }
@@ -194,14 +194,13 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         Job job = new UIJob("Draw Members Tab") {
+         Job job = new UIJob("Draw Tasks Tab") {
 
             @Override
             public IStatus runInUIThread(IProgressMonitor monitor) {
                if (firstTime) {
                   try {
                      if (Widgets.isAccessible(scrolledForm)) {
-                        updateTitleBar();
                         setLoading(false);
                         boolean createdAndLoaded = createMembersBody();
                         if (!createdAndLoaded) {
@@ -219,13 +218,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                      showBusy(false);
                   }
                } else {
-                  try {
-                     updateTitleBar();
-                  } catch (OseeCoreException ex) {
-                     handleException(ex);
-                  } finally {
-                     showBusy(false);
-                  }
+                  showBusy(false);
                   if (managedForm != null && Widgets.isAccessible(managedForm.getForm())) {
                      refresh();
                   }
@@ -239,8 +232,8 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
    private void handleException(Exception ex) {
       setLoading(false);
-      if (Widgets.isAccessible(worldComposite)) {
-         worldComposite.dispose();
+      if (Widgets.isAccessible(taskComposite)) {
+         taskComposite.dispose();
       }
       OseeLog.log(Activator.class, Level.SEVERE, ex);
       new ExceptionComposite(bodyComp, ex);
@@ -263,27 +256,19 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
     * @return true if created; false if skipped
     */
    private boolean createMembersBody() {
-      if (!Widgets.isAccessible(worldComposite)) {
-         worldComposite = new WorldComposite(this, provider.getXViewerFactory(provider.getArtifact()),
-            bodyComp, SWT.BORDER, false);
-
-         new MembersDragAndDrop(worldComposite, SMAEditor.EDITOR_ID);
-
-         if (editor.getAwa().isOfType(AtsArtifactTypes.Goal)) {
-            worldComposite.getXViewer().setParentGoal((GoalArtifact) editor.getAwa());
-         } else {
-            worldComposite.getXViewer().setParentSprint((SprintArtifact) editor.getAwa());
-         }
-
-         worldComposite.getWorldXViewer().addMenuActionProvider(this);
-         getSite().setSelectionProvider(worldComposite.getWorldXViewer());
+      if (!Widgets.isAccessible(taskComposite)) {
+         taskComposite = new TaskComposite(this, this, new TaskXViewerFactory(), bodyComp, SWT.BORDER, editor,
+            teamWf.isInWork(), teamWf);
+         taskComposite.getWorldXViewer().addMenuActionProvider(this);
+         getSite().setSelectionProvider(taskComposite.getWorldXViewer());
          GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
          gd.widthHint = 100;
          gd.heightHint = 100;
-         worldComposite.setLayoutData(gd);
+         taskComposite.setLayoutData(gd);
+
+         getSite().setSelectionProvider(taskComposite.getWorldXViewer());
 
          reload();
-         createActions();
          return true;
       }
       return false;
@@ -293,7 +278,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       if (isTableDisposed()) {
          return;
       }
-      String getLoadingString = String.format("Loading %s %s", provider.getCollectorName(), provider.getMembersName());
+      String getLoadingString = String.format("Loading Tasks for %s", editor.getAwa());
       Job job = new Job(getLoadingString) {
 
          @Override
@@ -302,27 +287,21 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
                return Status.OK_STATUS;
             }
             try {
-               final List<Artifact> artifacts = provider.getMembers();
-               try {
-                  AtsBulkLoad.bulkLoadArtifacts(artifacts);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
+               Collection<TaskArtifact> taskArts = getTaskArtifacts();
                Displays.ensureInDisplayThread(new Runnable() {
                   @Override
                   public void run() {
                      if (isTableDisposed()) {
                         return;
                      }
-                     worldComposite.load(provider.getCollectorName(), artifacts, (CustomizeData) null,
-                        TableLoadOption.None);
+                     taskComposite.load("Tasks", taskArts, (CustomizeData) null, TableLoadOption.None);
                   }
 
                });
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
                return new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-                  String.format("Exception loading %s", provider.getCollectorName()), ex);
+                  String.format("Exception loading tasks for %s", teamWf.toStringWithId()), ex);
             }
             return Status.OK_STATUS;
          }
@@ -331,12 +310,12 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    }
 
    private boolean isTableDisposed() {
-      return worldComposite == null || worldComposite.getXViewer() == null || worldComposite.getXViewer().getTree() == null || worldComposite.getXViewer().getTree().isDisposed();
+      return taskComposite == null || taskComposite.getXViewer() == null || taskComposite.getXViewer().getTree() == null || taskComposite.getXViewer().getTree().isDisposed();
    }
 
    private void jumptoScrollLocation() {
       //       Jump to scroll location if set
-      Integer selection = guidToScrollLocation.get(provider.getGuid());
+      Integer selection = guidToScrollLocation.get(teamWf.getUuid());
       if (selection != null) {
          JumpScrollbarJob job = new JumpScrollbarJob("");
          job.schedule(500);
@@ -345,8 +324,8 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
    @Override
    public void dispose() {
-      if (worldComposite != null) {
-         worldComposite.dispose();
+      if (taskComposite != null) {
+         taskComposite.dispose();
       }
       if (editor.getToolkit() != null) {
          editor.getToolkit().dispose();
@@ -358,7 +337,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    private void storeScrollLocation() {
       if (managedForm != null && managedForm.getForm() != null) {
          Integer selection = managedForm.getForm().getVerticalBar().getSelection();
-         guidToScrollLocation.put(provider.getGuid(), selection);
+         guidToScrollLocation.put(teamWf.getUuid(), selection);
       }
    }
 
@@ -372,7 +351,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
-               Integer selection = guidToScrollLocation.get(provider.getGuid());
+               Integer selection = guidToScrollLocation.get(teamWf.getUuid());
 
                // Find the ScrolledComposite operating on the control.
                ScrolledComposite sComp = null;
@@ -403,57 +382,198 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
          @Override
          public void run() {
-            if (Widgets.isAccessible(worldComposite)) {
+            if (Widgets.isAccessible(taskComposite)) {
                updateShown();
-               worldComposite.update();
-               worldComposite.getXViewer().refresh();
+               taskComposite.update();
+               taskComposite.getXViewer().refresh();
             }
          }
       });
    }
 
    private void updateShown() {
-      List<Artifact> members;
+      Collection<TaskArtifact> members;
       try {
-         members = provider.getMembers();
+         members = getTaskArtifacts();
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return;
       }
-      List<Artifact> loadedArtifacts = worldComposite.getLoadedArtifacts();
+      List<Artifact> loadedArtifacts = taskComposite.getLoadedArtifacts();
       List<Artifact> toRemoveFromLoaded = new LinkedList<>(members);
       members.removeAll(loadedArtifacts);
       for (Artifact art : members) {
-         worldComposite.insert(art, -1);
+         taskComposite.insert(art, -1);
       }
       loadedArtifacts.removeAll(toRemoveFromLoaded);
-      worldComposite.removeItems(loadedArtifacts);
-      worldComposite.getXViewer().remove(loadedArtifacts);
-      worldComposite.getXViewer().refresh(provider.getArtifact());
+      taskComposite.removeItems(loadedArtifacts);
+      taskComposite.getXViewer().remove(loadedArtifacts);
+      taskComposite.getXViewer().refresh(getTaskArtifacts());
    }
 
    private void refreshToolbar() {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
-      toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
       toolBarMgr.add(new Separator());
-      toolBarMgr.add(new ExpandAllAction(worldComposite.getXViewer()));
-      toolBarMgr.add(new CollapseAllAction(worldComposite.getXViewer()));
-      toolBarMgr.add(new RefreshAction(worldComposite));
+      toolBarMgr.add(new OpenNewAtsTaskEditorAction(taskComposite));
+      toolBarMgr.add(new OpenNewAtsTaskEditorSelected(taskComposite));
+      toolBarMgr.add(new OpenNewAtsWorldEditorSelectedAction(taskComposite));
+      toolBarMgr.add(new Separator());
+      toolBarMgr.add(new RefreshAction(taskComposite));
+      toolBarMgr.add(new NewAction());
+      toolBarMgr.add(new Separator());
+      createDropDownMenuActions();
+      toolBarMgr.add(new DropDownAction());
       scrolledForm.updateToolBar();
    }
 
+   protected void createDropDownMenuActions() {
+      try {
+         worldAssigneeFilter = new WorldAssigneeFilter();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", IAction.AS_CHECK_BOX) {
+
+         @Override
+         public void run() {
+            if (filterCompletedAction.isChecked()) {
+               taskComposite.getTaskXViewer().addFilter(worldCompletedFilter);
+            } else {
+               taskComposite.getTaskXViewer().removeFilter(worldCompletedFilter);
+            }
+            updateExtendedStatusString();
+            taskComposite.getTaskXViewer().refresh();
+         }
+      };
+      filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
+
+      filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", IAction.AS_CHECK_BOX) {
+
+         @Override
+         public void run() {
+            if (filterMyAssigneeAction.isChecked()) {
+               taskComposite.getTaskXViewer().addFilter(worldAssigneeFilter);
+            } else {
+               taskComposite.getTaskXViewer().removeFilter(worldAssigneeFilter);
+            }
+            updateExtendedStatusString();
+            taskComposite.getTaskXViewer().refresh();
+         }
+      };
+      filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
+   }
+
+   public void updateExtendedStatusString() {
+      taskComposite.getTaskXViewer().setExtendedStatusString(
+         //
+         (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
+         //
+         (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
+   }
+
+   public class DropDownAction extends Action implements IMenuCreator {
+      private Menu fMenu;
+
+      public DropDownAction() {
+         setText("Other");
+         setMenuCreator(this);
+         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
+         addKeyListener();
+      }
+
+      @Override
+      public Menu getMenu(Control parent) {
+         if (fMenu != null) {
+            fMenu.dispose();
+         }
+
+         fMenu = new Menu(parent);
+
+         addActionToMenu(fMenu, filterCompletedAction);
+         addActionToMenu(fMenu, filterMyAssigneeAction);
+         new MenuItem(fMenu, SWT.SEPARATOR);
+         addActionToMenu(fMenu, new AtsExportAction(taskComposite.getTaskXViewer()));
+         try {
+            if (taskComposite.getIXTaskViewer().isTasksEditable()) {
+               addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(taskComposite.getTeamArt(), null));
+               addActionToMenu(fMenu, new ImportTasksViaSimpleList(taskComposite.getTeamArt(), null));
+
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+
+         return fMenu;
+      }
+
+      @Override
+      public void dispose() {
+         if (fMenu != null) {
+            fMenu.dispose();
+            fMenu = null;
+         }
+      }
+
+      @Override
+      public Menu getMenu(Menu parent) {
+         return null;
+      }
+
+      protected void addActionToMenu(Menu parent, Action action) {
+         ActionContributionItem item = new ActionContributionItem(action);
+         item.fill(parent, -1);
+      }
+
+      void clear() {
+         dispose();
+      }
+
+      private void addKeyListener() {
+         taskComposite.getTaskXViewer().getTree().addKeyListener(new KeyListener() {
+            @Override
+            public void keyPressed(KeyEvent event) {
+               // do nothing
+            }
+
+            @Override
+            public void keyReleased(KeyEvent event) {
+               if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
+                  if (event.keyCode == 'a') {
+                     taskComposite.getTaskXViewer().getTree().setSelection(
+                        taskComposite.getTaskXViewer().getTree().getItems());
+                  } else if (event.keyCode == 'f') {
+                     filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
+                     filterCompletedAction.run();
+                  } else if (event.keyCode == 'g') {
+                     filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
+                     filterMyAssigneeAction.run();
+                  } else if (event.keyCode == 'd') {
+                     filterMyAssigneeAction.setChecked(!filterMyAssigneeAction.isChecked());
+                     filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
+                     filterCompletedAction.run();
+                     filterMyAssigneeAction.run();
+                  }
+               }
+            }
+         });
+      }
+   }
+
    public WorldComposite getMembersSection() {
-      return worldComposite;
+      return taskComposite;
    }
 
    @Override
    public WorldXViewer getWorldXViewer() {
-      if (worldComposite == null) {
+      if (taskComposite == null) {
          return null;
       }
-      return worldComposite.getWorldXViewer();
+      return taskComposite.getWorldXViewer();
    }
 
    @Override
@@ -471,10 +591,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
 
    @Override
    public void relationsModifed(Collection<Artifact> relModifiedArts, Collection<Artifact> goalMemberReordered, Collection<Artifact> sprintMemberReordered) {
-      if (goalMemberReordered.contains(provider.getArtifact()) || sprintMemberReordered.contains(
-         provider.getArtifact())) {
-         reload();
-      } else if (relModifiedArts.contains(provider.getArtifact())) {
+      if (relModifiedArts.contains(teamArt)) {
          refresh();
       }
    }
@@ -484,160 +601,16 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
       return editor.isDisposed();
    }
 
-   private class MembersDragAndDrop extends WorldViewDragAndDrop {
-
-      private boolean isFeedbackAfter = false;
-
-      public MembersDragAndDrop(WorldComposite worldComposite, String viewId) {
-         super(worldComposite, viewId);
-      }
-
-      private Artifact getSelectedArtifact(DropTargetEvent event) {
-         if (event.item != null && event.item.getData() instanceof Artifact) {
-            return (Artifact) event.item.getData();
-         }
-         return null;
-      }
-
-      private CustomizeData getCustomizeData() throws OseeCoreException {
-         CustomizeData customizeData = worldComposite.getCustomizeDataCopy();
-         Conditions.checkNotNull(customizeData, "Customized Data");
-         return customizeData;
-      }
-
-      private FilterData getFilterData() throws OseeCoreException {
-         FilterData filterData = getCustomizeData().getFilterData();
-         Conditions.checkNotNull(filterData, "Filter Data");
-         return filterData;
-      }
-
-      private SortingData getSortingData() throws OseeCoreException {
-         SortingData sortingData = getCustomizeData().getSortingData();
-         Conditions.checkNotNull(sortingData, "Sort Data");
-         return sortingData;
-      }
-
-      private String getFilterText() throws OseeCoreException {
-         String filterText = getFilterData().getFilterText();
-         Conditions.checkNotNull(filterText, "Filter Text");
-         return filterText;
-      }
-
-      private List<String> getSortingIds() throws OseeCoreException {
-         return getSortingData().getSortingIds();
-      }
-
-      private boolean isSortedByCollectorsOrder() throws OseeCoreException {
-         List<String> sortingIds = getSortingIds();
-         return sortingIds.size() == 1 && sortingIds.contains(provider.getColumnName());
-      }
-
-      private boolean isFiltered() throws OseeCoreException {
-         String filterText = getFilterText();
-         return Strings.isValid(filterText);
-      }
-
-      private boolean isDropValid() throws OseeCoreException {
-         return !isFiltered() && isSortedByCollectorsOrder();
-      }
-
-      @Override
-      public void operationChanged(DropTargetEvent event) {
-         if (!(event.detail == 1)) {
-            isFeedbackAfter = false;
-         } else {
-            isFeedbackAfter = true;
-         }
-      }
-
-      @Override
-      public void performDragOver(DropTargetEvent event) {
-         if (isValidForArtifactDrop(event)) {
-            event.detail = DND.DROP_COPY;
-            Artifact selectedArtifact = getSelectedArtifact(event);
-            if (selectedArtifact != null) {
-               if (isFeedbackAfter) {
-                  event.feedback = DND.FEEDBACK_INSERT_AFTER | DND.FEEDBACK_SCROLL;
-               } else {
-                  event.feedback = DND.FEEDBACK_INSERT_BEFORE | DND.FEEDBACK_SCROLL;
-               }
-            }
-         }
-      }
-
-      @Override
-      public void performDrop(final DropTargetEvent event) {
-         final ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
-         final List<Artifact> droppedArtifacts = Arrays.asList(artData.getArtifacts());
-         Collections.reverse(droppedArtifacts);
-         final Artifact dropTarget = getSelectedArtifact(event);
-         try {
-            boolean dropValid = isDropValid();
-            if (dropValid && ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
-
-               Collections.reverse(droppedArtifacts);
-               List<Artifact> members = provider.getMembers();
-               Result result = provider.isAddValid(droppedArtifacts);
-               if (result.isFalse()) {
-                  if (MessageDialog.openQuestion(Displays.getActiveShell(), "Drop Error", result.getText())) {
-                     for (Artifact dropped : droppedArtifacts) {
-                        dropped.deleteRelations(provider.getMemberRelationTypeSide().getOpposite());
-                     }
-                  } else {
-                     return;
-                  }
-               }
-               for (Artifact dropped : droppedArtifacts) {
-                  if (!members.contains(dropped)) {
-                     provider.addMember(dropped);
-                  }
-                  if (dropTarget != null) {
-                     provider.getArtifact().setRelationOrder(provider.getMemberRelationTypeSide(), dropTarget,
-                        isFeedbackAfter, dropped);
-                  }
-               }
-               provider.getArtifact().persist(SMAMembersTab.class.getSimpleName());
-            } else if (!dropValid) {
-               AWorkbench.popup(
-                  "Drag/Drop is disabled when table is filtered or sorted.\n\nSwitch to default table customization and try again.");
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, Lib.exceptionToString(ex));
-         }
-      }
-
-   }
-
-   Action setCollectorOrderAction, removeFromCollectorAction;
-
-   private void createActions() {
-      setCollectorOrderAction = new SetCollectorOrderAction(provider, (CollectorArtifact) editor.getAwa(), this);
-      RemovedFromCollectorHandler handler = new RemovedFromCollectorHandler() {
-
-         @Override
-         public void removedFromCollector(Collection<? extends Artifact> removed) {
-            worldComposite.removeItems(removed);
-            worldComposite.getXViewer().remove(removed);
-            worldComposite.getXViewer().refresh(provider.getArtifact());
-         }
-
-      };
-      removeFromCollectorAction =
-         new RemoveFromCollectorAction(provider, (CollectorArtifact) editor.getAwa(), this, handler);
-   }
-
    @Override
    public void updateMenuActionsForTable() {
-      MenuManager mm = worldComposite.getXViewer().getMenuManager();
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, setCollectorOrderAction);
-      mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, removeFromCollectorAction);
+      MenuManager mm = taskComposite.getXViewer().getMenuManager();
       mm.insertBefore(WorldXViewer.MENU_GROUP_ATS_WORLD_EDIT, new Separator());
    }
 
    @Override
    public Set<? extends Artifact> getSelectedSMAArtifacts() {
       Set<Artifact> artifacts = new HashSet<>();
-      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+      for (Artifact art : taskComposite.getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {
             artifacts.add(art);
          }
@@ -648,7 +621,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    @Override
    public List<Artifact> getSelectedAtsArtifacts() {
       List<Artifact> artifacts = new ArrayList<>();
-      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+      for (Artifact art : taskComposite.getSelectedArtifacts()) {
          if (art.isOfType(AtsArtifactTypes.AtsArtifact)) {
             artifacts.add(art);
          }
@@ -659,7 +632,7 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    @Override
    public List<TaskArtifact> getSelectedTaskArtifacts() {
       List<TaskArtifact> tasks = new ArrayList<>();
-      for (Artifact art : worldComposite.getSelectedArtifacts()) {
+      for (Artifact art : taskComposite.getSelectedArtifacts()) {
          if (art instanceof TaskArtifact) {
             tasks.add((TaskArtifact) art);
          }
@@ -688,7 +661,13 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
          }
 
       };
-      provider.deCacheAndReload(false, listener);
+      deCacheAndReload(listener);
+   }
+
+   private void deCacheAndReload(JobChangeAdapter listener) {
+      ArtifactQuery.reloadArtifacts(getTaskArtifacts());
+      AtsTaskCache.decache(teamArt);
+      ArtifactQuery.reloadArtifacts(Collections.singleton(teamArt));
    }
 
    @Override
@@ -704,6 +683,39 @@ public class SMAMembersTab extends FormPage implements IWorldEditor, ISelectedAt
    @Override
    public String getCurrentTitleLabel() {
       return null;
+   }
+
+   private Collection<IAtsTask> getTasks() {
+      return client.getTaskService().getTasks(teamWf);
+   }
+
+   public Collection<TaskArtifact> getTaskArtifacts() {
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+         AtsObjects.getArtifacts(client.getTaskService().getTasks(teamWf)));
+   }
+
+   @Override
+   public String getTabName() {
+      try {
+         return String.format("Tasks (%d)", getTasks().size());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return "Tasks";
+   }
+
+   public TaskComposite getTaskComposite() {
+      return taskComposite;
+   }
+
+   @Override
+   public IAtsTeamWorkflow getTeamWf() throws OseeCoreException {
+      return teamArt;
+   }
+
+   @Override
+   public boolean isTasksEditable() {
+      return editor.isTasksEditable();
    }
 
 }

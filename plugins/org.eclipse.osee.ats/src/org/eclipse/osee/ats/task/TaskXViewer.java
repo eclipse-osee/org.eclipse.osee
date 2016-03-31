@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -12,98 +12,53 @@ package org.eclipse.osee.ats.task;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.Date;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.EditAssigneeAction;
 import org.eclipse.osee.ats.actions.EditStatusAction;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.column.HoursSpentSMAStateColumn;
-import org.eclipse.osee.ats.column.HoursSpentStateTotalColumn;
-import org.eclipse.osee.ats.column.PercentCompleteSMAStateColumn;
-import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
+import org.eclipse.osee.ats.api.task.JaxAtsTask;
+import org.eclipse.osee.ats.api.task.JaxAtsTaskFactory;
+import org.eclipse.osee.ats.api.task.NewTaskData;
+import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
+import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
+import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
-import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryComboDialog;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
-import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeItem;
 
-/**
- * @author Donald G. Dunne
- */
 public class TaskXViewer extends WorldXViewer {
-
-   private final TaskComposite taskComposite;
-   private boolean tasksEditable = true;
-   private boolean newTaskSelectionEnabled = false;
-   private static String viewerId = GUID.create();
-
-   public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor) {
-      super(taskComposite, style, new TaskXViewerFactory(), editor);
-      this.taskComposite = taskComposite;
-   }
-
-   @Override
-   public String toString() {
-      if (taskComposite == null) {
-         return "TaskXViewer";
-      }
-      try {
-         if (taskComposite.getIXTaskViewer().getAwa() != null) {
-            return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().getAwa().toString();
-         }
-         return "TaskXViewer - id:" + viewerId + " - " + taskComposite.getIXTaskViewer().toString();
-      } catch (Exception ex) {
-         return "TaskXViewer - id:" + viewerId;
-      }
-   }
-
-   @Override
-   public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
-      super.handleColumnMultiEdit(treeColumn, treeItems);
-      handleColumnMultiEdit(treeColumn, treeItems, false);
-      refresh();
-      editor.onDirtied();
-   }
-
-   public TaskArtifact getSelectedTaskArtifact() {
-      Collection<TaskArtifact> arts = getSelectedTaskArtifacts();
-      if (arts.size() > 0) {
-         return arts.iterator().next();
-      }
-      return null;
-   }
-
-   public boolean isSelectedTaskArtifactsAreInWork() throws OseeCoreException {
-      Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();
-      while (i.hasNext()) {
-         Object obj = i.next();
-         if (Artifacts.isOfType(obj, AtsArtifactTypes.Task) && !((TaskArtifact) obj).isInWork()) {
-            return false;
-         }
-      }
-      return true;
-   }
 
    Action editAssigneeAction;
    Action addNewTaskAction;
+   private boolean newTaskSelectionEnabled = false;
+   private boolean tasksEditable = true;
+   private final IAtsTeamWorkflow teamWf;
+
+   public TaskXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf) {
+      super(parent, style, xViewerFactory, editor);
+      this.teamWf = teamWf;
+   }
 
    @Override
    public void createMenuActions() {
@@ -115,7 +70,7 @@ public class TaskXViewer extends WorldXViewer {
       addNewTaskAction = new Action("New Task", IAction.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            taskComposite.handleNewTask();
+            handleNewTask();
          }
       };
       addNewTaskAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_TASK));
@@ -156,36 +111,6 @@ public class TaskXViewer extends WorldXViewer {
 
    }
 
-   @Override
-   public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      if (!isTasksEditable()) {
-         AWorkbench.popup("ERROR", "Editing disabled for current state.");
-         return false;
-      }
-      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-      try {
-         TaskArtifact taskArt = (TaskArtifact) treeItem.getData();
-         boolean modified = false;
-
-         if (xCol.equals(HoursSpentSMAStateColumn.getInstance()) || xCol.equals(
-            HoursSpentStateTotalColumn.getInstance()) || xCol.equals(
-               PercentCompleteSMAStateColumn.getInstance()) || xCol.equals(PercentCompleteTotalColumn.getInstance())) {
-            modified = SMAPromptChangeStatus.promptChangeStatus(Arrays.asList(taskArt), false);
-         } else {
-            modified = super.handleAltLeftClick(treeColumn, treeItem);
-         }
-
-         if (modified) {
-            editor.onDirtied();
-            update(treeItem.getData(), null);
-            return true;
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      return false;
-   }
-
    public boolean isTasksEditable() {
       return tasksEditable;
    }
@@ -202,13 +127,31 @@ public class TaskXViewer extends WorldXViewer {
       this.newTaskSelectionEnabled = newTaskSelectionEnabled;
    }
 
-   public TaskComposite getTaskComposite() {
-      return taskComposite;
-   }
+   public TaskArtifact handleNewTask() {
+      TaskArtifact taskArt = null;
+      try {
+         EntryComboDialog ed = new EntryComboDialog("Create New Task", "Enter Task Title",
+            RelatedToStateColumn.RELATED_TO_STATE_SELECTION);
+         List<String> validStates =
+            RelatedToStateColumn.getValidInWorkStates((TeamWorkFlowArtifact) teamWf.getStoreObject());
+         ed.setOptions(validStates);
+         if (ed.open() == 0) {
+            NewTaskData newTaskData = NewTaskDataFactory.get("Create New Task",
+               AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getUuid());
+            JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
+               AtsClientService.get().getUserService().getCurrentUser(), new Date());
+            if (Strings.isValid(ed.getSelection())) {
+               task.setRelatedToState(ed.getSelection());
+            }
+            AtsClientService.get().getTaskService().createTasks(new NewTaskDatas(newTaskData));
 
-   @Override
-   public boolean isAltLeftClickPersist() {
-      return false;
+            taskArt = (TaskArtifact) AtsClientService.get().getArtifact(task.getUuid());
+            AtsTaskCache.decache((TeamWorkFlowArtifact) teamWf.getStoreObject());
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      return taskArt;
    }
 
 }

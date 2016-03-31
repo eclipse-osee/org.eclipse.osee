@@ -23,12 +23,15 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.MenuCmdDef;
+import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 
 /**
  * @author Jeff C. Phillips
  */
 public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
+
+   private static final String Option_TASK_WORLD_EDITOR = "task.world.editor.option";
 
    @Override
    public String getName() {
@@ -38,16 +41,25 @@ public class AtsTaskEditorRenderer extends AbstractAtsRenderer {
    @Override
    public int getApplicabilityRating(PresentationType presentationType, IArtifact artifact, Object... objects) throws OseeCoreException {
       Artifact aArtifact = artifact.getFullArtifact();
+
+      VariableMap options = new VariableMap();
+      options.setValues(objects);
+
       if (aArtifact.isOfType(AtsArtifactTypes.Task) && !aArtifact.isHistorical() && !presentationType.matches(
          GENERALIZED_EDIT, PRODUCE_ATTRIBUTE)) {
-         return PRESENTATION_SUBTYPE_MATCH;
+         if (Option_TASK_WORLD_EDITOR.equals(options.getString(OPEN_OPTION))) {
+            return SPECIALIZED_KEY_MATCH;
+         } else {
+            return PRESENTATION_SUBTYPE_MATCH;
+         }
       }
       return NO_MATCH;
    }
 
    @Override
    public void addMenuCommandDefinitions(ArrayList<MenuCmdDef> commands, Artifact artifact) {
-      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Task Editor", AtsImage.TASK));
+      commands.add(new MenuCmdDef(CommandGroup.EDIT, SPECIALIZED_EDIT, "ATS Task Editor", AtsImage.TASK, OPEN_OPTION,
+         Option_TASK_WORLD_EDITOR));
    }
 
    @Override

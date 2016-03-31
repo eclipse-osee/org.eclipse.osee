@@ -18,6 +18,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -71,6 +72,11 @@ public class OpenNewAtsWorldEditorActionTest extends AbstractAtsActionRunTest {
 
                @Override
                public Collection<Artifact> performSearch(SearchType searchType) {
+                  return null;
+               }
+
+               @Override
+               public TableLoadOption[] getTableLoadOptions() throws OseeCoreException {
                   return null;
                }
             };

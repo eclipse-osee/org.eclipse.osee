@@ -22,6 +22,7 @@ import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.help.ui.AtsHelpContext;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
+import org.eclipse.osee.ats.task.TaskEditorProvider;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -51,7 +52,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
  */
 public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
-   private WorldXWidgetActionPage worldXWidgetActionPage;
+   protected WorldXWidgetActionPage worldXWidgetActionPage;
    public static final int TITLE_MAX_LENGTH = 80;
 
    @Override
@@ -291,6 +292,10 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
    @Override
    public void onDirtied() {
       // do nothing
+   }
+
+   public boolean isTaskEditor() {
+      return getWorldEditorInput().getIWorldEditorProvider() instanceof TaskEditorProvider;
    }
 
 }

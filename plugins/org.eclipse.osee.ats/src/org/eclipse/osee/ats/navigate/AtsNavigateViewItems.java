@@ -63,6 +63,7 @@ import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeSearchItem;
 import org.eclipse.osee.ats.world.search.ArtifactTypeWithInheritenceSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchGoalSearchItem;
+import org.eclipse.osee.ats.world.search.AtsSearchTaskSearchItem;
 import org.eclipse.osee.ats.world.search.AtsSearchTeamWorkflowSearchItem;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchData;
 import org.eclipse.osee.ats.world.search.MultipleIdSearchOperation;
@@ -148,8 +149,9 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          items.add(new XNavigateItemAction(item, new NewGoal(), AtsImage.GOAL));
          items.add(new SearchNavigateItem(item, new MyWorldSearchItem("User's World")));
 
-         items.add(new SearchNavigateItem(item, new AtsSearchGoalSearchItem()));
+         items.add(new SearchNavigateItem(item, new AtsSearchTaskSearchItem()));
          items.add(new SearchNavigateItem(item, new AtsSearchTeamWorkflowSearchItem()));
+         items.add(new SearchNavigateItem(item, new AtsSearchGoalSearchItem()));
 
          createVersionsSection(item, items);
          createAgileSection(item, items);

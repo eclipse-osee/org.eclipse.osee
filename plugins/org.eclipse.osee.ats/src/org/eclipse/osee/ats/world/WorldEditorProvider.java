@@ -58,6 +58,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       return null;
    }
 
+   @Override
    public TableLoadOption[] getTableLoadOptions() {
       return tableLoadOptions;
    }

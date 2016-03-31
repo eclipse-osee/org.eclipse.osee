@@ -99,7 +99,7 @@ public class AtsObjects {
       return uuids;
    }
 
-   public static Collection<ArtifactId> getArtifacts(Collection<IAtsObject> atsObjects) {
+   public static Collection<ArtifactId> getArtifacts(Collection<? extends IAtsObject> atsObjects) {
       List<ArtifactId> artifacts = new LinkedList<>();
       for (IAtsObject task : atsObjects) {
          artifacts.add(task.getStoreObject());

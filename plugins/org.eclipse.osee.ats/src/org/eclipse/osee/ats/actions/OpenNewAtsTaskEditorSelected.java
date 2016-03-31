@@ -37,7 +37,7 @@ public class OpenNewAtsTaskEditorSelected extends AbstractAtsAction {
    public interface IOpenNewAtsTaskEditorSelectedHandler {
       CustomizeData getCustomizeDataCopy() throws OseeCoreException;
 
-      List<? extends Artifact> getSelectedArtifacts() throws OseeCoreException;
+      List<Artifact> getSelectedArtifacts() throws OseeCoreException;
    }
 
    @Override

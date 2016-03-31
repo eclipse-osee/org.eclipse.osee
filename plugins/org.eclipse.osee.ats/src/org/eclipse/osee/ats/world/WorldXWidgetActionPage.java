@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.world;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -25,16 +26,23 @@ import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.actions.TaskAddAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.artifact.GoalManager;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.review.ReviewManager;
+import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.util.WorkflowMetrics;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.framework.core.util.Result;
@@ -89,7 +97,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
    }
 
    public WorldXWidgetActionPage(WorldEditor worldEditor) {
-      super(worldEditor, ID, "Actions");
+      super(worldEditor, ID, (worldEditor.isTaskEditor() ? "Tasks" : "Actions"));
       this.worldEditor = worldEditor;
    }
 
@@ -112,16 +120,55 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      setPartName(getTabName());
+   }
+
+   private String getTabName() {
+      String name = "Tasks";
+      try {
+         if (getTaskComposite() != null) {
+            TeamWorkFlowArtifact teamArt = getTaskComposite().getTeamArt();
+            name = String.format("Tasks (%d)", teamArt.getTaskArtifacts().size());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return name;
    }
 
    @Override
    protected void createToolBar(IToolBarManager toolBarManager) {
 
       toolBarManager.add(new GroupMarker(MENU_GROUP_PRE));
+      if (worldEditor.isTaskEditor()) {
+         try {
+            TaskComposite taskComposite = getTaskComposite();
+            if (taskComposite != null && taskComposite.getIXTaskViewer().isTasksEditable()) {
+               toolBarManager.add(new TaskAddAction(taskComposite));
+               TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+
+                  @Override
+                  public List<TaskArtifact> getSelectedArtifacts() {
+                     return taskComposite.getSelectedTaskArtifacts();
+                  }
+               };
+               toolBarManager.add(new DeleteTasksAction(taskProvider));
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+      toolBarManager.add(new Separator());
+
       toolBarManager.add(worldComposite.getXViewer().getCustomizeAction());
       toolBarManager.add(new Separator());
-      toolBarManager.add(new OpenNewAtsWorldEditorAction(worldComposite));
-      toolBarManager.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
+      if (worldEditor.isTaskEditor()) {
+         toolBarManager.add(new OpenNewAtsTaskEditorAction(worldComposite));
+         toolBarManager.add(new OpenNewAtsTaskEditorSelected(worldComposite));
+      } else {
+         toolBarManager.add(new OpenNewAtsWorldEditorAction(worldComposite));
+         toolBarManager.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
+      }
       toolBarManager.add(new Separator());
       toolBarManager.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarManager.add(new CollapseAllAction(worldComposite.getXViewer()));
@@ -155,7 +202,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
       showReleaseMetricsLabel = toolkit.createLabel(resultsContainer, "");
       showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      worldComposite = new WorldComposite("world.editor.main", worldEditor, resultsContainer, SWT.BORDER);
+      worldComposite = new WorldComposite(worldEditor, resultsContainer, SWT.BORDER);
       toolkit.adapt(worldComposite);
       return resultsSection;
    }
@@ -224,15 +271,19 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
 
          fMenu = new Menu(parent);
-         addActionToMenu(fMenu, selectionMetricsAction);
+         if (!worldEditor.isTaskEditor()) {
+            addActionToMenu(fMenu, selectionMetricsAction);
+         }
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
-         new MenuItem(fMenu, SWT.SEPARATOR);
-         addActionToMenu(fMenu, toAction);
-         addActionToMenu(fMenu, toGoal);
-         addActionToMenu(fMenu, toWorkFlow);
-         addActionToMenu(fMenu, toTask);
-         addActionToMenu(fMenu, toReview);
+         if (!worldEditor.isTaskEditor()) {
+            new MenuItem(fMenu, SWT.SEPARATOR);
+            addActionToMenu(fMenu, toAction);
+            addActionToMenu(fMenu, toGoal);
+            addActionToMenu(fMenu, toWorkFlow);
+            addActionToMenu(fMenu, toTask);
+            addActionToMenu(fMenu, toReview);
+         }
 
          worldEditor.createToolBarPulldown(fMenu);
 
@@ -311,6 +362,14 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
             }
          });
       }
+   }
+
+   private TaskComposite getTaskComposite() {
+      TaskComposite taskComposite = null;
+      if (worldComposite instanceof TaskComposite) {
+         taskComposite = (TaskComposite) worldComposite;
+      }
+      return taskComposite;
    }
 
    private void addSelectionListener() {

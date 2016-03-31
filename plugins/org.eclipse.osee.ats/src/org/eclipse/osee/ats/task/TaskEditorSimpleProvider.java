@@ -12,8 +12,9 @@ package org.eclipse.osee.ats.task;
 
 import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
+import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 
@@ -23,26 +24,16 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 public class TaskEditorSimpleProvider extends TaskEditorProvider {
 
    private final String name;
-   private final Collection<? extends Artifact> artifacts;
+   private final Collection<Artifact> artifacts;
 
-   public TaskEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts) {
+   public TaskEditorSimpleProvider(String name, Collection<Artifact> artifacts) {
       this(name, artifacts, null, TableLoadOption.None);
    }
 
-   public TaskEditorSimpleProvider(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
+   public TaskEditorSimpleProvider(String name, Collection<Artifact> artifacts, CustomizeData customizeData, TableLoadOption... tableLoadOption) {
       super(customizeData, tableLoadOption);
       this.name = name;
       this.artifacts = artifacts;
-   }
-
-   @Override
-   public String getTaskEditorLabel(SearchType searchType) {
-      return Strings.truncate(name, TaskEditor.TITLE_MAX_LENGTH, true);
-   }
-
-   @Override
-   public Collection<? extends Artifact> getTaskEditorTaskArtifacts() {
-      return artifacts;
    }
 
    @Override
@@ -53,6 +44,31 @@ public class TaskEditorSimpleProvider extends TaskEditorProvider {
    @Override
    public ITaskEditorProvider copyProvider() {
       return new TaskEditorSimpleProvider(name, artifacts, customizeData, tableLoadOptions);
+   }
+
+   @Override
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      return name;
+   }
+
+   @Override
+   public IAtsVersion getTargetedVersionArtifact() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public Collection<Artifact> performSearch(SearchType searchType) {
+      return artifacts;
+   }
+
+   @Override
+   public Collection<? extends Artifact> getTaskEditorTaskArtifacts() throws OseeCoreException {
+      return artifacts;
+   }
+
+   @Override
+   public String getTaskEditorLabel(SearchType searchType) {
+      return "Tasks";
    }
 
 }
