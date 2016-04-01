@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
@@ -27,6 +28,9 @@ public class XNavigateItem {
    private String name;
    private XNavigateItem parent;
    private final KeyedImage oseeImage;
+   private List<IXNavigateMenuItem> menuItems;
+   private Object data;
+   private long id = 0L;
 
    public XNavigateItem(XNavigateItem parent, String name, KeyedImage oseeImage) {
       this.parent = parent;
@@ -102,5 +106,38 @@ public class XNavigateItem {
    @Override
    public String toString() {
       return getName();
+   }
+
+   public List<IXNavigateMenuItem> getMenuItems() {
+      if (menuItems == null) {
+         return Collections.emptyList();
+      }
+      return menuItems;
+   }
+
+   /**
+    * Add Menu creation listener to supply custom menu options when right-click on item.
+    */
+   public void addMenuItem(IXNavigateMenuItem listener) {
+      if (menuItems == null) {
+         menuItems = new LinkedList<>();
+      }
+      menuItems.add(listener);
+   }
+
+   public Object getData() {
+      return data;
+   }
+
+   public void setData(Object data) {
+      this.data = data;
+   }
+
+   public long getId() {
+      return id;
+   }
+
+   public void setId(long id) {
+      this.id = id;
    }
 }

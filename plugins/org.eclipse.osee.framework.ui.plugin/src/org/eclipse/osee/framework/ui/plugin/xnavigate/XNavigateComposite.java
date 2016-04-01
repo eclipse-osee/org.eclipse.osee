@@ -12,9 +12,14 @@
 package org.eclipse.osee.framework.ui.plugin.xnavigate;
 
 import java.util.List;
+import org.eclipse.jface.action.IMenuListener;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.activity.api.Activity;
 import org.eclipse.osee.activity.api.ActivityLog;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -39,10 +44,13 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.dialogs.FilteredTree;
 
 /**
@@ -118,6 +126,42 @@ public class XNavigateComposite extends Composite {
             }
          }
       });
+
+      MenuManager menuManager = new MenuManager();
+      menuManager.setRemoveAllWhenShown(true);
+      menuManager.addMenuListener(new IMenuListener() {
+         @Override
+         public void menuAboutToShow(IMenuManager manager) {
+            MenuManager menuManager = (MenuManager) manager;
+            menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+         }
+      });
+
+      addMenu(filteredTree.getViewer());
+   }
+
+   private void addMenu(TreeViewer treeViewer) {
+      final Menu menu = new Menu(treeViewer.getTree().getShell(), SWT.POP_UP);
+      treeViewer.getTree().setMenu(menu);
+      menu.addListener(SWT.Show, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            MenuItem[] menuItems = menu.getItems();
+            for (int i = 0; i < menuItems.length; i++) {
+               menuItems[i].dispose();
+            }
+            TreeItem[] treeItems = treeViewer.getTree().getSelection();
+            final TreeItem selectedTreeItem = treeItems[0];
+            if (selectedTreeItem.getData() instanceof XNavigateItem) {
+               XNavigateItem navItem = (XNavigateItem) selectedTreeItem.getData();
+               for (IXNavigateMenuItem menuItem : navItem.getMenuItems()) {
+                  menuItem.addMenuItems(menu, selectedTreeItem);
+               }
+            }
+         }
+
+      });
+
    }
 
    protected void disposeTooltip() {

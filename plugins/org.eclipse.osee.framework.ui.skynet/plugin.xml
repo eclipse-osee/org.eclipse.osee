@@ -1470,6 +1470,9 @@
       <XCommonNavigateItem
             classname="org.eclipse.osee.framework.ui.skynet.user.perspective.UserNavigateViewItems">
       </XCommonNavigateItem>
+      <XCommonNavigateItem
+            classname="org.eclipse.osee.framework.ui.skynet.links.LinksNavigateViewItems">
+      </XCommonNavigateItem>
    </extension>
    <extension
          point="org.eclipse.ui.perspectives">

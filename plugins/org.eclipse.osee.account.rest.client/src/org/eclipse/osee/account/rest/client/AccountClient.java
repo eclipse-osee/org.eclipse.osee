@@ -19,6 +19,7 @@ import org.eclipse.osee.account.rest.model.AccountInput;
 import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 
 /**
@@ -64,5 +65,7 @@ public interface AccountClient {
    boolean setAccountPreferences(Long accountId, Map<String, String> preferences);
 
    ResultSet<UnsubscribeInfo> getUnsubscribeUris(Long accountId, Collection<String> groupNames);
+
+   AccountWebPreferences getAccountWebPreferencesByUniqueField(Long accountId);
 
 }

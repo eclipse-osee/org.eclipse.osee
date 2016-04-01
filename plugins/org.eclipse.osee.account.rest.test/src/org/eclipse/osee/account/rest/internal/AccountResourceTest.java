@@ -37,7 +37,6 @@ import org.mockito.Mock;
  */
 public class AccountResourceTest {
 
-   private static final String NEW_USERNAME = "helloWorld";
    private static final ArtifactId ACCOUNT_ID = TokenFactory.createArtifactId(93253L);
 
    //@formatter:off

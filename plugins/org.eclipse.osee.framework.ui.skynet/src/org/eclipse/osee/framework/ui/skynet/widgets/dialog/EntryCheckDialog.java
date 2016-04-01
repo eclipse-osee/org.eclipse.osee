@@ -45,7 +45,7 @@ public class EntryCheckDialog extends EntryDialog {
       text.setFocus();
       text.setDisplayLabel(false);
       text.set(checked);
-      text.createWidgets(parent, 2);
+      text.createWidgets(parent, 1);
 
       SelectionListener selectionListener = new SelectionAdapter() {
 

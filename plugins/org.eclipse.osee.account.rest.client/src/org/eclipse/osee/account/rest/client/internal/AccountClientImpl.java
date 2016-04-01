@@ -38,6 +38,7 @@ import org.eclipse.osee.account.rest.model.AccountPreferencesData;
 import org.eclipse.osee.account.rest.model.AccountPreferencesInput;
 import org.eclipse.osee.account.rest.model.AccountSessionData;
 import org.eclipse.osee.account.rest.model.AccountSessionDetailsData;
+import org.eclipse.osee.account.rest.model.AccountWebPreferences;
 import org.eclipse.osee.account.rest.model.SubscriptionData;
 import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -167,6 +168,17 @@ public class AccountClientImpl implements AccountClient {
          accountId);
       try {
          return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountPreferencesData.class);
+      } catch (Exception ex) {
+         throw JaxRsExceptions.asOseeException(ex);
+      }
+   }
+
+   @Override
+   public AccountWebPreferences getAccountWebPreferencesByUniqueField(Long accountId) {
+      URI uri = UriBuilder.fromUri(baseUri).path(ACCOUNTS).path(ACCOUNT_PREFERENCES).path(ACCOUNT_ID_TEMPLATE).build(
+         accountId);
+      try {
+         return newTarget(uri).request(MediaType.APPLICATION_JSON_TYPE).get(AccountWebPreferences.class);
       } catch (Exception ex) {
          throw JaxRsExceptions.asOseeException(ex);
       }

@@ -13,6 +13,7 @@ package org.eclipse.osee.account.rest.model;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -21,7 +22,7 @@ import org.json.JSONObject;
  */
 public class AccountWebPreferences {
 
-   Map<String, Link> linksMap;
+   Map<String, Link> linksMap = new HashMap<String, Link>();
 
    public AccountWebPreferences() {
 
@@ -31,16 +32,11 @@ public class AccountWebPreferences {
       for (String team : teamToPreferences.keySet()) {
          initPreferences(teamToPreferences.get(team), team);
       }
-
    }
 
    private void initPreferences(String string, String team) {
       try {
          JSONObject jObject = new JSONObject(string);
-
-         if (linksMap == null) {
-            linksMap = new HashMap<String, Link>();
-         }
          JSONObject linkJsonObject = jObject.getJSONObject("links");
          @SuppressWarnings("unchecked")
          Iterator<String> keys = linkJsonObject.keys();
@@ -53,6 +49,12 @@ public class AccountWebPreferences {
             }
             if (linkJObject.has("url")) {
                link.setUrl(linkJObject.getString("url"));
+            }
+            if (linkJObject.has("tags")) {
+               JSONArray array = linkJObject.getJSONArray("tags");
+               for (int x = 0; x < array.length(); x++) {
+                  link.getTags().add(array.getString(x));
+               }
             }
             link.setTeam(team);
             link.setId(linkJObject.getString("id"));

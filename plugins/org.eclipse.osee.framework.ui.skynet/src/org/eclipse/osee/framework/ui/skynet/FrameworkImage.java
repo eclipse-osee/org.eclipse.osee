@@ -120,6 +120,7 @@ public enum FrameworkImage implements KeyedImage {
    LEFT_ARROW_1("leftarrow1.png"),
    LEFT_ARROW_N("leftarrowN.png"),
    LINE_MATCH("line_match.gif"),
+   LINK("link.gif"),
    LOAD("load.gif"),
    LOCKED("lock.gif"),
    LOCK_LOCKED("lock_locked.gif"),

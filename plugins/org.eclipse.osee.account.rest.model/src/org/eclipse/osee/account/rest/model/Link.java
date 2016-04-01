@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.account.rest.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Angel Avila
  */
@@ -18,10 +21,7 @@ public class Link {
    String url;
    String id;
    String team;
-
-   public Link() {
-
-   }
+   List<String> tags = new ArrayList<String>();
 
    public void setId(String id) {
       this.id = id;
@@ -53,5 +53,13 @@ public class Link {
 
    public String getTeam() {
       return team;
+   }
+
+   public List<String> getTags() {
+      return tags;
+   }
+
+   public void setTags(List<String> tags) {
+      this.tags = tags;
    }
 }

@@ -59,6 +59,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IMemento;
 import org.eclipse.ui.IViewSite;
@@ -304,6 +305,32 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
       if (loadingComposite != null && !loadingComposite.isDisposed()) {
          loadingComposite.setFocus();
       }
+   }
+
+   public XNavigateItem getItem(long topLinkId, boolean recurseChildren) {
+      for (TreeItem treeItem : xNavComp.getFilteredTree().getViewer().getTree().getItems()) {
+         XNavigateItem treeNavItem = (XNavigateItem) treeItem.getData();
+         XNavigateItem foundItem = getItem(treeNavItem, topLinkId, recurseChildren);
+         if (foundItem != null) {
+            return foundItem;
+         }
+      }
+      return null;
+   }
+
+   public XNavigateItem getItem(XNavigateItem item, long topLinkId, boolean recurseChildren) {
+      if (item.getId() == topLinkId) {
+         return item;
+      }
+      if (recurseChildren) {
+         for (XNavigateItem child : item.getChildren()) {
+            XNavigateItem found = getItem(child, topLinkId, recurseChildren);
+            if (found != null) {
+               return found;
+            }
+         }
+      }
+      return null;
    }
 
 }
