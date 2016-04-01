@@ -10,24 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.disposition.model.Discrepancy;
+import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.rest.DispoConstants;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
  * @author Angel Avila
  */
-public class DispoItemArtifact extends BaseIdentity<String>implements DispoItem {
+public class DispoItemArtifact extends BaseIdentity<String> implements DispoItem {
 
    private final ArtifactReadable artifact;
+   private boolean isIncludeDetails;
 
    public DispoItemArtifact(ArtifactReadable artifact) {
-      super(artifact.getGuid());
+      super(String.valueOf(artifact.getUuid()));
       this.artifact = artifact;
    }
 
@@ -36,16 +46,48 @@ public class DispoItemArtifact extends BaseIdentity<String>implements DispoItem 
       return artifact.getName();
    }
 
-   @Override
-   public JSONObject getDiscrepanciesList() {
-      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "{}");
-      return DispoUtil.asJSONObject(discrepanciesJson);
+   public void setIsIncludeDetails(boolean isIncludeDetails) {
+      this.isIncludeDetails = isIncludeDetails;
    }
 
    @Override
-   public JSONArray getAnnotationsList() {
+   public boolean getIsIncludeDetails() {
+      return isIncludeDetails;
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Map<String, Discrepancy> getDiscrepanciesList() {
+      Map<String, Discrepancy> toReturn = new HashMap<String, Discrepancy>();
+      String discrepanciesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoDiscrepanciesJson, "{}");
+      try {
+         JSONObject jObject = DispoUtil.asJSONObject(discrepanciesJson);
+         Iterator<String> keys = jObject.keys();
+         while (keys.hasNext()) {
+            String key = keys.next();
+            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(jObject.getJSONObject(key));
+            toReturn.put(key, discrepancy);
+         }
+         return toReturn;
+      } catch (JSONException ex) {
+         throw new OseeCoreException("Could not parse Discrepancies Json", ex);
+      }
+   }
+
+   @Override
+   public List<DispoAnnotationData> getAnnotationsList() {
+      List<DispoAnnotationData> toReturn = new ArrayList<DispoAnnotationData>();
       String annotationsList = artifact.getSoleAttributeAsString(DispoConstants.DispoAnnotationsJson, "[]");
-      return DispoUtil.asJSONArray(annotationsList);
+      try {
+         JSONArray jArray = DispoUtil.asJSONArray(annotationsList);
+         for (int i = 0; i < jArray.length(); i++) {
+            DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(jArray.getJSONObject(i));
+            toReturn.add(annotation);
+         }
+         return toReturn;
+      } catch (JSONException ex) {
+         throw new OseeCoreException("Could not parse Annotations Json", ex);
+      }
    }
 
    @Override

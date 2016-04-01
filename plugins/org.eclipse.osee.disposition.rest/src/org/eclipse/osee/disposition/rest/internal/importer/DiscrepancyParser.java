@@ -14,16 +14,15 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.xml.sax.InputSource;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
@@ -70,7 +69,7 @@ public class DiscrepancyParser {
       final MutableInteger idOfTestPoint = new MutableInteger(0);
       final StringBuilder textAppendable = new StringBuilder();
       final MutableBoolean isFailure = new MutableBoolean(false);
-      final JSONObject discrepancies = new JSONObject();
+      final Map<String, Discrepancy> discrepancies = new HashMap<String, Discrepancy>();
       final MutableDate scriptRunDate = new MutableDate();
       final MutableDate firstTestPointDate = new MutableDate();
       final MutableBoolean stoppedParsing = new MutableBoolean(false);
@@ -132,15 +131,14 @@ public class DiscrepancyParser {
       handler.getHandler("TestPoint").addListener(new SaxElementAdapter() {
 
          @Override
-         public void onEndElement(Object obj) throws JSONException {
+         public void onEndElement(Object obj) {
             if (isWithinTestPointElement.getValue() && isFailure.getValue()) {
                Discrepancy discrepancy = new Discrepancy();
                discrepancy.setText(textAppendable.toString());
                discrepancy.setLocation(idOfTestPoint.getValue());
                String id = String.valueOf(Lib.generateUuid());
                discrepancy.setId(id);
-               JSONObject discrepancyAsJson = DispoUtil.discrepancyToJsonObj(discrepancy);
-               discrepancies.put(id, discrepancyAsJson);
+               discrepancies.put(id, discrepancy);
 
                isFailure.setValue(false);
             }
@@ -319,11 +317,11 @@ public class DiscrepancyParser {
       return stoppedParsing.getValue();
    }
 
-   private static JSONObject createAdditionalDiscrepancy(String id, String message) {
+   private static Discrepancy createAdditionalDiscrepancy(String id, String message) {
       Discrepancy discrepancy = new Discrepancy();
       discrepancy.setText(message);
       discrepancy.setLocation(0);
       discrepancy.setId(id);
-      return DispoUtil.discrepancyToJsonObj(discrepancy);
+      return discrepancy;
    }
 }

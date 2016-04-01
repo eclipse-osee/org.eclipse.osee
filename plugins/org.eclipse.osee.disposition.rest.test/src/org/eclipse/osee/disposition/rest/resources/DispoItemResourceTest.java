@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -23,8 +24,6 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -61,32 +60,28 @@ public class DispoItemResourceTest {
    public void testGetAll() throws Exception {
       // No Items
       List<DispoItem> emptyResultSet = new ArrayList<>();
-      when(dispositionApi.getDispoItems(program, "setId")).thenReturn(emptyResultSet);
-      Response noItemsResponse = resource.getAllDispoItems(false);
-      assertEquals(Response.Status.OK.getStatusCode(), noItemsResponse.getStatus());
+      when(dispositionApi.getDispoItems(program, "setId", false)).thenReturn(emptyResultSet);
+      Iterable<DispoItem> noItemsResponse = resource.getAllDispoItems(false);
+      assertEquals(emptyResultSet, noItemsResponse);
 
       DispoItemData item = new DispoItemData();
-      item.setAnnotationsList(new JSONArray());
-      item.setDiscrepanciesList(new JSONObject());
+      item.setAnnotationsList(new ArrayList<>());
+      item.setDiscrepanciesList(new HashMap<>());
       item.setGuid(id1.getGuid());
       List<DispoItem> resultSet = Collections.singletonList((DispoItem) item);
 
-      when(dispositionApi.getDispoItems(program, "setId")).thenReturn(resultSet);
-      Response response = resource.getAllDispoItems(false);
-      JSONArray entity = new JSONArray((String) response.getEntity());
-      JSONObject itemFromResponse = entity.getJSONObject(0);
-      assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
-      assertEquals(id1.getGuid(), itemFromResponse.getString("guid"));
+      when(dispositionApi.getDispoItems(program, "setId", false)).thenReturn(resultSet);
+      Iterable<DispoItem> response = resource.getAllDispoItems(false);
+      DispoItem itemFromResponse = response.iterator().next();
+      assertEquals(id1.getGuid(), itemFromResponse.getGuid());
    }
 
    @Test
    public void testGetSingleSet() {
       // No items
       when(dispositionApi.getDispoItemById(program, id2.getGuid())).thenReturn(null);
-      Response noItemsResponse = resource.getDispoItemsById(id2.getGuid());
-      String messageActual = (String) noItemsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noItemsResponse.getStatus());
-      assertEquals(DispoMessages.Item_NotFound, messageActual);
+      DispoItem noItemsResponse = resource.getDispoItemsById(id2.getGuid());
+      assertEquals(null, noItemsResponse);
 
       DispoItemData expectedItem = new DispoItemData();
       expectedItem.setGuid(id1.getGuid());
@@ -94,10 +89,8 @@ public class DispoItemResourceTest {
       expectedItem.setNeedsRerun(false);
       expectedItem.setTotalPoints("4");
       when(dispositionApi.getDispoItemById(program, expectedItem.getGuid())).thenReturn(expectedItem);
-      Response oneSetResponse = resource.getDispoItemsById(expectedItem.getGuid());
-      DispoItemData returnedItem = (DispoItemData) oneSetResponse.getEntity();
-      assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(expectedItem.getGuid(), returnedItem.getGuid());
+      DispoItem oneSetResponse = resource.getDispoItemsById(expectedItem.getGuid());
+      assertEquals(expectedItem.getGuid(), oneSetResponse.getGuid());
    }
 
    @Test

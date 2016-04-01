@@ -39,17 +39,17 @@ public interface DispoQuery {
 
    boolean isUniqueItemName(DispoProgram program, String setId, String name);
 
-   List<DispoSet> findDispoSets(DispoProgram program);
+   List<DispoSet> findDispoSets(DispoProgram program, String type);
 
    DispoSet findDispoSetsById(DispoProgram program, String id);
 
-   List<DispoItem> findDipoItems(DispoProgram program, String setId);
+   List<DispoItem> findDipoItems(DispoProgram program, String setId, boolean isDetailed);
 
    DispoItem findDispoItemById(DispoProgram program, String itemId);
 
    List<IOseeBranch> getDispoBranches();
 
-   Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword);
+   Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword, boolean isDetailed);
 
    DispoConfig findDispoConfig(DispoProgram program);
 

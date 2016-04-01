@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal.importer;
 
-import static org.eclipse.osee.disposition.model.DispoSummarySeverity.ERROR;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.IGNORE;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.UPDATE;
 import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
@@ -18,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -32,9 +30,6 @@ import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -61,11 +56,12 @@ public class DispoSetCopier {
                if (newItem != null) {
                   modifiedItems.add(newItem);
 
-                  JSONArray destAnnotationsList = destItem.getAnnotationsList();
-                  String message = String.format("Had %s Dispositions now has %s", destAnnotationsList.length(),
-                     newItem.getAnnotationsList().length());
-
-                  report.addEntry(destItem.getName(), message, UPDATE);
+                  if (!newItem.getGuid().equals(sourceItem.getGuid())) {
+                     List<DispoAnnotationData> destAnnotationsList = destItem.getAnnotationsList();
+                     String message = String.format("Had %s Dispositions now has %s", destAnnotationsList.size(),
+                        newItem.getAnnotationsList().size());
+                     report.addEntry(destItem.getName(), message, UPDATE);
+                  }
                }
             } else if (!Strings.isValid(destItem.getGuid()) && !sourceItem.getStatus().equals(DispoStrings.Item_Pass)) {
                /**
@@ -104,39 +100,31 @@ public class DispoSetCopier {
 
    private DispoItemData createNewItemWithCopiedAnnotations(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report) {
       DispoItemData toReturn = null;
+      boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
+      if (!isSameDiscrepancies) {
+         report.addEntry(destItem.getName(),
+            String.format("Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid()),
+            WARNING);
 
-      try {
-         boolean isSameDiscrepancies = matchAllDiscrepancies(destItem, sourceItem);
-         if (!isSameDiscrepancies) {
-            report.addEntry(destItem.getName(), String.format(
-               "Tried to copy from item id: [%s] but discrepancies were not the same", sourceItem.getGuid()), WARNING);
-
-         }
-         toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
-      } catch (JSONException ex) {
-         report.addEntry(sourceItem.getName(), "Bad JSON!", ERROR);
       }
-
+      toReturn = buildNewItem(destItem, sourceItem, isCoverageCopy, report, isSameDiscrepancies);
       return toReturn;
    }
 
-   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report, boolean isSameDiscrepancies) throws JSONException {
+   private DispoItemData buildNewItem(DispoItemData destItem, DispoItem sourceItem, boolean isCoverageCopy, OperationReport report, boolean isSameDiscrepancies) {
       boolean isChangesMade = false;
       DispoItemData newItem = initNewItem(destItem, sourceItem);
-      JSONArray newAnnotations = newItem.getAnnotationsList();
-      JSONArray sourceAnnotations = sourceItem.getAnnotationsList();
+      List<DispoAnnotationData> newAnnotations = newItem.getAnnotationsList();
+      List<DispoAnnotationData> sourceAnnotations = sourceItem.getAnnotationsList();
       Set<String> destDefaultAnntationLocations = getDefaultAnnotations(newItem);
       Map<String, Integer> placeHolderAnnotationLocations = getPlaceHolderAnnotations(newItem);
+      List<String> destDiscrepanciesTextOnly = discrepanciesTextOnly(destItem.getDiscrepanciesList());
 
-      for (int i = 0; i < sourceAnnotations.length(); i++) {
-         JSONObject annotationJson = sourceAnnotations.getJSONObject(i);
-         DispoAnnotationData sourceAnnotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
-
+      for (DispoAnnotationData sourceAnnotation : sourceAnnotations) {
          String sourceLocation = sourceAnnotation.getLocationRefs();
 
          // Check for ignore cases
-         if (DispoUtil.isDefaultAnntoation(
-            sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
+         if (DispoUtil.isDefaultAnotation(sourceAnnotation) || !Strings.isValid(sourceAnnotation.getResolutionType())) {
             /**
              * This means this annotation is TEST_UNIT, Exception_Handling, or just place holder, so don't copy it over,
              * only log if the destination item doesn't have this annotation as a Default i.e means something changed
@@ -169,8 +157,8 @@ public class DispoSetCopier {
 
          } else {
             // Try to copy but check if Discrepancy is the same and present in the destination set
-            if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destItem, sourceItem, sourceAnnotation,
-               report)) {
+            if (isSameDiscrepancies && isCoveredDiscrepanciesExistInDest(destDiscrepanciesTextOnly, sourceItem,
+               sourceAnnotation, report)) {
                DispoAnnotationData newAnnotation = sourceAnnotation;
                if (destDefaultAnntationLocations.contains(sourceLocation)) {
                   /**
@@ -195,10 +183,10 @@ public class DispoSetCopier {
                if (placeHolderAnnotationLocations.containsKey(sourceLocation)) {
                   nextIndex = placeHolderAnnotationLocations.get(sourceLocation);
                } else {
-                  nextIndex = newAnnotations.length();
+                  nextIndex = newAnnotations.size();
                }
                newAnnotation.setIndex(nextIndex);
-               newAnnotations.put(nextIndex, DispoUtil.annotationToJsonObj(newAnnotation));
+               newAnnotations.add(nextIndex, newAnnotation);
             }
          }
       }
@@ -220,48 +208,32 @@ public class DispoSetCopier {
       return newItem;
    }
 
-   private boolean isCoveredDiscrepanciesExistInDest(DispoItem destItem, DispoItem sourceItem, DispoAnnotationData annotation, OperationReport report) {
-      JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
-      List<String> destDescrepanciesTextOnly =
-         discrepanciesTextOnly(destItem.getDiscrepanciesList(), report, destItem.getName());
-      JSONObject sourceDiscrepancies = sourceItem.getDiscrepanciesList();
-      try {
-         for (int i = 0; i < idsOfCoveredDiscrepancies.length(); i++) {
-            String key = idsOfCoveredDiscrepancies.getString(i);
-            Discrepancy coveredDiscrepancy = DispoUtil.jsonObjToDiscrepancy(sourceDiscrepancies.getJSONObject(key));
-            if (!destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
-               return false;
-            }
+   private boolean isCoveredDiscrepanciesExistInDest(List<String> destDescrepanciesTextOnly, DispoItem sourceItem, DispoAnnotationData annotation, OperationReport report) {
+      List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+      Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
+      for (String id : idsOfCoveredDiscrepancies) {
+         Discrepancy coveredDiscrepancy = sourceDiscrepancies.get(id);
+         if (!destDescrepanciesTextOnly.contains(coveredDiscrepancy.getText())) {
+            return false;
          }
-      } catch (JSONException ex) {
-         report.addEntry(sourceItem.getName(), "Bad JSON!", ERROR);
-         return false;
       }
 
       return true;
    }
 
-   private List<String> discrepanciesTextOnly(JSONObject discrepancies, OperationReport report, String itemName) {
+   private List<String> discrepanciesTextOnly(Map<String, Discrepancy> discrepancies) {
       List<String> toReturn = new ArrayList<>();
-      @SuppressWarnings("rawtypes")
-      Iterator keys = discrepancies.keys();
-      while (keys.hasNext()) {
-         String key = (String) keys.next();
-         try {
-            Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancies.getJSONObject(key));
-            toReturn.add(discrepancy.getText());
-         } catch (JSONException ex) {
-            report.addEntry(itemName, "Bad JSON!", ERROR);
-         }
+      for (String key : discrepancies.keySet()) {
+         Discrepancy discrepancy = discrepancies.get(key);
+         toReturn.add(discrepancy.getText());
       }
-
       return toReturn;
    }
 
-   private DispoItemData initNewItem(DispoItemData destItem, DispoItem sourceItem) throws JSONException {
+   private DispoItemData initNewItem(DispoItemData destItem, DispoItem sourceItem) {
       DispoItemData newItem = new DispoItemData();
       newItem.setDiscrepanciesList(destItem.getDiscrepanciesList());
-      JSONArray newList = new JSONArray(destItem.getAnnotationsList().toString());
+      List<DispoAnnotationData> newList = destItem.getAnnotationsList();
       newItem.setAnnotationsList(newList);
       if (Strings.isValid(destItem.getGuid())) {
          newItem.setGuid(destItem.getGuid());
@@ -272,15 +244,13 @@ public class DispoSetCopier {
       return newItem;
    }
 
-   private Map<String, Integer> getPlaceHolderAnnotations(DispoItemData item) throws JSONException {
+   private Map<String, Integer> getPlaceHolderAnnotations(DispoItemData item) {
       Map<String, Integer> placeHolderAnnotationLocations = new HashMap<>();
-      JSONArray annotations = item.getAnnotationsList();
+      List<DispoAnnotationData> annotations = item.getAnnotationsList();
       if (annotations == null) {
-         annotations = new JSONArray();
+         annotations = new ArrayList<>();
       }
-      for (int i = 0; i < annotations.length(); i++) {
-         JSONObject annotationJson = annotations.getJSONObject(i);
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
+      for (DispoAnnotationData annotation : annotations) {
          if (!Strings.isValid(annotation.getResolutionType())) {
             placeHolderAnnotationLocations.put(annotation.getLocationRefs(), annotation.getIndex());
          }
@@ -289,16 +259,14 @@ public class DispoSetCopier {
       return placeHolderAnnotationLocations;
    }
 
-   private Set<String> getDefaultAnnotations(DispoItemData item) throws JSONException {
+   private Set<String> getDefaultAnnotations(DispoItemData item) {
       Set<String> defaultAnnotationLocations = new HashSet<>();
-      JSONArray annotations = item.getAnnotationsList();
+      List<DispoAnnotationData> annotations = item.getAnnotationsList();
       if (annotations == null) {
-         annotations = new JSONArray();
+         annotations = new ArrayList<>();
       }
-      for (int i = 0; i < annotations.length(); i++) {
-         JSONObject annotationJson = annotations.getJSONObject(i);
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
-         if (DispoUtil.isDefaultAnntoation(annotation)) {
+      for (DispoAnnotationData annotation : annotations) {
+         if (DispoUtil.isDefaultAnotation(annotation)) {
             defaultAnnotationLocations.add(annotation.getLocationRefs());
          }
       }
@@ -306,17 +274,13 @@ public class DispoSetCopier {
       return defaultAnnotationLocations;
    }
 
-   private boolean matchAllDiscrepancies(DispoItemData destItem, DispoItem sourceItem) throws JSONException {
+   private boolean matchAllDiscrepancies(DispoItemData destItem, DispoItem sourceItem) {
       Map<Integer, String> destLocationToText = generateLocationToTextMap(destItem);
       boolean toReturn = true;
 
-      JSONObject sourceDiscrepancies = sourceItem.getDiscrepanciesList();
-      @SuppressWarnings("unchecked")
-      Iterator<String> iterator = sourceDiscrepancies.keys();
-      while (iterator.hasNext()) {
-         String key = iterator.next();
-         JSONObject discrepancyAsJson = sourceDiscrepancies.getJSONObject(key);
-         Discrepancy sourceDiscrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+      Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
+      for (String key : sourceDiscrepancies.keySet()) {
+         Discrepancy sourceDiscrepancy = sourceDiscrepancies.get(key);
 
          int sourceLocation = sourceDiscrepancy.getLocation();
          String destDicrepancyText = destLocationToText.get(sourceLocation);
@@ -335,18 +299,13 @@ public class DispoSetCopier {
       return toReturn;
    }
 
-   private Map<Integer, String> generateLocationToTextMap(DispoItem item) throws JSONException {
+   private Map<Integer, String> generateLocationToTextMap(DispoItem item) {
       Map<Integer, String> locationToText = new HashMap<>();
-      JSONObject discrepancies = item.getDiscrepanciesList();
-      @SuppressWarnings("unchecked")
-      Iterator<String> iterator = discrepancies.keys();
-      while (iterator.hasNext()) {
-         String key = iterator.next();
-         JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
-         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+      Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+      for (String key : discrepancies.keySet()) {
+         Discrepancy discrepancy = discrepancies.get(key);
          locationToText.put(discrepancy.getLocation(), discrepancy.getText());
       }
-
       return locationToText;
    }
 

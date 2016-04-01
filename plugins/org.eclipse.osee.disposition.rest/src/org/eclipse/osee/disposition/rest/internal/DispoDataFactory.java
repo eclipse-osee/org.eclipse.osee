@@ -11,18 +11,20 @@
 
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.model.DispoStrings;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -54,25 +56,25 @@ public class DispoDataFactory {
       newSet.setName(descriptor.getName());
       newSet.setImportPath(descriptor.getImportPath());
       newSet.setImportState("NONE");
-      newSet.setNotesList(new JSONArray());
+      newSet.setNotesList(new ArrayList<Note>());
       newSet.setDispoType(descriptor.getDispoType());
 
       return newSet;
    }
 
-   public void setStatus(DispoItemData item) throws JSONException {
+   public void setStatus(DispoItemData item) {
       item.setStatus(dispoConnector.getItemStatus(item));
    }
 
    public void initDispoItem(DispoItemData itemToInit) {
       if (itemToInit.getAnnotationsList() == null) {
-         itemToInit.setAnnotationsList(new JSONArray());
+         itemToInit.setAnnotationsList(new ArrayList<DispoAnnotationData>());
       }
       if (itemToInit.getDiscrepanciesList() == null) {
-         itemToInit.setDiscrepanciesList(new JSONObject());
+         itemToInit.setDiscrepanciesList(new HashMap<String, Discrepancy>());
       }
 
-      if (itemToInit.getDiscrepanciesList().length() == 0) {
+      if (itemToInit.getDiscrepanciesList().size() == 0) {
          itemToInit.setStatus(DispoStrings.Item_Pass);
       } else {
          itemToInit.setStatus(DispoStrings.Item_InComplete);
@@ -80,7 +82,7 @@ public class DispoDataFactory {
    }
 
    public void initAnnotation(DispoAnnotationData annotationToInit) {
-      annotationToInit.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotationToInit.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       annotationToInit.setCustomerNotes("");
       annotationToInit.setDeveloperNotes("");
       annotationToInit.setResolution("");
@@ -88,37 +90,13 @@ public class DispoDataFactory {
       annotationToInit.setIsDefault(false);
    }
 
-   public DispoItem createUpdatedItem(JSONArray annotationsList, JSONObject discrepanciesList) throws JSONException {
+   public DispoItem createUpdatedItem(List<DispoAnnotationData> annotationsList, Map<String, Discrepancy> discrepanciesList) {
       DispoItemData newItem = new DispoItemData();
       newItem.setAnnotationsList(annotationsList);
       newItem.setDiscrepanciesList(discrepanciesList);
       newItem.setStatus(dispoConnector.getItemStatus(newItem));
 
       return newItem;
-   }
-
-   public JSONArray mergeJsonArrays(JSONArray currentArray, JSONArray arrayToAdd) {
-      String currentJsonString = currentArray.toString().trim();
-      String toAddJsonString = arrayToAdd.toString();
-      StringBuilder sb = new StringBuilder();
-
-      if (!currentJsonString.equals("[]")) {
-         sb.append(currentJsonString);
-         sb.replace(currentJsonString.length() - 1, currentJsonString.length(), ",");
-         sb.append(toAddJsonString.replaceFirst("\\[", ""));
-      } else {
-         sb.append(toAddJsonString);
-      }
-      JSONArray toReturn;
-      try {
-         toReturn = new JSONArray(sb.toString());
-      } catch (JSONException ex) {
-         toReturn = currentArray;
-         throw new OseeCoreException(ex);
-      }
-
-      return toReturn;
-
    }
 
    public String getNewId() {

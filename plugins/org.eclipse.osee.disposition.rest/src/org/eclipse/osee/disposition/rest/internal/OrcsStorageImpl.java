@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -178,7 +177,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public List<DispoSet> findDispoSets(DispoProgram program) {
+   public List<DispoSet> findDispoSets(DispoProgram program, String type) {
       ResultSet<ArtifactReadable> results = getQuery()//
       .fromBranch(program.getUuid())//
       .andTypeEquals(DispoConstants.DispoSet)//
@@ -186,7 +185,10 @@ public class OrcsStorageImpl implements Storage {
 
       List<DispoSet> toReturn = new ArrayList<>();
       for (ArtifactReadable art : results) {
-         toReturn.add(new DispoSetArtifact(art));
+         DispoSetArtifact dispoSetArt = new DispoSetArtifact(art);
+         if (dispoSetArt.getDispoType().equals(type)) {
+            toReturn.add(dispoSetArt);
+         }
       }
       return toReturn;
    }
@@ -197,22 +199,22 @@ public class OrcsStorageImpl implements Storage {
       return new DispoSetArtifact(result);
    }
 
-   private ArtifactReadable findDispoArtifact(DispoProgram program, String setId, IArtifactType type) {
+   private ArtifactReadable findDispoArtifact(DispoProgram program, String artId, IArtifactType type) {
       return getQuery()//
       .fromBranch(program.getUuid())//
-      .andGuid(setId)//
+      .andUuid(Long.valueOf(artId))//
       .getResults().getOneOrNull();
    }
 
    @Override
-   public List<DispoItem> findDipoItems(DispoProgram program, String setId) {
+   public List<DispoItem> findDipoItems(DispoProgram program, String setId, boolean isDetailed) {
       ArtifactReadable setArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
       ResultSet<ArtifactReadable> results = setArt.getChildren();
 
       List<DispoItem> toReturn = new ArrayList<>();
       for (ArtifactReadable art : results) {
          DispoItemArtifact dispoItemArtifact = new DispoItemArtifact(art);
-         dispoItemArtifact.getAborted();
+         dispoItemArtifact.setIsIncludeDetails(isDetailed);
          toReturn.add(dispoItemArtifact);
       }
       return toReturn;
@@ -234,15 +236,16 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
+   public Long createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor) {
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Create Dispo Set");
       ArtifactId creatdArtId = tx.createArtifact(DispoConstants.DispoSet, descriptor.getName());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportPath, descriptor.getImportPath());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.ImportState, descriptor.getImportState());
       tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoType, descriptor.getDispoType());
-      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, descriptor.getNotesList().toString());
+      JSONArray notesJarray = DispoUtil.noteListToJsonObj(descriptor.getNotesList());
+      tx.setSoleAttributeFromString(creatdArtId, DispoConstants.DispoNotesJson, notesJarray.toString());
       tx.commit();
-      return creatdArtId;
+      return creatdArtId.getUuid();
    }
 
    @Override
@@ -275,7 +278,11 @@ public class OrcsStorageImpl implements Storage {
 
       String name = newData.getName();
       String importPath = newData.getImportPath();
-      JSONArray notesList = newData.getNotesList();
+
+      JSONArray notesList = null;
+      if (newData.getNotesList() != null) {
+         notesList = DispoUtil.noteListToJsonObj(newData.getNotesList());
+      }
 
       TransactionBuilder tx = getTxFactory().createTransaction(program.getUuid(), author, "Update Dispo Set");
       if (name != null && !name.equals(origSetAs.getName())) {
@@ -303,10 +310,14 @@ public class OrcsStorageImpl implements Storage {
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemStatus, item.getStatus());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemTotalPoints, item.getTotalPoints());
          tx.setSoleAttributeValue(createdItem, DispoConstants.DispoItemNeedsRerun, item.getNeedsRerun());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson,
-            item.getDiscrepanciesList().toString());
-         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson,
-            item.getAnnotationsList().toString());
+
+         // Need to convert to Json String
+         String discrepanciesAsJsonString = DispoUtil.disrepanciesMapToJson(item.getDiscrepanciesList()).toString();
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoDiscrepanciesJson, discrepanciesAsJsonString);
+         String annotationsAsJsonString = DispoUtil.annotationsListToJson(item.getAnnotationsList()).toString();
+         tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoAnnotationsJson, annotationsAsJsonString);
+         // End
+
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemVersion, item.getVersion());
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemAssignee, assignee);
          tx.setSoleAttributeFromString(createdItem, DispoConstants.DispoItemMachine, item.getMachine());
@@ -328,8 +339,19 @@ public class OrcsStorageImpl implements Storage {
    private void updateSingleItem(ArtifactReadable author, DispoProgram program, ArtifactReadable currentItemArt, DispoItem newItemData, TransactionBuilder tx, boolean resetRerunFlag) {
       Date lastUpdate = newItemData.getLastUpdate();
       String name = newItemData.getName();
-      JSONObject discrepanciesList = newItemData.getDiscrepanciesList();
-      JSONArray annotationsList = newItemData.getAnnotationsList();
+
+      // Need to convert to Json String
+      JSONObject discrepanciesList = null;
+      if (newItemData.getDiscrepanciesList() != null) {
+         discrepanciesList = DispoUtil.disrepanciesMapToJson(newItemData.getDiscrepanciesList());
+      }
+
+      JSONArray annotationsList = null;
+      if (newItemData.getAnnotationsList() != null) {
+         annotationsList = DispoUtil.annotationsListToJson(newItemData.getAnnotationsList());
+      }
+      // End
+
       String status = newItemData.getStatus();
       String assignee = newItemData.getAssignee();
       String totalPoints = newItemData.getTotalPoints();
@@ -439,7 +461,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    @Override
-   public Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword) {
+   public Collection<DispoItem> findDispoItemByAnnoationText(DispoProgram program, String setId, String keyword, boolean isDetailed) {
       ArtifactReadable dispoSetArt = findDispoArtifact(program, setId, DispoConstants.DispoSet);
 
       Set<DispoItem> toReturn = new HashSet<>();
@@ -452,7 +474,9 @@ public class OrcsStorageImpl implements Storage {
          .getResults();
 
       for (ArtifactReadable art : dispoArtifacts) {
-         toReturn.add(new DispoItemArtifact(art));
+         DispoItemArtifact dispoItem = new DispoItemArtifact(art);
+         dispoItem.setIsIncludeDetails(isDetailed);
+         toReturn.add(dispoItem);
       }
 
       return toReturn;

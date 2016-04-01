@@ -12,9 +12,9 @@
 package org.eclipse.osee.disposition.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -36,9 +36,9 @@ public interface DispoItem extends Identifiable<String> {
 
    Boolean getNeedsRerun();
 
-   JSONObject getDiscrepanciesList();
+   Map<String, Discrepancy> getDiscrepanciesList();
 
-   JSONArray getAnnotationsList();
+   List<DispoAnnotationData> getAnnotationsList();
 
    String getMachine();
 
@@ -53,4 +53,6 @@ public interface DispoItem extends Identifiable<String> {
    String getMethodNumber();
 
    String getFileNumber();
+
+   boolean getIsIncludeDetails();
 }

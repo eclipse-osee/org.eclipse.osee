@@ -15,7 +15,6 @@ import static org.eclipse.osee.disposition.model.DispoSummarySeverity.WARNING;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -25,13 +24,10 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -59,16 +55,12 @@ public class CoverageAdapter {
                DispoItemData newItem = new DispoItemData();
                newItem.setName(dispoItem.getName());
                newItem.setGuid(dispoItem.getGuid());
-               newItem.setAnnotationsList(DispoUtil.listAsJsonArray(newAnnotations));
+               newItem.setAnnotationsList(newAnnotations);
 
                String newStatus;
-               try {
-                  newItem.setDiscrepanciesList(dispoItem.getDiscrepanciesList());
-                  newStatus = dispoConnector.getItemStatus(newItem);
-                  newItem.setStatus(newStatus);
-               } catch (JSONException ex) {
-                  report.addEntry(newItem.getName(), "Could not determine Status", ERROR);
-               }
+               newItem.setDiscrepanciesList(dispoItem.getDiscrepanciesList());
+               newStatus = dispoConnector.getItemStatus(newItem);
+               newItem.setStatus(newStatus);
 
                modifiedItems.add(newItem);
             }
@@ -82,7 +74,7 @@ public class CoverageAdapter {
       boolean madeChange = false;
       List<String> covearageItems = source.getAttributeValues(CoverageUtil.Item);
       Map<String, Discrepancy> textToDiscrepancyMap = getTextToDiscrepancyMap(dest);
-      List<DispoAnnotationData> annotations = DispoUtil.asAnnotationsList(dest.getAnnotationsList());
+      List<DispoAnnotationData> annotations = dest.getAnnotationsList();
 
       PropertyStore store = new PropertyStore();
 
@@ -116,11 +108,7 @@ public class CoverageAdapter {
             newAnnotation.setCustomerNotes(textFromCoverage);
             newAnnotation.setResolution("n/a");
             newAnnotation.setDeveloperNotes("");
-            try {
-               dispoConnector.connectAnnotation(newAnnotation, dest.getDiscrepanciesList());
-            } catch (JSONException ex) {
-               throw new OseeCoreException(ex);
-            }
+            dispoConnector.connectAnnotation(newAnnotation, dest.getDiscrepanciesList());
 
             annotations.add(newAnnotation.getIndex(), newAnnotation);
          } else if (matchedDiscrepancy == null) {
@@ -139,18 +127,11 @@ public class CoverageAdapter {
    private Map<String, Discrepancy> getTextToDiscrepancyMap(DispoItem dest) {
       Map<String, Discrepancy> toReturn = new HashMap<>();
 
-      JSONObject discrepanciesList = dest.getDiscrepanciesList();
-      @SuppressWarnings("rawtypes")
-      Iterator keys = discrepanciesList.keys();
-      while (keys.hasNext()) {
-         String key = (String) keys.next();
+      Map<String, Discrepancy> discrepanciesList = dest.getDiscrepanciesList();
+      for (String key : discrepanciesList.keySet()) {
          Discrepancy discrepancy;
-         try {
-            discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepanciesList.getJSONObject(key));
-            toReturn.put(discrepancy.getText(), discrepancy);
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
-         }
+         discrepancy = discrepanciesList.get(key);
+         toReturn.put(discrepancy.getText(), discrepancy);
       }
 
       return toReturn;

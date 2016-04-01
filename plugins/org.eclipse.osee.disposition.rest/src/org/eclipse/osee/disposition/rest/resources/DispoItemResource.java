@@ -21,14 +21,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.ResponseBuilder;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
 
 /**
  * @author Angel Avila
@@ -46,15 +43,9 @@ public class DispoItemResource {
 
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoItems(@QueryParam("isDetailed") Boolean isDetailed) throws Exception {
-      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, setId);
-      JSONArray jarray = new JSONArray();
-      for (DispoItem dispoItem : dispoItems) {
-         jarray.put(DispoUtil.dispoItemToJsonObj(dispoItem, isDetailed));
-      }
-
-      ResponseBuilder builder = Response.ok(jarray.toString());
-      return builder.build();
+   public Iterable<DispoItem> getAllDispoItems(@QueryParam("isDetailed") Boolean isDetailed) {
+      List<DispoItem> allDispoItems = dispoApi.getDispoItems(program, setId, isDetailed);
+      return allDispoItems;
    }
 
    /**
@@ -68,15 +59,8 @@ public class DispoItemResource {
    @Path("{itemId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoItemsById(@PathParam("itemId") String itemId) {
-      Response response;
-      DispoItem result = dispoApi.getDispoItemById(program, itemId);
-      if (result == null) {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
-      } else {
-         response = Response.status(Response.Status.OK).entity(DispoUtil.itemArtToItemData(result, false)).build();
-      }
-      return response;
+   public DispoItem getDispoItemsById(@PathParam("itemId") String itemId) {
+      return dispoApi.getDispoItemById(program, itemId);
    }
 
    /**

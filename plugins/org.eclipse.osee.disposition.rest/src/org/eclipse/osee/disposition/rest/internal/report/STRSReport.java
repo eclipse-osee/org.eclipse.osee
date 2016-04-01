@@ -21,11 +21,8 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.json.JSONArray;
-import org.json.JSONException;
 
 /**
  * @author Angel Avila
@@ -39,8 +36,8 @@ public class STRSReport {
    }
 
    public void runReport(DispoProgram program, DispoSet setPrimary, DispoSet setSecondary, OutputStream outputStream) {
-      List<DispoItem> itemsFromPrimary = dispoApi.getDispoItems(program, setPrimary.getGuid());
-      List<DispoItem> itemsFromSecondary = dispoApi.getDispoItems(program, setSecondary.getGuid());
+      List<DispoItem> itemsFromPrimary = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
+      List<DispoItem> itemsFromSecondary = dispoApi.getDispoItems(program, setSecondary.getGuid(), true);
 
       HashMap<String, DispoItem> idsToDryRun = convertToMap(itemsFromSecondary);
 
@@ -60,13 +57,13 @@ public class STRSReport {
             int index = 0;
 
             DispoItem dryrunItem = idsToDryRun.get(demoItem.getName());
-            JSONArray annotationsList = demoItem.getAnnotationsList();
+            List<DispoAnnotationData> annotationsList = demoItem.getAnnotationsList();
             HashMap<String, Integer> issueTypeToCount = convertToIssueTypeToCounttMap(annotationsList);
 
             row[index++] = String.valueOf(demoItem.getName());
             if (dryrunItem != null) {
                row[index++] = String.valueOf(dryrunItem.getTotalPoints());
-               row[index++] = String.valueOf(dryrunItem.getDiscrepanciesList().length());
+               row[index++] = String.valueOf(dryrunItem.getDiscrepanciesList().size());
             } else {
                row[index++] = "No corresponding Item";
                row[index++] = "No corresponding Item";
@@ -77,7 +74,7 @@ public class STRSReport {
             row[index++] = String.valueOf(issueTypeToCount.get("REQ"));
             row[index++] = String.valueOf(allUncoveredDiscprepancies.size());
             row[index++] = String.valueOf(issueTypeToCount.get("OTHER"));
-            row[index++] = String.valueOf(demoItem.getDiscrepanciesList().length());
+            row[index++] = String.valueOf(demoItem.getDiscrepanciesList().size());
             row[index++] = " ";
             row[index++] = String.valueOf(getCustomerNotes(demoItem.getAnnotationsList()));
 
@@ -101,10 +98,9 @@ public class STRSReport {
       return toReturn;
    }
 
-   private String getCustomerNotes(JSONArray annotations) throws JSONException {
+   private String getCustomerNotes(List<DispoAnnotationData> annotations) {
       StringBuilder sb = new StringBuilder();
-      for (int i = 0; i < annotations.length(); i++) {
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotations.getJSONObject(i));
+      for (DispoAnnotationData annotation : annotations) {
          String customerNotes = annotation.getCustomerNotes();
          if (!customerNotes.equalsIgnoreCase("--Enter Notes--")) {
             sb.append(annotation.getCustomerNotes());
@@ -134,32 +130,26 @@ public class STRSReport {
       return toReturn;
    }
 
-   private HashMap<String, Integer> convertToIssueTypeToCounttMap(JSONArray jsonArray) {
+   private HashMap<String, Integer> convertToIssueTypeToCounttMap(List<DispoAnnotationData> annotationList) {
       HashMap<String, Integer> toReturn = new HashMap<>();
       int codeCount = 0;
       int scriptCount = 0;
       int reqCount = 0;
       int other = 0;
-      for (int i = 0; i < jsonArray.length(); i++) {
-         DispoAnnotationData annotation;
-         try {
-            annotation = DispoUtil.jsonObjToDispoAnnotationData(jsonArray.getJSONObject(i));
-            if (annotation.isValid()) {
-               String resolutionType = annotation.getResolutionType();
-               if (resolutionType != null) {
-                  if (resolutionType.equalsIgnoreCase("CODE")) {
-                     codeCount += getTotalLocationOfAnnotation(annotation);
-                  } else if (resolutionType.equalsIgnoreCase("TEST")) {
-                     scriptCount += getTotalLocationOfAnnotation(annotation);
-                  } else if (resolutionType.equalsIgnoreCase("REQ")) {
-                     reqCount += getTotalLocationOfAnnotation(annotation);
-                  } else {
-                     other += getTotalLocationOfAnnotation(annotation);
-                  }
+      for (DispoAnnotationData annotation : annotationList) {
+         if (annotation.isValid()) {
+            String resolutionType = annotation.getResolutionType();
+            if (resolutionType != null) {
+               if (resolutionType.equalsIgnoreCase("CODE")) {
+                  codeCount += getTotalLocationOfAnnotation(annotation);
+               } else if (resolutionType.equalsIgnoreCase("TEST")) {
+                  scriptCount += getTotalLocationOfAnnotation(annotation);
+               } else if (resolutionType.equalsIgnoreCase("REQ")) {
+                  reqCount += getTotalLocationOfAnnotation(annotation);
+               } else {
+                  other += getTotalLocationOfAnnotation(annotation);
                }
             }
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
          }
       }
 

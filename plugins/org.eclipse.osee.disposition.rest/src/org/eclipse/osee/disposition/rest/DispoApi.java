@@ -23,7 +23,6 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.util.DispoFactory;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 
 /**
  * @author Angel Avila
@@ -33,11 +32,11 @@ public interface DispoApi {
    // Queries
    List<IOseeBranch> getDispoPrograms();
 
-   List<DispoSet> getDispoSets(DispoProgram program);
+   List<DispoSet> getDispoSets(DispoProgram program, String type);
 
    DispoSet getDispoSetById(DispoProgram program, String dispoSetId);
 
-   List<DispoItem> getDispoItems(DispoProgram program, String dispoSetId);
+   List<DispoItem> getDispoItems(DispoProgram program, String dispoSetId, boolean isDetailed);
 
    DispoItem getDispoItemById(DispoProgram program, String itemId);
 
@@ -50,7 +49,7 @@ public interface DispoApi {
    // Writes
    Long createDispoProgram(String name);
 
-   Identifiable<String> createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
+   Long createDispoSet(DispoProgram program, DispoSetDescriptorData descriptor);
 
    String createDispoAnnotation(DispoProgram program, String itemId, DispoAnnotationData annotation, String userName);
 
@@ -81,6 +80,6 @@ public interface DispoApi {
 
    DispoFactory getDispoFactory();
 
-   Collection<DispoItem> getDispoItemByAnnotationText(DispoProgram program, String setId, String keyword);
+   Collection<DispoItem> getDispoItemByAnnotationText(DispoProgram program, String setId, String keyword, boolean isDetailed);
 
 }

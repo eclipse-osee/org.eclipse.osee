@@ -17,8 +17,10 @@ import javax.ws.rs.core.Application;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.messages.DispoAnnotationMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoAnnotationMessageWriter;
+import org.eclipse.osee.disposition.rest.messages.DispoItemListMessageWriter;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoItemMessageWriter;
+import org.eclipse.osee.disposition.rest.messages.DispoSetListMessageWriter;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageReader;
 import org.eclipse.osee.disposition.rest.messages.DispoSetMessageWriter;
 
@@ -44,8 +46,10 @@ public final class DispoApplication extends Application {
    public void start() {
       singletons.add(new DispoSetMessageReader());
       singletons.add(new DispoSetMessageWriter());
+      singletons.add(new DispoSetListMessageWriter());
       singletons.add(new DispoItemMessageReader());
       singletons.add(new DispoItemMessageWriter());
+      singletons.add(new DispoItemListMessageWriter());
       singletons.add(new DispoAnnotationMessageReader());
       singletons.add(new DispoAnnotationMessageWriter());
 

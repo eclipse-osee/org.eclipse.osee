@@ -12,8 +12,8 @@ package org.eclipse.osee.disposition.rest.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -23,9 +23,10 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoStrings;
-import org.eclipse.osee.disposition.model.LocationRange;
+import org.eclipse.osee.disposition.model.DispoSummarySeverity;
 import org.eclipse.osee.disposition.model.Note;
 import org.eclipse.osee.disposition.model.OperationReport;
+import org.eclipse.osee.disposition.model.OperationSummaryEntry;
 import org.eclipse.osee.disposition.model.ResolutionMethod;
 import org.eclipse.osee.disposition.rest.internal.LocationRangesCompressor;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -50,7 +51,7 @@ public final class DispoUtil {
       }
    }
 
-   public static boolean isDefaultAnntoation(DispoAnnotationData annotation) {
+   public static boolean isDefaultAnotation(DispoAnnotationData annotation) {
       return annotation.getResolutionType().equalsIgnoreCase(
          DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
             DispoStrings.Exception_Handling_Resolution);
@@ -58,23 +59,14 @@ public final class DispoUtil {
 
    public static String operationReportToString(OperationReport report) {
       JSONObject reportAsJson = new JSONObject(report);
-
       return reportAsJson.toString();
    }
 
-   public static JSONObject getById(JSONArray list, String id) {
-      try {
-         for (int i = 0; i < list.length(); i++) {
-            JSONObject object;
-            object = list.getJSONObject(i);
-            if (object.has("id")) {
-               if (object.getString("id").equals(id)) {
-                  return object;
-               }
-            }
+   public static DispoAnnotationData getById(List<DispoAnnotationData> list, String id) {
+      for (DispoAnnotationData annotation : list) {
+         if (annotation.getId().equals(id)) {
+            return annotation;
          }
-      } catch (JSONException ex) {
-         throw new OseeCoreException(ex);
       }
 
       return null;
@@ -86,41 +78,6 @@ public final class DispoUtil {
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
-   }
-
-   public static JSONArray mergeNotesList(JSONArray originalNotesList, JSONArray modifiedNotesList) {
-      return originalNotesList.put(modifiedNotesList);
-   }
-
-   public static String getJsonArrayString(JSONArray jsonArray) throws JSONException {
-      StringBuilder sb = new StringBuilder();
-
-      int arraySize = jsonArray.length();
-      for (int i = 0; i < arraySize; i++) {
-         Object obj = jsonArray.get(i);
-         JSONObject annotationJSsonObject = new JSONObject(obj);
-         sb.append(annotationJSsonObject.toString());
-         sb.append(",");
-      }
-
-      sb.deleteCharAt(sb.length() - 1);
-      return sb.toString();
-   }
-
-   public static DispoSetData setArtToSetData(DispoSet dispoSet) {
-      DispoSetData dispoSetData = new DispoSetData();
-      if (dispoSet != null) {
-         dispoSetData.setName(dispoSet.getName());
-         dispoSetData.setImportPath(dispoSet.getImportPath());
-         dispoSetData.setNotesList(dispoSet.getNotesList());
-         dispoSetData.setGuid(dispoSet.getGuid());
-         dispoSetData.setDispoType(dispoSet.getDispoType());
-         dispoSetData.setOperationSummary(dispoSet.getOperationSummary());
-         dispoSetData.setImportState(dispoSet.getImportState());
-      } else {
-         dispoSetData = null;
-      }
-      return dispoSetData;
    }
 
    public static DispoItemData itemArtToItemData(DispoItem dispoItemArt, boolean isIncludeDiscrepancies) {
@@ -146,7 +103,10 @@ public final class DispoUtil {
       dispoItemData.setFileNumber(dispoItemArt.getFileNumber());
       dispoItemData.setMethodNumber(dispoItemArt.getMethodNumber());
       if (isIncludeDiscrepancies) {
-         dispoItemData.setDiscrepanciesList(dispoItemArt.getDiscrepanciesList());
+         Map<String, Discrepancy> discrepanciesList = dispoItemArt.getDiscrepanciesList();
+         dispoItemData.setDiscrepanciesList(discrepanciesList);
+         dispoItemData.setDiscrepanciesAsRanges(discrepanciesToString(discrepanciesList));
+         dispoItemData.setFailureCount(discrepanciesList.size());
       }
       if (isIncludeAnnotations) {
          dispoItemData.setAnnotationsList(dispoItemArt.getAnnotationsList());
@@ -154,22 +114,15 @@ public final class DispoUtil {
       return dispoItemData;
    }
 
-   @SuppressWarnings("unchecked")
-   public static String discrepanciesToString(JSONObject discrepanciesList) {
+   public static String discrepanciesToString(Map<String, Discrepancy> discrepanciesList) {
       List<Integer> discrepanciesPoints = new ArrayList<>();
-      Iterator<String> iterator = discrepanciesList.keys();
-      while (iterator.hasNext()) {
-         try {
-            JSONObject jObject = discrepanciesList.getJSONObject(iterator.next());
-            int location = jObject.getInt("location");
-            discrepanciesPoints.add(location);
-         } catch (JSONException ex) {
-            throw new OseeCoreException(ex);
-         }
+      for (String key : discrepanciesList.keySet()) {
+         Discrepancy disrepancy = discrepanciesList.get(key);
+         int location = disrepancy.getLocation();
+         discrepanciesPoints.add(location);
       }
 
       return LocationRangesCompressor.compress(discrepanciesPoints);
-
    }
 
    public static DispoItemData jsonObjToDispoItem(JSONObject jsonObject) {
@@ -181,8 +134,8 @@ public final class DispoUtil {
          if (jsonObject.has("guid")) {
             dispoItem.setGuid(jsonObject.getString("guid"));
          }
-         if (jsonObject.has("itemStatus")) {
-            dispoItem.setStatus(jsonObject.getString("itemStatus"));
+         if (jsonObject.has("status")) {
+            dispoItem.setStatus(jsonObject.getString("status"));
          }
          if (jsonObject.has("totalPoints")) {
             dispoItem.setTotalPoints(jsonObject.getString("totalPoints"));
@@ -190,17 +143,11 @@ public final class DispoUtil {
          if (jsonObject.has("needsRerun")) {
             dispoItem.setNeedsRerun(jsonObject.getBoolean("needsRerun"));
          }
-         if (jsonObject.has("itemVersion")) {
-            dispoItem.setVersion(jsonObject.getString("itemVersion"));
+         if (jsonObject.has("version")) {
+            dispoItem.setVersion(jsonObject.getString("version"));
          }
          if (jsonObject.has("assignee")) {
             dispoItem.setAssignee(jsonObject.getString("assignee"));
-         }
-         if (jsonObject.has("discrepanciesList")) {
-            dispoItem.setDiscrepanciesList(jsonObject.getJSONObject("discrepanciesList"));
-         }
-         if (jsonObject.has("annotationsList")) {
-            dispoItem.setAnnotationsList(jsonObject.getJSONArray("annotationsList"));
          }
          if (jsonObject.has("category")) {
             dispoItem.setCategory(jsonObject.getString("category"));
@@ -243,22 +190,27 @@ public final class DispoUtil {
             dispoSet.setOperation(jsonObject.getString("operation"));
          }
          if (jsonObject.has("notesList")) {
-            dispoSet.setNotesList(jsonObject.getJSONArray("notesList"));
+            JSONArray jArray = jsonObject.getJSONArray("notesList");
+            List<Note> notesList = new ArrayList<Note>();
+            for (int i = 0; i < jArray.length(); i++) {
+               notesList.add(jsonObjToNote(jArray.getJSONObject(i)));
+            }
+            dispoSet.setNotesList(notesList);
          }
       } catch (JSONException ex) {
-         throw new OseeCoreException("Error deserializing a Dispositionable Set.", ex);
+         throw new OseeCoreException("Error deserializing a Dispositionable Item.", ex);
       }
       return dispoSet;
    }
 
-   public static JSONObject dispoItemToJsonObj(DispoItem dispoItem, boolean isDeatailed) {
+   public static JSONObject dispoItemToJsonObj(DispoItem dispoItem, boolean isDetailed) {
       JSONObject jsonObject = new JSONObject();
       try {
          jsonObject.put("discrepanciesAsRanges", discrepanciesToString(dispoItem.getDiscrepanciesList()));
-         if (isDeatailed) {
+         if (isDetailed) {
             jsonObject.put("discrepancies", dispoItem.getDiscrepanciesList());
          }
-         jsonObject.put("failureCount", dispoItem.getDiscrepanciesList().length());
+         jsonObject.put("failureCount", dispoItem.getDiscrepanciesList().size());
          jsonObject.put("name", dispoItem.getName());
          jsonObject.put("status", dispoItem.getStatus());
          jsonObject.put("totalPoints", dispoItem.getTotalPoints());
@@ -282,16 +234,68 @@ public final class DispoUtil {
       return jsonObject;
    }
 
+   public static JSONArray noteListToJsonObj(List<Note> notes) {
+      JSONArray jArray = new JSONArray();
+      for (Note note : notes) {
+         jArray.put(new JSONObject(note));
+      }
+
+      return jArray;
+   }
+
    public static JSONObject discrepancyToJsonObj(Discrepancy discrepancy) {
       JSONObject toReturn = new JSONObject(discrepancy);
       return toReturn;
    }
 
-   public static JSONObject dispoSetToJsonObj(DispoSetData dispoSet) {
-      JSONObject jsonObject = new JSONObject(dispoSet, true);
+   public static OperationSummaryEntry jsonObjToOperationSummaryEntry(JSONObject jObj) throws JSONException {
+      OperationSummaryEntry entry = new OperationSummaryEntry();
+      if (jObj.has("message")) {
+         entry.setMessage(jObj.getString("message"));
+      }
+      if (jObj.has("name")) {
+         entry.setName(jObj.getString("name"));
+      }
+      if (jObj.has("severity")) {
+         String severity = jObj.getJSONObject("severity").getString("name").toUpperCase();
+         DispoSummarySeverity dispoSummarySeverity = DispoSummarySeverity.valueOf(severity);
+         entry.setSeverity(dispoSummarySeverity);
+      }
+      return entry;
+   }
+
+   public static OperationReport jsonObjToOperationSummary(JSONObject jObj) {
+      OperationReport summary = new OperationReport();
+      List<OperationSummaryEntry> entries = new ArrayList<>();
+
       try {
-         jsonObject.put("notesList", dispoSet.getNotesList());
-         jsonObject.put("operationSummary", dispoSet.getOperationSummary());
+         JSONArray entriesJson = jObj.getJSONArray("entries");
+
+         if (jObj.has("entries")) {
+            for (int i = 0; i < entriesJson.length(); i++) {
+               JSONObject entryAsJson = entriesJson.getJSONObject(i);
+               OperationSummaryEntry entry = jsonObjToOperationSummaryEntry(entryAsJson);
+               entries.add(entry);
+            }
+            summary.setEntries(entries);
+         }
+      } catch (JSONException ex) {
+         //
+      }
+      return summary;
+   }
+
+   public static JSONObject dispoSetToJsonObj(DispoSet dispoSet) {
+      JSONObject jsonObject = new JSONObject(dispoSet, true);
+      JSONObject operationSummaryJObj = new JSONObject();
+      JSONArray jArray = new JSONArray();
+      try {
+         for (OperationSummaryEntry entry : dispoSet.getOperationSummary().getEntries()) {
+            JSONObject entryJson = new JSONObject(entry);
+            jArray.put(entryJson);
+         }
+         operationSummaryJObj.put("entries", jArray);
+         jsonObject.put("operationSummary", operationSummaryJObj);
       } catch (JSONException ex) {
          throw new OseeCoreException(ex);
       }
@@ -322,7 +326,12 @@ public final class DispoUtil {
             dispoAnnotation.setLocationRefs(object.getString("locationRefs"));
          }
          if (object.has("idsOfCoveredDiscrepancies")) {
-            dispoAnnotation.setIdsOfCoveredDiscrepancies(object.getJSONArray("idsOfCoveredDiscrepancies"));
+            List<String> idsOfCoveredDiscrepanciesList = new ArrayList<String>();
+            JSONArray jArray = object.getJSONArray("idsOfCoveredDiscrepancies");
+            for (int i = 0; i < jArray.length(); i++) {
+               idsOfCoveredDiscrepanciesList.add(jArray.getString(i));
+            }
+            dispoAnnotation.setIdsOfCoveredDiscrepancies(idsOfCoveredDiscrepanciesList);
          }
          if (object.has("isValid")) {
             dispoAnnotation.setIsConnected(object.getBoolean("isValid"));
@@ -354,19 +363,42 @@ public final class DispoUtil {
       return dispoAnnotation;
    }
 
+   public static JSONObject disrepanciesMapToJson(Map<String, Discrepancy> discrepancies) {
+      JSONObject jObject = null;
+      try {
+         jObject = new JSONObject();
+         for (String key : discrepancies.keySet()) {
+            jObject.put(key, DispoUtil.discrepancyToJsonObj(discrepancies.get(key)));
+         }
+
+      } catch (JSONException ex) {
+         throw new OseeCoreException(ex);
+      }
+      return jObject;
+
+   }
+
+   public static JSONArray annotationsListToJson(List<DispoAnnotationData> annotations) {
+      JSONArray jArray = null;
+      try {
+         jArray = new JSONArray();
+         for (DispoAnnotationData annotation : annotations) {
+            jArray.put(annotation.getIndex(), DispoUtil.annotationToJsonObj(annotation));
+         }
+
+      } catch (JSONException ex) {
+         throw new OseeCoreException(ex);
+      }
+      return jArray;
+   }
+
+   //
    public static Discrepancy jsonObjToDiscrepancy(JSONObject object) throws JSONException {
       Discrepancy discrepancy = new Discrepancy();
       discrepancy.setLocation(object.getInt("location"));
       discrepancy.setText(object.getString("text"));
       discrepancy.setId(object.getString("id"));
       return discrepancy;
-   }
-
-   public static LocationRange jsonObjToLocationRagne(JSONObject object) throws JSONException {
-      LocationRange range = new LocationRange();
-      range.setStart(object.getInt("start"));
-      range.setEnd(object.getInt("end"));
-      return range;
    }
 
    public static Note jsonObjToNote(JSONObject object) throws JSONException {

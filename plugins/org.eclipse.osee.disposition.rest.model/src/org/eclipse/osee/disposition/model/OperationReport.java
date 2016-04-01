@@ -24,7 +24,7 @@ public class OperationReport {
 
    private DispoSetStatus status = DispoSetStatus.NO_CHANGE;
 
-   private final List<OperationSummaryEntry> entries = new ArrayList<>();
+   private List<OperationSummaryEntry> entries = new ArrayList<>();
 
    public OperationReport() {
    }
@@ -54,5 +54,13 @@ public class OperationReport {
 
    public DispoSetStatus getStatus() {
       return status;
+   }
+
+   public void setStatus(DispoSetStatus status) {
+      this.status = status;
+   }
+
+   public void setEntries(List<OperationSummaryEntry> entries) {
+      this.entries = entries;
    }
 }

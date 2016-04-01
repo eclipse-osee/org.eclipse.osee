@@ -16,7 +16,6 @@ import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.model.OperationReport;
-import org.eclipse.osee.framework.jdk.core.type.Identifiable;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -26,7 +25,7 @@ public interface DispoWriter {
 
    Long createDispoProgram(ArtifactReadable author, String name);
 
-   Identifiable<String> createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor);
+   Long createDispoSet(ArtifactReadable author, DispoProgram program, DispoSet descriptor);
 
    void updateDispoSet(ArtifactReadable author, DispoProgram program, String dispoSetId, DispoSet data);
 

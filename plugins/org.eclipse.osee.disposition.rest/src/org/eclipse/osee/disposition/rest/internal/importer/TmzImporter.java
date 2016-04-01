@@ -16,6 +16,7 @@ import java.io.InputStream;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
@@ -28,7 +29,6 @@ import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoImporterApi;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -75,7 +75,7 @@ public class TmzImporter implements DispoImporterApi {
          Date lastUpdate = oldItem != null ? oldItem.getLastUpdate() : new Date(0);
 
          DispoItemData itemToBuild = null;
-         JSONObject discrepancies = null;
+         Map<String, Discrepancy> discrepancies = null;
          ZipFile zf = null;
          try {
             zf = new ZipFile(file);
@@ -89,7 +89,7 @@ public class TmzImporter implements DispoImporterApi {
                processOverview(json, itemToBuild);
 
                if (oldItem == null || !itemToBuild.getLastUpdate().after(lastUpdate)) {
-                  discrepancies = new JSONObject();
+                  discrepancies = new HashMap<>();
                   itemToBuild.setDiscrepanciesList(discrepancies);
                   entry = zf.getEntry("TestPointSummary.json");
                   if (entry != null) {
@@ -132,7 +132,7 @@ public class TmzImporter implements DispoImporterApi {
       dispoItem.setLastUpdate(date);
    }
 
-   private void processTestPointSummary(String json, JSONObject discrepancies) throws JSONException {
+   private void processTestPointSummary(String json, Map<String, Discrepancy> discrepancies) throws JSONException {
       JSONObject contents = new JSONObject(json);
       JSONArray records = contents.getJSONArray("childRecords");
       for (int i = 0; i < records.length(); i++) {
@@ -167,8 +167,7 @@ public class TmzImporter implements DispoImporterApi {
                }
                discrepancy.setText(text.toString());
             }
-            JSONObject discrepancyAsJson = DispoUtil.discrepancyToJsonObj(discrepancy);
-            discrepancies.put(id, discrepancyAsJson);
+            discrepancies.put(id, discrepancy);
          }
       }
    }

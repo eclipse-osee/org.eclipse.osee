@@ -14,8 +14,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.StringTokenizer;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -23,13 +24,9 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.disposition.rest.util.LocationRangeComparator;
 import org.eclipse.osee.disposition.rest.util.LocationRangeUtil;
 import org.eclipse.osee.logger.Log;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -51,22 +48,23 @@ public class DispoConnector {
       logger.trace("Stopping DispoConnector...");
    }
 
-   public List<Integer> getAllUncoveredDiscprepancies(DispoItem item) throws JSONException {
-      JSONObject discrepancies = item.getDiscrepanciesList();
-      JSONArray annotations = item.getAnnotationsList();
-      HashSet<Integer> allCoveredDiscrepancies = getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotations);
+   public List<Integer> getAllUncoveredDiscprepancies(DispoItem item) {
+      Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
+      List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
+      HashSet<Integer> allCoveredDiscrepancies =
+         getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotationsList);
       ArrayList<Integer> allDiscrepancies = createDiscrepanciesList(discrepancies);
 
       allDiscrepancies.removeAll(allCoveredDiscrepancies);
       return allDiscrepancies;
    }
 
-   public String getItemStatus(DispoItem item) throws JSONException {
+   public String getItemStatus(DispoItem item) {
       String toReturn;
-      JSONArray annotations = item.getAnnotationsList();
+      List<DispoAnnotationData> annotations = item.getAnnotationsList();
       List<Integer> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
 
-      if (item.getDiscrepanciesList().length() == 0) {
+      if (item.getDiscrepanciesList().size() == 0) {
          toReturn = DispoStrings.Item_Pass;
       } else if (allAnnotationsValid(annotations) && allUncoveredDiscprepancies.isEmpty()) {
          toReturn = DispoStrings.Item_Complete;
@@ -77,11 +75,8 @@ public class DispoConnector {
       return toReturn;
    }
 
-   private boolean allAnnotationsValid(JSONArray annotatinos) throws JSONException {
-      int length = annotatinos.length();
-      for (int i = 0; i < length; i++) {
-         JSONObject annotationAsJson = annotatinos.getJSONObject(i);
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationAsJson);
+   private boolean allAnnotationsValid(List<DispoAnnotationData> annotations) {
+      for (DispoAnnotationData annotation : annotations) {
          if (!annotation.getIsDefault() && !annotation.isValid()) {
             return false;
          }
@@ -90,32 +85,23 @@ public class DispoConnector {
       return true;
    }
 
-   @SuppressWarnings("unchecked")
-   private ArrayList<Integer> createDiscrepanciesList(JSONObject discrepancies) throws JSONException {
-      ArrayList<Integer> toReturn = new ArrayList<>();
-      Iterator<String> iterator = discrepancies.keys();
-      while (iterator.hasNext()) {
-         String key = iterator.next();
-         JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
-         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+   private ArrayList<Integer> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {
+      ArrayList<Integer> toReturn = new ArrayList<Integer>();
+      for (String key : discrepancies.keySet()) {
+         Discrepancy discrepancy = discrepancies.get(key);
          toReturn.add(discrepancy.getLocation());
       }
 
       return toReturn;
    }
 
-   private HashSet<Integer> getAllCoveredDiscrepanciesFromAnnotations(JSONObject discrepancies, JSONArray annotations) throws JSONException {
-      HashSet<Integer> toReturn = new HashSet<>();
-      int length = annotations.length();
-      for (int j = 0; j < length; j++) {
-         JSONObject annotationAsObject = annotations.getJSONObject(j);
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationAsObject);
-         JSONArray idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
-         for (int i = 0; i < idsOfCoveredDiscrepancies.length(); i++) {
-            String id = idsOfCoveredDiscrepancies.getString(i);
-            if (discrepancies.has(id)) {
-               JSONObject discrepancyAsJson = discrepancies.getJSONObject(id);
-               Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+   private HashSet<Integer> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies, List<DispoAnnotationData> annotations) {
+      HashSet<Integer> toReturn = new HashSet<Integer>();
+      for (DispoAnnotationData annotation : annotations) {
+         List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
+         for (String id : idsOfCoveredDiscrepancies) {
+            if (discrepancies.containsKey(id)) {
+               Discrepancy discrepancy = discrepancies.get(id);
                toReturn.add(discrepancy.getLocation());
             }
          }
@@ -124,7 +110,7 @@ public class DispoConnector {
       return toReturn;
    }
 
-   public boolean connectAnnotation(DispoAnnotationData annotation, JSONObject discrepanciesList) throws JSONException {
+   public boolean connectAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
       boolean isAllLocRefValid = true;
       HashMap<Integer, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
       List<LocationRange> listOfLocationRefs = sortList(annotation.getLocationRefs());
@@ -152,7 +138,7 @@ public class DispoConnector {
 
       if (isAllLocRefValid) {
          annotation.setIsConnected(true);
-         annotation.setIdsOfCoveredDiscrepancies(new JSONArray(workingIdsOfCovered));
+         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<String>(workingIdsOfCovered));
       } else {
          annotation.setIsConnected(false);
       }
@@ -170,14 +156,11 @@ public class DispoConnector {
       return true;
    }
 
-   @SuppressWarnings("unchecked")
-   private HashMap<Integer, String> getPointNumbersToIds(JSONObject discrepancies) throws JSONException {
-      HashMap<Integer, String> toReturn = new HashMap<>();
-      Iterator<String> iterator = discrepancies.keys();
-      while (iterator.hasNext()) {
-         String key = iterator.next();
-         JSONObject discrepancyAsJson = discrepancies.getJSONObject(key);
-         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+   private HashMap<Integer, String> getPointNumbersToIds(Map<String, Discrepancy> discrepancies) {
+      HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
+      Set<String> keys = discrepancies.keySet();
+      for (String key : keys) {
+         Discrepancy discrepancy = discrepancies.get(key);
          int pointNumber = discrepancy.getLocation();
          toReturn.put(pointNumber, discrepancy.getId());
       }

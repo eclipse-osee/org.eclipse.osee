@@ -13,17 +13,13 @@ package org.eclipse.osee.disposition.rest.importer;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.disposition.rest.internal.importer.TmzImporter;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
@@ -40,8 +36,7 @@ public class TmzImporterTest {
    private final DispoDataFactory factory = new DispoDataFactory();
 
    @Test
-   @SuppressWarnings("unchecked")
-   public void testImportWithCheckGroups() throws IOException, JSONException {
+   public void testImportWithCheckGroups() throws IOException {
       File tmzFile = folder.newFile("CheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("CheckGroup.tmz"), tmzFile);
       TmzImporter importer = new TmzImporter(null, factory);
@@ -50,13 +45,11 @@ public class TmzImporterTest {
       Assert.assertEquals(1, results.size());
       DispoItem result = results.get(0);
       Assert.assertEquals("CheckGroup", result.getName());
-      Assert.assertEquals(2, result.getDiscrepanciesList().length());
-      Iterator<String> keys = result.getDiscrepanciesList().keys();
+      Assert.assertEquals(2, result.getDiscrepanciesList().size());
       Assert.assertEquals("113054", result.getVersion());
       boolean firstFound = false, thirdFound = false;
-      while (keys.hasNext()) {
-         JSONObject jsonObject = result.getDiscrepanciesList().getJSONObject(keys.next());
-         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(jsonObject);
+      for (String key : result.getDiscrepanciesList().keySet()) {
+         Discrepancy discrepancy = result.getDiscrepanciesList().get(key);
          if (discrepancy.getLocation() == 1) {
             firstFound = true;
             Assert.assertEquals(
@@ -74,8 +67,7 @@ public class TmzImporterTest {
    }
 
    @Test
-   @SuppressWarnings("unchecked")
-   public void testImportNoCheckGroups() throws IOException, JSONException {
+   public void testImportNoCheckGroups() throws IOException {
       File tmzFile = folder.newFile("NoCheckGroup.tmz");
       Lib.inputStreamToFile(getClass().getResourceAsStream("NoCheckGroup.tmz"), tmzFile);
       TmzImporter importer = new TmzImporter(null, factory);
@@ -84,13 +76,11 @@ public class TmzImporterTest {
       Assert.assertEquals(1, results.size());
       DispoItem result = results.get(0);
       Assert.assertEquals("NoCheckGroup", result.getName());
-      Assert.assertEquals(1, result.getDiscrepanciesList().length());
-      Iterator<String> keys = result.getDiscrepanciesList().keys();
+      Assert.assertEquals(1, result.getDiscrepanciesList().size());
       Assert.assertEquals("113054", result.getVersion());
       boolean secondFound = false;
-      while (keys.hasNext()) {
-         JSONObject jsonObject = result.getDiscrepanciesList().getJSONObject(keys.next());
-         Discrepancy discrepancy = DispoUtil.jsonObjToDiscrepancy(jsonObject);
+      for (String key : result.getDiscrepanciesList().keySet()) {
+         Discrepancy discrepancy = result.getDiscrepanciesList().get(key);
          if (discrepancy.getLocation() == 2) {
             secondFound = true;
             Assert.assertEquals(

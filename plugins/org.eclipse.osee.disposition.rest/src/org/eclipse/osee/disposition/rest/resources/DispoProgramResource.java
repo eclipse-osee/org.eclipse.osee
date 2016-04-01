@@ -64,7 +64,6 @@ public class DispoProgramResource {
       String name = programDescriptor.getName();
       Response.Status status;
       Response response;
-
       if (!name.isEmpty()) {
          boolean isUniqueName = dispoApi.isUniqueProgramName(name);
          if (isUniqueName) {

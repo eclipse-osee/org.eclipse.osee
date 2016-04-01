@@ -22,6 +22,7 @@ public class Discrepancy {
    private int location;
 
    public Discrepancy() {
+
    }
 
    public String getId() {

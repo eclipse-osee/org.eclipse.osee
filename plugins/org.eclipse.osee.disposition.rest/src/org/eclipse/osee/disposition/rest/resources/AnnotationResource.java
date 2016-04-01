@@ -11,7 +11,6 @@
 package org.eclipse.osee.disposition.rest.resources;
 
 import java.io.IOException;
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
@@ -28,8 +27,6 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoMessages;
 import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.rest.DispoApi;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
 import org.json.JSONException;
 
 /**
@@ -88,16 +85,8 @@ public class AnnotationResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoAnnotations() throws JSONException {
-      Response.Status status;
-      List<DispoAnnotationData> dispositionAnnotations = dispoApi.getDispoAnnotations(program, itemId);
-
-      status = Status.OK;
-      JSONArray array = new JSONArray();
-      for (DispoAnnotationData annotation : dispositionAnnotations) {
-         array.put(annotation.getIndex(), DispoUtil.annotationToJsonObj(annotation));
-      }
-      return Response.status(status).entity(array.toString()).build();
+   public Iterable<DispoAnnotationData> getAllDispoAnnotations() {
+      return dispoApi.getDispoAnnotations(program, itemId);
    }
 
    /**
@@ -111,15 +100,8 @@ public class AnnotationResource {
    @Path("{annotationId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAnnotationByIdJson(@PathParam("annotationId") String annotationId) {
-      Response response;
-      DispoAnnotationData result = dispoApi.getDispoAnnotationById(program, itemId, annotationId);
-      if (result == null) {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Annotation_NotFound).build();
-      } else {
-         response = Response.status(Response.Status.OK).entity(result).build();
-      }
-      return response;
+   public DispoAnnotationData getAnnotationByIdJson(@PathParam("annotationId") String annotationId) {
+      return dispoApi.getDispoAnnotationById(program, itemId, annotationId);
    }
 
    /**

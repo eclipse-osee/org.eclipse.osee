@@ -13,14 +13,13 @@ package org.eclipse.osee.disposition.rest.importer;
 import java.io.BufferedInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Collection;
 import java.util.Date;
-import java.util.Iterator;
+import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.rest.internal.importer.DiscrepancyParser;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -45,19 +44,18 @@ public class DiscrepancyParserTest {
          Lib.close(stream);
       }
 
-      int actualLength = dispoItem.getDiscrepanciesList().length();
+      int actualLength = dispoItem.getDiscrepanciesList().size();
       Assert.assertEquals(6, actualLength);
       Assert.assertFalse(stoppedParsing);
 
-      JSONObject discrepanciesList = dispoItem.getDiscrepanciesList();
-      @SuppressWarnings("rawtypes")
-      Iterator keys = discrepanciesList.keys();
+      Map<String, Discrepancy> discrepanciesList = dispoItem.getDiscrepanciesList();
+      Collection<Discrepancy> values = discrepanciesList.values();
       Discrepancy discrepancy13 = null;
-      while (keys.hasNext() && discrepancy13 == null) {
-         JSONObject discrepancyAsJson = discrepanciesList.getJSONObject((String) keys.next());
-         int loc = discrepancyAsJson.getInt("location");
+      for (Discrepancy discrepancy : values) {
+         int loc = discrepancy.getLocation();
          if (loc == 13) {
-            discrepancy13 = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+            discrepancy13 = discrepancy;
+            break;
          }
       }
       String actualText = discrepancy13.getText();
@@ -66,13 +64,12 @@ public class DiscrepancyParserTest {
          actualText);
 
       // Test Group Discrepancy
-      keys = discrepanciesList.keys();
       Discrepancy discrepancy12 = null;
-      while (keys.hasNext() && discrepancy12 == null) {
-         JSONObject discrepancyAsJson = discrepanciesList.getJSONObject((String) keys.next());
-         int loc = discrepancyAsJson.getInt("location");
+      for (Discrepancy discrepancy : values) {
+         int loc = discrepancy.getLocation();
          if (loc == 14) {
-            discrepancy12 = DispoUtil.jsonObjToDiscrepancy(discrepancyAsJson);
+            discrepancy12 = discrepancy;
+            break;
          }
       }
       actualText = discrepancy12.getText();

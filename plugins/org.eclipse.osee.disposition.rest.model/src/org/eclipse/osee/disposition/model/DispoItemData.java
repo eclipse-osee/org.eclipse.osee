@@ -12,9 +12,9 @@
 package org.eclipse.osee.disposition.model;
 
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -29,8 +29,8 @@ public class DispoItemData implements DispoItem {
    private Date lastUpdate;
    private String status;
    private String version;
-   private JSONObject discrepanciesList;
-   private JSONArray annotationsList;
+   private Map<String, Discrepancy> discrepanciesList;
+   private List<DispoAnnotationData> annotationsList;
    private String totalPoints;
    private Boolean needsRerun;
    private String machine;
@@ -38,8 +38,11 @@ public class DispoItemData implements DispoItem {
    private String elapsedTime;
    private Boolean aborted;
    private String itemNotes;
+   private String discrepanciesAsRanges;
+   private int failureCount;
    private String fileNumber;
    private String methodNumber;
+   private boolean isIncludeDetails;
 
    public DispoItemData() {
 
@@ -81,12 +84,12 @@ public class DispoItemData implements DispoItem {
    }
 
    @Override
-   public JSONObject getDiscrepanciesList() {
+   public Map<String, Discrepancy> getDiscrepanciesList() {
       return discrepanciesList;
    }
 
    @Override
-   public JSONArray getAnnotationsList() {
+   public List<DispoAnnotationData> getAnnotationsList() {
       return annotationsList;
    }
 
@@ -135,15 +138,28 @@ public class DispoItemData implements DispoItem {
       return methodNumber;
    }
 
+   public String getDiscrepanciesAsRanges() {
+      return discrepanciesAsRanges;
+   }
+
+   public int getFailureCount() {
+      return failureCount;
+   }
+
+   @Override
+   public boolean getIsIncludeDetails() {
+      return isIncludeDetails;
+   }
+
    public void setName(String name) {
       this.name = name;
    }
 
-   public void setDiscrepanciesList(JSONObject discrepanciesList) {
+   public void setDiscrepanciesList(Map<String, Discrepancy> discrepanciesList) {
       this.discrepanciesList = discrepanciesList;
    }
 
-   public void setAnnotationsList(JSONArray annotationsList) {
+   public void setAnnotationsList(List<DispoAnnotationData> annotationsList) {
       this.annotationsList = annotationsList;
    }
 
@@ -199,6 +215,10 @@ public class DispoItemData implements DispoItem {
       this.itemNotes = itemNotes;
    }
 
+   public void setFailureCount(int failureCount) {
+      this.failureCount = failureCount;
+   }
+
    public void setFileNumber(String fileNumber) {
       this.fileNumber = fileNumber;
    }
@@ -207,4 +227,11 @@ public class DispoItemData implements DispoItem {
       this.methodNumber = methodNumber;
    }
 
+   public void setDiscrepanciesAsRanges(String discrepanciesAsRanges) {
+      this.discrepanciesAsRanges = discrepanciesAsRanges;
+   }
+
+   public void setIsIncludeDetails(boolean isIncludeDetails) {
+      this.isIncludeDetails = isIncludeDetails;
+   }
 }

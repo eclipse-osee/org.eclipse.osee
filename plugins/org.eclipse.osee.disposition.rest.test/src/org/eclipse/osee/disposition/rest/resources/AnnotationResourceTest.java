@@ -22,9 +22,6 @@ import org.eclipse.osee.disposition.model.DispoProgram;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -90,7 +87,7 @@ public class AnnotationResourceTest {
    }
 
    @Test
-   public void testGetAll() throws JSONException {
+   public void testGetAll() {
       DispoAnnotationData annotation = new DispoAnnotationData();
       annotation.setId(mockId);
       annotation.setLocationRefs("1-10");
@@ -98,31 +95,25 @@ public class AnnotationResourceTest {
       resultSet.add(annotation);
 
       when(dispositionApi.getDispoAnnotations(program, "itemId")).thenReturn(resultSet);
-      Response oneSetResponse = resource.getAllDispoAnnotations();
-      JSONArray jarray = new JSONArray((String) oneSetResponse.getEntity());
-      JSONObject annotationFromResponse = jarray.getJSONObject(0);
-      assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(mockId, annotationFromResponse.getString("guid"));
+      Iterable<DispoAnnotationData> oneSetResponse = resource.getAllDispoAnnotations();
+      DispoAnnotationData annotationFromResponse = oneSetResponse.iterator().next();
+      assertEquals(mockId, annotationFromResponse.getGuid());
    }
 
    @Test
    public void testGetSingleAsJson() {
       // No items
       when(dispositionApi.getDispoAnnotationById(program, "itemId", mockId)).thenReturn(null);
-      Response noAnnotationsResponse = resource.getAnnotationByIdJson(mockId);
-      String messageActual = (String) noAnnotationsResponse.getEntity();
-      assertEquals(Response.Status.NOT_FOUND.getStatusCode(), noAnnotationsResponse.getStatus());
-      assertEquals(DispoMessages.Annotation_NotFound, messageActual);
+      DispoAnnotationData noAnnotationsResponse = resource.getAnnotationByIdJson(mockId);
+      assertEquals(null, noAnnotationsResponse);
 
       DispoAnnotationData expectedAnnotation = new DispoAnnotationData();
       expectedAnnotation.setId(mockId);
       expectedAnnotation.setLocationRefs("1-10");
       when(dispositionApi.getDispoAnnotationById(program, "itemId", expectedAnnotation.getId())).thenReturn(
          expectedAnnotation);
-      Response oneSetResponse = resource.getAnnotationByIdJson(expectedAnnotation.getId());
-      DispoAnnotationData returnedItem = (DispoAnnotationData) oneSetResponse.getEntity();
-      assertEquals(Response.Status.OK.getStatusCode(), oneSetResponse.getStatus());
-      assertEquals(expectedAnnotation, returnedItem);
+      DispoAnnotationData oneSetResponse = resource.getAnnotationByIdJson(expectedAnnotation.getId());
+      assertEquals(expectedAnnotation, oneSetResponse);
    }
 
    @Test

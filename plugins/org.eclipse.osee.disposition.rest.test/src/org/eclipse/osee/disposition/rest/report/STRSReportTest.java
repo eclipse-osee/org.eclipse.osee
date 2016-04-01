@@ -13,7 +13,9 @@ package org.eclipse.osee.disposition.rest.report;
 import static org.junit.Assert.assertEquals;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
@@ -25,10 +27,6 @@ import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.report.STRSReport;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -70,12 +68,12 @@ public class STRSReportTest {
       List<DispoItem> itemsForPrimary = new ArrayList<>();
       itemsForPrimary.add(item1);
       itemsForPrimary.add(item2);
-      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid())).thenReturn(itemsForPrimary);
+      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid(), true)).thenReturn(itemsForPrimary);
 
       List<DispoItem> itemsForSecondary = new ArrayList<>();
       itemsForSecondary.add(item1);
       itemsForSecondary.add(item2);
-      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid())).thenReturn(itemsForSecondary);
+      Mockito.when(dispoApi.getDispoItems(program, set1.getGuid(), true)).thenReturn(itemsForSecondary);
 
       ByteArrayOutputStream bout = new ByteArrayOutputStream();
       reportWriter.runReport(program, set1, set2, bout);
@@ -115,7 +113,7 @@ public class STRSReportTest {
 
    }
 
-   private void initItems() throws JSONException {
+   private void initItems() {
       DispoConnector connector = new DispoConnector();
 
       Discrepancy discrepancy1 = new Discrepancy();
@@ -124,31 +122,31 @@ public class STRSReportTest {
       Discrepancy discrepancy2 = new Discrepancy();
       discrepancy2.setId("two");
       discrepancy2.setLocation(3);
-      JSONObject discrepanciesListItem1 = new JSONObject();
-      discrepanciesListItem1.put("one", DispoUtil.discrepancyToJsonObj(discrepancy1));
-      discrepanciesListItem1.put("two", DispoUtil.discrepancyToJsonObj(discrepancy2));
+      Map<String, Discrepancy> discrepanciesListItem1 = new HashMap<>();
+      discrepanciesListItem1.put("one", discrepancy1);
+      discrepanciesListItem1.put("two", discrepancy2);
       item1.setDiscrepanciesList(discrepanciesListItem1);
 
-      List<JSONObject> annotationsItem1 = new ArrayList<>();
+      List<DispoAnnotationData> annotationsItem1 = new ArrayList<>();
       DispoAnnotationData annotation1 = new DispoAnnotationData();
       annotation1.setLocationRefs("1");
       annotation1.setResolutionType("CODE");
       annotation1.setIsResolutionValid(true);
       annotation1.setCustomerNotes("Notes");
-      annotation1.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation1.setIdsOfCoveredDiscrepancies(new ArrayList<>());
       connector.connectAnnotation(annotation1, item1.getDiscrepanciesList());
-      annotationsItem1.add(DispoUtil.annotationToJsonObj(annotation1));
+      annotationsItem1.add(annotation1);
 
       DispoAnnotationData annotation2 = new DispoAnnotationData();
       annotation2.setLocationRefs("3");
       annotation2.setResolutionType("TEST");
       annotation2.setIsResolutionValid(true);
       annotation2.setCustomerNotes("Notes");
-      annotation2.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation2.setIdsOfCoveredDiscrepancies(new ArrayList<>());
       connector.connectAnnotation(annotation2, item1.getDiscrepanciesList());
-      annotationsItem1.add(DispoUtil.annotationToJsonObj(annotation2));
+      annotationsItem1.add(annotation2);
 
-      item1.setAnnotationsList(new JSONArray(annotationsItem1));
+      item1.setAnnotationsList(annotationsItem1);
       item1.setName("item1");
       item1.setTotalPoints("5");
       item1.setGuid("abc123");
@@ -159,32 +157,32 @@ public class STRSReportTest {
       Discrepancy discrepancy4 = new Discrepancy();
       discrepancy4.setId("fff");
       discrepancy4.setLocation(6);
-      JSONObject discrepanciesListItem2 = new JSONObject();
-      discrepanciesListItem2.put("tth", DispoUtil.discrepancyToJsonObj(discrepancy3));
-      discrepanciesListItem2.put("fff", DispoUtil.discrepancyToJsonObj(discrepancy4));
+      Map<String, Discrepancy> discrepanciesListItem2 = new HashMap<>();
+      discrepanciesListItem2.put("tth", discrepancy3);
+      discrepanciesListItem2.put("fff", discrepancy4);
       item2.setDiscrepanciesList(discrepanciesListItem2);
 
-      List<JSONObject> annotationsItem2 = new ArrayList<>();
+      List<DispoAnnotationData> annotationsItem2 = new ArrayList<>();
 
       DispoAnnotationData annotation3 = new DispoAnnotationData();
       annotation3.setLocationRefs("4");
       annotation3.setResolutionType("CODE");
       annotation3.setIsResolutionValid(true);
       annotation3.setCustomerNotes("Notes");
-      annotation3.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation3.setIdsOfCoveredDiscrepancies(new ArrayList<>());
       connector.connectAnnotation(annotation3, item2.getDiscrepanciesList());
-      annotationsItem2.add(DispoUtil.annotationToJsonObj(annotation3));
+      annotationsItem2.add(annotation3);
 
       DispoAnnotationData annotation4 = new DispoAnnotationData();
       annotation4.setLocationRefs("6");
       annotation4.setResolutionType("TEST");
       annotation4.setIsResolutionValid(true);
       annotation4.setCustomerNotes("Notes");
-      annotation4.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation4.setIdsOfCoveredDiscrepancies(new ArrayList<>());
       connector.connectAnnotation(annotation4, item2.getDiscrepanciesList());
-      annotationsItem2.add(DispoUtil.annotationToJsonObj(annotation4));
+      annotationsItem2.add(annotation4);
 
-      item2.setAnnotationsList(new JSONArray(annotationsItem2));
+      item2.setAnnotationsList(annotationsItem2);
       item2.setName("item2");
       item2.setTotalPoints("6");
       item2.setGuid("bac123");

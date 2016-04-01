@@ -10,8 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.internal;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.osee.disposition.model.DispoSet;
+import org.eclipse.osee.disposition.model.Note;
+import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.DispoConstants;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
@@ -27,7 +32,7 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    private final ArtifactReadable artifact;
 
    public DispoSetArtifact(ArtifactReadable artifact) {
-      super(artifact.getGuid());
+      super(String.valueOf(artifact.getUuid()));
       this.artifact = artifact;
    }
 
@@ -42,21 +47,26 @@ public class DispoSetArtifact extends BaseIdentity<String> implements DispoSet {
    }
 
    @Override
-   public JSONArray getNotesList() {
+   public List<Note> getNotesList() {
+      List<Note> toReturn = new ArrayList<Note>();
       String notesJson = artifact.getSoleAttributeAsString(DispoConstants.DispoNotesJson, "[]");
       try {
-         return new JSONArray(notesJson);
+         JSONArray jArray = new JSONArray(notesJson);
+         for (int i = 0; i < jArray.length(); i++) {
+            toReturn.add(DispoUtil.jsonObjToNote(jArray.getJSONObject(i)));
+         }
+         return toReturn;
       } catch (JSONException ex) {
          throw new OseeCoreException("Could not parse Notes Json", ex);
       }
    }
 
    @Override
-   public JSONObject getOperationSummary() {
+   public OperationReport getOperationSummary() {
       String operationSummaryJson = artifact.getSoleAttributeAsString(DispoConstants.OperationSummary, "{}");
       try {
-         JSONObject toReturn = new JSONObject(operationSummaryJson);
-         return toReturn;
+         JSONObject jsonObject = new JSONObject(operationSummaryJson);
+         return DispoUtil.jsonObjToOperationSummary(jsonObject);
       } catch (JSONException ex) {
          throw new OseeCoreException("Could not parse Operation Sumary Json", ex);
       }

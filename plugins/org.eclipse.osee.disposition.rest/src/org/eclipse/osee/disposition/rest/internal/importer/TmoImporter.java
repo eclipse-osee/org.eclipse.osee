@@ -13,6 +13,7 @@ package org.eclipse.osee.disposition.rest.internal.importer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import java.util.regex.Pattern;
+import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.OperationReport;
@@ -28,7 +30,6 @@ import org.eclipse.osee.disposition.rest.internal.DispoDataFactory;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.logger.Log;
-import org.json.JSONArray;
 
 /**
  * @author Angel Avila
@@ -120,10 +121,10 @@ public class TmoImporter implements DispoImporterApi {
                   if (!wasSameFile) {
                      // Copy Id to tell callee that this is not a new Item
                      itemToBuild.setGuid(oldItem.getGuid());
-                     itemToBuild.setAnnotationsList(new JSONArray());
+                     itemToBuild.setAnnotationsList(new ArrayList<DispoAnnotationData>());
 
                      // If Item has no Discrepancies then don't both copying over Annotations
-                     if (itemToBuild.getDiscrepanciesList().length() > 0) {
+                     if (itemToBuild.getDiscrepanciesList().size() > 0) {
                         DispoItemDataCopier.copyOldItemData(oldItem, itemToBuild, operationReport);
                      }
                      dataFactory.setStatus(itemToBuild);
@@ -140,7 +141,6 @@ public class TmoImporter implements DispoImporterApi {
          }
          return fromThread;
       }
-
    };
 
 }

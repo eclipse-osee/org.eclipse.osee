@@ -11,9 +11,8 @@
 
 package org.eclipse.osee.disposition.model;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -24,9 +23,9 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
 
    private String guid;
    private String operation;
-   private JSONArray notesList;
+   private List<Note> notesList;
    private String importState;
-   private JSONObject operationSummary;
+   private OperationReport operationSummary;
 
    public DispoSetData() {
 
@@ -49,16 +48,16 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
       this.operation = operation;
    }
 
-   public void setNotesList(JSONArray notesList) {
+   public void setNotesList(List<Note> notesList) {
       this.notesList = notesList;
    }
 
-   public void setOperationSummary(JSONObject operationSummary) {
+   public void setOperationSummary(OperationReport operationSummary) {
       this.operationSummary = operationSummary;
    }
 
    @Override
-   public JSONArray getNotesList() {
+   public List<Note> getNotesList() {
       return notesList;
    }
 
@@ -72,7 +71,7 @@ public class DispoSetData extends DispoSetDescriptorData implements DispoSet {
    }
 
    @Override
-   public JSONObject getOperationSummary() {
+   public OperationReport getOperationSummary() {
       return operationSummary;
    }
 

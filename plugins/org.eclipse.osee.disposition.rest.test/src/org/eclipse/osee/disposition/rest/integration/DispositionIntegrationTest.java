@@ -84,7 +84,7 @@ public class DispositionIntegrationTest {
 
       DispoProgram program = dispoApi.getDispoFactory().createProgram(DispositionTestUtil.SAW_Bld_1_FOR_DISPO);
 
-      List<DispoSet> dispoSets = dispoApi.getDispoSets(program);
+      List<DispoSet> dispoSets = dispoApi.getDispoSets(program, "code_coverage");
       DispoSet devSet = dispoSets.get(0);
       String devSetId = devSet.getGuid();
 
@@ -96,9 +96,8 @@ public class DispositionIntegrationTest {
       devSetEdited2.setOperation(DispoStrings.Operation_Import);
       dispoApi.editDispoSet(program, devSetId, devSetEdited2);
 
-      // should have new items now    100
-
-      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, devSetId);
+      // should have new items now
+      List<DispoItem> dispoItems = dispoApi.getDispoItems(program, devSetId, false);
       assertEquals(5, dispoItems.size());
    }
 

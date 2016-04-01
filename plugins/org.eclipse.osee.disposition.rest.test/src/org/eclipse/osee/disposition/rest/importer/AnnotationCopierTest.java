@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.rest.importer;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -23,10 +24,6 @@ import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.OperationReport;
 import org.eclipse.osee.disposition.rest.internal.DispoConnector;
 import org.eclipse.osee.disposition.rest.internal.importer.DispoSetCopier;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -61,41 +58,41 @@ public class AnnotationCopierTest {
    DispoItemData sourceItem;
 
    @Before
-   public void setup() throws JSONException {
+   public void setup() {
       sourceItem = new DispoItemData();
       sourceItem.setGuid(mockId4);
-      JSONArray sourceAnnotations = new JSONArray();
-      JSONObject sourceDescrepancies = new JSONObject();
+      List<DispoAnnotationData> sourceAnnotations = new ArrayList<DispoAnnotationData>();
+      Map<String, Discrepancy> sourceDescrepancies = new HashMap<String, Discrepancy>();
 
       discrepancy1 = new Discrepancy();
       discrepancy1.setId(mockId1);
       discrepancy1.setLocation(2);
       discrepancy1.setText("One");
-      sourceDescrepancies.put(discrepancy1.getId(), DispoUtil.discrepancyToJsonObj(discrepancy1));
+      sourceDescrepancies.put(discrepancy1.getId(), discrepancy1);
 
       discrepancy2 = new Discrepancy();
       discrepancy2.setId(mockId2);
       discrepancy2.setLocation(3);
       discrepancy2.setText("TTWO");
-      sourceDescrepancies.put(discrepancy2.getId(), DispoUtil.discrepancyToJsonObj(discrepancy2));
+      sourceDescrepancies.put(discrepancy2.getId(), discrepancy2);
 
       discrepancy3 = new Discrepancy();
       discrepancy3.setId(mockId3);
       discrepancy3.setLocation(5);
       discrepancy3.setText("TTHRREEE");
-      sourceDescrepancies.put(discrepancy3.getId(), DispoUtil.discrepancyToJsonObj(discrepancy3));
+      sourceDescrepancies.put(discrepancy3.getId(), discrepancy3);
 
       discrepancy4 = new Discrepancy();
       discrepancy4.setId(mockId6);
       discrepancy4.setLocation(6);
       discrepancy4.setText("F");
-      sourceDescrepancies.put(discrepancy4.getId(), DispoUtil.discrepancyToJsonObj(discrepancy4));
+      sourceDescrepancies.put(discrepancy4.getId(), discrepancy4);
 
       discrepancy5 = new Discrepancy();
       discrepancy5.setId(mockId7);
       discrepancy5.setLocation(7);
       discrepancy5.setText("fff");
-      sourceDescrepancies.put(discrepancy5.getId(), DispoUtil.discrepancyToJsonObj(discrepancy5));
+      sourceDescrepancies.put(discrepancy5.getId(), discrepancy5);
 
       DispoAnnotationData annotation1 = new DispoAnnotationData();
       annotation1.setId(mockAnnotId1);
@@ -103,7 +100,7 @@ public class AnnotationCopierTest {
       annotation1.setResolutionType(DispoStrings.Test_Unit_Resolution);
       annotation1.setResolution("file.dat");
       annotation1.setIndex(0);
-      annotation1.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation1.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       connector.connectAnnotation(annotation1, sourceDescrepancies);
 
       DispoAnnotationData annotation2 = new DispoAnnotationData();
@@ -112,7 +109,7 @@ public class AnnotationCopierTest {
       annotation2.setResolutionType(DispoStrings.Test_Unit_Resolution);
       annotation2.setResolution("file2.dat");
       annotation2.setIndex(1);
-      annotation2.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation2.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       connector.connectAnnotation(annotation2, sourceDescrepancies);
 
       DispoAnnotationData annotation3 = new DispoAnnotationData();
@@ -121,7 +118,7 @@ public class AnnotationCopierTest {
       annotation3.setResolutionType("Other");
       annotation3.setResolution("Manual Annotation");
       annotation3.setIndex(2);
-      annotation3.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation3.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       connector.connectAnnotation(annotation3, sourceDescrepancies);
 
       DispoAnnotationData annotation4 = new DispoAnnotationData();
@@ -130,13 +127,13 @@ public class AnnotationCopierTest {
       annotation4.setResolutionType("Other");
       annotation4.setResolution("Manual Annotation2");
       annotation4.setIndex(3);
-      annotation4.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotation4.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       connector.connectAnnotation(annotation4, sourceDescrepancies);
 
-      sourceAnnotations.put(annotation1.getIndex(), DispoUtil.annotationToJsonObj(annotation1));
-      sourceAnnotations.put(annotation2.getIndex(), DispoUtil.annotationToJsonObj(annotation2));
-      sourceAnnotations.put(annotation3.getIndex(), DispoUtil.annotationToJsonObj(annotation3));
-      sourceAnnotations.put(annotation4.getIndex(), DispoUtil.annotationToJsonObj(annotation4));
+      sourceAnnotations.add(annotation1.getIndex(), annotation1);
+      sourceAnnotations.add(annotation1.getIndex(), annotation2);
+      sourceAnnotations.add(annotation1.getIndex(), annotation3);
+      sourceAnnotations.add(annotation1.getIndex(), annotation4);
 
       sourceItem.setAnnotationsList(sourceAnnotations);
       sourceItem.setDiscrepanciesList(sourceDescrepancies);
@@ -147,16 +144,16 @@ public class AnnotationCopierTest {
       DispoItemData destItem = new DispoItemData();
       destItem.setStatus(DispoStrings.Item_InComplete);
       destItem.setGuid(mockId5);
-      destItem.setAnnotationsList(new JSONArray());
-      destItem.setDiscrepanciesList(new JSONObject());
+      destItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
+      destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());
 
       // First set the Destination Item's discrepancies the same as the source
-      JSONObject destDiscrepancies = new JSONObject();
-      destDiscrepancies.put(discrepancy1.getId(), DispoUtil.discrepancyToJsonObj(discrepancy1));
-      destDiscrepancies.put(discrepancy2.getId(), DispoUtil.discrepancyToJsonObj(discrepancy2));
-      destDiscrepancies.put(discrepancy3.getId(), DispoUtil.discrepancyToJsonObj(discrepancy3));
-      destDiscrepancies.put(discrepancy4.getId(), DispoUtil.discrepancyToJsonObj(discrepancy4));
-      destDiscrepancies.put(discrepancy5.getId(), DispoUtil.discrepancyToJsonObj(discrepancy5));
+      Map<String, Discrepancy> destDiscrepancies = new HashMap<String, Discrepancy>();
+      destDiscrepancies.put(discrepancy1.getId(), discrepancy1);
+      destDiscrepancies.put(discrepancy2.getId(), discrepancy2);
+      destDiscrepancies.put(discrepancy3.getId(), discrepancy3);
+      destDiscrepancies.put(discrepancy4.getId(), discrepancy4);
+      destDiscrepancies.put(discrepancy5.getId(), discrepancy5);
 
       destItem.setDiscrepanciesList(destDiscrepancies);
       OperationReport report = new OperationReport();
@@ -168,49 +165,47 @@ public class AnnotationCopierTest {
          copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
-      JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
-      DispoAnnotationData newAnnotation =
-         DispoUtil.jsonObjToDispoAnnotationData(modifiedItemAnnotations.getJSONObject(0));
-      DispoAnnotationData newAnnotation2 =
-         DispoUtil.jsonObjToDispoAnnotationData(modifiedItemAnnotations.getJSONObject(1));
+      List<DispoAnnotationData> modifiedItemAnnotations = modifiedItem.getAnnotationsList();
+      DispoAnnotationData newAnnotation = modifiedItemAnnotations.get(1);
+      DispoAnnotationData newAnnotation2 = modifiedItemAnnotations.get(0);
 
       // We should of copied all NON-Default Anntotations
       Assert.assertEquals("5-7", newAnnotation.getLocationRefs());
       Assert.assertEquals("Manual Annotation", newAnnotation.getResolution());
       Assert.assertEquals("8", newAnnotation2.getLocationRefs());
       Assert.assertEquals("Manual Annotation2", newAnnotation2.getResolution());
-      Assert.assertEquals(2, modifiedItemAnnotations.length());
+      Assert.assertEquals(2, modifiedItemAnnotations.size());
       Assert.assertEquals(mockId5, modifiedItem.getGuid());
    }
 
    @Test
-   public void testCopyEntireSetSomeAnnotationsOnDest() throws JSONException {
+   public void testCopyEntireSetSomeAnnotationsOnDest() {
       DispoItemData destItem = new DispoItemData();
       destItem.setStatus(DispoStrings.Item_InComplete);
       destItem.setGuid(mockId5);
-      destItem.setAnnotationsList(new JSONArray());
-      destItem.setDiscrepanciesList(new JSONObject());
+      destItem.setAnnotationsList(new ArrayList<DispoAnnotationData>());
+      destItem.setDiscrepanciesList(new HashMap<String, Discrepancy>());
 
       // First set the Destination Item's discrepancies the same as the source
-      JSONObject destDiscrepancies = new JSONObject();
-      destDiscrepancies.put(discrepancy1.getId(), DispoUtil.discrepancyToJsonObj(discrepancy1));
-      destDiscrepancies.put(discrepancy2.getId(), DispoUtil.discrepancyToJsonObj(discrepancy2));
-      destDiscrepancies.put(discrepancy3.getId(), DispoUtil.discrepancyToJsonObj(discrepancy3));
-      destDiscrepancies.put(discrepancy4.getId(), DispoUtil.discrepancyToJsonObj(discrepancy4));
-      destDiscrepancies.put(discrepancy5.getId(), DispoUtil.discrepancyToJsonObj(discrepancy5));
+      Map<String, Discrepancy> destDiscrepancies = new HashMap<String, Discrepancy>();
+      destDiscrepancies.put(discrepancy1.getId(), discrepancy1);
+      destDiscrepancies.put(discrepancy2.getId(), discrepancy2);
+      destDiscrepancies.put(discrepancy3.getId(), discrepancy3);
+      destDiscrepancies.put(discrepancy4.getId(), discrepancy4);
+      destDiscrepancies.put(discrepancy5.getId(), discrepancy5);
       destItem.setDiscrepanciesList(destDiscrepancies);
 
       // We're gonna set this annotation on the Dest Item this Annotation should not get overwritten but
       DispoAnnotationData annotationD1 = new DispoAnnotationData();
       String expectedId = "DIID";
-      annotationD1.setIdsOfCoveredDiscrepancies(new JSONArray());
+      annotationD1.setIdsOfCoveredDiscrepancies(new ArrayList<String>());
       annotationD1.setId(expectedId);
       annotationD1.setLocationRefs("8");
       annotationD1.setResolutionType(DispoStrings.Test_Unit_Resolution);
       annotationD1.setResolution("file444.dat");
       annotationD1.setIndex(0);
-      JSONArray destAnnotations = new JSONArray();
-      destAnnotations.put(annotationD1.getIndex(), DispoUtil.annotationToJsonObj(annotationD1));
+      List<DispoAnnotationData> destAnnotations = new ArrayList<DispoAnnotationData>();
+      destAnnotations.add(annotationD1.getIndex(), annotationD1);
 
       destItem.setAnnotationsList(destAnnotations);
       destItem.setDiscrepanciesList(destDiscrepancies);
@@ -223,17 +218,15 @@ public class AnnotationCopierTest {
          copier.copyAllDispositions(nameToItems, Collections.singletonList((DispoItem) sourceItem), true, report);
 
       DispoItem modifiedItem = toModify.get(0);
-      JSONArray modifiedItemAnnotations = modifiedItem.getAnnotationsList();
-      DispoAnnotationData origAnnotation =
-         DispoUtil.jsonObjToDispoAnnotationData(modifiedItemAnnotations.getJSONObject(0));
-      DispoAnnotationData newAnnotation =
-         DispoUtil.jsonObjToDispoAnnotationData(modifiedItemAnnotations.getJSONObject(1));
+      List<DispoAnnotationData> modifiedItemAnnotations = modifiedItem.getAnnotationsList();
+      DispoAnnotationData origAnnotation = modifiedItemAnnotations.get(0);
+      DispoAnnotationData newAnnotation = modifiedItemAnnotations.get(1);
 
       // We should of copied all NON-Default Anntotations
       Assert.assertEquals(expectedId, origAnnotation.getId());
       Assert.assertEquals("5-7", newAnnotation.getLocationRefs());
       Assert.assertEquals("Manual Annotation", newAnnotation.getResolution());
-      Assert.assertEquals(2, modifiedItemAnnotations.length());
+      Assert.assertEquals(2, modifiedItemAnnotations.size());
       Assert.assertEquals(mockId5, modifiedItem.getGuid());
    }
 

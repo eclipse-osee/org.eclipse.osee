@@ -33,10 +33,7 @@ import org.eclipse.osee.disposition.model.DispoSetData;
 import org.eclipse.osee.disposition.model.DispoSetDescriptorData;
 import org.eclipse.osee.disposition.rest.DispoApi;
 import org.eclipse.osee.disposition.rest.DispoRoles;
-import org.eclipse.osee.disposition.rest.util.DispoUtil;
-import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -74,10 +71,10 @@ public class DispoSetResource {
       if (!name.isEmpty() && !importPath.isEmpty() && !dispoType.isEmpty()) {
          boolean isUniqueSetName = dispoApi.isUniqueSetName(program, name);
          if (isUniqueSetName) {
-            String createdSetId = dispoApi.createDispoSet(program, descriptor).getGuid();
-            DispoSet createdSet = dispoApi.getDispoSetById(program, createdSetId);
+            Long createdSetId = dispoApi.createDispoSet(program, descriptor);
+            DispoSet createdSet = dispoApi.getDispoSetById(program, String.valueOf(createdSetId));
             status = Status.CREATED;
-            response = Response.status(status).entity(DispoUtil.setArtToSetData(createdSet)).build();
+            response = Response.status(status).entity(createdSet).build();
          } else {
             status = Status.CONFLICT;
             response = Response.status(status).entity(DispoMessages.Set_ConflictingNames).build();
@@ -100,15 +97,8 @@ public class DispoSetResource {
    @Path("{setId}")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoSetByIdJson(@PathParam("setId") String setId) {
-      Response response;
-      DispoSet result = dispoApi.getDispoSetById(program, setId);
-      if (result == null) {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Set_NotFound).build();
-      } else {
-         response = Response.status(Response.Status.OK).entity(DispoUtil.setArtToSetData(result)).build();
-      }
-      return response;
+   public DispoSet getDispoSetById(@PathParam("setId") String setId) {
+      return dispoApi.getDispoSetById(program, setId);
    }
 
    /**
@@ -121,27 +111,9 @@ public class DispoSetResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getAllDispoSets(@QueryParam("type") String type) throws JSONException {
-      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program);
-      JSONArray jarray = new JSONArray();
-
-      for (DispoSet set : allDispoSets) {
-         JSONObject jobject = new JSONObject();
-         if (set.getDispoType().equalsIgnoreCase(type)) {
-            jobject.put("guid", set.getGuid());
-            jobject.put("name", set.getName());
-            jobject.put("importPath", set.getImportPath());
-            jobject.put("importState", set.getImportState());
-            jarray.put(jobject);
-         }
-      }
-      Status status;
-      if (jarray.length() <= 0) {
-         status = Status.NOT_FOUND;
-      } else {
-         status = Status.OK;
-      }
-      return Response.status(status).entity(jarray.toString()).build();
+   public Iterable<DispoSet> getAllDispoSets(@QueryParam("type") String type) {
+      List<DispoSet> allDispoSets = dispoApi.getDispoSets(program, type);
+      return allDispoSets;
    }
 
    /**
@@ -207,20 +179,8 @@ public class DispoSetResource {
    @Path("{setId}/search")
    @GET
    @Produces(MediaType.APPLICATION_JSON)
-   public Response getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
-      Response response;
-      Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(program, setId, value);
-      if (foundItems.isEmpty()) {
-         response = Response.status(Response.Status.NOT_FOUND).entity(DispoMessages.Item_NotFound).build();
-      } else {
-         JSONArray jArray = new JSONArray();
-         for (DispoItem item : foundItems) {
-            jArray.put(DispoUtil.dispoItemToJsonObj(item, isDetailed));
-         }
-
-         response = Response.status(Response.Status.OK).entity(jArray.toString()).build();
-      }
-      return response;
+   public Iterable<DispoItem> getDispoItemsByAnnotationText(@PathParam("setId") String setId, @QueryParam("value") String value, @QueryParam("isDetailed") boolean isDetailed) {
+      Collection<DispoItem> foundItems = dispoApi.getDispoItemByAnnotationText(program, setId, value, isDetailed);
+      return foundItems;
    }
-
 }

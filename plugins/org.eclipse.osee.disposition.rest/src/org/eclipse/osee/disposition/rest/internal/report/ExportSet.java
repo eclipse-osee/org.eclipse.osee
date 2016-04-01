@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
 import org.eclipse.osee.disposition.model.DispoItem;
@@ -33,9 +34,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 /**
  * @author Angel Avila
@@ -50,7 +48,7 @@ public class ExportSet {
    }
 
    public void runReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
-      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid());
+      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
 
       try {
          Writer writer = new OutputStreamWriter(outputStream, "UTF-8");
@@ -67,13 +65,13 @@ public class ExportSet {
             String[] row = new String[columns];
             int index = 0;
 
-            JSONObject discrepanciesList = item.getDiscrepanciesList();
+            Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
 
             row[index++] = String.valueOf(item.getName());
             row[index++] = String.valueOf(item.getCategory());
             row[index++] = String.valueOf(item.getStatus());
             row[index++] = String.valueOf(item.getTotalPoints());
-            row[index++] = String.valueOf(item.getDiscrepanciesList().length());
+            row[index++] = String.valueOf(item.getDiscrepanciesList().size());
             row[index++] = String.valueOf(DispoUtil.discrepanciesToString(discrepanciesList));
             row[index++] = String.valueOf(allUncoveredDiscprepancies.size());
             row[index++] = String.valueOf(LocationRangesCompressor.compress(allUncoveredDiscprepancies));
@@ -103,7 +101,7 @@ public class ExportSet {
    public void runCoverageReport(DispoProgram program, DispoSet setPrimary, String option, OutputStream outputStream) {
       totalStatementCount = 0;
       totalCoveredCount = 0;
-      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid());
+      List<DispoItem> items = dispoApi.getDispoItems(program, setPrimary.getGuid(), true);
 
       Map<String, Integer> resolutionToCount = new HashMap<>();
       Map<String, Pair<Integer, Integer>> unitToCovered = new HashMap<>();
@@ -123,9 +121,8 @@ public class ExportSet {
          sheetWriter.writeRow((Object[]) headers);
 
          for (DispoItem item : items) {
-            JSONArray annotations = item.getAnnotationsList();
-            for (int i = 0; i < annotations.length(); i++) {
-               DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotations.getJSONObject(i));
+            List<DispoAnnotationData> annotations = item.getAnnotationsList();
+            for (DispoAnnotationData annotation : annotations) {
                writeRowAnnotation(sheetWriter, columns, item, annotation, setPrimary.getName(), resolutionToCount,
                   unitToCovered, totalStatementCount);
             }
@@ -313,12 +310,10 @@ public class ExportSet {
       return nameSpace.toString();
    }
 
-   private static String prettifyAnnotations(JSONArray annotations) throws JSONException {
+   private static String prettifyAnnotations(List<DispoAnnotationData> annotations) {
       StringBuilder sb = new StringBuilder();
 
-      for (int i = 0; i < annotations.length(); i++) {
-         JSONObject annotationJson = annotations.getJSONObject(i);
-         DispoAnnotationData annotation = DispoUtil.jsonObjToDispoAnnotationData(annotationJson);
+      for (DispoAnnotationData annotation : annotations) {
          sb.append(annotation.getLocationRefs());
          sb.append(":");
          sb.append(annotation.getResolution());

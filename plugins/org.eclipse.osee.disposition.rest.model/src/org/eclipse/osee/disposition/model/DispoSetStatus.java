@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.disposition.model;
 
-import org.codehaus.jackson.annotate.JsonValue;
-
 /**
  * @author Angel Avila
  */
@@ -37,7 +35,6 @@ public enum DispoSetStatus {
       return value;
    }
 
-   @JsonValue
    public String getName() {
       return name;
    }

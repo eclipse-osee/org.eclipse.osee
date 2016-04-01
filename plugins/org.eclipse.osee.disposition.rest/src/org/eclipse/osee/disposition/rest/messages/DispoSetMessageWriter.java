@@ -19,30 +19,29 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.MessageBodyWriter;
-import org.eclipse.osee.disposition.model.DispoSetData;
+import org.eclipse.osee.disposition.model.DispoSet;
 import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.json.JSONObject;
 
 /**
  * @author Angel Avila
  */
-public class DispoSetMessageWriter implements MessageBodyWriter<DispoSetData> {
+public class DispoSetMessageWriter implements MessageBodyWriter<DispoSet> {
 
    @Override
    public boolean isWriteable(Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
-      return type == DispoSetData.class;
+      return genericType == DispoSet.class;
    }
 
    @Override
-   public long getSize(DispoSetData dispoSet, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
+   public long getSize(DispoSet dispoSet, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType) {
       return -1;
    }
 
    @Override
-   public void writeTo(DispoSetData dispoSet, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
+   public void writeTo(DispoSet dispoSet, Class<?> type, Type genericType, Annotation[] annotations, MediaType mediaType, MultivaluedMap<String, Object> httpHeaders, OutputStream entityStream) throws IOException, WebApplicationException {
       JSONObject jsonObject = DispoUtil.dispoSetToJsonObj(dispoSet);
       String jsonString = jsonObject.toString();
       entityStream.write(jsonString.getBytes(Charset.forName("UTF-8")));
    }
-
 }
