@@ -109,6 +109,7 @@ import org.osgi.framework.Bundle;
 public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigateCommonItem {
    private final List<XNavigateItem> items = new CopyOnWriteArrayList<>();
    private boolean ensurePopulatedRanOnce = false;
+   public static long ATS_SEARCH_NAVIGATE_VIEW_ITEM = 324265264L;
 
    private final static AtsNavigateViewItems instance = new AtsNavigateViewItems();
 
@@ -137,7 +138,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    public void addAtsSectionChildren(XNavigateItem item) {
       try {
          IAtsUser user = AtsClientService.get().getUserService().getCurrentUser();
-         items.add(new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem()));
+         SearchNavigateItem searchItem = new SearchNavigateItem(item, new AtsSearchWorkflowSearchItem());
+         items.add(searchItem);
 
          createMySearchesSection(item, items);
 
@@ -319,20 +321,25 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private void createMySearchesSection(XNavigateItem parent, List<XNavigateItem> items) {
       try {
          XNavigateItem searches = new XNavigateItem(parent, "Saved Searches", AtsImage.SEARCH);
-         for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
-            for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-               for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
-                  AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
-                  AtsSearchWorkflowSearchItem searchItem = item.copy();
-                  searchItem.setSavedData(data);
-                  SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
-                  navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
-               }
-            }
-         }
+         searches.setId(ATS_SEARCH_NAVIGATE_VIEW_ITEM);
+         populateSavedSearchesItem(searches);
          items.add(searches);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Can't create Goals section");
+      }
+   }
+
+   private static void populateSavedSearchesItem(XNavigateItem searches) {
+      for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
+         for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
+            for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
+               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
+               AtsSearchWorkflowSearchItem searchItem = item.copy();
+               searchItem.setSavedData(data);
+               SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
+               navItem.setName(item.getShortNamePrefix() + ": " + data.getSearchName());
+            }
+         }
       }
    }
 
@@ -421,5 +428,12 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    public void clearCaches() {
       ensurePopulatedRanOnce = false;
       items.clear();
+   }
+
+   public static void refreshTopAtsSearchItem() {
+      XNavigateItem linkItem = NavigateView.getNavigateView().getItem(ATS_SEARCH_NAVIGATE_VIEW_ITEM, true);
+      populateSavedSearchesItem(linkItem);
+      NavigateView.getNavigateView().refresh(linkItem);
+
    }
 }

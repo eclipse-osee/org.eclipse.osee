@@ -57,8 +57,7 @@ public final class DeleteSearchAction extends Action {
             selected);
          ((Artifact) AtsClientService.get().getUserService().getCurrentUser().getStoreObject()).reloadAttributesAndRelations();
          if (NavigateView.getNavigateView() != null) {
-            AtsNavigateViewItems.getInstance().clearCaches();
-            NavigateView.getNavigateView().refreshData();
+            AtsNavigateViewItems.refreshTopAtsSearchItem();
          }
          AWorkbench.popup("Search Deleted");
       }
