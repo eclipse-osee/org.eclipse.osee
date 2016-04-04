@@ -16,6 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -64,6 +65,14 @@ public class UniqueNameRule extends AbstractValidationRule {
                   artToValidate.getName()) && !artToValidate.getArtifactType().equals(art.getArtifactType())) {
                   continue;
                }
+               /**************************************************************************
+                * Allow for a Software Requirement parent to have an Implementation Details <br/>
+                * child of the same name.
+                */
+               if (isImplementationDetailsChild(artToValidate, art) || isImplementationDetailsChild(art,
+                  artToValidate)) {
+                  continue;
+               }
                errorMessages.add(ValidationReportOperation.getRequirementHyperlink(
                   artToValidate) + " and " + ValidationReportOperation.getRequirementHyperlink(
                      art) + " have same name value:\"" + artToValidate.getName() + " \"");
@@ -73,6 +82,12 @@ public class UniqueNameRule extends AbstractValidationRule {
          }
       }
       return new ValidationResult(errorMessages, validationPassed);
+   }
+
+   private boolean isImplementationDetailsChild(Artifact childArtifact, Artifact parentArtifact) {
+      return parentArtifact.getArtifactType().equals(CoreArtifactTypes.SoftwareRequirement) && //
+      (childArtifact.isOfType(CoreArtifactTypes.ImplementationDetails) && //
+      childArtifact.getParent().equals(parentArtifact));
    }
 
    private void addGuidPair(String guidA, String guidB) {
