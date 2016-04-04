@@ -21,8 +21,8 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
@@ -391,10 +391,15 @@ public class WordTemplateRendererTest {
             contents = contents.replace(rev, "wsp:rsidRDefault=\"TESTING\"");
          }
 
-         Assert.assertTrue("Original Paragram Numbering for Notes is incorrect", contents.contains(
-            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3</w:t></w:r>"));
-         Assert.assertTrue("Original Paragram Numbering for More Notes is incorrect", contents.contains(
-            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\"><w:r><w:t> Paragraph Number: 3.1</w:t></w:r>"));
+         Matcher m2 = Pattern.compile(
+            "<w:r><w:t>Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t> Paragraph Number: 3</w:t></w:r>").matcher(
+               contents);
+         Assert.assertTrue("Original Paragram Numbering for Notes is incorrect", m2.find());
+
+         Matcher m3 = Pattern.compile(
+            "<w:r><w:t>More Notes</w:t></w:r></w:p><w:p wsp:rsidR=\"TESTING\" wsp:rsidRDefault=\"TESTING\".*?><w:r><w:t> Paragraph Number: 3.1</w:t></w:r>").matcher(
+               contents);
+         Assert.assertTrue("Original Paragram Numbering for More Notes is incorrect", m3.find());
          m = findBlankPage.matcher(contents);
          int counter = 0;
          while (m.find()) {
