@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.Collection;
+import org.eclipse.osee.define.report.internal.SafetyCriticalityLookup;
 import org.eclipse.osee.define.report.internal.SafetyInformationAccumulator;
 import org.eclipse.osee.define.report.internal.TraceAccumulator;
 import org.eclipse.osee.define.report.internal.TraceMatch;
@@ -21,6 +22,8 @@ import org.eclipse.osee.define.report.internal.util.ComponentUtil;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.jdk.core.type.ResultSet;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.logger.Log;
@@ -37,27 +40,34 @@ public class SafetyReportGenerator {
    private long branchUuid;
    private final Log logger;
 
-   public static int SYSTEM_REQUIREMENT_INDEX = 3;
-   public static int SUBSYSTEM_FUNCTION_INDEX = 5;
-   public static int SUBSYSTEM_INDEX = 7;
-   public static int SOFTWARE_REQUIREMENT_INDEX = 11;
-   public static int CODE_UNIT_INDEX = 17;
+   public static int SYSTEM_REQUIREMENT_INDEX = 6;
+   public static int SUBSYSTEM_FUNCTION_INDEX = 7;
+   public static int SUBSYSTEM_INDEX = 11;
+   public static int SOFTWARE_REQUIREMENT_INDEX = 16;
+   public static int CODE_UNIT_INDEX = 24;
    private final String[] columnHeadings = {
       "System Function",
-      "Safety Criticality",
+      "Severity Category",
+      "System FDAL",
+      "System FDAL Rational",
       "SFHA Hazard(s)",
-      "Paragraph #",
+      "Hazard Level Test",
       "System Requirement Name",
       "Subsystem Function",
-      "Safety Criticality",
+      "Subsystem Severity Category",
+      "Subsystem FDAL",
+      "Subsystem FDAL Rational",
       CoreAttributeTypes.Subsystem.getName(),
-      "Paragraph #",
       "Subsystem Requirement Name",
-      "Development Assurance Level",
+      "Subsystem Requirement FDAL",
+      "Subsystem Requirement FDAL Rational",
+      "Subsystem Requirement Level Check",
       CoreArtifactTypes.SoftwareRequirement.getName(),
-      "Development Assurance Level",
-      "Boeing Equivalent SW Qual Level",
-      "Category",
+      "IDAL",
+      "IDAL Rational",
+      "Software Control Category",
+      "Software Control Category Rational",
+      "Functional Category",
       "SW Partition",
       "SW CSU",
       "SW Code Unit"};
@@ -104,22 +114,21 @@ public class SafetyReportGenerator {
             writer.writeCell(systemFunction.getName());
             accumulator.reset(systemFunction);
             accumulator.buildSubsystemsRequirementsMap(systemFunction);
-            String criticality;
+            String sevCat;
             if (systemFunction.getAttributes(CoreAttributeTypes.SeverityCategory).size() != 1) {
                logger.debug("found too many attributes on %s", systemFunction.toString());
-               criticality = systemFunction.getAttributes(
+               sevCat = systemFunction.getAttributes(
                   CoreAttributeTypes.SeverityCategory).iterator().next().getDisplayableString();
             } else {
-               criticality = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
+               sevCat = systemFunction.getSoleAttributeAsString(CoreAttributeTypes.SeverityCategory);
             }
-
-            writer.writeCell(criticality);
-            writer.writeCell(getSFHAHazards(systemFunction));
+            writer.writeCell(sevCat);
+            writeSFHAInfo(systemFunction, sevCat, writer);
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRational, ""));
             for (ArtifactReadable systemRequirement : systemFunction.getRelated(
                CoreRelationTypes.Design__Requirement)) {
-               writer.writeCell(systemRequirement.getSoleAttributeAsString(CoreAttributeTypes.ParagraphNumber, ""),
-                  SYSTEM_REQUIREMENT_INDEX);
-               writer.writeCell(systemRequirement.getName());
+               writer.writeCell(systemRequirement.getName(), SYSTEM_REQUIREMENT_INDEX);
                accumulator.output();
             }
             writer.endRow();
@@ -128,9 +137,21 @@ public class SafetyReportGenerator {
       writer.endSheet();
    }
 
-   private String getSFHAHazards(ArtifactReadable systemFunction) {
+   private void writeSFHAInfo(ArtifactReadable systemFunction, String sevCat, ISheetWriter writer) throws IOException {
+      ResultSet<ArtifactReadable> results = systemFunction.getRelated(CoreRelationTypes.Safety__Safety_Assessment);
+      if (results.isEmpty()) {
+         writer.writeCell("No SFHA Hazards found");
+         writer.writeCell("N/A");
+      } else {
+         writer.writeCell(getSFHAHazards(results));
+         writer.writeCell(compareHazardLevel(results, sevCat));
+      }
+
+   }
+
+   private String getSFHAHazards(ResultSet<ArtifactReadable> results) {
       StringBuilder sb = new StringBuilder();
-      for (ArtifactReadable assessment : systemFunction.getRelated(CoreRelationTypes.Safety__Safety_Assessment)) {
+      for (ArtifactReadable assessment : results) {
          if (sb.length() > 0) {
             sb.append(", ");
          }
@@ -138,9 +159,35 @@ public class SafetyReportGenerator {
          sb.append(" ");
          sb.append(assessment.getSoleAttributeAsString(CoreAttributeTypes.Name, ""));
          sb.append(" ");
-         sb.append(assessment.getSoleAttributeAsString(CoreAttributeTypes.Sfha, ""));
+         sb.append(assessment.getSoleAttributeValue(CoreAttributeTypes.Sfha, ""));
       }
       return sb.toString();
+   }
+
+   private String compareHazardLevel(ResultSet<ArtifactReadable> results, String sevCat) {
+      String toReturn = "System Function Severity Category invalid";
+
+      try {
+         Integer sevCatLevel = SafetyCriticalityLookup.getSeverityLevel(sevCat);
+         toReturn = "good: " + sevCat;
+         Integer sfhaSevCatLevel;
+
+         for (ArtifactReadable assessment : results) {
+            String sfha = assessment.getSoleAttributeAsString(CoreAttributeTypes.Sfha);
+            if (Strings.isValid(sfha)) {
+               String[] sfhaSevCat = sfha.split(" ");
+               sfhaSevCatLevel = SafetyCriticalityLookup.getSeverityLevel(sfhaSevCat[2]);
+               if (sevCatLevel > sfhaSevCatLevel) {
+                  toReturn = "bad: " + sevCat + " > " + sfhaSevCat[2];
+               }
+            }
+
+         }
+
+      } catch (Exception ex) {
+         toReturn = ex.getMessage();
+      }
+      return toReturn;
    }
 
    public Collection<String> getRequirementToCodeUnitsValues(ArtifactReadable softwareRequirement) {
