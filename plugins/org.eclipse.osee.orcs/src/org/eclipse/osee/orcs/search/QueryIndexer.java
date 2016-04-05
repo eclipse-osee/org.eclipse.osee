@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.search;
 
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.Callable;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.orcs.data.BranchReadable;
@@ -25,7 +26,9 @@ public interface QueryIndexer {
 
    CancellableCallable<Integer> indexBranches(Set<BranchReadable> branches, boolean indexOnlyMissing, IndexerCollector... collector);
 
-   CancellableCallable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector);
+   Callable<List<Future<?>>> indexResources(Iterable<Long> gammaIds, IndexerCollector... collector);
+
+   void indexAttrTypeIds(Iterable<Long> gammaIds);
 
    CancellableCallable<Integer> deleteIndexByQueryId(int queueId);
 

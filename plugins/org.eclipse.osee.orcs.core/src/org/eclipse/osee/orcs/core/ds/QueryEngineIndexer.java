@@ -42,4 +42,6 @@ public interface QueryEngineIndexer {
 
    CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<Long> datas, IndexerCollector... collector);
 
+   void indexAttrTypeIds(OrcsSession session, AttributeTypes attributeTypes, Iterable<Long> attrTypeIds);
+
 }

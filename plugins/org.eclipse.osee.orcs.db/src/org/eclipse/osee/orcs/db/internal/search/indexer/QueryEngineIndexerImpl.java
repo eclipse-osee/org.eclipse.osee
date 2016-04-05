@@ -11,12 +11,16 @@
 package org.eclipse.osee.orcs.db.internal.search.indexer;
 
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Future;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
+import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.IndexerData;
@@ -82,6 +86,28 @@ public class QueryEngineIndexerImpl implements QueryEngineIndexer {
    public CancellableCallable<List<Future<?>>> indexResources(OrcsSession session, AttributeTypes types, Iterable<Long> datas, IndexerCollector... collector) {
       return new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer, merge(collector),
          IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, datas);
+   }
+
+   @Override
+   public void indexAttrTypeIds(OrcsSession session, AttributeTypes types, Iterable<Long> attrTypeIds) {
+      String GAMMAS_BY_TYPE = "select gamma_id from osee_attribute where attr_type_id = ?";
+      List<Long> gammaIds = new LinkedList<>();
+      for (Long attributeType : attrTypeIds) {
+         try (JdbcStatement chStmt = jdbcClient.getStatement()) {
+            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, GAMMAS_BY_TYPE, attributeType);
+            while (chStmt.next()) {
+               gammaIds.add(chStmt.getLong("gamma_id"));
+            }
+         }
+         try {
+            new IndexerDatabaseCallable(logger, session, jdbcClient, joinFactory, types, consumer, null,
+               IndexerConstants.INDEXER_CACHE_ALL_ITEMS, IndexerConstants.INDEXER_CACHE_LIMIT, gammaIds).call();
+         } catch (Exception ex) {
+            OseeCoreException.wrapAndThrow(ex);
+         }
+         System.out.println(String.format("Processed %d gammas for type %d", gammaIds.size(), attributeType));
+         gammaIds.clear();
+      }
    }
 
    private IndexerCollector merge(IndexerCollector... collectors) {

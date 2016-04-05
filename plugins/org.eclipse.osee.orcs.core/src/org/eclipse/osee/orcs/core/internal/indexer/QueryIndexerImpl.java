@@ -58,6 +58,11 @@ public class QueryIndexerImpl implements QueryIndexer {
    }
 
    @Override
+   public void indexAttrTypeIds(Iterable<Long> attrTypeIds) {
+      engineIndexer.indexAttrTypeIds(session, attributeTypes, attrTypeIds);
+   }
+
+   @Override
    public CancellableCallable<Integer> deleteIndexByQueryId(int queueId) {
       return engineIndexer.deleteIndexByQueryId(session, queueId);
    }

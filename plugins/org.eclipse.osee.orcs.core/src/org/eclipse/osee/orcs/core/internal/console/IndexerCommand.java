@@ -35,6 +35,7 @@ public class IndexerCommand implements ConsoleCommand {
       ALL,
       MISSING_ITEMS_ONLY,
       ITEM_IDS,
+      ATTR_TYPE_IDS,
       CANCEL
    }
 
@@ -74,7 +75,8 @@ public class IndexerCommand implements ConsoleCommand {
          cnt++;
       }
       builder.append("> [branchUuids=<BRANCH_UUID,..>]\n");
-      builder.append("op=ITEM_IDS ids=<GAMMA_IDS,..> debug=<TRUE|FALSE>");
+      builder.append("op=ITEM_IDS ids=<GAMMA_IDS,..> debug=<TRUE|FALSE>\n");
+      builder.append("op=ATTR_TYPE_IDS ids=<ATTR_TYPE_IDS,..>");
       return builder.toString();
    }
 
@@ -136,14 +138,20 @@ public class IndexerCommand implements ConsoleCommand {
                callable.call();
                break;
             case ITEM_IDS:
+            case ATTR_TYPE_IDS:
                boolean printTags = params.getBoolean("debug");
                Set<Long> ids = new LinkedHashSet<>();
                for (String value : params.getArray("ids")) {
                   ids.add(Long.parseLong(value));
                }
-               IndexStatusDisplayCollector collector2 = new IndexStatusDisplayCollector(console, startTime, printTags);
-               Callable<?> callable2 = indexer.indexResources(ids, collector2);
-               callable2.call();
+               if (opType == OpType.ATTR_TYPE_IDS) {
+                  indexer.indexAttrTypeIds(ids);
+               } else {
+                  IndexStatusDisplayCollector collector2 =
+                     new IndexStatusDisplayCollector(console, startTime, printTags);
+                  Callable<?> callable2 = indexer.indexResources(ids, collector2);
+                  callable2.call();
+               }
                break;
             case STATS:
             default:
