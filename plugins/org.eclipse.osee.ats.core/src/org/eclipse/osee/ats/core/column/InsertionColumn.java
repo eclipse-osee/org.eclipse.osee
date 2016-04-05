@@ -21,7 +21,20 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 /**
  * @author Donald G. Dunne
  */
-public class InsertionColumn {
+public class InsertionColumn extends AbstractServicesColumn {
+
+   public InsertionColumn(IAtsServices services) {
+      super(services);
+   }
+
+   @Override
+   public String getText(IAtsObject atsObject) {
+      String format = "%s";
+      if (services.getStoreService().isDeleted(atsObject)) {
+         format = "<Deleted> %s";
+      }
+      return String.format(format, getInsertionStr(atsObject, services));
+   }
 
    public static String getInsertionStr(IAtsObject atsObject, IAtsServices services) throws OseeCoreException {
       return getInsertionStr(atsObject, services, CountryColumn.getUtil());

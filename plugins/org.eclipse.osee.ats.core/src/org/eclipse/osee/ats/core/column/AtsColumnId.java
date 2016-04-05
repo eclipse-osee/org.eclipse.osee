@@ -21,6 +21,8 @@ public enum AtsColumnId implements IAtsColumnId {
    ActivityId("ats.column.activityId"),
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
+   Insertion("ats.column.insertion"),
+   InsertionActivity("ats.column.insertionActivity"),
    LegacyPcrId("ats.column.legacyPcr"),
    Name("framework.artifact.name"),
    PercentCompleteWorkflow("ats.column.workflowPercentComplete"),

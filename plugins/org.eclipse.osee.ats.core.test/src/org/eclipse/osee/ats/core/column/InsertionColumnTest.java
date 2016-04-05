@@ -29,7 +29,7 @@ import org.mockito.MockitoAnnotations;
  *
  * @author Donald G. Dunne
  */
-public class InsertionColumnTest extends InsertionColumn {
+public class InsertionColumnTest {
 
    // @formatter:off
    @Mock private WorkPackageUtility util;

@@ -169,8 +169,8 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          PercentCompleteTasksReviewsColumn.getInstance(),
          CountryColumnUI.getInstance(),
          ProgramColumnUI.getInstance(),
-         InsertionColumnUI.getInstance(),
-         InsertionActivityColumnUI.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.InsertionColumn, AtsClientService.get().getServices()),
+         new AtsColumnIdUI(AtsColumnToken.InsertionActivityColumn, AtsClientService.get().getServices()),
          ColorTeamColumnUI.getInstance(),
          RelatedArtifactChangedColumn.getInstance(),
          RelatedArtifactLastModifiedByColumn.getInstance(),
@@ -178,19 +178,19 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new UuidColumn(false)};
    }
 
-   private static XViewerColumn getConfigColumn(AtsAttributeValueColumn titleColumn) {
+   private static XViewerColumn getConfigColumn(AtsAttributeValueColumn attrValueColumn) {
       XViewerColumn result = null;
       if (atsConfigurations == null) {
          atsConfigurations = AtsClientService.getConfigEndpoint().get();
       }
       for (AtsAttributeValueColumn column : atsConfigurations.getViews().getAttrColumns()) {
-         if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(titleColumn.getId())) {
+         if (column.getNamespace().equals(NAMESPACE) && column.getId().equals(attrValueColumn.getId())) {
             result = new XViewerAtsAttributeValueColumn(column);
             break;
          }
       }
       if (result == null) {
-         result = new XViewerAtsAttributeValueColumn(titleColumn);
+         result = new XViewerAtsAttributeValueColumn(attrValueColumn);
       }
       return result;
    }
