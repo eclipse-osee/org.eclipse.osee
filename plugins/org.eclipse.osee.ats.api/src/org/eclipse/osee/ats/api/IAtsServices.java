@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.api;
 
 import java.util.Collection;
+import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
@@ -112,5 +113,7 @@ public interface IAtsServices {
    AtsConfigurations getConfigurations();
 
    IAtsEarnedValueServiceProvider getEarnedValueServiceProvider();
+
+   IAtsColumnService getColumnService();
 
 }

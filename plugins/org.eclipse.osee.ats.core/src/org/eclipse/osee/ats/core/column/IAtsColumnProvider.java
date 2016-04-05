@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.column.IAtsColumn;
 
 /**
  * @author Donald G. Dunne

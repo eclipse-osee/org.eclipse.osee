@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.column;
+package org.eclipse.osee.ats.api.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 

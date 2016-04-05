@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.column;
 
+import org.eclipse.osee.ats.api.column.IAtsColumnId;
+
 /**
  * @author Donald G. Dunne
  */
