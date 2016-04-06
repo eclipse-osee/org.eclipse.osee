@@ -76,7 +76,7 @@ public final class OrcsRestUtil {
       data.setBranchType(src.getBranchType());
       data.setInheritAccessControl(src.isInheritAccessControl());
       data.setName(src.getName());
-      data.setParentBranchUuid(src.getParentBranch());
+      data.setParentBranch(src.getParentBranch());
       data.setSourceTransactionId(src.getSourceTransaction());
       data.setBranchUuid(src.getGuid());
       return data;

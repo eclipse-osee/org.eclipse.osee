@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -122,7 +123,7 @@ public class HtmlWriter {
       data.put("Archived", branch.getArchiveState());
       if (branch.hasParentBranch()) {
          try {
-            IOseeBranch parent = getBranchFromUuid(branch.getParentBranch());
+            IOseeBranch parent = getBranchFromId(branch.getParentBranch());
 
             URI uri;
             if (isAtEndOfPath(uriInfo.getPath(), "branch")) {
@@ -146,9 +147,9 @@ public class HtmlWriter {
       return data;
    }
 
-   private IOseeBranch getBranchFromUuid(long uuid) {
-      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andUuids(
-         uuid).getResultsAsId().getExactlyOne();
+   private IOseeBranch getBranchFromId(BranchId branch) {
+      return OrcsApplication.getOrcsApi().getQueryFactory().branchQuery().andIds(
+         branch).getResultsAsId().getExactlyOne();
    }
 
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
@@ -158,7 +159,7 @@ public class HtmlWriter {
       data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());
       data.put("Author", txRecord.getAuthorId());
-      IOseeBranch branch = getBranchFromUuid(txRecord.getBranchId());
+      IOseeBranch branch = getBranchFromId(txRecord.getBranch());
 
       URI uri;
       if (isAtEndOfPath(uriInfo.getPath(), "branch")) {

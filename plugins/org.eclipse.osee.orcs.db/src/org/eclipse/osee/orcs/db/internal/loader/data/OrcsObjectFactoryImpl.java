@@ -189,7 +189,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, Long parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
+   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
       BranchData data = new BranchDataImpl(branchUuid, name);
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);

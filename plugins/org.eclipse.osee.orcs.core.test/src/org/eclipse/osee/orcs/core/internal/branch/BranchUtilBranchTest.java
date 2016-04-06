@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import java.util.LinkedList;
+import static org.eclipse.osee.framework.core.enums.BranchState.COMMITTED;
+import static org.eclipse.osee.framework.core.enums.BranchType.WORKING;
+import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
@@ -24,28 +24,17 @@ import org.junit.Test;
  */
 public class BranchUtilBranchTest {
 
-   private final Branch one =
-      new Branch(Lib.generateUuid(), "one", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch two =
-      new Branch(Lib.generateUuid(), "two", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch three =
-      new Branch(Lib.generateUuid(), "three", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch four =
-      new Branch(Lib.generateUuid(), "four", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch five =
-      new Branch(Lib.generateUuid(), "five", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch six =
-      new Branch(Lib.generateUuid(), "six", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch seven =
-      new Branch(Lib.generateUuid(), "seven", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch eight =
-      new Branch(Lib.generateUuid(), "eight", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch nine =
-      new Branch(Lib.generateUuid(), "nine", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch ten =
-      new Branch(Lib.generateUuid(), "ten", BranchType.WORKING, BranchState.COMMITTED, true, false);
-   private final Branch outside =
-      new Branch(Lib.generateUuid(), "outside", BranchType.WORKING, BranchState.COMMITTED, true, false);
+   private final Branch one = new Branch(Lib.generateUuid(), "one", WORKING, COMMITTED, true, false);
+   private final Branch two = new Branch(Lib.generateUuid(), "two", WORKING, COMMITTED, true, false);
+   private final Branch three = new Branch(Lib.generateUuid(), "three", WORKING, COMMITTED, true, false);
+   private final Branch four = new Branch(Lib.generateUuid(), "four", WORKING, COMMITTED, true, false);
+   private final Branch five = new Branch(Lib.generateUuid(), "five", WORKING, COMMITTED, true, false);
+   private final Branch six = new Branch(Lib.generateUuid(), "six", WORKING, COMMITTED, true, false);
+   private final Branch seven = new Branch(Lib.generateUuid(), "seven", WORKING, COMMITTED, true, false);
+   private final Branch eight = new Branch(Lib.generateUuid(), "eight", WORKING, COMMITTED, true, false);
+   private final Branch nine = new Branch(Lib.generateUuid(), "nine", WORKING, COMMITTED, true, false);
+   private final Branch ten = new Branch(Lib.generateUuid(), "ten", WORKING, COMMITTED, true, false);
+   private final Branch outside = new Branch(Lib.generateUuid(), "outside", WORKING, COMMITTED, true, false);
 
    private void initBranchParentageList() {
       two.setParentBranch(one);
@@ -84,65 +73,39 @@ public class BranchUtilBranchTest {
       ten.setParentBranch(nine);
    }
 
-   private void initDisjointOrderList(List<Branch> branchList) {
-      branchList.add(0, two);
-      branchList.add(1, three);
-      branchList.add(2, four);
-      branchList.add(3, five);
-      branchList.add(4, six);
-      branchList.add(5, seven);
-      branchList.add(6, eight);
-      branchList.add(7, nine);
-      branchList.add(8, ten);
-      branchList.add(9, one);
+   private List<Branch> getDisjointOrderList() {
+      return Arrays.asList(two, three, four, five, six, seven, eight, nine, ten, one);
    }
 
-   private void initOutOfOrderList(List<Branch> branchList) {
-      branchList.add(0, three);
-      branchList.add(1, eight);
-      branchList.add(2, one);
-      branchList.add(3, four);
-      branchList.add(4, five);
-      branchList.add(5, six);
-      branchList.add(6, ten);
-      branchList.add(7, nine);
-      branchList.add(8, two);
-      branchList.add(9, seven);
+   private List<Branch> getOutOfOrderList() {
+      return Arrays.asList(three, eight, one, four, five, six, ten, nine, two, seven);
    }
 
    @Test
    public void testConnectedBranchSorting() {
-      List<Branch> branchList = new LinkedList<>();
       initBranchParentageList();
-      initOutOfOrderList(branchList);
-      List<Branch> ordered = BranchUtil.orderByParent(branchList);
+      List<Branch> ordered = BranchUtil.orderByParent(getOutOfOrderList());
       Assert.assertEquals("[ten, nine, eight, seven, six, five, four, three, two, one]", ordered.toString());
    }
 
    @Test
    public void testDisjointBranchSorting() {
-      List<Branch> branchList = new LinkedList<>();
       initDisjointParentageList();
-      initDisjointOrderList(branchList);
-      List<Branch> ordered = BranchUtil.orderByParent(branchList);
+      List<Branch> ordered = BranchUtil.orderByParent(getDisjointOrderList());
       Assert.assertEquals("[four, three, two, seven, six, five, ten, nine, eight, one]", ordered.toString());
    }
 
    @Test
    public void testDisjointOutOfOrderBranchSorting() {
-      List<Branch> branchList = new LinkedList<>();
       initDisjointParentageList();
-      initOutOfOrderList(branchList);
-      List<Branch> ordered = BranchUtil.orderByParent(branchList);
+      List<Branch> ordered = BranchUtil.orderByParent(getOutOfOrderList());
       Assert.assertEquals("[four, ten, seven, three, six, nine, eight, two, five, one]", ordered.toString());
    }
 
    @Test
    public void testOutsideParentsBranchSorting() {
-      List<Branch> branchList = new LinkedList<>();
       initOutsideParentList();
-      initOutOfOrderList(branchList);
-      List<Branch> ordered = BranchUtil.orderByParent(branchList);
+      List<Branch> ordered = BranchUtil.orderByParent(getOutOfOrderList());
       Assert.assertEquals("[four, ten, three, two, seven, six, nine, eight, one, five]", ordered.toString());
    }
 }

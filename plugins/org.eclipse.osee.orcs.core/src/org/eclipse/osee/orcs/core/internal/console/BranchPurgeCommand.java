@@ -219,8 +219,7 @@ public final class BranchPurgeCommand implements ConsoleCommand {
          if (branchesToPurge.isEmpty()) {
             console.writeln("no branches matched specified criteria");
          } else {
-            List<? extends IOseeBranch> orderedBranches =
-               BranchUtil.orderByParentReadable(queryFactory, branchesToPurge);
+            List<? extends IOseeBranch> orderedBranches = BranchUtil.orderByParentReadable(branchesToPurge);
 
             for (IOseeBranch toPurge : orderedBranches) {
                console.writeln("Branch [%s] guid [%s] will be purged!", toPurge.getName(), toPurge.getGuid());

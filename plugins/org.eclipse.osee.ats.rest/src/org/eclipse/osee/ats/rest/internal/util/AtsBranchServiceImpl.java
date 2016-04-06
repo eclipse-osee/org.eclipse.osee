@@ -153,8 +153,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    @Override
    public BranchId getParentBranch(BranchId branch) {
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      BranchReadable fullBranch = query.andUuids(branch.getUuid()).getResults().getExactlyOne();
-      return getBranchByUuid(fullBranch.getParentBranch());
+      BranchReadable fullBranch = query.andIds(branch).getResults().getExactlyOne();
+      return fullBranch.getParentBranch();
    }
 
    @Override

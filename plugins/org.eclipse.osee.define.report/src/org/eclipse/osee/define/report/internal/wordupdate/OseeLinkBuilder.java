@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report.internal.wordupdate;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -93,18 +94,10 @@ public class OseeLinkBuilder {
       "<v:imagedata src=\"wordml://%s\" o:title=\"%s\"/></v:shape></w:pict></w:r>";
    // @formatter:on
 
-   public OseeLinkBuilder() {
-      super();
-   }
-
-   public String getUnknownArtifactLink(String guid, Long branch) {
-      String processType = "unknown";
-      return getArtifactLinkWithMessage(processType, guid, branch,
-         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch));
-   }
-
-   private String getArtifactLinkWithMessage(String processType, String guid, Long branch, String message) {
-      String internalLink = String.format("http://none/%s?guid=%s&amp;branchUuid=%s", processType, guid, branch);
+   public String getUnknownArtifactLink(String guid, BranchId branch) {
+      String message =
+         String.format("Invalid Link: artifact with guid:[%s] on branchUuid:[%s] does not exist", guid, branch);
+      String internalLink = String.format("http://none/unknown?guid=%s&amp;branchUuid=%s", guid, branch);
       return String.format(WORDML_LINK_FORMAT, internalLink, message);
    }
 

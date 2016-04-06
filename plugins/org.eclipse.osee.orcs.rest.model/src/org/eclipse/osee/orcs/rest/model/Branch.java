@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -25,7 +26,7 @@ public class Branch {
 
    private long branchUuid;
    private String name;
-   private long parentBranchUuid;
+   private BranchId parentBranch;
 
    private int associatedArtifactId = DEFAULT_INT;
    private int baseTransaction = DEFAULT_INT;
@@ -80,16 +81,12 @@ public class Branch {
       sourceTransaction = sourceTx;
    }
 
-   public long getParentBranchUuid() {
-      return parentBranchUuid;
+   public BranchId getParentBranch() {
+      return parentBranch;
    }
 
-   public void setParentBranchUuid(long parentBranchUuid) {
-      this.parentBranchUuid = parentBranchUuid;
-   }
-
-   public boolean hasParentBranchUuid() {
-      return getParentBranchUuid() > 0;
+   public void setParentBranch(BranchId parentBranch) {
+      this.parentBranch = parentBranch;
    }
 
    public BranchArchivedState getArchiveState() {
@@ -152,7 +149,7 @@ public class Branch {
 
    @Override
    public String toString() {
-      return "Branch [branchUuid=" + getBranchUuid() + ", name=" + name + ", parentBranchUuid=" + getParentBranchUuid() + ", associatedArtifactId=" + associatedArtifactId + ", baseTransaction=" + baseTransaction + ", sourceTransaction=" + sourceTransaction + ", archiveState=" + archiveState + ", branchState=" + branchState + ", branchType=" + branchType + ", inheritAccessControl=" + inheritAccessControl + "]";
+      return "Branch [branchUuid=" + getBranchUuid() + ", name=" + name + ", parentBranchUuid=" + getParentBranch() + ", associatedArtifactId=" + associatedArtifactId + ", baseTransaction=" + baseTransaction + ", sourceTransaction=" + sourceTransaction + ", archiveState=" + archiveState + ", branchState=" + branchState + ", branchType=" + branchType + ", inheritAccessControl=" + inheritAccessControl + "]";
    }
 
 }

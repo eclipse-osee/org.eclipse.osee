@@ -10,170 +10,169 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.branch;
 
-import static org.mockito.Mockito.when;
-import java.util.ArrayList;
-import java.util.LinkedList;
+import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
+import java.util.Arrays;
 import java.util.List;
-import org.eclipse.osee.framework.jdk.core.type.ResultSet;
-import org.eclipse.osee.framework.jdk.core.type.ResultSets;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.search.BranchQuery;
-import org.eclipse.osee.orcs.search.QueryFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 
 /**
  * @author David W. Miller
  */
 public class BranchUtilBranchReadableTest {
 
-   @Mock
-   private BranchReadable one, two, three, four, five, six, seven, eight, nine, ten, outside;
-   @Mock
-   QueryFactory queryFactory;
-   @Mock
-   BranchQuery branchQuery, bq1, bq2, bq3, bq4, bq5, bq6, bq7, bq8, bq9, bqout;
+   private BranchReadableImpl one, two, three, four, five, six, seven, eight, nine, ten;
 
    @Before
    public void init() {
-      MockitoAnnotations.initMocks(this);
-      initBranchQueryElements();
+      one = new BranchReadableImpl(1);
+      two = new BranchReadableImpl(2);
+      three = new BranchReadableImpl(3);
+      four = new BranchReadableImpl(4);
+      five = new BranchReadableImpl(5);
+      six = new BranchReadableImpl(6);
+      seven = new BranchReadableImpl(7);
+      eight = new BranchReadableImpl(8);
+      nine = new BranchReadableImpl(9);
+      ten = new BranchReadableImpl(10);
+   }
+
+   private static class BranchReadableImpl extends NamedId implements BranchReadable {
+      private BranchId parent;
+
+      public void setParentBranch(BranchId parent) {
+         this.parent = parent;
+      }
+
+      public BranchReadableImpl(int branchId) {
+         super((long) branchId, String.valueOf(branchId));
+      }
+
+      @Override
+      public BranchArchivedState getArchiveState() {
+         return null;
+      }
+
+      @Override
+      public BranchState getBranchState() {
+         return null;
+      }
+
+      @Override
+      public BranchType getBranchType() {
+         return null;
+      }
+
+      @Override
+      public boolean hasParentBranch() {
+         return false;
+      }
+
+      @Override
+      public int getAssociatedArtifactId() {
+         return 0;
+      }
+
+      @Override
+      public int getBaseTransaction() {
+         return 0;
+      }
+
+      @Override
+      public int getSourceTransaction() {
+         return 0;
+      }
+
+      @Override
+      public BranchId getParentBranch() {
+         return parent;
+      }
+
+      @Override
+      public boolean isInheritAccessControl() {
+         return false;
+      }
    }
 
    @Test
    public void testConnectedBranchSorting() {
       initBranchParentageList();
-      List<BranchReadable> branchList = new LinkedList<>();
-      initOutOfOrderList(branchList);
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
-      Assert.assertEquals("[ten, nine, eight, seven, six, five, four, three, two, one]", ordered.toString());
+      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      Assert.assertEquals("[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]", ordered.toString());
    }
 
    @Test
    public void testDisjointBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> branchList = new LinkedList<>();
-      initDisjointOrderList(branchList);
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
-      Assert.assertEquals("[four, three, two, seven, six, five, ten, nine, eight, one]", ordered.toString());
+      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getDisjointOrderList());
+      Assert.assertEquals("[4, 3, 2, 7, 6, 5, 10, 9, 8, 1]", ordered.toString());
    }
 
    @Test
    public void testDisjointOutOfOrderBranchSorting() {
       initDisjointParentageList();
-      List<BranchReadable> branchList = new LinkedList<>();
-      initOutOfOrderList(branchList);
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
-      Assert.assertEquals("[four, ten, seven, three, six, nine, eight, two, five, one]", ordered.toString());
+      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      Assert.assertEquals("[4, 10, 7, 3, 6, 9, 8, 2, 5, 1]", ordered.toString());
    }
 
    @Test
    public void testOutsideParentsBranchSorting() {
-      List<BranchReadable> branchList = new LinkedList<>();
       initOutsideParentList();
-      initOutOfOrderList(branchList);
-      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(queryFactory, branchList);
-      Assert.assertEquals("[four, ten, three, two, seven, six, nine, eight, one, five]", ordered.toString());
+      List<BranchReadable> ordered = BranchUtil.orderByParentReadable(getOutOfOrderList());
+      Assert.assertEquals("[4, 10, 3, 2, 7, 6, 9, 8, 1, 5]", ordered.toString());
    }
 
-   private void initOutOfOrderList(List<BranchReadable> branchList) {
-      branchList.add(0, three);
-      branchList.add(1, eight);
-      branchList.add(2, one);
-      branchList.add(3, four);
-      branchList.add(4, five);
-      branchList.add(5, six);
-      branchList.add(6, ten);
-      branchList.add(7, nine);
-      branchList.add(8, two);
-      branchList.add(9, seven);
+   private List<BranchReadable> getOutOfOrderList() {
+      return Arrays.asList(three, eight, one, four, five, six, ten, nine, two, seven);
    }
 
-   private void initDisjointOrderList(List<BranchReadable> branchList) {
-      branchList.add(0, two);
-      branchList.add(1, three);
-      branchList.add(2, four);
-      branchList.add(3, five);
-      branchList.add(4, six);
-      branchList.add(5, seven);
-      branchList.add(6, eight);
-      branchList.add(7, nine);
-      branchList.add(8, ten);
-      branchList.add(9, one);
+   private List<BranchReadable> getDisjointOrderList() {
+      return Arrays.asList(two, three, four, five, six, seven, eight, nine, ten, one);
    }
 
    private void initBranchParentageList() {
-      when(one.getParentBranch()).thenReturn((long) -1);
-      when(two.getParentBranch()).thenReturn((long) 1);
-      when(three.getParentBranch()).thenReturn((long) 2);
-      when(four.getParentBranch()).thenReturn((long) 3);
-      when(five.getParentBranch()).thenReturn((long) 4);
-      when(six.getParentBranch()).thenReturn((long) 5);
-      when(seven.getParentBranch()).thenReturn((long) 6);
-      when(eight.getParentBranch()).thenReturn((long) 7);
-      when(nine.getParentBranch()).thenReturn((long) 8);
-      when(ten.getParentBranch()).thenReturn((long) 9);
+      one.setParentBranch(BRANCH_SENTINEL);
+      two.setParentBranch(one);
+      three.setParentBranch(two);
+      four.setParentBranch(three);
+      five.setParentBranch(four);
+      six.setParentBranch(five);
+      seven.setParentBranch(six);
+      eight.setParentBranch(seven);
+      nine.setParentBranch(eight);
+      ten.setParentBranch(nine);
    }
 
    private void initDisjointParentageList() {
-      when(one.getParentBranch()).thenReturn((long) -1);
-      when(two.getParentBranch()).thenReturn((long) 1);
-      when(three.getParentBranch()).thenReturn((long) 2);
-      when(four.getParentBranch()).thenReturn((long) 3);
-      when(five.getParentBranch()).thenReturn((long) 1);
-      when(six.getParentBranch()).thenReturn((long) 5);
-      when(seven.getParentBranch()).thenReturn((long) 6);
-      when(eight.getParentBranch()).thenReturn((long) 1);
-      when(nine.getParentBranch()).thenReturn((long) 8);
-      when(ten.getParentBranch()).thenReturn((long) 9);
+      one.setParentBranch(BRANCH_SENTINEL);
+      two.setParentBranch(one);
+      three.setParentBranch(two);
+      four.setParentBranch(three);
+      five.setParentBranch(one);
+      six.setParentBranch(five);
+      seven.setParentBranch(six);
+      eight.setParentBranch(one);
+      nine.setParentBranch(eight);
+      ten.setParentBranch(nine);
    }
 
    private void initOutsideParentList() {
-      when(one.getParentBranch()).thenReturn((long) -1);
-      when(two.getParentBranch()).thenReturn((long) 1);
-      when(three.getParentBranch()).thenReturn((long) 2);
-      when(four.getParentBranch()).thenReturn((long) 3);
-      when(five.getParentBranch()).thenReturn((long) -1);
-      when(six.getParentBranch()).thenReturn((long) 5);
-      when(seven.getParentBranch()).thenReturn((long) 6);
-      when(eight.getParentBranch()).thenReturn((long) -1);
-      when(nine.getParentBranch()).thenReturn((long) 8);
-      when(ten.getParentBranch()).thenReturn((long) 9);
-   }
-
-   private void initBranchQueryElements() {
-      when(queryFactory.branchQuery()).thenReturn(branchQuery);
-      when(branchQuery.andUuids(-1L)).thenReturn(bqout);
-      when(bqout.getResults()).thenReturn(makeResults(outside));
-
-      when(branchQuery.andUuids(1L)).thenReturn(bq1);
-      when(branchQuery.andUuids(2L)).thenReturn(bq2);
-      when(branchQuery.andUuids(3L)).thenReturn(bq3);
-      when(branchQuery.andUuids(4L)).thenReturn(bq4);
-      when(branchQuery.andUuids(5L)).thenReturn(bq5);
-      when(branchQuery.andUuids(6L)).thenReturn(bq6);
-      when(branchQuery.andUuids(7L)).thenReturn(bq7);
-      when(branchQuery.andUuids(8L)).thenReturn(bq8);
-      when(branchQuery.andUuids(9L)).thenReturn(bq9);
-
-      when(bq1.getResults()).thenReturn(makeResults(one));
-      when(bq2.getResults()).thenReturn(makeResults(two));
-      when(bq3.getResults()).thenReturn(makeResults(three));
-      when(bq4.getResults()).thenReturn(makeResults(four));
-      when(bq5.getResults()).thenReturn(makeResults(five));
-      when(bq6.getResults()).thenReturn(makeResults(six));
-      when(bq7.getResults()).thenReturn(makeResults(seven));
-      when(bq8.getResults()).thenReturn(makeResults(eight));
-      when(bq9.getResults()).thenReturn(makeResults(nine));
-   }
-
-   private ResultSet<BranchReadable> makeResults(BranchReadable input) {
-      List<BranchReadable> list = new ArrayList<>();
-      list.add(input);
-      ResultSet<BranchReadable> results = ResultSets.newResultSet(list);
-      return results;
+      one.setParentBranch(BRANCH_SENTINEL);
+      two.setParentBranch(one);
+      three.setParentBranch(two);
+      four.setParentBranch(three);
+      five.setParentBranch(BRANCH_SENTINEL);
+      six.setParentBranch(five);
+      seven.setParentBranch(six);
+      eight.setParentBranch(BRANCH_SENTINEL);
+      nine.setParentBranch(eight);
+      ten.setParentBranch(nine);
    }
 }

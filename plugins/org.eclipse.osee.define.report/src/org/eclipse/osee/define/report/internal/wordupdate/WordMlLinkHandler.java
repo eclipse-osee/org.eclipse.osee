@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -164,11 +165,11 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, Long branchId, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<ArtifactReadable> findArtifacts(QueryFactory queryFactory, BranchId branch, List<String> guidsFromLinks) throws OseeCoreException {
 
       List<ArtifactReadable> arts = Lists.newLinkedList();
       for (String guid : guidsFromLinks) {
-         ArtifactReadable art = queryFactory.fromBranch(branchId).andGuid(guid).getResults().getOneOrNull();
+         ArtifactReadable art = queryFactory.fromBranch(branch).andGuid(guid).getResults().getOneOrNull();
          if (art != null) {
             arts.add(art);
          }
@@ -185,16 +186,15 @@ public class WordMlLinkHandler {
    }
 
    private static String modifiedContent(QueryFactory queryFactory, LinkType destLinkType, ArtifactReadable source, String original, HashCollection<String, MatchRange> matchMap, boolean isUnliking) throws OseeCoreException {
-      Long branchId = source.getBranchId();
+      BranchId branch = source.getBranch();
       ChangeSet changeSet = new ChangeSet(original);
       List<ArtifactReadable> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
-      artifactsFromSearch = findArtifacts(queryFactory, branchId, guidsFromLinks);
-      boolean isMergeBranch =
-         queryFactory.branchQuery().andUuids(branchId).andIsOfType(BranchType.MERGE).getCount() > 0;
+      artifactsFromSearch = findArtifacts(queryFactory, branch, guidsFromLinks);
+      boolean isMergeBranch = queryFactory.branchQuery().andIds(branch).andIsOfType(BranchType.MERGE).getCount() > 0;
       if (guidsFromLinks.size() != artifactsFromSearch.size() && isMergeBranch) {
-         BranchReadable branchReadable = queryFactory.branchQuery().andUuids(branchId).getResults().getExactlyOne();
+         BranchReadable branchReadable = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<ArtifactReadable> union = new ArrayList<>();
@@ -218,7 +218,7 @@ public class WordMlLinkHandler {
             // Items not found
             for (String guid : unknownGuids) {
                for (MatchRange match : matchMap.getValues(guid)) {
-                  String link = linkBuilder.getUnknownArtifactLink(guid, branchId);
+                  String link = linkBuilder.getUnknownArtifactLink(guid, branch);
                   changeSet.replace(match.start(), match.end(), link);
                }
             }

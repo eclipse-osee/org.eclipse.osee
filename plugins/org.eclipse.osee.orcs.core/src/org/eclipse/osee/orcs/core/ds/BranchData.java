@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -32,9 +33,9 @@ public interface BranchData extends IOseeBranch {
 
    void setSourceTransaction(int sourceTx);
 
-   long getParentBranch();
+   BranchId getParentBranch();
 
-   void setParentBranch(long parent);
+   void setParentBranch(BranchId parent);
 
    boolean hasParentBranch();
 

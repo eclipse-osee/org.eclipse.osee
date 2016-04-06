@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.api;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import static org.eclipse.osee.framework.core.enums.BranchState.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.BranchType.BASELINE;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
@@ -90,11 +91,11 @@ public class OrcsBranchQueryTest {
       List<BranchReadable> list = results.getList();
 
       // list, IOseeBranch, BranchType, BranchState, isArchived, parentId, baseTx, sourceTx, assocArtId
-      assertBranch(list, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, -1);
-      assertBranch(list, SAW_Bld_1, BASELINE, MODIFIED, false, 1, -1);
-      assertBranch(list, CIS_Bld_1, BASELINE, MODIFIED, false, 1, -1);
-      assertBranch(list, SAW_Bld_2, BASELINE, MODIFIED, false, 3, 11);
-      assertBranch(list, COMMON, BASELINE, MODIFIED, false, 1, -1);
+      assertBranch(branch1, SYSTEM_ROOT, BranchType.SYSTEM_ROOT, MODIFIED, false, -1, 1, 1, -1);
+      assertBranch(branch2, SAW_Bld_1, BASELINE, MODIFIED, false, 1, 15, 3, -1);
+      assertBranch(branch3, CIS_Bld_1, BASELINE, MODIFIED, false, 1, 17, 3, -1);
+      assertBranch(branch4, SAW_Bld_2, BASELINE, CREATED, false, 3, 23, 22, 9);
+      assertBranch(branch5, COMMON, BASELINE, MODIFIED, false, 1, 4, 3, -1);
    }
 
    @Test
@@ -307,7 +308,7 @@ public class OrcsBranchQueryTest {
       return orcsApi.getBranchOps();
    }
 
-   private static void assertBranch(List<BranchReadable> list, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, int parent, int assocArtId) {
+   private static void assertBranch(BranchReadable actual, IOseeBranch token, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
       BranchReadable found = null;
       for (BranchReadable branch : list) {
          if (branch.getId().equals(token.getId())) {
@@ -316,13 +317,9 @@ public class OrcsBranchQueryTest {
          }
       }
       Assert.assertNotNull(found);
-      assertBranch(found, token.getName(), token.getGuid(), type, state, isArchived, parent, assocArtId);
-   }
-
-   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int assocArtId) {
-      assertEquals(name, actual.getName());
-      assertEquals(localId, actual.getUuid());
-
+      assertBranch(actual, token.getName(), token.getGuid(), type, state, isArchived, parent, baseTx, sourceTx,
+   private static void assertBranch(BranchReadable actual, String name, Long localId, BranchType type, BranchState state, boolean isArchived, int parent, int baseTx, int sourceTx, int assocArtId) {
+      assertEquals(token.getName(), actual.getName());
       assertEquals(type, actual.getBranchType());
       assertEquals(state, actual.getBranchState());
       assertEquals(isArchived, actual.getArchiveState().isArchived());

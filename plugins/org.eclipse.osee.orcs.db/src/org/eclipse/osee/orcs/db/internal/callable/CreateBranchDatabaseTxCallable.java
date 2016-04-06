@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -108,7 +109,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (jdbcClient.runPreparedQueryFetchObject(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch,
             destinationBranch) > 0) {
-            throw new OseeStateException("Existing merge branch detected for [%d] and [%d]", parentBranch,
+            throw new OseeStateException("Existing merge branch detected for [%s] and [%d]", parentBranch,
                destinationBranch);
          }
       } else if (!newBranchData.getBranchType().isSystemRootBranch()) {
@@ -211,7 +212,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          BranchId parentBranch = newBranchData.getParentBranch();
 
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
-
          if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
                parentBranch, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());

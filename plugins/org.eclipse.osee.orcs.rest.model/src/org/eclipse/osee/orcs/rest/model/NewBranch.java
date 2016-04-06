@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 public class NewBranch {
 
    private String branchName;
-   private long parentBranchId;
+   private BranchId parentBranch;
    private int associatedArtifactId;
    private BranchType branchType;
 
@@ -40,8 +40,8 @@ public class NewBranch {
       return branchName;
    }
 
-   public long getParentBranchId() {
-      return parentBranchId;
+   public BranchId getParentBranch() {
+      return parentBranch;
    }
 
    public int getAssociatedArtifactId() {
@@ -80,8 +80,8 @@ public class NewBranch {
       this.branchName = branchName;
    }
 
-   public void setParentBranchId(long parentBranchId) {
-      this.parentBranchId = parentBranchId;
+   public void setParentBranchId(BranchId parentBranch) {
+      this.parentBranch = parentBranch;
    }
 
    public void setAssociatedArtifactId(int associatedArtifactId) {
@@ -118,7 +118,7 @@ public class NewBranch {
 
    @Override
    public String toString() {
-      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranchId + ", associatedArtifactId=" + associatedArtifactId + ", branchType=" + branchType + ", authorId=" + authorId + ", sourceTransactionId=" + sourceTransactionId + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
+      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifactId + ", branchType=" + branchType + ", authorId=" + authorId + ", sourceTransactionId=" + sourceTransactionId + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
    }
 
 }

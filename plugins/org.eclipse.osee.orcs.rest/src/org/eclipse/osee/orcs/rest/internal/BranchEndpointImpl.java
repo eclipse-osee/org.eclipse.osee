@@ -310,7 +310,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
 
       createData.setFromTransaction(TokenFactory.createTransaction(data.getSourceTransactionId()));
-      createData.setParentBranch(getBranchFromTxId(data.getSourceTransactionId()));
+      createData.setParentBranch(data.getParentBranch());
 
       createData.setMergeDestinationBranchId(data.getMergeDestinationBranchId());
       createData.setMergeAddressingQueryId(data.getMergeAddressingQueryId());
