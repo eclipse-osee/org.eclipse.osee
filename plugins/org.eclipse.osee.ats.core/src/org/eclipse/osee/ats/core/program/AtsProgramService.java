@@ -397,7 +397,11 @@ public class AtsProgramService implements IAtsProgramService {
 
    @Override
    public Collection<IAtsVersion> getVersions(IAtsProgram program) {
-      return services.getProgramService().getTeamDefHoldingVersions(program).getVersions();
+      IAtsTeamDefinition teamDefHoldingVersions = services.getProgramService().getTeamDefHoldingVersions(program);
+      if(teamDefHoldingVersions != null) {
+         return teamDefHoldingVersions.getVersions();
+      }
+      return java.util.Collections.emptyList();
    }
 
    @Override
