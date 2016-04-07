@@ -16,6 +16,7 @@ import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.core.column.IActivityIdUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * Provides for display of ActivityId and ActivityName from related Work Package
@@ -51,8 +52,12 @@ public class ActivityIdColumn implements IActivityIdUtility {
    }
 
    private String getText(IAtsWorkPackage workPackage) {
-      String result;
-      result = String.format("%s - %s", workPackage.getActivityId(), workPackage.getActivityName());
+      String result = "";
+      if (workPackage != null) {
+         String activityId = Strings.isValid(workPackage.getActivityId()) ? workPackage.getActivityId() : "";
+         String activityName = Strings.isValid(workPackage.getActivityName()) ? workPackage.getActivityName() : "";
+         result = String.format("%s - %s", activityId, activityName);
+      }
       return result;
    }
 
