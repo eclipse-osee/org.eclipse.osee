@@ -13,7 +13,9 @@ package org.eclipse.osee.ats.core.column;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
+import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.core.config.WorkPackageUtility;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -47,6 +49,13 @@ public class InsertionColumn extends AbstractServicesColumn {
          Pair<IAtsInsertion, Boolean> insertion = util.getInsertion(services, workItem);
          if (insertion.getFirst() != null) {
             result = String.format("%s%s", insertion.getFirst().getName(), insertion.getSecond() ? " (I)" : "");
+         }
+      } else if (atsObject instanceof IAtsWorkPackage) {
+         IAtsWorkPackage workPackage = (IAtsWorkPackage) atsObject;
+         IAtsInsertionActivity insertionActivity = services.getProgramService().getInsertionActivity(workPackage);
+         if (insertionActivity != null) {
+            IAtsInsertion insertion = services.getProgramService().getInsertion(insertionActivity);
+            result = insertion.getName();
          }
       }
       return result;
