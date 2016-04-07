@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.core.internal.column;
 
 import static org.mockito.Mockito.when;
 import java.util.Collections;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.IAtsAbstractReview;
 import org.eclipse.osee.ats.api.review.IAtsReviewService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
+import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +41,7 @@ public class TeamColumnUtilityTest {
    @Mock private IAtsActionableItem ai;
    @Mock private IAtsWorkItemService workItemService;
    @Mock private IAtsReviewService reviewService;
+   @Mock private IAtsServices services;
    // @formatter:on
 
    @Before
@@ -53,11 +56,12 @@ public class TeamColumnUtilityTest {
       when(reviewService.isStandAloneReview(standAloneReview)).thenReturn(true);
       when(ai.getTeamDefinitionInherited()).thenReturn(teamDef);
       when(ai.getTeamDefinition()).thenReturn(teamDef);
+      when(services.getReviewService()).thenReturn(reviewService);
    }
 
    @Test
    public void testGetColumnText() throws Exception {
-      TeamColumn utility = new TeamColumn(reviewService);
+      TeamColumn utility = new TeamColumn(services);
 
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(teamWf));
       Assert.assertEquals(TEAM_NAME, utility.getColumnText(review));

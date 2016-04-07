@@ -32,9 +32,9 @@ import org.eclipse.osee.ats.core.column.InsertionColumn;
 import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
+import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.UuidColumn;
-import org.eclipse.osee.ats.core.internal.column.TeamColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 
 /**
@@ -70,14 +70,14 @@ public class AtsColumnService implements IAtsColumnService {
          }
       }
 
-      // Add from coded columns
+      // Add from coded columns; this will only happen once per column as they're cached after this check
       if (column == null) {
          if (id.equals(AtsColumnId.ActionableItem.getId())) {
             column = new ActionableItemsColumn(services);
          } else if (id.equals(AtsColumnId.LegacyPcrId.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.LegacyPcrIdColumn, services);
          } else if (id.equals(AtsColumnId.Team.getId())) {
-            column = new TeamColumn(services.getReviewService());
+            column = new TeamColumn(services);
          } else if (id.equals(AtsColumnId.Assignees.getId())) {
             column = new AssigneeColumn(services);
          } else if (id.equals(AtsColumnId.AtsId.getId())) {

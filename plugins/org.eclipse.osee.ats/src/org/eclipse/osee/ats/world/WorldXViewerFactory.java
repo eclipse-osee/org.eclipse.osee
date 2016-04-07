@@ -62,7 +62,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          AtsIdColumnUI.getInstance(),
          CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(),
-         TeamColumn.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.TeamColumn, AtsClientService.get().getServices()),
          NotesColumn.getInstance(),
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),

@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnToken {
 
+   public static AtsColumnIdValueColumn TeamColumn = new AtsColumnIdValueColumn(AtsColumnId.Team, "Team", 50,
+      ColumnAlign.Left.name(), true, ColumnType.String, false, "Team that has been assigned to work this Action.");
    public static AtsColumnIdValueColumn InsertionActivityColumn = new AtsColumnIdValueColumn(
       AtsColumnId.InsertionActivity, "Insertion Activity", 80, ColumnAlign.Left.name(), false, ColumnType.String, false,
       "Insertion Activity specified by related Work Package.  (I) if inherited from parent.");
