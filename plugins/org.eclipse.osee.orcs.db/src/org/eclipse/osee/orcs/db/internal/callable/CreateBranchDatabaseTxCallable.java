@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -35,7 +37,6 @@ import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -90,7 +91,6 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private static final String INSERT_BRANCH =
       "INSERT INTO osee_branch (branch_id, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state, baseline_transaction_id, inherit_access_control) VALUES (?,?,?,?,?,?,?,?,?,?)";
-   protected static final int NULL_PARENT_BRANCH_ID = -1;
    private static final String SELECT_INHERIT_ACCESS_CONTROL =
       "SELECT inherit_access_control from osee_branch where branch_id = ?";
 
@@ -104,7 +104,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       this.newBranchData = branchData;
    }
 
-   private void checkPreconditions(JdbcConnection connection, Long parentBranch, Long destinationBranch) throws OseeCoreException {
+   private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, Long destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
          if (jdbcClient.runPreparedQueryFetchObject(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch,
             destinationBranch) > 0) {
@@ -144,10 +144,10 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    @Override
    public void handleTxWork(JdbcConnection connection) {
-      Long parentBranchUuid = newBranchData.getParentBranchUuid();
+      BranchId parentBranch = newBranchData.getParentBranch();
       Long destinationBranchUuid = newBranchData.getMergeDestinationBranchId();
 
-      checkPreconditions(connection, parentBranchUuid, destinationBranchUuid);
+      checkPreconditions(connection, parentBranch, destinationBranchUuid);
 
       long uuid = newBranchData.getUuid();
 
@@ -167,18 +167,14 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          }
       }
 
-      int inheritAccessControl = 0;
-      if (parentBranchUuid != null) {
-         inheritAccessControl =
-            jdbcClient.runPreparedQueryFetchObject(connection, 0, SELECT_INHERIT_ACCESS_CONTROL, parentBranchUuid);
-      }
+      int inheritAccessControl =
+         jdbcClient.runPreparedQueryFetchObject(connection, 0, SELECT_INHERIT_ACCESS_CONTROL, parentBranch);
 
       //write to branch table
-      long parentBranchId = parentBranchUuid != null ? parentBranchUuid : NULL_PARENT_BRANCH_ID;
       Object[] toInsert = new Object[] {
          uuid,
          truncatedName,
-         parentBranchId,
+         parentBranch,
          sourceTx,
          BranchArchivedState.UNARCHIVED.getValue(),
          newBranchData.getAssociatedArtifactId(),
@@ -190,7 +186,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
 
       if (inheritAccessControl != 0) {
-         copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranchUuid, uuid);
+         copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranch, uuid);
       }
 
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
@@ -204,8 +200,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private void addMergeBranchEntry(double workAmount, JdbcConnection connection) {
       if (newBranchData.getBranchType().isMergeBranch()) {
-         long parentBranchId = newBranchData.getParentBranchUuid() != null ? newBranchData.getParentBranchUuid() : -1;
-         jdbcClient.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, parentBranchId,
+         jdbcClient.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, newBranchData.getParentBranch(),
             newBranchData.getMergeDestinationBranchId(), newBranchData.getUuid(), 0);
       }
    }
@@ -213,19 +208,17 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private void populateBaseTransaction(double workAmount, JdbcConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
          HashSet<Long> gammas = new HashSet<>(100000);
-         long parentBranchId = -1;
+         BranchId parentBranch = newBranchData.getParentBranch();
 
          OseePreparedStatement addressing = jdbcClient.getBatchStatement(connection, INSERT_ADDRESSING);
-         if (newBranchData.getParentBranchUuid() != null) {
-            parentBranchId = newBranchData.getParentBranchUuid();
-         }
+
          if (newBranchData.getBranchType().isMergeBranch()) {
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
             populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
-               parentBranchId, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
+               parentBranch, TxChange.NOT_CURRENT.getValue(), newBranchData.getMergeAddressingQueryId());
          } else {
-            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranchId,
+            populateAddressingToCopy(connection, addressing, baseTxId, gammas, SELECT_ADDRESSING, parentBranch,
                sourceTxId);
          }
 
@@ -253,7 +246,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void copyAccessRules(JdbcConnection connection, int userArtId, Long parentBranch, Long branchUuid) {
+   private void copyAccessRules(JdbcConnection connection, int userArtId, BranchId parentBranch, Long branchUuid) {
       int lock = PermissionEnum.LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 

@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -27,7 +28,6 @@ import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.orcs.data.CreateBranchData;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.accessor.UpdatePreviousTxCurrent;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
 /**
@@ -76,7 +76,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchData.getUuid(), nextTransactionId,
          creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
 
-      populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranchUuid(),
+      populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
          branchData.getSavedTransaction().getGuid());
 
       UpdatePreviousTxCurrent updater =
@@ -84,15 +84,11 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       updater.updateTxNotCurrentsFromTx(nextTransactionId);
    }
 
-   private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, Long parentBranch, int copyTxId) throws OseeCoreException {
+   private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, BranchId parentBranch, int copyTxId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<>();
       HashSet<Long> gammas = new HashSet<>(100000);
-      long parentBranchId = RelationalConstants.BRANCH_SENTINEL;
-      if (parentBranch != null) {
-         parentBranchId = parentBranch;
-      }
 
-      populateAddressingToCopy(connection, data, intoTx, gammas, SELECT_ADDRESSING, parentBranchId, copyTxId);
+      populateAddressingToCopy(connection, data, intoTx, gammas, SELECT_ADDRESSING, parentBranch, copyTxId);
 
       if (!data.isEmpty()) {
          jdbcClient.runBatchUpdate(connection, INSERT_ADDRESSING, data);

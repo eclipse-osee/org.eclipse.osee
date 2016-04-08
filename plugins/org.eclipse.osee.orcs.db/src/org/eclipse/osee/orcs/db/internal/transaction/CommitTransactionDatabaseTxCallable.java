@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,7 +29,6 @@ import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.callable.AbstractDatastoreTxCallable;
 import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar

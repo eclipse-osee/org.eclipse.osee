@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -33,7 +34,6 @@ import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
 import org.eclipse.osee.orcs.db.internal.loader.ProxyDataFactory;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -56,7 +56,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    public VersionData createDefaultVersionData() {
       // @formatter:off
       return createVersion(
-         RelationalConstants.BRANCH_SENTINEL,
+         RelationalConstants.BRANCH_SENTINEL.getId(),
          RelationalConstants.TRANSACTION_SENTINEL,
          RelationalConstants.GAMMA_SENTINEL,
          RelationalConstants.IS_HISTORICAL_DEFAULT,

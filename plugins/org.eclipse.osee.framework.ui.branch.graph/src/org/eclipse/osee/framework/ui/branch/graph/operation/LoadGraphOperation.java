@@ -15,7 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -71,7 +71,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
          if (editor != null) {
             ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }
-         Branch path = transaction.getFullBranch();
+         IOseeBranch path = transaction.getBranchToken();
 
          monitor.setTaskName("Initializating cache");
 
@@ -100,7 +100,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       return Status.OK_STATUS;
    }
 
-   private void updateView(IProgressMonitor monitor, Branch branch, TransactionRecord revision) throws OseeCoreException {
+   private void updateView(IProgressMonitor monitor, IOseeBranch branch, TransactionRecord revision) throws OseeCoreException {
       monitor.setTaskName("Finding root node");
       int unitWork = TASK_STEPS / revision.getId();
       if (unitWork < 1) {

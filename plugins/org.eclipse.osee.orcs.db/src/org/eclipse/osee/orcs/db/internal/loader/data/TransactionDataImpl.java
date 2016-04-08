@@ -11,17 +11,17 @@
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionDataImpl extends OrcsObjectImpl<Integer>implements TxOrcsData {
+public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOrcsData {
 
    private int authorId = RelationalConstants.ART_ID_SENTINEL;
-   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchId = RelationalConstants.BRANCH_SENTINEL.getId();
    private String comment = RelationalConstants.DEFAULT_COMMENT;
    private int commitId = RelationalConstants.ART_ID_SENTINEL;
    private TransactionDetailsType type = TransactionDetailsType.INVALID;

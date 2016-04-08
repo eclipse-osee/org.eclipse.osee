@@ -14,6 +14,7 @@ import java.util.Date;
 import java.util.Random;
 import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -29,8 +30,6 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
 import org.eclipse.osee.framework.core.model.access.Scope;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
@@ -92,17 +91,15 @@ public final class MockDataFactory {
       return new Branch(uuid, "branch_" + index, branchType, branchState, isArchived, false);
    }
 
-   public static TransactionRecord createTransaction(int index, int branchUuid) {
+   public static TransactionRecord createTransaction(int index, long branchUuid) {
       TransactionDetailsType type =
          TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
       int value = index;
       if (value == 0) {
          value++;
       }
-      MockOseeDataAccessor<Branch> accessor = new MockOseeDataAccessor<>();
-      BranchCache cache = new BranchCache(accessor, new TransactionCache());
-      return new TransactionRecord(value * 47, branchUuid, "comment_" + value, new Date(), value * 37, value * 42, type,
-         cache);
+      IOseeBranch branch = TokenFactory.createBranch(branchUuid, "fake test branch");
+      return new TransactionRecord(value * 47, branch, "comment_" + value, new Date(), value * 37, value * 42, type);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

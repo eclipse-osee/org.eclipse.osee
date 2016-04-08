@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -32,7 +31,7 @@ public class GraphCache {
    private final Map<BranchId, BranchModel> branchToBranchModelMap;
    private final Map<Long, TxModel> txNumberToTxModelMap;
 
-   public GraphCache(Branch rootBranch) throws OseeCoreException {
+   public GraphCache(IOseeBranch rootBranch) throws OseeCoreException {
       this.branchToBranchModelMap = new HashMap<>();
       this.txNumberToTxModelMap = new HashMap<>();
       this.rootModel = this.getOrCreateBranchModel(rootBranch);

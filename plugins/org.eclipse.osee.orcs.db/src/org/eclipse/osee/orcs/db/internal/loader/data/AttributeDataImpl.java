@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar

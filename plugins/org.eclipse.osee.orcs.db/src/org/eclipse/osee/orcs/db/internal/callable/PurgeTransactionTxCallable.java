@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.ITransaction;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -30,7 +31,6 @@ import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 
@@ -97,10 +97,10 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
          List<Object[]> txsToDelete = new ArrayList<>();
 
-         long txBranchId = getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL,
+         long txBranchId = getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.BRANCH_SENTINEL.getId(),
             SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
 
-         Conditions.checkExpressionFailOnTrue(RelationalConstants.BRANCH_SENTINEL == txBranchId,
+         Conditions.checkExpressionFailOnTrue(RelationalConstants.BRANCH_SENTINEL.equals(txBranchId),
             "Cannot find branch for transaction record [%s]", txIdToDelete);
          txsToDelete.add(new Object[] {txBranchId, txIdToDelete});
 

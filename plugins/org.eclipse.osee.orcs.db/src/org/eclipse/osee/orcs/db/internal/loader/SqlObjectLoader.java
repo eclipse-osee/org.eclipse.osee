@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader;
 
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -44,7 +45,6 @@ import org.eclipse.osee.orcs.db.internal.loader.processor.RelationLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.TransactionLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandler;
 import org.eclipse.osee.orcs.db.internal.sql.SqlHandlerFactory;

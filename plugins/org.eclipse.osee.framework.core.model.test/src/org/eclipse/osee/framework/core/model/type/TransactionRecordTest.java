@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.core.model.type;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -35,7 +37,7 @@ public class TransactionRecordTest {
 
    private final TransactionRecord transaction;
    private final int transactionNumber;
-   private final Long branchId;
+   private final BranchId branch;
    private final TransactionDetailsType txType;
 
    private final String comment;
@@ -43,9 +45,9 @@ public class TransactionRecordTest {
    private final int authorArtId;
    private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, Long branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, IOseeBranch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
-      this.branchId = branchId;
+      this.branch = branch;
       this.comment = comment;
       this.time = time;
       this.authorArtId = authorArtId;
@@ -53,12 +55,12 @@ public class TransactionRecordTest {
       this.txType = txType;
 
       this.transaction =
-         new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType, null);
+         new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
    }
 
    @Test
    public void getBranch() {
-      Assert.assertEquals(branchId, transaction.getBranchId());
+      Assert.assertEquals(branch, transaction.getBranch());
    }
 
    @Test
@@ -143,7 +145,7 @@ public class TransactionRecordTest {
 
    @Test
    public void testToString() {
-      Assert.assertEquals(transactionNumber + ":" + branchId, transaction.toString());
+      Assert.assertEquals("branchId: " + branch.getId() + " txId: " + transactionNumber, transaction.toString());
    }
 
    @Parameters
@@ -151,13 +153,13 @@ public class TransactionRecordTest {
       Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
-         Long branchId = index * 9L;
+         IOseeBranch branch = TokenFactory.createBranch(index * 9L, "fake test branch");
          String comment = GUID.create();
          Date time = new Date();
          int authorArtId = index * 47;
          int commitArtId = index * 37;
          TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
-         data.add(new Object[] {transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType});
+         data.add(new Object[] {transactionNumber, branch, comment, time, authorArtId, commitArtId, txType});
       }
       return data;
    }

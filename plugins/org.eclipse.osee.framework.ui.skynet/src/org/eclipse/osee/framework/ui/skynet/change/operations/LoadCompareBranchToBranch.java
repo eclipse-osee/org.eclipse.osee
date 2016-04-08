@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -37,7 +36,7 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      Branch startBranch = uiData.getTxDelta().getStartTx().getFullBranch();
+      BranchId startBranch = uiData.getTxDelta().getStartTx().getBranch();
       BranchId otherBranch = branchProvider.getBranch(monitor);
       checkForCancelledStatus(monitor);
 

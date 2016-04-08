@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
@@ -130,13 +129,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
 
    @Override
    public Collection<TransactionRecord> getAllDirty() {
-      Set<TransactionRecord> dirtys = new HashSet<>();
-      for (TransactionRecord record : transactionIdCache.values()) {
-         if (record.isDirty()) {
-            dirtys.add(record);
-         }
-      }
-      return dirtys;
+      return new HashSet<>();
    }
 
    @Override

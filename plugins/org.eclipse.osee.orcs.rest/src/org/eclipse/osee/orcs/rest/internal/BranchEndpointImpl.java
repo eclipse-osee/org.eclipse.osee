@@ -145,17 +145,16 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return artifact;
    }
 
-   private Long getBranchUuidFromTxId(int tx) {
+   private BranchId getBranchFromTxId(int tx) {
       TransactionQuery txQuery = newQuery().transactionQuery();
-      Long branchId = txQuery.andTxId(tx).getResults().getExactlyOne().getBranchId();
-      return branchId;
+      return txQuery.andTxId(tx).getResults().getExactlyOne().getBranch();
    }
 
    private BranchReadable getBranchById(long branchUuid) {
       ResultSet<BranchReadable> results = newBranchQuery().andUuids(branchUuid)//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return results.getExactlyOne();
    }
 
@@ -171,9 +170,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived()//
-      .includeDeleted()//
-      .getResults();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResults();
       return asBranches(results);
    }
 
@@ -234,20 +233,20 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public List<Branch> getBaselineBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.BASELINE)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.BASELINE)//
+         .getResults();
       return asBranches(results);
    }
 
    @Override
    public List<Branch> getWorkingBranches() {
       ResultSet<BranchReadable> results = newBranchQuery()//
-      .includeArchived(false) //
-      .includeDeleted(false) //
-      .andIsOfType(BranchType.WORKING)//
-      .getResults();
+         .includeArchived(false) //
+         .includeDeleted(false) //
+         .andIsOfType(BranchType.WORKING)//
+         .getResults();
       return asBranches(results);
    }
 
@@ -311,7 +310,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
 
       createData.setFromTransaction(TokenFactory.createTransaction(data.getSourceTransactionId()));
-      createData.setParentBranchUuid(getBranchUuidFromTxId(data.getSourceTransactionId()));
+      createData.setParentBranch(getBranchFromTxId(data.getSourceTransactionId()));
 
       createData.setMergeDestinationBranchId(data.getMergeDestinationBranchId());
       createData.setMergeAddressingQueryId(data.getMergeAddressingQueryId());
@@ -592,9 +591,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    private List<IOseeBranch> getExportImportBranches(Collection<Long> branchUids) {
       ResultSet<IOseeBranch> resultsAsId = newBranchQuery().andUuids(branchUids) //
-      .includeArchived()//
-      .includeDeleted()//
-      .getResultsAsId();
+         .includeArchived()//
+         .includeDeleted()//
+         .getResultsAsId();
       return Lists.newLinkedList(resultsAsId);
    }
 

@@ -10,63 +10,48 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeff C. Phillips
  */
 public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
-   private static final int NON_EXISTING_BRANCH = -1;
    private final TransactionDetailsType txType;
-
-   private final long branchUuid;
+   private final IOseeBranch branch;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
-   private final BranchCache branchCache;
 
-   public TransactionRecord(int transactionNumber, long branchUuid, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType, BranchCache branchCache) {
+   public TransactionRecord(int transactionNumber, IOseeBranch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       super(transactionNumber);
-      this.branchUuid = branchUuid;
+      this.branch = branch;
       this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
       this.txType = txType;
-      this.branchCache = branchCache;
    }
 
-   public TransactionRecord(int transactionNumber, BranchCache branchCache) {
-      this(transactionNumber, NON_EXISTING_BRANCH, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID,
-         branchCache);
-   }
-
-   public boolean exists() {
-      return branchUuid != NON_EXISTING_BRANCH;
+   public TransactionRecord(int transactionNumber) {
+      this(transactionNumber, BRANCH_SENTINEL, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
    }
 
    @Override
-   public Long getBranchId() {
-      return branchUuid;
+   public BranchId getBranch() {
+      return branch;
    }
 
    public final IOseeBranch getBranchToken() {
-      return getFullBranch();
-   }
-
-   public Branch getFullBranch() {
-      Conditions.checkNotNull(branchCache, "BranchCache was not set after construction");
-      return branchCache.getByUuid(getBranchId());
+      return branch;
    }
 
    public int getId() {
@@ -120,19 +105,7 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
 
    @Override
    public String toString() {
-      try {
-         return String.format("%s (%s:%s)", getFullBranch(), getGuid(), getBranchId());
-      } catch (OseeCoreException ex) {
-         return String.format("%s:%s", getGuid(), getBranchId());
-      }
-   }
-
-   public boolean isDirty() {
-      return false;
-   }
-
-   public void clearDirty() {
-      //
+      return "branchId: " + getBranchId() + " txId: " + getGuid();
    }
 
    public boolean isIdValid() {

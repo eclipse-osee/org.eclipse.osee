@@ -41,11 +41,11 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
 
       TransactionDelta txDelta = uiData.getTxDelta();
       if (txDelta.areOnTheSameBranch()) {
-         selectedBranch[0] = txDelta.getStartTx().getFullBranch();
+         selectedBranch[0] = txDelta.getStartTx().getBranchToken();
       } else {
          final Collection<BranchId> selectable = new ArrayList<>();
-         selectable.add(uiData.getTxDelta().getStartTx().getFullBranch());
-         selectable.add(uiData.getTxDelta().getEndTx().getFullBranch());
+         selectable.add(uiData.getTxDelta().getStartTx().getBranchToken());
+         selectable.add(uiData.getTxDelta().getEndTx().getBranchToken());
          IStatus status = executeInUiThread(selectable, selectedBranch);
          monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
       }

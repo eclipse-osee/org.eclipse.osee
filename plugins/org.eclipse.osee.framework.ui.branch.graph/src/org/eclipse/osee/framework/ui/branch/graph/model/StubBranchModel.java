@@ -14,7 +14,7 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 
 /**
  * @author Roberto E. Escobar
@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 public class StubBranchModel extends BranchModel {
    private static final long serialVersionUID = -6424441243526185426L;
 
-   public static final Branch STUB_BRANCH = null;
+   public static final IOseeBranch STUB_BRANCH = null;
 
    private final Map<Long, TxModel> stubs;
 

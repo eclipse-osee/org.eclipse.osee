@@ -97,7 +97,7 @@ public class BranchDataFactory {
       createData.setAssociatedArtifact(associatedArtifact);
       createData.setTxCopyBranchType(bCopyTx);
       if (parent != null) {
-         createData.setParentBranchUuid(parent.getGuid());
+         createData.setParentBranch(parent);
       }
       return createData;
    }

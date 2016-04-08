@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.executors;
 
-import static org.eclipse.osee.orcs.db.internal.sql.RelationalConstants.MIN_FETCH_SIZE;
+import static org.eclipse.osee.framework.core.data.RelationalConstants.MIN_FETCH_SIZE;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;

@@ -21,7 +21,6 @@ import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxData;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxModel;
@@ -77,7 +76,7 @@ public class FigureFactory {
 
    public static IFigure createTxNoteFigure(TxModel txModel) {
       TxData txData = txModel.getTxData();
-      Branch branch = txData.getBranch();
+      IOseeBranch branch = txData.getBranch();
       String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getShortName());
       return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());
    }

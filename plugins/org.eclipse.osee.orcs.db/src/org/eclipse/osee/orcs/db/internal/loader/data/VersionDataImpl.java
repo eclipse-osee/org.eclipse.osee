@@ -10,15 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.db.internal.sql.RelationalConstants;
 
 /**
  * @author Roberto E. Escobar
  */
 public class VersionDataImpl implements VersionData {
 
-   private Long branchId = RelationalConstants.BRANCH_SENTINEL;
+   private Long branchId = RelationalConstants.BRANCH_SENTINEL.getId();
    private int txId = RelationalConstants.TRANSACTION_SENTINEL;
    private long gamma = RelationalConstants.GAMMA_SENTINEL;
    private boolean historical = RelationalConstants.IS_HISTORICAL_DEFAULT;

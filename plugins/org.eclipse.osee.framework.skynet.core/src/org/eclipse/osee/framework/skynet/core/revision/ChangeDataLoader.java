@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
@@ -142,7 +143,7 @@ public class ChangeDataLoader extends AbstractOperation {
             // if basGamma is null then this must be a new artifact
             // Otherwise, change must be on IS branch and WAS branch.
             // In either case, set the baseTxArtifact to the base of the start branch
-            baseTxArtifact = bulkLoaded.get(txDelta.getStartTx().getFullBranch().getBaseTransaction(), artId);
+            baseTxArtifact = bulkLoaded.get(BranchManager.getBaseTransaction(txDelta.getStartTx().getBranch()), artId);
          }
 
          ArtifactDelta artifactDelta = new ArtifactDelta(txDelta, startTxArtifact, endTxArtifact, baseTxArtifact);
@@ -166,7 +167,7 @@ public class ChangeDataLoader extends AbstractOperation {
             startTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getEndTx(), artId);
          } else {
-            startTxArtifact = bulkLoaded.get(txDelta.getStartTx().getFullBranch().getBaseTransaction(), artId);
+            startTxArtifact = bulkLoaded.get(BranchManager.getBaseTransaction(txDelta.getStartTx().getBranch()), artId);
             endTxArtifact = bulkLoaded.get(txDelta.getStartTx(), artId);
          }
 
@@ -256,7 +257,7 @@ public class ChangeDataLoader extends AbstractOperation {
       }
 
       if (!txDelta.areOnTheSameBranch()) {
-         preloadArtifacts(bulkLoaded, artIds, txDelta.getStartTx().getFullBranch().getBaseTransaction(), true);
+         preloadArtifacts(bulkLoaded, artIds, BranchManager.getBaseTransaction(txDelta.getStartTx().getBranch()), true);
       }
    }
 
@@ -306,9 +307,9 @@ public class ChangeDataLoader extends AbstractOperation {
    private static boolean isAllowableChange(ChangeIgnoreType ignoreType) {
       return //
       ignoreType.isNone() || //
-      ignoreType.isResurrected() || //
-      ignoreType.isDeletedOnDestAndNotResurrected() || //
-      ignoreType.isDeletedOnDestination();
+         ignoreType.isResurrected() || //
+         ignoreType.isDeletedOnDestAndNotResurrected() || //
+         ignoreType.isDeletedOnDestination();
    }
 
 }

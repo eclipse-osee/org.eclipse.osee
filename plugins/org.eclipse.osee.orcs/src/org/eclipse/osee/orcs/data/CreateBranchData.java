@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.Identifiable;
@@ -40,7 +41,7 @@ public class CreateBranchData implements Identifiable<Long> {
    private long mergeDestinationBranchId = MERGE_DESTINATION_BRANCH_ID;
 
    private boolean txCopyBranchType = false;
-   private Long parentBranchUuid;
+   private BranchId parentBranch;
 
    public CreateBranchData() {
       this(Lib.generateUuid());
@@ -181,12 +182,12 @@ public class CreateBranchData implements Identifiable<Long> {
       this.branchUuid = uuid;
    }
 
-   public void setParentBranchUuid(Long uuid) {
-      this.parentBranchUuid = uuid;
+   public void setParentBranch(BranchId parentBranch) {
+      this.parentBranch = parentBranch;
    }
 
-   public Long getParentBranchUuid() {
-      return parentBranchUuid;
+   public BranchId getParentBranch() {
+      return parentBranch;
    }
 
 }

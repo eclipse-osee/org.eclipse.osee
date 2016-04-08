@@ -24,23 +24,18 @@ import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mockito;
 
 /**
  * Test unit for {@AtsBranchServiceImpl}
- * 
+ *
  * @author Shawn F. Cook
  */
 public class AtsBranchServiceImplTest {
@@ -102,12 +97,8 @@ public class AtsBranchServiceImplTest {
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
       //Test TxRecords
-      Branch branch = BranchManager.getBranch(SAW_Bld_1);
-      BranchCache branchCache = Mockito.mock(BranchCache.class);
-      Mockito.when(branchCache.getByUuid(Matchers.anyLong())).thenReturn(branch);
-      TransactionRecord txRecord =
-         new TransactionRecord(1234, branch.getUuid(), "comment", new Date(), UserManager.getUser().getArtId(),
-            UserManager.getUser().getArtId(), TransactionDetailsType.Baselined, branchCache);
+      TransactionRecord txRecord = new TransactionRecord(1234, SAW_Bld_1, "comment", new Date(),
+         UserManager.getUser().getArtId(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined);
       Collection<ITransaction> commitTxs = new ArrayList<>();
       Collection<ICommitConfigItem> configArtSet = new HashSet<>();
       commitTxs.add(txRecord);
