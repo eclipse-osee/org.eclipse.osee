@@ -19,7 +19,6 @@ import org.eclipse.osee.ats.agile.SprintOrderColumn;
 import org.eclipse.osee.ats.api.config.AtsAttributeValueColumn;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.column.ActionableItemOwner;
-import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsColumnIdUI;
@@ -154,7 +153,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          ChangeTypeColumnUI.getInstance(),
          AssigneeColumnUI.getInstance(),
          getConfigColumn(AtsColumnToken.TitleColumn),
-         ActionableItemsColumnUI.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.ActionableItemsColumn, AtsClientService.get().getServices()),
          AtsIdColumnUI.getInstance(),
          CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(),
