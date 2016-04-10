@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.ChangeTypeColumn;
+import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
@@ -47,7 +47,7 @@ public class ChangeTypeColumnTest {
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(codeArt));
-      Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(codeArt, ChangeTypeColumn.getInstance(), 0));
+      Assert.assertNotNull(ChangeTypeColumnUI.getInstance().getColumnImage(codeArt, ChangeTypeColumnUI.getInstance(), 0));
 
       IAtsAction action = codeArt.getParentAction();
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action));
@@ -59,21 +59,21 @@ public class ChangeTypeColumnTest {
       reqArt.persist(CategoryColumnTest.class.getSimpleName());
 
       Assert.assertEquals(ChangeType.None, ChangeTypeUtil.getChangeType(reqArt));
-      Assert.assertNull(ChangeTypeColumn.getInstance().getColumnImage(reqArt, ChangeTypeColumn.getInstance(), 0));
+      Assert.assertNull(ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
 
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action));
       Assert.assertEquals("Problem",
-         ChangeTypeColumn.getInstance().getColumnText(action, ChangeTypeColumn.getInstance(), 0));
+         ChangeTypeColumnUI.getInstance().getColumnText(action, ChangeTypeColumnUI.getInstance(), 0));
 
       // set change type to Improvement
       ChangeTypeUtil.setChangeType(reqArt, ChangeType.Improvement);
       reqArt.persist(CategoryColumnTest.class.getSimpleName());
 
       Assert.assertEquals(ChangeType.Improvement, ChangeTypeUtil.getChangeType(reqArt));
-      Assert.assertNotNull(ChangeTypeColumn.getInstance().getColumnImage(reqArt, ChangeTypeColumn.getInstance(), 0));
+      Assert.assertNotNull(ChangeTypeColumnUI.getInstance().getColumnImage(reqArt, ChangeTypeColumnUI.getInstance(), 0));
 
       Assert.assertEquals(ChangeType.Problem, ChangeTypeUtil.getChangeType(action));
-      String columnText = ChangeTypeColumn.getInstance().getColumnText(action, ChangeTypeColumn.getInstance(), 0);
+      String columnText = ChangeTypeColumnUI.getInstance().getColumnText(action, ChangeTypeColumnUI.getInstance(), 0);
       Assert.assertTrue(columnText.equals("Problem; Improvement") || columnText.equals("Improvement; Problem"));
 
       TestUtil.severeLoggingEnd(loggingMonitor);

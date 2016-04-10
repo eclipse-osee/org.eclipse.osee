@@ -16,18 +16,16 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
@@ -47,16 +45,16 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
+public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
 
-   public static ChangeTypeColumn instance = new ChangeTypeColumn();
+   public static ChangeTypeColumnUI instance = new ChangeTypeColumnUI();
 
-   public static ChangeTypeColumn getInstance() {
+   public static ChangeTypeColumnUI getInstance() {
       return instance;
    }
 
-   private ChangeTypeColumn() {
-      super(AtsAttributeTypes.ChangeType, 22, XViewerAlign.Center, true, SortDataType.String, true, "");
+   private ChangeTypeColumnUI() {
+      super(AtsColumnToken.ChangeTypeColumn);
    }
 
    /**
@@ -64,8 +62,8 @@ public class ChangeTypeColumn extends XViewerAtsAttributeValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public ChangeTypeColumn copy() {
-      ChangeTypeColumn newXCol = new ChangeTypeColumn();
+   public ChangeTypeColumnUI copy() {
+      ChangeTypeColumnUI newXCol = new ChangeTypeColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }

@@ -21,6 +21,7 @@ public enum AtsColumnId implements IAtsColumnId {
    ActivityId("ats.column.activityId"),
    Assignees("ats.column.assignees"),
    AtsId("ats.id"),
+   ChangeType("ats.Change Type"),
    Insertion("ats.column.insertion"),
    InsertionActivity("ats.column.insertionActivity"),
    LegacyPcrId("ats.column.legacyPcr"),
