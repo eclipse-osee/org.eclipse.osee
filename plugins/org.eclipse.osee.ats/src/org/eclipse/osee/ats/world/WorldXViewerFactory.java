@@ -84,7 +84,7 @@ import org.eclipse.osee.ats.column.PercentCompleteTasksReviewsColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.PercentReworkColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.column.ProgramColumnUI;
 import org.eclipse.osee.ats.column.RelatedArtifactChangedColumn;
 import org.eclipse.osee.ats.column.RelatedArtifactLastModifiedByColumn;
@@ -150,7 +150,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
       return new XViewerColumn[] {
          new AtsColumnIdUI(AtsColumnToken.TypeColumn, AtsClientService.get().getServices()),
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
-         PriorityColumn.getInstance(),
+         PriorityColumnUI.getInstance(),
          ChangeTypeColumn.getInstance(),
          AssigneeColumnUI.getInstance(),
          getConfigColumn(AtsColumnToken.TitleColumn),

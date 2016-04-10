@@ -99,6 +99,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new PercentCompleteTasksColumn(services);
          } else if (id.equals(AtsColumnId.Uuid.getId())) {
             column = new UuidColumn(services);
+         } else if (id.equals(AtsColumnId.Priority.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.PriorityColumn, services);
          } else if (id.equals(AtsColumnId.WorkPackageName.getId())) {
             column = new WorkPackageNameColumn(services.getEarnedValueServiceProvider());
          } else if (id.equals(AtsColumnId.WorkPackageId.getId())) {

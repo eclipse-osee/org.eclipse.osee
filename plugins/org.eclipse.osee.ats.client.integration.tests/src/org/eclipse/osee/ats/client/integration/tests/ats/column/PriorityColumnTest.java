@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
@@ -34,22 +34,22 @@ public class PriorityColumnTest {
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(reqArt, PriorityColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(reqArt, PriorityColumnUI.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(codeArt, PriorityColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(codeArt, PriorityColumnUI.getInstance(), 0));
 
       PeerToPeerReviewArtifact peerArt =
          (PeerToPeerReviewArtifact) codeArt.getRelatedArtifact(AtsRelationTypes.TeamWorkflowToReview_Review);
-      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(peerArt, PriorityColumn.getInstance(), 0));
+      Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(peerArt, PriorityColumnUI.getInstance(), 0));
 
       TaskArtifact taskArt =
          (TaskArtifact) codeArt.getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_Task).iterator().next();
-      Assert.assertEquals("", PriorityColumn.getInstance().getColumnText(taskArt, PriorityColumn.getInstance(), 0));
+      Assert.assertEquals("", PriorityColumnUI.getInstance().getColumnText(taskArt, PriorityColumnUI.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals("3", PriorityColumn.getInstance().getColumnText(actionArt, PriorityColumn.getInstance(), 0));
+      Assert.assertEquals("3", PriorityColumnUI.getInstance().getColumnText(actionArt, PriorityColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

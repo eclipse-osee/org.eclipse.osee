@@ -15,13 +15,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.PromptChangeUtil;
@@ -38,16 +37,16 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class PriorityColumn extends XViewerAtsAttributeValueColumn {
+public class PriorityColumnUI extends XViewerAtsAttributeValueColumn {
 
-   public static PriorityColumn instance = new PriorityColumn();
+   public static PriorityColumnUI instance = new PriorityColumnUI();
 
-   public static PriorityColumn getInstance() {
+   public static PriorityColumnUI getInstance() {
       return instance;
    }
 
-   private PriorityColumn() {
-      super(AtsAttributeTypes.PriorityType, 20, XViewerAlign.Left, true, SortDataType.String, true, "");
+   private PriorityColumnUI() {
+      super(AtsColumnToken.PriorityColumn);
    }
 
    /**
@@ -55,8 +54,8 @@ public class PriorityColumn extends XViewerAtsAttributeValueColumn {
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public PriorityColumn copy() {
-      PriorityColumn newXCol = new PriorityColumn();
+   public PriorityColumnUI copy() {
+      PriorityColumnUI newXCol = new PriorityColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }

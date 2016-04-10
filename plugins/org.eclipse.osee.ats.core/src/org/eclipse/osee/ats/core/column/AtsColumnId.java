@@ -27,6 +27,7 @@ public enum AtsColumnId implements IAtsColumnId {
    Name("framework.artifact.name"),
    PercentCompleteWorkflow("ats.column.workflowPercentComplete"),
    PercentCompleteTasks("ats.column.taskPercentComplete"),
+   Priority("ats.column.Priority"),
    State("ats.column.state"),
    Team("ats.column.team"),
    Title("framework.artifact.name.Title"),

@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -58,7 +58,7 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
          backlogCols);
       WorldXViewerUtil.addColumn(this,
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()), 74, backlogCols);
-      WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, backlogCols);
+      WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, backlogCols);
       WorldXViewerUtil.addColumn(this, TargetedVersionColumn.getInstance(), 50, backlogCols);

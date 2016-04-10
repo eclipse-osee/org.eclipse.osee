@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnToken {
 
+   // ColumnId columns
    public static AtsColumnIdValueColumn StateColumn = new AtsColumnIdValueColumn(AtsColumnId.State, "State", 75,
       ColumnAlign.Left.name(), true, ColumnType.String, false, null);
    public static AtsColumnIdValueColumn TypeColumn = new AtsColumnIdValueColumn(AtsColumnId.Type, "Type", 150,
@@ -34,6 +35,11 @@ public class AtsColumnToken {
    public static AtsColumnIdValueColumn InsertionColumn =
       new AtsColumnIdValueColumn(AtsColumnId.Insertion, "Insertion", 80, ColumnAlign.Left.name(), false,
          ColumnType.String, false, "Insertion specified by related Work Package.  (I) if inherited from parent.", true);
+
+   // AttributeValue columns
+   public static AtsAttributeValueColumn PriorityColumn = new AtsAttributeValueColumn(AtsAttributeTypes.PriorityType,
+      AtsColumnId.Priority.getId(), AtsAttributeTypes.PriorityType.getUnqualifiedName(), 20, ColumnAlign.Left.name(),
+      true, ColumnType.String, true, "");
    public static AtsAttributeValueColumn LegacyPcrIdColumn = new AtsAttributeValueColumn(AtsAttributeTypes.LegacyPcrId,
       AtsColumnId.LegacyPcrId.getId(), AtsAttributeTypes.LegacyPcrId.getUnqualifiedName(), 40, ColumnAlign.Left.name(),
       false, ColumnType.String, false, "");

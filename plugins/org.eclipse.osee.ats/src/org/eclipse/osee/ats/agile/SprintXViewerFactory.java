@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
-import org.eclipse.osee.ats.column.PriorityColumn;
+import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -52,7 +52,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 339, sprintCols);
       WorldXViewerUtil.addColumn(this,
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()), 74, sprintCols);
-      WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, sprintCols);
+      WorldXViewerUtil.addColumn(this, PriorityColumnUI.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, sprintCols);
       WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, sprintCols);
       XViewerColumn unPlannedWorkColumn = WorldXViewerUtil.getConfigColumn("ats.Unplanned Work", configCols);
