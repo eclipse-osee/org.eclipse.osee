@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
+import org.eclipse.osee.ats.api.column.IAtsColumnService;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
@@ -28,19 +30,18 @@ public class TypeColumnTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+      IAtsColumnService columnService = AtsClientService.get().getColumnService();
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals("SAW Requirements Workflow",
-         TypeColumn.getInstance().getColumnText(reqArt, TypeColumn.getInstance(), 0));
+      Assert.assertEquals("SAW Requirements Workflow", columnService.getColumnText(AtsColumnId.Type, reqArt));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertEquals("SAW Code Workflow",
-         TypeColumn.getInstance().getColumnText(codeArt, TypeColumn.getInstance(), 0));
+      Assert.assertEquals("SAW Code Workflow", columnService.getColumnText(AtsColumnId.Type, codeArt));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals("Action", TypeColumn.getInstance().getColumnText(actionArt, TypeColumn.getInstance(), 0));
+      IAtsAction action = reqArt.getParentAction();
+      Assert.assertEquals("Action", columnService.getColumnText(AtsColumnId.Type, action));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

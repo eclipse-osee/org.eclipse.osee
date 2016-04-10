@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
+import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
@@ -26,9 +27,9 @@ import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
 import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
-import org.eclipse.osee.ats.column.TypeColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
@@ -44,7 +45,8 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
 
    private List<? extends XViewerColumn> getGoalViewerVisibleColumns() {
       List<XViewerColumn> columns = Arrays.asList(GoalOrderColumn.getInstance(), GoalOrderVoteColumn.getInstance(),
-         new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), TypeColumn.getInstance(),
+         new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
+         new AtsColumnIdUI(AtsColumnToken.TypeColumn, AtsClientService.get().getServices()),
          StateColumnUI.getInstance(), PriorityColumn.getInstance(), ChangeTypeColumn.getInstance(),
          AssigneeColumnUI.getInstance(), new AtsIdColumnUI(true), CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(), NotesColumn.getInstance());

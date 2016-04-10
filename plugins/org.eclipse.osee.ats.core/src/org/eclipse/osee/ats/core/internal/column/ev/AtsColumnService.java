@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
+import org.eclipse.osee.ats.core.column.TypeColumn;
 import org.eclipse.osee.ats.core.column.UuidColumn;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 
@@ -90,6 +91,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new StateColumn(services);
          } else if (id.equals(AtsColumnId.Name.getId()) || id.equals(AtsColumnId.Title.getId())) {
             column = new TitleColumn(services);
+         } else if (id.equals(AtsColumnId.Type.getId())) {
+            column = new TypeColumn(services);
          } else if (id.equals(AtsColumnId.PercentCompleteWorkflow.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.PercentCompleteWorkflowColumn, services);
          } else if (id.equals(AtsColumnId.PercentCompleteTasks.getId())) {
