@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
+import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.BacklogOrderColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumn;
@@ -25,10 +26,10 @@ import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumn;
-import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.ats.world.WorldXViewerSorter;
@@ -55,7 +56,8 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerUtil.addColumn(this, PointsColumn.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), 300,
          backlogCols);
-      WorldXViewerUtil.addColumn(this, StateColumnUI.getInstance(), 74, backlogCols);
+      WorldXViewerUtil.addColumn(this,
+         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()), 74, backlogCols);
       WorldXViewerUtil.addColumn(this, PriorityColumn.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, ChangeTypeColumn.getInstance(), 20, backlogCols);
       WorldXViewerUtil.addColumn(this, AssigneeColumnUI.getInstance(), 113, backlogCols);

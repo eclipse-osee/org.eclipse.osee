@@ -113,6 +113,10 @@ public class AtsColumnService implements IAtsColumnService {
             column = new TitleColumn(services);
          } else if (id.equals(AtsColumnId.Title.getId())) {
             column = new TitleColumn(services);
+         } else if (id.equals(AtsColumnId.State.getId())) {
+            column = new StateColumn(services);
+         } else if (id.equals(AtsColumnId.Uuid.getId())) {
+            column = new UuidColumn(services);
          } else if (id.equals(AtsColumnId.Insertion.getId())) {
             column = new InsertionColumn(services);
          } else if (id.equals(AtsColumnId.InsertionActivity.getId())) {

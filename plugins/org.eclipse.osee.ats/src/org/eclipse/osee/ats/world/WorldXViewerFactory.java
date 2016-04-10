@@ -106,7 +106,6 @@ import org.eclipse.osee.ats.column.ReviewNumMajorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewNumMinorDefectsColumn;
 import org.eclipse.osee.ats.column.ReviewReviewerColumn;
 import org.eclipse.osee.ats.column.StartDateColumn;
-import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.column.ValidationRequiredColumn;
 import org.eclipse.osee.ats.column.WeeklyBenefitHrsColumn;
@@ -150,7 +149,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn[] getWorldViewColumns() {
       return new XViewerColumn[] {
          new AtsColumnIdUI(AtsColumnToken.TypeColumn, AtsClientService.get().getServices()),
-         StateColumnUI.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
          PriorityColumn.getInstance(),
          ChangeTypeColumn.getInstance(),
          AssigneeColumnUI.getInstance(),

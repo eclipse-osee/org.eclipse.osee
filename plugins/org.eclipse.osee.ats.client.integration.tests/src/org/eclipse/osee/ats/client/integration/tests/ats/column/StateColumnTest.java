@@ -10,13 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
+import org.eclipse.osee.ats.api.column.IAtsColumnService;
+import org.eclipse.osee.ats.api.workflow.IAtsAction;
+import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.Assert;
 
@@ -29,15 +31,14 @@ public class StateColumnTest {
    @org.junit.Test
    public void testGetColumnText() throws Exception {
       SevereLoggingMonitor loggingMonitor = TestUtil.severeLoggingStart();
+      IAtsColumnService columnService = AtsClientService.get().getColumnService();
 
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
-      Assert.assertEquals(TeamState.Implement.getName(),
-         StateColumnUI.getInstance().getColumnText(reqArt, StateColumnUI.getInstance(), 0));
+      Assert.assertEquals(TeamState.Implement.getName(), columnService.getColumnText(AtsColumnId.State, reqArt));
 
-      Artifact actionArt = reqArt.getParentActionArtifact();
-      Assert.assertEquals(TeamState.Implement.getName(),
-         StateColumnUI.getInstance().getColumnText(actionArt, StateColumnUI.getInstance(), 0));
+      IAtsAction action = reqArt.getParentAction();
+      Assert.assertEquals(TeamState.Implement.getName(), columnService.getColumnText(AtsColumnId.State, action));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

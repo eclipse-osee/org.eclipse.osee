@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
+import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
 import org.eclipse.osee.ats.column.NotesColumn;
@@ -24,9 +25,9 @@ import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
 import org.eclipse.osee.ats.column.ResolutionColumn;
-import org.eclipse.osee.ats.column.StateColumnUI;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeValueColumn;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
@@ -43,7 +44,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
 public class TaskXViewerFactory extends SkynetXViewerFactory {
 
    public static final List<? extends XViewerAtsColumn> TaskViewerVisibleColumns =
-      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn), StateColumnUI.getInstance(),
+      Arrays.asList(new XViewerAtsAttributeValueColumn(AtsColumnToken.TitleColumn),
+         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
          AssigneeColumnUI.getInstance(), PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(),
          ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(),
          RelatedToStateColumn.getInstance(), NotesColumn.getInstance());

@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
  */
 public class AtsColumnToken {
 
+   public static AtsColumnIdValueColumn StateColumn = new AtsColumnIdValueColumn(AtsColumnId.State, "State", 75,
+      ColumnAlign.Left.name(), true, ColumnType.String, false, null);
    public static AtsColumnIdValueColumn TypeColumn = new AtsColumnIdValueColumn(AtsColumnId.Type, "Type", 150,
       ColumnAlign.Left.name(), true, ColumnType.String, false, null);
    public static AtsColumnIdValueColumn TeamColumn = new AtsColumnIdValueColumn(AtsColumnId.Team, "Team", 50,

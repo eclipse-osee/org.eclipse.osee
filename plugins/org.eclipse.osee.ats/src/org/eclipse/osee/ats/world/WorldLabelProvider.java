@@ -14,14 +14,19 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.workdef.StateColorToSwtColor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
@@ -70,6 +75,13 @@ public class WorldLabelProvider extends XViewerLabelProvider {
                }
             }
          }
+         if (element instanceof IAtsWorkItem) {
+            if (xCol.getId().equals(AtsColumnId.State.getId())) {
+               return Displays.getSystemColor(
+                  StateColorToSwtColor.convert(((AbstractWorkflowArtifact) element).getStateDefinition().getColor()));
+            }
+         }
+
          if (xCol instanceof XViewerAtsColumn) {
             return ((XViewerAtsColumn) xCol).getForeground(element, xCol, columnIndex);
          }
