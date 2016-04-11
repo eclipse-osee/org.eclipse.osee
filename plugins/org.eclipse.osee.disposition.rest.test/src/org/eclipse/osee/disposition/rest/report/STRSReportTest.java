@@ -118,10 +118,10 @@ public class STRSReportTest {
 
       Discrepancy discrepancy1 = new Discrepancy();
       discrepancy1.setId("one");
-      discrepancy1.setLocation(1);
+      discrepancy1.setLocation("1");
       Discrepancy discrepancy2 = new Discrepancy();
       discrepancy2.setId("two");
-      discrepancy2.setLocation(3);
+      discrepancy2.setLocation("3");
       Map<String, Discrepancy> discrepanciesListItem1 = new HashMap<>();
       discrepanciesListItem1.put("one", discrepancy1);
       discrepanciesListItem1.put("two", discrepancy2);
@@ -153,10 +153,10 @@ public class STRSReportTest {
       /////////////
       Discrepancy discrepancy3 = new Discrepancy();
       discrepancy3.setId("tth");
-      discrepancy3.setLocation(4);
+      discrepancy3.setLocation("4");
       Discrepancy discrepancy4 = new Discrepancy();
       discrepancy4.setId("fff");
-      discrepancy4.setLocation(6);
+      discrepancy4.setLocation("6");
       Map<String, Discrepancy> discrepanciesListItem2 = new HashMap<>();
       discrepanciesListItem2.put("tth", discrepancy3);
       discrepanciesListItem2.put("fff", discrepancy4);

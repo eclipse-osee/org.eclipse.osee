@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoConfig;
@@ -39,6 +41,9 @@ import org.json.JSONObject;
  */
 public final class DispoUtil {
 
+   private static final Pattern pattern =
+      Pattern.compile("^\\s*-?\\d+\\s*(-?\\s*-?\\d+\\s*)?(,\\s*-?\\d+\\s*(-?\\s*-?\\d+\\s*)?)*$");
+
    private DispoUtil() {
       //
    }
@@ -55,6 +60,11 @@ public final class DispoUtil {
       return annotation.getResolutionType().equalsIgnoreCase(
          DispoStrings.Test_Unit_Resolution) || annotation.getResolutionType().equalsIgnoreCase(
             DispoStrings.Exception_Handling_Resolution);
+   }
+
+   public static boolean isNumericLocations(String str) {
+      Matcher matcher = pattern.matcher(str);
+      return matcher.matches();
    }
 
    public static String operationReportToString(OperationReport report) {
@@ -115,14 +125,42 @@ public final class DispoUtil {
    }
 
    public static String discrepanciesToString(Map<String, Discrepancy> discrepanciesList) {
-      List<Integer> discrepanciesPoints = new ArrayList<>();
+      String toReturn;
+      boolean isAllNumeric = true;
+      List<Integer> discrepancyLocationAsInts = new ArrayList<>();
+      List<String> discrepancyLocationsAsString = new ArrayList<>();
       for (String key : discrepanciesList.keySet()) {
          Discrepancy disrepancy = discrepanciesList.get(key);
-         int location = disrepancy.getLocation();
-         discrepanciesPoints.add(location);
+         String location = disrepancy.getLocation();
+         if (isAllNumeric && isNumericLocations(location)) {
+            discrepancyLocationAsInts.add(Integer.valueOf(location));
+         } else {
+            isAllNumeric = false;
+            discrepancyLocationsAsString.add(location);
+         }
       }
 
-      return LocationRangesCompressor.compress(discrepanciesPoints);
+      if (isAllNumeric) {
+         toReturn = LocationRangesCompressor.compress(discrepancyLocationAsInts);
+      } else {
+         toReturn = listToString(discrepancyLocationsAsString);
+      }
+      return toReturn;
+   }
+
+   public static String listToString(List<String> locations) {
+      StringBuilder sb = new StringBuilder();
+      boolean isFirst = true;
+      for (String location : locations) {
+         if (isFirst) {
+            sb.append(location);
+            isFirst = false;
+         } else {
+            sb.append(", ");
+            sb.append(location);
+         }
+      }
+      return sb.toString();
    }
 
    public static DispoItemData jsonObjToDispoItem(JSONObject jsonObject) {
@@ -392,10 +430,9 @@ public final class DispoUtil {
       return jArray;
    }
 
-   //
    public static Discrepancy jsonObjToDiscrepancy(JSONObject object) throws JSONException {
       Discrepancy discrepancy = new Discrepancy();
-      discrepancy.setLocation(object.getInt("location"));
+      discrepancy.setLocation(object.getString("location"));
       discrepancy.setText(object.getString("text"));
       discrepancy.setId(object.getString("id"));
       return discrepancy;

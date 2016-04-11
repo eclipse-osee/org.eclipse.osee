@@ -20,7 +20,6 @@ import java.util.Map;
 import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.xml.sax.InputSource;
@@ -66,7 +65,8 @@ public class DiscrepancyParser {
    public static boolean buildItemFromFile(DispoItemData dispoItem, String resourceName, InputStream inputStream, final boolean isNewImport, final Date lastUpdate) throws Exception {
       final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.US);
       final MutableBoolean isWithinTestPointElement = new MutableBoolean(false);
-      final MutableInteger idOfTestPoint = new MutableInteger(0);
+      final MutableString location = new MutableString();
+      location.setValue("0");
       final StringBuilder textAppendable = new StringBuilder();
       final MutableBoolean isFailure = new MutableBoolean(false);
       final Map<String, Discrepancy> discrepancies = new HashMap<String, Discrepancy>();
@@ -135,7 +135,7 @@ public class DiscrepancyParser {
             if (isWithinTestPointElement.getValue() && isFailure.getValue()) {
                Discrepancy discrepancy = new Discrepancy();
                discrepancy.setText(textAppendable.toString());
-               discrepancy.setLocation(idOfTestPoint.getValue());
+               discrepancy.setLocation(location.value);
                String id = String.valueOf(Lib.generateUuid());
                discrepancy.setId(id);
                discrepancies.put(id, discrepancy);
@@ -157,10 +157,10 @@ public class DiscrepancyParser {
          @Override
          public void onEndElement(Object obj) {
             if (isWithinTestPointElement.getValue()) {
-               idOfTestPoint.setValue(Integer.valueOf(obj.toString()));
+               location.setValue(obj.toString());
 
                textAppendable.append("Failure at Test Point ");
-               textAppendable.append(idOfTestPoint);
+               textAppendable.append(location.value);
                textAppendable.append(". ");
             }
          }
@@ -320,7 +320,7 @@ public class DiscrepancyParser {
    private static Discrepancy createAdditionalDiscrepancy(String id, String message) {
       Discrepancy discrepancy = new Discrepancy();
       discrepancy.setText(message);
-      discrepancy.setLocation(0);
+      discrepancy.setLocation("0");
       discrepancy.setId(id);
       return discrepancy;
    }

@@ -285,11 +285,10 @@
 		            }, function(data) {
 		            	$scope.isCopying = false;
 		            	var reportUrl = data.operationStatus;
-			            window.open(reportUrl);
-		            	console.log(data);
+		            	$scope.getSetImportDetails(destinationSet);
 		            }, function(data) {
 		               $scope.isCopying = false;
-		            	alert("Oops...Something went wrong");
+		            	$scope.getSetImportDetails(destinationSet);
 		            });
 		        }
 		        

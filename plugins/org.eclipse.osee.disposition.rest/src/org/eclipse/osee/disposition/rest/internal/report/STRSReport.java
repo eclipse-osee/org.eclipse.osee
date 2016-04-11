@@ -52,7 +52,7 @@ public class STRSReport {
 
          for (DispoItem demoItem : itemsFromPrimary) {
             DispoConnector connector = new DispoConnector();
-            List<Integer> allUncoveredDiscprepancies = connector.getAllUncoveredDiscprepancies(demoItem);
+            List<String> allUncoveredDiscprepancies = connector.getAllUncoveredDiscprepancies(demoItem);
             String[] row = new String[columns];
             int index = 0;
 

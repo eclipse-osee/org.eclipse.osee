@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
    TmzImporterTest.class,
    DiscrepancyParserTest.class,
    DispoItemDataCopierTest.class,
-   AnnotationCopierTest.class})
+   AnnotationCopierTest.class,
+   DispoSetCopierTest.class})
 public class ImporterTestSuite {
    // Test Suite
 }

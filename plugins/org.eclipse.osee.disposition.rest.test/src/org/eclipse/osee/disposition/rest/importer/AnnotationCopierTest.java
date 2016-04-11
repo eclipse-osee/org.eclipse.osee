@@ -66,31 +66,31 @@ public class AnnotationCopierTest {
 
       discrepancy1 = new Discrepancy();
       discrepancy1.setId(mockId1);
-      discrepancy1.setLocation(2);
+      discrepancy1.setLocation("2");
       discrepancy1.setText("One");
       sourceDescrepancies.put(discrepancy1.getId(), discrepancy1);
 
       discrepancy2 = new Discrepancy();
       discrepancy2.setId(mockId2);
-      discrepancy2.setLocation(3);
+      discrepancy2.setLocation("3");
       discrepancy2.setText("TTWO");
       sourceDescrepancies.put(discrepancy2.getId(), discrepancy2);
 
       discrepancy3 = new Discrepancy();
       discrepancy3.setId(mockId3);
-      discrepancy3.setLocation(5);
+      discrepancy3.setLocation("5");
       discrepancy3.setText("TTHRREEE");
       sourceDescrepancies.put(discrepancy3.getId(), discrepancy3);
 
       discrepancy4 = new Discrepancy();
       discrepancy4.setId(mockId6);
-      discrepancy4.setLocation(6);
+      discrepancy4.setLocation("6");
       discrepancy4.setText("F");
       sourceDescrepancies.put(discrepancy4.getId(), discrepancy4);
 
       discrepancy5 = new Discrepancy();
       discrepancy5.setId(mockId7);
-      discrepancy5.setLocation(7);
+      discrepancy5.setLocation("7");
       discrepancy5.setText("fff");
       sourceDescrepancies.put(discrepancy5.getId(), discrepancy5);
 

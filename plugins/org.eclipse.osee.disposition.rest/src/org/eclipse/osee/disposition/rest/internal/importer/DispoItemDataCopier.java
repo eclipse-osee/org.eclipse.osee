@@ -36,7 +36,7 @@ public class DispoItemDataCopier {
       Map<String, Discrepancy> destItemDiscrepancies = destItem.getDiscrepanciesList();
       List<DispoAnnotationData> sourceAnnotations = sourceItem.getAnnotationsList();
       Boolean needsReview = false;
-      HashMap<String, Integer> idsToUpdate = matchupOldDiscrepancies(sourceItem.getDiscrepanciesList(),
+      HashMap<String, String> idsToUpdate = matchupOldDiscrepancies(sourceItem.getDiscrepanciesList(),
          destItemDiscrepancies, sourceAnnotations, message, needsReview);
       updateTestPointNumbersForAnntations(idsToUpdate, sourceAnnotations, destItemDiscrepancies, message);
       destItem.setAnnotationsList(sourceAnnotations);
@@ -44,7 +44,7 @@ public class DispoItemDataCopier {
       report.addEntry(destItem.getName(), message.toString(), DispoSummarySeverity.UPDATE);
    }
 
-   private static void updateTestPointNumbersForAnntations(HashMap<String, Integer> idsToUpdate, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, StringBuilder message) {
+   private static void updateTestPointNumbersForAnntations(HashMap<String, String> idsToUpdate, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, StringBuilder message) {
       for (DispoAnnotationData annotation : annotations) {
          List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
          updateIdsCoveredDiscrepancies(idsToUpdate, idsOfCoveredDiscrepancies, annotations, discrepancies, annotation,
@@ -52,7 +52,7 @@ public class DispoItemDataCopier {
       }
    }
 
-   private static void updateIdsCoveredDiscrepancies(HashMap<String, Integer> idsToUpdate, List<String> idsOfCoveredDiscrepancies, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, DispoAnnotationData annotation, StringBuilder message) {
+   private static void updateIdsCoveredDiscrepancies(HashMap<String, String> idsToUpdate, List<String> idsOfCoveredDiscrepancies, List<DispoAnnotationData> annotations, Map<String, Discrepancy> discrepancies, DispoAnnotationData annotation, StringBuilder message) {
       for (String coveredId : idsOfCoveredDiscrepancies) {
          if (idsToUpdate.containsKey(coveredId)) {
             String newLocRef = rebuildLocRef(idsOfCoveredDiscrepancies, discrepancies, idsToUpdate, message);
@@ -65,16 +65,17 @@ public class DispoItemDataCopier {
       }
    }
 
-   private static String rebuildLocRef(List<String> idsOfCoveredDiscrepancies, Map<String, Discrepancy> discrepancies, HashMap<String, Integer> idsToUpdate, StringBuilder message) {
+   private static String rebuildLocRef(List<String> idsOfCoveredDiscrepancies, Map<String, Discrepancy> discrepancies, HashMap<String, String> idsToUpdate, StringBuilder message) {
       boolean isGaveup = false;
       List<Integer> testPointNumber = new ArrayList<>();
       for (String id : idsOfCoveredDiscrepancies) {
          if (discrepancies.containsKey(id)) {
             Discrepancy discrepancy = discrepancies.get(id);
-            testPointNumber.add(discrepancy.getLocation());
+            String location = discrepancy.getLocation();
+            testPointNumber.add(Integer.parseInt(location));
          } else if (idsToUpdate.containsKey(id)) {
-            int justTestPoint = idsToUpdate.get(id);
-            testPointNumber.add(justTestPoint); // Made this locationRef negative to convey to User it was valid at one point but on reimport it was invalid
+            String justTestPoint = idsToUpdate.get(id);
+            testPointNumber.add(Integer.parseInt(justTestPoint)); // Made this locationRef negative to convey to User it was valid at one point but on reimport it was invalid
          } else {
             message.append("Something when wrong with trying to rebuild the Annotations");
             isGaveup = true;
@@ -93,17 +94,17 @@ public class DispoItemDataCopier {
       return toReturn;
    }
 
-   private static HashMap<String, Integer> matchupOldDiscrepancies(Map<String, Discrepancy> oldDiscrepancies, Map<String, Discrepancy> newDiscrepancies, List<DispoAnnotationData> annotations, StringBuilder message, Boolean needsReview) {
+   private static HashMap<String, String> matchupOldDiscrepancies(Map<String, Discrepancy> oldDiscrepancies, Map<String, Discrepancy> newDiscrepancies, List<DispoAnnotationData> annotations, StringBuilder message, Boolean needsReview) {
       HashMap<String, Pair<Discrepancy, Boolean>> textToNewDiscrepancies =
          createTextToDiscrepanciesMap(newDiscrepancies);
-      HashMap<String, Integer> idsToUpdate = new HashMap<>();
+      HashMap<String, String> idsToUpdate = new HashMap<>();
 
       for (String key : oldDiscrepancies.keySet()) {
          Discrepancy oldDiscrepany = oldDiscrepancies.get(key);
          String normalizedText = oldDiscrepany.getText().replaceFirst(".*?\\.", "");
 
          Pair<Discrepancy, Boolean> matchedPair = textToNewDiscrepancies.get(normalizedText);
-         int oldTestPointNumber = oldDiscrepany.getLocation();
+         String oldTestPointLocation = oldDiscrepany.getLocation();
 
          /**
           * If there's a matching Discrepany try to transfer the id from the old discrepancy to the new one since
@@ -121,13 +122,13 @@ public class DispoItemDataCopier {
             matchedNewDiscrepancy.setId(idOfOldDiscrep);
 
             // Now compare test points and see if they changed
-            int newTestPointNumber = matchedNewDiscrepancy.getLocation();
-            if (oldTestPointNumber != newTestPointNumber) {
+            String newTestPointLocation = matchedNewDiscrepancy.getLocation();
+            if (!oldTestPointLocation.equals(newTestPointLocation)) {
                message.append("Test Point:");
-               message.append(oldTestPointNumber);
+               message.append(oldTestPointLocation);
                message.append("is now:");
-               message.append(newTestPointNumber);
-               idsToUpdate.put(idOfOldDiscrep, newTestPointNumber);
+               message.append(newTestPointLocation);
+               idsToUpdate.put(idOfOldDiscrep, newTestPointLocation);
             }
 
             newDiscrepancies.remove(idToReplace);
@@ -135,10 +136,10 @@ public class DispoItemDataCopier {
          } else {
             // This discrepancy doesn't exist on the new Item
             message.append("Test Point:");
-            message.append(oldTestPointNumber);
+            message.append(oldTestPointLocation);
             message.append("No longer fails");
-            int outdateNumber = oldTestPointNumber * -1;
-            idsToUpdate.put(DispoStrings.DeletedDiscrepancy + outdateNumber, outdateNumber);
+            String outdatedLocation = "-" + oldTestPointLocation;
+            idsToUpdate.put(DispoStrings.DeletedDiscrepancy + outdatedLocation, outdatedLocation);
             removeDiscrepancyFromAnnotation(oldDiscrepany, annotations);
 
          }
@@ -162,7 +163,7 @@ public class DispoItemDataCopier {
       String id = discrepany.getId();
       for (int i = 0; i < idsList.size(); i++) {
          if (id.equals(idsList.get(i))) {
-            int testPoint = discrepany.getLocation() * -1;
+            String testPoint = "-" + discrepany.getLocation();
             String newFakeId = DispoStrings.DeletedDiscrepancy + testPoint;
             idsList.add(i, newFakeId);
             break;

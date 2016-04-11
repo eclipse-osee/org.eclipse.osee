@@ -142,14 +142,13 @@ public class LisFileParser implements DispoImporterApi {
 
    private void createPlaceHolderAnnotations(DispoItemData item, OperationReport report) {
       DispoConnector connetor = new DispoConnector();
-      List<Integer> uncovered = connetor.getAllUncoveredDiscprepancies(item);
+      List<String> uncovered = connetor.getAllUncoveredDiscprepancies(item);
       if (!uncovered.isEmpty()) {
          Map<String, Discrepancy> discrepanciesList = item.getDiscrepanciesList();
          for (String id : discrepanciesList.keySet()) {
             Discrepancy discrepancy = discrepanciesList.get(id);
             if (uncovered.contains(discrepancy.getLocation())) {
-               addBlankAnnotationForForUncoveredLine(item, Integer.toString(discrepancy.getLocation()),
-                  discrepancy.getText());
+               addBlankAnnotationForForUncoveredLine(item, discrepancy.getLocation(), discrepancy.getText());
             }
 
          }
@@ -287,7 +286,7 @@ public class LisFileParser implements DispoImporterApi {
 
       if (lineData != null) {
          newDiscrepancy.setText(lineData.getFirst().trim());
-         newDiscrepancy.setLocation(lineNumber);
+         newDiscrepancy.setLocation(String.valueOf(lineNumber));
          String id = String.valueOf(Lib.generateUuid());
          newDiscrepancy.setId(id);
          discrepancies.put(id, newDiscrepancy);

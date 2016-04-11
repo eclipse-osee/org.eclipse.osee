@@ -50,12 +50,12 @@ public class TmzImporterTest {
       boolean firstFound = false, thirdFound = false;
       for (String key : result.getDiscrepanciesList().keySet()) {
          Discrepancy discrepancy = result.getDiscrepanciesList().get(key);
-         if (discrepancy.getLocation() == 1) {
+         if (discrepancy.getLocation().equals("1")) {
             firstFound = true;
             Assert.assertEquals(
                "Failure at Test Point 1. Check Group with Checkpoint Failures: Check Point: CODE. Expected: 1500. Actual: NULL. Check Point: STATE. Expected: TRUE. Actual: NULL. Check Point: IBOT. Expected: FALSE. Actual: NULL. Check Point: BOT_CODE. Expected: 0. Actual: NULL. Check Point: FILTER_TIME. Expected: 10000. Actual: NULL. ",
                discrepancy.getText());
-         } else if (discrepancy.getLocation() == 3) {
+         } else if (discrepancy.getLocation().equals("3")) {
             thirdFound = true;
             Assert.assertEquals(
                "Failure at Test Point 3. Check Point: CheckPoint_BOT. Expected: ORANGE = FALSE. Actual: ORANGE = NULL. ",
@@ -81,7 +81,7 @@ public class TmzImporterTest {
       boolean secondFound = false;
       for (String key : result.getDiscrepanciesList().keySet()) {
          Discrepancy discrepancy = result.getDiscrepanciesList().get(key);
-         if (discrepancy.getLocation() == 2) {
+         if (Integer.valueOf(discrepancy.getLocation()) == 2) {
             secondFound = true;
             Assert.assertEquals(
                "Failure at Test Point 2. Check Point: CheckPoint_BOT. Expected: ORANGE = FALSE. Actual: ORANGE = NULL. ",

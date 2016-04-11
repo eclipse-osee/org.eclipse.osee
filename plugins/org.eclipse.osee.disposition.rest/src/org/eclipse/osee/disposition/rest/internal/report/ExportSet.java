@@ -14,6 +14,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,7 +63,8 @@ public class ExportSet {
 
          for (DispoItem item : items) {
             DispoConnector connector = new DispoConnector();
-            List<Integer> allUncoveredDiscprepancies = connector.getAllUncoveredDiscprepancies(item);
+            List<String> allUncoveredDiscprepancies = connector.getAllUncoveredDiscprepancies(item);
+            List<Integer> allUncoveredDiscrepanciesAsInts = getDiscrepanciesAsInts(allUncoveredDiscprepancies);
             String[] row = new String[columns];
             int index = 0;
 
@@ -74,7 +77,13 @@ public class ExportSet {
             row[index++] = String.valueOf(item.getDiscrepanciesList().size());
             row[index++] = String.valueOf(DispoUtil.discrepanciesToString(discrepanciesList));
             row[index++] = String.valueOf(allUncoveredDiscprepancies.size());
-            row[index++] = String.valueOf(LocationRangesCompressor.compress(allUncoveredDiscprepancies));
+            String uncoveredDiscrepancies;
+            if (allUncoveredDiscrepanciesAsInts.isEmpty()) {
+               uncoveredDiscrepancies = DispoUtil.listToString(allUncoveredDiscprepancies);
+            } else {
+               uncoveredDiscrepancies = LocationRangesCompressor.compress(allUncoveredDiscrepanciesAsInts);
+            }
+            row[index++] = String.valueOf(uncoveredDiscrepancies);
             row[index++] = String.valueOf(item.getAssignee());
             row[index++] = String.valueOf(item.getItemNotes());
             row[index++] = String.valueOf(item.getNeedsRerun());
@@ -132,9 +141,9 @@ public class ExportSet {
 
          // Write Cover Sheet
          sheetWriter.startSheet("Cover Sheet", headers.length);
-         String[] coverSheetHeaders = {" ", setPrimary.getName()};
+         Object[] coverSheetHeaders = {" ", setPrimary.getName()};
          sheetWriter.writeRow(coverSheetHeaders);
-         String[] row = new String[2];
+         Object[] row = new String[2];
          row[0] = "All Coverage Methods";
          row[1] = getPercent(totalCoveredCount, totalStatementCount, false);
          sheetWriter.writeRow(row);
@@ -147,9 +156,9 @@ public class ExportSet {
 
          // Write Summary Sheet
          sheetWriter.startSheet("Summary Sheet", headers.length);
-         String[] summarySheetHeaders = {"Unit", "Lines Covered", "Total Lines", "Percent Coverage"};
+         Object[] summarySheetHeaders = {"Unit", "Lines Covered", "Total Lines", "Percent Coverage"};
          sheetWriter.writeRow(summarySheetHeaders);
-         String[] row2 = new String[4];
+         Object[] row2 = new String[4];
          for (String unit : unitToCovered.keySet()) {
             row2[0] = unit;
             Pair<Integer, Integer> coveredOverTotal = unitToCovered.get(unit);
@@ -170,6 +179,20 @@ public class ExportSet {
          throw new OseeCoreException(ex);
       }
 
+   }
+
+   private List<Integer> getDiscrepanciesAsInts(List<String> discrepancyLocations) {
+      List<Integer> toReturn = new ArrayList<>();
+      for (String location : discrepancyLocations) {
+         if (DispoUtil.isNumericLocations(location)) {
+            toReturn.add(Integer.valueOf(location));
+         } else {
+            toReturn = Collections.emptyList();
+            break;
+         }
+      }
+
+      return toReturn;
    }
 
    private String getPercent(int complete, int total, boolean showZero) {
@@ -197,8 +220,6 @@ public class ExportSet {
 
    private void writeRowAnnotation(ExcelXmlWriter sheetWriter, int columns, DispoItem item, DispoAnnotationData annotation, String setName, Map<String, Integer> resolutionToCount, Map<String, Pair<Integer, Integer>> unitToCovered, Integer totalNumber) throws IOException {
       totalStatementCount++;
-
-      //      String namespace = generateNamespace(setName, item.getName());
 
       String[] row = new String[columns];
       int index = 0;
@@ -253,37 +274,6 @@ public class ExportSet {
          unitToCovered.put(unit, newCount);
       }
    }
-
-   //////////////////////////////////
-   private String generateNamespace(String prefix, String filename) {
-      int lastIndexOf = filename.lastIndexOf('.');
-      String filenameNormalized = filename.substring(0, lastIndexOf);
-      StringBuffer sb = new StringBuffer();
-      sb.append(prefix);
-      if (!prefix.endsWith(".")) {
-         sb.append(".");
-      }
-      String namespaceFilename = null;
-      if (filenameNormalized.endsWith(".c")) {
-         namespaceFilename = "c_files." + filenameNormalized;
-         captureNamespace(namespaceFilename, 2, sb);
-      } else {
-         namespaceFilename = filenameNormalized;
-         captureNamespace(namespaceFilename, 3, sb);
-      }
-      return sb.toString().replaceFirst("\\.$", "");
-   }
-
-   private void captureNamespace(String filename, int namesOverLength, StringBuffer sb) {
-      String[] names = filename.split("\\.");
-      if (names.length > namesOverLength) {
-         for (int x = 0; x < names.length - namesOverLength; x++) {
-            sb.append(names[x]);
-            sb.append(".");
-         }
-      }
-   }
-   ////////////////////
 
    private String getNormalizedName(String fullName) {
       if (fullName.contains(".2.ada")) {

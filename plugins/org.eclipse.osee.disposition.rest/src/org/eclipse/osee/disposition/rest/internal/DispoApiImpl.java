@@ -476,7 +476,7 @@ public class DispoApiImpl implements DispoApi {
          editDispoItems(program, namesToToEditItems.values(), false, operation);
       }
 
-      storageProvider.get().updateOperationSummary(null, program, destination, report);
+      storageProvider.get().updateOperationSummary(getQuery().findUser(), program, destination, report);
    }
 
    @Override

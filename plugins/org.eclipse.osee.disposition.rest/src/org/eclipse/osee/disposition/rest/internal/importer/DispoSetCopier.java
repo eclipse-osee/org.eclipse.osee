@@ -275,14 +275,14 @@ public class DispoSetCopier {
    }
 
    private boolean matchAllDiscrepancies(DispoItemData destItem, DispoItem sourceItem) {
-      Map<Integer, String> destLocationToText = generateLocationToTextMap(destItem);
+      Map<String, String> destLocationToText = generateLocationToTextMap(destItem);
       boolean toReturn = true;
 
       Map<String, Discrepancy> sourceDiscrepancies = sourceItem.getDiscrepanciesList();
       for (String key : sourceDiscrepancies.keySet()) {
          Discrepancy sourceDiscrepancy = sourceDiscrepancies.get(key);
 
-         int sourceLocation = sourceDiscrepancy.getLocation();
+         String sourceLocation = sourceDiscrepancy.getLocation();
          String destDicrepancyText = destLocationToText.get(sourceLocation);
          if (destDicrepancyText == null) {
             // No Discrepancy with that location in the destination item, return false
@@ -299,8 +299,8 @@ public class DispoSetCopier {
       return toReturn;
    }
 
-   private Map<Integer, String> generateLocationToTextMap(DispoItem item) {
-      Map<Integer, String> locationToText = new HashMap<>();
+   private Map<String, String> generateLocationToTextMap(DispoItem item) {
+      Map<String, String> locationToText = new HashMap<>();
       Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
       for (String key : discrepancies.keySet()) {
          Discrepancy discrepancy = discrepancies.get(key);

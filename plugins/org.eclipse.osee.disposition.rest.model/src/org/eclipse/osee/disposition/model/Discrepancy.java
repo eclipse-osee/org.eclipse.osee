@@ -19,7 +19,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class Discrepancy {
    private String id;
    private String text;
-   private int location;
+   private String location;
 
    public Discrepancy() {
 
@@ -33,7 +33,7 @@ public class Discrepancy {
       return text;
    }
 
-   public int getLocation() {
+   public String getLocation() {
       return location;
    }
 
@@ -46,7 +46,7 @@ public class Discrepancy {
       this.text = text;
    }
 
-   public void setLocation(int location) {
+   public void setLocation(String location) {
       this.location = location;
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.disposition.rest.internal;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,6 +25,7 @@ import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItem;
 import org.eclipse.osee.disposition.model.DispoStrings;
 import org.eclipse.osee.disposition.model.LocationRange;
+import org.eclipse.osee.disposition.rest.util.DispoUtil;
 import org.eclipse.osee.disposition.rest.util.LocationRangeComparator;
 import org.eclipse.osee.disposition.rest.util.LocationRangeUtil;
 import org.eclipse.osee.logger.Log;
@@ -48,12 +50,12 @@ public class DispoConnector {
       logger.trace("Stopping DispoConnector...");
    }
 
-   public List<Integer> getAllUncoveredDiscprepancies(DispoItem item) {
+   public List<String> getAllUncoveredDiscprepancies(DispoItem item) {
       Map<String, Discrepancy> discrepancies = item.getDiscrepanciesList();
       List<DispoAnnotationData> annotationsList = item.getAnnotationsList();
-      HashSet<Integer> allCoveredDiscrepancies =
+      HashSet<String> allCoveredDiscrepancies =
          getAllCoveredDiscrepanciesFromAnnotations(discrepancies, annotationsList);
-      ArrayList<Integer> allDiscrepancies = createDiscrepanciesList(discrepancies);
+      ArrayList<String> allDiscrepancies = createDiscrepanciesList(discrepancies);
 
       allDiscrepancies.removeAll(allCoveredDiscrepancies);
       return allDiscrepancies;
@@ -62,7 +64,7 @@ public class DispoConnector {
    public String getItemStatus(DispoItem item) {
       String toReturn;
       List<DispoAnnotationData> annotations = item.getAnnotationsList();
-      List<Integer> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
+      List<String> allUncoveredDiscprepancies = getAllUncoveredDiscprepancies(item);
 
       if (item.getDiscrepanciesList().size() == 0) {
          toReturn = DispoStrings.Item_Pass;
@@ -85,8 +87,8 @@ public class DispoConnector {
       return true;
    }
 
-   private ArrayList<Integer> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {
-      ArrayList<Integer> toReturn = new ArrayList<Integer>();
+   private ArrayList<String> createDiscrepanciesList(Map<String, Discrepancy> discrepancies) {
+      ArrayList<String> toReturn = new ArrayList<>();
       for (String key : discrepancies.keySet()) {
          Discrepancy discrepancy = discrepancies.get(key);
          toReturn.add(discrepancy.getLocation());
@@ -95,8 +97,8 @@ public class DispoConnector {
       return toReturn;
    }
 
-   private HashSet<Integer> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies, List<DispoAnnotationData> annotations) {
-      HashSet<Integer> toReturn = new HashSet<Integer>();
+   private HashSet<String> getAllCoveredDiscrepanciesFromAnnotations(Map<String, Discrepancy> discrepancies, List<DispoAnnotationData> annotations) {
+      HashSet<String> toReturn = new HashSet<>();
       for (DispoAnnotationData annotation : annotations) {
          List<String> idsOfCoveredDiscrepancies = annotation.getIdsOfCoveredDiscrepancies();
          for (String id : idsOfCoveredDiscrepancies) {
@@ -111,21 +113,29 @@ public class DispoConnector {
    }
 
    public boolean connectAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
+      if (DispoUtil.isNumericLocations(annotation.getLocationRefs())) {
+         return connectNumberLocationRangeAnnotation(annotation, discrepanciesList);
+      } else {
+         return connectStringLocationRangeAnnotation(annotation, discrepanciesList);
+      }
+   }
+
+   private boolean connectNumberLocationRangeAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
       boolean isAllLocRefValid = true;
-      HashMap<Integer, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
+      HashMap<String, String> testPointNumberToId = getPointNumbersToIds(discrepanciesList);
       List<LocationRange> listOfLocationRefs = sortList(annotation.getLocationRefs());
       List<String> workingIdsOfCovered = new ArrayList<>();
 
       for (LocationRange singleLocationRef : listOfLocationRefs) {
          if (singleLocationRef.getStart() != singleLocationRef.getEnd()) {
             for (int i = singleLocationRef.getStart(); i <= singleLocationRef.getEnd(); i++) {
-               if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, i, workingIdsOfCovered)) {
+               if (!tryToAddDiscrepancyForTestPointNumber(testPointNumberToId, i, workingIdsOfCovered)) {
                   isAllLocRefValid = false;
                   break;
                }
             }
          } else {
-            if (!tryToAddDiscrepancyForTestPoint(testPointNumberToId, singleLocationRef.getStart(),
+            if (!tryToAddDiscrepancyForTestPointNumber(testPointNumberToId, singleLocationRef.getStart(),
                workingIdsOfCovered)) {
                isAllLocRefValid = false;
                break;
@@ -145,8 +155,49 @@ public class DispoConnector {
       return isAllLocRefValid;
    }
 
-   private boolean tryToAddDiscrepancyForTestPoint(HashMap<Integer, String> testPointNumberToId, int testPoint, List<String> workingList) {
-      String idOfMatched = testPointNumberToId.get(testPoint);
+   private boolean connectStringLocationRangeAnnotation(DispoAnnotationData annotation, Map<String, Discrepancy> discrepanciesList) {
+      boolean isAllLocRefValid = true;
+      HashMap<String, String> testPointIdentifierToId = getPointIdentifiersToIds(discrepanciesList);
+      String locationRef = annotation.getLocationRefs();
+      List<String> workingIdsOfCovered = new ArrayList<>();
+
+      if (locationRef.contains(",")) {
+         List<String> indvLocationRefs = Arrays.asList(locationRef.split(","));
+         for (String indvLocationRef : indvLocationRefs) {
+            if (!tryToAddDiscrepancyForStringLocationRef(testPointIdentifierToId, indvLocationRef.trim(),
+               workingIdsOfCovered)) {
+               isAllLocRefValid = false;
+               break;
+            }
+         }
+      } else {
+         if (!tryToAddDiscrepancyForStringLocationRef(testPointIdentifierToId, locationRef.trim(),
+            workingIdsOfCovered)) {
+            isAllLocRefValid = false;
+         }
+      }
+
+      if (isAllLocRefValid) {
+         annotation.setIsConnected(true);
+         annotation.setIdsOfCoveredDiscrepancies(new ArrayList<String>(workingIdsOfCovered));
+      } else {
+         annotation.setIsConnected(false);
+      }
+      return isAllLocRefValid;
+   }
+
+   private boolean tryToAddDiscrepancyForStringLocationRef(HashMap<String, String> locationToId, String locationRef, List<String> workingList) {
+      String idOfMatched = locationToId.get(locationRef);
+      if (idOfMatched == null) {
+         return false;
+      } else {
+         workingList.add(idOfMatched);
+      }
+      return true;
+   }
+
+   private boolean tryToAddDiscrepancyForTestPointNumber(HashMap<String, String> testPointLocationToId, int testPoint, List<String> workingList) {
+      String idOfMatched = testPointLocationToId.get(String.valueOf(testPoint));
       if (idOfMatched == null) {
          return false;
       } else {
@@ -156,12 +207,20 @@ public class DispoConnector {
       return true;
    }
 
-   private HashMap<Integer, String> getPointNumbersToIds(Map<String, Discrepancy> discrepancies) {
-      HashMap<Integer, String> toReturn = new HashMap<Integer, String>();
+   private HashMap<String, String> getPointIdentifiersToIds(Map<String, Discrepancy> discrepancies) {
+      HashMap<String, String> toReturn = new HashMap<>();
+      for (Discrepancy discrepancy : discrepancies.values()) {
+         toReturn.put(discrepancy.getLocation().trim(), discrepancy.getId());
+      }
+      return toReturn;
+   }
+
+   private HashMap<String, String> getPointNumbersToIds(Map<String, Discrepancy> discrepancies) {
+      HashMap<String, String> toReturn = new HashMap<>();
       Set<String> keys = discrepancies.keySet();
       for (String key : keys) {
          Discrepancy discrepancy = discrepancies.get(key);
-         int pointNumber = discrepancy.getLocation();
+         String pointNumber = discrepancy.getLocation();
          toReturn.put(pointNumber, discrepancy.getId());
       }
 

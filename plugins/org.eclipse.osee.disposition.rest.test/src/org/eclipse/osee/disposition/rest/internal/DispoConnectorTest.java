@@ -20,6 +20,7 @@ import org.eclipse.osee.disposition.model.Discrepancy;
 import org.eclipse.osee.disposition.model.DispoAnnotationData;
 import org.eclipse.osee.disposition.model.DispoItemData;
 import org.eclipse.osee.disposition.model.DispoStrings;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -52,20 +53,20 @@ public class DispoConnectorTest {
 
       for (int i = 1; i <= 5; i++) {
          Discrepancy discrepancy = new Discrepancy();
-         discrepancy.setLocation(i);
+         discrepancy.setLocation(String.valueOf(i));
          discrepancy.setId(idsForDiscrepancies1_5[i - 1]);
          discrepancies.put(discrepancy.getId(), discrepancy);
       }
 
       for (int i = 12; i <= 18; i++) {
          Discrepancy discrepancy = new Discrepancy();
-         discrepancy.setLocation(i);
+         discrepancy.setLocation(String.valueOf(i));
          discrepancy.setId(idsForDiscrepancies12_18[i - 12]);
          discrepancies.put(discrepancy.getId(), discrepancy);
       }
 
       Discrepancy discrepancy20 = new Discrepancy();
-      discrepancy20.setLocation(20);
+      discrepancy20.setLocation("20");
       discrepancy20.setId(id20);
       discrepancies.put(discrepancy20.getId(), discrepancy20);
 
@@ -73,10 +74,89 @@ public class DispoConnectorTest {
    }
 
    @Test
+   public void testConnectAnnotationsStringComplete() {
+      // Convert Location Refs to have characters
+      for (Discrepancy discrepancy : dispoItem.getDiscrepanciesList().values()) {
+         discrepancy.setLocation(discrepancy.getLocation() + "zzz");
+      }
+
+      // Create one annotation with every discrepancy covered
+      DispoAnnotationData annotationOne = new DispoAnnotationData();
+      annotationOne.setLocationRefs("1zzz, 2zzz, 3zzz,4zzz,5zzz,12zzz,13zzz,14zzz,15zzz,16zzz,17zzz,18zzz,20zzz");
+      annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("Code");
+      annotationOne.setId(annotIdOne);
+      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
+
+      dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
+      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      annotationsList.add(annotationOne);
+      dispoItem.setAnnotationsList(annotationsList);
+
+      // annotation 1 should be connected to all Discrepancies
+      List<String> idsOfCoveredDiscrepancies = annotationOne.getIdsOfCoveredDiscrepancies();
+      Assert.assertTrue(idsOfCoveredDiscrepancies.size() == 13);
+      for (int i = 0; i < idsOfCoveredDiscrepancies.size(); i++) {
+         if (i < 5) {//first 5 discrepancies are from ids array 1-5
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies1_5[i]);
+         } else if (i < 12) {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies12_18[i - 5]);
+         } else {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), id20);
+         }
+      }
+
+      assertTrue(annotationOne.getIsConnected());
+
+      String actual = dispoConnector.getItemStatus(dispoItem);
+      assertEquals(DispoStrings.Item_Complete, actual);
+   }
+
+   @Test
+   public void testConnectAnnotationsStringIncomplete() {
+      // Convert Location Refs to have characters
+      for (Discrepancy discrepancy : dispoItem.getDiscrepanciesList().values()) {
+         discrepancy.setLocation(discrepancy.getLocation() + "zzz");
+      }
+
+      // Create one annotation with every discrepancy covered
+      DispoAnnotationData annotationOne = new DispoAnnotationData();
+      annotationOne.setLocationRefs("1zzz, 2zzz,12zzz,13zzz,14zzz,15zzz,16zzz,17zzz,18zzz");
+      annotationOne.setIsResolutionValid(true);
+      annotationOne.setResolutionType("Code");
+      annotationOne.setId(annotIdOne);
+      List<String> idsOfCoveredDisc = new ArrayList<String>();
+      annotationOne.setIdsOfCoveredDiscrepancies(idsOfCoveredDisc);
+
+      dispoConnector.connectAnnotation(annotationOne, dispoItem.getDiscrepanciesList());
+      List<DispoAnnotationData> annotationsList = new ArrayList<DispoAnnotationData>();
+      annotationsList.add(annotationOne);
+      dispoItem.setAnnotationsList(annotationsList);
+
+      // annotation 1 should be connected to all Discrepancies
+      List<String> idsOfCoveredDiscrepancies = annotationOne.getIdsOfCoveredDiscrepancies();
+      Assert.assertTrue(idsOfCoveredDiscrepancies.size() == 9);
+      for (int i = 0; i < idsOfCoveredDiscrepancies.size(); i++) {
+         if (i < 2) {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies1_5[i]);
+         } else {
+            assertEquals(idsOfCoveredDiscrepancies.get(i), idsForDiscrepancies12_18[i - 2]);
+         }
+
+      }
+
+      assertTrue(annotationOne.getIsConnected());
+
+      String actual = dispoConnector.getItemStatus(dispoItem);
+      assertEquals(DispoStrings.Item_InComplete, actual);
+   }
+
+   @Test
    public void testConnectAnnotationsSingleCompelete() {
       // Create one annotation with every discrepancy covered
       DispoAnnotationData annotationOne = new DispoAnnotationData();
-      annotationOne.setLocationRefs("1-5, 12-18, 20");
+      annotationOne.setLocationRefs("1- 5, 12 - 18, 20");
       annotationOne.setIsResolutionValid(true);
       annotationOne.setResolutionType("Code");
       annotationOne.setId(annotIdOne);
