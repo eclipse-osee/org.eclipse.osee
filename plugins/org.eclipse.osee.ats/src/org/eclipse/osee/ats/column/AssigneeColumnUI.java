@@ -16,22 +16,19 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -39,7 +36,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -48,7 +44,7 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
    public static AssigneeColumnUI instance = new AssigneeColumnUI();
 
@@ -58,17 +54,6 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
 
    private AssigneeColumnUI() {
       super(AtsColumnToken.AssigneeColumn);
-   }
-
-   /**
-    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
-    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
-    */
-   @Override
-   public AssigneeColumnUI copy() {
-      AssigneeColumnUI newXCol = new AssigneeColumnUI();
-      super.copy(this, newXCol);
-      return newXCol;
    }
 
    @Override
@@ -151,18 +136,6 @@ public class AssigneeColumnUI extends XViewerAtsColumn implements IXViewerValueC
          AtsChangeSet.execute("Assignee - Prompt Change", awas);
       }
       return true;
-   }
-
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      try {
-         if (element instanceof IAtsObject) {
-            return AtsClientService.get().getColumnService().getColumnText(AtsColumnId.Assignees, (IAtsObject) element);
-         }
-      } catch (OseeCoreException ex) {
-         return LogUtil.getCellExceptionString(ex);
-      }
-      return "";
    }
 
    @Override

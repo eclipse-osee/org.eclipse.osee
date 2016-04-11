@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import java.util.Date;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -33,7 +33,7 @@ public class CreatedDateColumnTest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertNotNull(CreatedDateColumn.getInstance().getColumnText(codeArt, CreatedDateColumn.getInstance(), 0));
+      Assert.assertNotNull(CreatedDateColumn.getDateStr(codeArt));
       Date date = CreatedDateColumn.getDate(codeArt);
       Assert.assertNotNull(date);
       Assert.assertEquals(DateUtil.getMMDDYYHHMM(date), CreatedDateColumn.getDateStr(codeArt));

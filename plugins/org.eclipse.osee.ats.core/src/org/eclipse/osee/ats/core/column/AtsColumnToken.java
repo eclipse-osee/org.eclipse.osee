@@ -31,6 +31,9 @@ public class AtsColumnToken {
       AtsColumnId.Assignees.name(), 100, ColumnAlign.Left.name(), true, ColumnType.String, true, "");
    public static AtsColumnIdValueColumn ActionableItemsColumn = new AtsColumnIdValueColumn(AtsColumnId.ActionableItem,
       AtsColumnId.ActionableItem.name(), 80, ColumnAlign.Left.name(), true, ColumnType.String, false, "");
+   public static AtsColumnIdValueColumn CreatedDateColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.CreatedDate, AtsColumnId.CreatedDate.name(), 80, ColumnAlign.Left.name(),
+         true, ColumnType.Date, false, "Date this workflow was created.");
    public static AtsColumnIdValueColumn StateColumn = new AtsColumnIdValueColumn(AtsColumnId.State, "State", 75,
       ColumnAlign.Left.name(), true, ColumnType.String, false, null);
    public static AtsColumnIdValueColumn TypeColumn = new AtsColumnIdValueColumn(AtsColumnId.Type, "Type", 150,

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.AttributeColumn;
+import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
@@ -89,6 +90,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new ImplementerColumn(services);
          } else if (id.equals(AtsColumnId.ChangeType.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, services);
+         } else if (id.equals(AtsColumnId.CreatedDate.getId())) {
+            column = new CreatedDateColumn(services);
          } else if (id.equals(AtsColumnId.Notes.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, services);
          } else if (id.equals(AtsColumnId.State.getId())) {

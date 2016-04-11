@@ -19,9 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.column.AtsColumnIdValueColumn;
 import org.eclipse.osee.ats.api.util.ColorColumn;
-import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.IPersistAltLeftClickProvider;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,12 +45,6 @@ public abstract class XViewerAtsColumn extends XViewerColumn {
 
    protected XViewerAtsColumn() {
       // do nothing
-   }
-
-   public XViewerAtsColumn(AtsColumnIdValueColumn column) {
-      this(column.getId(), column.getName(), column.getWidth(), AtsColumnIdUI.getXViewerAlign(column.getAlign()),
-         column.isVisible(), SortDataType.valueOf(column.getSortDataType()), column.isColumnMultiEdit(),
-         column.getDescription());
    }
 
    public XViewerAtsColumn(String id, String name, int width, XViewerAlign align, boolean show, SortDataType sortDataType, boolean multiColumnEditable, String description) {

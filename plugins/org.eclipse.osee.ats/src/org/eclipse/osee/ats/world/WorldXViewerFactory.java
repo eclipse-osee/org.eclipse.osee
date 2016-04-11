@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.column.CompletedCancelledByColumn;
 import org.eclipse.osee.ats.column.CompletedCancelledDateColumn;
 import org.eclipse.osee.ats.column.CompletedDateColumn;
 import org.eclipse.osee.ats.column.CountryColumnUI;
-import org.eclipse.osee.ats.column.CreatedDateColumn;
+import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.DaysInCurrentStateColumn;
 import org.eclipse.osee.ats.column.DeadlineColumn;
 import org.eclipse.osee.ats.column.DecisionColumn;
@@ -153,7 +153,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          getConfigColumn(AtsColumnToken.TitleColumn),
          new AtsColumnIdUI(AtsColumnToken.ActionableItemsColumn, AtsClientService.get().getServices()),
          new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()),
-         CreatedDateColumn.getInstance(),
+         CreatedDateColumnUI.getInstance(),
          TargetedVersionColumn.getInstance(),
          new AtsColumnIdUI(AtsColumnToken.TeamColumn, AtsClientService.get().getServices()),
          getConfigColumn(AtsColumnToken.NotesColumn),
