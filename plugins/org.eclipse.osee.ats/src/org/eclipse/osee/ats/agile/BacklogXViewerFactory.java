@@ -19,7 +19,6 @@ import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.column.AbstractMembersOrderColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsColumnIdUI;
-import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.BacklogOrderColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
@@ -71,7 +70,8 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
       WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, backlogCols);
       WorldXViewerUtil.addColumn(this, NotesColumn.getInstance(), 116, backlogCols);
       WorldXViewerUtil.addColumn(this, CreatedDateColumn.getInstance(), 82, backlogCols);
-      WorldXViewerUtil.addColumn(this, new AtsIdColumnUI(true), 50, backlogCols);
+      WorldXViewerUtil.addColumn(this,
+         new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()), 50, backlogCols);
 
       // Add remaining columns from world columns
       for (XViewerColumn worldCol : WorldXViewerFactory.getWorldViewColumns()) {

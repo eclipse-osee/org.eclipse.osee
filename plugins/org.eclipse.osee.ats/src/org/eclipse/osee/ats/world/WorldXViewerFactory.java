@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.column.ActionableItemOwner;
 import org.eclipse.osee.ats.column.AnnualCostAvoidanceColumn;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsColumnIdUI;
-import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.BacklogColumnUI;
 import org.eclipse.osee.ats.column.BranchStatusColumn;
 import org.eclipse.osee.ats.column.CancelledByColumn;
@@ -154,7 +153,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          AssigneeColumnUI.getInstance(),
          getConfigColumn(AtsColumnToken.TitleColumn),
          new AtsColumnIdUI(AtsColumnToken.ActionableItemsColumn, AtsClientService.get().getServices()),
-         AtsIdColumnUI.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()),
          CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(),
          new AtsColumnIdUI(AtsColumnToken.TeamColumn, AtsClientService.get().getServices()),
@@ -252,7 +251,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          new GuidColumn(false),
          ParentTopTeamColumnUI.getInstance(),
          ActionableItemOwner.getInstance(),
-         AtsIdColumnUI.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.AtsIdColumn, AtsClientService.get().getServices()),
          AgileFeatureGroupColumn.getInstance(),
          SprintOrderColumn.getInstance(),
          RemainingPointsNumericWorkflowColumn.getInstance(),

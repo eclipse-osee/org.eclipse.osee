@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.api.query.IAtsQuery;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.column.AtsColumnIdUI;
-import org.eclipse.osee.ats.column.AtsIdColumnUI;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
@@ -153,7 +152,7 @@ public class GenerateReviewParticipationReport extends XNavigateItemAction {
       public ReviewParticipationXViewerFactory(IAtsUser user) {
          super(MASS_XVIEWER_CUSTOMIZE_NAMESPACE);
          registerColumns(ArtifactTypeColumn.getInstance());
-         registerColumns(new AtsIdColumnUI());
+         registerColumns(new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()));
          registerColumns(new XViewerAtsAttributeValueColumn(AtsColumnToken.LegacyPcrIdColumn));
          registerColumns(new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()));
          registerColumns(new XViewerSmaCompletedDateColumn("Completed"));
