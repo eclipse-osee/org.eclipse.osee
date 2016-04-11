@@ -12,9 +12,11 @@ package org.eclipse.osee.ats.client.integration.tests.ats.workflow;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import javax.ws.rs.core.Response;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.task.AtsTaskEndpointApi;
 import org.eclipse.osee.ats.api.task.JaxAtsTask;
@@ -22,10 +24,15 @@ import org.eclipse.osee.ats.api.task.JaxAttribute;
 import org.eclipse.osee.ats.api.task.NewTaskData;
 import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
+import org.eclipse.osee.ats.api.util.IAtsChangeSet;
+import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
+import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -43,9 +50,11 @@ public class AtsTaskEndpointImplTest {
 
    private AtsTaskEndpointApi taskEp;
    private long taskUuid1, taskUuid2, taskUuid3, codeTeamWfUuid;
+   private IAtsClient client;
 
    @Before
    public void setup() {
+      client = AtsClientService.get();
       taskEp = AtsClientService.getTaskEp();
       taskUuid1 = Lib.generateArtifactIdAsInt();
       taskUuid2 = Lib.generateArtifactIdAsInt();
@@ -58,6 +67,64 @@ public class AtsTaskEndpointImplTest {
       taskEp.delete(taskUuid1);
       taskEp.delete(taskUuid2);
       taskEp.delete(taskUuid3);
+   }
+
+   @Test
+   public void testCreateTaskAndRelate() {
+
+      String createdByUserId = DemoUsers.Joe_Smith.getUserId();
+      Date createdDate = new Date();
+      NewTaskData data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(),
+         DemoUsers.Joe_Smith.getUserId(), codeTeamWfUuid);
+
+      // Test add relation where task on A side
+      JaxAtsTask newTask = createJaxAtsTask(taskUuid1, "Task 4", "description", createdByUserId, createdDate, null);
+      newTask.setTaskWorkDef("WorkDef_Task_Default");
+      data.getNewTasks().add(newTask);
+      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportedBy, codeTeamWfUuid);
+
+      Response response = taskEp.create(new NewTaskDatas(data));
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      IAtsTask task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andUuids(
+         newTask.getUuid()).getResults().getAtMostOneOrNull();
+      Collection<IAtsWorkItem> workItems = client.getRelationResolver().getRelated(task,
+         CoreRelationTypes.SupportingInfo_SupportedBy, IAtsWorkItem.class);
+      Assert.assertEquals(1, workItems.size());
+      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
+
+      IAtsChangeSet changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup");
+      changes.deleteArtifact(task);
+      changes.execute();
+
+      workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportedBy,
+         IAtsWorkItem.class);
+      Assert.assertTrue(workItems.isEmpty());
+
+      // Test add relation where task on B side
+      newTask = createJaxAtsTask(taskUuid1, "Task 4", "description", createdByUserId, createdDate, null);
+      newTask.setTaskWorkDef("WorkDef_Task_Default");
+      data.getNewTasks().add(newTask);
+      newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfUuid);
+
+      response = taskEp.create(new NewTaskDatas(data));
+      Assert.assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
+
+      task = (IAtsTask) client.getQueryService().createQuery(WorkItemType.Task).andUuids(
+         newTask.getUuid()).getResults().getAtMostOneOrNull();
+      workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportingInfo,
+         IAtsWorkItem.class);
+      Assert.assertEquals(1, workItems.size());
+      Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
+
+      changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup");
+      changes.deleteArtifact(task);
+      changes.execute();
+
+      workItems = client.getRelationResolver().getRelated(task, CoreRelationTypes.SupportingInfo_SupportingInfo,
+         IAtsWorkItem.class);
+      Assert.assertTrue(workItems.isEmpty());
+
    }
 
    @Test
