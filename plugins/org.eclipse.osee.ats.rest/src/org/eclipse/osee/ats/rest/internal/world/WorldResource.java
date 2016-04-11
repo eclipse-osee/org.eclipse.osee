@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.rest.internal.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.LinkedList;
 import java.util.List;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -22,12 +23,11 @@ import javax.ws.rs.core.MediaType;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.column.IAtsColumnId;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.core.column.AtsColumnId;
 import org.eclipse.osee.ats.rest.IAtsServer;
@@ -228,65 +228,21 @@ public class WorldResource {
    }
 
    private void getDefaultUiTable(long uuid, StringBuilder sb, String tableName, Collection<IAtsWorkItem> workItems) throws Exception {
+      List<IAtsColumnId> columns = Arrays.asList(AtsColumnId.Team, AtsColumnId.State, AtsColumnId.Priority,
+         AtsColumnId.ChangeType, AtsColumnId.Assignees, AtsColumnId.Title, AtsColumnId.ActionableItem,
+         AtsColumnId.CreatedDate, AtsColumnId.TargetedVersion, AtsColumnId.Notes, AtsColumnId.AtsId);
       sb.append(AHTML.heading(2, tableName));
       sb.append(AHTML.beginMultiColumnTable(97, 1));
       sb.append(AHTML.addHeaderRowMultiColumnTable(Arrays.asList("Team", "State", "Priority", "Change Type", "Assignee",
          "Title", "AI", "Created", "Targted Version", "Notes", "ID")));
       for (IAtsWorkItem workItem : workItems) {
-         sb.append(AHTML.addRowMultiColumnTable(getTeam(workItem), getState(workItem), getPriority(workItem),
-            getChangeType(workItem), getAssignee(workItem), getTitle(workItem), getAI(workItem),
-            getCreatedDate(workItem), getTargetedVersion(workItem), getNotes(workItem), getId(workItem)));
+         List<String> values = new LinkedList<>();
+         for (IAtsColumnId columnId : columns) {
+            values.add(atsServer.getColumnService().getColumnText(columnId, workItem));
+         }
+         sb.append(AHTML.addRowMultiColumnTable(values.toArray(new String[values.size()])));
       }
       sb.append(AHTML.endMultiColumnTable());
-   }
-
-   private String getId(IAtsWorkItem workItem) {
-      return atsServer.getColumnService().getColumnText(AtsColumnId.AtsId, workItem);
-   }
-
-   private String getAI(IAtsWorkItem workItem) {
-      return "TBD";
-   }
-
-   private String getNotes(IAtsWorkItem workItem) {
-      return atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.SmaNote, "");
-   }
-
-   private String getTargetedVersion(IAtsWorkItem workItem) {
-      String result = "";
-      IAtsVersion version = atsServer.getVersionService().getTargetedVersion(workItem);
-      if (version != null) {
-         result = version.toString();
-      }
-      return result;
-   }
-
-   private String getCreatedDate(IAtsWorkItem workItem) {
-      return workItem.getCreatedDate().toString();
-   }
-
-   private String getTitle(IAtsWorkItem workItem) {
-      return atsServer.getColumnService().getColumnText(AtsColumnId.Title, workItem);
-   }
-
-   private String getAssignee(IAtsWorkItem workItem) {
-      return atsServer.getColumnService().getColumnText(AtsColumnId.Assignees, workItem);
-   }
-
-   private String getChangeType(IAtsWorkItem workItem) {
-      return atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.ChangeType, "");
-   }
-
-   private String getPriority(IAtsWorkItem workItem) {
-      return atsServer.getAttributeResolver().getSoleAttributeValue(workItem, AtsAttributeTypes.PriorityType, "");
-   }
-
-   private String getState(IAtsWorkItem workItem) {
-      return atsServer.getColumnService().getColumnText(AtsColumnId.State, workItem);
-   }
-
-   private String getTeam(IAtsWorkItem workItem) {
-      return atsServer.getColumnService().getColumnText(AtsColumnId.Team, workItem);
    }
 
 }

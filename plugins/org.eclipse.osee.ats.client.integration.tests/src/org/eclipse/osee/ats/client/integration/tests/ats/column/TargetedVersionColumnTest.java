@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 
 import static org.eclipse.osee.framework.core.enums.DemoBranches.SAW_Bld_2;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -33,24 +33,24 @@ public class TargetedVersionColumnTest {
       TeamWorkFlowArtifact reqArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Requirements);
       Assert.assertEquals(SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(reqArt, TargetedVersionColumn.getInstance(), 0));
+         TargetedVersionColumnUI.getInstance().getColumnText(reqArt, TargetedVersionColumnUI.getInstance(), 0));
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
       Assert.assertEquals(SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(codeArt, TargetedVersionColumn.getInstance(), 0));
+         TargetedVersionColumnUI.getInstance().getColumnText(codeArt, TargetedVersionColumnUI.getInstance(), 0));
 
       Artifact actionArt = reqArt.getParentActionArtifact();
       Assert.assertEquals(SAW_Bld_2.getName(),
-         TargetedVersionColumn.getInstance().getColumnText(actionArt, TargetedVersionColumn.getInstance(), 0));
+         TargetedVersionColumnUI.getInstance().getColumnText(actionArt, TargetedVersionColumnUI.getInstance(), 0));
 
       TeamWorkFlowArtifact toolsArt = DemoTestUtil.getToolsTeamWorkflow();
       Assert.assertEquals("",
-         TargetedVersionColumn.getInstance().getColumnText(toolsArt, TargetedVersionColumn.getInstance(), 0));
+         TargetedVersionColumnUI.getInstance().getColumnText(toolsArt, TargetedVersionColumnUI.getInstance(), 0));
 
       actionArt = toolsArt.getParentActionArtifact();
       Assert.assertEquals("",
-         TargetedVersionColumn.getInstance().getColumnText(actionArt, TargetedVersionColumn.getInstance(), 0));
+         TargetedVersionColumnUI.getInstance().getColumnText(actionArt, TargetedVersionColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }

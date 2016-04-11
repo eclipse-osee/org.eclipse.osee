@@ -33,6 +33,7 @@ public enum AtsColumnId implements IAtsColumnId {
    Priority("ats.column.Priority"),
    State("ats.column.state"),
    Team("ats.column.team"),
+   TargetedVersion("ats.column.versionTarget"),
    Title("framework.artifact.name.Title"),
    Type("ats.column.type"),
    Uuid("framework.uuid"),

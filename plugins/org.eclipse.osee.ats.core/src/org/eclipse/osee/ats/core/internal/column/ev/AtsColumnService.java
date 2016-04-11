@@ -28,11 +28,12 @@ import org.eclipse.osee.ats.core.column.AtsIdColumn;
 import org.eclipse.osee.ats.core.column.AttributeColumn;
 import org.eclipse.osee.ats.core.column.CreatedDateColumn;
 import org.eclipse.osee.ats.core.column.IAtsColumnProvider;
+import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.InsertionActivityColumn;
 import org.eclipse.osee.ats.core.column.InsertionColumn;
-import org.eclipse.osee.ats.core.column.ImplementerColumn;
 import org.eclipse.osee.ats.core.column.PercentCompleteTasksColumn;
 import org.eclipse.osee.ats.core.column.StateColumn;
+import org.eclipse.osee.ats.core.column.TargetedVersionColumn;
 import org.eclipse.osee.ats.core.column.TeamColumn;
 import org.eclipse.osee.ats.core.column.TitleColumn;
 import org.eclipse.osee.ats.core.column.TypeColumn;
@@ -130,6 +131,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new InsertionColumn(services);
          } else if (id.equals(AtsColumnId.InsertionActivity.getId())) {
             column = new InsertionActivityColumn(services);
+         } else if (id.equals(AtsColumnId.TargetedVersion.getId())) {
+            column = new TargetedVersionColumn(services);
          }
       }
       // Add columns provided through OSGI services

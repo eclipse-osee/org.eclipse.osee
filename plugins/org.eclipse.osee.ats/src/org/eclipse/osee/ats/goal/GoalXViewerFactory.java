@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.GoalOrderColumn;
 import org.eclipse.osee.ats.column.GoalOrderVoteColumn;
 import org.eclipse.osee.ats.column.PriorityColumnUI;
-import org.eclipse.osee.ats.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.GoalArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -47,7 +47,7 @@ public class GoalXViewerFactory extends SkynetXViewerFactory {
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
          PriorityColumnUI.getInstance(), ChangeTypeColumnUI.getInstance(), AssigneeColumnUI.getInstance(),
          new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()),
-         new CreatedDateColumnUI(), TargetedVersionColumn.getInstance(),
+         new CreatedDateColumnUI(), TargetedVersionColumnUI.getInstance(),
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()));
       return columns;
    }

@@ -36,6 +36,9 @@ public class AtsColumnToken {
          true, ColumnType.Date, false, "Date this workflow was created.");
    public static AtsColumnIdValueColumn StateColumn = new AtsColumnIdValueColumn(AtsColumnId.State, "State", 75,
       ColumnAlign.Left.name(), true, ColumnType.String, false, null);
+   public static AtsColumnIdValueColumn TargtedVersionColumn =
+      new AtsColumnIdValueColumn(AtsColumnId.TargetedVersion, "Targeted Version", 40, ColumnAlign.Left.name(), true,
+         ColumnType.String, true, "Date this workflow transitioned to the Completed state.");
    public static AtsColumnIdValueColumn TypeColumn = new AtsColumnIdValueColumn(AtsColumnId.Type, "Type", 150,
       ColumnAlign.Left.name(), true, ColumnType.String, false, null);
    public static AtsColumnIdValueColumn TeamColumn = new AtsColumnIdValueColumn(AtsColumnId.Team, "Team", 50,

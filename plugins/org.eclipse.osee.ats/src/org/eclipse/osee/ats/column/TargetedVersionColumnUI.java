@@ -19,37 +19,28 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.IAltLeftClickProvider;
 import org.eclipse.nebula.widgets.xviewer.IMultiColumnEditProvider;
-import org.eclipse.nebula.widgets.xviewer.IXViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
-import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
-import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.core.config.Versions;
+import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.VersionListDialog;
-import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumn;
-import org.eclipse.osee.ats.world.WorldXViewerFactory;
+import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsColumnIdColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -57,17 +48,16 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerValueColumn, IAltLeftClickProvider, IMultiColumnEditProvider {
+public class TargetedVersionColumnUI extends XViewerAtsColumnIdColumn implements IAltLeftClickProvider, IMultiColumnEditProvider {
 
-   public static TargetedVersionColumn instance = new TargetedVersionColumn();
+   public static TargetedVersionColumnUI instance = new TargetedVersionColumnUI();
 
-   public static TargetedVersionColumn getInstance() {
+   public static TargetedVersionColumnUI getInstance() {
       return instance;
    }
 
-   private TargetedVersionColumn() {
-      super(WorldXViewerFactory.COLUMN_NAMESPACE + ".versionTarget", "Targeted Version", 40, XViewerAlign.Left, true,
-         SortDataType.String, true, "Date this workflow transitioned to the Completed state.");
+   private TargetedVersionColumnUI() {
+      super(AtsColumnToken.TargtedVersionColumn);
    }
 
    /**
@@ -75,8 +65,8 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
     * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
     */
    @Override
-   public TargetedVersionColumn copy() {
-      TargetedVersionColumn newXCol = new TargetedVersionColumn();
+   public TargetedVersionColumnUI copy() {
+      TargetedVersionColumnUI newXCol = new TargetedVersionColumnUI();
       super.copy(this, newXCol);
       return newXCol;
    }
@@ -183,29 +173,6 @@ public class TargetedVersionColumn extends XViewerAtsColumn implements IXViewerV
       }
       Artifacts.persistInTransaction("ATS Prompt Change Version", awas);
       return true;
-   }
-
-   @Override
-   public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
-      String result = "";
-      try {
-         if (element instanceof IAtsAction) {
-            Set<String> strs = new HashSet<>();
-            for (TeamWorkFlowArtifact team : ActionManager.getTeams(element)) {
-               String str = Versions.getTargetedVersionStr(team, AtsClientService.get().getVersionService());
-               if (Strings.isValid(str)) {
-                  strs.add(str);
-               }
-            }
-            result = Collections.toString(";", strs);
-
-         } else if (element instanceof IAtsWorkItem) {
-            result = Versions.getTargetedVersionStr((IAtsWorkItem) element, AtsClientService.get().getVersionService());
-         }
-      } catch (OseeCoreException ex) {
-         result = LogUtil.getCellExceptionString(ex);
-      }
-      return result;
    }
 
    @Override

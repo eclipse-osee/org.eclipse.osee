@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumnUI;
 import org.eclipse.osee.ats.column.PriorityColumnUI;
-import org.eclipse.osee.ats.column.TargetedVersionColumn;
+import org.eclipse.osee.ats.column.TargetedVersionColumnUI;
 import org.eclipse.osee.ats.core.client.artifact.SprintArtifact;
 import org.eclipse.osee.ats.core.column.AtsColumnToken;
 import org.eclipse.osee.ats.internal.AtsClientService;
@@ -58,7 +58,7 @@ public class SprintXViewerFactory extends SkynetXViewerFactory {
          WorldXViewerUtil.addColumn(this, unPlannedWorkColumn, 43, sprintCols);
          configCols.remove(unPlannedWorkColumn);
       }
-      WorldXViewerUtil.addColumn(this, TargetedVersionColumn.getInstance(), 50, sprintCols);
+      WorldXViewerUtil.addColumn(this, TargetedVersionColumnUI.getInstance(), 50, sprintCols);
       WorldXViewerUtil.addColumn(this,
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()), 116, sprintCols);
       WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, sprintCols);
