@@ -573,7 +573,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, I
 
    private void ensureAttributesLoaded() throws OseeCoreException {
       if (!isAttributesLoaded() && isInDb()) {
-         ArtifactLoader.loadArtifactData(this, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
+         ArtifactLoader.loadArtifactData(this, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, BranchManager.isArchived(getBranch()));
       }
    }
 

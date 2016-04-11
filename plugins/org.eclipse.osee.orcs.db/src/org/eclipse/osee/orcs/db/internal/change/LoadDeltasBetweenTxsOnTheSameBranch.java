@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -43,6 +44,9 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
    private static final String SELECT_CHANGES_BETWEEN_TRANSACTIONS =
       "select gamma_id, mod_type, app_id from osee_txs where branch_id = ? and transaction_id > ? and transaction_id <= ?";
+   private static final String SELECT_CHANGES_BETWEEN_ARCHIVED_TRANSACTIONS =
+      "select gamma_id, mod_type, app_id from osee_txs_archived where branch_id = ? and transaction_id > ? and transaction_id <= ?";
+   private static final String SELECT_IS_BRANCH_ARCHIVED = "select archived from osee_branch where branch_id = ?";
 
    private final HashMap<Long, Pair<ModificationType, ApplicabilityId>> changeByGammaId = new HashMap<>();
 
@@ -78,13 +82,27 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
 
       TransactionJoinQuery txJoin = joinFactory.createTransactionJoinQuery();
 
-      loadChangesAtEndTx(txJoin);
+      boolean isArchived = false;
+      JdbcStatement chStmt = getJdbcClient().getStatement();
+      try {
+         chStmt.runPreparedQuery(1, SELECT_IS_BRANCH_ARCHIVED, getBranchId());
+         while (chStmt.next()) {
+            checkForCancelled();
+            if (chStmt.getInt("archived") == BranchArchivedState.ARCHIVED.getValue()) {
+               isArchived = true;
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      loadChangesAtEndTx(txJoin, isArchived);
 
       int txJoinId = txJoin.getQueryId();
       try {
-         loadByItemId(changeData, txJoinId, changeItemLoader.createArtifactChangeItemFactory());
-         loadByItemId(changeData, txJoinId, changeItemLoader.createAttributeChangeItemFactory());
-         loadByItemId(changeData, txJoinId, changeItemLoader.createRelationChangeItemFactory());
+         loadByItemId(changeData, txJoinId, changeItemLoader.createArtifactChangeItemFactory(), isArchived);
+         loadByItemId(changeData, txJoinId, changeItemLoader.createAttributeChangeItemFactory(), isArchived);
+         loadByItemId(changeData, txJoinId, changeItemLoader.createRelationChangeItemFactory(), isArchived);
       } finally {
          try {
             txJoin.delete();
@@ -95,11 +113,13 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       return changeData;
    }
 
-   private void loadChangesAtEndTx(TransactionJoinQuery txJoin) throws OseeCoreException {
+   private void loadChangesAtEndTx(TransactionJoinQuery txJoin, boolean isArchived) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_CHANGES_BETWEEN_TRANSACTIONS, getBranchId(),
-            getStartTx().getGuid(), getEndTx().getGuid());
+
+         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE,
+            (isArchived ? SELECT_CHANGES_BETWEEN_ARCHIVED_TRANSACTIONS : SELECT_CHANGES_BETWEEN_TRANSACTIONS),
+            getBranchId(), getStartTx().getGuid(), getEndTx().getGuid());
          while (chStmt.next()) {
             checkForCancelled();
             Long gammaId = chStmt.getLong("gamma_id");
@@ -115,7 +135,7 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       }
    }
 
-   private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory) throws OseeCoreException {
+   private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory, boolean isArchived) throws OseeCoreException {
 
       IdJoinQuery idJoin = joinFactory.createIdJoinQuery();
 
@@ -125,19 +145,21 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
       idJoin.store();
 
       loadCurrentData(factory.getItemTableName(), factory.getItemIdColumnName(), idJoin.getQueryId(), changesByItemId,
-         getStartTx());
+         getStartTx(), isArchived);
 
       idJoin.delete();
 
       changeData.addAll(changesByItemId.values());
    }
 
-   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit) throws OseeCoreException {
+   private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit, boolean isArchived) throws OseeCoreException {
       JdbcStatement chStmt = getJdbcClient().getStatement();
       try {
-         String query = "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
-            + tableName + " item, osee_txs txs where idj.query_id = ? and idj.id = item." + columnName + //
-            " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?";
+         String query = String.format(
+            "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
+               + tableName + " item, %s txs where idj.query_id = ? and idj.id = item." + columnName + //
+               " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?",
+            isArchived ? "osee_txs_archived" : "osee_txs");
 
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranchId(),
             transactionLimit.getGuid());

@@ -37,14 +37,14 @@ import org.eclipse.osee.jdbc.JdbcStatement;
  */
 public class AttributeLoader {
 
-   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Long, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel) throws OseeCoreException {
+   static void loadAttributeData(int queryId, CompositeKeyHashMap<Integer, Long, Artifact> tempCache, boolean historical, DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean isArchived) throws OseeCoreException {
       if (loadLevel == ARTIFACT_DATA || loadLevel == RELATION_DATA) {
          return;
       }
 
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
-         String sql = getSql(allowDeletedArtifacts, loadLevel, historical);
+         String sql = getSql(allowDeletedArtifacts, loadLevel, historical, isArchived);
          chStmt.runPreparedQuery(tempCache.size() * 8, sql, queryId);
 
          Artifact currentArtifact = null;
@@ -155,7 +155,7 @@ public class AttributeLoader {
       if (!historical) {
          OseeLog.logf(ArtifactLoader.class, Level.WARNING,
 
-         "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
+            "multiple attribute version for attribute id [%d] artifact id[%d] branch[%d] previousGammaId[%s] currentGammaId[%s] previousModType[%s] currentModType[%s]",
             current.attrId, current.artifactId, current.branchUuid, previous.gammaId, current.gammaId, previous.modType,
             current.modType);
       }
@@ -186,10 +186,16 @@ public class AttributeLoader {
       artifact.setTransactionId(maxTransactionId);
    }
 
-   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical) throws OseeCoreException {
+   private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) throws OseeCoreException {
       OseeSql sqlKey;
-      if (historical) {
+      if (historical && isArchived) {
+         sqlKey = OseeSql.LOAD_HISTORICAL_ARCHIVED_ATTRIBUTES;
+      } else if (historical) {
          sqlKey = OseeSql.LOAD_HISTORICAL_ATTRIBUTES;
+      } else if (isArchived && allowDeletedArtifacts == INCLUDE_DELETED) {
+         sqlKey = OseeSql.LOAD_CURRENT_ARCHIVED_ATTRIBUTES_WITH_DELETED;
+      } else if (isArchived) {
+         sqlKey = OseeSql.LOAD_CURRENT_ARCHIVED_ATTRIBUTES;
       } else if (allowDeletedArtifacts == INCLUDE_DELETED) {
          sqlKey = OseeSql.LOAD_CURRENT_ATTRIBUTES_WITH_DELETED;
       } else {

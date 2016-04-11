@@ -37,14 +37,23 @@ public enum OseeSql {
    CONFLICT_GET_HISTORICAL_ATTRIBUTES("SELECT%s atr.attr_id, atr.art_id, source_gamma_id, dest_gamma_id, attr_type_id, mer.merge_branch_id, mer.dest_branch_id, value as source_value, status, mer.source_branch_id FROM osee_merge mer, osee_conflict con, osee_attribute atr Where mer.commit_transaction_id = ? AND mer.merge_branch_id = con.merge_branch_id And con.source_gamma_id = atr.gamma_id AND con.status in (" + ConflictStatus.COMMITTED.getValue() + ", " + ConflictStatus.INFORMATIONAL.getValue() + " ) order by attr_id", getHintsOrderedFirstRows()),
 
    LOAD_HISTORICAL_ARTIFACTS("SELECT%s aj.art_id, txs.branch_id, txs.gamma_id, txs.mod_type, art_type_id, guid, aj.transaction_id as stripe_transaction_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.transaction_id <= aj.transaction_id AND txs.branch_id = aj.branch_id order by aj.branch_id, art.art_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
+   LOAD_HISTORICAL_ARCHIVED_ARTIFACTS("SELECT%s aj.art_id, txs.branch_id, txs.gamma_id, txs.mod_type, art_type_id, guid, aj.transaction_id as stripe_transaction_id FROM osee_join_artifact aj, osee_artifact art, osee_txs_archived txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.transaction_id <= aj.transaction_id AND txs.branch_id = aj.branch_id order by aj.branch_id, art.art_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
+
    LOAD_HISTORICAL_ATTRIBUTES("SELECT att.art_id, att.attr_id, att.value, att.gamma_id, att.attr_type_id, att.uri, aj.branch_id, txs.mod_type, txs.transaction_id, aj.transaction_id as stripe_transaction_id FROM osee_join_artifact aj, osee_attribute att, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = att.art_id AND att.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.transaction_id <= aj.transaction_id order by txs.branch_id, att.art_id, att.attr_id, txs.transaction_id desc"),
+   LOAD_HISTORICAL_ARCHIVED_ATTRIBUTES("SELECT att.art_id, att.attr_id, att.value, att.gamma_id, att.attr_type_id, att.uri, aj.branch_id, txs.mod_type, txs.transaction_id, aj.transaction_id as stripe_transaction_id FROM osee_join_artifact aj, osee_attribute att, osee_txs_archived txs WHERE aj.query_id = ? AND aj.art_id = att.art_id AND att.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.transaction_id <= aj.transaction_id order by txs.branch_id, att.art_id, att.attr_id, txs.transaction_id desc"),
+
    LOAD_CURRENT_ATTRIBUTES(Strings.SELECT_CURRENT_ATTRIBUTES_PREFIX + "= 1 order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
    LOAD_CURRENT_ATTRIBUTES_WITH_DELETED(Strings.SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
    LOAD_ALL_CURRENT_ATTRIBUTES(Strings.SELECT_CURRENT_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
+   LOAD_CURRENT_ARCHIVED_ATTRIBUTES(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "= 1 order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
+   LOAD_CURRENT_ARCHIVED_ATTRIBUTES_WITH_DELETED(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "IN (1, 3) order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
+   LOAD_ALL_CURRENT_ARCHIVED_ATTRIBUTES(Strings.SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX + "IN (1, 2, 3) order by al1.branch_id, al1.art_id, att1.attr_id, txs.transaction_id desc", getHintsOrderedFirstRows()),
 
    LOAD_RELATIONS("SELECT%s txs.mod_type, rel_link_id, a_art_id, b_art_id, rel_link_type_id, rel.gamma_id, rationale, txs.branch_id FROM osee_join_artifact aj, osee_relation_link rel, osee_txs txs WHERE aj.query_id = ? AND (aj.art_id = rel.a_art_id OR aj.art_id = rel.b_art_id) AND rel.gamma_id = txs.gamma_id AND txs.tx_current = " + TxChange.CURRENT.getValue() + " AND aj.branch_id = txs.branch_id", getHintsOrderedFirstRows()),
    LOAD_CURRENT_ARTIFACTS(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "= 1", getHintsOrderedFirstRows()),
    LOAD_CURRENT_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARTIFACTS_PREFIX + "in (1, 2)", getHintsOrderedFirstRows()),
+   LOAD_CURRENT_ARCHIVED_ARTIFACTS(Strings.SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX + "= 1", getHintsOrderedFirstRows()),
+   LOAD_CURRENT_ARCHIVED_ARTIFACTS_WITH_DELETED(Strings.SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX + "in (1, 2)", getHintsOrderedFirstRows()),
 
    LOAD_REVISION_HISTORY_TRANSACTION_ATTR("SELECT %s txs.transaction_id from osee_attribute arv, osee_txs txs where arv.art_id = ? and arv.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", getHintsOrderedFirstRows()),
    LOAD_REVISION_HISTORY_TRANSACTION_REL("SELECT %s txs.transaction_id from osee_relation_link rel, osee_txs txs where (rel.a_art_id = ? or rel.b_art_id = ?) and rel.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <=?", getHintsOrderedFirstRows()),
@@ -130,6 +139,13 @@ public enum OseeSql {
 
       private static final String SELECT_CURRENT_ARTIFACTS_PREFIX =
          "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
+
+      private static final String SELECT_CURRENT_ARCHIVED_ATTRIBUTES_PREFIX =
+         "SELECT%s att1.art_id, att1.attr_id, att1.value, att1.gamma_id, att1.attr_type_id, att1.uri, al1.branch_id, txs.mod_type, txs.transaction_id FROM osee_join_artifact al1, osee_attribute att1, osee_txs_archived txs WHERE al1.query_id = ? AND al1.art_id = att1.art_id AND att1.gamma_id = txs.gamma_id AND txs.branch_id = al1.branch_id AND txs.tx_current ";
+
+      private static final String SELECT_CURRENT_ARCHIVED_ARTIFACTS_PREFIX =
+         "SELECT%s aj.art_id, txs.gamma_id, mod_type, art_type_id, guid, txs.branch_id FROM osee_join_artifact aj, osee_artifact art, osee_txs_archived txs WHERE aj.query_id = ? AND aj.art_id = art.art_id AND art.gamma_id = txs.gamma_id AND txs.branch_id = aj.branch_id AND txs.tx_current ";
+
    }
 
 }
