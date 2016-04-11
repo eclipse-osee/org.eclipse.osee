@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.client.integration.tests.ats.column;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
-import org.eclipse.osee.ats.column.ActionableItemsColumnUI;
 import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
@@ -50,15 +49,12 @@ public class AssigneeColumnUITest {
 
       TeamWorkFlowArtifact codeArt =
          (TeamWorkFlowArtifact) DemoTestUtil.getUncommittedActionWorkflow(DemoWorkType.Code);
-      Assert.assertNotNull(
-         ActionableItemsColumnUI.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(AssigneeColumnUI.getInstance().getColumnImage(codeArt, AssigneeColumnUI.getInstance(), 0));
 
       Artifact actionArt = codeArt.getParentActionArtifact();
-      Assert.assertNotNull(
-         ActionableItemsColumnUI.getInstance().getColumnImage(actionArt, AssigneeColumnUI.getInstance(), 0));
+      Assert.assertNotNull(AssigneeColumnUI.getInstance().getColumnImage(actionArt, AssigneeColumnUI.getInstance(), 0));
 
-      Assert.assertNull(
-         ActionableItemsColumnUI.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(), 0));
+      Assert.assertNull(AssigneeColumnUI.getInstance().getColumnImage("String", AssigneeColumnUI.getInstance(), 0));
 
       TestUtil.severeLoggingEnd(loggingMonitor);
    }
