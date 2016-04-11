@@ -56,7 +56,6 @@ import org.eclipse.osee.ats.column.ImplementorColumnUI;
 import org.eclipse.osee.ats.column.LastStatusedColumn;
 import org.eclipse.osee.ats.column.LocChangedColumn;
 import org.eclipse.osee.ats.column.LocReviewedColumn;
-import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.NumberOfTasksColumn;
 import org.eclipse.osee.ats.column.NumberOfTasksRemainingColumn;
 import org.eclipse.osee.ats.column.NumericColumn;
@@ -157,7 +156,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
          CreatedDateColumn.getInstance(),
          TargetedVersionColumn.getInstance(),
          new AtsColumnIdUI(AtsColumnToken.TeamColumn, AtsClientService.get().getServices()),
-         NotesColumn.getInstance(),
+         getConfigColumn(AtsColumnToken.NotesColumn),
          DeadlineColumn.getInstance(),
          AnnualCostAvoidanceColumn.getInstance(),
          DescriptionColumn.getInstance(),

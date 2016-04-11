@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.column.AssigneeColumnUI;
 import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.EstimatedHoursColumn;
 import org.eclipse.osee.ats.column.HoursSpentTotalColumn;
-import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PercentCompleteTotalColumn;
 import org.eclipse.osee.ats.column.RelatedToStateColumn;
 import org.eclipse.osee.ats.column.RemainingHoursColumn;
@@ -48,7 +47,8 @@ public class TaskXViewerFactory extends SkynetXViewerFactory {
          new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()),
          AssigneeColumnUI.getInstance(), PercentCompleteTotalColumn.getInstance(), HoursSpentTotalColumn.getInstance(),
          ResolutionColumn.getInstance(), EstimatedHoursColumn.getInstance(), RemainingHoursColumn.getInstance(),
-         RelatedToStateColumn.getInstance(), NotesColumn.getInstance());
+         RelatedToStateColumn.getInstance(),
+         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()));
    public static Integer[] widths = new Integer[] {450, 60, 150, 40, 40, 100, 50, 50, 50, 80, 80};
 
    public TaskXViewerFactory() {

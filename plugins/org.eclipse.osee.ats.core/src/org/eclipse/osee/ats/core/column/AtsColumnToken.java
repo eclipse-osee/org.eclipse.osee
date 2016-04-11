@@ -45,6 +45,8 @@ public class AtsColumnToken {
          ColumnType.String, false, "Insertion specified by related Work Package.  (I) if inherited from parent.", true);
 
    // AttributeValue columns
+   public static AtsAttributeValueColumn NotesColumn = new AtsAttributeValueColumn(AtsAttributeTypes.SmaNote,
+      AtsColumnId.Notes.getId(), "Notes", 80, ColumnAlign.Left.name(), true, ColumnType.String, true, "");
    public static AtsAttributeValueColumn ChangeTypeColumn = new AtsAttributeValueColumn(AtsAttributeTypes.ChangeType,
       AtsColumnId.ChangeType.getId(), AtsAttributeTypes.ChangeType.getUnqualifiedName(), 22, ColumnAlign.Center.name(),
       true, ColumnType.String, true, "");

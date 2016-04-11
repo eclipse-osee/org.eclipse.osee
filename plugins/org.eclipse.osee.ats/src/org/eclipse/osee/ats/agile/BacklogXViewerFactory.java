@@ -22,7 +22,6 @@ import org.eclipse.osee.ats.column.AtsColumnIdUI;
 import org.eclipse.osee.ats.column.BacklogOrderColumn;
 import org.eclipse.osee.ats.column.ChangeTypeColumnUI;
 import org.eclipse.osee.ats.column.CreatedDateColumn;
-import org.eclipse.osee.ats.column.NotesColumn;
 import org.eclipse.osee.ats.column.PointsColumn;
 import org.eclipse.osee.ats.column.PriorityColumnUI;
 import org.eclipse.osee.ats.column.TargetedVersionColumn;
@@ -68,7 +67,8 @@ public class BacklogXViewerFactory extends SkynetXViewerFactory {
          configCols.remove(unPlannedWorkColumn);
       }
       WorldXViewerUtil.addColumn(this, AgileFeatureGroupColumn.getInstance(), 91, backlogCols);
-      WorldXViewerUtil.addColumn(this, NotesColumn.getInstance(), 116, backlogCols);
+      WorldXViewerUtil.addColumn(this,
+         new AtsColumnIdUI(AtsColumnToken.StateColumn, AtsClientService.get().getServices()), 116, backlogCols);
       WorldXViewerUtil.addColumn(this, CreatedDateColumn.getInstance(), 82, backlogCols);
       WorldXViewerUtil.addColumn(this,
          new AtsColumnIdUI(AtsColumnToken.AtsIdColumnShow, AtsClientService.get().getServices()), 50, backlogCols);

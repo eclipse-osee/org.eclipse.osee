@@ -89,6 +89,8 @@ public class AtsColumnService implements IAtsColumnService {
             column = new ImplementerColumn(services);
          } else if (id.equals(AtsColumnId.ChangeType.getId())) {
             column = new AtsAttributeValueColumnHandler(AtsColumnToken.ChangeTypeColumn, services);
+         } else if (id.equals(AtsColumnId.Notes.getId())) {
+            column = new AtsAttributeValueColumnHandler(AtsColumnToken.NotesColumn, services);
          } else if (id.equals(AtsColumnId.State.getId())) {
             column = new StateColumn(services);
          } else if (id.equals(AtsColumnId.Name.getId()) || id.equals(AtsColumnId.Title.getId())) {
