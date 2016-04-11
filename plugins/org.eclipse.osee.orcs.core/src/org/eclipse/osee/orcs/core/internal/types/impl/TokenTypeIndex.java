@@ -39,7 +39,14 @@ public class TokenTypeIndex<UUID_TYPE, TOKEN extends Identity<UUID_TYPE>, DSLTYP
    }
 
    public DSLTYPE getDslTypeByToken(TOKEN key) {
-      return tokenToType.get(key);
+      DSLTYPE type = tokenToType.get(key);
+      if (type == null) {
+         TOKEN tokenByUuid = getTokenByUuid(key.getGuid());
+         if (tokenByUuid != null) {
+            type = tokenToType.get(tokenByUuid);
+         }
+      }
+      return type;
    }
 
    public TOKEN getTokenByDslType(DSLTYPE value) {
