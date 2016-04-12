@@ -20,9 +20,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.actions.ModifyActionableItemAction;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.config.ColumnAlign;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
@@ -34,6 +36,7 @@ import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
+import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.internal.Activator;
@@ -45,10 +48,10 @@ import org.eclipse.osee.ats.world.WorldEditorSimpleProvider;
 import org.eclipse.osee.ats.world.WorldEditorUISearchItemProvider;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -56,7 +59,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
@@ -190,7 +192,7 @@ public final class AtsUtil {
          return;
       }
 
-      openArtifact(editor, artifact);
+      openArtifact(artifact, editor);
    }
 
    public static void openArtifact(String guid, OseeCmEditor editor) {
@@ -202,10 +204,10 @@ public final class AtsUtil {
          return;
       }
 
-      openArtifact(editor, artifact);
+      openArtifact(artifact, editor);
    }
 
-   private static void openArtifact(OseeCmEditor editor, Artifact artifact) {
+   public static void openArtifact(Artifact artifact, OseeCmEditor editor) {
       try {
          if (editor == OseeCmEditor.CmPcrEditor) {
             if (artifact instanceof AbstractWorkflowArtifact || artifact.isOfType(AtsArtifactTypes.Action)) {
@@ -293,7 +295,27 @@ public final class AtsUtil {
       return null;
    }
 
-   public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts) {
+   public static void openInAtsWorldEditorItems(String name, Collection<IAtsWorkItem> items) {
+      openInAtsWorldEditor(name, AtsObjects.getArtifacts(items));
+   }
+
+   public static void openInAtsWorldEditor(String name, Collection<? extends ArtifactId> artifacts) {
+      Set<Artifact> otherArts = new HashSet<>();
+      for (ArtifactId artId : artifacts) {
+         Artifact art = (Artifact) artId;
+         if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
+            WorldEditor.open(
+               new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null, TableLoadOption.None));
+         } else {
+            otherArts.add(art);
+         }
+      }
+      if (otherArts.size() > 0) {
+         WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
+      }
+   }
+
+   public static void openInAtsWorldEditor(String name, Collection<? extends Artifact> artifacts, CustomizeData customizeData) {
       Set<Artifact> otherArts = new HashSet<>();
       for (Artifact art : artifacts) {
          if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
@@ -304,7 +326,7 @@ public final class AtsUtil {
          }
       }
       if (otherArts.size() > 0) {
-         WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts));
+         WorldEditor.open(new WorldEditorSimpleProvider(name, otherArts, customizeData));
       }
    }
 

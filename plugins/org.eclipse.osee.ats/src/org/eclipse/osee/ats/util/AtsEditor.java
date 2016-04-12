@@ -17,5 +17,6 @@ public enum AtsEditor {
    WorldEditor,
    WorkflowEditor,
    TaskEditor,
-   ChangeReport
+   ChangeReport,
+   ArtifactEditor;
 }

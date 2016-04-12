@@ -267,29 +267,32 @@ public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
       // If task specifies it's own workflow id, use it
       IWorkDefinitionMatch match =
          task == null ? new WorkDefinitionMatch() : getWorkDefinitionFromArtifactsAttributeValue(task);
-      if (!match.isMatched() && task != null) {
-         for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
-            String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
-            attributeResolver.getSoleAttributeValue(task.getStoreObject(), AtsAttributeTypes.WorkflowDefinition, null);
-            if (Strings.isValid(workFlowDefId)) {
-               match = getWorkDefinition(workFlowDefId);
-               match.addTrace(
-                  String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(), workFlowDefId));
-               break;
+      if (teamWf != null) {
+         if (!match.isMatched() && task != null) {
+            for (ITeamWorkflowProvider provider : TeamWorkflowProviders.getTeamWorkflowProviders()) {
+               String workFlowDefId = provider.getRelatedTaskWorkflowDefinitionId(teamWf);
+               attributeResolver.getSoleAttributeValue(task.getStoreObject(), AtsAttributeTypes.WorkflowDefinition,
+                  null);
+               if (Strings.isValid(workFlowDefId)) {
+                  match = getWorkDefinition(workFlowDefId);
+                  match.addTrace(String.format("from provider [%s] for id [%s]", provider.getClass().getSimpleName(),
+                     workFlowDefId));
+                  break;
+               }
             }
          }
-      }
-      if (!match.isMatched()) {
-         // Else If parent SMA has a related task definition workflow id specified, use it
-         IWorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf);
-         if (match2.isMatched()) {
-            match2.addTrace(String.format("from task parent SMA [%s]", teamWf));
-            match = match2;
+         if (!match.isMatched()) {
+            // Else If parent SMA has a related task definition workflow id specified, use it
+            IWorkDefinitionMatch match2 = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf);
+            if (match2.isMatched()) {
+               match2.addTrace(String.format("from task parent SMA [%s]", teamWf));
+               match = match2;
+            }
          }
-      }
-      if (!match.isMatched()) {
-         // Else If parent TeamWorkflow's IAtsTeamDefinition has a related task definition workflow id, use it
-         match = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
+         if (!match.isMatched()) {
+            // Else If parent TeamWorkflow's IAtsTeamDefinition has a related task definition workflow id, use it
+            match = getTaskWorkDefinitionFromArtifactsAttributeValue(teamWf.getTeamDefinition());
+         }
       }
       if (!match.isMatched()) {
          match = getWorkDefinition(TaskWorkflowDefinitionId);

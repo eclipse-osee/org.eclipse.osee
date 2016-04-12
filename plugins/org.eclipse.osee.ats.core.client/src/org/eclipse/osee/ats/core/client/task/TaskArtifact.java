@@ -12,7 +12,9 @@ package org.eclipse.osee.ats.core.client.task;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
@@ -22,8 +24,8 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.core.client.action.ActionArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
  * @author Donald G. Dunne
  */
 public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, IATSStateMachineArtifact {
+   Set<Long> taskHasNoParent = new HashSet<>();
 
    public TaskArtifact(String guid, BranchId branch, IArtifactType artifactType) throws OseeCoreException {
       super(guid, branch, artifactType);
@@ -66,9 +69,13 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
       if (parentAwa != null) {
          return parentAwa;
       }
+      if (taskHasNoParent.contains(getId())) {
+         return null;
+      }
       Collection<AbstractWorkflowArtifact> awas =
          getRelatedArtifacts(AtsRelationTypes.TeamWfToTask_TeamWf, AbstractWorkflowArtifact.class);
       if (awas.isEmpty()) {
+         taskHasNoParent.add(getId());
          throw new OseeStateException("Task has no parent [%s]", getAtsId());
       }
       parentAwa = awas.iterator().next();
@@ -90,7 +97,7 @@ public class TaskArtifact extends AbstractWorkflowArtifact implements IAtsTask, 
          return parentTeamArt;
       }
       AbstractWorkflowArtifact awa = getParentAWA();
-      if (awa.isTeamWorkflow()) {
+      if (awa != null && awa.isTeamWorkflow()) {
          parentTeamArt = (TeamWorkFlowArtifact) awa;
       }
       return parentTeamArt;

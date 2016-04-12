@@ -25,6 +25,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
+import org.eclipse.osee.ats.actions.OpenArtifactEditorById;
+import org.eclipse.osee.ats.actions.OpenOrphanedTasks;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.query.AtsSearchData;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
@@ -216,6 +218,8 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
          new AtsConfig2ExampleNavigateItem(adminItems);
          new DoesNotWorkItemAts(adminItems);
          new XNavigateItemAction(adminItems, new OpenChangeReportByTransactionIdAction(), FrameworkImage.BRANCH_CHANGE);
+         new XNavigateItemAction(adminItems, new OpenArtifactEditorById(), FrameworkImage.ARTIFACT_EDITOR);
+         new XNavigateItemAction(adminItems, new OpenOrphanedTasks(), AtsImage.TASK);
          new XNavigateItemAction(adminItems, new PurgeTransactionAction(), FrameworkImage.PURGE);
 
          XNavigateItem healthItems = new XNavigateItemFolder(adminItems, "Health");

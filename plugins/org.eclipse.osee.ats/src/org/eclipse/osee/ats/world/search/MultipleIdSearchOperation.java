@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLo
 import org.eclipse.osee.framework.ui.skynet.ArtifactDecoratorPreferences;
 import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.cm.OseeCmEditor;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxTreeDialog;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.ui.dialogs.ListDialog;
@@ -101,6 +102,10 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                openWorkflowEditor(resultAtsArts);
             } else if (data.getAtsEditor() == AtsEditor.ChangeReport) {
                openChangeReport(resultAtsArts, data.getEnteredIds());
+            } else if (data.getAtsEditor() == AtsEditor.ArtifactEditor) {
+               for (Artifact artifact : resultAtsArts) {
+                  AtsUtil.openArtifact(artifact, OseeCmEditor.ArtifactEditor);
+               }
             } else {
                WorldEditor.open(new WorldEditorSimpleProvider(getName(), resultAtsArts));
             }
