@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xchange;
 
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.GuidCo
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.HierarchyIndexColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedByColumn;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedDateColumn;
+import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column.LastModifiedTransactionColumn;
 
 /**
  * @author Donald G. Dunne
@@ -54,6 +55,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
       registerColumns(new ArtifactTypeColumn("framework.change.artifactType"));
       registerColumns(new LastModifiedDateColumn(false));
       registerColumns(new LastModifiedByColumn(false));
+      registerColumns(new LastModifiedTransactionColumn(false));
       registerAllAttributeColumns();
    }
 
