@@ -7,6 +7,7 @@
    <reference bind="setOrcsApi" cardinality="1..1" interface="org.eclipse.osee.orcs.OrcsApi" name="OrcsApi" policy="static"/>
    <reference bind="setLogger" cardinality="1..1" interface="org.eclipse.osee.logger.Log" name="Log" policy="static"/>
    <reference bind="setDefineApi" cardinality="1..1" interface="org.eclipse.osee.define.report.api.DefineApi" name="DefineApi" policy="static"/>
+   <reference bind="setEventAdmin" cardinality="1..1" interface="org.osgi.service.event.EventAdmin" name="EventAdmin" policy="static"/>
    <property name="osee.trace.myII.C_Test_Scripts.primary.regexs" type="String">[^_&quot;]CSID\s*\{\d+\s+(.+)\}
 [^_&quot;]CSID\s*(\{[^\{\}]+\})
 [^_&quot;]SubDD\s*\{\d+\s*(.+)\}
@@ -23,5 +24,4 @@
    <property name="osee.trace.myII.Ada_Code.secondary.regexs" type="String">(SRS)?\d*\s*([^;]+)
 .+
    </property>
-   <reference bind="setAtsServer" cardinality="1..1" interface="org.eclipse.osee.ats.rest.IAtsServer" name="IAtsServer" policy="static"/>
  </scr:component>

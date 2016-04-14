@@ -16,13 +16,13 @@ import java.util.Set;
 import javax.ws.rs.ApplicationPath;
 import javax.ws.rs.core.Application;
 import org.eclipse.osee.app.OseeAppResourceTokens;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.WordUpdateEndpointImpl;
 import org.eclipse.osee.define.report.api.DefineApi;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.type.ResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author Ryan D. Brooks
@@ -33,11 +33,7 @@ public final class OseeReportApplication extends Application {
    private OrcsApi orcsApi;
    private Log logger;
    private DefineApi defineApi;
-   private IAtsServer atsServer;
-
-   public void setAtsServer(IAtsServer atsServer) {
-      this.atsServer = atsServer;
-   }
+   private EventAdmin eventAdmin;
 
    public void setOrcsApi(OrcsApi orcsApi) {
       this.orcsApi = orcsApi;
@@ -49,6 +45,10 @@ public final class OseeReportApplication extends Application {
 
    public void setDefineApi(DefineApi defineApi) {
       this.defineApi = defineApi;
+   }
+
+   public void setEventAdmin(EventAdmin eventAdmin) {
+      this.eventAdmin = eventAdmin;
    }
 
    public void start(Map<String, Object> properties) {
@@ -63,7 +63,7 @@ public final class OseeReportApplication extends Application {
       singletons.add(new DataRightsSwReqAndCodeResource(logger, properties, resourceRegistry, orcsApi));
       singletons.add(new DataRightsResource(defineApi));
       logger.debug(">>>>> registered Data Rights resource");
-      singletons.add(new WordUpdateEndpointImpl(logger, orcsApi, atsServer));
+      singletons.add(new WordUpdateEndpointImpl(logger, orcsApi, eventAdmin));
       logger.debug(">>>>> registered WordUpdateEndpointImpl");
    }
 

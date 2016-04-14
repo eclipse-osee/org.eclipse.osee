@@ -31,7 +31,8 @@ Import-Package: com.google.common.base;version="15.0.0",
  org.eclipse.osee.orcs.data,
  org.eclipse.osee.orcs.search,
  org.eclipse.osee.orcs.transaction,
- org.eclipse.osee.template.engine
+ org.eclipse.osee.template.engine,
+ org.osgi.service.event
 Bundle-Vendor: Eclipse Open System Engineering Environment
 Export-Package: org.eclipse.osee.define.report
 Bundle-ActivationPolicy: lazy

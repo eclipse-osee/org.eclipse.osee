@@ -182,10 +182,6 @@ public final class SafetyInformationAccumulator {
    }
 
    private String writeCriticalityWithDesignCheck(ArtifactReadable art, String criticality, IAttributeType thisType, IRelationTypeSide relType, IAttributeType otherType) throws IOException {
-      if (thisType != CoreAttributeTypes.FunctionalDAL && thisType != CoreAttributeTypes.ItemDAL) {
-         writer.writeCell("Invalid Type");
-      }
-
       String current = art.getSoleAttributeAsString(thisType, "Error");
       if ("Error".equals(criticality) || "Error".equals(current)) {
          writer.writeCell("Error: invalid content");

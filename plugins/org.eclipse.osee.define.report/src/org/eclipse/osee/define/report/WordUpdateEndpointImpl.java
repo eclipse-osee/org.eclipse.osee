@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.define.report;
 
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
 import org.eclipse.osee.define.report.api.WordUpdateData;
 import org.eclipse.osee.define.report.api.WordUpdateEndpoint;
@@ -18,6 +17,7 @@ import org.eclipse.osee.define.report.internal.wordupdate.WordUpdateArtifact;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
+import org.osgi.service.event.EventAdmin;
 
 /**
  * @author David W. Miller
@@ -25,20 +25,20 @@ import org.eclipse.osee.orcs.OrcsApi;
 public final class WordUpdateEndpointImpl implements WordUpdateEndpoint {
 
    private final OrcsApi orcsApi;
-   private final IAtsServer atsServer;
    private final Log logger;
+   private final EventAdmin eventAdmin;
 
-   public WordUpdateEndpointImpl(Log logger, OrcsApi orcsApi, IAtsServer atsServer) {
+   public WordUpdateEndpointImpl(Log logger, OrcsApi orcsApi, EventAdmin eventAdmin) {
       this.orcsApi = orcsApi;
-      this.atsServer = atsServer;
       this.logger = logger;
+      this.eventAdmin = eventAdmin;
    }
 
    @Override
    public WordUpdateChange updateWordArtifacts(WordUpdateData data) {
-      WordUpdateArtifact updateArt = new WordUpdateArtifact(logger, orcsApi);
+      WordUpdateArtifact updateArt = new WordUpdateArtifact(logger, orcsApi, eventAdmin);
       validate(data);
-      return updateArt.updateArtifacts(data, atsServer);
+      return updateArt.updateArtifacts(data);
    }
 
    protected void validate(WordUpdateData data) {
