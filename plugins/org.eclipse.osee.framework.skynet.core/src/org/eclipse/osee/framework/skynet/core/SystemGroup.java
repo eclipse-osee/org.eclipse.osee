@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public enum SystemGroup {
 
    Everyone(CoreArtifactTokens.Everyone),
-   OseeAccessAdmin(CoreArtifactTokens.OseeAdmin), // Ability to change Access Control on any object
+   OseeAccessAdmin(CoreArtifactTokens.OseeAccessAdmin), // Ability to change Access Control on any object
    OseeAdmin(CoreArtifactTokens.OseeAdmin);
 
    private final OseeGroup group;
