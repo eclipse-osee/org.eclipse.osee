@@ -19,6 +19,7 @@ import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.IAttributeType;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -41,6 +43,7 @@ import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.FilteredCheckboxAttributeTypeDialog;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -68,7 +71,7 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
    private final IDirtiableEditor editor;
    private final List<String> EXTRA_COLUMNS = Arrays.asList(new String[] {"GUID", "Artifact Type"});
    private final Composite parent;
-   private Action deleteAttributeValuesAction;
+   private Action deleteAttributeValuesAction, deleteArtifactAction;
 
    public MassXViewer(Composite parent, int style, MassArtifactEditor editor) {
       super(parent, style, ((MassArtifactEditorInput) editor.getEditorInput()).getXViewerFactory());
@@ -157,6 +160,35 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
             }
          }
       };
+
+      deleteArtifactAction = new Action("Delete Artifact(s)", IAction.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            try {
+               handleDeleteArtifacts();
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+   }
+
+   protected void handleDeleteArtifacts() {
+      ArrayList<Artifact> selectedArtifacts = getSelectedArtifacts();
+      if (selectedArtifacts.isEmpty()) {
+         AWorkbench.popup("Must select items to delete");
+         return;
+      }
+      if (MessageDialog.openConfirm(Displays.getActiveShell(), "Delete Artifacts",
+         "Delete " + selectedArtifacts.size() + " Artifacts")) {
+         SkynetTransaction transaction = TransactionManager.createTransaction(
+            selectedArtifacts.iterator().next().getBranch(), "Mass Editor - Delete Artifacts");
+         for (Artifact art : selectedArtifacts) {
+            art.deleteAndPersist(transaction);
+            art.persist(transaction);
+         }
+         transaction.execute();
+      }
    }
 
    protected void handleDeleteAttributeValues() {
@@ -198,6 +230,12 @@ public class MassXViewer extends XViewer implements IMassViewerEventHandler {
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteAttributeValuesAction);
       deleteAttributeValuesAction.setEnabled(!getSelectedArtifacts().isEmpty());
+
+      if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+         mm.insertBefore(XViewer.MENU_GROUP_PRE, deleteArtifactAction);
+         deleteArtifactAction.setEnabled(!getSelectedArtifacts().isEmpty());
+      }
+
    }
 
    private void setupDragAndDropSupport() {
