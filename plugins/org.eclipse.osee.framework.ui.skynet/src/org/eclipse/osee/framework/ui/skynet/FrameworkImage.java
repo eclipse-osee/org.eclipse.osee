@@ -185,6 +185,7 @@ public enum FrameworkImage implements KeyedImage {
    SAVE_NEEDED("save.gif"),
    SAVED("saved.gif"),
    SAVE("save.gif"),
+   SAVE_AS("saveas.gif"),
    SEVERITY_MAJOR("major.gif"),
    SEVERITY_MINOR("minor.gif"),
    SEVERITY_ISSUE("issue.gif"),

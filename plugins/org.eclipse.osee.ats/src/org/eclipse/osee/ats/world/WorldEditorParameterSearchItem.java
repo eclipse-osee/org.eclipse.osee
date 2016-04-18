@@ -150,6 +150,7 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
       return customizeData;
    }
 
+   @Override
    public TableLoadOption[] getTableLoadOptions() {
       return tableLoadOptions;
    }
@@ -343,7 +344,6 @@ public abstract class WorldEditorParameterSearchItem extends WorldSearchItem imp
    public StateNameSearchWidget getStateName() {
       if (stateName == null) {
          stateName = new StateNameSearchWidget(this);
-
       }
       return stateName;
    }

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats.navigate;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -336,8 +337,9 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    private static void populateSavedSearchesItem(XNavigateItem searches) {
       for (IAtsWorldEditorItem worldEditorItem : AtsWorldEditorItems.getItems()) {
          for (AtsSearchWorkflowSearchItem item : worldEditorItem.getSearchWorkflowSearchItems()) {
-            for (AtsSearchData data : AtsClientService.get().getQueryService().getSavedSearches(
-               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace())) {
+            ArrayList<AtsSearchData> savedSearches = AtsClientService.get().getQueryService().getSavedSearches(
+               AtsClientService.get().getUserService().getCurrentUser(), item.getNamespace());
+            for (AtsSearchData data : savedSearches) {
                AtsSearchWorkflowSearchItem searchItem = item.copy();
                searchItem.setSavedData(data);
                SearchNavigateItem navItem = new SearchNavigateItem(searches, searchItem);
@@ -435,9 +437,10 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
    }
 
    public static void refreshTopAtsSearchItem() {
-      XNavigateItem linkItem = NavigateView.getNavigateView().getItem(ATS_SEARCH_NAVIGATE_VIEW_ITEM, true);
-      populateSavedSearchesItem(linkItem);
-      NavigateView.getNavigateView().refresh(linkItem);
-
+      XNavigateItem searchesItem = NavigateView.getNavigateView().getItem(ATS_SEARCH_NAVIGATE_VIEW_ITEM, true);
+      searchesItem.getChildren().clear();
+      populateSavedSearchesItem(searchesItem);
+      NavigateView.getNavigateView().refresh(searchesItem);
    }
+
 }

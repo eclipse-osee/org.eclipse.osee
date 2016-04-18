@@ -34,7 +34,7 @@ public class StateNameSearchWidget extends AbstractXComboViewerSearchWidget<Stri
          setup(getWidget());
          String stateName = data.getState();
          if (Strings.isValid(stateName)) {
-            getWidget().setInput(Arrays.asList(stateName));
+            getWidget().setSelected(Arrays.asList(stateName));
          }
       }
    }

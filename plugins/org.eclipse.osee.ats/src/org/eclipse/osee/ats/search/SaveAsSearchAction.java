@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -29,43 +29,45 @@ import org.eclipse.osee.framework.ui.swt.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public final class SaveSearchAction extends Action {
+public final class SaveAsSearchAction extends Action {
 
    private final AtsSearchWorkflowSearchItem searchItem;
 
-   public SaveSearchAction(AtsSearchWorkflowSearchItem searchItem) {
+   public SaveAsSearchAction(AtsSearchWorkflowSearchItem searchItem) {
       this.searchItem = searchItem;
    }
 
    @Override
    public String getText() {
-      return "Save Search";
+      return "Save As Search";
    }
 
    @Override
    public String getToolTipText() {
-      return "Enter search criteria and select to save";
+      return "Enter search criteria and select to save as";
    }
 
    @Override
    public void run() {
       IAtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
-      EntryDialog dialog = new EntryDialog("Save Search", "Save Search?\n\n(edit to change Search Name)");
-      dialog.setEntry(searchItem.getSearchName());
+      EntryDialog dialog = new EntryDialog("Save Search As", "Save Search?\n\nSearch Name");
       if (dialog.open() == 0) {
          if (!Strings.isValid(dialog.getEntry())) {
             AWorkbench.popup("Invalid Search Name");
             return;
          }
-         AtsSearchData data = AtsClientService.get().getQueryService().createSearchData(searchItem.getNamespace(),
-            searchItem.getSearchName());
+         searchItem.setSearchName(dialog.getEntry());
+         searchItem.setSearchUuid(Lib.generateUuid());
+
+         String namespace = searchItem.getNamespace();
+         AtsSearchData data =
+            AtsClientService.get().getQueryService().createSearchData(namespace, searchItem.getSearchName());
          searchItem.loadSearchData(data);
-         data.setSearchName(dialog.getEntry());
          if (data.getUuid() <= 0) {
             data.setUuid(Lib.generateArtifactIdAsInt());
          }
          Conditions.checkExpressionFailOnTrue(data.getUuid() <= 0, "searchUuid must be > 0, not %d", data.getUuid());
-         Conditions.checkNotNullOrEmpty(data.getSearchName(), "Search Name");
+         Conditions.checkNotNullOrEmpty(data.getSearchName(), "New Search Name");
          AtsClientService.get().getQueryService().saveSearch(asUser, data);
          ((Artifact) asUser.getStoreObject()).reloadAttributesAndRelations();
          if (NavigateView.getNavigateView() != null) {
@@ -77,6 +79,6 @@ public final class SaveSearchAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.SAVE);
+      return ImageManager.getImageDescriptor(FrameworkImage.SAVE_AS);
    }
 };

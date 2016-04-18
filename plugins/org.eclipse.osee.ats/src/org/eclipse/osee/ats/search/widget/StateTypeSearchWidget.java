@@ -25,6 +25,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class StateTypeSearchWidget extends AbstractXComboViewerSearchWidget<String> {
 
+   private static final String COMPLETED_CANCELLED = "Completed/Cancelled";
+   private static final String WORKING_CANCELLED = "Working/Cancelled";
+   private static final String WORKING_COMPLETED = "Working/Completed";
+   private static final String CANCELLED = "Cancelled";
+   private static final String COMPLETED = "Completed";
+   private static final String WORKING = "Working";
    public static final String STATE_TYPE = "State Type";
 
    public StateTypeSearchWidget(WorldEditorParameterSearchItem searchItem) {
@@ -52,23 +58,28 @@ public class StateTypeSearchWidget extends AbstractXComboViewerSearchWidget<Stri
       String selected = "";
       if (stateTypes != null && stateTypes.length != 0) {
          List<StateType> states = Collections.getAggregate(stateTypes);
-         if (states.size() == 1) {
+         if (!states.isEmpty()) {
             boolean isWorking = false, isCompleted = false, isCancelled = false;
             if (states.contains(StateType.Working)) {
-               selected = "Working";
+               selected = WORKING;
                isWorking = true;
-            } else if (states.contains(StateType.Completed)) {
-               selected = "Completed";
+            }
+            if (states.contains(StateType.Completed)) {
+               selected = COMPLETED;
                isCompleted = true;
-            } else if (states.contains(StateType.Cancelled)) {
-               selected = "Cancelled";
+            }
+            if (states.contains(StateType.Cancelled)) {
+               selected = CANCELLED;
                isCancelled = true;
-            } else if (isWorking && isCompleted) {
-               selected = "Working/Completed";
-            } else if (isWorking && isCancelled) {
-               selected = "Working/Cancelled";
-            } else if (isCompleted && isCancelled) {
-               selected = "Completed/Cancelled";
+            }
+            if (isWorking && isCompleted) {
+               selected = WORKING_COMPLETED;
+            }
+            if (isWorking && isCancelled) {
+               selected = WORKING_CANCELLED;
+            }
+            if (isCompleted && isCancelled) {
+               selected = COMPLETED_CANCELLED;
             }
          }
       }
@@ -89,7 +100,7 @@ public class StateTypeSearchWidget extends AbstractXComboViewerSearchWidget<Stri
 
    @Override
    public Collection<String> getInput() {
-      return Arrays.asList(CLEAR, "Working", "Completed", "Cancelled", "Working/Completed", "Working/Cancelled",
-         "Completed/Cancelled");
+      return Arrays.asList(CLEAR, WORKING, COMPLETED, CANCELLED, WORKING_COMPLETED, WORKING_CANCELLED,
+         COMPLETED_CANCELLED);
    }
 }

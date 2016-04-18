@@ -40,9 +40,7 @@ public abstract class AbstractXComboViewerSearchWidget<ObjectType extends Object
    public ObjectType get() {
       XComboViewer combo = getWidget();
       if (combo != null) {
-         if (!(combo.getSelected() instanceof String)) {
-            return (ObjectType) combo.getSelected();
-         }
+         return (ObjectType) combo.getSelected();
       }
       return null;
    }
