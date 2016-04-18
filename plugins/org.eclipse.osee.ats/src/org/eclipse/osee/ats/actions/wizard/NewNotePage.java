@@ -101,6 +101,7 @@ public class NewNotePage extends WizardPage {
       gridData = new GridData(GridData.FILL_BOTH);
       bottomC.setLayoutData(gridData);
 
+      noteText.setFillHorizontally(true);
       noteText.createWidgets(bottomC, 2);
       noteText.addModifyListener(new ModifyListener() {
          @Override
@@ -108,6 +109,9 @@ public class NewNotePage extends WizardPage {
             update();
          };
       });
+      GridData gridData2 = new GridData(GridData.FILL_BOTH);
+      gridData2.heightHint = 200;
+      noteText.getStyledText().setLayoutData(gridData2);
 
       setControl(composite);
    }
