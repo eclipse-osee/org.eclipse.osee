@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.core.column;
 
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 
 /**
  * @author Donald G. Dunne
@@ -24,7 +25,14 @@ public class TypeColumn extends AbstractServicesColumn {
 
    @Override
    public String getText(IAtsObject atsObject) {
-      return services.getStoreService().getTypeName(atsObject.getStoreObject());
+      if (!services.getStoreService().isDeleted(atsObject)) {
+         if (atsObject instanceof IAtsTeamWorkflow) {
+            return ((IAtsTeamWorkflow) atsObject).getTeamDefinition().getName() + " Workflow";
+         } else {
+            return services.getStoreService().getTypeName(atsObject.getStoreObject());
+         }
+      }
+      return "(Deleted)";
    }
 
 }
