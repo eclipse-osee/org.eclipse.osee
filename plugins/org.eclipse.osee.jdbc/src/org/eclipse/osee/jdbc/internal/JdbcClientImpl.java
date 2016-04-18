@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.IVariantData;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
 import org.eclipse.osee.jdbc.JdbcConnection;
@@ -424,7 +425,7 @@ public final class JdbcClientImpl implements JdbcClient {
          }
 
          if (saveException != null) {
-            throw newJdbcException(saveException);
+            throw OseeCoreException.wrap(saveException);
          }
       }
    }
