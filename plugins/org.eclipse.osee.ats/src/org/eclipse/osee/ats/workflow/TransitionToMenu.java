@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.workflow;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -65,12 +70,25 @@ public class TransitionToMenu {
          new MenuManager(name, ImageManager.getImageDescriptor(AtsImage.TRANSITION), "transition-to");
       final Set<IAtsWorkItem> workItems = new HashSet<>();
       Set<IAtsStateDefinition> toStateDefs = new HashSet<>();
+      String workDefinitionId = null;
+      Map<String, IAtsStateDefinition> stateNameToStateDef = new HashMap<>();
+      boolean multipleWorkDefinitions = false;
       for (TreeItem treeItem : selectedTreeItems) {
          if (treeItem.getData() instanceof AbstractWorkflowArtifact) {
             AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) treeItem.getData();
             workItems.add(awa);
+            if (!multipleWorkDefinitions) {
+               if (workDefinitionId == null) {
+                  workDefinitionId = awa.getWorkDefinition().getName();
+               } else if (!workDefinitionId.equals(awa.getWorkDefinition().getName())) {
+                  multipleWorkDefinitions = true;
+               }
+            }
             try {
-               toStateDefs.addAll(awa.getToStatesWithCompleteCancelReturnStates());
+               for (IAtsStateDefinition stateDef : awa.getToStatesWithCompleteCancelReturnStates()) {
+                  toStateDefs.add(stateDef);
+                  stateNameToStateDef.put(stateDef.getName(), stateDef);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -87,33 +105,53 @@ public class TransitionToMenu {
 
             });
       } else {
-         Set<Integer> stateOrdinals = new HashSet<>();
-         for (final IAtsStateDefinition stateDef : toStateDefs) {
-            stateOrdinals.add(stateDef.getOrdinal());
-         }
-         Integer[] toStates = stateOrdinals.toArray(new Integer[stateOrdinals.size()]);
-         Arrays.sort(toStates);
-         for (Integer stateOrdinal : stateOrdinals) {
-            for (final IAtsStateDefinition stateDef : toStateDefs) {
-               if (stateDef.getOrdinal() == stateOrdinal) {
-                  editMenuManager.add(
-                     new Action(getTransitionToString(stateDef), ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
-
-                        @Override
-                        public void run() {
-                           handleTransitionToSelected(stateDef.getName(), workItems);
-                        }
-
-                     });
+         List<String> toStateNames = new ArrayList<>();
+         if (multipleWorkDefinitions) {
+            for (IAtsStateDefinition stateDef : toStateDefs) {
+               if (!toStateNames.contains(stateDef.getName())) {
+                  toStateNames.add(stateDef.getName());
                }
             }
+            Collections.sort(toStateNames);
+         } else {
+            Set<Integer> stateOrdinals = new HashSet<>();
+            for (final IAtsStateDefinition stateDef : toStateDefs) {
+               stateOrdinals.add(stateDef.getOrdinal());
+            }
+            Integer[] toStates = stateOrdinals.toArray(new Integer[stateOrdinals.size()]);
+            Arrays.sort(toStates);
+            for (Integer stateOrdinal : stateOrdinals) {
+               for (final IAtsStateDefinition stateDef : toStateDefs) {
+                  if (stateDef.getOrdinal() == stateOrdinal) {
+                     toStateNames.add(stateDef.getName());
+                  }
+               }
+            }
+         }
+         for (String stateName : toStateNames) {
+            editMenuManager.add(
+               new Action(getTransitionToString(stateName, multipleWorkDefinitions, stateNameToStateDef),
+                  ImageManager.getImageDescriptor(AtsImage.TRANSITION)) {
+
+                  @Override
+                  public void run() {
+                     handleTransitionToSelected(stateName, workItems);
+                  }
+
+               });
          }
       }
       return editMenuManager;
    }
 
-   private static String getTransitionToString(IAtsStateDefinition stateDef) {
-      return String.format("%s%s%s", stateDef.getName(), getStateTypeName(stateDef), getDefaultStatePercent(stateDef));
+   private static String getTransitionToString(String stateDefName, boolean multipleWorkDefinitions, Map<String, IAtsStateDefinition> stateNameToStateDef) {
+      if (multipleWorkDefinitions) {
+         return stateDefName;
+      } else {
+         IAtsStateDefinition stateDef = stateNameToStateDef.get(stateDefName);
+         return String.format("%s%s%s", stateDef.getName(), getStateTypeName(stateDef),
+            getDefaultStatePercent(stateDef));
+      }
    }
 
    private static Object getDefaultStatePercent(IAtsStateDefinition stateDef) {
