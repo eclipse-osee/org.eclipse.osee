@@ -1429,6 +1429,16 @@ relationType "Design" {
 	multiplicity MANY_TO_MANY
 }
 
+relationType "Developmental Verification" {
+	uuid 0x20000000000DE15B
+	sideAName "requirement"
+	sideAArtifactType "Abstract Software Requirement"
+	sideBName "developmental verifier"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
+}
+
 relationType "Verification" {
 	uuid 0x200000000000015B
 	sideAName "requirement"
