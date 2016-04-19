@@ -75,4 +75,6 @@ public interface ITransitionHelper {
 
    public void handleWorkflowReload(TransitionResults results);
 
+   public boolean isReload();
+
 }

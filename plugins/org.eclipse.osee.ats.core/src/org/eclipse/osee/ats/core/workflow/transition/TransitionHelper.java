@@ -66,6 +66,11 @@ public class TransitionHelper extends TransitionHelperAdapter {
    }
 
    @Override
+   public boolean isReload() {
+      return !Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideReload);
+   }
+
+   @Override
    public boolean isOverrideTransitionValidityCheck() {
       return Collections.getAggregate(transitionOption).contains(TransitionOption.OverrideTransitionValidityCheck);
    }

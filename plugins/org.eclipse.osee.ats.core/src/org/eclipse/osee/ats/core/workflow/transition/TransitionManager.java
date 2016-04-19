@@ -97,7 +97,9 @@ public class TransitionManager implements IAtsTransitionManager {
    }
 
    private void handleWorkflowReload(TransitionResults results) {
-      helper.handleWorkflowReload(results);
+      if (helper.isReload()) {
+         helper.handleWorkflowReload(results);
+      }
    }
 
    /**

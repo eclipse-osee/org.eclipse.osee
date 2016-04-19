@@ -47,6 +47,11 @@ public abstract class TransitionHelperAdapter implements ITransitionHelper {
    }
 
    @Override
+   public boolean isReload() {
+      return true;
+   }
+
+   @Override
    public boolean isOverrideAssigneeCheck() {
       return false;
    }
