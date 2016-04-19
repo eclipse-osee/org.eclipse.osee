@@ -18,11 +18,10 @@ import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.IVariantData;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
@@ -31,7 +30,6 @@ import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcMigrationOptions;
 import org.eclipse.osee.jdbc.JdbcMigrationResource;
-import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -365,15 +363,28 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void runQuery(JdbcProcessor processor, String query, Object... data) throws JdbcException {
-      JdbcStatement chStmt = getStatement();
-      try {
-         chStmt.runPreparedQuery(query, data);
-         while (chStmt.next()) {
-            processor.processNext(chStmt);
+   public void runQuery(Consumer<JdbcStatement> consumer, String query, Object... data) {
+      runQuery(consumer, 0, query, data);
+   }
+
+   @Override
+   public void runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
+      try (JdbcStatement stmt = getStatement()) {
+         stmt.runPreparedQuery(fetchSize, query, data);
+         while (stmt.next()) {
+            consumer.accept(stmt);
          }
-      } finally {
-         chStmt.close();
+      }
+   }
+
+   @Override
+   public <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
+      try (JdbcStatement chStmt = getStatement()) {
+         chStmt.runPreparedQuery(query, data);
+         if (chStmt.next()) {
+            return function.apply(chStmt);
+         }
+         return defaultValue;
       }
    }
 
@@ -462,13 +473,6 @@ public final class JdbcClientImpl implements JdbcClient {
    @Override
    public void invalidateSequences() {
       sequenceProvider.invalidate();
-   }
-
-   @Override
-   public List<IVariantData> runQuery(String query, Object... data) {
-      List<IVariantData> toReturn = new ArrayList<>();
-      runQuery(new JdbcVariantDataProcessor(toReturn), query, data);
-      return toReturn;
    }
 
    @Override

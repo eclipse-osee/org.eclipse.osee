@@ -20,7 +20,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -30,7 +29,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link JdbcClient, JdbcServer}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class JdbcReadWriteTest {
@@ -55,8 +54,8 @@ public class JdbcReadWriteTest {
       File newFile = folder.newFile("hsql.db.read.write.test");
 
       server = JdbcServerBuilder.hsql(newFile.toURI().toASCIIString())//
-      .useRandomPort(true) //
-      .build();
+         .useRandomPort(true) //
+         .build();
 
       JdbcServerConfig config = server.getConfig();
       dbName = config.getDbName();
@@ -96,7 +95,8 @@ public class JdbcReadWriteTest {
       client.runBatchUpdate("insert into books (id, title, author) values (?,?,?)", Arrays.asList(DB_DATA));
 
       List<Book> books = new ArrayList<>();
-      client.runQuery(newBookProcessor(books), "select * from books");
+      client.runQuery(stmt -> books.add(new Book(stmt.getInt("id"), stmt.getString("title"), stmt.getString("author"))),
+         "select * from books");
       assertEquals(4, books.size());
 
       Iterator<Book> iterator = books.iterator();
@@ -123,29 +123,20 @@ public class JdbcReadWriteTest {
       assertEquals("Lord of the Flies",
          client.runPreparedQueryFetchObject("", "select title from books where id = ?", 6));
 
-      Iterator<IVariantData> it = client.runQuery("select * from books").iterator();
-      assertVariant(it.next(), "1", "The Odyssey", "Homer");
-      assertVariant(it.next(), "2", "Pride and Prejudice", "Jane Austen");
-      assertVariant(it.next(), "3", "Romeo and Juliet", "William Shakespeare");
-      assertVariant(it.next(), "4", "The Great Gatsby", "F. Scott Fitzgerald");
-      assertVariant(it.next(), "5", "Dracula", "Bram Stoker");
-      assertVariant(it.next(), "6", "Lord of the Flies", "William Golding");
-   }
+      Iterator<String[]> expectedRows = Arrays.asList(new String[][] {
+         {"1", "The Odyssey", "Homer"},
+         {"2", "Pride and Prejudice", "Jane Austen"},
+         {"3", "Romeo and Juliet", "William Shakespeare"},
+         {"4", "The Great Gatsby", "F. Scott Fitzgerald"},
+         {"5", "Dracula", "Bram Stoker"},
+         {"6", "Lord of the Flies", "William Golding"}}).iterator();
 
-   private static JdbcProcessor newBookProcessor(final List<Book> books) {
-      return new JdbcProcessor() {
-
-         @Override
-         public void processNext(JdbcStatement chStmt) {
-            books.add(new Book(chStmt.getInt("id"), chStmt.getString("title"), chStmt.getString("author")));
-         }
-      };
-   }
-
-   private static void assertVariant(IVariantData data, String id, String title, String author) {
-      assertEquals(id, data.get("ID"));
-      assertEquals(title, data.get("TITLE"));
-      assertEquals(author, data.get("AUTHOR"));
+      client.runQuery(stmt -> {
+         String[] expected = expectedRows.next();
+         assertEquals(expected[0], stmt.getString("ID"));
+         assertEquals(expected[1], stmt.getString("TITLE"));
+         assertEquals(expected[2], stmt.getString("AUTHOR"));
+      }, "select * from books");
    }
 
    private static void assertBook(Book book, int id, String title, String author) {

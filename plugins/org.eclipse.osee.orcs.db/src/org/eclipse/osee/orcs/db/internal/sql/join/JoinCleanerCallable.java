@@ -19,15 +19,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 
 /**
  * If -1 is found in the expires_in column, it means never expire.
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class JoinCleanerCallable extends CancellableCallable<Void> {
@@ -51,19 +51,17 @@ public class JoinCleanerCallable extends CancellableCallable<Void> {
    public Void call() throws Exception {
       try {
          final ListMultimap<String, Object[]> expiredItems = newListMultimap();
-         jdbcClient.runQuery(new JdbcProcessor() {
 
-            @Override
-            public void processNext(JdbcStatement chStmt) {
-               Long issuedAt = chStmt.getLong("issued_at");
-               Long expiresIn = chStmt.getLong("expires_in");
-               if (isExpired(issuedAt, expiresIn)) {
-                  String tableName = chStmt.getString("table_name");
-                  Integer queryId = chStmt.getInt("query_id");
-                  expiredItems.put(tableName, new Integer[] {queryId});
-               }
+         Consumer<JdbcStatement> consumer = stmt -> {
+            Long issuedAt = stmt.getLong("issued_at");
+            Long expiresIn = stmt.getLong("expires_in");
+            if (isExpired(issuedAt, expiresIn)) {
+               String tableName = stmt.getString("table_name");
+               Integer queryId = stmt.getInt("query_id");
+               expiredItems.put(tableName, new Integer[] {queryId});
             }
-         }, SELECT_FROM_JOIN_CLEANUP);
+         };
+         jdbcClient.runQuery(consumer, SELECT_FROM_JOIN_CLEANUP);
 
          if (!expiredItems.isEmpty()) {
             for (Entry<String, Collection<Object[]>> entry : expiredItems.asMap().entrySet()) {

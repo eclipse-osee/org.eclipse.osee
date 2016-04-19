@@ -15,10 +15,10 @@ import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
@@ -30,9 +30,9 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.util.HttpProcessor;
 import org.eclipse.osee.framework.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -41,6 +41,7 @@ import org.eclipse.osee.orcs.rest.internal.client.model.ClientDetails;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientInfo;
 import org.eclipse.osee.orcs.rest.internal.client.model.ClientSession;
 import org.eclipse.osee.orcs.rest.internal.client.model.Sessions;
+import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Donald G. Dunne
@@ -49,6 +50,8 @@ public class ClientResource {
 
    private final JdbcService jdbcService;
    private final OrcsApi orcsApi;
+   private static final String NEWEST_SESSIONS_BY_USER =
+      "select * from (select row_number() over (order by created_on desc) as rownumber, client_address, user_id, created_on, client_port, client_version, session_id from osee_session where  user_id = ? order by created_on desc) where rownumber <= 10";
 
    public ClientResource(JdbcService jdbcService, OrcsApi orcsApi) {
       this.jdbcService = jdbcService;
@@ -93,10 +96,9 @@ public class ClientResource {
       if (!Strings.isValid(uId)) {
          throw new OseeArgumentException("User with id or name of [%s] not found", userId);
       }
-      String queryStr = "select * from osee_session where user_id = '" + uId + "' order by created_on desc";
-      int x = 0;
-      for (IVariantData data : jdbcService.getClient().runQuery(queryStr)) {
-         ClientSession session = new ClientSession(data);
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ClientSession session = createSession(stmt);
          String key = session.getClientAddress() + session.getClientPort();
          Boolean alive = portToAlive.get(key);
          if (alive == null) {
@@ -106,11 +108,9 @@ public class ClientResource {
                sessions.add(session);
             }
          }
-         // only check last 5 entries
-         if (++x > 10) {
-            break;
-         }
-      }
+      };
+
+      jdbcService.getClient().runQuery(consumer, NEWEST_SESSIONS_BY_USER, userId);
       return Response.ok(sessions).build();
    }
 
@@ -137,13 +137,18 @@ public class ClientResource {
       return infoStr;
    }
 
+   private static ClientSession createSession(JdbcStatement stmt) {
+      return new ClientSession(stmt.getString("CLIENT_ADDRESS"), stmt.getString("CLIENT_PORT"),
+         stmt.getString("USER_ID"), stmt.getString("CLIENT_VERSION"), stmt.getString("SESSION_ID"),
+         DateUtil.get(stmt.getDate("CREATED_ON"), DateUtil.MMDDYYHHMM));
+   }
+
    private Map<ClientSession, ClientInfo> getActiveSessions() {
       Map<ClientSession, ClientInfo> sessionToInfo = new HashMap<>(200);
-      String queryStr =
-         "select * from osee_session where created_on > CURRENT_DATE - INTERVAL '7' DAY order by created_on desc ";
       Set<String> pinged = new HashSet<>(200);
-      for (IVariantData data : jdbcService.getClient().runQuery(queryStr)) {
-         ClientSession session = new ClientSession(data);
+
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ClientSession session = createSession(stmt);
          String key = session.getClientAddress() + session.getClientPort();
          // don't ping same host:port twice
          if (!pinged.contains(key)) {
@@ -154,7 +159,10 @@ public class ClientResource {
             }
             pinged.add(key);
          }
-      }
+      };
+
+      jdbcService.getClient().runQuery(consumer,
+         "select * from osee_session where created_on > CURRENT_DATE - INTERVAL '7' DAY order by created_on desc");
       return sessionToInfo;
    }
 
@@ -187,13 +195,8 @@ public class ClientResource {
    }
 
    private ClientSession getClientSession(String sessionId) {
-      ClientSession session = null;
-      String queryStr = "select * from osee_session where session_id = '" + sessionId + "'";
-      List<IVariantData> sessions = jdbcService.getClient().runQuery(queryStr);
-      if (!sessions.isEmpty()) {
-         session = new ClientSession(sessions.iterator().next());
-      }
-      return session;
+      return jdbcService.getClient().fetchObject(null, stmt -> createSession(stmt),
+         "select * from osee_session where session_id = ?", sessionId);
    }
 
    private boolean alive(ClientSession session) throws OseeCoreException {

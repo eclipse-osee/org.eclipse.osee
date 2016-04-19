@@ -11,6 +11,7 @@
 package org.eclipse.osee.jdbc.internal;
 
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -21,6 +22,11 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
+import org.eclipse.osee.framework.jdk.core.type.IVariantData;
+import org.eclipse.osee.framework.jdk.core.type.VariantData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
@@ -388,7 +394,7 @@ public final class JdbcStatementImpl implements JdbcStatement {
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
     * row
-    * 
+    *
     * @return the number of rows in the result set
     */
    @Override
@@ -456,5 +462,61 @@ public final class JdbcStatementImpl implements JdbcStatement {
       } catch (SQLException ex) {
          throw newJdbcException(ex);
       }
+   }
+
+   public IVariantData parse() {
+      IVariantData toReturn = new VariantData();
+      int numberOfColumns = getColumnCount() + 1;
+      for (int index = 1; index < numberOfColumns; index++) {
+         int type = getColumnType(index);
+         String name = getColumnName(index);
+         // Store name - all upper case
+         String upperCasedName = name.toUpperCase();
+         switch (type) {
+            case Types.CLOB:
+            case Types.BINARY:
+               InputStream inputStream = getAsciiStream(name);
+               toReturn.put(upperCasedName, streamToByteArray(inputStream));
+               break;
+            case Types.BLOB:
+               InputStream blobStream = getBinaryStream(name);
+               toReturn.put(upperCasedName, streamToByteArray(blobStream));
+               break;
+            case Types.TIMESTAMP:
+               Timestamp timeStamp = getTimestamp(name);
+               if (timeStamp != null) {
+                  toReturn.put(upperCasedName, timeStamp.getTime());
+               }
+               break;
+            case Types.DATE:
+               Date date = getDate(name);
+               if (date != null) {
+                  toReturn.put(upperCasedName, date.getTime());
+               }
+               break;
+            default:
+               String value = getString(name);
+               if (Strings.isValid(value) != false) {
+                  value = value.trim();
+               }
+               toReturn.put(upperCasedName, getString(name));
+               break;
+         }
+      }
+      return toReturn;
+   }
+
+   private static byte[] streamToByteArray(InputStream inputStream) {
+      byte[] toReturn;
+      if (inputStream != null) {
+         try {
+            toReturn = Lib.inputStreamToBytes(inputStream);
+         } catch (IOException ex) {
+            throw newJdbcException(ex);
+         }
+      } else {
+         toReturn = new byte[0];
+      }
+      return toReturn;
    }
 }

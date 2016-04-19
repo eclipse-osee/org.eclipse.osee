@@ -11,9 +11,9 @@
 package org.eclipse.osee.jdbc;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.jdk.core.type.IVariantData;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Roberto E. Escobar
@@ -28,9 +28,11 @@ public interface JdbcClient {
 
    JdbcStatement getStatement(int resultSetType, int resultSetConcurrency);
 
-   void runQuery(JdbcProcessor processor, String query, Object... data);
+   void runQuery(Consumer<JdbcStatement> consumer, String query, Object... data);
 
-   List<IVariantData> runQuery(String query, Object... data);
+   void runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object[] data);
+
+   <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
 
@@ -82,5 +84,4 @@ public interface JdbcClient {
    long getNextSequence(String sequenceName, boolean aggressiveFetch);
 
    void invalidateSequences();
-
 }

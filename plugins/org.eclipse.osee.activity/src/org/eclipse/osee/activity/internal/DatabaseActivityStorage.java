@@ -11,12 +11,12 @@
 package org.eclipse.osee.activity.internal;
 
 import java.util.Arrays;
+import java.util.function.Consumer;
 import org.eclipse.osee.activity.ActivityStorage;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityDataHandler;
 import org.eclipse.osee.activity.api.ActivityLog.ActivityTypeDataHandler;
 import org.eclipse.osee.activity.api.ActivityType;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -41,7 +41,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    private static final String COUNT_TYPE = "SELECT count(1) FROM osee_activity_type WHERE type_id = ?";
 
-   private static class ActivityEntryProcessor implements JdbcProcessor {
+   private static class ActivityEntryProcessor implements Consumer<JdbcStatement> {
 
       private final ActivityDataHandler handler;
 
@@ -51,7 +51,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
 
       @Override
-      public void processNext(JdbcStatement chStmt) {
+      public void accept(JdbcStatement chStmt) {
          Long entryId = chStmt.getLong("entry_id");
          Long parentId = chStmt.getLong("parent_id");
          Long typeId = chStmt.getLong("type_id");
@@ -67,7 +67,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
    }
 
-   private static class ActivityTypeProcessor implements JdbcProcessor {
+   private static class ActivityTypeProcessor implements Consumer<JdbcStatement> {
 
       private final ActivityTypeDataHandler handler;
 
@@ -77,7 +77,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
       }
 
       @Override
-      public void processNext(JdbcStatement chStmt) {
+      public void accept(JdbcStatement chStmt) {
          Long typeId = chStmt.getLong("type_id");
          Long logLevel = chStmt.getLong("log_level");
          String module = chStmt.getString("module");

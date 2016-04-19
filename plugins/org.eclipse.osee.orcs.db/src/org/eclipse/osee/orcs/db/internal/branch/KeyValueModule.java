@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.branch;
 
+import java.util.function.Consumer;
 import org.apache.commons.lang.mutable.MutableLong;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcProcessor;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.KeyValueStore;
 
@@ -52,10 +52,10 @@ public class KeyValueModule {
          public String getByKey(Long key) {
             final MutableString toReturn = new MutableString();
 
-            jdbcClient.runQuery(new JdbcProcessor() {
+            jdbcClient.runQuery(new Consumer<JdbcStatement>() {
 
                @Override
-               public void processNext(JdbcStatement chStmt) {
+               public void accept(JdbcStatement chStmt) {
                   toReturn.setValue(chStmt.getString("value"));
                }
 
@@ -66,10 +66,10 @@ public class KeyValueModule {
          @Override
          public Long getByValue(String value) {
             final MutableLong toReturn = new MutableLong(0);
-            jdbcClient.runQuery(new JdbcProcessor() {
+            jdbcClient.runQuery(new Consumer<JdbcStatement>() {
 
                @Override
-               public void processNext(JdbcStatement chStmt) {
+               public void accept(JdbcStatement chStmt) {
                   toReturn.setValue(chStmt.getLong("key"));
                }
 

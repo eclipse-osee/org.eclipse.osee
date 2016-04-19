@@ -11,8 +11,6 @@
 package org.eclipse.osee.orcs.rest.internal.client.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
-import org.eclipse.osee.framework.jdk.core.type.IVariantData;
-import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 
 /**
  * @author Donald G. Dunne
@@ -20,34 +18,43 @@ import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 @XmlRootElement
 public class ClientSession {
 
-   private final IVariantData variantData;
+   private final String clientAddress;
+   private final String clientPort;
+   private final String userId;
+   private final String clientVersion;
+   private final String sessionId;
+   private final String createdOn;
 
-   public ClientSession(IVariantData variantData) {
-      this.variantData = variantData;
+   public ClientSession(String clientAddress, String clientPort, String userId, String clientVersion, String sessionId, String createdOn) {
+      this.clientAddress = clientAddress;
+      this.clientPort = clientPort;
+      this.userId = userId;
+      this.clientVersion = clientVersion;
+      this.sessionId = sessionId;
+      this.createdOn = createdOn;
    }
 
    public String getClientAddress() {
-      return variantData.get("CLIENT_ADDRESS");
+      return clientAddress;
    }
 
    public String getClientPort() {
-      return variantData.get("CLIENT_PORT");
+      return clientPort;
    }
 
    public String getUserId() {
-      return variantData.get("USER_ID");
+      return userId;
    }
 
    public String getClientVersion() {
-      return variantData.get("CLIENT_VERSION");
+      return clientVersion;
    }
 
    public String getSessionId() {
-      return variantData.get("SESSION_ID");
+      return sessionId;
    }
 
    public String getCreatedOn() {
-      return DateUtil.get(variantData.getDate("CREATED_ON"), DateUtil.MMDDYYHHMM);
+      return createdOn;
    }
-
 }

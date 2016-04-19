@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
+import org.eclipse.osee.framework.jdk.core.type.IVariantData;
 
 /**
  * @author Jeff C. Phillips
@@ -83,7 +84,7 @@ public interface JdbcStatement extends Closeable {
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
     * row
-    * 
+    *
     * @return the number of rows in the result set
     */
    int getRowCount();
@@ -117,4 +118,5 @@ public interface JdbcStatement extends Closeable {
 
    void updateRow();
 
+   public IVariantData parse();
 }
