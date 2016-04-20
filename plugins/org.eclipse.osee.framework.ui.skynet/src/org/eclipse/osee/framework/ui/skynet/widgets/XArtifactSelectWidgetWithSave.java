@@ -35,9 +35,11 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
 
    public Artifact getStored() throws OseeCoreException {
       Artifact stored = null;
-      Integer uuid = artifact.getSoleAttributeValue(attributeType, 0);
-      if (uuid > 0) {
-         stored = ArtifactQuery.getArtifactFromId(uuid, artifact.getBranch());
+      if (artifact != null) {
+         Integer uuid = artifact.getSoleAttributeValue(attributeType, 0);
+         if (uuid > 0) {
+            stored = ArtifactQuery.getArtifactFromId(uuid, artifact.getBranch());
+         }
       }
       return stored;
    }
@@ -63,7 +65,13 @@ public class XArtifactSelectWidgetWithSave extends XArtifactSelectWidget impleme
          try {
             Artifact storedArt = getStored();
             Artifact widgetArt = getSelection();
-            if (!storedArt.equals(widgetArt)) {
+            if (storedArt == null && widgetArt == null) {
+               return Result.FalseResult;
+            } else if (storedArt != null && widgetArt == null) {
+               return new Result(true, getAttributeType() + " is dirty");
+            } else if (storedArt == null && widgetArt != null) {
+               return new Result(true, getAttributeType() + " is dirty");
+            } else if (!storedArt.equals(widgetArt)) {
                return new Result(true, getAttributeType() + " is dirty");
             }
          } catch (OseeCoreException ex) {
