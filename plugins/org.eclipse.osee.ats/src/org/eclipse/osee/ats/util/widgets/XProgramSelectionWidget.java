@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -26,9 +28,21 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XArtifactSelectWidgetWithSav
 public class XProgramSelectionWidget extends XArtifactSelectWidgetWithSave {
 
    public static final String WIDGET_ID = XProgramSelectionWidget.class.getSimpleName();
+   private final List<ArtifactId> programArts = new ArrayList<>();
 
    public XProgramSelectionWidget() {
       super("Program");
+      setupPrograms();
+   }
+
+   public void setupPrograms() {
+      Collection<IAtsProgram> programs =
+         AtsClientService.get().getProgramService().getPrograms(AtsArtifactTypes.Program);
+      for (IAtsProgram program : programs) {
+         if (program.isActive()) {
+            programArts.add(AtsClientService.get().getArtifactById(program.getUuid().toString()));
+         }
+      }
    }
 
    @Override
