@@ -299,6 +299,10 @@ public final class AtsUtil {
       openInAtsWorldEditor(name, AtsObjects.getArtifacts(items));
    }
 
+   public static void openInAtsWorldEditor(Collection<? extends IAtsWorkItem> workItems, String name) {
+      openInAtsWorldEditor(name, AtsObjects.getArtifacts(workItems));
+   }
+
    public static void openInAtsWorldEditor(String name, Collection<? extends ArtifactId> artifacts) {
       Set<Artifact> otherArts = new HashSet<>();
       for (ArtifactId artId : artifacts) {
