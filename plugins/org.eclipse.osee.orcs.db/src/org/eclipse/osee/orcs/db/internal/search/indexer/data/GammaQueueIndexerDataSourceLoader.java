@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.search.indexer.data;
 
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -38,35 +39,26 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
       this.resourceManager = resourceManager;
    }
 
-   private boolean loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) throws OseeCoreException {
-      boolean loaded = false;
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
-         while (chStmt.next()) {
-            loaded = true;
+   private int loadData(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) throws OseeCoreException {
+      Consumer<JdbcStatement> consumer = stmt -> {
+         int itemId = stmt.getInt("attr_id");
+         long typeUuid = stmt.getLong("attr_type_id");
+         long gammaId = stmt.getLong("gamma_id");
+         String uri = stmt.getString("uri");
+         String value = stmt.getString("value");
 
-            int itemId = chStmt.getInt("attr_id");
-            long typeUuid = chStmt.getLong("attr_type_id");
-            long gammaId = chStmt.getLong("gamma_id");
-            String uri = chStmt.getString("uri");
-            String value = chStmt.getString("value");
-
-            IndexedResource data = createData(itemId, typeUuid, gammaId, value, uri);
-            handler.onData(data);
-         }
-      } finally {
-         chStmt.close();
-      }
-      return loaded;
+         IndexedResource data = createData(itemId, typeUuid, gammaId, value, uri);
+         handler.onData(data);
+      };
+      return jdbcClient.runQuery(consumer, LOAD_ATTRIBUTE, tagQueueQueryId);
    }
 
    @Override
    public void loadSource(OrcsDataHandler<IndexedResource> handler, int tagQueueQueryId) throws OseeCoreException {
-      boolean loadSuccess = loadData(handler, tagQueueQueryId);
+      int count = loadData(handler, tagQueueQueryId);
       // Re-try in case query id hasn't been committed to the database
       int retry = 0;
-      while (!loadSuccess && retry < IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES) {
+      while (count == 0 && retry < IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES) {
          try {
             Thread.sleep(2000);
          } catch (InterruptedException ex) {
@@ -74,7 +66,7 @@ public class GammaQueueIndexerDataSourceLoader implements IndexedResourceLoader 
          }
          logger.debug("Retrying attribute load from gammas - queryId[%s] attempt[%s of %s]", tagQueueQueryId, retry,
             IndexerConstants.INDEX_QUERY_ID_LOADER_TOTAL_RETRIES);
-         loadSuccess = loadData(handler, tagQueueQueryId);
+         loadData(handler, tagQueueQueryId);
          retry++;
       }
    }

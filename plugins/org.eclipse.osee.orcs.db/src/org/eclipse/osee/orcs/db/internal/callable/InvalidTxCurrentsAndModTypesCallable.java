@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.callable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -159,34 +160,29 @@ public class InvalidTxCurrentsAndModTypesCallable extends AbstractDatastoreTxCal
    protected Void handleTxWork(JdbcConnection connection) {
       checkForCancelled();
 
-      JdbcStatement chStmt = getJdbcClient().getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
+      Address[] previousAddress = new Address[1];
 
-         Address previousAddress = null;
-         while (chStmt.next()) {
-            checkForCancelled();
-            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-            TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
-            TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
-            Address address = new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
-               chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, appId, txCurrent);
+      Consumer<JdbcStatement> consumer = stmt -> {
+         checkForCancelled();
+         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+         TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
+		 ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
+            stmt.getInt("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
 
-            if (!address.isSimilar(previousAddress)) {
-               if (!addresses.isEmpty()) {
-                  consolidateAddressing();
-               }
-               addresses.clear();
+         if (!address.isSimilar(previousAddress[0])) {
+            if (!addresses.isEmpty()) {
+               consolidateAddressing();
             }
-
-            addresses.add(address);
-            previousAddress = address;
+            addresses.clear();
          }
-      } finally {
-         chStmt.close();
-      }
+
+         addresses.add(address);
+         previousAddress[0] = address;
+      };
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
       fixIssues();
       return null;
    }

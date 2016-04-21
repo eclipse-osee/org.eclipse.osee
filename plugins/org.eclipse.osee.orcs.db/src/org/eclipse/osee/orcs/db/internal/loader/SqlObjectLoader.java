@@ -94,7 +94,7 @@ public class SqlObjectLoader {
       return sqlProvider;
    }
 
-   public JdbcClient getDatabaseService() {
+   public JdbcClient getJdbcClient() {
       return jdbcClient;
    }
 
@@ -230,7 +230,7 @@ public class SqlObjectLoader {
 
    protected int loadHeadTransactionId(Long branchId) throws OseeCoreException {
       String sql = sqlProvider.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return getDatabaseService().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql, branchId);
+      return getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql, branchId);
    }
 
    protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
@@ -240,9 +240,7 @@ public class SqlObjectLoader {
          }
 
          long startTime = System.currentTimeMillis();
-         JdbcStatement chStmt = null;
-         try {
-            chStmt = getDatabaseService().getStatement();
+         try (JdbcStatement chStmt = getJdbcClient().getStatement()) {
             chStmt.runPreparedQuery(fetchSize, loadContext.getSql(), loadContext.getParameters().toArray());
 
             String processorName = null;
@@ -259,8 +257,6 @@ public class SqlObjectLoader {
                logger.trace("Sql Artifact Load [%s] - [%s] processed [%d] rows", Lib.getElapseString(startTime),
                   processorName, rowCount);
             }
-         } finally {
-            Lib.close(chStmt);
          }
       } finally {
          for (AbstractJoinQuery join : loadContext.getJoins()) {

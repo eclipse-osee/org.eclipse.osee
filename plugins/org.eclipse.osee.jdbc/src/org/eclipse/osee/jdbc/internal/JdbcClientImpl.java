@@ -363,18 +363,21 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public void runQuery(Consumer<JdbcStatement> consumer, String query, Object... data) {
-      runQuery(consumer, 0, query, data);
+   public int runQuery(Consumer<JdbcStatement> consumer, String query, Object... data) {
+      return runQuery(consumer, 0, query, data);
    }
 
    @Override
-   public void runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
+   public int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data) {
+      int rowCount = 0;
       try (JdbcStatement stmt = getStatement()) {
          stmt.runPreparedQuery(fetchSize, query, data);
          while (stmt.next()) {
             consumer.accept(stmt);
+            rowCount++;
          }
       }
+      return rowCount;
    }
 
    @Override

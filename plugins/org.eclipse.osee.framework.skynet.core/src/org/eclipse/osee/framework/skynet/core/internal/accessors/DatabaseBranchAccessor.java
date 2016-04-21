@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
@@ -80,7 +81,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          }
          branchToSourceTx.put(branch, stmt.getInt("parent_transaction_id"));
          branchToBaseTx.put(branch, stmt.getInt("baseline_transaction_id"));
-      }, JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
+      } , JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
    }
 
    private static Branch create(Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
@@ -179,21 +180,15 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    }
 
    private void loadMergeBranches(IOseeCache<Branch> cache) throws OseeCoreException {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
-         while (chStmt.next()) {
-            Branch sourceBranch = cache.getById(chStmt.getLong("source_branch_id"));
-            Branch destBranch = cache.getById(chStmt.getLong("dest_branch_id"));
+      Consumer<JdbcStatement> consumer = stmt -> {
+         Branch sourceBranch = cache.getById(stmt.getLong("source_branch_id"));
+         Branch destBranch = cache.getById(stmt.getLong("dest_branch_id"));
+         MergeBranch mergeBranch = (MergeBranch) cache.getById(stmt.getLong("merge_branch_id"));
 
-            MergeBranch mergeBranch = (MergeBranch) cache.getById(chStmt.getLong("merge_branch_id"));
-            mergeBranch.setSourceBranch(sourceBranch);
-            mergeBranch.setDestinationBranch(destBranch);
-         }
-      } finally {
-         chStmt.close();
-      }
-
+         mergeBranch.setSourceBranch(sourceBranch);
+         mergeBranch.setDestinationBranch(destBranch);
+      };
+      getJdbcClient().runQuery(consumer, 1000, SELECT_MERGE_BRANCHES);
    }
 
    @Override

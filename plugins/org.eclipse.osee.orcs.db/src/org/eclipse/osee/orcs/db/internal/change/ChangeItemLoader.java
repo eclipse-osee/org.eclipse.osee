@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.change;
 
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -60,17 +61,12 @@ public class ChangeItemLoader {
    }
 
    public void loadItemIdsBasedOnGammas(ChangeItemFactory factory, int queryId, HashMap<Integer, ChangeItem> changesByItemId, IdJoinQuery idJoin) throws OseeCoreException {
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, factory.getLoadByGammaQuery(), queryId);
-         while (chStmt.next()) {
-            ChangeItem item = factory.createItem(chStmt);
-            Integer itemId = item.getItemId();
-            changesByItemId.put(itemId, item);
-            idJoin.add(itemId);
-         }
-      } finally {
-         chStmt.close();
-      }
+      Consumer<JdbcStatement> consumer = stmt -> {
+         ChangeItem item = factory.createItem(stmt);
+         Integer itemId = item.getItemId();
+         changesByItemId.put(itemId, item);
+         idJoin.add(itemId);
+      };
+      jdbcClient.runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, factory.getLoadByGammaQuery(), queryId);
    }
 }

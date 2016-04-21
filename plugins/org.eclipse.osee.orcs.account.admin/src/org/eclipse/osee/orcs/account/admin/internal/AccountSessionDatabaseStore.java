@@ -15,6 +15,7 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.function.Consumer;
 import org.eclipse.osee.account.admin.AccountSession;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -87,24 +88,19 @@ public class AccountSessionDatabaseStore implements AccountSessionStorage {
          @Override
          protected ResultSet<AccountSession> innerCall() throws Exception {
             List<AccountSession> list = new LinkedList<>();
-            JdbcStatement chStmt = jdbcClient.getStatement();
-            try {
-               chStmt.runPreparedQuery(query, data);
-               while (chStmt.next()) {
-                  long accountId = chStmt.getLong("account_id");
-                  String sessionToken = chStmt.getString("session_token");
-                  Date createdOn = chStmt.getTimestamp("created_on");
-                  Date lastAccessedOn = chStmt.getTimestamp("last_accessed_on");
-                  String accessedFrom = chStmt.getString("accessed_from");
-                  String accessDetails = chStmt.getString("access_details");
+            Consumer<JdbcStatement> consumer = stmt -> {
+               long accountId = stmt.getLong("account_id");
+               String sessionToken = stmt.getString("session_token");
+               Date createdOn = stmt.getTimestamp("created_on");
+               Date lastAccessedOn = stmt.getTimestamp("last_accessed_on");
+               String accessedFrom = stmt.getString("accessed_from");
+               String accessDetails = stmt.getString("access_details");
                   ArtifactId artId = ArtifactId.valueOf(accountId);
-                  AccountSession session = factory.newAccountSession(artId, sessionToken, createdOn, lastAccessedOn,
-                     accessedFrom, accessDetails);
-                  list.add(session);
-               }
-            } finally {
-               chStmt.close();
-            }
+               AccountSession session = factory.newAccountSession(artId, sessionToken, createdOn, lastAccessedOn,
+                  accessedFrom, accessDetails);
+               list.add(session);
+            };
+            jdbcClient.runQuery(consumer, query, data);
             return ResultSets.newResultSet(list);
          }
       };

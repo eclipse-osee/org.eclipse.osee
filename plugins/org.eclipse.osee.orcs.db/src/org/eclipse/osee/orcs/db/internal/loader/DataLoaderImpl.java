@@ -182,12 +182,12 @@ public class DataLoaderImpl implements DataLoader {
 
    private DataLoader withArtifactIds(Collection<Integer> artifactIds) {
       loadExecutor =
-         new LoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), joinFactory, session, branchId, artifactIds);
+         new LoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId, artifactIds);
       return this;
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
-      loadExecutor = new UuidsLoadExecutor(sqlLoader, sqlLoader.getDatabaseService(), joinFactory, session, branchId,
+      loadExecutor = new UuidsLoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId,
          artifactGuids);
       return this;
    }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.server.internal.session;
 
 import java.util.Date;
 import java.util.Random;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.server.internal.util.CharJoinQuery;
 import org.eclipse.osee.framework.core.server.internal.util.DatabaseJoinAccessor;
 import org.eclipse.osee.framework.core.server.internal.util.IJoinAccessor;
@@ -63,23 +64,18 @@ public final class DatabaseSessionQuery implements ISessionQuery {
    }
 
    private void querySessions(ISessionCollector collector, String sql, Object... params) throws OseeCoreException {
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         chStmt.runPreparedQuery(sql, params);
-         while (chStmt.next()) {
-            String sessionGuid = chStmt.getString("session_id");
-            String userId = chStmt.getString("user_id");
-            Date creationDate = chStmt.getTimestamp("created_on");
-            String clientVersion = chStmt.getString("client_version");
-            String clientMachineName = chStmt.getString("client_machine_name");
-            String clientAddress = chStmt.getString("client_address");
-            int clientPort = chStmt.getInt("client_port");
-            collector.collect(sessionGuid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
-               clientPort);
-         }
-      } finally {
-         chStmt.close();
-      }
+      Consumer<JdbcStatement> consumer = stmt -> {
+         String sessionGuid = stmt.getString("session_id");
+         String userId = stmt.getString("user_id");
+         Date creationDate = stmt.getTimestamp("created_on");
+         String clientVersion = stmt.getString("client_version");
+         String clientMachineName = stmt.getString("client_machine_name");
+         String clientAddress = stmt.getString("client_address");
+         int clientPort = stmt.getInt("client_port");
+         collector.collect(sessionGuid, userId, creationDate, clientVersion, clientMachineName, clientAddress,
+            clientPort);
+      };
+      jdbcClient.runQuery(consumer, sql, params);
    }
 
    private int getNewQueryId() {

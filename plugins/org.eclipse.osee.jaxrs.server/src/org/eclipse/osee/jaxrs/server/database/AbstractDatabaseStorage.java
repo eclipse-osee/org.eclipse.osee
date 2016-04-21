@@ -100,16 +100,10 @@ public abstract class AbstractDatabaseStorage<T> {
          @Override
          protected ResultSet<T> innerCall() throws Exception {
             List<T> list = new LinkedList<>();
-            JdbcStatement chStmt = jdbcClient.getStatement();
-            try {
-               chStmt.runPreparedQuery(query, data);
-               while (chStmt.next()) {
-                  T data = readData(chStmt);
-                  list.add(data);
-               }
-            } finally {
-               chStmt.close();
-            }
+            getJdbcClient().runQuery(stmt -> {
+               T data = readData(stmt);
+               list.add(data);
+            } , query, data);
             return ResultSets.newResultSet(list);
          }
       };

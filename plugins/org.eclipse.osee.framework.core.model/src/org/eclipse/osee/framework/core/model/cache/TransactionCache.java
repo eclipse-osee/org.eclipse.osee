@@ -156,7 +156,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
       }
 
       if (!toLoad.isEmpty()) {
-         accessor.loadTransactionRecord(this, toLoad);
+         accessor.loadTransactionRecords(this, toLoad);
       }
    }
 

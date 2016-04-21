@@ -59,7 +59,7 @@ public class DbTableExportItem extends AbstractXmlExportItem {
       this.bindData = bindData;
    }
 
-   private JdbcClient getDatabaseService() {
+   private JdbcClient getJdbcClient() {
       return jdbcClient;
    }
 
@@ -91,84 +91,81 @@ public class DbTableExportItem extends AbstractXmlExportItem {
    }
 
    @Override
-   protected void doWork(Appendable appendable) throws Exception {
-      JdbcStatement chStmt = getDatabaseService().getStatement();
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, bindData);
-         while (chStmt.next()) {
-            processData(appendable, chStmt);
-         }
-      } finally {
-         chStmt.close();
-      }
+   protected void doWork(Appendable appendable) {
+      getJdbcClient().runQuery(stmt -> processData(appendable, stmt), JdbcConstants.JDBC__MAX_FETCH_SIZE, query,
+         bindData);
    }
 
-   private void processData(Appendable appendable, JdbcStatement chStmt) throws Exception {
-      ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
-
+   private void processData(Appendable appendable, JdbcStatement chStmt) {
       try {
-         int numberOfColumns = chStmt.getColumnCount();
-         for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
-            String columnName = chStmt.getColumnName(columnIndex).toLowerCase();
-            Object value = chStmt.getObject(columnIndex);
+         ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
 
-            if (columnName.equals("uri")) {
-               handleBinaryContent(binaryContentBuffer, value);
-            } else if (columnName.equals("value")) {
-               handleStringContent(stringContentBuffer, value, ExportImportXml.STRING_CONTENT);
-            } else if (columnName.equals(ExportImportXml.OSEE_COMMENT)) {
-               handleStringContent(oseeCommentBuffer, value, columnName);
-            } else if (columnName.equals(ExportImportXml.BRANCH_NAME)) {
-               handleStringContent(branchNameBuffer, value, columnName);
-            } else if (columnName.equals(ExportImportXml.RATIONALE)) {
-               handleStringContent(rationaleBuffer, value, columnName);
-            } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
-               handleTypeId(appendable, value);
-            } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
-               handleTypeId(appendable, value);
-            } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
-               handleTypeId(appendable, value);
-            } else {
-               Timestamp timestamp = asTimestamp(value);
-               if (timestamp != null) {
-                  ExportImportXml.addXmlAttribute(appendable, columnName, timestamp);
+         try {
+            int numberOfColumns = chStmt.getColumnCount();
+            for (int columnIndex = 1; columnIndex <= numberOfColumns; columnIndex++) {
+               String columnName = chStmt.getColumnName(columnIndex).toLowerCase();
+               Object value = chStmt.getObject(columnIndex);
+
+               if (columnName.equals("uri")) {
+                  handleBinaryContent(binaryContentBuffer, value);
+               } else if (columnName.equals("value")) {
+                  handleStringContent(stringContentBuffer, value, ExportImportXml.STRING_CONTENT);
+               } else if (columnName.equals(ExportImportXml.OSEE_COMMENT)) {
+                  handleStringContent(oseeCommentBuffer, value, columnName);
+               } else if (columnName.equals(ExportImportXml.BRANCH_NAME)) {
+                  handleStringContent(branchNameBuffer, value, columnName);
+               } else if (columnName.equals(ExportImportXml.RATIONALE)) {
+                  handleStringContent(rationaleBuffer, value, columnName);
+               } else if (columnName.equals(ExportImportXml.ART_TYPE_ID)) {
+                  handleTypeId(appendable, value);
+               } else if (columnName.equals(ExportImportXml.ATTR_TYPE_ID)) {
+                  handleTypeId(appendable, value);
+               } else if (columnName.equals(ExportImportXml.REL_TYPE_ID)) {
+                  handleTypeId(appendable, value);
                } else {
-                  try {
-                     ExportImportXml.addXmlAttribute(appendable, columnName, value);
-                  } catch (Exception ex) {
-                     throw new OseeCoreException(ex, "Unable to convert [%s] of raw type [%s] to string.", columnName,
-                        chStmt.getColumnTypeName(columnIndex));
+                  Timestamp timestamp = asTimestamp(value);
+                  if (timestamp != null) {
+                     ExportImportXml.addXmlAttribute(appendable, columnName, timestamp);
+                  } else {
+                     try {
+                        ExportImportXml.addXmlAttribute(appendable, columnName, value);
+                     } catch (Exception ex) {
+                        throw new OseeCoreException(ex, "Unable to convert [%s] of raw type [%s] to string.",
+                           columnName, chStmt.getColumnTypeName(columnIndex));
+                     }
                   }
                }
             }
+         } finally {
+            if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0 || oseeCommentBuffer.length() > 0 || branchNameBuffer.length() > 0 || rationaleBuffer.length() > 0) {
+               ExportImportXml.endOpenedPartialXmlNode(appendable);
+               if (binaryContentBuffer.length() > 0) {
+                  appendable.append(binaryContentBuffer);
+                  binaryContentBuffer.delete(0, binaryContentBuffer.length());
+               }
+               if (stringContentBuffer.length() > 0) {
+                  appendable.append(stringContentBuffer);
+                  stringContentBuffer.delete(0, stringContentBuffer.length());
+               }
+               if (oseeCommentBuffer.length() > 0) {
+                  appendable.append(oseeCommentBuffer);
+                  oseeCommentBuffer.delete(0, oseeCommentBuffer.length());
+               }
+               if (branchNameBuffer.length() > 0) {
+                  appendable.append(branchNameBuffer);
+                  branchNameBuffer.delete(0, branchNameBuffer.length());
+               }
+               if (rationaleBuffer.length() > 0) {
+                  appendable.append(rationaleBuffer);
+                  rationaleBuffer.delete(0, rationaleBuffer.length());
+               }
+               ExportImportXml.closeXmlNode(appendable, ExportImportXml.ENTRY);
+            } else {
+               ExportImportXml.closePartialXmlNode(appendable);
+            }
          }
-      } finally {
-         if (binaryContentBuffer.length() > 0 || stringContentBuffer.length() > 0 || oseeCommentBuffer.length() > 0 || branchNameBuffer.length() > 0 || rationaleBuffer.length() > 0) {
-            ExportImportXml.endOpenedPartialXmlNode(appendable);
-            if (binaryContentBuffer.length() > 0) {
-               appendable.append(binaryContentBuffer);
-               binaryContentBuffer.delete(0, binaryContentBuffer.length());
-            }
-            if (stringContentBuffer.length() > 0) {
-               appendable.append(stringContentBuffer);
-               stringContentBuffer.delete(0, stringContentBuffer.length());
-            }
-            if (oseeCommentBuffer.length() > 0) {
-               appendable.append(oseeCommentBuffer);
-               oseeCommentBuffer.delete(0, oseeCommentBuffer.length());
-            }
-            if (branchNameBuffer.length() > 0) {
-               appendable.append(branchNameBuffer);
-               branchNameBuffer.delete(0, branchNameBuffer.length());
-            }
-            if (rationaleBuffer.length() > 0) {
-               appendable.append(rationaleBuffer);
-               rationaleBuffer.delete(0, rationaleBuffer.length());
-            }
-            ExportImportXml.closeXmlNode(appendable, ExportImportXml.ENTRY);
-         } else {
-            ExportImportXml.closePartialXmlNode(appendable);
-         }
+      } catch (Exception ex) {
+         throw new OseeCoreException(ex, "Failure during %s processData", getClass().getSimpleName());
       }
    }
 

@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.skynet.core.utility.ArtifactJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Theron Virgin
@@ -187,48 +186,18 @@ public class UpdateMergeBranch extends AbstractDbTxOperation {
 
    private Collection<Integer> getAllMergeArtifacts(BranchId branch) throws OseeCoreException {
       Collection<Integer> artSet = new HashSet<>();
-      long time = System.currentTimeMillis();
 
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getUuid());
-         while (chStmt.next()) {
-            artSet.add(chStmt.getInt("art_id"));
-         }
-         if (DEBUG) {
-            System.out.println(String.format("          Getting Artifacts that are on the Merge Branch Completed in %s",
-               Lib.getElapseString(time)));
-            time = System.currentTimeMillis();
-         }
+      getJdbcClient().runQuery(stmt -> artSet.add(stmt.getInt("art_id")),
+         ServiceUtil.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH), branch.getUuid());
 
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getUuid());
-         while (chStmt.next()) {
-            artSet.add(chStmt.getInt("art_id"));
-         }
-         if (DEBUG) {
-            System.out.println(String.format(
-               "          Getting Attributes that are on the Merge Branch Completed in %s", Lib.getElapseString(time)));
-            time = System.currentTimeMillis();
-         }
+      getJdbcClient().runQuery(stmt -> artSet.add(stmt.getInt("art_id")),
+         ServiceUtil.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH), branch.getUuid());
 
-         chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getUuid());
-         while (chStmt.next()) {
-            artSet.add(chStmt.getInt("a_art_id"));
-            artSet.add(chStmt.getInt("b_art_id"));
-         }
-      } finally {
-         chStmt.close();
-      }
-      if (DEBUG) {
-         System.out.println(String.format("          Getting Relations that are on the Merge Branch Completed in %s",
-            Lib.getElapseString(time)));
-         System.out.println("            Found the following Artifacts on the Merge Branch");
-         System.out.print("            ");
-         for (Integer integer : artSet) {
-            System.out.print(integer + ", ");
-         }
-         System.out.print("\n");
-      }
+      getJdbcClient().runQuery(stmt -> {
+         artSet.add(stmt.getInt("a_art_id"));
+         artSet.add(stmt.getInt("b_art_id"));
+      } , ServiceUtil.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH), branch.getUuid());
+
       return artSet;
    }
 

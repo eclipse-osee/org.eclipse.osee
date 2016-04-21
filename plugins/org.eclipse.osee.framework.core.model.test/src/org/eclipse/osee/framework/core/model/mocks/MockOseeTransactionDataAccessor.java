@@ -56,7 +56,7 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
    //   }
 
    @Override
-   public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
+   public void loadTransactionRecords(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
       wasLoadCalled = true;
    }
 

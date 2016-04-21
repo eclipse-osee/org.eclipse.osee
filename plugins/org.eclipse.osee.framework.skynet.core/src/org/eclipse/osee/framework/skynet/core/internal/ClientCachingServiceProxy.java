@@ -73,7 +73,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       JdbcClient jdbcClient = jdbcService.getClient();
 
       txCache = new TransactionCache();
-      txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, new TransactionRecordFactory()));
+      txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, txCache, new TransactionRecordFactory()));
       branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache), txCache);
 
       artifactTypeCache = new ArtifactTypeCache();

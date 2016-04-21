@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.utility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.utility.JoinUtility;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Jeff C. Phillips
@@ -78,17 +77,9 @@ public class PurgeAttributes extends AbstractDbTxOperation {
       IdJoinQuery txsJoin = JoinUtility.createIdJoinQuery(getJdbcClient());
       try {
          attributeJoin.store();
-         JdbcStatement chStmt = getJdbcClient().getStatement();
-
-         try {
-            chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
-            while (chStmt.next()) {
-               txsJoin.add(chStmt.getInt("gamma_id"));
-            }
-            txsJoin.store();
-         } finally {
-            chStmt.close();
-         }
+         getJdbcClient().runQuery(stmt -> txsJoin.add(stmt.getInt("gamma_id")), JdbcConstants.JDBC__MAX_FETCH_SIZE,
+            SELECT_ATTR_GAMMAS, attributeJoin.getQueryId());
+         txsJoin.store();
       } finally {
          attributeJoin.delete();
       }

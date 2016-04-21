@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.callable;
 
-import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +17,9 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import org.eclipse.osee.framework.core.data.OrcsTypesData;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreTupleTypes;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -29,7 +31,6 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -43,8 +44,8 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
     */
    private static final String LOAD_OSEE_TYPE_DEF_URIS =
       "select uri from osee_tuple2 t2, osee_txs txs1, osee_attribute attr, osee_txs txs2 where tuple_type = ? and " //
-         + "t2.gamma_id = txs1.gamma_id and txs1.branch_id = ? and txs1.tx_current = ? and e1 = ? and e2 = attr.attr_id and " //
-         + "attr.gamma_id = txs2.gamma_id and txs2.branch_id = txs1.branch_id and txs2.tx_current = ?";
+      + "t2.gamma_id = txs1.gamma_id and txs1.branch_id = ? and txs1.tx_current = ? and e1 = ? and e2 = attr.attr_id and " //
+      + "attr.gamma_id = txs2.gamma_id and txs2.branch_id = txs1.branch_id and txs2.tx_current = ?";
 
    private final IResourceManager resourceManager;
 
@@ -66,20 +67,11 @@ public class OrcsTypeLoaderCallable extends AbstractDatastoreCallable<IResource>
    private Collection<String> findOseeTypeData() throws OseeCoreException {
       Collection<String> paths = new LinkedHashSet<>();
 
-      JdbcStatement chStmt = null;
-      try {
-         chStmt = getJdbcClient().getStatement();
-
-         chStmt.runPreparedQuery(LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, COMMON,
-            TxChange.CURRENT.getValue(), OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT.getValue());
-
-         while (chStmt.next()) {
-            String uri = chStmt.getString("uri");
-            paths.add(uri);
-         }
-      } finally {
-         Lib.close(chStmt);
-      }
+      getJdbcClient().runQuery(stmt -> {
+         String uri = stmt.getString("uri");
+         paths.add(uri);
+      } , LOAD_OSEE_TYPE_DEF_URIS, CoreTupleTypes.OseeTypeDef, CoreBranches.COMMON,
+         TxChange.CURRENT.getValue(), OrcsTypesData.OSEE_TYPE_VERSION, TxChange.CURRENT.getValue());
       return paths;
    }
 

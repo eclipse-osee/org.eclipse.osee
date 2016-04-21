@@ -12,7 +12,6 @@ import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ITransactionDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.sql.OseeSql;
-import org.eclipse.osee.framework.jdk.core.type.MutableInteger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -46,14 +45,16 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
 
    private final JdbcClient jdbcClient;
    private final TransactionRecordFactory factory;
+   private final TransactionCache cache;
 
-   public DatabaseTransactionRecordAccessor(JdbcClient jdbcClient, TransactionRecordFactory factory) {
+   public DatabaseTransactionRecordAccessor(JdbcClient jdbcClient, TransactionCache cache, TransactionRecordFactory factory) {
+      this.cache = cache;
       this.jdbcClient = jdbcClient;
       this.factory = factory;
    }
 
    @Override
-   public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
+   public void loadTransactionRecords(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
       if (transactionIds.isEmpty()) {
          return;
       }
@@ -65,13 +66,13 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             }
             joinQuery.store();
 
-            loadTransactions(cache, transactionIds.size(), SELECT_TRANSACTIONS_BY_QUERY_ID, joinQuery.getQueryId());
+            loadTransactions(transactionIds.size(), SELECT_TRANSACTIONS_BY_QUERY_ID, joinQuery.getQueryId());
 
          } finally {
             joinQuery.delete();
          }
       } else {
-         loadTransaction(cache, SELECT_BY_TRANSACTION, transactionIds.iterator().next());
+         loadTransaction(SELECT_BY_TRANSACTION, transactionIds.iterator().next());
       }
    }
 
@@ -80,11 +81,10 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       TransactionRecord toReturn = null;
       switch (transactionType) {
          case BASE:
-            toReturn =
-               loadTransaction(cache, SELECT_BASE_TRANSACTION, branch.getUuid(), TransactionDetailsType.Baselined);
+            toReturn = loadTransaction(SELECT_BASE_TRANSACTION, branch.getUuid(), TransactionDetailsType.Baselined);
             break;
          case HEAD:
-            toReturn = loadTransaction(cache, SELECT_HEAD_TRANSACTION, branch.getUuid(), branch.getUuid());
+            toReturn = loadTransaction(SELECT_HEAD_TRANSACTION, branch.getUuid(), branch.getUuid());
             break;
          default:
             throw new OseeStateException("Transaction Type [%s] is not supported", transactionType);
@@ -92,52 +92,24 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       return toReturn;
    }
 
-   private void loadTransactions(TransactionCache cache, int expectedCount, String query, int queryId) throws OseeCoreException {
-      MutableInteger numberLoaded = new MutableInteger(-1);
-      loadFromTransaction(cache, expectedCount, numberLoaded, query, queryId);
-
-      if (numberLoaded.getValue() != expectedCount) {
-         JdbcStatement chStmt = jdbcClient.getStatement();
-         try {
-            chStmt.runPreparedQuery(expectedCount, SELECT_NON_EXISTING_TRANSACTIONS_BY_QUERY_ID, queryId);
-            while (chStmt.next()) {
-               int transactionNumber = chStmt.getInt("id");
-               factory.getOrCreate(cache, transactionNumber);
-            }
-         } finally {
-            chStmt.close();
-         }
-      }
+   private TransactionRecord loadInternalTransaction(JdbcStatement stmt) {
+      IOseeBranch branch = BranchManager.getBranch(stmt.getLong("branch_id"));
+      int transactionNumber = stmt.getInt("transaction_id");
+      String comment = stmt.getString("osee_comment");
+      Date timestamp = stmt.getTimestamp("time");
+      int authorArtId = stmt.getInt("author");
+      int commitArtId = stmt.getInt("commit_art_id");
+      TransactionDetailsType txType = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
+      return factory.createOrUpdate(cache, transactionNumber, branch, comment, timestamp, authorArtId, commitArtId,
+         txType);
    }
 
-   private TransactionRecord loadTransaction(TransactionCache cache, String query, Object... parameters) throws OseeCoreException {
-      return loadFromTransaction(cache, 1, new MutableInteger(0), query, parameters);
+   private void loadTransactions(int expectedCount, String query, int queryId) throws OseeCoreException {
+      jdbcClient.runQuery(this::loadInternalTransaction, query, queryId);
    }
 
-   private TransactionRecord loadFromTransaction(TransactionCache cache, int expectedCount, MutableInteger numberLoaded, String query, Object... parameters) throws OseeCoreException {
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      TransactionRecord record = null;
-      int count = 0;
-      try {
-         chStmt.runPreparedQuery(expectedCount, query, parameters);
-         while (chStmt.next()) {
-            count++;
-            IOseeBranch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
-            int transactionNumber = chStmt.getInt("transaction_id");
-            String comment = chStmt.getString("osee_comment");
-            Date timestamp = chStmt.getTimestamp("time");
-            int authorArtId = chStmt.getInt("author");
-            int commitArtId = chStmt.getInt("commit_art_id");
-            TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-
-            record = factory.createOrUpdate(cache, transactionNumber, branch, comment, timestamp, authorArtId,
-               commitArtId, txType);
-         }
-         numberLoaded.setValue(count);
-      } finally {
-         chStmt.close();
-      }
-      return record;
+   private TransactionRecord loadTransaction(String query, Object... parameters) throws OseeCoreException {
+      return jdbcClient.fetchObject(null, this::loadInternalTransaction, query, parameters);
    }
 
    @Override

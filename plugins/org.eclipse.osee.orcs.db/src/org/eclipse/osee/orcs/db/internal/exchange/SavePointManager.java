@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -77,19 +76,12 @@ public class SavePointManager {
    }
 
    public void loadSavePoints(String sourceDatabaseId, Date sourceExportDate) throws OseeCoreException {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         setCurrentSetPointId(LOAD_SAVE_POINT_ID);
-         chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId,
-            new Timestamp(sourceExportDate.getTime()));
-         while (chStmt.next()) {
-            String key = chStmt.getString("save_point_name");
-            savePoints.put(key, new SavePoint(key));
-         }
-         addCurrentSavePointToProcessed();
-      } finally {
-         chStmt.close();
-      }
+      setCurrentSetPointId(LOAD_SAVE_POINT_ID);
+      getJdbcClient().runQuery(stmt -> {
+         String key = stmt.getString("save_point_name");
+         savePoints.put(key, new SavePoint(key));
+      } , QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(sourceExportDate.getTime()));
+      addCurrentSavePointToProcessed();
    }
 
    public String getCurrentSetPointId() {

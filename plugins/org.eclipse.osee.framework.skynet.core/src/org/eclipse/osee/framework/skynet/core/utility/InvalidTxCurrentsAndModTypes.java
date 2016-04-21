@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -49,15 +50,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
    private final JdbcClient jdbcClient;
 
    public InvalidTxCurrentsAndModTypes(String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) throws OseeDataStoreException {
-      this(ConnectionHandler.getJdbcClient(), operationName, tableName, columnName, logger, isFixOperationEnabled,
-         archived);
-   }
-
-   private InvalidTxCurrentsAndModTypes(JdbcClient jdbcClient, String operationName, String tableName, String columnName, OperationLogger logger, boolean isFixOperationEnabled, boolean archived) {
       super(
          "InvalidTxCurrentsAndModTypes " + operationName + tableName + " fix:" + isFixOperationEnabled + " archived:" + archived,
          Activator.PLUGIN_ID, logger);
-      this.jdbcClient = jdbcClient;
+      this.jdbcClient = ConnectionHandler.getJdbcClient();
       this.tableName = tableName;
       this.columnName = columnName;
       this.isFixOperationEnabled = isFixOperationEnabled;
@@ -179,40 +175,32 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       log("Starting " + getName());
 
       checkForCancelledStatus(monitor);
-
-      JdbcStatement chStmt = getJdbcClient().getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, txsTableName, columnName);
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
-         monitor.worked(calculateWork(0.40));
+      monitor.worked(calculateWork(0.40));
+      Address[] previousAddress = new Address[1];
 
-         Address previousAddress = null;
-         while (chStmt.next()) {
-            checkForCancelledStatus(monitor);
-            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-            TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
-            TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
-            Address address = new Address(type.isBaseline(), chStmt.getLong("branch_id"), chStmt.getInt(columnName),
-               chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"), modType, appId, txCurrent);
+      Consumer<JdbcStatement> consumer = stmt -> {
+         checkForCancelledStatus(monitor);
+         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+         TxChange txCurrent = TxChange.getChangeType(stmt.getInt("tx_current"));
+         TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
+         ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
+            stmt.getInt("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
 
-            if (!address.isSimilar(previousAddress)) {
-               if (!addresses.isEmpty()) {
-                  consolidateAddressing();
-               }
-               addresses.clear();
+         if (!address.isSimilar(previousAddress[0])) {
+            if (!addresses.isEmpty()) {
+               consolidateAddressing();
             }
-
-            addresses.add(address);
-            previousAddress = address;
+            addresses.clear();
          }
-         monitor.worked(calculateWork(0.5));
-      } finally {
-         chStmt.close();
-      }
 
+         addresses.add(address);
+         previousAddress[0] = address;
+      };
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, sql);
+      monitor.worked(calculateWork(0.5));
       fixIssues(monitor);
-
       log("Completed " + getName());
    }
 }

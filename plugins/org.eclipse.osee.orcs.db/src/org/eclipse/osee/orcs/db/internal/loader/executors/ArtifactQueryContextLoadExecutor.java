@@ -11,10 +11,10 @@
 package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
@@ -70,23 +70,17 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             checkCancelled(cancellation);
          }
          Integer transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
-         JdbcStatement chStmt = null;
-         try {
-            chStmt = jdbcClient.getStatement();
+         Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
-            String query = queryContext.getSql();
-            List<Object> params = queryContext.getParameters();
-            chStmt.runPreparedQuery(fetchSize, query, params.toArray());
-            while (chStmt.next()) {
-               checkCancelled(cancellation);
-               Integer artId = chStmt.getInt("art_id");
-               Long branchUuid = chStmt.getLong("branch_id");
-               artifactJoin.add(artId, branchUuid, transactionId);
-               checkCancelled(cancellation);
-            }
-         } finally {
-            Lib.close(chStmt);
-         }
+            Integer artId = stmt.getInt("art_id");
+            Long branchUuid = stmt.getLong("branch_id");
+            artifactJoin.add(artId, branchUuid, transactionId);
+            checkCancelled(cancellation);
+         };
+         checkCancelled(cancellation);
+         String query = queryContext.getSql();
+         List<Object> params = queryContext.getParameters();
+         getJdbcClient().runQuery(consumer, fetchSize, query, params.toArray());
       } finally {
          for (AbstractJoinQuery join : queryContext.getJoins()) {
             try {

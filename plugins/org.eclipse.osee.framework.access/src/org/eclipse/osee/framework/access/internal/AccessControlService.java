@@ -25,6 +25,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -73,8 +74,8 @@ import org.eclipse.osee.framework.skynet.core.event.filter.IEventFilter;
 import org.eclipse.osee.framework.skynet.core.event.listener.EventQosType;
 import org.eclipse.osee.framework.skynet.core.event.listener.IArtifactEventListener;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessArtifactLockTopicEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEvent;
+import org.eclipse.osee.framework.skynet.core.event.model.AccessTopicEventPayload;
 import org.eclipse.osee.framework.skynet.core.event.model.ArtifactEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
@@ -213,80 +214,61 @@ public class AccessControlService implements IAccessControlService {
 
    private void populateBranchAccessControlList() throws OseeCoreException {
       ensurePopulated();
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
-         while (chStmt.next()) {
-            Integer subjectId = chStmt.getInt("privilege_entity_id");
-            Long branchUuid = chStmt.getLong("branch_id");
-            Long subjectArtifactTypeId = chStmt.getLong("art_type_id");
-            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
-            BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchUuid);
+      Consumer<JdbcStatement> consumer = stmt -> {
+         Integer subjectId = stmt.getInt("privilege_entity_id");
+         Long branchUuid = stmt.getLong("branch_id");
+         Long subjectArtifactTypeId = stmt.getLong("art_type_id");
+         PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
+         BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchUuid);
 
-            accessControlListCache.put(subjectId, branchAccessObject, permission);
-            objectToSubjectCache.put(branchAccessObject, subjectId);
+         accessControlListCache.put(subjectId, branchAccessObject, permission);
+         objectToSubjectCache.put(branchAccessObject, subjectId);
 
-            ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
-            if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
-               populateGroupMembers(subjectId);
-            }
+         ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
+         if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
+            populateGroupMembers(subjectId);
          }
-      } finally {
-         chStmt.close();
-      }
+      };
+      getJdbcClient().runQuery(consumer, GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
    }
 
    private void populateArtifactAccessControlList() throws OseeCoreException {
       ensurePopulated();
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
-         while (chStmt.next()) {
-            Integer subjectId = chStmt.getInt("privilege_entity_id");
-            Integer objectId = chStmt.getInt("art_id");
-            Long branchUuid = chStmt.getLong("branch_id");
-            Long subjectArtifactTypeId = chStmt.getLong("art_type_id");
-            PermissionEnum permission = PermissionEnum.getPermission(chStmt.getInt("permission_id"));
+      Consumer<JdbcStatement> consumer = stmt -> {
+         Integer subjectId = stmt.getInt("privilege_entity_id");
+         Integer objectId = stmt.getInt("art_id");
+         Long branchUuid = stmt.getLong("branch_id");
+         Long subjectArtifactTypeId = stmt.getLong("art_type_id");
+         PermissionEnum permission = PermissionEnum.getPermission(stmt.getInt("permission_id"));
 
-            if (permission != null) {
-               if (permission.equals(PermissionEnum.LOCK)) {
-                  artifactLockCache.put(branchUuid, objectId, subjectId);
-               } else {
-                  AccessObject accessObject =
-                     ArtifactAccessObject.getArtifactAccessObject(objectId, TokenFactory.createBranch(branchUuid));
-                  cacheAccessObject(objectId, subjectId, permission, accessObject);
+         if (permission != null) {
+            if (permission.equals(PermissionEnum.LOCK)) {
+               artifactLockCache.put(branchUuid, objectId, subjectId);
+            } else {
+               AccessObject accessObject =
+                  ArtifactAccessObject.getArtifactAccessObject(objectId, TokenFactory.createBranch(branchUuid));
+               cacheAccessObject(objectId, subjectId, permission, accessObject);
 
-                  ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
-                  if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
-                     populateGroupMembers(subjectId);
-                  }
+               ArtifactType subjectArtifactType = getArtifactTypeCache().getById(subjectArtifactTypeId);
+               if (subjectArtifactType != null && subjectArtifactType.inheritsFrom(CoreArtifactTypes.UserGroup)) {
+                  populateGroupMembers(subjectId);
                }
             }
          }
-      } finally {
-         chStmt.close();
-      }
+      };
+
+      getJdbcClient().runQuery(consumer, GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
    }
 
    private void populateGroupMembers(Integer groupId) throws OseeCoreException {
       ensurePopulated();
       if (!groupToSubjectsCache.containsKey(groupId)) {
-         Integer groupMember;
-
-         JdbcStatement chStmt = getJdbcClient().getStatement();
-         try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
-
-            // get group members and populate subjectToGroupCache
-            while (chStmt.next()) {
-               groupMember = chStmt.getInt("b_art_id");
-               subjectToGroupCache.put(groupMember, groupId);
-               groupToSubjectsCache.put(groupId, groupMember);
-            }
-         } finally {
-            chStmt.close();
-         }
+         getJdbcClient().runQuery(stmt -> {
+            Integer groupMember = stmt.getInt("b_art_id");
+            subjectToGroupCache.put(groupMember, groupId);
+            groupToSubjectsCache.put(groupId, groupMember);
+         } , USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
       }
    }
 
@@ -675,7 +657,7 @@ public class AccessControlService implements IAccessControlService {
       if (isArtifact) {
          event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
       }
- 
+
       OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_MODIFIED);
 
    }

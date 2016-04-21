@@ -22,7 +22,6 @@ import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcService;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
@@ -163,15 +162,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    @Override
    public Set<String> getKeys() throws OseeCoreException {
       Set<String> keys = new HashSet<>();
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         chStmt.runPreparedQuery(GET_KEYS_SQL);
-         while (chStmt.next()) {
-            keys.add(chStmt.getString("osee_key"));
-         }
-      } finally {
-         chStmt.close();
-      }
+      jdbcClient.runQuery(stmt -> keys.add(stmt.getString("osee_key")), GET_KEYS_SQL);
       return keys;
    }
 

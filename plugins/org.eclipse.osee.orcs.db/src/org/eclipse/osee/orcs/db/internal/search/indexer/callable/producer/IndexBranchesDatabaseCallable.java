@@ -13,7 +13,9 @@ package org.eclipse.osee.orcs.db.internal.search.indexer.callable.producer;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -115,30 +117,30 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
       return branchUuids.size();
    }
 
-   public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) throws Exception {
-      if (!joinQuery.isEmpty()) {
-         joinQuery.store();
-         consumer.submitTaskId(getSession(), types, collector, joinQuery.getQueryId());
+   public void storeAndAddQueryId(TagQueueJoinQuery joinQuery) {
+      try {
+         if (!joinQuery.isEmpty()) {
+            joinQuery.store();
+            consumer.submitTaskId(getSession(), types, collector, joinQuery.getQueryId());
+         }
+      } catch (Exception ex) {
+         OseeCoreException.wrapAndThrow(ex);
       }
    }
 
-   private void fetchAndProcessGammas(String query, Object... params) throws Exception {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         chStmt.runPreparedQuery(query, params);
-         TagQueueJoinQuery joinQuery = joinFactory.createTagQueueJoinQuery();
-         while (chStmt.next()) {
-            long gammaId = chStmt.getLong("gamma_id");
-            joinQuery.add(gammaId);
-            if (joinQuery.size() >= BATCH_SIZE) {
-               storeAndAddQueryId(joinQuery);
-               joinQuery = joinFactory.createTagQueueJoinQuery();
-            }
+   private void fetchAndProcessGammas(String query, Object... params) {
+      TagQueueJoinQuery queryHolder[] = new TagQueueJoinQuery[1];
+      queryHolder[0] = joinFactory.createTagQueueJoinQuery();
+      Consumer<JdbcStatement> consumer = stmt -> {
+         long gammaId = stmt.getLong("gamma_id");
+         queryHolder[0].add(gammaId);
+         if (queryHolder[0].size() >= BATCH_SIZE) {
+            storeAndAddQueryId(queryHolder[0]);
+            queryHolder[0] = joinFactory.createTagQueueJoinQuery();
          }
-         storeAndAddQueryId(joinQuery);
-      } finally {
-         chStmt.close();
-      }
+      };
+      getJdbcClient().runQuery(consumer, query, params);
+      storeAndAddQueryId(queryHolder[0]);
    }
 
    private String getParamInfo() {

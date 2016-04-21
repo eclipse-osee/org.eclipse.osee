@@ -14,6 +14,7 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.enums.StorageState;
@@ -48,21 +49,16 @@ public class DatabaseConflictAccessor {
    }
 
    public void load(Collection<Conflict> conflicts, MergeBranch mergeBranch) throws OseeCoreException {
-      JdbcStatement statement = getJdbcClient().getStatement();
-      try {
-         statement.runPreparedQuery(SELECT_CONFLICTS, mergeBranch.getUuid());
-         while (statement.next()) {
-            int uniqueId = statement.getInt("conflict_id");
-            Long sourceGammaId = statement.getLong("source_gamma_id");
-            Long destGammaId = statement.getLong("dest_gamma_id");
-            ConflictType conflictType = ConflictType.valueOf(statement.getInt("conflict_type"));
-            ConflictStatus status = ConflictStatus.valueOf(statement.getInt("status"));
-            conflicts.add(new Conflict(StorageState.LOADED, uniqueId, conflictType, mergeBranch, status, sourceGammaId,
-               destGammaId));
-         }
-      } finally {
-         statement.close();
-      }
+      Consumer<JdbcStatement> consumer = stmt -> {
+         int uniqueId = stmt.getInt("conflict_id");
+         Long sourceGammaId = stmt.getLong("source_gamma_id");
+         Long destGammaId = stmt.getLong("dest_gamma_id");
+         ConflictType conflictType = ConflictType.valueOf(stmt.getInt("conflict_type"));
+         ConflictStatus status = ConflictStatus.valueOf(stmt.getInt("status"));
+         conflicts.add(
+            new Conflict(StorageState.LOADED, uniqueId, conflictType, mergeBranch, status, sourceGammaId, destGammaId));
+      };
+      getJdbcClient().runQuery(consumer, SELECT_CONFLICTS, mergeBranch.getUuid());
    }
 
    public void store(Collection<Conflict> conflicts) throws OseeCoreException {

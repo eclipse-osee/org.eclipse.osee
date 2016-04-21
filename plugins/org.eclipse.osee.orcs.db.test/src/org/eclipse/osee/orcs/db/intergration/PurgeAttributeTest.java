@@ -40,7 +40,6 @@ public class PurgeAttributeTest {
    @Test
    public void testPurgeAttribute() throws Exception {
       JdbcClient jdbcClient = jdbcService.getClient();
-      JdbcStatement stmt = jdbcClient.getStatement();
 
       int prePurgeAttributeCount = getCount(jdbcClient, "osee_attribute");
       int preAttributeRows = getCount(jdbcClient, "osee_attribute where value = 'Software Requirements'");
@@ -49,11 +48,9 @@ public class PurgeAttributeTest {
 
       int prePurgeTxsCount = getCount(jdbcClient, "osee_txs");
 
-      stmt.runPreparedQuery("select attr_id from osee_attribute where value = 'Software Requirements'");
       List<Long> toPurge = new LinkedList<>();
-      while (stmt.next()) {
-         toPurge.add(stmt.getLong("attr_id"));
-      }
+      jdbcClient.runQuery(stmt -> toPurge.add(stmt.getLong("attr_id")),
+         "select attr_id from osee_attribute where value = 'Software Requirements'");
 
       PurgeAttributesDatabaseTxCallable callable =
          new PurgeAttributesDatabaseTxCallable(null, null, jdbcClient, sqlJoinFactory, toPurge, null);
@@ -71,11 +68,12 @@ public class PurgeAttributeTest {
    }
 
    private int getCount(JdbcClient jdbcClient, String table) {
-      JdbcStatement stmt = jdbcClient.getStatement();
       int toReturn = -1;
-      stmt.runPreparedQuery("select count(1) from " + table);
-      while (stmt.next()) {
-         toReturn = stmt.getInt(1);
+      try (JdbcStatement chStmt = jdbcClient.getStatement()) {
+         chStmt.runPreparedQuery("select count(1) from " + table);
+         while (chStmt.next()) {
+            toReturn = chStmt.getInt(1);
+         }
       }
       return toReturn;
    }

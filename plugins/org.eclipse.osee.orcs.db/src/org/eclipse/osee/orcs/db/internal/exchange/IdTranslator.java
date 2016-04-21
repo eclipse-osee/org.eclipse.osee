@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -128,16 +127,9 @@ public class IdTranslator {
    }
 
    public void load(String sourceDatabaseId) throws OseeCoreException {
-      JdbcStatement chStmt = jdbcClient.getStatement();
-      try {
-         originalToMapped.clear();
-         chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequenceName());
-         while (chStmt.next()) {
-            originalToMapped.put(chStmt.getLong("original_id"), chStmt.getLong("mapped_id"));
-         }
-      } finally {
-         chStmt.close();
-      }
+      originalToMapped.clear();
+      jdbcClient.runQuery(stmt -> originalToMapped.put(stmt.getLong("original_id"), stmt.getLong("mapped_id")),
+         SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequenceName());
    }
 
    public boolean hasItemsToStore() {

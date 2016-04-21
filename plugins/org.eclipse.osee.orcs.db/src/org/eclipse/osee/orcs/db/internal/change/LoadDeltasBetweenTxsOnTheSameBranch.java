@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -114,25 +115,21 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    }
 
    private void loadChangesAtEndTx(TransactionJoinQuery txJoin, boolean isArchived) throws OseeCoreException {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
+      Consumer<JdbcStatement> consumer = stmt -> {
+         checkForCancelled();
+         Long gammaId = stmt.getLong("gamma_id");
+         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
+		 ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
 
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE,
-            (isArchived ? SELECT_CHANGES_BETWEEN_ARCHIVED_TRANSACTIONS : SELECT_CHANGES_BETWEEN_TRANSACTIONS),
-            getBranchId(), getStartTx().getGuid(), getEndTx().getGuid());
-         while (chStmt.next()) {
-            checkForCancelled();
-            Long gammaId = chStmt.getLong("gamma_id");
-            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
+         txJoin.add(gammaId, -1);
+         changeByGammaId.put(gammaId, new Pair<ModificationType, ApplicabilityId>(modType, appId));
+      };
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE,
+         (isArchived ? SELECT_CHANGES_BETWEEN_ARCHIVED_TRANSACTIONS : SELECT_CHANGES_BETWEEN_TRANSACTIONS),
+         getBranchId(), getStartTx().getGuid(), getEndTx().getGuid());
 
-            txJoin.add(gammaId, -1);
-            changeByGammaId.put(gammaId, new Pair<ModificationType, ApplicabilityId>(modType, appId));
-         }
-         txJoin.store();
-      } finally {
-         chStmt.close();
-      }
+      txJoin.store();
+
    }
 
    private void loadByItemId(Collection<ChangeItem> changeData, int txJoinId, ChangeItemFactory factory, boolean isArchived) throws OseeCoreException {
@@ -153,33 +150,26 @@ public class LoadDeltasBetweenTxsOnTheSameBranch extends AbstractDatastoreCallab
    }
 
    private void loadCurrentData(String tableName, String columnName, int queryId, HashMap<Integer, ChangeItem> changesByItemId, TransactionReadable transactionLimit, boolean isArchived) throws OseeCoreException {
-      JdbcStatement chStmt = getJdbcClient().getStatement();
-      try {
-         String query = String.format(
-            "select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
-               + tableName + " item, %s txs where idj.query_id = ? and idj.id = item." + columnName + //
-               " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?",
-            isArchived ? "osee_txs_archived" : "osee_txs");
+      String query = String.format("select txs.gamma_id, txs.mod_type, txs.app_id, item." + columnName + " from osee_join_id idj, " //
+      + tableName + " item, %s txs where idj.query_id = ? and idj.id = item." + columnName + //
+      " and item.gamma_id = txs.gamma_id and txs.branch_id = ? and txs.transaction_id <= ?",
+         isArchived ? "osee_txs_archived" : "osee_txs");
+      Consumer<JdbcStatement> consumer = stmt -> {
+         checkForCancelled();
 
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, transactionLimit.getBranchId(),
-            transactionLimit.getGuid());
+         Integer itemId = stmt.getInt(columnName);
+         Long gammaId = stmt.getLong("gamma_id");
+		 ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
+         ModificationType modType = ModificationType.getMod(stmt.getInt("mod_type"));
 
-         while (chStmt.next()) {
-            checkForCancelled();
+         ChangeItem change = changesByItemId.get(itemId);
+         change.getDestinationVersion().setModType(modType);
+         change.getDestinationVersion().setGammaId(gammaId);
+		 change.getDestinationVersion().setApplicabilityId(appId);
+         change.getBaselineVersion().copy(change.getDestinationVersion());
+      };
+      getJdbcClient().runQuery(consumer, JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId,
+         transactionLimit.getBranchId(), transactionLimit.getGuid());
 
-            Integer itemId = chStmt.getInt(columnName);
-            Long gammaId = chStmt.getLong("gamma_id");
-            ApplicabilityId appId = ApplicabilityId.valueOf(chStmt.getLong("app_id"));
-            ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-
-            ChangeItem change = changesByItemId.get(itemId);
-            change.getDestinationVersion().setModType(modType);
-            change.getDestinationVersion().setGammaId(gammaId);
-            change.getDestinationVersion().setApplicabilityId(appId);
-            change.getBaselineVersion().copy(change.getDestinationVersion());
-         }
-      } finally {
-         chStmt.close();
-      }
    }
 }

@@ -13,9 +13,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.LoadDataHandler;
 import org.eclipse.osee.orcs.core.ds.Options;
@@ -73,17 +71,11 @@ public class UuidsLoadExecutor extends AbstractLoadExecutor {
 
          Integer transactionId = OptionsUtil.getFromTransaction(options);
 
-         JdbcStatement chStmt = null;
-         try {
-            chStmt = jdbcClient.getStatement();
-            chStmt.runPreparedQuery(artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
-            while (chStmt.next()) {
-               Integer artId = chStmt.getInt("art_id");
-               toReturn.add(artId, branchId, transactionId);
-            }
-         } finally {
-            Lib.close(chStmt);
-         }
+         getJdbcClient().runQuery(stmt -> {
+            Integer artId = stmt.getInt("art_id");
+            toReturn.add(artId, branchId, transactionId);
+         } , artifactIds.size(), GUIDS_TO_IDS, guidJoin.getQueryId());
+
       } finally {
          guidJoin.delete();
       }
