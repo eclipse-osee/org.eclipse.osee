@@ -43,6 +43,8 @@ public final class AtsArtifactToken {
       TokenFactory.createArtifactToken(284655, "ADTfjCLEj2DH2WYyeOgA", "Work Definitions", CoreArtifactTypes.Folder);
    public static IArtifactToken WebPrograms = TokenFactory.createArtifactToken(277592, "Awsk_RtncCochcuSxagA",
       "Web Programs", CoreArtifactTypes.UniversalGroup);
+   public static IArtifactToken EVReportPrograms = TokenFactory.createArtifactToken(8174118, "ABPMYxe8_1EZYA8obTQA",
+      "EV Report Programs", CoreArtifactTypes.UniversalGroup);
    public static IArtifactToken WorkDef_State_Names = TokenFactory.createArtifactToken(1330130, "BFqfTrN8W3QmQSFAi6wA",
       "WorkDef_State_Names", CoreArtifactTypes.GeneralData);
    public static IArtifactToken AtsAdmin =
