@@ -14,15 +14,26 @@ import java.net.URI;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.container.ContainerRequestContext;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriInfo;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jaxrs.server.internal.security.oauth2.OAuthUtil;
 
 /**
  * @author Angel Avila
  */
 @Path("/")
 public class OseeRootResource {
+
+   @Context
+   private UriInfo uriInfo;
+
+   @Context
+   private ContainerRequestContext context;
 
    public OseeRootResource() {
 
@@ -31,8 +42,25 @@ public class OseeRootResource {
    @GET
    @Produces(MediaType.APPLICATION_JSON)
    public Response getRoot() {
-      URI uri = UriBuilder.fromUri("/osee/ui/index.html").build();
-      return Response.seeOther(uri).build();
+      String forwardedServer = OAuthUtil.getForwarderServer();
+
+      String basePath;
+      URI location = uriInfo.getRequestUri();
+      if (Strings.isValid(forwardedServer)) {
+         basePath = forwardedServer;
+      } else {
+         basePath = location.toString();
+      }
+
+      String scheme = location.getScheme();
+      URI finalUri = UriBuilder//
+         .fromPath(basePath)//
+         .scheme(scheme)//
+         .path("/osee/ui/index.html")//
+         .fragment(location.getRawFragment())//
+         .buildFromEncoded();
+
+      return Response.seeOther(finalUri).build();
    }
 
 }
