@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -99,16 +100,20 @@ public final class TokenFactory {
       return new TupleTypeImpl(tupleTypeId);
    }
 
-   public static <E1, E2> Tuple2Type<E1, E2> createTuple2Type(Long tupleTypeId) {
-      return new Tuple2TypeImpl<E1, E2>(tupleTypeId);
+   public static <E1, E2> Tuple2Type<E1, E2> createTuple2Type(TupleFamilyId family, Long tupleTypeId) {
+      return new Tuple2TypeImpl<E1, E2>(family, tupleTypeId);
    }
 
-   public static <E1, E2, E3> Tuple3Type<E1, E2, E3> createTuple3Type(Long tupleTypeId) {
-      return new Tuple3TypeImpl<E1, E2, E3>(tupleTypeId);
+   public static <E1, E2, E3> Tuple3Type<E1, E2, E3> createTuple3Type(TupleFamilyId family, Long tupleTypeId) {
+      return new Tuple3TypeImpl<E1, E2, E3>(family, tupleTypeId);
    }
 
-   public static <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> createTuple4Type(Long tupleTypeId) {
-      return new Tuple4TypeImpl<E1, E2, E3, E4>(tupleTypeId);
+   public static <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> createTuple4Type(TupleFamilyId family, Long tupleTypeId) {
+      return new Tuple4TypeImpl<E1, E2, E3, E4>(family, tupleTypeId);
+   }
+
+   public static TupleFamilyId createTupleFamilyType(Long tupleFamilyTypeId) {
+      return new TupleFailyTypeImpl(tupleFamilyTypeId);
    }
 
    private final static class SorterIdToken extends NamedIdentity<String> implements IRelationSorterId {
@@ -313,27 +318,45 @@ public final class TokenFactory {
       }
    }
 
-   private static final class TupleTypeImpl extends BaseId implements TupleTypeId {
+   private static class TupleTypeImpl extends BaseId implements TupleTypeToken {
+      private final TupleFamilyId family;
+
       public TupleTypeImpl(Long tupleTypeId) {
+         this(CoreTupleFamilyTypes.DefaultFamily, tupleTypeId);
+      }
+
+      public TupleTypeImpl(TupleFamilyId family, Long tupleTypeId) {
          super(tupleTypeId);
+         this.family = family;
+      }
+
+      @Override
+      public TupleFamilyId getFamily() {
+         return family;
       }
    }
 
-   private static final class Tuple2TypeImpl<E1, E2> extends BaseId implements Tuple2Type<E1, E2> {
-      public Tuple2TypeImpl(Long tupleTypeId) {
-         super(tupleTypeId);
+   private static final class Tuple2TypeImpl<E1, E2> extends TupleTypeImpl implements Tuple2Type<E1, E2> {
+      public Tuple2TypeImpl(TupleFamilyId family, Long tupleTypeId) {
+         super(family, tupleTypeId);
       }
    }
 
-   private static final class Tuple3TypeImpl<E1, E2, E3> extends BaseId implements Tuple3Type<E1, E2, E3> {
-      public Tuple3TypeImpl(Long tupleTypeId) {
-         super(tupleTypeId);
+   private static final class Tuple3TypeImpl<E1, E2, E3> extends TupleTypeImpl implements Tuple3Type<E1, E2, E3> {
+      public Tuple3TypeImpl(TupleFamilyId family, Long tupleTypeId) {
+         super(family, tupleTypeId);
       }
    }
 
-   private static final class Tuple4TypeImpl<E1, E2, E3, E4> extends BaseId implements Tuple4Type<E1, E2, E3, E4> {
-      public Tuple4TypeImpl(Long tupleTypeId) {
-         super(tupleTypeId);
+   private static final class Tuple4TypeImpl<E1, E2, E3, E4> extends TupleTypeImpl implements Tuple4Type<E1, E2, E3, E4> {
+      public Tuple4TypeImpl(TupleFamilyId family, Long tupleTypeId) {
+         super(family, tupleTypeId);
+      }
+   }
+
+   private static final class TupleFailyTypeImpl extends BaseId implements TupleFamilyId {
+      public TupleFailyTypeImpl(Long tupleFamilyTypeId) {
+         super(tupleFamilyTypeId);
       }
    }
 }
