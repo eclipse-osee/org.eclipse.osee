@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 
 /**
@@ -45,9 +46,11 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    private static final String COLOR_TEAM_KEY = "colorTeam";
    private final IAtsServer atsServer;
    private final Gson gson;
+   private final Log logger;
 
-   public AtsWorkPackageEndpointImpl(IAtsServer atsServer) {
+   public AtsWorkPackageEndpointImpl(IAtsServer atsServer, Log logger) {
       this.atsServer = atsServer;
+      this.logger = logger;
       gson = new GsonBuilder().create();
    }
 
@@ -89,7 +92,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
                workItem.getArtifactTypeName());
          }
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.WorkPackageGuid, workPackageArt.getGuid());
-         autoAddWorkItemToGoalColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
+         autoAddWorkItemToColorTeamGoals(getColorTeams(), workPackageArt, workPackageId, workItem, changes);
       }
       if (!changes.isEmpty()) {
          changes.execute();
@@ -97,28 +100,42 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
       return Response.ok().build();
    }
 
-   private void autoAddWorkItemToGoalColorTeamGoals(ColorTeams colorTeams, ArtifactReadable workPackageArt, long workPackageId, IAtsWorkItem workItem, IAtsChangeSet changes) {
-      String workPackageColorTeam =
-         atsServer.getAttributeResolver().getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, null);
-      if (Strings.isValid(workPackageColorTeam)) {
-         for (ColorTeam team : colorTeams.getTeams()) {
-            if (!team.getGoalUuids().isEmpty() && team.getName().equals(workPackageColorTeam)) {
-               for (Long uuid : team.getGoalUuids()) {
-                  ArtifactReadable goalArt = atsServer.getArtifact(uuid);
-                  if (goalArt != null) {
-                     IAtsWorkItem goalWorkItem = atsServer.getWorkItemFactory().getWorkItem(goalArt);
-                     if (!atsServer.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
-                        workItem)) {
-                        changes.relate(goalWorkItem, AtsRelationTypes.Goal_Member, workItem);
+   private void autoAddWorkItemToColorTeamGoals(ColorTeams colorTeams, ArtifactReadable workPackageArt, long workPackageId, IAtsWorkItem workItem, IAtsChangeSet changes) {
+      try {
+         String workPackageColorTeam =
+            atsServer.getAttributeResolver().getSoleAttributeValue(workPackageArt, AtsAttributeTypes.ColorTeam, null);
+         if (Strings.isValid(workPackageColorTeam)) {
+            for (ColorTeam colorTeam : colorTeams.getTeams()) {
+               if (!colorTeam.getGoalUuids().isEmpty() && colorTeam.getName().equals(workPackageColorTeam)) {
+                  for (Long uuid : colorTeam.getGoalUuids()) {
+                     ArtifactReadable goalArt = atsServer.getArtifact(uuid);
+                     if (goalArt != null) {
+                        IAtsWorkItem goalWorkItem = atsServer.getWorkItemFactory().getWorkItem(goalArt);
+                        if (!atsServer.getRelationResolver().areRelated(goalWorkItem, AtsRelationTypes.Goal_Member,
+                           workItem)) {
+                           changes.relate(goalWorkItem, AtsRelationTypes.Goal_Member, workItem);
+                        }
+                     } else {
+                        logger.error(
+                           "Goal Uuid [%d] invalid in Color Team [%s] for Work Package [%s] Work Item [%s]; Skipping...",
+                           uuid, colorTeam, workPackageArt.toStringWithId(), workItem.toStringWithId());
                      }
                   }
                }
             }
          }
+      } catch (Exception ex) {
+         logger.error(ex,
+            "Error adding Work ITem to Color Team goals. Color Teams [%s] Work Package [%s] Work Item [%s]", colorTeams,
+            workPackageArt.toStringWithId(), workItem.toStringWithId());
       }
    }
 
-   private ColorTeams getColorTeams() {
+   @Override
+   @GET
+   @Path("colorteam")
+   @Produces({MediaType.APPLICATION_JSON})
+   public ColorTeams getColorTeams() {
       String colorTeamStr = atsServer.getConfigValue(COLOR_TEAM_KEY);
       ColorTeams teams = null;
       if (Strings.isValid(colorTeamStr)) {
@@ -133,7 +150,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
    @Override
-   public Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
+   public Response deleteWorkPackageItems(JaxWorkPackageData workPackageData) {
       IAtsUser asUser = atsServer.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
          throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());

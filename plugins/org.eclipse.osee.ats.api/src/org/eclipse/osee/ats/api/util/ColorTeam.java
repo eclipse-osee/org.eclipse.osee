@@ -41,4 +41,9 @@ public class ColorTeam {
       this.goalUuids = goalUuids;
    }
 
+   @Override
+   public String toString() {
+      return "ColorTeam [name=" + name + ", goalUuids=" + goalUuids + "]";
+   }
+
 }

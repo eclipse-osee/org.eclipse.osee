@@ -112,7 +112,7 @@ public class AtsApplication extends Application {
       singletons.add(new AtsConfigEndpointImpl(atsServer, orcsApi, logger));
       singletons.add(new AtsTaskEndpointImpl(atsServer));
       singletons.add(new AtsNotifyEndpointImpl(atsServer));
-      singletons.add(new AtsWorkPackageEndpointImpl(atsServer));
+      singletons.add(new AtsWorkPackageEndpointImpl(atsServer, logger));
 
       // UIs
       singletons.add(new ActionUiResource(atsServer, logger));

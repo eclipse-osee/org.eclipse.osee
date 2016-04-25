@@ -58,7 +58,7 @@ public class AtsWorkPackageEndpointImplTest {
       data.setAsUserId(AtsClientService.get().getUserService().getCurrentUserId());
       data.getWorkItemUuids().add(workItem.getUuid());
 
-      workPackageEp.deleteWorkPackageItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid(), data);
+      workPackageEp.deleteWorkPackageItems(data);
       assertEquals(1, workPackageEp.getWorkItems(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid()).size());
 
       workPackageEp.setWorkPackage(DemoArtifactToken.SAW_Code_Team_WorkPackage_01.getUuid(), data);

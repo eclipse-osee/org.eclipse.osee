@@ -21,12 +21,18 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.util.ColorTeams;
 
 /**
  * @author Donald D. Dunne
  */
 @Path("workpackage")
 public interface AtsWorkPackageEndpointApi {
+
+   @GET
+   @Path("colorteam")
+   @Produces({MediaType.APPLICATION_JSON})
+   public ColorTeams getColorTeams();
 
    @GET
    @Path("{workPackageId}/workitem")
@@ -41,6 +47,6 @@ public interface AtsWorkPackageEndpointApi {
    @DELETE
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
-   Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
+   Response deleteWorkPackageItems(JaxWorkPackageData workPackageData);
 
 }

@@ -33,4 +33,9 @@ public class ColorTeams {
       this.teams = teams;
    }
 
+   @Override
+   public String toString() {
+      return "ColorTeams [teams=" + teams + "]";
+   }
+
 }
