@@ -135,9 +135,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
          inputBranch = sampleArtifact.getBranch();
       }
       ArtifactExplorer artifactExplorer = ArtifactExplorerUtil.findView(inputBranch, page);
-
-      artifactExplorer.setPartName("Artifacts");
-      artifactExplorer.setContentDescription("These artifacts could not be handled");
+      artifactExplorer.setPartName("Artifact Explorer");
       artifactExplorer.treeViewer.setInput(artifacts);
       artifactExplorer.initializeSelectionBox();
    }
@@ -289,7 +287,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       }
 
       setPartName("Artifact Explorer: " + artifact.getBranchToken().getShortName());
-      if (branch != null && branch != artifact.getBranch()) {
+      if (branch != null && artifact.getBranch().equals(branch)) {
          explore(Arrays.asList(artifact));
          return;
       }
