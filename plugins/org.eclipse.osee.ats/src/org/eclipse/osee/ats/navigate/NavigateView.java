@@ -49,6 +49,8 @@ import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.OseeStatusContributionItemFactory;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.LoadingComposite;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -72,7 +74,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Donald G. Dunne
  */
-public class NavigateView extends ViewPart implements IXNavigateEventListener {
+public class NavigateView extends ViewPart implements IXNavigateEventListener, IRefreshActionHandler {
 
    public static final String VIEW_ID = "org.eclipse.osee.ats.navigate.NavigateView";
    private static final String INPUT = "filter";
@@ -240,6 +242,7 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
 
    protected void createToolBar() {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+      toolbarManager.add(new RefreshAction(this));
       toolbarManager.add(new MyWorldAction());
       toolbarManager.add(new MyFavoritesAction());
       toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
@@ -331,6 +334,11 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener {
          }
       }
       return null;
+   }
+
+   @Override
+   public void refreshActionHandler() {
+      refreshData();
    }
 
 }

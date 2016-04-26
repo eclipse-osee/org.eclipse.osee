@@ -24,17 +24,15 @@ public class AtsDefaultSearchDataProvider implements IAtsSearchDataProvider {
 
    @Override
    public AtsSearchData fromJson(String namespace, String jsonValue) {
-      if (getSupportedNamespaces().contains(namespace)) {
-         try {
-            return AtsJsonFactory.getMapper().readValue(jsonValue, AtsSearchData.class);
-         } catch (Exception ex) {
-            throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);
-         }
+      try {
+         return AtsJsonFactory.getMapper().readValue(jsonValue, AtsSearchData.class);
+      } catch (Exception ex) {
+         throw new OseeArgumentException(ex, "Unable to read AtsSearchData for [%s]", jsonValue);
       }
-      return null;
    }
 
-   private List<String> getSupportedNamespaces() {
+   @Override
+   public List<String> getSupportedNamespaces() {
       return AtsSearchUtil.ATS_DEFAULT_SEARCH_NAMESPACES;
    }
 

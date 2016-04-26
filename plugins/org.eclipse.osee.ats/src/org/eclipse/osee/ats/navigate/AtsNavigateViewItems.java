@@ -438,9 +438,11 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
 
    public static void refreshTopAtsSearchItem() {
       XNavigateItem searchesItem = NavigateView.getNavigateView().getItem(ATS_SEARCH_NAVIGATE_VIEW_ITEM, true);
-      searchesItem.getChildren().clear();
-      populateSavedSearchesItem(searchesItem);
-      NavigateView.getNavigateView().refresh(searchesItem);
+      if (searchesItem != null) {
+         searchesItem.getChildren().clear();
+         populateSavedSearchesItem(searchesItem);
+         NavigateView.getNavigateView().refresh(searchesItem);
+      }
    }
 
 }

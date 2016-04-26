@@ -79,7 +79,7 @@ import org.eclipse.osee.ats.core.client.internal.config.AtsConfigCacheProvider;
 import org.eclipse.osee.ats.core.client.internal.config.TeamDefinitionFactory;
 import org.eclipse.osee.ats.core.client.internal.config.VersionFactory;
 import org.eclipse.osee.ats.core.client.internal.ev.AtsEarnedValueImpl;
-import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceIimpl;
+import org.eclipse.osee.ats.core.client.internal.query.AtsQueryServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.review.AtsReviewServiceImpl;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.store.ActionableItemArtifactWriter;
@@ -711,7 +711,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public IAtsQueryService getQueryService() {
       if (atsQueryService == null) {
-         atsQueryService = new AtsQueryServiceIimpl(this);
+         atsQueryService = new AtsQueryServiceImpl(this);
       }
       return atsQueryService;
    }

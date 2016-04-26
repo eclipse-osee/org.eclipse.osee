@@ -39,12 +39,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 /**
  * @author Donald G. Dunne
  */
-public class AtsQueryServiceIimpl implements IAtsQueryService {
+public class AtsQueryServiceImpl implements IAtsQueryService {
 
    private final IAtsClient atsClient;
    private static final Pattern namespacePattern = Pattern.compile("\"namespace\":\"(.*?)\"");
 
-   public AtsQueryServiceIimpl(IAtsClient atsClient) {
+   public AtsQueryServiceImpl(IAtsClient atsClient) {
       this.atsClient = atsClient;
    }
 
@@ -179,9 +179,11 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       AtsSearchData data = null;
       try {
          for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
-            data = provider.fromJson(namespace, jsonValue);
-            if (data != null) {
-               break;
+            if (provider.getSupportedNamespaces().contains(namespace)) {
+               data = provider.fromJson(namespace, jsonValue);
+               if (data != null) {
+                  break;
+               }
             }
          }
       } catch (Exception ex) {
@@ -201,9 +203,11 @@ public class AtsQueryServiceIimpl implements IAtsQueryService {
       AtsSearchData data = null;
       try {
          for (IAtsSearchDataProvider provider : atsClient.getSearchDataProviders()) {
-            data = provider.createSearchData(namespace, searchName);
-            if (data != null) {
-               break;
+            if (provider.getSupportedNamespaces().contains(namespace)) {
+               data = provider.createSearchData(namespace, searchName);
+               if (data != null) {
+                  break;
+               }
             }
          }
       } catch (Exception ex) {

@@ -10,13 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.api.query;
 
+import java.util.List;
+
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsSearchDataProvider {
 
-   public AtsSearchData fromJson(String namespace, String json);
+   AtsSearchData fromJson(String namespace, String json);
 
-   public AtsSearchData createSearchData(String namespace, String searchName);
+   AtsSearchData createSearchData(String namespace, String searchName);
+
+   List<String> getSupportedNamespaces();
 
 }
