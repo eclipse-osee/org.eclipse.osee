@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.event.EventType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -88,21 +89,24 @@ public class LinkUtil {
       Conditions.checkNotNull(useArtifact, "Could not find store artifact for accountId: " + accountId);
 
       String webPrefStr = useArtifact.getSoleAttributeValue(CoreAttributeTypes.WebPreferences, null);
-      if (webPrefStr != null) {
-         AccountWebPreferences webPrefs = new AccountWebPreferences(webPrefStr, useArtifact.getName());
-         boolean found = false;
-         for (Entry<String, Link> stored : webPrefs.getLinks().entrySet()) {
-            if (stored.getKey().equals(link.getId())) {
-               setLinkFromLink(link, stored.getValue());
-               found = true;
-               break;
-            }
-         }
-         if (!found) {
-            webPrefs.getLinks().put(link.getId(), link);
-         }
-         saveWebPrefsToArtifactAndKickEvent(global, useArtifact, webPrefs);
+      AccountWebPreferences webPrefs = null;
+      if (!Strings.isValid(webPrefStr)) {
+         webPrefs = new AccountWebPreferences();
+      } else {
+         webPrefs = new AccountWebPreferences(webPrefStr, useArtifact.getName());
       }
+      boolean found = false;
+      for (Entry<String, Link> stored : webPrefs.getLinks().entrySet()) {
+         if (stored.getKey().equals(link.getId())) {
+            setLinkFromLink(link, stored.getValue());
+            found = true;
+            break;
+         }
+      }
+      if (!found) {
+         webPrefs.getLinks().put(link.getId(), link);
+      }
+      saveWebPrefsToArtifactAndKickEvent(global, useArtifact, webPrefs);
    }
 
    public static Artifact getStoreArtifact(boolean global) {
@@ -169,10 +173,14 @@ public class LinkUtil {
    public static void upateLinkFromDialog(EditLinkDialog dialog, Link link) throws Exception {
       link.setName(dialog.getEntry());
       link.setUrl(dialog.getUrl());
+      link.getTags().clear();
       boolean global = dialog.isChecked();
       for (String tag : dialog.getTags().split(",")) {
-         tag = tag.replaceAll(" ", "");
-         link.getTags().add(tag);
+         tag = tag.replaceAll("^ ", "");
+         tag = tag.replaceAll(" $", "");
+         if (Strings.isValid(tag) && !link.getTags().contains(tag)) {
+            link.getTags().add(tag);
+         }
       }
       int accountId = 0;
       if (link.getId() == null) {
