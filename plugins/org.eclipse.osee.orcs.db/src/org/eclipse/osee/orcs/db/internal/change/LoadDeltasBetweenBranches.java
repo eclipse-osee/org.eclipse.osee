@@ -213,7 +213,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
             if (previousItemId != itemId) {
                isFirstSet = false;
             }
-            if (sourceBaselineTxId == transactionId) {
+            if (transactionId.equals(sourceBaselineTxId)) {
                setVersionData(change.getBaselineVersion(), gammaId, modType, value, appId);
             } else if (!isFirstSet) {
                setVersionData(change.getFirstNonCurrentChange(), gammaId, modType, value, appId);

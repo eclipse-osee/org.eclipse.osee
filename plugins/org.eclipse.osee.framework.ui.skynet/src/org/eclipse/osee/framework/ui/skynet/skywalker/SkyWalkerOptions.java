@@ -291,7 +291,7 @@ public final class SkyWalkerOptions {
     * @param artifact the artifact to set
     */
    public void setArtifact(Artifact artifact) {
-      if (this.artifact == artifact) {
+      if (this.artifact.equals(artifact)) {
          return;
       }
       this.artifact = artifact;

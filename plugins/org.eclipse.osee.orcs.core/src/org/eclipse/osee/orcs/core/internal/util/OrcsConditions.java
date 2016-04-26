@@ -40,7 +40,7 @@ public final class OrcsConditions {
       for (RelationNode node : nodes) {
          checkNotNull(node, "node");
          GraphData graph2 = node.getGraph();
-         checkExpressionFailOnTrue(graph.getBranchId() != graph2.getBranchId(),
+         checkExpressionFailOnTrue(!graph.getBranch().equals(graph2.getBranch()),
             "Error - Node[%s] is on branch[%d] but should be on branch[%d]", node, graph2.getBranchId(),
             graph.getBranchId());
       }

@@ -35,7 +35,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The default value of the '{@link #getSideAName() <em>Side AName</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #getSideAName()
     * @generated
     * @ordered
@@ -45,7 +45,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getSideAName() <em>Side AName</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #getSideAName()
     * @generated
     * @ordered
@@ -55,7 +55,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getSideAArtifactType() <em>Side AArtifact Type</em>}' reference. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getSideAArtifactType()
     * @generated
     * @ordered
@@ -65,7 +65,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The default value of the '{@link #getSideBName() <em>Side BName</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #getSideBName()
     * @generated
     * @ordered
@@ -75,7 +75,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getSideBName() <em>Side BName</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #getSideBName()
     * @generated
     * @ordered
@@ -85,7 +85,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getSideBArtifactType() <em>Side BArtifact Type</em>}' reference. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getSideBArtifactType()
     * @generated
     * @ordered
@@ -95,7 +95,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The default value of the '{@link #getDefaultOrderType() <em>Default Order Type</em>}' attribute. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getDefaultOrderType()
     * @generated
     * @ordered
@@ -105,7 +105,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getDefaultOrderType() <em>Default Order Type</em>}' attribute. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getDefaultOrderType()
     * @generated
     * @ordered
@@ -115,7 +115,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The default value of the '{@link #getMultiplicity() <em>Multiplicity</em>}' attribute. <!-- begin-user-doc -->
     * <!-- end-user-doc -->
-    * 
+    *
     * @see #getMultiplicity()
     * @generated
     * @ordered
@@ -125,7 +125,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
    /**
     * The cached value of the '{@link #getMultiplicity() <em>Multiplicity</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #getMultiplicity()
     * @generated
     * @ordered
@@ -134,7 +134,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    protected XRelationTypeImpl() {
@@ -143,7 +143,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -153,7 +153,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -163,7 +163,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -171,14 +171,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       String oldSideAName = sideAName;
       sideAName = newSideAName;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__SIDE_ANAME, oldSideAName, sideAName));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__SIDE_ANAME, oldSideAName,
+            sideAName));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -186,7 +186,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       if (sideAArtifactType != null && sideAArtifactType.eIsProxy()) {
          InternalEObject oldSideAArtifactType = (InternalEObject) sideAArtifactType;
          sideAArtifactType = (XArtifactType) eResolveProxy(oldSideAArtifactType);
-         if (sideAArtifactType != oldSideAArtifactType) {
+         if (!sideAArtifactType.equals(oldSideAArtifactType)) {
             if (eNotificationRequired()) {
                eNotify(new ENotificationImpl(this, Notification.RESOLVE,
                   OseeDslPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
@@ -198,7 +198,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    public XArtifactType basicGetSideAArtifactType() {
@@ -207,7 +207,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -215,14 +215,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       XArtifactType oldSideAArtifactType = sideAArtifactType;
       sideAArtifactType = newSideAArtifactType;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE, oldSideAArtifactType, sideAArtifactType));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__SIDE_AARTIFACT_TYPE,
+            oldSideAArtifactType, sideAArtifactType));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -232,7 +232,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -240,14 +240,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       String oldSideBName = sideBName;
       sideBName = newSideBName;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__SIDE_BNAME, oldSideBName, sideBName));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__SIDE_BNAME, oldSideBName,
+            sideBName));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -255,7 +255,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       if (sideBArtifactType != null && sideBArtifactType.eIsProxy()) {
          InternalEObject oldSideBArtifactType = (InternalEObject) sideBArtifactType;
          sideBArtifactType = (XArtifactType) eResolveProxy(oldSideBArtifactType);
-         if (sideBArtifactType != oldSideBArtifactType) {
+         if (!sideBArtifactType.equals(oldSideBArtifactType)) {
             if (eNotificationRequired()) {
                eNotify(new ENotificationImpl(this, Notification.RESOLVE,
                   OseeDslPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
@@ -267,7 +267,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    public XArtifactType basicGetSideBArtifactType() {
@@ -276,7 +276,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -284,14 +284,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       XArtifactType oldSideBArtifactType = sideBArtifactType;
       sideBArtifactType = newSideBArtifactType;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE, oldSideBArtifactType, sideBArtifactType));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__SIDE_BARTIFACT_TYPE,
+            oldSideBArtifactType, sideBArtifactType));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -301,7 +301,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -309,14 +309,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       String oldDefaultOrderType = defaultOrderType;
       defaultOrderType = newDefaultOrderType;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE, oldDefaultOrderType, defaultOrderType));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__DEFAULT_ORDER_TYPE,
+            oldDefaultOrderType, defaultOrderType));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -326,7 +326,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -334,14 +334,14 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
       RelationMultiplicityEnum oldMultiplicity = multiplicity;
       multiplicity = newMultiplicity == null ? MULTIPLICITY_EDEFAULT : newMultiplicity;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XRELATION_TYPE__MULTIPLICITY, oldMultiplicity, multiplicity));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XRELATION_TYPE__MULTIPLICITY,
+            oldMultiplicity, multiplicity));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -371,7 +371,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -401,7 +401,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -431,7 +431,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -456,7 +456,7 @@ public class XRelationTypeImpl extends OseeTypeImpl implements XRelationType {
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override

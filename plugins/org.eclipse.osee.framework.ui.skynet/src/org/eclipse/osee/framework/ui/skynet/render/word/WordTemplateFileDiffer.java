@@ -82,7 +82,7 @@ public final class WordTemplateFileDiffer {
 
       boolean maintainOrder = renderer.getBooleanOption("Maintain Order");
       if (startTransaction.getId() < endTransaction.getId() || maintainOrder) {
-         if (compareBranch == endBranch) {
+         if (compareBranch.equals(endBranch)) {
             txDelta = new TransactionDelta(startTransaction, endTransaction);
          } else {
             txDelta = new TransactionDelta(endTransaction, startTransaction);

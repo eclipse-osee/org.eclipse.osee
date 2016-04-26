@@ -350,9 +350,9 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    @Override
    protected boolean validateOptionsGroup() {
       return getArtifactParser() != null && //
-      selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged() && //
-      getArtifactType() != null && //
-      (!updateExistingArtifacts.getSelection() || updateByGuid.getSelection() || getNonChangingAttributes() != null);
+         selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged() && //
+         getArtifactType() != null && //
+         (!updateExistingArtifacts.getSelection() || updateByGuid.getSelection() || getNonChangingAttributes() != null);
    }
 
    @Override
@@ -539,10 +539,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       }
 
       public boolean hasChanged() {
-         return lastSelected.destinationArtifact != currentSelected.destinationArtifact && //
-         lastSelected.sourceFile != currentSelected.sourceFile && //
-         lastSelected.extractor != currentSelected.extractor && //
-         lastSelected.delegate != currentSelected.delegate;
+         return !lastSelected.destinationArtifact.equals(currentSelected.destinationArtifact) && //
+            !lastSelected.sourceFile.equals(currentSelected.sourceFile) && //
+            !lastSelected.extractor.equals(currentSelected.extractor) && //
+            !lastSelected.delegate.equals(currentSelected.delegate);
       }
    }
 

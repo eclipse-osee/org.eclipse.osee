@@ -115,7 +115,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          int associatedArtifactId = newBranchData.getAssociatedArtifactId();
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
-         if (associatedArtifactId > -1 && associatedArtifactId != SystemUser.OseeSystem.getUuid().intValue()) {
+         if (associatedArtifactId > -1 && !SystemUser.OseeSystem.getUuid().equals((long) associatedArtifactId)) {
             int count = jdbcClient.runPreparedQueryFetchObject(connection, 0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
                newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),

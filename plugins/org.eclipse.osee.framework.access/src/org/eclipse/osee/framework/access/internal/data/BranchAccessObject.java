@@ -75,6 +75,6 @@ public class BranchAccessObject extends AccessObject {
       if (!(obj instanceof BranchAccessObject)) {
          return false;
       }
-      return branchUuid == ((BranchAccessObject) obj).branchUuid;
+      return branchUuid.equals(((BranchAccessObject) obj).branchUuid);
    }
 }

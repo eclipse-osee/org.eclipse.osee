@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes.USER_DEFINED;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -266,9 +266,9 @@ public class RelationLink implements HasBranch {
 
    private String getSidePhrasingFor(Artifact artifact, boolean isOtherArtifact) throws OseeCoreException {
       RelationSide side;
-      if (artifact == getArtifact(RelationSide.SIDE_A)) {
+      if (artifact.equals(getArtifact(RelationSide.SIDE_A))) {
          side = RelationSide.SIDE_A;
-      } else if (artifact == getArtifact(RelationSide.SIDE_B)) {
+      } else if (artifact.equals(getArtifact(RelationSide.SIDE_B))) {
          side = RelationSide.SIDE_B;
       } else {
          throw new OseeArgumentException("Link does not contain the artifact.");

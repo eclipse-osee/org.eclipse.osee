@@ -251,7 +251,7 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
          if (branchModel.areTxsVisible()) {
             for (TxModel txModel : branchModel.getTxs()) {
                TxFigure txFigure = getTxFigure(txModel);
-               boolean connectToBranchLabel = branchModel.getFirstTx() == txModel;
+               boolean connectToBranchLabel = branchModel.getFirstTx().equals(txModel);
                String msg = null;
                if (txModel.getParentTx() != null) {
                   TxModel parentTxModel = txModel.getParentTx();

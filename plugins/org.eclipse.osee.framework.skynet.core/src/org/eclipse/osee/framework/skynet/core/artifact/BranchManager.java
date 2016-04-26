@@ -590,7 +590,7 @@ public final class BranchManager {
 
    public static Artifact getAssociatedArtifact(BranchId branch) throws OseeCoreException {
       Integer associatedArtifactId = getAssociatedArtifactId(branch);
-      if (associatedArtifactId == null || associatedArtifactId == -1) {
+      if (associatedArtifactId == null || associatedArtifactId.equals(-1)) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
       return ArtifactQuery.getArtifactFromId(associatedArtifactId, COMMON);

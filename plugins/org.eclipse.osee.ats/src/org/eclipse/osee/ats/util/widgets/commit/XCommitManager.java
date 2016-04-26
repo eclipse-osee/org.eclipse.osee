@@ -168,7 +168,7 @@ public class XCommitManager extends GenericXWidget implements IArtifactWidget, I
                            for (Long branchUuid : branchUuids) {
                               Branch destinationBranch = branchUuidToBranchMap.get(branchUuid);
                               IOperation operation = AtsBranchManager.commitWorkingBranch(teamArt, false, true,
-                                 destinationBranch, branchUuid == branchUuids.get(branchUuids.size() - 1));
+                                 destinationBranch, branchUuid.equals(branchUuids.get(branchUuids.size() - 1)));
                               Operations.executeWorkAndCheckStatus(operation);
                            }
                         } catch (Exception ex) {

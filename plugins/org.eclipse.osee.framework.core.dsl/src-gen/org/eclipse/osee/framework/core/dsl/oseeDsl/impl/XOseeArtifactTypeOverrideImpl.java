@@ -38,7 +38,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
    /**
     * The cached value of the '{@link #getOverridenArtifactType() <em>Overriden Artifact Type</em>}' reference. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getOverridenArtifactType()
     * @generated
     * @ordered
@@ -48,7 +48,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
    /**
     * The default value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #isInheritAll()
     * @generated
     * @ordered
@@ -58,7 +58,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
    /**
     * The cached value of the '{@link #isInheritAll() <em>Inherit All</em>}' attribute. <!-- begin-user-doc --> <!--
     * end-user-doc -->
-    * 
+    *
     * @see #isInheritAll()
     * @generated
     * @ordered
@@ -68,7 +68,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
    /**
     * The cached value of the '{@link #getOverrideOptions() <em>Override Options</em>}' containment reference list. <!--
     * begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @see #getOverrideOptions()
     * @generated
     * @ordered
@@ -77,7 +77,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    protected XOseeArtifactTypeOverrideImpl() {
@@ -86,7 +86,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -96,7 +96,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -104,7 +104,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
       if (overridenArtifactType != null && overridenArtifactType.eIsProxy()) {
          InternalEObject oldOverridenArtifactType = (InternalEObject) overridenArtifactType;
          overridenArtifactType = (XArtifactType) eResolveProxy(oldOverridenArtifactType);
-         if (overridenArtifactType != oldOverridenArtifactType) {
+         if (!overridenArtifactType.equals(oldOverridenArtifactType)) {
             if (eNotificationRequired()) {
                eNotify(new ENotificationImpl(this, Notification.RESOLVE,
                   OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__OVERRIDEN_ARTIFACT_TYPE, oldOverridenArtifactType,
@@ -117,7 +117,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    public XArtifactType basicGetOverridenArtifactType() {
@@ -126,7 +126,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -142,7 +142,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -152,7 +152,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -160,14 +160,14 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
       boolean oldInheritAll = inheritAll;
       inheritAll = newInheritAll;
       if (eNotificationRequired()) {
-         eNotify(new ENotificationImpl(this, Notification.SET,
-            OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL, oldInheritAll, inheritAll));
+         eNotify(new ENotificationImpl(this, Notification.SET, OseeDslPackage.XOSEE_ARTIFACT_TYPE_OVERRIDE__INHERIT_ALL,
+            oldInheritAll, inheritAll));
       }
    }
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -181,7 +181,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -195,7 +195,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -216,7 +216,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @SuppressWarnings("unchecked")
@@ -239,7 +239,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -260,7 +260,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override
@@ -278,7 +278,7 @@ public class XOseeArtifactTypeOverrideImpl extends MinimalEObjectImpl.Container 
 
    /**
     * <!-- begin-user-doc --> <!-- end-user-doc -->
-    * 
+    *
     * @generated
     */
    @Override

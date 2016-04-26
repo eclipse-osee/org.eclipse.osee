@@ -101,7 +101,8 @@ public class MergeCompoundContributionItem extends CompoundContributionProvider 
       Map<String, String> parameters = new HashMap<>();
       parameters.put(BranchView.BRANCH_ID, Long.toString(branchUuid));
       CommandContributionItem contributionItem;
-      String label = branchUuid == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchUuid).getName();
+      String label =
+         branchUuid.equals(0L) ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchUuid).getName();
 
       contributionItem = new CommandContributionItem(
          new CommandContributionItemParameter(PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId,

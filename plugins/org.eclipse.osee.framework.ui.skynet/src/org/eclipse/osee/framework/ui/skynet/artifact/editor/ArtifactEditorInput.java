@@ -96,7 +96,7 @@ public class ArtifactEditorInput implements IEditorInput {
       boolean equals = false;
       if (obj instanceof ArtifactEditorInput) {
          ArtifactEditorInput otherEdInput = (ArtifactEditorInput) obj;
-         equals = artifact == otherEdInput.artifact;
+         equals = artifact.equals(otherEdInput.artifact);
       }
       return equals;
    }
