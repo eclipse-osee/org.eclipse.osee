@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
  * Check for certain conditions that must be met to delete an ATS object or User artifact.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsArtifactChecks extends ArtifactCheck {
@@ -86,6 +86,10 @@ public class AtsArtifactChecks extends ArtifactCheck {
 
          if (result.isOK()) {
             result = checkActions(isAtsAdmin, artifacts);
+         }
+
+         if (result.isOK()) {
+            result = checkWorkPackages(isAtsAdmin, artifacts);
          }
       }
 
@@ -165,6 +169,25 @@ public class AtsArtifactChecks extends ArtifactCheck {
          }
          if (!isAtsAdmin) {
             return createStatus("Deletion of Team Definitions is only permitted by ATS Admin.");
+         }
+      }
+      return Status.OK_STATUS;
+   }
+
+   private IStatus checkWorkPackages(boolean isAtsAdmin, Collection<Artifact> artifacts) throws OseeCoreException {
+      List<String> guids = new ArrayList<>();
+      for (Artifact art : artifacts) {
+         if (art.isOfType(AtsArtifactTypes.WorkPackage)) {
+            guids.add(art.getGuid());
+         }
+      }
+      if (!guids.isEmpty()) {
+         List<Artifact> artifactListFromIds = ArtifactQuery.getArtifactListFromAttributeValues(
+            AtsAttributeTypes.WorkPackageGuid, guids, AtsUtilCore.getAtsBranch(), 5);
+         if (artifactListFromIds.size() > 0) {
+            return createStatus(String.format(
+               "Work Packages [%s] selected to delete have related Work Items; Delete or re-assign Work Packages first.",
+               guids));
          }
       }
       return Status.OK_STATUS;
