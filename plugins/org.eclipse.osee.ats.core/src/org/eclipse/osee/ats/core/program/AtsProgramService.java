@@ -205,7 +205,7 @@ public class AtsProgramService implements IAtsProgramService {
       }
       if (program == null) {
          IAtsTeamDefinition topTeamDef = teamDef.getTeamDefinitionHoldingVersions();
-         if (!teamDef.equals(topTeamDef)) {
+         if (topTeamDef != null && !teamDef.equals(topTeamDef)) {
             program = getProgram(teamDef.getParentTeamDef());
          }
       }
@@ -241,23 +241,23 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsActionableItem> getAis(IAtsProgram program) {
       return Collections.castAll(services.getQueryService() //
-      .createQuery(AtsArtifactTypes.ActionableItem) //
-      .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
-      .getResults().getList());
+         .createQuery(AtsArtifactTypes.ActionableItem) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
+         .getResults().getList());
    }
 
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program) {
       return Collections.castAll(services.getQueryService() //
-      .createQuery(AtsArtifactTypes.TeamDefinition) //
-      .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
-      .getResults().getList());
+         .createQuery(AtsArtifactTypes.TeamDefinition) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid())) //
+         .getResults().getList());
    }
 
    @Override
    public Collection<IAtsProgram> getPrograms(IArtifactType artifactType) {
       return Collections.castAll(services.getQueryService() //
-      .createQuery(artifactType).getResults().getList());
+         .createQuery(artifactType).getResults().getList());
    }
 
    @Override
@@ -273,8 +273,8 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsActionableItem> getAis(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
       IAtsConfigQuery query = services.getQueryService() //
-      .createQuery(AtsArtifactTypes.ActionableItem) //
-      .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
+         .createQuery(AtsArtifactTypes.ActionableItem) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -286,8 +286,8 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsTeamDefinition> getTeamDefs(IAtsProgram program, Collection<WorkType> workTypes) throws OseeCoreException {
       IAtsConfigQuery query = services.getQueryService() //
-      .createQuery(AtsArtifactTypes.TeamDefinition) //
-      .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
+         .createQuery(AtsArtifactTypes.TeamDefinition) //
+         .andAttr(AtsAttributeTypes.ProgramUuid, String.valueOf(program.getUuid()));
       List<String> types = new LinkedList<>();
       for (WorkType type : workTypes) {
          types.add(type.name());
@@ -398,7 +398,7 @@ public class AtsProgramService implements IAtsProgramService {
    @Override
    public Collection<IAtsVersion> getVersions(IAtsProgram program) {
       IAtsTeamDefinition teamDefHoldingVersions = services.getProgramService().getTeamDefHoldingVersions(program);
-      if(teamDefHoldingVersions != null) {
+      if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions.getVersions();
       }
       return java.util.Collections.emptyList();
