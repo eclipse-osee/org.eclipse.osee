@@ -111,7 +111,8 @@ public class XCheckBox extends XButtonCommon {
       }
    }
 
-   private void updateCheckWidget() {
+   @Override
+   protected void updateCheckWidget() {
       if (checkButton != null && !checkButton.isDisposed()) {
          checkButton.setSelection(selected);
       }
@@ -120,7 +121,7 @@ public class XCheckBox extends XButtonCommon {
 
    /**
     * If set, label will be displayed after the check box NOTE: Has to be set before call to createWidgets
-    * 
+    *
     * @param labelAfter The labelAfter to set.
     */
    public void setLabelAfter(boolean labelAfter) {

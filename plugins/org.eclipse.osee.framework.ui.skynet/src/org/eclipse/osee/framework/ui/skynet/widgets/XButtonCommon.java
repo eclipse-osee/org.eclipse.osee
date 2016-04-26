@@ -40,7 +40,7 @@ public abstract class XButtonCommon extends GenericXWidget {
       updateCheckWidget();
    }
 
-   private void updateCheckWidget() {
+   protected void updateCheckWidget() {
       validate();
    }
 
