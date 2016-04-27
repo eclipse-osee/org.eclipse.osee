@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -409,8 +410,8 @@ public final class BranchManager {
 
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Long childBranchUuid, Artifact associatedArtifact) throws OseeCoreException {
       Conditions.notNull(childBranchUuid, "childBranchUuid");
-      String creationComment = String.format("New Branch from %s (%s)", parentTransactionId.getBranchToken().getName(),
-         parentTransactionId.getId());
+      String creationComment =
+         String.format("New Branch from %s (%s)", getBranchName(parentTransactionId), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
       return createBranch(BranchType.WORKING, parentTransactionId, truncatedName, childBranchUuid, associatedArtifact,
@@ -422,7 +423,7 @@ public final class BranchManager {
     */
    public static Branch createWorkingBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New branch, copy of %s from transaction %s",
-         parentTransactionId.getBranchToken().getName(), parentTransactionId.getId());
+         getBranchName(parentTransactionId), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
@@ -435,7 +436,7 @@ public final class BranchManager {
 
    public static Branch createPortBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",
-         parentTransactionId.getBranchToken().getName(), parentTransactionId.getId());
+         getBranchName(parentTransactionId), parentTransactionId.getId());
 
       final String truncatedName = Strings.truncate(childBranchName, 195, true);
 
@@ -710,4 +711,19 @@ public final class BranchManager {
       }
    }
 
+   public static String getBranchName(BranchId branch) {
+      return getBranch(branch).getName();
+   }
+
+   public static String getBranchShortName(BranchId branch) {
+      return getBranch(branch).getShortName();
+   }
+
+   public static String getBranchName(ITransaction tx) {
+      return getBranch(tx.getBranch()).getName();
+   }
+
+   public static String getBranchShortName(ITransaction tx) {
+      return getBranch(tx.getBranch()).getShortName();
+   }
 }

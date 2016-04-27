@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -45,7 +44,7 @@ public class TransactionRecordTest {
    private final int authorArtId;
    private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, IOseeBranch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
       this.branch = branch;
       this.comment = comment;
@@ -153,7 +152,7 @@ public class TransactionRecordTest {
       Collection<Object[]> data = new ArrayList<>();
       for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
-         IOseeBranch branch = TokenFactory.createBranch(index * 9L, "fake test branch");
+         BranchId branch = TokenFactory.createBranch(index * 9L);
          String comment = GUID.create();
          Date time = new Date();
          int authorArtId = index * 47;

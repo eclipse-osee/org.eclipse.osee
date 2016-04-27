@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -39,7 +40,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getEndTx().getBranchToken().getShortName(BRANCH_NAME_LEN);
+         branchName = BranchManager.getBranch(txDelta.getEndTx().getBranch()).getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
@@ -68,7 +69,7 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
       TransactionDelta txDelta = changeUiData.getTxDelta();
       NumberFormat formatter = NumberFormat.getInstance();
       return String.format("Shows changes made to [<b>%s</b>] between transactions [<b>%s</b>] and [<b>%s</b>].",
-         AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
+         AXml.textToXml(BranchManager.getBranchName(txDelta.getStartTx())),
          AXml.textToXml(formatter.format(txDelta.getStartTx().getId())),
          AXml.textToXml(formatter.format(txDelta.getEndTx().getId())));
    }

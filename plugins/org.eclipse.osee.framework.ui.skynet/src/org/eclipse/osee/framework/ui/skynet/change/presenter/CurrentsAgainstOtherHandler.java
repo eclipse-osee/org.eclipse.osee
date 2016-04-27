@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -38,7 +39,7 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
    public String getName(TransactionDelta txDelta) {
       String branchName;
       try {
-         branchName = txDelta.getStartTx().getBranchToken().getShortName(BRANCH_NAME_LEN);
+         branchName = BranchManager.getBranch(txDelta.getStartTx().getBranch()).getShortName(BRANCH_NAME_LEN);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex.toString(), ex);
          branchName = "Unknown";
@@ -69,12 +70,12 @@ public final class CurrentsAgainstOtherHandler implements IChangeReportUiHandler
       if (changeUiData.isMergeBranchValid()) {
          data = String.format(
             "Shows all changes made to [<b>%s</b>], including changes found in the merge branch compared to branch [<b>%s</b>].",
-            AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
-            AXml.textToXml(txDelta.getEndTx().getBranchToken().getName()));
+            AXml.textToXml(BranchManager.getBranchName(txDelta.getStartTx())),
+            AXml.textToXml(BranchManager.getBranchName(txDelta.getEndTx())));
       } else {
          data = String.format("Shows all changes made to [<b>%s</b>] compared to branch [<b>%s</b>].",
-            AXml.textToXml(txDelta.getStartTx().getBranchToken().getName()),
-            AXml.textToXml(txDelta.getEndTx().getBranchToken().getName()));
+            AXml.textToXml(BranchManager.getBranchName(txDelta.getStartTx())),
+            AXml.textToXml(BranchManager.getBranchName(txDelta.getEndTx())));
       }
       return data;
    }

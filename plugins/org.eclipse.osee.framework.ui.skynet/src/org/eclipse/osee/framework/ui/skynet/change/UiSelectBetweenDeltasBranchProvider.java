@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -36,16 +35,16 @@ public final class UiSelectBetweenDeltasBranchProvider implements IBranchProvide
    }
 
    @Override
-   public IOseeBranch getBranch(IProgressMonitor monitor) throws OseeCoreException {
-      final IOseeBranch[] selectedBranch = new IOseeBranch[1];
+   public BranchId getBranch(IProgressMonitor monitor) throws OseeCoreException {
+      final BranchId[] selectedBranch = new BranchId[1];
 
       TransactionDelta txDelta = uiData.getTxDelta();
       if (txDelta.areOnTheSameBranch()) {
-         selectedBranch[0] = txDelta.getStartTx().getBranchToken();
+         selectedBranch[0] = txDelta.getStartTx().getBranch();
       } else {
          final Collection<BranchId> selectable = new ArrayList<>();
-         selectable.add(uiData.getTxDelta().getStartTx().getBranchToken());
-         selectable.add(uiData.getTxDelta().getEndTx().getBranchToken());
+         selectable.add(uiData.getTxDelta().getStartTx().getBranch());
+         selectable.add(uiData.getTxDelta().getEndTx().getBranch());
          IStatus status = executeInUiThread(selectable, selectedBranch);
          monitor.setCanceled(status.getSeverity() == IStatus.CANCEL);
       }

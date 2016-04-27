@@ -14,7 +14,6 @@ import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SE
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.ITransaction;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
@@ -25,13 +24,13 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class TransactionRecord extends BaseIdentity<Integer> implements ITransaction, IAdaptable {
    private final TransactionDetailsType txType;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
 
-   public TransactionRecord(int transactionNumber, IOseeBranch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecord(int transactionNumber, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       super(transactionNumber);
       this.branch = branch;
       this.comment = Strings.intern(comment);
@@ -47,10 +46,6 @@ public class TransactionRecord extends BaseIdentity<Integer> implements ITransac
 
    @Override
    public BranchId getBranch() {
-      return branch;
-   }
-
-   public final IOseeBranch getBranchToken() {
       return branch;
    }
 
