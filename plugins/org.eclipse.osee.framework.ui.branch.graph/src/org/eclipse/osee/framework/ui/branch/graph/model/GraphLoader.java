@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -148,7 +148,7 @@ public class GraphLoader {
       try {
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);
          while (chStmt.next()) {
-            Branch branch = BranchManager.getBranch(chStmt.getLong("branch_id"));
+            BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
             TxData txData = new TxData(branch, chStmt.getInt("author"), chStmt.getTimestamp("time"),
                chStmt.getString("osee_comment"), chStmt.getInt("tx_type"), chStmt.getInt("commit_art_id"),
                chStmt.getInt("transaction_id"));

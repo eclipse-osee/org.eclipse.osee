@@ -188,8 +188,8 @@ public final class BranchManager {
       }
    }
 
-   public static boolean branchExists(BranchId branchToken) throws OseeCoreException {
-      return getCache().get(branchToken) != null;
+   public static boolean branchExists(BranchId branch) throws OseeCoreException {
+      return getCache().get(branch) != null;
    }
 
    public static boolean branchExists(long uuid) throws OseeCoreException {

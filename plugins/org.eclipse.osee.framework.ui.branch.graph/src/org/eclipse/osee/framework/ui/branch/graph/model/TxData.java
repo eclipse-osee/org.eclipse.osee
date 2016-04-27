@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.branch.graph.model;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -28,10 +28,10 @@ public class TxData {
    private final String comment;
    private final TransactionDetailsType txType;
    private final int commitArtId;
-   private final IOseeBranch branch;
+   private final BranchId branch;
    private final Long txId;
 
-   public TxData(IOseeBranch branch, int authorId, Date timeStamp, String comment, int txType, int commitArtId, long txId) {
+   public TxData(BranchId branch, int authorId, Date timeStamp, String comment, int txType, int commitArtId, long txId) {
       this.authorId = authorId;
       this.timeStamp = timeStamp;
       this.comment = comment;
@@ -88,7 +88,7 @@ public class TxData {
    /**
     * @return the branch
     */
-   public IOseeBranch getBranch() {
+   public BranchId getBranch() {
       return branch;
    }
 
@@ -115,12 +115,12 @@ public class TxData {
 
    @Override
    public String toString() {
-      return String.format("Tx:[%s] Author:[%s] Branch:[%s] Comment:[%s]", getTxId(), getAuthor(),
-         getBranch().getName(), getComment());
+      return String.format("Tx:[%s] Author:[%s] Branch:[%s] Comment:[%s]", getTxId(), getAuthor(), getBranch(),
+         getComment());
    }
 
    protected static TxData createTxData(TransactionRecord txId) throws OseeCoreException {
-      return new TxData(txId.getBranchToken(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
+      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
          txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }
 }

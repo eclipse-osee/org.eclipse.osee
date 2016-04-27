@@ -43,9 +43,9 @@ import org.eclipse.gef.LayerConstants;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.branch.graph.Activator;
 import org.eclipse.osee.framework.ui.branch.graph.figure.BranchFigure;
 import org.eclipse.osee.framework.ui.branch.graph.figure.FigureFactory;
@@ -62,7 +62,7 @@ import org.eclipse.swt.graphics.Color;
 public class GraphEditPart extends AbstractGraphicalEditPart {
 
    private final GraphicalViewer viewer;
-   private final Map<IOseeBranch, BranchFigure> branchFigureMap;
+   private final Map<BranchId, BranchFigure> branchFigureMap;
    private final Map<Long, TxModel> txNumberToTxModelMap;
    private final Map<Long, TxFigure> txNumberToTxFigureMap;
    private final HashCollection<ConnectionType, Connection> connectionMap;
@@ -242,8 +242,9 @@ public class GraphEditPart extends AbstractGraphicalEditPart {
    }
 
    private String getConnectionLabel(TxModel source, TxModel target) {
-      return String.format("%s:%s - %s:%s", source.getParentBranchModel().getBranch().getShortName(),
-         source.getRevision(), target.getParentBranchModel().getBranch().getShortName(), target.getRevision());
+      String sourceName = BranchManager.getBranch(source.getParentBranchModel().getBranch()).getShortName();
+      String targetName = BranchManager.getBranch(target.getParentBranchModel().getBranch()).getShortName();
+      return String.format("%s:%s - %s:%s", sourceName, source.getRevision(), targetName, target.getRevision());
    }
 
    private void createTxConnections(Collection<BranchModel> toReturn) {
