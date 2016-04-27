@@ -293,7 +293,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       revealInArtifactExporerMenuItem = new MenuItem(parentMenu, SWT.CASCADE);
       revealInArtifactExporerMenuItem.setText("&Reveal in Artifact Explorer");
       revealInArtifactExporerMenuItem.setImage(ImageManager.getImage(FrameworkImage.MAGNIFY));
-      needSelectedArtifactListener.add(revealInArtifactExporerMenuItem);
+      needSelectedArtifactListener.addArtifactEnabled(revealInArtifactExporerMenuItem);
       final RelationsComposite fRelComp = this;
       revealInArtifactExporerMenuItem.addSelectionListener(new SelectionAdapter() {
 
@@ -345,7 +345,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private void createOpenMenuItem(Menu parentMenu) {
       openMenuItem = new MenuItem(parentMenu, SWT.PUSH);
       openMenuItem.setText("Open");
-      needSelectedArtifactListener.add(openMenuItem);
+      needSelectedArtifactListener.addArtifactEnabled(openMenuItem);
       openMenuItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
@@ -370,7 +370,7 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
    private void createWordPreviewMenuItem(Menu parentMenu) {
       wordPreviewItem = new MenuItem(parentMenu, SWT.PUSH);
       wordPreviewItem.setText("Open Preview");
-      needSelectedArtifactListener.add(wordPreviewItem);
+      needSelectedArtifactListener.addArtifactEnabled(wordPreviewItem);
       wordPreviewItem.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {
@@ -458,7 +458,6 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
 
       public void addArtifactEnabled(MenuItem item) {
          artEnabledOnlyitems.add(item);
-
       }
 
       public void add(MenuItem item) {
@@ -473,7 +472,13 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
       @Override
       public void menuShown(MenuEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
+
+         boolean isRelationType = false;
+         if (selection.getFirstElement() instanceof RelationTypeSide || selection.getFirstElement() instanceof RelationType) {
+            isRelationType = true;
+         }
          boolean valid = selection.getFirstElement() instanceof WrapperForRelationLink;
+
          if (selection.getFirstElement() instanceof WrapperForRelationLink) {
             WrapperForRelationLink data = (WrapperForRelationLink) selection.getFirstElement();
             AccessPolicy policyHandlerService;
@@ -494,8 +499,9 @@ public class RelationsComposite extends Composite implements ISelectedArtifact {
             item.setEnabled(valid);
          }
 
+         // Do not enable items for Relations
          for (MenuItem item : artEnabledOnlyitems) {
-            item.setEnabled(true);
+            item.setEnabled(!isRelationType);
          }
       }
    }
