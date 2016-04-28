@@ -14,13 +14,12 @@ import static org.eclipse.osee.client.demo.DemoChoice.OSEE_CLIENT_DEMO;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
-import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -42,37 +41,28 @@ public class BranchManagerTest {
    @Rule
    public TestInfo testInfo = new TestInfo();
 
-   public String branchName;
-   public String branchReNamed;
-
-   private IOseeBranch testBranch;
-
-   @Before
-   public void setUp() throws Exception {
-      branchName = testInfo.getQualifiedTestName();
-      branchReNamed = String.format("%s - Renamed", branchName);
-      testBranch = BranchManager.createWorkingBranch(CoreBranches.COMMON, branchName);
-   }
+   private BranchId testBranch;
 
    @After
-   public void tearDown() throws Exception {
+   public void tearDown() {
       if (testBranch != null) {
          BranchManager.purgeBranch(testBranch);
       }
    }
 
    @Test
-   public void testBranch() throws Exception {
-      Assert.assertEquals(testBranch, BranchManager.getBranch(branchName));
+   public void testBranchName() {
+      String branchName = testInfo.getQualifiedTestName();
+      String branchReNamed = String.format("%s - Renamed", branchName);
+      BranchId testBranch = BranchManager.createWorkingBranch(CoreBranches.COMMON, branchName);
+
+      Assert.assertEquals(branchName, BranchManager.getBranchName(testBranch));
 
       BranchManager.setName(testBranch, branchReNamed);
-
-      testBranch = BranchManager.getBranch(BranchManager.getBranch(branchReNamed));
-      Assert.assertEquals(branchReNamed, testBranch.getName());
+      Assert.assertEquals(branchReNamed, BranchManager.getBranchName(testBranch));
 
       thrown.expect(BranchDoesNotExist.class);
       thrown.expectMessage(String.format("No branch exists with the name: [%s]", branchName));
       BranchManager.getBranch(branchName);
    }
-
 }

@@ -201,20 +201,20 @@ public class BranchStateTest {
                }
             };
 
-         IOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
+         UpdateBranchOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
          Asserts.assertOperation(operation, IStatus.OK);
 
          Assert.assertEquals(BranchState.DELETED, BranchManager.getState(workingBranch));
          Assert.assertEquals(UserManager.getUser(SystemUser.OseeSystem).getArtId(),
             BranchManager.getAssociatedArtifact(workingBranch).getArtId());
 
-         IOseeBranch newWorkingBranch = BranchManager.getBranch(originalBranchName);
+         IOseeBranch newWorkingBranch = operation.getNewBranch();
          assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch was not editable", BranchManager.isEditable(newWorkingBranch));
          assertFalse("New Working branch was editable", BranchManager.isEditable(workingBranch));
       } finally {
-         cleanup(originalBranchName, workingBranch, null);
+         cleanup(workingBranch, null);
       }
    }
 
@@ -252,7 +252,7 @@ public class BranchStateTest {
                }
             };
 
-         IOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
+         UpdateBranchOperation operation = new UpdateBranchOperation(workingBranch, resolverOperation);
          Asserts.assertOperation(operation, IStatus.OK);
          assertFalse("Resolver was executed", resolverOperation.wasExecuted());
 
@@ -264,12 +264,12 @@ public class BranchStateTest {
          Collection<IOseeBranch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
 
-         IOseeBranch newWorkingBranch = branches.iterator().next();
-         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
+         IOseeBranch newWorkingBranch = operation.getNewBranch();
+         assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
       } finally {
-         cleanup(originalBranchName, workingBranch, null, change, baseArtifact);
+         cleanup(workingBranch, null, change, baseArtifact);
       }
    }
 
@@ -345,30 +345,27 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          IOseeBranch newWorkingBranch = branches.iterator().next();
-         assertTrue(!workingBranch.getUuid().equals(newWorkingBranch.getUuid()));
+         assertFalse(workingBranch.equals(newWorkingBranch));
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", BranchManager.isEditable(newWorkingBranch));
 
          // Swapped successfully
-         assertEquals(destinationBranch.getUuid(), newWorkingBranch.getUuid());
+         assertEquals(destinationBranch.getId(), newWorkingBranch.getId());
       } catch (Exception ex) {
          throw ex;
       } finally {
-         cleanup(originalBranchName, workingBranch, mergeBranch, sameArtifact, baseArtifact);
+         cleanup(workingBranch, mergeBranch, sameArtifact, baseArtifact);
 
       }
    }
 
-   private void cleanup(String originalBranchName, IOseeBranch workingBranch, IOseeBranch mergeBranch, Artifact... toDelete) {
+   private void cleanup(BranchId workingBranch, BranchId mergeBranch, Artifact... toDelete) {
       try {
          if (mergeBranch != null) {
             BranchManager.purgeBranch(mergeBranch);
          }
          if (workingBranch != null) {
             purgeBranchAndChildren(workingBranch);
-         }
-         for (BranchId branch : BranchManager.getBranchesByName(originalBranchName)) {
-            purgeBranchAndChildren(branch);
          }
          if (toDelete != null && toDelete.length > 0) {
             Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(toDelete)));

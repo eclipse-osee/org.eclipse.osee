@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -89,6 +88,7 @@ public final class BranchManager {
    public static final String COMMIT_COMMENT = "Commit Branch ";
    private static final BranchFactory branchFactory = new BranchFactory();
    private static final String SELECT_BRANCH = "select * from osee_branch where branch_id = ?";
+   private static final String SELECT_BRANCH_BY_NAME = "select * from osee_branch where branch_name = ?";
 
    private static IOseeBranch lastBranch;
 
@@ -142,7 +142,10 @@ public final class BranchManager {
    }
 
    public static Collection<IOseeBranch> getBranchesByName(String branchName) throws OseeCoreException {
-      return Collections.castAll(getCache().getByName(branchName));
+      Collection<IOseeBranch> branches = new ArrayList<>(1);
+      ConnectionHandler.getJdbcClient().runQuery(stmt -> branches.add(getBranch(stmt.getLong("branch_id"))),
+         SELECT_BRANCH_BY_NAME, branchName);
+      return branches;
    }
 
    public static Branch getBranch(BranchId branch) throws OseeCoreException {

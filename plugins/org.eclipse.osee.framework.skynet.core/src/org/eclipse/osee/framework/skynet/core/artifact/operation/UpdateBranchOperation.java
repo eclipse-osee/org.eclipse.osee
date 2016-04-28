@@ -75,25 +75,24 @@ public class UpdateBranchOperation extends AbstractOperation {
    }
 
    private void performUpdate(IProgressMonitor monitor, Branch originalBranch) throws Exception {
-      Branch newWorkingBranch = null;
       boolean wasSuccessful = false;
       try {
          monitor.setTaskName("Creating temporary branch");
-         newWorkingBranch = createTempBranch(originalBranch);
+         newBranch = createTempBranch(originalBranch);
          originalBranch.setBranchState(BranchState.REBASELINE_IN_PROGRESS);
          BranchManager.persist(originalBranch);
          monitor.worked(calculateWork(0.40));
 
          boolean hasChanges = BranchManager.hasChanges(originalBranch);
          if (hasChanges) {
-            commitOldWorkingIntoNewWorkingBranch(monitor, originalBranch, newWorkingBranch, 0.40);
+            commitOldWorkingIntoNewWorkingBranch(monitor, originalBranch, newBranch, 0.40);
          } else {
-            deleteOldAndSetNewAsWorking(monitor, originalBranch, newWorkingBranch, 0.40);
+            deleteOldAndSetNewAsWorking(monitor, originalBranch, newBranch, 0.40);
          }
          wasSuccessful = true;
       } finally {
-         if (newWorkingBranch != null && !wasSuccessful) {
-            BranchManager.purgeBranch(newWorkingBranch);
+         if (newBranch != null && !wasSuccessful) {
+            BranchManager.purgeBranch(newBranch);
          }
          monitor.worked(calculateWork(0.20));
       }
@@ -112,18 +111,21 @@ public class UpdateBranchOperation extends AbstractOperation {
       doSubWork(operation, monitor, workPercentage);
    }
 
-   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, IOseeBranch originalBranch, Branch newWorkingBranch, double workPercentage) throws Exception {
+   private void deleteOldAndSetNewAsWorking(IProgressMonitor monitor, IOseeBranch originalBranch, BranchId newWorkingBranch, double workPercentage) throws Exception {
       String originalBranchName = originalBranch.getName();
 
       BranchManager.setName(originalBranch, getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
-      newWorkingBranch.setName(originalBranchName);
+      BranchManager.setName(newWorkingBranch, originalBranchName);
       BranchManager.setAssociatedArtifactId(newWorkingBranch, BranchManager.getAssociatedArtifactId(originalBranch));
       BranchManager.setState(originalBranch, BranchState.REBASELINED);
 
-      BranchManager.persist(newWorkingBranch);
       BranchManager.deleteBranch(originalBranch).join();
       monitor.worked(calculateWork(workPercentage));
+   }
+
+   public IOseeBranch getNewBranch() {
+      return newBranch;
    }
 }

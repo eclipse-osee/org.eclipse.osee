@@ -234,8 +234,7 @@ public class BranchEventTest {
 
       verifyReceivedBranchStatesEvent(branchEventListener.getFirstResults(), BranchEventType.Renamed, workingBranch);
 
-      Assert.assertEquals(newName, workingBranch.getName());
-      Assert.assertNotNull(BranchManager.getBranchesByName(newName));
+      Assert.assertEquals(newName, BranchManager.getBranchName(workingBranch));
       return workingBranch;
    }
 
