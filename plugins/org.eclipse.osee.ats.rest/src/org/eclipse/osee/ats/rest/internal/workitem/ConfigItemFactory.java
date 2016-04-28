@@ -218,7 +218,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    @Override
    public IAtsInsertion createInsertion(ArtifactId programArtifact, JaxInsertion newInsertion) {
 
-      Long uuid = newInsertion.getUuid();
+      long uuid = newInsertion.getUuid();
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
@@ -249,7 +249,7 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
    @Override
    public IAtsInsertionActivity createInsertionActivity(ArtifactId insertion, JaxInsertionActivity newActivity) {
-      Long uuid = newActivity.getUuid();
+      long uuid = newActivity.getUuid();
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }

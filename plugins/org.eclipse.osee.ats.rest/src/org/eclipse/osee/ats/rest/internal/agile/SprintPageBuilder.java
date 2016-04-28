@@ -17,7 +17,6 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResourceToken;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -40,7 +39,7 @@ public class SprintPageBuilder {
    private int numActionsBacklog = 0;
    TreeMap<String, FeatureGroupSum> featureSums = new TreeMap<>();
 
-   public SprintPageBuilder(IAtsServer atsServer, ArtifactReadable sprint) {
+   public SprintPageBuilder(ArtifactReadable sprint) {
       this.sprint = sprint;
    }
 

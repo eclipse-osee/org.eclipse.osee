@@ -103,7 +103,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
          throw new OseeWebApplicationException(Status.BAD_REQUEST, "name is not valid");
       }
 
-      Long uuid = newTeam.getUuid();
+      long uuid = newTeam.getUuid();
       if (uuid <= 0) {
          newTeam.setUuid(Lib.generateArtifactIdAsInt());
       }
@@ -182,7 +182,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      Long uuid = newFeatureGroup.getUuid();
+      long uuid = newFeatureGroup.getUuid();
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
@@ -233,7 +233,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      Long uuid = newSprint.getUuid();
+      long uuid = newSprint.getUuid();
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }
@@ -280,7 +280,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       ArtifactReadable sprint = getSprint(sprintUuid);
-      SprintPageBuilder page = new SprintPageBuilder(atsServer, sprint);
+      SprintPageBuilder page = new SprintPageBuilder(sprint);
       PageCreator appPage = PageFactory.newPageCreator(resourceRegistry);
       String result =
          page.generatePage(appPage, new ClassBasedResourceToken("sprintTemplate.html", SprintPageBuilder.class));
@@ -323,7 +323,7 @@ public class AgileEndpointImpl implements AgileEndpointApi {
       }
 
       String guid = GUID.create();
-      Long uuid = newBacklog.getUuid();
+      long uuid = newBacklog.getUuid();
       if (uuid <= 0) {
          uuid = Lib.generateArtifactIdAsInt();
       }

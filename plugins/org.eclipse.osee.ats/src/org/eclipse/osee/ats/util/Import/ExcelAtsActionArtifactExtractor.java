@@ -322,7 +322,6 @@ public class ExcelAtsActionArtifactExtractor {
       protected String title = "";
       protected String desc = "";
       protected String priorityStr = "";
-      protected Set<String> userComms = new HashSet<>();
       protected String changeType = "";
       protected Set<String> assigneeStrs = new HashSet<>();
       protected List<IAtsUser> assignees = new LinkedList<>();
