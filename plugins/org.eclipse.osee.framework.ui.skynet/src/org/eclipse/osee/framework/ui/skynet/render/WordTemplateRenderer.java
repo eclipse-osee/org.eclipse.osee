@@ -22,13 +22,15 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.define.report.api.ReportConstants;
-import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -160,8 +162,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             data = WordUtil.reassignBookMarkID(data);
+            data = removeSectionBreakParagraph(data);
+
             // remove any existing footers and replace with the current one
-            data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
+            data = data.replaceAll(ReportConstants.ENTIRE_FTR + ReportConstants.FULL_PARA_END, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
             data = data.concat(footer);
          }
@@ -183,6 +187,27 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
    }
 
+   private String removeSectionBreakParagraph(String data) {
+      Pattern pattern = Pattern.compile(ReportConstants.ENTIRE_FTR);
+      Pattern paragraphMatch = Pattern.compile("<w:p.*?/w:p>");
+      Matcher matcher = pattern.matcher(data);
+      if (matcher.find()) {
+
+         int startIndex = matcher.start();
+         String replace = data.substring(0, startIndex);
+
+         // Matches everything but last paragraph before section break
+         Matcher matchParagraphs = paragraphMatch.matcher(replace);
+         replace = "";
+         while (matchParagraphs.find()) {
+            replace += matchParagraphs.group(0);
+         }
+         data = replace + data.substring(startIndex);
+      }
+
+      return data;
+   }
+
    @Override
    public InputStream getRenderInputStream(PresentationType presentationType, List<Artifact> artifacts) throws OseeCoreException {
       final List<Artifact> notMultiEditableArtifacts = new LinkedList<>();
@@ -193,14 +218,14 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       if (artifacts.isEmpty()) {
          //  Still need to get a default template with a null artifact list
          template = getTemplate(null, presentationType);
-         if(template != null) {
+         if (template != null) {
             templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
             templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
          }
       } else {
          Artifact firstArtifact = artifacts.iterator().next();
          template = getTemplate(firstArtifact, presentationType);
-         if(template != null) {
+         if (template != null) {
             templateContent = template.getSoleAttributeValue(CoreAttributeTypes.WholeWordContent);
             templateOptions = template.getSoleAttributeValue(CoreAttributeTypes.RendererOptions);
          }
@@ -226,8 +251,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
       }
 
       templateContent = WordUtil.removeGUIDFromTemplate(templateContent);
-      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, null, null, getStringOption("outlineType"),
-         presentationType);
+      return templateProcessor.applyTemplate(artifacts, templateContent, templateOptions, null, null,
+         getStringOption("outlineType"), presentationType);
    }
 
    protected Artifact getTemplate(Artifact artifact, PresentationType presentationType) throws OseeCoreException {
@@ -258,7 +283,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          Artifact templateArtifact = TemplateManager.getTemplate(this, artifact, presentationType, (String) option);
          return templateArtifact;
       }
-     return null;
+      return null;
    }
 
    @Override
