@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
+import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.client.search.UserRelatedToAtsObjectSearch;
@@ -31,6 +32,7 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCheck;
@@ -68,42 +70,78 @@ public class AtsArtifactChecks extends ArtifactCheck {
       IStatus result = Status.OK_STATUS;
 
       if (deletionChecksEnabled) {
+         Set<Artifact> allArtifacts = getAllArtifacts(artifacts, new HashSet<>());
+
          if (result.isOK()) {
-            result = checkActionableItems(isAtsAdmin, artifacts);
+            result = checkActionableItems(isAtsAdmin, allArtifacts);
          }
 
          if (result.isOK()) {
-            result = checkTeamDefinitions(isAtsAdmin, artifacts);
+            result = checkTeamDefinitions(isAtsAdmin, allArtifacts);
          }
 
          if (result.isOK()) {
-            result = checkAtsWorkDefinitions(isAtsAdmin, artifacts);
+            result = checkAtsWorkDefinitions(isAtsAdmin, allArtifacts);
          }
 
          if (result.isOK()) {
-            result = checkUsers(artifacts);
+            result = checkUsers(allArtifacts);
          }
 
          if (result.isOK()) {
-            result = checkActions(isAtsAdmin, artifacts);
+            result = checkActions(isAtsAdmin, allArtifacts);
          }
 
          if (result.isOK()) {
-            result = checkWorkPackages(isAtsAdmin, artifacts);
+            result = checkWorkPackages(isAtsAdmin, allArtifacts);
          }
       }
 
       return result;
    }
 
+   // Get all artifacts and recurse down default hierarchy
+   private Set<Artifact> getAllArtifacts(Collection<Artifact> artifacts, Set<Artifact> allArtifacts) {
+      for (Artifact art : artifacts) {
+         if (art.isOnBranch(AtsUtilCore.getAtsBranch())) {
+            allArtifacts.addAll(art.getDescendants());
+         }
+      }
+      return allArtifacts;
+   }
+
    private IStatus checkActions(boolean isAtsAdmin, Collection<Artifact> artifacts) {
       for (Artifact art : artifacts) {
          if (!isAtsAdmin && isWorkflowOrAction(art) && !isTask(art)) {
-            return createStatus(
-               String.format("Deletion of [%s] is only permitted by ATS Admin", art.getArtifactTypeName()));
+            return createStatus(String.format("Deletion of [%s] is only permitted by ATS Admin; %s invalid",
+               art.getArtifactTypeName(), art.toStringWithId()));
+         }
+         String error = isWorkflowOrActionPermittedByAnyone(art, artifacts);
+         if (Strings.isValid(error)) {
+            return createStatus(String.format("Deletion of artifact type [%s] object %s is not permitted. Error: [%s]",
+               art.getArtifactTypeName(), art.toStringWithId(), error));
          }
       }
       return Status.OK_STATUS;
+   }
+
+   private String isWorkflowOrActionPermittedByAnyone(Artifact art, Collection<Artifact> allArtifacts) {
+      if (art.isOfType(AtsArtifactTypes.Action)) {
+         for (IAtsTeamWorkflow teamWf : AtsClientService.get().getWorkItemService().getTeams((IAtsAction) art)) {
+            if (!allArtifacts.contains(teamWf)) {
+               return String.format("Can't delete action %s without deleting workflow %s, use ATS World Editor",
+                  art.toStringWithId(), teamWf.toStringWithId());
+            }
+         }
+      }
+      if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {
+         IAtsTeamWorkflow teamWf = AtsClientService.get().getWorkItemFactory().getTeamWf(art);
+         if (!allArtifacts.contains(teamWf.getParentAction())) {
+            return String.format("Can't delete workflow %s without deleting action %s, use ATS World Editor",
+               teamWf.toStringWithId(), teamWf.getParentAction());
+         }
+      }
+      return null;
    }
 
    private boolean isWorkflowOrAction(Artifact art) {

@@ -43,11 +43,11 @@ public class ArtifactPersistenceManager {
          return;
       }
 
+      bulkLoadRelatives(artifacts);
+
       if (!overrideDeleteCheck) {
          performDeleteChecks(artifacts);
       }
-
-      bulkLoadRelatives(artifacts);
 
       boolean reorderRelations = true;
       for (Artifact artifact : artifacts) {
