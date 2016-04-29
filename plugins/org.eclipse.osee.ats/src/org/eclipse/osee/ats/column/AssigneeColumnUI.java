@@ -56,6 +56,17 @@ public class AssigneeColumnUI extends XViewerAtsColumnIdColumn implements IAltLe
       super(AtsColumnToken.AssigneeColumn);
    }
 
+   /**
+    * XViewer uses copies of column definitions so originals that are registered are not corrupted. Classes extending
+    * XViewerValueColumn MUST extend this constructor so the correct sub-class is created
+    */
+   @Override
+   public XViewerAtsColumnIdColumn copy() {
+      XViewerAtsColumnIdColumn newXCol = new AssigneeColumnUI();
+      super.copy(this, newXCol);
+      return newXCol;
+   }
+
    @Override
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
       try {
