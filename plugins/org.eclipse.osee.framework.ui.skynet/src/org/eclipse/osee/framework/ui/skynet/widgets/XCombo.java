@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
+import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CCombo;
 import org.eclipse.swt.events.KeyAdapter;
@@ -106,6 +107,7 @@ public class XCombo extends XButtonCommon {
 
       dataCombo = new CCombo(parent, SWT.DROP_DOWN | SWT.READ_ONLY | SWT.V_SCROLL | SWT.FLAT | SWT.BORDER);
       dataCombo.setItems(displayArray);
+      dataCombo.setBackground(Displays.getSystemColor(SWT.COLOR_WHITE));
       dataCombo.setVisibleItemCount(Math.min(displayArray.length, 45));
       dataCombo.addKeyListener(new KeyAdapter() {
          private String keySequence;
