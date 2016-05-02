@@ -74,7 +74,5 @@ public class BranchRemoteEventHandler implements EventHandlerRemote<RemoteBranch
          BranchManager.decache(branch);
       }
       branch.setBranchState(state);
-      branch.clearDirty();
    }
-
 }

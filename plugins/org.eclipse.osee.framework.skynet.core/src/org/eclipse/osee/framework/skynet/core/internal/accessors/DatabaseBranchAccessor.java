@@ -2,21 +2,17 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_FETCH_SIZE;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.logging.Level;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -24,13 +20,7 @@ import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
-import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -66,10 +56,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       loadBranchHierarchy(cache, childToParent);
       loadMergeBranches(cache);
       loadBranchRelatedTransactions(branchToBaseTx, branchToSourceTx);
-
-      for (Branch branch : cache.getAll()) {
-         branch.clearDirty();
-      }
    }
 
    private void loadBranches(IOseeCache<Branch> cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) {
@@ -81,7 +67,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          }
          branchToSourceTx.put(branch, stmt.getInt("parent_transaction_id"));
          branchToBaseTx.put(branch, stmt.getInt("baseline_transaction_id"));
-      } , JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
+      }, JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
    }
 
    private static Branch create(Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) throws OseeCoreException {
@@ -105,7 +91,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          branch.setArchived(isArchived);
          branch.setInheritAccessControl(inheritAccessControl);
       }
-      branch.setStorageState(storageState);
       branch.setAssociatedArtifactId(artifactId);
       return branch;
    }
@@ -189,43 +174,5 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          mergeBranch.setDestinationBranch(destBranch);
       };
       getJdbcClient().runQuery(consumer, 1000, SELECT_MERGE_BRANCHES);
-   }
-
-   @Override
-   public void store(Collection<Branch> branches) throws OseeCoreException {
-      StoreBranchDatabaseCallable task = new StoreBranchDatabaseCallable(jdbcClient, branches);
-      try {
-         IStatus status = task.handleTxWork();
-         if (status.isOK()) {
-            sendChangeEvents(branches);
-            for (Branch branch : branches) {
-               branch.clearDirty();
-            }
-         } else {
-            throw new OseeStateException("Error storing branches");
-         }
-      } catch (Exception ex) {
-         OseeCoreException.wrapAndThrow(ex);
-      }
-   }
-
-   private void sendChangeEvents(Collection<Branch> branches) {
-      for (Branch branch : branches) {
-         if (BranchManager.getState(branch).isDeleted()) {
-            try {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Deleted, branch));
-            } catch (Exception ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-
-         try {
-            if (branch.isFieldDirty(AbstractOseeType.NAME_FIELD_KEY)) {
-               OseeEventManager.kickBranchEvent(this, new BranchEvent(BranchEventType.Renamed, branch));
-            }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
    }
 }

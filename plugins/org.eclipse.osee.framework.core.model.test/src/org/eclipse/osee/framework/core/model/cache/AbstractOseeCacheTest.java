@@ -12,18 +12,12 @@ package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
-import org.eclipse.osee.framework.core.model.TypeUtil;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
@@ -33,7 +27,7 @@ import org.junit.runners.MethodSorters;
  * @author Roberto E. Escobar
  */
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
+public abstract class AbstractOseeCacheTest<T extends NamedId> {
    private final List<T> data;
    private final AbstractOseeCache<T> cache;
    private final TypeComparator comparator;
@@ -77,7 +71,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
    @org.junit.Test
    public void testCacheById() throws OseeCoreException {
       for (T expected : data) {
-         T actual = cache.getById(TypeUtil.getId(expected));
+         T actual = cache.getById(expected.getId());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }
@@ -119,12 +113,12 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
    private void checkCached(T item, boolean isInCacheExpected) throws OseeCoreException {
       if (isInCacheExpected) {
          Assert.assertEquals(item, cache.getByGuid(item.getId()));
-         Assert.assertEquals(item, cache.getById(TypeUtil.getId(item)));
+         Assert.assertEquals(item, cache.getById(item.getId()));
          Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
          Assert.assertTrue(cache.getAll().contains(item));
       } else {
          Assert.assertNull(cache.getByGuid(item.getId()));
-         Assert.assertNull(cache.getById(TypeUtil.getId(item)));
+         Assert.assertNull(cache.getById(item.getId()));
          Assert.assertNull(cache.getUniqueByName(item.getName()));
          Assert.assertFalse(cache.getAll().contains(item));
       }
@@ -160,34 +154,20 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       String originalName = item1.getName();
       cache.decache(item1);
 
-      ((AbstractOseeType) item1).setName(item2.getName());
+      item1.setName(item2.getName());
 
-      if (cache.isNameUniquenessEnforced()) {
-         try {
-            cache.cache(item1);
-            Assert.fail("This line should not be executed");
-         } catch (OseeCoreException ex) {
-            Assert.assertTrue(ex instanceof OseeStateException);
-         }
+      cache.cache(item1);
 
-         actual = cache.getByName(originalName);
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(0, actual.size());
+      actual = cache.getByName(originalName);
+      Assert.assertNotNull(actual);
+      Assert.assertEquals(0, actual.size());
 
-      } else {
-         cache.cache(item1);
+      actual = cache.getByName(item2.getName());
+      Assert.assertNotNull(actual);
+      Assert.assertEquals(2, actual.size());
 
-         actual = cache.getByName(originalName);
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(0, actual.size());
-
-         actual = cache.getByName(item2.getName());
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(2, actual.size());
-
-         checkEquals(item2, actual.iterator().next());
-      }
-      ((AbstractOseeType) item1).setName(originalName);
+      checkEquals(item2, actual.iterator().next());
+      item1.setName(originalName);
    }
 
    @Test
@@ -207,53 +187,7 @@ public abstract class AbstractOseeCacheTest<T extends AbstractOseeType> {
       }
    }
 
-   @Test(expected = OseeTypeDoesNotExist.class)
-   public void testNonExistingPersist() throws OseeCoreException {
-      cache.storeByGuid(Collections.singleton(createKey()));
-   }
-
    protected abstract Long createKey();
-
-   @SuppressWarnings("unchecked")
-   @Test(expected = OseeArgumentException.class)
-   public void testStoreNull2() throws OseeCoreException {
-      cache.storeItems((T) null);
-   }
-
-   @Test(expected = OseeArgumentException.class)
-   public void testStoreNull3() throws OseeCoreException {
-      cache.storeItems((Collection<T>) null);
-   }
-
-   @Ignore
-   @Test
-   public void testPersist() {
-      //      T item1 = data.get(0);
-      //      T item2 = data.get(1);
-      //
-      //      String name1 = item1.getName();
-      //      String name2 = item2.getName();
-      //
-      //      AbstractOseeType t1 = (AbstractOseeType) item1;
-      //      AbstractOseeType t2 = (AbstractOseeType) item2;
-      //
-      //      t1.setName("changed_1");
-      //      t2.setName("changed_2");
-      //
-      //      cache.storeByGuid(guids);
-
-      //      T item2 = data.get(1);
-      //
-      //
-      //      cache.storeItem(item);
-      //      cache.storeItems(toStore);
-      //      cache.storeItems(items);
-      //      public void storeItem(AbstractOseeType item) throws OseeCoreException {
-
-      //      public void storeItems(T... items) throws OseeCoreException {
-
-      //      public void storeItems(Collection<T> toStore) throws OseeCoreException {
-   }
 
    //OseeCoreException is thrown by inheriting class.
    protected void checkEquals(T expected, T actual) throws OseeCoreException {

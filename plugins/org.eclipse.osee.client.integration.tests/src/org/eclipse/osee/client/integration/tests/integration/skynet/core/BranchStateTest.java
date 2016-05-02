@@ -140,7 +140,7 @@ public class BranchStateTest {
          branchPurged = true;
 
          assertEquals(BranchState.PURGED, fullBranch.getBranchState());
-         assertTrue(fullBranch.getArchiveState().isArchived());
+         assertTrue(fullBranch.isArchived());
       } finally {
          if (workingBranch != null && !branchPurged) {
             // needed to allow for archiving to occur

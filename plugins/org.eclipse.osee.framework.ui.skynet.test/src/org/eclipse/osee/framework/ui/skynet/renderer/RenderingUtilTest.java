@@ -15,9 +15,6 @@ import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.model.cache.BranchCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.render.RenderingUtil;
 import org.junit.Assert;
@@ -28,14 +25,11 @@ import org.junit.Test;
  * @author Roberto E. Escobar
  */
 public class RenderingUtilTest {
-
-   private static AbstractOseeCache<Branch> cache;
    private static Branch branch;
 
    @BeforeClass
    public static void setUpOnce() throws OseeCoreException {
-      cache = new BranchCache(new MockOseeDataAccessor<Long, Branch>(), new TransactionCache());
-      branch = createBranch(cache, "Test 1", 1);
+      branch = new Branch(1L, "Test 1", BranchType.WORKING, BranchState.MODIFIED, false, false);
    }
 
    @Test
@@ -95,11 +89,5 @@ public class RenderingUtilTest {
 
    private String encode(String guid) throws UnsupportedEncodingException {
       return URLEncoder.encode(guid, "UTF-8");
-   }
-
-   private static Branch createBranch(AbstractOseeCache<Branch> cache, String name, long uuid) throws OseeCoreException {
-      Branch branch = new Branch(uuid, name, BranchType.WORKING, BranchState.MODIFIED, false, false);
-      Assert.assertNotNull(branch);
-      return branch;
    }
 }

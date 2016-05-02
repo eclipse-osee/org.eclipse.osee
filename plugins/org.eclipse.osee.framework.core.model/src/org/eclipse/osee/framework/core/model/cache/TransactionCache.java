@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model.cache;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +75,6 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    @Override
    public void decache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
-      ensurePopulated();
       if (type.isIdValid()) {
          transactionIdCache.remove(type.getId());
       }
@@ -119,26 +117,6 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    @Override
    public int size() {
       return transactionIdCache.size();
-   }
-
-   @Override
-   public Collection<TransactionRecord> getAllDirty() {
-      return new HashSet<>();
-   }
-
-   @Override
-   public void storeAllModified() {
-      // do nothing
-   }
-
-   @Override
-   public void storeItems(TransactionRecord... items) {
-      // do nothing
-   }
-
-   @Override
-   public void storeItems(Collection<TransactionRecord> toStore) {
-      // do nothing
    }
 
    public TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {

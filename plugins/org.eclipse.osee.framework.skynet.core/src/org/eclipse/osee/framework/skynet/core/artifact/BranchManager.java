@@ -670,7 +670,7 @@ public final class BranchManager {
    public static boolean isEditable(BranchId branch) {
       Branch fullBranch = getBranch(branch);
       BranchState state = fullBranch.getBranchState();
-      return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && fullBranch.getArchiveState().isUnArchived();
+      return (state.isCreated() || state.isModified() || state.isRebaselineInProgress()) && !fullBranch.isArchived();
    }
 
    public static Collection<BranchId> getAncestors(BranchId branch) {
@@ -682,11 +682,11 @@ public final class BranchManager {
    }
 
    public static boolean isArchived(BranchId branch) {
-      return getBranch(branch).getArchiveState().isArchived();
+      return getBranch(branch).isArchived();
    }
 
    public static String getArchivedStr(BranchId branch) {
-      return getBranch(branch).getArchiveState().name();
+      return BranchArchivedState.fromBoolean(getBranch(branch).isArchived()).name();
    }
 
    public static boolean hasChildren(BranchId branch) {

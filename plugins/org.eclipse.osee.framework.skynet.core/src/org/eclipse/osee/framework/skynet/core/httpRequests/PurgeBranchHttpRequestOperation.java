@@ -15,7 +15,6 @@ import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.StorageState;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -61,7 +60,6 @@ public final class PurgeBranchHttpRequestOperation extends AbstractOperation {
       try {
          Response response = proxy.purgeBranch(branch.getId(), recursive);
          if (Status.OK.getStatusCode() == response.getStatus()) {
-            branch.setStorageState(StorageState.PURGED);
             branch.setBranchState(BranchState.PURGED);
             branch.setArchived(true);
             BranchManager.decache(branch);

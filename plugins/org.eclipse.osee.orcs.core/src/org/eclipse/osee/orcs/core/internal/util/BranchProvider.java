@@ -18,7 +18,7 @@ import org.eclipse.osee.orcs.core.ds.OrcsData;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchProvider extends OrcsLazyObject<Branch, OrcsData>implements ValueProvider<Branch, OrcsData> {
+public class BranchProvider extends OrcsLazyObject<Branch, OrcsData> implements ValueProvider<Branch, OrcsData> {
 
    private final BranchCache branchCache;
 
@@ -29,6 +29,6 @@ public class BranchProvider extends OrcsLazyObject<Branch, OrcsData>implements V
 
    @Override
    protected Branch instance() throws OseeCoreException {
-      return branchCache.getByUuid(getOrcsData().getVersion().getBranchId());
+      return branchCache.getById(getOrcsData().getVersion().getBranchId());
    }
 }

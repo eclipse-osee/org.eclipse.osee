@@ -10,24 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.cache;
 
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeLoadingCache<T extends AbstractOseeType> extends AbstractOseeCache<T> implements IOseeLoadingCache<T> {
+public abstract class AbstractOseeLoadingCache<T extends NamedId> extends AbstractOseeCache<T> implements IOseeLoadingCache<T> {
    private final IOseeDataAccessor<T> dataAccessor;
    private final AtomicBoolean wasLoaded;
    private long lastLoaded;
 
-   protected AbstractOseeLoadingCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
-      super(cacheId, uniqueName);
+   protected AbstractOseeLoadingCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor) {
+      super(cacheId);
       this.lastLoaded = 0;
       this.wasLoaded = new AtomicBoolean(false);
       this.dataAccessor = dataAccessor;
@@ -78,10 +77,4 @@ public abstract class AbstractOseeLoadingCache<T extends AbstractOseeType> exten
       wasLoaded.set(true);
       return true;
    }
-
-   @Override
-   protected void store(Collection<T> toStore) throws OseeCoreException {
-      dataAccessor.store(toStore);
-   }
-
 }

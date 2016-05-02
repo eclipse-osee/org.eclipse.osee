@@ -22,123 +22,109 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
-import org.eclipse.osee.framework.core.model.internal.fields.AssociatedArtifactField;
-import org.eclipse.osee.framework.core.model.internal.fields.CollectionField;
+import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType implements WriteableBranch, IAdaptable {
+public class Branch extends NamedId implements BranchReadable, IAdaptable {
 
-   private final Collection<Branch> childBranches = new HashSet<>();
+   private final Set<Branch> childBranches = new HashSet<>();
+   private BranchType branchType;
+   private BranchState branchState;
+   private boolean isArchived;
+   private boolean inheritsAccessControl;
+   private TransactionRecord parentTx;
+   private TransactionRecord baselineTx;
+   private Branch parent;
+   private Integer associatedArtifactId;
 
    public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
       super(uuid, name);
-      initializeFields();
-      setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
-      setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
-      setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
-      setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, inheritsAccessControl);
-      if (uuid <= 0) {
-         throw new OseeStateException("uuid [%d] must be > 0", uuid);
-      }
-      setField(UNIQUE_ID_FIELD_KEY, uuid);
-   }
-
-   protected void initializeFields() {
-      addField(BranchField.PARENT_BRANCH, new OseeField<Branch>());
-      addField(BranchField.BRANCH_BASE_TRANSACTION, new OseeField<TransactionRecord>());
-      addField(BranchField.BRANCH_SOURCE_TRANSACTION, new OseeField<TransactionRecord>());
-      addField(BranchField.BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
-      addField(BranchField.BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
-      addField(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
-      addField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, new OseeField<Boolean>());
-
-      addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, new AssociatedArtifactField(null));
-      addField(BranchField.BRANCH_CHILDREN, new CollectionField<Branch>(childBranches));
+      this.branchType = branchType;
+      this.branchState = branchState;
+      this.isArchived = isArchived;
+      this.inheritsAccessControl = inheritsAccessControl;
    }
 
    @Override
    public Branch getParentBranch() throws OseeCoreException {
-      return getFieldValue(BranchField.PARENT_BRANCH);
+      return parent;
    }
 
    @Override
    public BranchType getBranchType() {
-      return getFieldValueLogException(null, BranchField.BRANCH_TYPE_FIELD_KEY);
+      return branchType;
    }
 
    @Override
    public BranchState getBranchState() {
-      return getFieldValueLogException(null, BranchField.BRANCH_STATE_FIELD_KEY);
+      return branchState;
    }
 
    @Override
-   public BranchArchivedState getArchiveState() {
-      return getFieldValueLogException(null, BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY);
+   public boolean isArchived() {
+      return isArchived;
    }
 
    @Override
    public Integer getAssociatedArtifactId() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY);
+      return associatedArtifactId;
    }
 
    public void setAssociatedArtifactId(Integer artifactId) throws OseeCoreException {
-      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_ID_FIELD_KEY, artifactId);
+      this.associatedArtifactId = artifactId;
    }
 
    @Override
    public TransactionRecord getBaseTransaction() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_BASE_TRANSACTION);
+      return baselineTx;
    }
 
    @Override
    public TransactionRecord getSourceTransaction() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_SOURCE_TRANSACTION);
+      return parentTx;
    }
 
    public void setArchived(boolean isArchived) {
-      BranchArchivedState newValue = BranchArchivedState.fromBoolean(isArchived);
-      setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, newValue);
+      this.isArchived = isArchived;
    }
 
    public void setBranchState(BranchState branchState) {
-      setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
+      this.branchState = branchState;
    }
 
    public void setBranchType(BranchType branchType) {
-      setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
+      this.branchType = branchType;
    }
 
    public void setParentBranch(Branch parentBranch) throws OseeCoreException {
-      Branch oldParent = getParentBranch();
-      if (oldParent != null) {
-         oldParent.childBranches.remove(this);
+      if (parent != null) {
+         parent.childBranches.remove(this);
       }
-      setField(BranchField.PARENT_BRANCH, parentBranch);
+      parent = parentBranch;
       parentBranch.childBranches.add(this);
    }
 
-   public void setBaseTransaction(TransactionRecord baseTx) throws OseeCoreException {
-      setField(BranchField.BRANCH_BASE_TRANSACTION, baseTx);
+   public void setBaseTransaction(TransactionRecord baselineTx) throws OseeCoreException {
+      this.baselineTx = baselineTx;
    }
 
-   public void setSourceTransaction(TransactionRecord srcTx) throws OseeCoreException {
-      setField(BranchField.BRANCH_SOURCE_TRANSACTION, srcTx);
+   public void setSourceTransaction(TransactionRecord parentTx) throws OseeCoreException {
+      this.parentTx = parentTx;
    }
 
    public boolean isInheritAccessControl() {
-      return getFieldValue(BranchField.BRANCH_INHERIT_ACCESS_CONTROL);
+      return inheritsAccessControl;
    }
 
-   public void setInheritAccessControl(boolean toInherit) {
-      setField(BranchField.BRANCH_INHERIT_ACCESS_CONTROL, toInherit);
+   public void setInheritAccessControl(boolean inheritsAccessControl) {
+      this.inheritsAccessControl = inheritsAccessControl;
    }
 
-   public Collection<BranchReadable> getChildren() throws OseeCoreException {
-      return getFieldValue(BranchField.BRANCH_CHILDREN);
+   public Set<Branch> getChildren() throws OseeCoreException {
+      return childBranches;
    }
 
    @Override

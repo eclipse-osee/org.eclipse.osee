@@ -68,11 +68,6 @@ public final class Conflict implements IOseeStorable {
    }
 
    @Override
-   public boolean isIdValid() {
-      return IOseeStorable.UNPERSISTED_VALUE != itemId;
-   }
-
-   @Override
    public void clearDirty() {
       this.isDirty = false;
       this.storageState = StorageState.LOADED;

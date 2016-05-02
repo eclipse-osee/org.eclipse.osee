@@ -15,12 +15,12 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.access.AccessDetail;
@@ -102,10 +102,10 @@ public class ModelAsserts {
    public static void checkHierarchy(BranchCache cache, Long parentUuid, Long... expected) throws OseeCoreException {
       Branch parentBranch = cache.getByGuid(parentUuid);
       Assert.assertNotNull(parentBranch);
-      Collection<BranchReadable> children = parentBranch.getChildren();
+      Set<Branch> children = parentBranch.getChildren();
       Assert.assertEquals(expected.length, children.size());
       int index = 0;
-      for (BranchReadable child : children) {
+      for (Branch child : children) {
          Branch expectedBranch = cache.getByGuid(expected[index]);
          Assert.assertNotNull(expectedBranch);
          Assert.assertEquals(expectedBranch, child);

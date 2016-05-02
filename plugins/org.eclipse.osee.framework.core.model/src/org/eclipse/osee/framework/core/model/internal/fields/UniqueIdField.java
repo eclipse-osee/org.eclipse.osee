@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.model.internal.fields;
 
 import org.eclipse.osee.framework.core.model.AbstractOseeField;
-import org.eclipse.osee.framework.core.model.IOseeStorable;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Compare;
@@ -25,13 +25,13 @@ public final class UniqueIdField extends AbstractOseeField<Long> {
 
    public UniqueIdField() {
       super();
-      this.value = IOseeStorable.UNPERSISTED_VALUE;
+      this.value = Id.SENTINEL;
       isDirty = true;
    }
 
    @Override
    public void set(Long value) throws OseeCoreException {
-      if (IOseeStorable.UNPERSISTED_VALUE.equals(get())) {
+      if (Id.SENTINEL.equals(get())) {
          isDirty |= Compare.isDifferent(get(), value);
          this.value = value;
       } else {

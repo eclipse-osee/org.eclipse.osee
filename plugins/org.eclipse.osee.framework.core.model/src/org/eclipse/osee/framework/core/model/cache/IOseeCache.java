@@ -38,12 +38,4 @@ public interface IOseeCache<TYPE> {
    TYPE getById(Number typeId) throws OseeCoreException;
 
    TYPE getByGuid(Long guid) throws OseeCoreException;
-
-   Collection<TYPE> getAllDirty() throws OseeCoreException;
-
-   void storeAllModified() throws OseeCoreException;
-
-   void storeItems(TYPE... items) throws OseeCoreException;
-
-   void storeItems(Collection<TYPE> toStore) throws OseeCoreException;
 }

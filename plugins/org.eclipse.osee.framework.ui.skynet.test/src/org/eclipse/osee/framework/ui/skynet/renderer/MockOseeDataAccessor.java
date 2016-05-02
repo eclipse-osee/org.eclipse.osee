@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.renderer;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.model.IOseeStorable;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeDataAccessor;
@@ -46,11 +45,4 @@ public class MockOseeDataAccessor<K, T extends IOseeStorable> implements IOseeDa
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }
-
-   @Override
-   public void store(Collection<T> types) throws OseeCoreException {
-      Assert.assertNotNull(types);
-      setStoreCalled(true);
-   }
-
 }

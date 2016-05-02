@@ -49,7 +49,8 @@ public class BranchFilter {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }
-      if (!branch.getArchiveState().matches(archivedState)) {
+
+      if (!BranchArchivedState.fromBoolean(branch.isArchived()).matches(archivedState)) {
          return false;
       }
       if (branchTypes.length > 0 && !branch.getBranchType().isOfType(branchTypes)) {

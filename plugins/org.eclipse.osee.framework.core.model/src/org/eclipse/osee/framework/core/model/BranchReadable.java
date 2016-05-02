@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.model;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
@@ -28,7 +27,7 @@ public interface BranchReadable extends IOseeBranch {
 
    BranchState getBranchState();
 
-   BranchArchivedState getArchiveState();
+   boolean isArchived();
 
    Integer getAssociatedArtifactId() throws OseeCoreException;
 

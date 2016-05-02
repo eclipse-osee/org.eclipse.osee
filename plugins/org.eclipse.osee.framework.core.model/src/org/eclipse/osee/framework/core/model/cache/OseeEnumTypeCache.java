@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
 
    public OseeEnumTypeCache() {
-      super(OseeCacheEnum.OSEE_ENUM_TYPE_CACHE, true);
+      super(OseeCacheEnum.OSEE_ENUM_TYPE_CACHE);
    }
 
 }

@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -21,31 +20,26 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  * @author Roberto E. Escobar
  */
 public final class MergeBranch extends Branch {
+   private IOseeBranch source;
+   private IOseeBranch destination;
 
    public MergeBranch(Long branchId, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritAccessControl) {
       super(branchId, name, branchType, branchState, isArchived, inheritAccessControl);
    }
 
-   @Override
-   protected void initializeFields() {
-      super.initializeFields();
-      addField(BranchField.MERGE_BRANCH_SOURCE, new OseeField<Branch>());
-      addField(BranchField.MERGE_BRANCH_DESTINATION, new OseeField<Branch>());
-   }
-
    public IOseeBranch getSourceBranch() throws OseeCoreException {
-      return getFieldValue(BranchField.MERGE_BRANCH_SOURCE);
+      return source;
    }
 
    public IOseeBranch getDestinationBranch() throws OseeCoreException {
-      return getFieldValue(BranchField.MERGE_BRANCH_DESTINATION);
+      return destination;
    }
 
-   public void setSourceBranch(BranchId branch) throws OseeCoreException {
-      setField(BranchField.MERGE_BRANCH_SOURCE, branch);
+   public void setSourceBranch(IOseeBranch branch) throws OseeCoreException {
+      this.source = branch;
    }
 
-   public void setDestinationBranch(BranchId branch) throws OseeCoreException {
-      setField(BranchField.MERGE_BRANCH_DESTINATION, branch);
+   public void setDestinationBranch(IOseeBranch branch) throws OseeCoreException {
+      this.destination = branch;
    }
 }

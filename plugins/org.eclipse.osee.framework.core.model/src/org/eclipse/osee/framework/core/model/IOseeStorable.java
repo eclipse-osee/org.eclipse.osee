@@ -17,14 +17,9 @@ import org.eclipse.osee.framework.core.enums.StorageState;
  */
 public interface IOseeStorable {
 
-   public final static Long UNPERSISTED_VALUE = (long) Short.MIN_VALUE;
-
-   boolean isIdValid();
-
    boolean isDirty();
 
    void clearDirty();
 
    public StorageState getStorageState();
-
 }

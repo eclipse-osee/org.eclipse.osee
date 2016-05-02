@@ -30,7 +30,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
    private final TransactionCache txCache;
 
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor, TransactionCache txCache) {
-      super(OseeCacheEnum.BRANCH_CACHE, dataAccessor, false);
+      super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
       this.txCache = txCache;
    }
 
@@ -89,10 +89,6 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
          }
       }
       return branches;
-   }
-
-   public Branch getByUuid(long uuid) throws OseeCoreException {
-      return super.getById(uuid);
    }
 
    @Override

@@ -136,9 +136,4 @@ public abstract class AbstractOseeType extends NamedId implements IOseeStorable 
    public void setStorageState(StorageState storageState) {
       this.itemState = storageState;
    }
-
-   @Override
-   public boolean isIdValid() {
-      return !UNPERSISTED_VALUE.equals(TypeUtil.getId(this));
-   }
 }
