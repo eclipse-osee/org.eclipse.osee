@@ -83,13 +83,12 @@ import org.json.JSONObject;
 public class WordTemplateProcessor {
 
    private static final String ARTIFACT = "Artifact";
-   private static final String EXTENSION_PROCESSOR = "Extension_Processor";
+   private static final String INSERT_LINK = "INSERT_LINK_HERE";
    private static final String NESTED_TEMPLATE = "NestedTemplate";
-
    public static final String PGNUMTYPE_START_1 = "<w:pgNumType [^>]*w:start=\"1\"/>";
 
    private static final Pattern headElementsPattern =
-      Pattern.compile("<((\\w+:)?(" + ARTIFACT + "|" + EXTENSION_PROCESSOR + "))>(.*?)</\\1>",
+      Pattern.compile("<((\\w+:)?(" + ARTIFACT + "))>(.*?)</\\1>|" + INSERT_LINK,
          Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE);
 
    //The following REGEX are to be used once the Whole Word Content xml no longer contains custom xml tags
@@ -410,7 +409,7 @@ public class WordTemplateProcessor {
          if (matcher.find()) {
             String elementType = matcher.group(3);
 
-            if (elementType.equals(ARTIFACT) && !artifacts.isEmpty()) {
+            if (elementType != null && elementType.equals(ARTIFACT) && !artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
                if (artifact.isAttributeTypeValid(CoreAttributeTypes.ParagraphNumber)) {
                   String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.ParagraphNumber, "");
