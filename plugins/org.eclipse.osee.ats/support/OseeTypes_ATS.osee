@@ -65,7 +65,7 @@ artifactType "Program" extends "ats.Ats Config Artifact" {
    attribute "ats.CSCI"
 }
 
-artifactType "ats.Review" extends "ats.State Machine" {
+abstract artifactType "ats.Review" extends "ats.State Machine" {
 	uuid 0x0000000000000040
 	attribute "ats.Actionable Item"
 	attribute "ats.Related To State"

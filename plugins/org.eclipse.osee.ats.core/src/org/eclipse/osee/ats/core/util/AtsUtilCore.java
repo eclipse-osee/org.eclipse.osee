@@ -40,7 +40,7 @@ public class AtsUtilCore {
    private static final String ATS_BRANCH_UUID = "ats.branch.uuid";
    public final static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    public static final String DEFAULT_ATS_ID_VALUE = "0";
-   public static final String USER_CREATION_DISABLED = "UserCreationDisabled";
+   public static final String USER_CREATION_DISABLED = "UserCreationDisabled2";
 
    private static final Object lock = new Object();
    private volatile static BranchId atsBranch;

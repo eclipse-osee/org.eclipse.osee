@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
@@ -22,12 +24,27 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 
 public final class TokenFactory {
 
+   public static final Pattern nameIdPattern = Pattern.compile("\\[(.*)\\]-\\[(.*)\\]");
+
    private TokenFactory() {
       // Utility Class
    }
 
    public static IArtifactType createArtifactType(long guid, String name) {
       return new ArtifactTypeToken(guid, name);
+   }
+
+   /**
+    * @param token as [name]-[uuid]
+    */
+   public static IArtifactType createArtifactTypeFromToken(String token) {
+      Matcher matcher = nameIdPattern.matcher(token);
+      if (matcher.find()) {
+         Long uuid = Long.valueOf(matcher.group(2));
+         String name = matcher.group(1);
+         return new ArtifactTypeToken(uuid, name);
+      }
+      return null;
    }
 
    public static IAttributeType createAttributeType(long guid, String name) {
@@ -339,5 +356,9 @@ public final class TokenFactory {
       public TupleFailyTypeImpl(Long tupleFamilyTypeId) {
          super(tupleFamilyTypeId);
       }
+   }
+
+   public static String createArtifactTypeTokenString(IArtifactType artifactType) {
+      return String.format("[%s]-[%d]", artifactType.getName(), artifactType.getGuid());
    }
 }
