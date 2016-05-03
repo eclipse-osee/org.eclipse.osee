@@ -13,7 +13,6 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.resource.management.exception,
  org.eclipse.osee.framework.resource.management.util,
  org.eclipse.osee.orcs.core.ds,
- org.eclipse.osee.orcs.db.internal.search.tagger,
  org.eclipse.osee.orcs.db.mock
 Require-Bundle: org.eclipse.osee.framework.core,
  org.junit,
