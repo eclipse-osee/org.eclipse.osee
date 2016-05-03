@@ -15,6 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -25,7 +27,9 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeContentProvider implements IGraphEntityContentProvider {
-   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<>(0);
+
+   private final Set<IArtifactType> parentTypes = new HashSet<>();
+   private IArtifactType selectedArtType = null;
 
    public ArtifactTypeContentProvider() {
       super();
@@ -35,7 +39,37 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    public Object[] getConnectedTo(Object entity) {
       try {
          if (entity instanceof ArtifactType) {
-            return ((ArtifactType) entity).getFirstLevelDescendantTypes().toArray();
+            ArtifactType artifactType = (ArtifactType) entity;
+            if (parentTypes.contains(artifactType)) {
+               Set<IArtifactType> artifactTypes = new HashSet<>();
+               for (IArtifactType childType : artifactType.getFirstLevelDescendantTypes()) {
+                  if (parentTypes.contains(childType)) {
+                     artifactTypes.add(childType);
+                  }
+               }
+               return artifactTypes.toArray();
+            } else if (parentTypes.contains(entity)) {
+               Set<IArtifactType> artifactTypes = new HashSet<>();
+               for (IArtifactType childType : artifactType.getSuperArtifactTypes()) {
+                  if (parentTypes.contains(childType)) {
+                     artifactTypes.add(childType);
+                  }
+               }
+               return artifactTypes.toArray();
+            } else if (selectedArtType.equals(entity) && !selectedArtType.equals(CoreArtifactTypes.Artifact)) {
+               Set<IArtifactType> artifactTypes = new HashSet<>();
+               // parents
+               for (IArtifactType childType : artifactType.getSuperArtifactTypes()) {
+                  if (parentTypes.contains(childType)) {
+                     artifactTypes.add(childType);
+                  }
+               }
+               // children
+               artifactTypes.addAll(artifactType.getFirstLevelDescendantTypes());
+               return artifactTypes.toArray();
+            } else {
+               return artifactType.getFirstLevelDescendantTypes().toArray();
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -47,9 +81,13 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    public Object[] getElements(Object inputElement) {
       try {
          if (inputElement instanceof ArtifactType) {
+            ArtifactType artifactType = (ArtifactType) inputElement;
             Set<ArtifactType> artifactTypes = new HashSet<>();
-            artifactTypes.add((ArtifactType) inputElement);
-            getDecendents((ArtifactType) inputElement, artifactTypes);
+            getParents(artifactType, artifactTypes);
+            if (!parentTypes.contains(artifactType)) {
+               artifactTypes.add(artifactType);
+               getDecendents(artifactType, artifactTypes);
+            }
             return artifactTypes.toArray();
          }
       } catch (OseeCoreException ex) {
@@ -58,10 +96,20 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
       return null;
    }
 
+   public void getParents(ArtifactType artifactType, Set<ArtifactType> parents) throws OseeCoreException {
+      for (ArtifactType artType : artifactType.getSuperArtifactTypes()) {
+         parents.add(artType);
+         parentTypes.add(artType);
+         getParents(artType, parents);
+      }
+   }
+
    public void getDecendents(ArtifactType artifactType, Set<ArtifactType> decendents) throws OseeCoreException {
       for (ArtifactType artType : artifactType.getFirstLevelDescendantTypes()) {
-         decendents.add(artType);
-         getDecendents(artType, decendents);
+         if (!parentTypes.contains(artType)) {
+            decendents.add(artType);
+            getDecendents(artType, decendents);
+         }
       }
    }
 
@@ -77,6 +125,18 @@ public class ArtifactTypeContentProvider implements IGraphEntityContentProvider 
    @Override
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
       // do nothing
+   }
+
+   public Set<IArtifactType> getParentTypes() {
+      return parentTypes;
+   }
+
+   public IArtifactType getSelectedArtType() {
+      return selectedArtType;
+   }
+
+   public void setSelectedArtType(IArtifactType selectedArtType) {
+      this.selectedArtType = selectedArtType;
    }
 
 }

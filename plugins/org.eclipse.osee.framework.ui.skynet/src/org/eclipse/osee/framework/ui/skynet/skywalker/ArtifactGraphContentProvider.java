@@ -33,7 +33,7 @@ import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
  * @author Donald G. Dunne
  */
 public class ArtifactGraphContentProvider implements IGraphEntityContentProvider {
-   // private static final Collection<Artifact>EMPTY_LIST = new ArrayList<>(0);
+
    private final SkyWalkerOptions options;
 
    public ArtifactGraphContentProvider(SkyWalkerOptions options) {
@@ -41,6 +41,7 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       this.options = options;
    }
 
+   @SuppressWarnings("deprecation")
    @Override
    public Object[] getConnectedTo(Object entity) {
       List<Artifact> otherItems = new LinkedList<>();
@@ -48,17 +49,6 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       // Don't want to create any links to artifacts that are NOT in displayArtifacts
       try {
          Artifact artifact = (Artifact) entity;
-         //         List<RelationType> validTypes =
-         //               RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
-         //         for (RelationType relationType : validTypes) {
-         //            if (options.isValidRelationType(relationType)) {
-         //               for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
-         //                  if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
-         //                     otherItems.add(art);
-         //                  }
-         //               }
-         //            }
-         //         }
          for (Object obj : options.getSelectedRelTypes()) {
             if (obj instanceof RelationType) {
                RelationType relationType = (RelationType) obj;
@@ -101,24 +91,12 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
       return null;
    }
 
+   @SuppressWarnings("deprecation")
    private void getDescendants(Collection<Artifact> displayArtifacts, Artifact artifact, int level) {
-      // System.out.println("getDecendants level: " + level + " artifact => " + artifact);
       if (level == 0) {
          return;
       } else {
          try {
-            //            List<RelationType> validTypes =
-            //                  RelationTypeManager.getValidTypes(artifact.getArtifactType(), artifact.getBranch());
-            //            for (RelationType relationType : validTypes) {
-            //               if (options.isValidRelationType(relationType)) {
-            //                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
-            //                     if (options.isValidArtifactType(art.getArtifactType())) {
-            //                        displayArtifacts.add(art);
-            //                        getDescendants(displayArtifacts, art, level - 1);
-            //                     }
-            //                  }
-            //               }
-            //            }
             for (Object obj : options.getSelectedRelTypes()) {
                if (obj instanceof RelationType) {
                   RelationType relationType = (RelationType) obj;

@@ -26,11 +26,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.ui.plugin.PluginUiImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
-import org.eclipse.osee.framework.ui.skynet.util.ArtifactTypeLabelProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.GenericViewPart;
 import org.eclipse.osee.framework.ui.swt.Displays;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IActionBars;
@@ -45,6 +45,7 @@ import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeWalker extends GenericViewPart {
+   private static final Color RED = Displays.getColor(234, 105, 135);
    public static final String VIEW_ID = "org.eclipse.osee.framework.ui.skynet.skywalker.ArtifactTypeWalkerView";
    protected GraphViewer viewer;
    private Composite viewerComp;
@@ -56,8 +57,9 @@ public class ArtifactTypeWalker extends GenericViewPart {
       viewerComp.setLayout(new FillLayout());
 
       viewer = new GraphViewer(viewerComp, ZestStyles.NONE);
-      viewer.setContentProvider(new ArtifactTypeContentProvider());
-      viewer.setLabelProvider(new ArtifactTypeLabelProvider());
+      ArtifactTypeContentProvider contentProvider = new ArtifactTypeContentProvider();
+      viewer.setContentProvider(contentProvider);
+      viewer.setLabelProvider(new ArtifactTypeWalkerLabelProvider(contentProvider));
       viewer.setConnectionStyle(ZestStyles.CONNECTIONS_SOLID);
       viewer.setNodeStyle(ZestStyles.NODES_NO_LAYOUT_RESIZE);
       viewer.setLayoutAlgorithm(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING));
@@ -87,6 +89,9 @@ public class ArtifactTypeWalker extends GenericViewPart {
    }
 
    private void explore(ArtifactType artifactType) {
+      ArtifactTypeContentProvider contentProvider = (ArtifactTypeContentProvider) viewer.getContentProvider();
+      contentProvider.getParentTypes().clear();
+      contentProvider.setSelectedArtType(artifactType);
       viewer.setInput(artifactType);
       GraphItem item = viewer.findGraphItem(artifactType);
       if (item != null && item instanceof GraphNode) {
@@ -100,6 +105,18 @@ public class ArtifactTypeWalker extends GenericViewPart {
             if (childItem != null && childItem instanceof GraphNode) {
                GraphNode node = (GraphNode) childItem;
                node.setBackgroundColor(Displays.getSystemColor(SWT.COLOR_GREEN));
+               viewer.update(node, null);
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      try {
+         for (IArtifactType childType : contentProvider.getParentTypes()) {
+            GraphItem childItem = viewer.findGraphItem(childType);
+            if (childItem != null && childItem instanceof GraphNode) {
+               GraphNode node = (GraphNode) childItem;
+               node.setBackgroundColor(RED);
                viewer.update(node, null);
             }
          }
