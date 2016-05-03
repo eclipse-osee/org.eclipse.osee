@@ -42,6 +42,10 @@ public class XAtsProgramComboWidget extends XComboViewer {
       this(atsProgramManager.getName() + " Program", atsProgramManager.getPrograms());
    }
 
+   public XAtsProgramComboWidget(Collection<? extends IAtsProgram> atsPrograms) throws OseeCoreException {
+      this("ATS Program", atsPrograms);
+   }
+
    public XAtsProgramComboWidget() throws OseeCoreException {
       this("ATS Program", getAllPrograms());
    }

@@ -11,6 +11,10 @@
 
 package org.eclipse.osee.ats.util.widgets;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import org.eclipse.osee.ats.api.program.IAtsProgram;
 import org.eclipse.osee.ats.column.OperationalImpactWithWorkaroundXWidget;
 import org.eclipse.osee.ats.column.OperationalImpactXWidget;
 import org.eclipse.osee.ats.core.client.review.defect.AtsXDefectValidator;
@@ -18,6 +22,7 @@ import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactValidator;
 import org.eclipse.osee.ats.core.client.validator.AtsOperationalImpactWithWorkaroundValidator;
 import org.eclipse.osee.ats.internal.Activator;
+import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.XVersionList;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.ats.util.widgets.defect.XDefectViewer;
@@ -103,6 +108,18 @@ public class AtsWidgetProvider implements IXWidgetProvider {
             return new XAtsProgramComboWidget();
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      } else if (widgetName.equals("XAtsProgramActiveComboWidget")) {
+         try {
+            List<IAtsProgram> activePrograms = new ArrayList<>();
+            for (IAtsProgram program : AtsClientService.get().getProgramService().getPrograms()) {
+               if (program.isActive()) {
+                  activePrograms.add(program);
+               }
+            }
+            return new XAtsProgramComboWidget(activePrograms);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       } else if (widgetName.equals(XVersionList.WIDGET_ID)) {
          XVersionList versionList = new XVersionList();

@@ -34,6 +34,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -154,14 +155,17 @@ public class DetailedTestStatusBlam extends AbstractBlam {
             selectedBranch = null;
 
             try {
-               Collection<IAtsVersion> versionArtifacts =
-                  AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(
-                     selectedProgram).getVersions();
-               versionsListViewer.setInputAtsObjects(versionArtifacts);
-
-               reportBranchWidget.setSelection(null);
-
-               versionsListViewer.addSelectionChangedListener(branchSelectionListener);
+               IAtsTeamDefinition teamDefHoldingVersions =
+                  AtsClientService.get().getTeamDefinitionService().getTeamDefHoldingVersions(selectedProgram);
+               if (teamDefHoldingVersions == null) {
+                  versionsListViewer.setInputAtsObjects(new ArrayList<>());
+                  reportBranchWidget.setSelection(null);
+               } else {
+                  Collection<IAtsVersion> versionArtifacts = teamDefHoldingVersions.getVersions();
+                  versionsListViewer.setInputAtsObjects(versionArtifacts);
+                  reportBranchWidget.setSelection(null);
+                  versionsListViewer.addSelectionChangedListener(branchSelectionListener);
+               }
             } catch (OseeCoreException ex) {
                log(ex);
             }
@@ -645,7 +649,8 @@ public class DetailedTestStatusBlam extends AbstractBlam {
    public String getXWidgetsXml() {
       StringBuilder sb = new StringBuilder();
       sb.append("<xWidgets>");
-      sb.append("<XWidget xwidgetType=\"XAtsProgramComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
+      sb.append(
+         "<XWidget xwidgetType=\"XAtsProgramActiveComboWidget\" horizontalLabel=\"true\" displayName=\"Program\" />");
       sb.append("<XWidget xwidgetType=\"XVersionList\" displayName=\"Versions\" multiSelect=\"true\" />");
       sb.append(
          "<XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Requirements Branch\" toolTip=\"Select a requirements branch.\" />");
