@@ -15,6 +15,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HexUtil;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -23,15 +24,16 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 /**
  * @author Donald G. Dunne
  */
-public class GenerateGuid extends XNavigateItemAction {
+public class GenerateGuidUuidArtId extends XNavigateItemAction {
 
-   public GenerateGuid(XNavigateItem parent) {
-      super(parent, "Generate Guid", AtsImage.REPORT);
+   public GenerateGuidUuidArtId(XNavigateItem parent) {
+      super(parent, "Generate Guid, Uuid and ArtId", AtsImage.REPORT);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       XResultData resultData = new XResultData();
+      resultData.log("GUIDs");
       for (int x = 0; x < 10; x++) {
          String guid = GUID.create();
          while (guid.contains("+")) {
@@ -39,7 +41,7 @@ public class GenerateGuid extends XNavigateItemAction {
          }
          resultData.log(guid);
       }
-      resultData.log("");
+      resultData.log("\nGUID - Uuid");
       Random r = new Random();
       for (int i = 0; i < 10; i++) {
          long next = r.nextLong();
@@ -49,6 +51,11 @@ public class GenerateGuid extends XNavigateItemAction {
             --i;
          }
       }
-      XResultDataUI.report(resultData, "GUIDs");
+
+      resultData.log("\nArtifact Ids");
+      for (int i = 0; i < 10; i++) {
+         resultData.log(String.valueOf(Lib.generateArtifactIdAsInt()));
+      }
+      XResultDataUI.report(resultData, getName());
    }
 }

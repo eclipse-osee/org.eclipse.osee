@@ -246,7 +246,7 @@ public final class AtsNavigateViewItems implements XNavigateViewItems, IXNavigat
       new XNavigateItemBlam(utilItems, new ImportActionsViaSpreadsheetBlam());
       new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
       new XNavigateItemAction(utilItems, new AtsExportAction(), FrameworkImage.EXPORT_DATA);
-      new GenerateGuid(utilItems);
+      new GenerateGuidUuidArtId(utilItems);
       new XNavigateItemOperation(utilItems, FrameworkImage.ARTIFACT_MASS_EDITOR, MassEditDirtyArtifactOperation.NAME,
          new MassEditDirtyArtifactOperation());
       new ClearAtsWorkDefinitionCache(utilItems);
