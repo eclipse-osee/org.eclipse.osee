@@ -19,6 +19,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.plugin.core.util.AIFile;
 import org.eclipse.osee.framework.plugin.core.util.OseeData;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.swt.program.Program;
@@ -40,7 +40,6 @@ public class ExportArtifacts extends AbstractBlam {
    private CharBackedInputStream charBak;
    private ISheetWriter excelWriter;
    private IAttributeType[] attributeColumns;
-   private AttributeType nameAttributeType;
    private static final int NUM_FIXED_COLUMNS = 3;
 
    @Override
@@ -83,7 +82,7 @@ public class ExportArtifacts extends AbstractBlam {
          row[1] = artifact.getArtifactTypeName();
          row[2] = artifact.getName();
          for (IAttributeType attributeType : artifact.getAttributeTypes()) {
-            if (!attributeType.equals(nameAttributeType)) {
+            if (!attributeType.equals(CoreAttributeTypes.Name)) {
                String value = artifact.getAttributesToString(attributeType);
                if (!value.equals("")) {
                   row[NUM_FIXED_COLUMNS + Arrays.binarySearch(attributeColumns, attributeType)] = value;
@@ -109,13 +108,12 @@ public class ExportArtifacts extends AbstractBlam {
          }
       }
 
-      attributeTypes.remove(nameAttributeType);
+      attributeTypes.remove(CoreAttributeTypes.Name);
       attributeColumns = attributeTypes.toArray(new AttributeType[attributeTypes.size()]);
       Arrays.sort(attributeColumns);
    }
 
    private void init() throws IOException, OseeCoreException {
-      nameAttributeType = AttributeTypeManager.getType("Name");
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }

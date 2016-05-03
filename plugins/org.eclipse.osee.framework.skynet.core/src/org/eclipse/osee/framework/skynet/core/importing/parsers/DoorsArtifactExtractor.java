@@ -24,7 +24,6 @@ import java.util.StringTokenizer;
 import java.util.Vector;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.model.type.AttributeType;
 import org.eclipse.osee.framework.core.model.type.OseeEnumType;
 import org.eclipse.osee.framework.core.operation.OperationLogger;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -659,8 +658,8 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
        */
       for (int i = 0; i < VERIFICATION_KEYWORDS.length; i++) {
          // special case Criteria is a string attribute
-         if (FIELD_TYPE[i] == null && !(VERIFICATION_KEYWORDS[i].equals(
-            CRITERIA) || VERIFICATION_KEYWORDS[i].equals(VERIFICATION_ACCEPTANCE_CRITERIA))) {
+         if (FIELD_TYPE[i] == null && !(VERIFICATION_KEYWORDS[i].equals(CRITERIA) || VERIFICATION_KEYWORDS[i].equals(
+            VERIFICATION_ACCEPTANCE_CRITERIA))) {
             continue;
          }
          int iStart = trimmed.indexOf(VERIFICATION_KEYWORDS[i]);
@@ -733,8 +732,7 @@ public class DoorsArtifactExtractor extends AbstractArtifactExtractor {
 
    private void parseAndStoreEnum(RoughArtifact roughArtifact, String data, IAttributeType type) {
       StringTokenizer theTokens = new StringTokenizer(data, " ");
-      AttributeType attr = AttributeTypeManager.getType(type.getName());
-      OseeEnumType enumType = attr.getOseeEnumType();
+      OseeEnumType enumType = AttributeTypeManager.getType(type).getOseeEnumType();
       Set<String> theValues = enumType.valuesAsOrderedStringSet();
       String singleItem = "";
       while (theTokens.hasMoreTokens()) {
