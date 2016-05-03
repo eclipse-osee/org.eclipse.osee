@@ -162,10 +162,13 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
             WordUiUtil.displayUnknownGuids(artifact, unknownGuids);
 
             data = WordUtil.reassignBookMarkID(data);
-            data = removeSectionBreakParagraph(data);
+            if (presentationType == PresentationType.SPECIALIZED_EDIT) {
+               data = removeSectionBreakParagraph(data);
+               data = data.replaceAll(ReportConstants.ENTIRE_FTR + ReportConstants.FULL_PARA_END, "");
+            }
 
             // remove any existing footers and replace with the current one
-            data = data.replaceAll(ReportConstants.ENTIRE_FTR + ReportConstants.FULL_PARA_END, "");
+            data = data.replaceAll(ReportConstants.ENTIRE_FTR, "");
             data = data.replaceAll(ReportConstants.NO_DATA_RIGHTS, "");
             data = data.concat(footer);
          }
