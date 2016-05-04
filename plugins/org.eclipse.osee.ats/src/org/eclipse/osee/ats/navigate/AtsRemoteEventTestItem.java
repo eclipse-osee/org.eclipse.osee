@@ -288,8 +288,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       testEquals("Description", "description 4", teamArt.getSoleAttributeValue(AtsAttributeTypes.Description, null));
       testEquals("Change Type", ChangeType.Support, ChangeTypeUtil.getChangeType(teamArt));
       testEquals("Priority", "3", teamArt.getSoleAttributeValue(AtsAttributeTypes.PriorityType, null));
-      testEquals("Validation Required", "false",
-         String.valueOf(teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null)));
+      testEquals("Validation Required", false,
+         teamArt.getSoleAttributeValue(AtsAttributeTypes.ValidationRequired, null));
 
       IAtsVersion verArt = AtsClientService.get().getVersionService().getTargetedVersion(teamArt);
       String expectedTargetedVersion;
