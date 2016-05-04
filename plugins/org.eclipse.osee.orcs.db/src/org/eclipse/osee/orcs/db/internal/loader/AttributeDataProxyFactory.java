@@ -15,9 +15,11 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.core.ds.DataProxy;
 import org.eclipse.osee.orcs.core.ds.DataProxyFactory;
 import org.eclipse.osee.orcs.data.AttributeTypes;
+import org.eclipse.osee.orcs.db.internal.util.AttributeDataUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -26,11 +28,13 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
 
    private final DataProxyFactoryProvider proxyProvider;
    private final AttributeTypes attributeTypeCache;
+   private final JdbcClient jdbcClient;
 
-   public AttributeDataProxyFactory(DataProxyFactoryProvider proxyProvider, AttributeTypes attributeTypes) {
+   public AttributeDataProxyFactory(DataProxyFactoryProvider proxyProvider, JdbcClient jdbcClient, AttributeTypes attributeTypes) {
       super();
       this.proxyProvider = proxyProvider;
       this.attributeTypeCache = attributeTypes;
+      this.jdbcClient = jdbcClient;
    }
 
    @Override
@@ -58,6 +62,7 @@ public class AttributeDataProxyFactory implements ProxyDataFactory {
       if (isEnumOrBoolean(attributeType)) {
          value = intern(value);
       }
+      value = AttributeDataUtil.replaceGuidsWithName(original, jdbcClient);
       return value;
    }
 

@@ -49,7 +49,7 @@ public class LoaderModule {
    }
 
    public ProxyDataFactory createProxyDataFactory(AttributeTypes attributeTypes) {
-      return new AttributeDataProxyFactory(proxyProvider, attributeTypes);
+      return new AttributeDataProxyFactory(proxyProvider, jdbcClient, attributeTypes);
    }
 
    public OrcsObjectFactory createOrcsObjectFactory(ProxyDataFactory proxyFactory) {

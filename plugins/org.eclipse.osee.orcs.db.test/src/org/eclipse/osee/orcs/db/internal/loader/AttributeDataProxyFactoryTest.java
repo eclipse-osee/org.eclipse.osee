@@ -27,7 +27,7 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test Case for {@link AttributeDataProxyFactory}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class AttributeDataProxyFactoryTest {
@@ -48,7 +48,7 @@ public class AttributeDataProxyFactoryTest {
    @Before
    public void setUp() {
       MockitoAnnotations.initMocks(this);
-      factory = new AttributeDataProxyFactory(proxyProvider, attributeTypeCache);
+      factory = new AttributeDataProxyFactory(proxyProvider, null, attributeTypeCache);
    }
 
    @Test
