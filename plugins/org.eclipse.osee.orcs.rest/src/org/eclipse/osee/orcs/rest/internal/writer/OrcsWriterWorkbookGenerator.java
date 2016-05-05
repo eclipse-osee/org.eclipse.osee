@@ -99,7 +99,7 @@ public class OrcsWriterWorkbookGenerator {
 
    private void createCreateSheet(ISheetWriter writer) throws IOException {
       // @formatter:off
-      String[] createSheetHeadings = {null, "New Art Token (for refrence in relations, if needed)", "Name", "Attribute", "Relation"};
+      String[] createSheetHeadings = {null, "New Art Token (for refrence in relations, if needed)", "Name", "Attribute", "Attribute", "Relation"};
       // @formatter:on
       writer.startSheet(OrcsWriterUtil.CREATE_SHEET_NAME, createSheetHeadings.length);
       writer.writeRow((Object[]) createSheetHeadings);
@@ -109,6 +109,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(null);
       writer.writeCell(CoreAttributeTypes.Name.getName() + " (required)");
       writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.StaticId).getData());
+      writer.writeCell(OwFactory.createAttributeType(CoreAttributeTypes.Partition).getData());
       writer.writeCell(OwFactory.createRelationType(orcsApi, CoreRelationTypes.Default_Hierarchical__Parent).getData());
       writer.endRow();
 
@@ -119,6 +120,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(folderToken.getData());
       writer.writeCell("Orcs Writer Import Folder");
       writer.writeCell(null);
+      writer.writeCell(null);
       writer.writeCell(OwFactory.createArtifactToken(CoreArtifactTokens.DefaultHierarchyRoot).getData());
       writer.endRow();
 
@@ -127,6 +129,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(null);
       writer.writeCell("Software Requirement 1");
       writer.writeCell("static id field 1");
+      writer.writeCell("Communication");
       writer.writeCell(folderToken.getData());
       writer.endRow();
 
@@ -135,6 +138,7 @@ public class OrcsWriterWorkbookGenerator {
       writer.writeCell(null);
       writer.writeCell("Software Requirement 2");
       writer.writeCell("static id field 2");
+      writer.writeCell("Flight Control");
       writer.writeCell(folderToken.getData());
       writer.endRow();
 

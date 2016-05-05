@@ -16,9 +16,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -160,8 +160,7 @@ public class OrcsCollectorWriter {
                      throw new OseeArgumentException("Exception processing Integer for OwAttribute %s Exception %s",
                         owAttribute, ex);
                   }
-               } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(
-                  newValue)) {
+               } else if (currValue == null && newValue != null || currValue != null && !currValue.equals(newValue)) {
                   logChange(artifact, attrType, currValue, newValue);
                   getTransaction().setSoleAttributeValue(artifact, attrType, newValue);
                }
@@ -275,26 +274,29 @@ public class OrcsCollectorWriter {
 
             List<Object> values = owAttribute.getValues();
             for (Object value : values) {
-               if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
-                  getTransaction().setSoleAttributeValue(artifact, attrType, Double.valueOf((String) value));
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
-                  getTransaction().setSoleAttributeValue(artifact, attrType, Integer.valueOf((String) value));
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
-                  Boolean set = getBoolean((String) value);
-                  if (set != null) {
-                     getTransaction().setSoleAttributeValue(artifact, attrType, set);
-                  }
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
-                  Date date = getDate(value);
-                  if (date != null) {
-                     getTransaction().setSoleAttributeValue(artifact, attrType, date);
+               String valueOf = String.valueOf(value);
+               if (Strings.isValid(valueOf) && !valueOf.equals("null")) {
+                  if (orcsApi.getOrcsTypes().getAttributeTypes().isFloatingType(attrType)) {
+                     getTransaction().setSoleAttributeValue(artifact, attrType, Double.valueOf((String) value));
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isIntegerType(attrType)) {
+                     getTransaction().setSoleAttributeValue(artifact, attrType, Integer.valueOf((String) value));
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isBooleanType(attrType)) {
+                     Boolean set = getBoolean((String) value);
+                     if (set != null) {
+                        getTransaction().setSoleAttributeValue(artifact, attrType, set);
+                     }
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().isDateType(attrType)) {
+                     Date date = getDate(value);
+                     if (date != null) {
+                        getTransaction().setSoleAttributeValue(artifact, attrType, date);
+                     } else {
+                        throw new OseeArgumentException("Unexpected date format [%s]", value);
+                     }
+                  } else if (orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attrType) == 1) {
+                     getTransaction().setSoleAttributeValue(artifact, attrType, value);
                   } else {
-                     throw new OseeArgumentException("Unexpected date format [%s]", value);
+                     getTransaction().createAttribute(artifact, attrType, value);
                   }
-               } else if (orcsApi.getOrcsTypes().getAttributeTypes().getMaxOccurrences(attrType) == 1) {
-                  getTransaction().setSoleAttributeValue(artifact, attrType, value);
-               } else {
-                  getTransaction().createAttribute(artifact, attrType, value);
                }
             }
          }

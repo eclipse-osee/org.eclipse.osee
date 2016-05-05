@@ -90,7 +90,6 @@ public class OrcsWriterCollectorGenerator {
          "   - Make modifications to the input. CREATE, MODIFY, DELETE, BRANCH tabs/structures are the only items\n");
       sb.append("     that will be read. Token and Type tabs/structures are for reference only and should be used\n");
       sb.append("     in the CREATE, MODIFY and DELETE tabs/structures.\n");
-      sb.append("   - NOTE: MODIFY and DELETE tabs are not yet implemented\n");
       sb.append("   - On BRANCH tab, delete all but the single branch to apply changes to.\n");
       sb.append("   - Use <server>/orcs/writer/ui/main.html to validate sheet/json and then apply changes to branch.");
       collector.setInstructions(sb.toString());
