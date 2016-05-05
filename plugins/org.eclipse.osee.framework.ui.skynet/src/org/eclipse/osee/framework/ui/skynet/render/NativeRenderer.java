@@ -16,6 +16,7 @@ import static org.eclipse.osee.framework.ui.skynet.render.PresentationType.SPECI
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -106,5 +107,12 @@ public class NativeRenderer extends FileSystemRenderer {
    @Override
    protected IOperation getUpdateOperation(File file, List<Artifact> artifacts, BranchId branch, PresentationType presentationType) {
       return new FileToAttributeUpdateOperation(file, artifacts.get(0), CoreAttributeTypes.NativeContent);
+   }
+
+   @Override
+   public void open(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
+      for (Artifact artifact : artifacts) {
+         super.open(Arrays.asList(artifact), presentationType);
+      }
    }
 }
