@@ -107,15 +107,14 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          createTreeViewers(xWidget.getControl().getParent());
 
          dropViewer = (XListDropViewer) xWidget;
+         if (defaultTeamWorkflow != null) {
+            dropViewer.setInput(defaultTeamWorkflow);
+         }
          dropViewer.addXModifiedListener(new DropListener());
          Control control = dropViewer.getControl();
          GridData data = new GridData(SWT.FILL, SWT.NONE, true, false);
          data.heightHint = 20;
          control.setLayoutData(data);
-
-         if (xWidget.getLabel().equals(TEAM_WORKFLOW) && defaultTeamWorkflow != null) {
-            dropViewer.setInput(defaultTeamWorkflow);
-         }
       }
    }
 
@@ -233,7 +232,7 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                try {
                   wfTree.getViewer().setInput(teamWf);
                   Set<IAtsActionableItem> actionableItems = teamWf.getActionableItems();
-                  wfTree.setInitalChecked(Arrays.asList(actionableItems.toArray()));
+                  wfTree.setInitalChecked(actionableItems);
 
                   Set<IAtsActionableItem> ais = new HashSet<>();
                   for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
@@ -288,7 +287,9 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
          for (TeamWorkFlowArtifact team : teamWf.getParentActionArtifact().getTeams()) {
             currAIsForAllWfs.addAll(team.getActionableItems());
          }
+
          currWorkflowDesiredAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(wfTree.getChecked());
+
          newAIs = org.eclipse.osee.framework.jdk.core.util.Collections.castAll(newTree.getChecked());
          IAtsUser modifiedBy = AtsClientService.get().getUserService().getCurrentUser();
 
@@ -415,10 +416,10 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
    @Override
    public String getXWidgetsXml() {
       return "<xWidgets>"
-      //
-      + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
-      //
-      "</xWidgets>";
+         //
+         + "<XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
+         //
+         "</xWidgets>";
    }
 
    @Override

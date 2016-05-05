@@ -57,7 +57,7 @@ public class FilteredCheckboxTree extends FilteredTree {
 
    /**
     * The FilteredCheckboxTree Constructor.
-    * 
+    *
     * @param parent The parent composite where this Tree will be placed.
     * @param treeStyle Tree styles
     * @param filter The pattern filter that will be used to filter elements
@@ -176,7 +176,7 @@ public class FilteredCheckboxTree extends FilteredTree {
    /**
     * Get the number of pixels the tree viewer is from the top of the filtered checkbox tree viewer. This is useful if
     * you wish to align buttons with the tree.
-    * 
+    *
     * @return the offset of the Tree from the top of the container
     */
    int getTreeLocationOffset() {
@@ -362,9 +362,13 @@ public class FilteredCheckboxTree extends FilteredTree {
          Set<Object> s = new HashSet<>(itemCache.keySet());
          s.removeAll(new HashSet<Object>(Arrays.asList(elements)));
          for (int i = 0; i < elements.length; i++) {
-            FilteredCheckboxTreeItem item = itemCache.get(elements[i]);
+            Object element = elements[i];
+            FilteredCheckboxTreeItem item = itemCache.get(element);
             if (item != null) {
                item.state = CHECKED;
+            } else {
+               item = new FilteredCheckboxTreeItem(element, CHECKED, itemCache, null);
+               itemCache.put(element, item);
             }
          }
          for (Iterator<Object> iterator = s.iterator(); iterator.hasNext();) {

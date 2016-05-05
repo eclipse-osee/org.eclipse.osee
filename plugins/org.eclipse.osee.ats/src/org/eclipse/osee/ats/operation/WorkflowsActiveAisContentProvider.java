@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.Active;
 
 /**
  * Provide AIs from given Team WF's team definition and all children matching active parameter.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
@@ -61,8 +61,12 @@ public class WorkflowsActiveAisContentProvider implements ITreeContentProvider {
    public Object getParent(Object element) {
       Object parent = null;
       if (element instanceof IAtsActionableItem) {
-         IAtsActionableItem ai = (IAtsActionableItem) element;
-         parent = ai.getParentActionableItem();
+         if (teamWf.getActionableItems().contains(element)) {
+            parent = teamWf;
+         } else {
+            IAtsActionableItem ai = (IAtsActionableItem) element;
+            parent = ai.getParentActionableItem();
+         }
       }
       return parent;
    }
