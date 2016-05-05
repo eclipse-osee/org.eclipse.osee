@@ -108,7 +108,7 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
          public void widgetSelected(SelectionEvent e) {
             if (selectOthers.contains(combo.getSelected())) {
                FilteredTreeDialog dialog = new FilteredTreeDialog("Select Work Package", "Select Work Package",
-                  new ArrayTreeContentProvider(), new WorkPacakgeLabelProvider(), new StringNameSorter());
+                  new ArrayTreeContentProvider(), new WorkPackageLabelProvider(), new StringNameSorter());
                dialog.setMultiSelect(false);
                if (combo.getSelected().equals(selectOtherActive)) {
                   dialog.setInput(
@@ -148,7 +148,7 @@ public class WorkPackageSearchWidget extends AbstractXComboViewerSearchWidget<IA
 
    }
 
-   private class WorkPacakgeLabelProvider extends StringLabelProvider {
+   private class WorkPackageLabelProvider extends StringLabelProvider {
 
       @Override
       public String getText(Object arg0) {
