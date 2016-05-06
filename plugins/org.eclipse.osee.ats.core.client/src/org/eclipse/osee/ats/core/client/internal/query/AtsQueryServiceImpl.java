@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.core.util.AtsJsonFactory;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -50,10 +51,13 @@ public class AtsQueryServiceImpl implements IAtsQueryService {
 
    @Override
    public IAtsQuery createQuery(WorkItemType workItemType, WorkItemType... workItemTypes) {
+      Conditions.checkNotNull(workItemType, "workItemType");
       AtsQueryImpl query = new AtsQueryImpl(atsClient);
       query.isOfType(workItemType);
-      for (WorkItemType type : workItemTypes) {
-         query.isOfType(type);
+      if (workItemTypes != null) {
+         for (WorkItemType type : workItemTypes) {
+            query.isOfType(type);
+         }
       }
       return query;
    }

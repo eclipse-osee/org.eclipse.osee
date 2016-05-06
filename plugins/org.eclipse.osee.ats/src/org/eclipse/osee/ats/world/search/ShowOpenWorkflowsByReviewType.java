@@ -29,10 +29,11 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
 
    private final boolean showFinished;
    private final boolean showWorkflow;
-   private WorkItemType workItemType;
+   private final WorkItemType workItemType;
 
    public ShowOpenWorkflowsByReviewType(String displayName, WorkItemType workItemType, boolean showFinished, boolean showWorkflow, KeyedImage oseeImage) {
       super(displayName, oseeImage);
+      Conditions.checkNotNull(workItemType, "workItemType");
       this.workItemType = workItemType;
       this.showFinished = showFinished;
       this.showWorkflow = showWorkflow;
@@ -46,6 +47,7 @@ public class ShowOpenWorkflowsByReviewType extends WorldUISearchItem {
       super(showOpenWorkflowsByArtifactType);
       this.showFinished = showOpenWorkflowsByArtifactType.showFinished;
       this.showWorkflow = showOpenWorkflowsByArtifactType.showWorkflow;
+      this.workItemType = showOpenWorkflowsByArtifactType.workItemType;
    }
 
    @Override
