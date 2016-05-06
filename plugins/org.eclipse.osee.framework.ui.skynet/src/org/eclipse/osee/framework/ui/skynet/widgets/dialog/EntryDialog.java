@@ -261,7 +261,7 @@ public class EntryDialog extends MessageDialog {
 
    /**
     * override this method to make own checks on entry this will be called with every keystroke
-    * 
+    *
     * @return true if entry is valid
     */
    public boolean isEntryValid() {
@@ -343,4 +343,11 @@ public class EntryDialog extends MessageDialog {
       this.errorString = errorString;
    }
 
+   public Label getMessageLabel() {
+      return messageLabel;
+   }
+
+   public Label getErrorLabel() {
+      return errorLabel;
+   }
 }

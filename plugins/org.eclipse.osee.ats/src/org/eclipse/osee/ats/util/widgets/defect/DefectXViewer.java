@@ -568,7 +568,10 @@ public class DefectXViewer extends XViewer {
          update(defectItem, null);
       }
       xDefectViewer.getDefectManager().saveToArtifact(xDefectViewer.getReviewArt());
-      transaction.execute();
+      if (xDefectViewer.getReviewArt().isDirty()) {
+         transaction.addArtifact(xDefectViewer.getReviewArt());
+         transaction.execute();
+      }
       xDefectViewer.notifyXModifiedListeners();
       return true;
    }

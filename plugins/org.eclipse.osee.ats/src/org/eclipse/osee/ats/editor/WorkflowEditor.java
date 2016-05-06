@@ -28,6 +28,7 @@ import org.eclipse.osee.ats.actions.IDirtyReportable;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.agile.SprintMemberProvider;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.review.IAtsPeerToPeerReview;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
@@ -94,6 +95,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
    private AbstractWorkflowArtifact awa;
    private WfeWorkFlowTab workFlowTab;
    private WfeMembersTab membersTab;
+   private WfeDefectsTab defectsTab;
    private WfeTasksTab taskTab;
    int attributesPageIndex;
    private AttributesComposite attributesComposite;
@@ -134,6 +136,7 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
             createMembersTab();
             createWorkflowTab();
             createTaskTab();
+            createDefectsTab();
             createAttributesTab();
             createMetricsTab();
          }
@@ -204,6 +207,13 @@ public class WorkflowEditor extends AbstractArtifactEditor implements IDirtyRepo
       if (isTaskable()) {
          taskTab = new WfeTasksTab(this, (IAtsTeamWorkflow) awa, AtsClientService.get());
          addPage(taskTab);
+      }
+   }
+
+   private void createDefectsTab() throws PartInitException {
+      if (awa.isOfType(AtsArtifactTypes.PeerToPeerReview)) {
+         defectsTab = new WfeDefectsTab(this, (IAtsPeerToPeerReview) awa);
+         addPage(defectsTab);
       }
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util.widgets.defect;
 
 import org.eclipse.osee.ats.core.client.review.defect.ReviewDefectItem.Severity;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -19,13 +20,15 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.MouseAdapter;
+import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Listener;
 
 /**
  * Dialog with two entry boxes
- * 
+ *
  * @author Donald G. Dunne
  */
 public class NewDefectDialog extends EntryDialog {
@@ -56,6 +59,20 @@ public class NewDefectDialog extends EntryDialog {
 
    @Override
    protected void createExtendedArea(Composite parent) {
+
+      getErrorLabel().addMouseListener(new MouseAdapter() {
+
+         @Override
+         public void mouseUp(MouseEvent e) {
+            super.mouseUp(e);
+            if (e.button == 3) {
+               text.set("description " + AtsUtil.getAtsDeveloperIncrementingNum());
+               severityCombo.set("Issue");
+               text2.set("location");
+            }
+         }
+
+      });
 
       severityCombo = new XCombo("Enter Defect Severity");
       severityCombo.setDataStrings(Severity.strValues().toArray(new String[Severity.strValues().size()]));

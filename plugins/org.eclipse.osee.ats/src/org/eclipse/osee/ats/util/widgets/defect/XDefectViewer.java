@@ -363,7 +363,10 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             SkynetTransaction transaction =
                TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Delete Review Defects");
             deleteDefectHelper(items, persist, transaction);
-            transaction.execute();
+            if (reviewArt.isDirty()) {
+               transaction.addArtifact(reviewArt);
+               transaction.execute();
+            }
          } catch (Exception ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -374,6 +377,7 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
       try {
          for (ReviewDefectItem defectItem : items) {
             defectManager.removeDefectItem(defectItem, persist, transaction);
+            defectManager.saveToArtifact(reviewArt);
             xViewer.remove(defectItem);
          }
          loadTable();
@@ -400,7 +404,10 @@ public class XDefectViewer extends GenericXWidget implements IArtifactWidget, IA
             }
             defectManager.addOrUpdateDefectItem(item);
             defectManager.saveToArtifact(reviewArt);
-            transaction.execute();
+            if (reviewArt.isDirty()) {
+               transaction.addArtifact(reviewArt);
+               transaction.execute();
+            }
             notifyXModifiedListeners();
             loadTable();
          } catch (Exception ex) {

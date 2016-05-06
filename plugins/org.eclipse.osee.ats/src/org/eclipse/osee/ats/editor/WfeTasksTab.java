@@ -161,7 +161,7 @@ public class WfeTasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
          WorldXViewerEventManager.add(this);
 
          scrolledForm.setText("Team Workflow Tasks");
-         scrolledForm.setImage(ImageManager.getImage(AtsImage.TASK));
+         scrolledForm.setImage(ImageManager.getImage(AtsImage.PEER_REVIEW));
 
          managedForm.reflow(true);
       } catch (Exception ex) {
