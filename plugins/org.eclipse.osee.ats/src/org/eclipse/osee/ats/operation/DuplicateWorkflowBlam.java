@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAsIsOperation;
 import org.eclipse.osee.ats.core.workflow.util.DuplicateWorkflowAtStartStateOperation;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.util.XResultData;
@@ -124,7 +124,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
 
       if (!results.isErrors()) {
          for (IAtsTeamWorkflow newTeamArt : op.getResults().values()) {
-            SMAEditor.editArtifact((Artifact) newTeamArt);
+            WorkflowEditor.editArtifact(newTeamArt);
          }
       }
    }

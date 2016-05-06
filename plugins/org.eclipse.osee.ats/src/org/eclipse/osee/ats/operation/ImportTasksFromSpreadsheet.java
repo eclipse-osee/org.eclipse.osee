@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.api.task.NewTaskDataFactory;
 import org.eclipse.osee.ats.api.task.NewTaskDatas;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.Import.ExcelAtsTaskArtifactExtractor;
 import org.eclipse.osee.ats.util.Import.TaskImportJob;
@@ -140,7 +140,7 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                   AtsUtilClient.setEmailEnabled(true);
                }
 
-               SMAEditor.editArtifact(artifact);
+               WorkflowEditor.editArtifact(artifact);
             } catch (Exception ex) {
                log(ex);
             }

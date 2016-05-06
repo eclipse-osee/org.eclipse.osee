@@ -34,8 +34,8 @@ import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.WfeWorkflowSection;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.review.NewDecisionReviewJob;
@@ -78,12 +78,12 @@ public class ReviewInfoXWidget extends XLabelValueBase {
    private final int horizontalSpan;
    private final XFormToolkit toolkit;
    private final TeamWorkFlowArtifact teamArt;
-   private final SMAWorkFlowSection smaWorkflowSection;
+   private final WfeWorkflowSection workflowSection;
 
-   public ReviewInfoXWidget(SMAWorkFlowSection smaWorkflowSection, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final IStateToken forState, Composite composite, int horizontalSpan) {
+   public ReviewInfoXWidget(WfeWorkflowSection workflowSection, XFormToolkit toolkit, final TeamWorkFlowArtifact teamArt, final IStateToken forState, Composite composite, int horizontalSpan) {
       super("\"" + forState.getName() + "\" State Reviews");
-      this.smaWorkflowSection = smaWorkflowSection;
-      this.managedForm = smaWorkflowSection.getManagedForm();
+      this.workflowSection = workflowSection;
+      this.managedForm = workflowSection.getManagedForm();
       this.toolkit = toolkit;
       this.teamArt = teamArt;
       this.forState = forState;
@@ -128,8 +128,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
-                  if (smaWorkflowSection.getEditor().isDirty()) {
-                     smaWorkflowSection.getEditor().doSave(null);
+                  if (workflowSection.getEditor().isDirty()) {
+                     workflowSection.getEditor().doSave(null);
                   }
                   StateListAndTitleDialog dialog = new StateListAndTitleDialog("Create Decision Review",
                      "Select state to that review will be associated with.",
@@ -169,8 +169,8 @@ public class ReviewInfoXWidget extends XLabelValueBase {
             @Override
             public void linkActivated(HyperlinkEvent e) {
                try {
-                  if (smaWorkflowSection.getEditor().isDirty()) {
-                     smaWorkflowSection.getEditor().doSave(null);
+                  if (workflowSection.getEditor().isDirty()) {
+                     workflowSection.getEditor().doSave(null);
                   }
                   StateListAndTitleDialog dialog = new StateListAndTitleDialog("Add Peer to Peer Review",
                      "Select state to that review will be associated with.",
@@ -282,7 +282,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
          @Override
          public void handleEvent(Event event) {
-            SMAEditor.editArtifact(revArt);
+            WorkflowEditor.editArtifact(revArt);
          }
       });
    }
@@ -320,7 +320,7 @@ public class ReviewInfoXWidget extends XLabelValueBase {
                      if (!results.isEmpty()) {
                         AWorkbench.popup(String.format("Transition Error %s", results.toString()));
                      }
-                     smaWorkflowSection.getEditor().refreshPages();
+                     workflowSection.getEditor().refreshPages();
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                   }

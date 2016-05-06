@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.task.TaskEditor;
@@ -245,13 +245,13 @@ public final class AtsUtil {
             Collection<TeamWorkFlowArtifact> teams = ActionManager.getTeams(art);
             if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (TeamWorkFlowArtifact team : teams) {
-                  SMAEditor.editArtifact(team);
+                  WorkflowEditor.editArtifact(team);
                }
             } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + action.getAtsId(), Arrays.asList(art)));
             } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
-                  SMAEditor.editArtifact(teams.iterator().next());
+                  WorkflowEditor.editArtifact(teams.iterator().next());
                } else {
                   Displays.ensureInDisplayThread(new Runnable() {
                      @Override
@@ -259,7 +259,7 @@ public final class AtsUtil {
                         try {
                            TeamWorkFlowArtifact teamArt = promptSelectTeamWorkflow(art);
                            if (teamArt != null) {
-                              SMAEditor.editArtifact((Artifact) teamArt);
+                              WorkflowEditor.editArtifact((Artifact) teamArt);
                            } else {
                               return;
                            }
@@ -271,7 +271,7 @@ public final class AtsUtil {
                }
             }
          } else {
-            SMAEditor.editArtifact(art);
+            WorkflowEditor.editArtifact(art);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

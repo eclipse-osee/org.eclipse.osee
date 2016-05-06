@@ -113,7 +113,7 @@ public class RelatedToStateColumn extends XViewerAtsAttributeValueColumn {
                if (!state.equals(selectedState)) {
                   task.setSoleAttributeFromString(AtsAttributeTypes.RelatedToState, selectedState);
                   if (persist) {
-                     task.saveSMA(changes);
+                     task.save(changes);
                   }
                }
             }

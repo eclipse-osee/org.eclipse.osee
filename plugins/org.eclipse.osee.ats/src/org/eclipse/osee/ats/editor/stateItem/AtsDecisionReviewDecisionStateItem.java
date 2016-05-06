@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.core.client.review.DecisionReviewArtifact;
 import org.eclipse.osee.ats.core.client.review.DecisionReviewState;
 import org.eclipse.osee.ats.core.client.review.XDecisionOptions;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.WfeWorkflowSection;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -67,7 +67,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
    }
 
    @Override
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) throws OseeCoreException {
       if (isApplicable(section)) {
          if (section.getTransitionToStateCombo() == null || section.getTransitionToStateCombo().getSelected() == null) {
             return null;
@@ -80,7 +80,7 @@ public class AtsDecisionReviewDecisionStateItem extends AtsStateItem {
       return null;
    }
 
-   private boolean isApplicable(SMAWorkFlowSection section) {
+   private boolean isApplicable(WfeWorkflowSection section) {
       return section.getSma().isOfType(
          AtsArtifactTypes.DecisionReview) && section.getSma().getCurrentStateName().equals(
             DecisionReviewState.Decision.getName());

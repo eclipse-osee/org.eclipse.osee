@@ -538,10 +538,10 @@ public class WorldXWidgetActionPage extends FormPage {
 
    public void updateExtraInfoLine() throws OseeCoreException {
       if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
-         if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedSMAArtifacts() != null && !worldComposite.getXViewer().getSelectedSMAArtifacts().isEmpty()) {
+         if (worldComposite.getXViewer() != null && worldComposite.getXViewer().getSelectedWorkflowArtifacts() != null && !worldComposite.getXViewer().getSelectedWorkflowArtifacts().isEmpty()) {
             showReleaseMetricsLabel.setText(
-               WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedSMAArtifacts(), null,
-                  worldComposite.getXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+               WorkflowMetrics.getEstRemainMetrics(worldComposite.getXViewer().getSelectedWorkflowArtifacts(), null,
+                  worldComposite.getXViewer().getSelectedWorkflowArtifacts().iterator().next().getManHrsPerDayPreference(),
                   null));
          } else {
             showReleaseMetricsLabel.setText("");

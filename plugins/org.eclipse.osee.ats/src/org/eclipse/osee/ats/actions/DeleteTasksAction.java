@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsTaskCache;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -95,7 +95,7 @@ public class DeleteTasksAction extends AbstractAtsAction {
             ArrayList<TaskArtifact> tasksNotInDb = new ArrayList<>();
             delItems.addAll(items);
             for (TaskArtifact taskArt : delItems) {
-               SMAEditor.close(Collections.singleton(taskArt), false);
+               WorkflowEditor.close(Collections.singleton(taskArt), false);
                if (taskArt.isInDb()) {
                   taskArt.deleteAndPersist(transaction);
                } else {

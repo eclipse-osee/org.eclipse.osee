@@ -64,7 +64,7 @@ import org.eclipse.osee.ats.core.workdef.SimpleDecisionReviewOption;
 import org.eclipse.osee.ats.core.workflow.state.StateTypeAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionFactory;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelper;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -481,7 +481,7 @@ public class AtsTestUtil {
     */
    public static void cleanup() throws OseeCoreException {
       WorldEditor.closeAll();
-      SMAEditor.closeAll();
+      WorkflowEditor.closeAll();
       TaskEditor.closeAll();
 
       if (teamWf != null) {
@@ -761,7 +761,7 @@ public class AtsTestUtil {
       return new ISelectedAtsArtifacts() {
 
          @Override
-         public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException {
+         public Set<? extends Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException {
             return Collections.singleton(getTeamWf());
          }
 

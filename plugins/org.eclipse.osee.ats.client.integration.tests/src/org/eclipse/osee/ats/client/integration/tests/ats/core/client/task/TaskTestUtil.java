@@ -74,7 +74,7 @@ public class TaskTestUtil {
             AtsClientService.get().getUserService().getCurrentUser());
       }
       if (changes != null) {
-         taskArt.saveSMA(changes);
+         taskArt.save(changes);
       }
       return Result.TrueResult;
    }

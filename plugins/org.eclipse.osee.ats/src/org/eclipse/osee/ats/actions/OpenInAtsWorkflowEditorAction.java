@@ -38,7 +38,7 @@ public class OpenInAtsWorkflowEditorAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+      for (Artifact art : selectedAtsArtifacts.getSelectedWorkflowArtifacts()) {
          AtsUtil.openATSAction(art, AtsOpenOption.OpenAll);
       }
    }

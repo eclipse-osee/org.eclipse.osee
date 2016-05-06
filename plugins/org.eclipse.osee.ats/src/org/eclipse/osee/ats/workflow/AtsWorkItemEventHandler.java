@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.workflow;
 import org.eclipse.osee.ats.api.util.AtsTopicEvent;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.editor.SMAEditorArtifactEventManager;
+import org.eclipse.osee.ats.editor.WfeArtifactEventManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.osgi.service.event.Event;
@@ -32,7 +32,7 @@ public class AtsWorkItemEventHandler implements EventHandler {
                (String) event.getProperty(AtsTopicEvent.WORK_ITEM_UUDS_KEY))) {
                Artifact artifact = ArtifactCache.getActive(workItemUuid, AtsUtilCore.getAtsBranch().getUuid());
                if (artifact != null) {
-                  if (SMAEditorArtifactEventManager.isLoaded(artifact)) {
+                  if (WfeArtifactEventManager.isLoaded(artifact)) {
                      artifact.reloadAttributesAndRelations();
                   } else {
                      ArtifactCache.deCache(artifact);

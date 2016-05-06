@@ -14,7 +14,7 @@ import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.task.TaskMover;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.world.IWorldEditor;
@@ -81,7 +81,7 @@ public class TaskComposite extends WorldComposite {
          public void dragSetData(DragSourceEvent event) {
             Collection<TaskArtifact> arts = taskXViewer.getSelectedTaskArtifacts();
             if (arts.size() > 0) {
-               event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", SMAEditor.EDITOR_ID);
+               event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", WorkflowEditor.EDITOR_ID);
             }
          }
 

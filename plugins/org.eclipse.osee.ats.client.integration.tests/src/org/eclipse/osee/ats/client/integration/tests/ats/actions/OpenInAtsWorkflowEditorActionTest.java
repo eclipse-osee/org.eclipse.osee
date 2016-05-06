@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.client.integration.tests.ats.actions;
 
 import org.eclipse.osee.ats.actions.OpenInAtsWorkflowEditorAction;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.junit.After;
 
 /**
@@ -27,6 +27,6 @@ public class OpenInAtsWorkflowEditorActionTest extends AbstractAtsActionRunTest 
 
    @After
    public void closeEditors() {
-      SMAEditor.closeAll();
+      WorkflowEditor.closeAll();
    }
 }

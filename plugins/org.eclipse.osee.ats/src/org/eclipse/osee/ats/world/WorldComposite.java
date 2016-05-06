@@ -375,7 +375,7 @@ public class WorldComposite extends Composite implements IOseeTreeReportProvider
    }
 
    @Override
-   public Set<Artifact> getSelectedSMAArtifacts() {
+   public Set<Artifact> getSelectedWorkflowArtifacts() {
       Set<Artifact> artifacts = new HashSet<>();
       for (Artifact art : getSelectedArtifacts()) {
          if (art instanceof AbstractWorkflowArtifact) {

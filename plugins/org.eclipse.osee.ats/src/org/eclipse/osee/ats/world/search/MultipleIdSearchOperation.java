@@ -23,11 +23,11 @@ import org.eclipse.osee.ats.AtsOpenOption;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.workflow.WorkItemType;
-import org.eclipse.osee.ats.artifact.SmaWorkflowLabelProvider;
+import org.eclipse.osee.ats.artifact.WorkflowLabelProvider;
 import org.eclipse.osee.ats.core.client.action.ActionManager;
 import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsBranchManager;
@@ -187,7 +187,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
             } else {
                ListDialog ld = new ListDialog(Displays.getActiveShell());
                ld.setContentProvider(new ArrayContentProvider());
-               ld.setLabelProvider(new SmaWorkflowLabelProvider());
+               ld.setLabelProvider(new WorkflowLabelProvider());
                ld.setTitle("Select Workflow");
                ld.setMessage("Select Workflow");
                ld.setInput(resultAtsArts);
@@ -201,7 +201,7 @@ public class MultipleIdSearchOperation extends AbstractOperation implements IWor
                AtsUtil.openATSAction(artifact, AtsOpenOption.OpenOneOrPopupSelect);
             } else {
                try {
-                  SMAEditor.editArtifact(artifact);
+                  WorkflowEditor.editArtifact(artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, Level.SEVERE, ex);
                }

@@ -103,7 +103,7 @@ public class ChangeTypeColumnUI extends XViewerAtsAttributeValueColumn {
                if (currChangeType != newChangeType) {
                   ChangeTypeUtil.setChangeType(team, newChangeType);
                   if (persist) {
-                     team.saveSMA(changes);
+                     team.save(changes);
                   }
                }
             }

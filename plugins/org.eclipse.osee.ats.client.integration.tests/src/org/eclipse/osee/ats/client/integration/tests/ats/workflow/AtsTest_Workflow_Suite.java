@@ -27,7 +27,7 @@ import org.junit.runners.Suite;
    TaskRelatedToChangedArtifactTest.class,
    StoreWorkDefinitionTest.class,
    AtsTaskEndpointImplTest.class,
-   SMAPromptChangeStatusTest.class,
+   WfePromptChangeStatusTest.class,
    TeamWorkflowProvidersTest.class,
    AtsRelationResolverServiceTest.class,
    CreateTaskRuleTest.class //

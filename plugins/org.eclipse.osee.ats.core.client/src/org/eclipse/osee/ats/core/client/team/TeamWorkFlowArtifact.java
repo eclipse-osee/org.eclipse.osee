@@ -86,8 +86,8 @@ public class TeamWorkFlowArtifact extends AbstractWorkflowArtifact implements IA
    }
 
    @Override
-   public void saveSMA(IAtsChangeSet changes) {
-      super.saveSMA(changes);
+   public void save(IAtsChangeSet changes) {
+      super.save(changes);
       try {
          ActionArtifact parentAction = getParentActionArtifact();
          ActionArtifactRollup rollup = new ActionArtifactRollup(parentAction);

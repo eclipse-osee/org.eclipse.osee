@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.core.client.task.TaskArtifact;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -140,7 +140,7 @@ public class CreateActionFromTaskBlam extends AbstractBlam {
       }
       changes.execute();
       if (newTeamArts.size() == 1) {
-         SMAEditor.editArtifact(newTeamArts.iterator().next());
+         WorkflowEditor.editArtifact(newTeamArts.iterator().next());
       } else {
          AtsUtil.openInAtsWorldEditor("Created Tasks from Actions", newTeamArts);
       }

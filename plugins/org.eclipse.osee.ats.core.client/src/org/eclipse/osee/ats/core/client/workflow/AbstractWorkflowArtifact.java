@@ -298,7 +298,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
     *
     * @return true if any object in SMA tree is dirty
     */
-   public Result isSMAEditorDirty() {
+   public Result isWfeDirty() {
       try {
          Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
@@ -337,7 +337,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       return Result.FalseResult;
    }
 
-   public void saveSMA(IAtsChangeSet changes) {
+   public void save(IAtsChangeSet changes) {
       try {
          Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);
@@ -351,7 +351,7 @@ public abstract class AbstractWorkflowArtifact extends AbstractAtsArtifact imple
       }
    }
 
-   public void revertSMA() {
+   public void revert() {
       try {
          Set<Artifact> artifacts = new HashSet<>();
          getSmaArtifactsOneLevel(this, artifacts);

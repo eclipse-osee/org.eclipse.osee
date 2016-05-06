@@ -15,7 +15,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -42,10 +42,10 @@ public class EditStatusAction extends AbstractAtsAction {
    @Override
    public void runWithException() throws OseeCoreException {
       Collection<AbstractWorkflowArtifact> smaArts =
-         Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedSMAArtifacts());
-      if (SMAPromptChangeStatus.promptChangeStatus(smaArts, true)) {
+         Collections.castMatching(AbstractWorkflowArtifact.class, selectedAtsArtifacts.getSelectedWorkflowArtifacts());
+      if (WfePromptChangeStatus.promptChangeStatus(smaArts, true)) {
          if (xViewer != null) {
-            xViewer.update(selectedAtsArtifacts.getSelectedSMAArtifacts().toArray(), null);
+            xViewer.update(selectedAtsArtifacts.getSelectedWorkflowArtifacts().toArray(), null);
          }
          if (editor != null) {
             editor.onDirtied();

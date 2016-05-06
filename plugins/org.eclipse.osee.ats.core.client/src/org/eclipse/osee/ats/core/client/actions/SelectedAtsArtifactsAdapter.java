@@ -26,7 +26,7 @@ public class SelectedAtsArtifactsAdapter implements ISelectedAtsArtifacts {
    }
 
    @Override
-   public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeCoreException {
+   public Set<? extends Artifact> getSelectedWorkflowArtifacts() throws OseeCoreException {
       return Collections.emptySet();
    }
 

@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TeamWorkFlowManager;
-import org.eclipse.osee.ats.editor.SMAEditor;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -178,7 +178,7 @@ public class AtsBranchConfigurationTest {
       dtwm.transitionTo(TeamState.Implement, AtsClientService.get().getUserService().getCurrentUser(), false, changes);
       teamWf.persist("Branch Configuration Test");
 
-      SMAEditor.editArtifact(teamWf);
+      WorkflowEditor.editArtifact(teamWf);
 
       // create branch
       createBranch(namespace, teamWf);
@@ -325,7 +325,7 @@ public class AtsBranchConfigurationTest {
          SkynetTransaction transaction =
             TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
          for (TeamWorkFlowArtifact teamArt : ActionManager.getTeams(aArt)) {
-            SMAEditor.close(Collections.singleton(teamArt), false);
+            WorkflowEditor.close(Collections.singleton(teamArt), false);
             teamArt.deleteAndPersist(transaction, true);
          }
          aArt.deleteAndPersist(transaction, true);

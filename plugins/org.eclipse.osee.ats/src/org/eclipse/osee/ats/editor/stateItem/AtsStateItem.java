@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IStateToken;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.WfeWorkflowSection;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -60,7 +60,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    @Override
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException {
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) throws OseeCoreException {
       return null;
    }
 

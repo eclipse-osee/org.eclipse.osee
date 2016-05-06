@@ -36,7 +36,7 @@ public class DeletePurgeAtsArtifactsAction extends AbstractAtsAction {
 
    @Override
    public void runWithException() throws OseeCoreException {
-      AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(),
+      AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedWorkflowArtifacts(),
          executeInCurrentThread, prompt ? DeleteOption.Prompt : null);
    }
 

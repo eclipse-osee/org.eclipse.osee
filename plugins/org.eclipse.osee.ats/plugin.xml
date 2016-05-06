@@ -11,11 +11,11 @@
          <extension
          point="org.eclipse.ui.editors">
          <editor
-            class="org.eclipse.osee.ats.editor.SMAEditor"
+            class="org.eclipse.osee.ats.editor.WorkflowEditor"
             icon="images/workflow.gif"
             default="false"            
-            contributorClass="org.eclipse.osee.ats.editor.SMAEditorContributor"
-            id="org.eclipse.osee.ats.editor.SMAEditor"
+            contributorClass="org.eclipse.osee.ats.editor.WfeContributor"
+            id="org.eclipse.osee.ats.editor.WorkflowEditor"
             name="ATS Workflow Editor"/>
          <editor
                class="org.eclipse.osee.ats.task.TaskEditor"
@@ -418,7 +418,7 @@
          name="WEEditor Input Factory"
          point="org.eclipse.ui.elementFactories">
       <factory
-            class="org.eclipse.osee.ats.editor.WEEditorInputFactory"
+            class="org.eclipse.osee.ats.editor.WfeInputFactory"
             id="org.eclipse.osee.ats.WEEditorInputFactory">
       </factory>
    </extension>

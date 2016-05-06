@@ -17,7 +17,7 @@ import java.util.Collection;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.core.client.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.editor.SMAPrint;
+import org.eclipse.osee.ats.editor.WfePrint;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -71,7 +71,7 @@ public class AtsExportAction extends Action {
          for (Artifact artifact : artifacts) {
             if (artifact instanceof AbstractWorkflowArtifact) {
                AbstractWorkflowArtifact awa = (AbstractWorkflowArtifact) artifact;
-               SMAPrint smaPrint = new SMAPrint(awa);
+               WfePrint smaPrint = new WfePrint(awa);
                smaPrint.setIncludeTaskList(includeTaskList);
                String html = XResultDataUI.getReport(smaPrint.getResultData(), "").getManipulatedHtml();
                if (multipleFile) {
@@ -132,7 +132,7 @@ public class AtsExportAction extends Action {
          AtsExportBlam.openAtsExportBlam(new ArrayList<AbstractWorkflowArtifact>());
       } else {
          AtsExportBlam.openAtsExportBlam(
-            Collections.castAll(AbstractWorkflowArtifact.class, selected.getSelectedSMAArtifacts()));
+            Collections.castAll(AbstractWorkflowArtifact.class, selected.getSelectedWorkflowArtifacts()));
       }
    }
 

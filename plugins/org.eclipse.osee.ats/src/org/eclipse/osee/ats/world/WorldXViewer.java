@@ -376,10 +376,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
          TransitionToMenu.createTransitionToMenuManager(thisXViewer, "Transition-To", selectedTreeItems));
 
       mm.insertBefore(MENU_GROUP_PRE, editStatusAction);
-      editStatusAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+      editStatusAction.setEnabled(getSelectedWorkflowArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editAssigneeAction);
-      editAssigneeAction.setEnabled(getSelectedSMAArtifacts().size() > 0);
+      editAssigneeAction.setEnabled(getSelectedWorkflowArtifacts().size() > 0);
 
       mm.insertBefore(MENU_GROUP_PRE, editActionableItemsAction);
       editActionableItemsAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() == 1);
@@ -420,7 +420,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
       subscribedAction.updateEnablement();
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, emailAction);
-      emailAction.setEnabled(getSelectedSMAArtifacts().size() == 1);
+      emailAction.setEnabled(getSelectedWorkflowArtifacts().size() == 1);
 
       mm.insertBefore(XViewer.MENU_GROUP_PRE, resetActionArtifactAction);
       resetActionArtifactAction.setEnabled(getSelectedActionArtifacts().size() > 0);
@@ -548,7 +548,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IPer
     * @return all selected Workflow and any workflow that have Actions with single workflow
     */
    @Override
-   public Set<AbstractWorkflowArtifact> getSelectedSMAArtifacts() {
+   public Set<AbstractWorkflowArtifact> getSelectedWorkflowArtifacts() {
       Set<AbstractWorkflowArtifact> smaArts = new HashSet<>();
       try {
          Iterator<?> i = ((IStructuredSelection) getSelection()).iterator();

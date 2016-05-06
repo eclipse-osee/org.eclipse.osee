@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
-import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.editor.WfeWorkflowSection;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -37,7 +37,7 @@ public interface IAtsStateItem {
 
    public void widgetModified(XWidget xWidget, FormToolkit toolkit, IAtsStateDefinition stateDefinition, Artifact art, boolean isEditable) throws OseeCoreException;
 
-   public String getOverrideTransitionToStateName(SMAWorkFlowSection section) throws OseeCoreException;
+   public String getOverrideTransitionToStateName(WfeWorkflowSection section) throws OseeCoreException;
 
    public Collection<IAtsUser> getOverrideTransitionToAssignees(AbstractWorkflowArtifact awa, String decision) throws OseeCoreException;
 

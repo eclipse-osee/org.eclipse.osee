@@ -43,7 +43,7 @@ import org.eclipse.osee.ats.core.client.workflow.transition.TransitionToOperatio
 import org.eclipse.osee.ats.core.workflow.state.TeamState;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionHelperAdapter;
 import org.eclipse.osee.ats.core.workflow.transition.TransitionStatusData;
-import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.util.widgets.dialog.TransitionStatusDialog;
@@ -211,7 +211,7 @@ public class TransitionToMenu {
                         int dialogResult = dialog.open();
                         if (dialogResult == 0) {
                            try {
-                              SMAPromptChangeStatus.performChangeStatus(workItems, null, data.getAdditionalHours(),
+                              WfePromptChangeStatus.performChangeStatus(workItems, null, data.getAdditionalHours(),
                                  data.getPercent(), data.isSplitHoursBetweenItems(), changes);
                            } catch (OseeCoreException ex) {
                               OseeLog.log(Activator.class, Level.SEVERE, ex);

@@ -16,8 +16,8 @@ import org.eclipse.osee.ats.core.client.review.ReviewManager;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.util.HoursSpentUtil;
-import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
+import org.eclipse.osee.ats.editor.WorkflowEditor;
+import org.eclipse.osee.ats.editor.WfePromptChangeStatus;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.ats.workdef.StateXWidgetPage;
@@ -36,9 +36,9 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    private final AbstractWorkflowArtifact sma;
    private final StateXWidgetPage page;
    private final boolean isCurrentState;
-   private final SMAEditor editor;
+   private final WorkflowEditor editor;
 
-   public StateHoursSpentXWidget(IManagedForm managedForm, StateXWidgetPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, SMAEditor editor) {
+   public StateHoursSpentXWidget(IManagedForm managedForm, StateXWidgetPage page, final AbstractWorkflowArtifact sma, Composite composite, int horizontalSpan, XModifiedListener xModListener, boolean isCurrentState, WorkflowEditor editor) {
       super("\"" + page.getName() + "\"" + " State Hours Spent");
       this.page = page;
       this.sma = sma;
@@ -56,7 +56,7 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    @Override
    public boolean handleSelection() {
       try {
-         SMAPromptChangeStatus.promptChangeStatus(Collections.singleton(sma), false);
+         WfePromptChangeStatus.promptChangeStatus(Collections.singleton(sma), false);
          editor.onDirtied();
          return true;
       } catch (Exception ex) {
