@@ -661,13 +661,15 @@ attributeType "Access Context Id" extends StringAttribute {
 }
 
 artifactType "Requirement" extends "Artifact" {
-	uuid 0x0000000000000015
+	uuid 0x0000000000000015	
+}
+
+artifactType "Abstract Spec Requirement" extends "Requirement" {
+	uuid 0x00D0040000000015
 	attribute "Legacy DAL"
 	attribute "Qualification Method"
 	attribute "Subsystem"
-	attribute "Technical Performance Parameter"
-	attribute "PublishInline"
-	
+	attribute "Technical Performance Parameter"	
 }
 
 attributeType "Test Frequency" extends EnumeratedAttribute {
@@ -738,7 +740,7 @@ abstract artifactType "Direct Software Requirement" extends "Abstract Software R
 	uuid 0x0000000000000016
 }
 
-abstract artifactType "Abstract Software Requirement" extends "Requirement" {
+abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Requirement" {
 	uuid 0x0000000000000017
 	attribute "CSCI"
 	attribute "Partition"
@@ -807,7 +809,7 @@ artifactType "Software Requirement Data Definition" extends "Indirect Software R
 	uuid 0x0000000000000319
 }
 
-abstract artifactType "Abstract System Requirement" extends "Requirement" {
+abstract artifactType "Abstract System Requirement" extends "Abstract Spec Requirement" {
 	uuid 0x000000000000031C
 	attribute "Legacy Id"
 	attribute "Verification Level"
@@ -824,7 +826,7 @@ artifactType "System Requirement - HTML" extends "Abstract System Requirement" ,
 	uuid 0x000000000000031A
 }
 
-abstract artifactType "Abstract Subsystem Requirement" extends "Requirement" {
+abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Requirement" {
 	uuid 0x000000000000031D
 	attribute "Legacy Id"
 	attribute "Verification Level"
@@ -842,12 +844,12 @@ artifactType "Subsystem Requirement - HTML" extends "Abstract Subsystem Requirem
 	uuid 0x000000000000031B
 }
 
-artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" {
+artifactType "Interface Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
 	uuid 0x0000000000000020
 	attribute "Component"
 }
 
-artifactType "Hardware Requirement" extends "Requirement" , "MS Word Template" {
+artifactType "Hardware Requirement" extends "Abstract Spec Requirement" , "MS Word Template" {
 	uuid 0x0000000000000021
 	attribute "Data Rights Classification"
 }
