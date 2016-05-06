@@ -11,12 +11,13 @@
 package org.eclipse.osee.framework.core.model.cache;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -80,15 +81,8 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public synchronized <T extends BranchId> List<T> getBranches(BranchFilter branchFilter) {
-      Collection<Branch> allBranches = getRawValues();
-      List<T> branches = new LinkedList<>();
-      for (Branch branch : allBranches) {
-         if (branchFilter.matches(branch)) {
-            branches.add((T) branch);
-         }
-      }
-      return branches;
+   public synchronized List<Branch> getBranches(Predicate<BranchReadable> branchFilter) {
+      return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }
 
    @Override

@@ -42,6 +42,7 @@ public final class DeletedBranchProvider implements BranchProvider {
 
       List<Branch> branches = branchCache.getBranches(branchFilter);
       Collection<BranchReadable> branchesToReturn = new LinkedHashSet<>();
+
       branchesToReturn.addAll(branches);
       for (Branch branch : branches) {
          branch.getChildBranches(branchesToReturn, true, branchFilter);

@@ -15,8 +15,11 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.SYSTEM_ROOT;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -95,12 +98,12 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<IOseeBranch> getBranches(BranchFilter branchFilter) throws OseeCoreException {
+   public static List<Branch> getBranches(Predicate<BranchReadable> branchFilter) throws OseeCoreException {
       return getCache().getBranches(branchFilter);
    }
 
-   public static IOseeBranch getBranch(BranchFilter branchFilter) throws OseeCoreException {
-      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
+   public static Branch getBranch(Predicate<BranchReadable> branchFilter) throws OseeCoreException {
+      List<Branch> branches = BranchManager.getBranches(branchFilter);
       if (branches.isEmpty()) {
          return null;
       } else if (branches.size() == 1) {
@@ -531,7 +534,7 @@ public final class BranchManager {
       return getBranches(BranchArchivedState.UNARCHIVED, BranchType.BASELINE);
    }
 
-   public static List<IOseeBranch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
+   public static List<Branch> getBranches(BranchArchivedState archivedState, BranchType... branchTypes) {
       return getCache().getBranches(new BranchFilter(archivedState, branchTypes));
    }
 
@@ -690,16 +693,19 @@ public final class BranchManager {
    }
 
    public static boolean hasChildren(BranchId branch) {
-      return !getBranch(branch).getChildBranches(false).isEmpty();
+      return !getBranch(branch).getChildren().isEmpty();
    }
 
    /**
     * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
     * @return all unarchived child branches that are not of type merge
-    * @throws OseeCoreException
     */
-   public static Collection<BranchReadable> getChildBranches(BranchId branch, boolean recurse) throws OseeCoreException {
-      return getBranch(branch).getChildBranches(recurse);
+   public static Collection<BranchReadable> getChildBranches(BranchId branch, boolean recurse) {
+      Set<BranchReadable> children = new HashSet<>();
+      BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
+      filter.setNegatedBranchTypes(BranchType.MERGE);
+      getBranch(branch).getChildBranches(children, recurse, filter);
+      return children;
    }
 
    public static void resetWasLoaded() {

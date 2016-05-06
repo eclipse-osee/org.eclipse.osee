@@ -147,7 +147,7 @@ public final class FrameworkXWidgetProvider {
                maxSelectionRequired = Integer.MAX_VALUE;
             }
             try {
-               List<IOseeBranch> branches =
+               List<? extends IOseeBranch> branches =
                   BranchManager.getBranches(BranchArchivedState.ALL, BranchType.WORKING, BranchType.BASELINE);
                Collections.sort(branches);
 

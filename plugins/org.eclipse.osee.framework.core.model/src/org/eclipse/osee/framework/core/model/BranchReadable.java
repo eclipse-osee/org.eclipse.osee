@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.core.model;
 
 import java.util.Collection;
+import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -37,13 +37,9 @@ public interface BranchReadable extends IOseeBranch {
 
    BranchReadable getParentBranch() throws OseeCoreException;
 
-   Collection<? extends BranchReadable> getChildBranches() throws OseeCoreException;
-
-   Collection<? extends BranchReadable> getChildBranches(boolean recurse) throws OseeCoreException;
-
    Collection<? extends BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException;
 
-   void getChildBranches(Collection<BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException;
+   void getChildBranches(Collection<BranchReadable> children, boolean recurse, Predicate<BranchReadable> filter);
 
    Collection<? extends BranchId> getAncestors() throws OseeCoreException;
 

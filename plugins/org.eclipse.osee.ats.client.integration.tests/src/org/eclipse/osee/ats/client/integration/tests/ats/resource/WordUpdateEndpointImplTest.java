@@ -132,8 +132,7 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
    private BranchId getWorkingBranch() {
       BranchId branchReturn = null;
       BranchFilter branchFilter = new BranchFilter(BranchType.WORKING);
-      List<IOseeBranch> branches = BranchManager.getBranches(branchFilter);
-      for (IOseeBranch branch : branches) {
+      for (IOseeBranch branch : BranchManager.getBranches(branchFilter)) {
          if (branch.getName().contains("More Reqt")) {
             branchReturn = branch;
             break;

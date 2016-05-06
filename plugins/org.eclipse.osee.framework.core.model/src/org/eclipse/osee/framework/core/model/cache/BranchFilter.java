@@ -10,17 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model.cache;
 
+import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BranchFilter {
+public class BranchFilter implements Predicate<BranchReadable> {
    private final BranchArchivedState archivedState;
    private final BranchType[] branchTypes;
    private IBasicArtifact<?> associatedArtifact;
@@ -45,11 +45,11 @@ public class BranchFilter {
       this(BranchArchivedState.ALL, branchTypes);
    }
 
-   public boolean matches(BranchReadable branch) throws OseeCoreException {
+   @Override
+   public boolean test(BranchReadable branch) {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }
-
       if (!BranchArchivedState.fromBoolean(branch.isArchived()).matches(archivedState)) {
          return false;
       }

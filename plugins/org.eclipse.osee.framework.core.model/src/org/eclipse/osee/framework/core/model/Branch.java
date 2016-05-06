@@ -16,12 +16,11 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -127,26 +126,6 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
       return childBranches;
    }
 
-   @Override
-   public Collection<BranchReadable> getChildBranches() throws OseeCoreException {
-      return getChildBranches(false);
-   }
-
-   /**
-    * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
-    * @return all unarchived child branches that are not of type merge
-    * @throws OseeCoreException
-    */
-   @Override
-   public Collection<BranchReadable> getChildBranches(boolean recurse) throws OseeCoreException {
-      Set<BranchReadable> children = new HashSet<>();
-      BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
-      filter.setNegatedBranchTypes(BranchType.MERGE);
-
-      getChildBranches(children, recurse, filter);
-      return children;
-   }
-
    /**
     * @return all child branches. It is equivalent to calling getChildBranches with new BranchFilter() (.i.e no child
     * branches are excluded)
@@ -155,14 +134,14 @@ public class Branch extends NamedId implements BranchReadable, IAdaptable {
    @Override
    public Collection<BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException {
       Set<BranchReadable> children = new HashSet<>();
-      getChildBranches(children, recurse, new BranchFilter());
+      getChildBranches(children, recurse, b -> true);
       return children;
    }
 
    @Override
-   public void getChildBranches(Collection<BranchReadable> children, boolean recurse, BranchFilter filter) throws OseeCoreException {
+   public void getChildBranches(Collection<BranchReadable> children, boolean recurse, Predicate<BranchReadable> filter) {
       for (BranchReadable branch : getChildren()) {
-         if (filter.matches(branch)) {
+         if (filter.test(branch)) {
             children.add(branch);
             if (recurse) {
                branch.getChildBranches(children, recurse, filter);

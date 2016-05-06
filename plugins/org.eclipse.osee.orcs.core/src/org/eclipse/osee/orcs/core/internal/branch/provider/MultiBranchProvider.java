@@ -13,9 +13,8 @@ package org.eclipse.osee.orcs.core.internal.branch.provider;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.framework.core.model.Branch;
+import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.model.BranchReadable;
-import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -26,9 +25,9 @@ public class MultiBranchProvider implements BranchProvider {
 
    private final boolean recursive;
    private final Set<BranchReadable> branches;
-   private final BranchFilter filter;
+   private final Predicate<BranchReadable> filter;
 
-   public MultiBranchProvider(boolean recursive, Set<BranchReadable> branches, BranchFilter filter) {
+   public MultiBranchProvider(boolean recursive, Set<BranchReadable> branches, Predicate<BranchReadable> filter) {
       this.recursive = recursive;
       this.branches = branches;
       this.filter = filter;
@@ -38,7 +37,7 @@ public class MultiBranchProvider implements BranchProvider {
       Set<BranchReadable> children = new HashSet<>();
 
       branch.getChildBranches(children, true, filter);
-      if (filter.matches(branch)) {
+      if (filter.test(branch)) {
          children.add(branch);
       }
       return children;
