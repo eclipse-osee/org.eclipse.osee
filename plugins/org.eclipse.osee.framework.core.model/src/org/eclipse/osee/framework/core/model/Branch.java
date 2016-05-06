@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends NamedId implements BranchReadable, Adaptable {
+public class Branch extends NamedId implements IOseeBranch, Adaptable {
 
    private final Set<Branch> childBranches = new HashSet<>();
    private BranchType branchType;
@@ -47,27 +48,22 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
       this.inheritsAccessControl = inheritsAccessControl;
    }
 
-   @Override
    public BranchId getParentBranch() throws OseeCoreException {
       return parent;
    }
 
-   @Override
    public BranchType getBranchType() {
       return branchType;
    }
 
-   @Override
    public BranchState getBranchState() {
       return branchState;
    }
 
-   @Override
    public boolean isArchived() {
       return isArchived;
    }
 
-   @Override
    public Integer getAssociatedArtifactId() throws OseeCoreException {
       return associatedArtifactId;
    }
@@ -76,12 +72,10 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
       this.associatedArtifactId = artifactId;
    }
 
-   @Override
    public TransactionRecord getBaseTransaction() throws OseeCoreException {
       return baselineTx;
    }
 
-   @Override
    public TransactionRecord getSourceTransaction() throws OseeCoreException {
       return parentTx;
    }
@@ -131,16 +125,14 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
     * branches are excluded)
     * @throws OseeCoreException
     */
-   @Override
-   public Collection<BranchReadable> getAllChildBranches(boolean recurse) throws OseeCoreException {
-      Set<BranchReadable> children = new HashSet<>();
+   public Collection<Branch> getAllChildBranches(boolean recurse) throws OseeCoreException {
+      Set<Branch> children = new HashSet<>();
       getChildBranches(children, recurse, b -> true);
       return children;
    }
 
-   @Override
-   public void getChildBranches(Collection<BranchReadable> children, boolean recurse, Predicate<BranchReadable> filter) {
-      for (BranchReadable branch : getChildren()) {
+   public void getChildBranches(Collection<Branch> children, boolean recurse, Predicate<Branch> filter) {
+      for (Branch branch : getChildren()) {
          if (filter.test(branch)) {
             children.add(branch);
             if (recurse) {
@@ -150,7 +142,6 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
       }
    }
 
-   @Override
    public Collection<BranchId> getAncestors() throws OseeCoreException {
       List<BranchId> ancestors = new ArrayList<>();
       Branch branchCursor = this;
@@ -161,7 +152,6 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
       return ancestors;
    }
 
-   @Override
    public boolean isAncestorOf(BranchId branch) throws OseeCoreException {
       return getAllChildBranches(true).contains(branch);
    }
@@ -180,7 +170,7 @@ public class Branch extends NamedId implements BranchReadable, Adaptable {
     * Provide easy way to display/report [guid][name]
     */
    public final String toStringWithId() {
-      return String.format("[%s][%s]", getGuid(), getName());
+      return String.format("[%s][%s]", getId(), getName());
    }
 
 }

@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -98,11 +97,11 @@ public final class BranchManager {
       return ServiceUtil.getOseeCacheService().getBranchCache();
    }
 
-   public static List<Branch> getBranches(Predicate<BranchReadable> branchFilter) throws OseeCoreException {
+   public static List<Branch> getBranches(Predicate<Branch> branchFilter) throws OseeCoreException {
       return getCache().getBranches(branchFilter);
    }
 
-   public static Branch getBranch(Predicate<BranchReadable> branchFilter) throws OseeCoreException {
+   public static Branch getBranch(Predicate<Branch> branchFilter) throws OseeCoreException {
       List<Branch> branches = BranchManager.getBranches(branchFilter);
       if (branches.isEmpty()) {
          return null;
@@ -704,8 +703,8 @@ public final class BranchManager {
     * @param recurse if true all descendants are processed, otherwise, only direct descendants are.
     * @return all unarchived child branches that are not of type merge
     */
-   public static Collection<BranchReadable> getChildBranches(BranchId branch, boolean recurse) {
-      Set<BranchReadable> children = new HashSet<>();
+   public static Collection<Branch> getChildBranches(BranchId branch, boolean recurse) {
+      Set<Branch> children = new HashSet<>();
       BranchFilter filter = new BranchFilter(BranchArchivedState.UNARCHIVED);
       filter.setNegatedBranchTypes(BranchType.MERGE);
       getBranch(branch).getChildBranches(children, recurse, filter);

@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
@@ -31,10 +30,10 @@ public class MultiBranchProviderTest {
    public void testGetBranchesRecursive() throws OseeCoreException {
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
-      Set<BranchReadable> branchRoots = new HashSet<>();
+      Set<Branch> branchRoots = new HashSet<>();
 
-      Collection<BranchReadable> testBranchesA = MockBranchProvider.createTestBranches();
-      Collection<BranchReadable> testBranchesB = MockBranchProvider.createTestBranches();
+      Collection<Branch> testBranchesA = MockBranchProvider.createTestBranches();
+      Collection<Branch> testBranchesB = MockBranchProvider.createTestBranches();
 
       branchRoots.add(MockBranchProvider.getRootBranch(testBranchesA));
       branchRoots.add(MockBranchProvider.getRootBranch(testBranchesB));
@@ -50,14 +49,14 @@ public class MultiBranchProviderTest {
       BranchFilter filter = new BranchFilter();
       filter.setNegatedBranchTypes(BranchType.BASELINE);
 
-      Collection<BranchReadable> testBranches = MockBranchProvider.createTestBranches();
+      Collection<Branch> testBranches = MockBranchProvider.createTestBranches();
 
       MultiBranchProvider provider1 =
          new MultiBranchProvider(false, Collections.singleton(MockBranchProvider.getRootBranch(testBranches)), filter);
       int numBranches = provider1.getBranches().size();
       Assert.assertEquals(1, numBranches);
 
-      Set<BranchReadable> branches = new HashSet<>(MockBranchProvider.createTestBranches());
+      Set<Branch> branches = new HashSet<>(MockBranchProvider.createTestBranches());
       MultiBranchProvider provider2 = new MultiBranchProvider(false, branches, filter);
       numBranches = provider2.getBranches().size();
       Assert.assertEquals(branches.size(), numBranches);

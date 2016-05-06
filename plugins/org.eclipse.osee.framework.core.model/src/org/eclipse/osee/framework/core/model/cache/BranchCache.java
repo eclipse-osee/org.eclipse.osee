@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.MergeBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -81,7 +80,7 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
       return toReturn;
    }
 
-   public synchronized List<Branch> getBranches(Predicate<BranchReadable> branchFilter) {
+   public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
    }
 

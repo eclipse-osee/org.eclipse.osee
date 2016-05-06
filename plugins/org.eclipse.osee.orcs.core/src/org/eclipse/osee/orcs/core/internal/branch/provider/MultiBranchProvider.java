@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
-import org.eclipse.osee.framework.core.model.BranchReadable;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -24,17 +24,17 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
 public class MultiBranchProvider implements BranchProvider {
 
    private final boolean recursive;
-   private final Set<BranchReadable> branches;
-   private final Predicate<BranchReadable> filter;
+   private final Set<Branch> branches;
+   private final Predicate<Branch> filter;
 
-   public MultiBranchProvider(boolean recursive, Set<BranchReadable> branches, Predicate<BranchReadable> filter) {
+   public MultiBranchProvider(boolean recursive, Set<Branch> branches, Predicate<Branch> filter) {
       this.recursive = recursive;
       this.branches = branches;
       this.filter = filter;
    }
 
-   private Collection<BranchReadable> getChildBranches(BranchReadable branch) throws OseeCoreException {
-      Set<BranchReadable> children = new HashSet<>();
+   private Collection<Branch> getChildBranches(Branch branch) throws OseeCoreException {
+      Set<Branch> children = new HashSet<>();
 
       branch.getChildBranches(children, true, filter);
       if (filter.test(branch)) {
@@ -44,12 +44,12 @@ public class MultiBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<BranchReadable> getBranches() throws OseeCoreException {
+   public Collection<Branch> getBranches() throws OseeCoreException {
       Conditions.checkNotNull(branches, "seeds");
-      Set<BranchReadable> result = branches;
+      Set<Branch> result = branches;
       if (recursive) {
          result = new HashSet<>(branches);
-         for (BranchReadable b : branches) {
+         for (Branch b : branches) {
             result.addAll(getChildBranches(b));
          }
       }

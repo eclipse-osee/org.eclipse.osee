@@ -14,13 +14,13 @@ import java.util.function.Predicate;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.BranchReadable;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IBasicArtifact;
 
 /**
  * @author Ryan D. Brooks
  */
-public class BranchFilter implements Predicate<BranchReadable> {
+public class BranchFilter implements Predicate<Branch> {
    private final BranchArchivedState archivedState;
    private final BranchType[] branchTypes;
    private IBasicArtifact<?> associatedArtifact;
@@ -45,8 +45,7 @@ public class BranchFilter implements Predicate<BranchReadable> {
       this(BranchArchivedState.ALL, branchTypes);
    }
 
-   @Override
-   public boolean test(BranchReadable branch) {
+   public boolean test(Branch branch) {
       if (associatedArtifact != null && !branch.getAssociatedArtifactId().equals(associatedArtifact.getArtId())) {
          return false;
       }

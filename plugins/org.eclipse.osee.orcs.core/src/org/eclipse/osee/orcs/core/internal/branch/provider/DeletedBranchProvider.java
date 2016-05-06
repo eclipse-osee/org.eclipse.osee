@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.BranchReadable;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -34,14 +33,14 @@ public final class DeletedBranchProvider implements BranchProvider {
    }
 
    @Override
-   public Collection<BranchReadable> getBranches() throws OseeCoreException {
+   public Collection<Branch> getBranches() throws OseeCoreException {
       Conditions.checkNotNull(branchCache, "branchCache");
       BranchFilter branchFilter = new BranchFilter(BranchArchivedState.ARCHIVED);
       branchFilter.setBranchStates(BranchState.DELETED);
       branchFilter.setNegatedBranchTypes(BranchType.BASELINE);
 
       List<Branch> branches = branchCache.getBranches(branchFilter);
-      Collection<BranchReadable> branchesToReturn = new LinkedHashSet<>();
+      Collection<Branch> branchesToReturn = new LinkedHashSet<>();
 
       branchesToReturn.addAll(branches);
       for (Branch branch : branches) {
