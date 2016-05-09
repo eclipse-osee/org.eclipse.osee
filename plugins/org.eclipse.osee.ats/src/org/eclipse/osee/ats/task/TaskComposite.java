@@ -54,14 +54,15 @@ public class TaskComposite extends WorldComposite {
       this.dirtiableEditor = dirtiableEditor;
       this.tasksEditable = tasksEditable;
       this.teamWf = teamWf;
+      taskXViewer.setTasksEditable(tasksEditable);
+      taskXViewer.setNewTaskSelectionEnabled(tasksEditable);
+      taskXViewer.setTeamWf(teamWf);
    }
 
    @Override
    protected WorldXViewer createXViewer(IXViewerFactory xViewerFactory, Composite mainComp) {
-      taskXViewer = new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory,
-         dirtiableEditor, teamWf);
-      taskXViewer.setTasksEditable(tasksEditable);
-      taskXViewer.setNewTaskSelectionEnabled(tasksEditable);
+      taskXViewer =
+         new TaskXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, xViewerFactory, dirtiableEditor);
       return taskXViewer;
    }
 

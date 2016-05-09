@@ -36,12 +36,15 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.core.model.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
+import org.eclipse.osee.ats.actions.DeleteTasksAction;
+import org.eclipse.osee.ats.actions.DeleteTasksAction.TaskArtifactProvider;
 import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
+import org.eclipse.osee.ats.actions.TaskAddAction;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -414,6 +417,23 @@ public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
    private void refreshToolbar() {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       toolBarMgr.removeAll();
+      try {
+         if (taskComposite.getIXTaskViewer().isTasksEditable()) {
+            toolBarMgr.add(new TaskAddAction(taskComposite));
+            TaskArtifactProvider taskProvider = new TaskArtifactProvider() {
+
+               @Override
+               public List<TaskArtifact> getSelectedArtifacts() {
+                  return taskComposite.getSelectedTaskArtifacts();
+               }
+            };
+            toolBarMgr.add(new DeleteTasksAction(taskProvider));
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      toolBarMgr.add(new Separator());
+
       toolBarMgr.add(getWorldXViewer().getCustomizeAction());
       toolBarMgr.add(new Separator());
       toolBarMgr.add(new OpenNewAtsTaskEditorAction(taskComposite));
@@ -473,7 +493,7 @@ public class SMATasksTab extends FormPage implements IWorldEditor, ISelectedAtsA
          //
          (filterCompletedAction.isChecked() ? "[Complete/Cancel Filter]" : "") +
          //
-         (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
+            (filterMyAssigneeAction.isChecked() ? "[My Assignee Filter]" : ""));
    }
 
    public class DropDownAction extends Action implements IMenuCreator {

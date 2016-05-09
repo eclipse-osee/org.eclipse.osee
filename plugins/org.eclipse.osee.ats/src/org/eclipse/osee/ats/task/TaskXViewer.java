@@ -38,6 +38,7 @@ import org.eclipse.osee.ats.workflow.TransitionToMenu;
 import org.eclipse.osee.ats.world.AtsWorldEditorItems;
 import org.eclipse.osee.ats.world.IAtsWorldEditorItem;
 import org.eclipse.osee.ats.world.WorldXViewer;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,11 +54,10 @@ public class TaskXViewer extends WorldXViewer {
    Action addNewTaskAction;
    private boolean newTaskSelectionEnabled = false;
    private boolean tasksEditable = true;
-   private final IAtsTeamWorkflow teamWf;
+   private IAtsTeamWorkflow teamWf;
 
-   public TaskXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor, IAtsTeamWorkflow teamWf) {
+   public TaskXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, IDirtiableEditor editor) {
       super(parent, style, xViewerFactory, editor);
-      this.teamWf = teamWf;
    }
 
    @Override
@@ -140,6 +140,7 @@ public class TaskXViewer extends WorldXViewer {
                AtsClientService.get().getUserService().getCurrentUser().getUserId(), teamWf.getUuid());
             JaxAtsTask task = JaxAtsTaskFactory.get(newTaskData, ed.getEntry(),
                AtsClientService.get().getUserService().getCurrentUser(), new Date());
+            task.setUuid(Lib.generateArtifactIdAsInt());
             if (Strings.isValid(ed.getSelection())) {
                task.setRelatedToState(ed.getSelection());
             }
@@ -152,6 +153,10 @@ public class TaskXViewer extends WorldXViewer {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return taskArt;
+   }
+
+   public void setTeamWf(IAtsTeamWorkflow teamWf) {
+      this.teamWf = teamWf;
    }
 
 }
