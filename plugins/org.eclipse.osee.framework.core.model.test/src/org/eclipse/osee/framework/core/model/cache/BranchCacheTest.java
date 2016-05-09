@@ -35,7 +35,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       branchData = new ArrayList<>();
 
       BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
-      cache = new BranchCache(branchAccessor, new TransactionCache());
+      cache = new BranchCache(branchAccessor);
       cache.ensurePopulated();
 
       Assert.assertTrue(branchAccessor.wasLoaded());

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.TransactionChange;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.TransactionEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -48,12 +47,6 @@ public final class PurgeTransactionEventUtil {
 
          Set<Artifact> artifactsInCache = new HashSet<>();
          for (TransactionChange transChange : transEvent.getTransactionChanges()) {
-            try {
-               TransactionManager.deCache(transChange.getTransactionId());
-            } catch (OseeCoreException ex1) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex1);
-            }
-
             for (DefaultBasicGuidArtifact guidArt : transChange.getArtifacts()) {
                try {
                   Artifact artifact = ArtifactCache.getActive(guidArt);

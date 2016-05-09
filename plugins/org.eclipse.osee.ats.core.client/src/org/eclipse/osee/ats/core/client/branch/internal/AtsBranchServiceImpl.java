@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -68,8 +69,8 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      return TransactionManager.getCommittedArtifactTransactionIds((Artifact) teamWf.getStoreObject());
+   public Collection<TransactionRecord> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
+      return TransactionManager.getCommittedArtifactTransactionIds(teamWf.getStoreObject());
    }
 
    /**

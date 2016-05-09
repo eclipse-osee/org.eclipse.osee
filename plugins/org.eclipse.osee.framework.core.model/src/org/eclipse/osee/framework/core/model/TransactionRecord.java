@@ -16,12 +16,15 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeff C. Phillips
  */
 public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
+   public static TransactionRecord SENTINEL =
+      new TransactionRecord(Id.SENTINEL, BranchId.SENTINEL, null, null, 0, 0, TransactionDetailsType.INVALID);
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;

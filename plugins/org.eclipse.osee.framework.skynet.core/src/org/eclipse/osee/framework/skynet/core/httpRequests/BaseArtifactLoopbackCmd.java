@@ -16,7 +16,6 @@ import java.net.HttpURLConnection;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -46,12 +45,11 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
             final Artifact artifact;
             final BranchId branch;
             if (Strings.isValid(transactionIdStr)) {
-               int transactionNumber = Integer.parseInt(transactionIdStr);
-               TransactionToken transactionId = TransactionManager.getTransaction(transactionNumber);
-               branch = transactionId.getBranch();
-               artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, searchDeleted);
+               TransactionToken transaction = TransactionManager.getTransaction(Long.valueOf(transactionIdStr));
+               branch = transaction.getBranch();
+               artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transaction, searchDeleted);
             } else {
-               branch = TokenFactory.createBranch(Long.parseLong(branchUuid));
+               branch = BranchId.valueOf(branchUuid);
                artifact = ArtifactQuery.getArtifactFromId(guid, branch, searchDeleted);
             }
             if (artifact == null) {

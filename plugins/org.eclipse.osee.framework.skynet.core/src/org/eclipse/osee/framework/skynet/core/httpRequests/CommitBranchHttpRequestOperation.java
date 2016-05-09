@@ -130,7 +130,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
-      TransactionToken newTransaction = TransactionManager.getTransaction(newTxId);
+      TransactionToken newTransaction = TransactionToken.valueOf(newTxId, destinationBranch);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
 

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 
 /**
  * @author Roberto E. Escobar
@@ -34,8 +33,6 @@ public interface IOseeCachingService {
    OseeEnumTypeCache getEnumTypeCache();
 
    BranchCache getBranchCache();
-
-   TransactionCache getTransactionCache();
 
    Collection<?> getCaches();
 

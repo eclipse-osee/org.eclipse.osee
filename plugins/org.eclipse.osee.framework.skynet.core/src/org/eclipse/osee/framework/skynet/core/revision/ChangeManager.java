@@ -127,7 +127,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
-               transactionMap.put(artifact, TransactionManager.getTransaction(chStmt.getLong("transaction_id")));
+               transactionMap.put(artifact, TransactionId.valueOf(chStmt.getLong("transaction_id")));
             }
          } finally {
             chStmt.close();

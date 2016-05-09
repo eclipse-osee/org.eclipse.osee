@@ -19,20 +19,17 @@ import java.util.List;
 import java.util.logging.Level;
 import javax.ws.rs.core.Response;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.model.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.model.cache.BranchCache;
 import org.eclipse.osee.framework.core.model.cache.IOseeCache;
 import org.eclipse.osee.framework.core.model.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.model.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseBranchAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.DatabaseTransactionRecordAccessor;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcService;
@@ -52,7 +49,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    private OseeClient oseeClient;
 
    private BranchCache branchCache;
-   private TransactionCache txCache;
 
    private OseeEnumTypeCache enumTypeCache;
    private AttributeTypeCache attributeTypeCache;
@@ -72,9 +68,7 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    public void start() {
       JdbcClient jdbcClient = jdbcService.getClient();
 
-      txCache = new TransactionCache();
-      txCache.setAccessor(new DatabaseTransactionRecordAccessor(jdbcClient, txCache, new TransactionRecordFactory()));
-      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient, txCache), txCache);
+      branchCache = new BranchCache(new DatabaseBranchAccessor(jdbcClient));
 
       artifactTypeCache = new ArtifactTypeCache();
       enumTypeCache = new OseeEnumTypeCache();
@@ -83,7 +77,6 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
 
       caches = new ArrayList<>();
       caches.add(branchCache);
-      caches.add(txCache);
       caches.add(artifactTypeCache);
       caches.add(attributeTypeCache);
       caches.add(relationTypeCache);
@@ -99,17 +92,11 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
       artifactTypeCache = null;
 
       branchCache = null;
-      txCache = null;
    }
 
    @Override
    public BranchCache getBranchCache() {
       return branchCache;
-   }
-
-   @Override
-   public TransactionCache getTransactionCache() {
-      return txCache;
    }
 
    @Override
@@ -170,15 +157,12 @@ public class ClientCachingServiceProxy implements IOseeCachingService {
    @Override
    public void reloadAll() {
       getBranchCache().reloadCache();
-      getTransactionCache().reloadCache();
-
       reloadTypes();
    }
 
    @Override
    public void clearAll() {
       getBranchCache().decacheAll();
-      getTransactionCache().decacheAll();
       clearAllTypes();
    }
 

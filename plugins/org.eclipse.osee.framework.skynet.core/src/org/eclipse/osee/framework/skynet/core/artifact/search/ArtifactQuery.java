@@ -59,7 +59,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.model.EventBasicGuidArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.client.QueryBuilder;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -674,7 +673,7 @@ public class ArtifactQuery {
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {
-            tx = TransactionManager.getTransaction(searchParameters.getFromTx());
+            tx = TransactionId.valueOf(searchParameters.getFromTx());
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
@@ -701,7 +700,7 @@ public class ArtifactQuery {
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {
-            tx = TransactionManager.getTransaction(searchParameters.getFromTx());
+            tx = TransactionId.valueOf(searchParameters.getFromTx());
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;

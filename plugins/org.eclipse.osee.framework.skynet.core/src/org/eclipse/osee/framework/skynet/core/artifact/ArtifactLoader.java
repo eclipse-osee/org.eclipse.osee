@@ -346,7 +346,7 @@ public final class ArtifactLoader {
 
          List<Artifact> artifacts = new ArrayList<>(1);
          artifacts.add(artifact);
-         loadArtifactsData(joinQuery.getQueryId(), artifacts, loadLevel, LoadType.INCLUDE_CACHE, null,
+         loadArtifactsData(joinQuery.getQueryId(), artifacts, loadLevel, LoadType.INCLUDE_CACHE, TransactionId.SENTINEL,
             artifact.isDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED, isArchived);
       } finally {
          joinQuery.delete();

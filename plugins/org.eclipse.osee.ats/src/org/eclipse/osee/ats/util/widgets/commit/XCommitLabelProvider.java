@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -180,7 +179,7 @@ public class XCommitLabelProvider extends XViewerLabelProvider {
    private TransactionRecord getTransactionRecord(BranchId branch) {
       IAtsBranchService service = AtsClientService.get().getBranchService();
       IAtsTeamWorkflow teamWf = commitXManager.getXCommitViewer().getTeamArt();
-      return TransactionManager.getTransaction(service.getCommitTransactionRecord(teamWf, branch));
+      return service.getCommitTransactionRecord(teamWf, branch);
    }
 
    private String handleDestBranchColumn(Object element, BranchId branchToken) {

@@ -10,27 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.rest.internal.util;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.data.BranchReadable;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.TransactionQuery;
 
@@ -40,12 +41,14 @@ import org.eclipse.osee.orcs.search.TransactionQuery;
 public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    private final OrcsApi orcsApi;
-   private static final HashMap<Integer, List<TransactionToken>> commitArtifactIdMap =
-      new HashMap<Integer, List<TransactionToken>>();
+   private final TransactionQuery txQuery;
+   private final HashCollection<ArtifactId, TransactionRecord> commitArtifactIdMap =
+      new HashCollection<>(true, HashSet.class);
 
    public AtsBranchServiceImpl(IAtsServices atsServices, OrcsApi orcsApi, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
       super(atsServices, teamWorkflowProvidersLazy);
       this.orcsApi = orcsApi;
+      txQuery = orcsApi.getQueryFactory().transactionQuery();
    }
 
    @Override
@@ -126,21 +129,15 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
    }
 
    @Override
-   public Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      ArtifactReadable artifactReadable = (ArtifactReadable) teamWf.getStoreObject();
-      List<TransactionToken> transactionIds = commitArtifactIdMap.get(artifactReadable.getUuid());
-      // Cache the transactionIds first time through.  Other commits will be added to cache as they
-      // happen in this client or as remote commit events come through
-      if (transactionIds == null) {
-         transactionIds = new ArrayList<>(5);
-         TransactionQuery txQuery = orcsApi.getQueryFactory().transactionQuery();
-         txQuery.andCommitIds(artifactReadable.getLocalId());
-         for (TransactionReadable tx : txQuery.getResults()) {
-            transactionIds.add(tx);
-         }
-         commitArtifactIdMap.put(artifactReadable.getLocalId(), transactionIds);
+   public Collection<TransactionRecord> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
+      ArtifactId artifact = teamWf.getStoreObject();
+      if (!commitArtifactIdMap.containsKey(artifact)) {
+         txQuery.andCommitIds(artifact.getId().intValue());
+         txQuery.getResults().forEach(tx -> commitArtifactIdMap.put(artifact, new TransactionRecord(tx.getId(),
+            tx.getBranch(), tx.getComment(), tx.getDate(), tx.getAuthorId(), tx.getCommit(), tx.getTxType())));
       }
-      return transactionIds;
+      Collection<TransactionRecord> transactions = commitArtifactIdMap.getValues(artifact);
+      return transactions == null ? Collections.emptyList() : transactions;
    }
 
    @Override

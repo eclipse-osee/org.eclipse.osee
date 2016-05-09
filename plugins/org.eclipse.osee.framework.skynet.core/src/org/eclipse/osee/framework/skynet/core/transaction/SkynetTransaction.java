@@ -19,6 +19,7 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import static org.eclipse.osee.framework.core.enums.ModificationType.REPLACED_WITH_VERSION;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +32,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.RelationTypeSide;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.access.PermissionStatus;
@@ -40,6 +42,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -382,9 +385,22 @@ public final class SkynetTransaction extends TransactionOperation<BranchId> {
    }
 
    private IOperation createStorageOp() throws OseeCoreException {
-      transaction = TransactionManager.internalCreateTransactionRecord(getBranch(), getAuthor(), comment);
+      transaction = internalCreateTransaction(getBranch(), getAuthor(), comment);
       return new StoreSkynetTransactionOperation(getName(), getBranch(), transaction, getTransactionData(),
          getArtifactReferences());
+   }
+
+   public static synchronized TransactionRecord internalCreateTransaction(BranchId branch, User userToBlame, String comment) throws OseeCoreException {
+      if (comment == null) {
+         comment = "";
+      }
+      Integer authorArtId = userToBlame.getArtId();
+      TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
+      Date timestamp = GlobalTime.GreenwichMeanTimestamp();
+      //keep transaction id's sequential in the face of concurrent transaction by multiple users
+      Long txId = ConnectionHandler.getNextSequence("SKYNET_TRANSACTION_ID_SEQ", false);
+
+      return new TransactionRecord(txId, branch, comment, timestamp, authorArtId, 0, txType);
    }
 
    @Override

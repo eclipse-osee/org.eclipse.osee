@@ -25,7 +25,6 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -113,7 +112,7 @@ public class AtsBranchServiceImplTest {
       //Test TxRecords
       TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser().getArtId(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined);
-      Collection<TransactionToken> commitTxs = new ArrayList<>();
+      Collection<TransactionRecord> commitTxs = new ArrayList<>();
       Collection<ICommitConfigItem> configArtSet = new HashSet<>();
       commitTxs.add(txRecord);
       Collection<Object> commitObjs =

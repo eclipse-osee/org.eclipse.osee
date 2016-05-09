@@ -27,11 +27,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class BranchCache extends AbstractOseeLoadingCache<Branch> {
 
-   private final TransactionCache txCache;
-
-   public BranchCache(IOseeDataAccessor<Branch> dataAccessor, TransactionCache txCache) {
+   public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
-      this.txCache = txCache;
    }
 
    public MergeBranch findMergeBranch(BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
@@ -82,18 +79,5 @@ public class BranchCache extends AbstractOseeLoadingCache<Branch> {
 
    public synchronized List<Branch> getBranches(Predicate<Branch> branchFilter) {
       return getRawValues().stream().filter(branchFilter).collect(Collectors.toList());
-   }
-
-   @Override
-   public synchronized boolean reloadCache() throws OseeCoreException {
-      super.reloadCache();
-      txCache.reloadCache();
-      return true;
-   }
-
-   @Override
-   public synchronized void decacheAll() {
-      super.decacheAll();
-      txCache.decacheAll();
    }
 }
