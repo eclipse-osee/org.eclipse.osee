@@ -477,13 +477,7 @@ public class RelationManagerImpl implements RelationManager {
                Relation destinationRel =
                   findRelationByLocalId(destinationAdjacencies, sourceRel.getOrcsData().getLocalId());
                Relation introduceRelation = relationFactory.introduce(branch, sourceRel.getOrcsData());
-               if (destinationRel == null) {
-                  ArtifactReadable readable = doesRelatedArtifactExist(session, introduceRelation, destination, branch);
-                  if (readable != null) {
-                     RelationNode node = proxy.getInternalArtifact(readable);
-                     relate(session, destination, sourceRel.getRelationType(), node);
-                  }
-               } else {
+               if (destinationRel != null) {
                   destinationRel.setOrcsData(introduceRelation.getOrcsData());
                   destinationRel.setDirty();
                }
