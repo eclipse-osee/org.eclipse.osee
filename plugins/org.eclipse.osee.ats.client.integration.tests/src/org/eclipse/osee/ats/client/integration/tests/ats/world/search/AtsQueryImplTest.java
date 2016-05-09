@@ -34,6 +34,7 @@ import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
 import org.eclipse.osee.ats.client.integration.tests.util.DemoTestUtil;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.demo.api.DemoArtifactToken;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -180,7 +181,7 @@ public class AtsQueryImplTest {
       Conditions.checkNotNull(codeWf, "Code Team Workflow");
       Conditions.checkNotNull(codeTask, "Code Team Workflow");
 
-      services.getProgramService().setWorkPackage(wp, Arrays.asList(codeWf, codeTask));
+      services.getProgramService().setWorkPackage(wp, Arrays.asList(codeWf, codeTask), AtsCoreUsers.SYSTEM_USER);
 
       // by program
       query = queryService.createQuery(WorkItemType.TeamWorkflow);

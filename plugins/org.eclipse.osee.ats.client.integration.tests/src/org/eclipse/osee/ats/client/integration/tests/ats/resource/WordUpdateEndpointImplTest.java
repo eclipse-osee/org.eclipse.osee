@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.DirtyArtifactCacheTest;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.define.report.api.WordArtifactChange;
 import org.eclipse.osee.define.report.api.WordUpdateChange;
@@ -53,8 +54,8 @@ public class WordUpdateEndpointImplTest extends AbstractRestTest {
    public static void cleanup() {
       List<Artifact> teamWorkflows = ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.TeamWorkflow,
          "Safety", AtsUtilCore.getAtsBranch(), QueryOption.CONTAINS_MATCH_OPTIONS);
-      IAtsChangeSet changes =
-         AtsClientService.get().getStoreService().createAtsChangeSet(WordUpdateEndpointImplTest.class.getSimpleName());
+      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(
+         WordUpdateEndpointImplTest.class.getSimpleName(), AtsCoreUsers.SYSTEM_USER);
       for (Artifact teamArt : teamWorkflows) {
          changes.deleteArtifact(teamArt);
       }

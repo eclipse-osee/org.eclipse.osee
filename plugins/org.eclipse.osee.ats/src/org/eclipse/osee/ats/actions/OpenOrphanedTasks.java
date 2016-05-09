@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.ChangeType;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
@@ -120,12 +121,13 @@ public class OpenOrphanedTasks extends Action {
                      if (fAi == null) {
                         AtsUtil.openInAtsWorldEditor("Orphaned Tasks", artifacts, data);
                      } else {
-                        IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getName());
+                        IAtsUser asUser = AtsClientService.get().getUserService().getCurrentUser();
+                        IAtsChangeSet changes =
+                           AtsClientService.get().getStoreService().createAtsChangeSet(getName(), asUser);
                         Pair<IAtsAction, Collection<IAtsTeamWorkflow>> results =
-                           AtsClientService.get().getActionFactory().createAction(
-                              AtsClientService.get().getUserService().getCurrentUser(), getName(), getName(),
-                              ChangeType.Support, "3", false, null, Arrays.asList(fAi), new Date(),
-                              AtsClientService.get().getUserService().getCurrentUser(), null, changes);
+                           AtsClientService.get().getActionFactory().createAction(asUser, getName(), getName(),
+                              ChangeType.Support, "3", false, null, Arrays.asList(fAi), new Date(), asUser, null,
+                              changes);
                         IAtsTeamWorkflow teamWf = results.getSecond().iterator().next();
                         for (Artifact taskArt : artifacts) {
                            changes.relate(teamWf, AtsRelationTypes.TeamWfToTask_Task, taskArt);

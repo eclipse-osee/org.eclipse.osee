@@ -58,14 +58,9 @@ public class AtsStoreServiceImpl implements IAtsStoreService {
    }
 
    @Override
-   public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser user) {
+   public IAtsChangeSet createAtsChangeSet(String comment, IAtsUser asUser) {
       return new AtsChangeSet(atsServer, attributeResolver, atsServer.getOrcsApi(), stateFactory, logFactory, comment,
-         user, notifier);
-   }
-
-   @Override
-   public IAtsChangeSet createAtsChangeSet(String comment) {
-      return createAtsChangeSet(comment, atsServer.getUserService().getCurrentUser());
+         asUser, notifier);
    }
 
    @Override

@@ -72,7 +72,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public TransactionBuilder getTransaction() throws OseeCoreException {
       if (transaction == null) {
          transaction =
-            orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), getUser(user), comment);
+            orcsApi.getTransactionFactory().createTransaction(AtsUtilCore.getAtsBranch(), getUser(asUser), comment);
       }
       return transaction;
    }
@@ -96,7 +96,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             IAtsStateManager stateMgr = workItem.getStateMgr();
             if (stateMgr.isDirty()) {
-               stateFactory.writeToStore(user, workItem, this);
+               stateFactory.writeToStore(asUser, workItem, this);
             }
             if (workItem.getLog().isDirty()) {
                logFactory.writeToStore(workItem, attributeResolver, this);

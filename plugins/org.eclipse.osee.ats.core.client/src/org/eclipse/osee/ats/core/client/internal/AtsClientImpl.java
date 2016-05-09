@@ -119,9 +119,9 @@ import org.eclipse.osee.ats.core.workflow.AtsImplementersService;
 import org.eclipse.osee.ats.core.workflow.AtsWorkItemServiceImpl;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -279,7 +279,7 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
       teamDefinitionService = new AtsTeamDefinitionService(this);
 
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
-         userService, attributeResolverService, atsStateFactory, configProxy, getServices());
+         attributeResolverService, atsStateFactory, configProxy, getServices());
       taskService = new AtsTaskService(this);
 
       eventService = new AtsEventServiceImpl();

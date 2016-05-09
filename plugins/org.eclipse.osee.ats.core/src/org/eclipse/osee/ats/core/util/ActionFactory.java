@@ -29,7 +29,6 @@ import org.eclipse.osee.ats.api.team.CreateTeamOption;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.team.IAtsWorkItemFactory;
 import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.user.IAtsUserService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
@@ -70,18 +69,16 @@ public class ActionFactory implements IAtsActionFactory {
    private final IAtsUtilService utilService;
    private final ISequenceProvider sequenceProvider;
    private final ActionableItemManager actionableItemManager;
-   private final IAtsUserService userService;
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
    private final IAtsConfig config;
    private final IAtsServices services;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAtsUserService userService, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
       this.actionableItemManager = actionableItemManager;
-      this.userService = userService;
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
       this.config = config;
@@ -275,24 +272,23 @@ public class ActionFactory implements IAtsActionFactory {
       IAtsStateManager stateManager = stateFactory.getStateManager(workItem);
       workItem.setStateManager(stateManager);
       StateManagerUtility.initializeStateMachine(workItem.getStateMgr(), startState, assignees,
-         createdBy == null ? userService.getCurrentUser() : createdBy, changes);
-      IAtsUser user = createdBy == null ? userService.getCurrentUser() : createdBy;
+         createdBy == null ? changes.getAsUser() : createdBy, changes);
+      IAtsUser user = createdBy == null ? changes.getAsUser() : createdBy;
       setCreatedBy(workItem, user, true, createdDate, changes);
       TransitionManager.logStateStartedEvent(workItem, startState, createdDate, user);
    }
 
-   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date) throws OseeCoreException {
+   private void logCreatedByChange(IAtsWorkItem workItem, IAtsUser user, Date date, IAtsUser asUser) throws OseeCoreException {
       if (attrResolver.getSoleAttributeValue(workItem, AtsAttributeTypes.CreatedBy, null) == null) {
          workItem.getLog().addLog(LogType.Originated, "", "", date, user.getUserId());
       } else {
-         workItem.getLog().addLog(LogType.Originated, "", "Changed by " + userService.getCurrentUser().getName(), date,
-            user.getUserId());
+         workItem.getLog().addLog(LogType.Originated, "", "Changed by " + asUser.getName(), date, user.getUserId());
       }
    }
 
    public void setCreatedBy(IAtsWorkItem workItem, IAtsUser user, boolean logChange, Date date, IAtsChangeSet changes) throws OseeCoreException {
       if (logChange) {
-         logCreatedByChange(workItem, user, date);
+         logCreatedByChange(workItem, user, date, changes.getAsUser());
       }
 
       if (attrResolver.isAttributeTypeValid(workItem, AtsAttributeTypes.CreatedBy)) {
@@ -302,7 +298,7 @@ public class ActionFactory implements IAtsActionFactory {
          changes.setSoleAttributeValue(workItem, AtsAttributeTypes.CreatedDate, date);
       }
       changes.getNotifications().addWorkItemNotificationEvent(AtsNotificationEventFactory.getWorkItemNotificationEvent(
-         userService.getCurrentUser(), workItem, AtsNotifyType.Originator));
+         changes.getAsUser(), workItem, AtsNotifyType.Originator));
    }
 
    /**

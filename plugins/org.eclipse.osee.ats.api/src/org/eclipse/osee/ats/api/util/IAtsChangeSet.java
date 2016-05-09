@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAttribute;
 import org.eclipse.osee.framework.core.data.ArtifactId;
@@ -109,5 +110,12 @@ public interface IAtsChangeSet {
     * Will check if anything is to be stored, else return quietly.
     */
    void executeIfNeeded();
+
+   /**
+    * User making these changes
+    * 
+    * @return
+    */
+   IAtsUser getAsUser();
 
 }

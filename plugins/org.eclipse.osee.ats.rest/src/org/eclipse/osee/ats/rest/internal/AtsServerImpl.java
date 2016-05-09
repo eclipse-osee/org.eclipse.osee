@@ -245,7 +245,7 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
       config = new AtsArtifactConfigCache(configItemFactory, orcsApi);
       actionableItemManager = new ActionableItemManager(config, attributeResolverService, atsStoreService);
       actionFactory = new ActionFactory(workItemFactory, utilService, sequenceProvider, actionableItemManager,
-         userService, attributeResolverService, atsStateFactory, config, getServices());
+         attributeResolverService, atsStateFactory, config, getServices());
       atsProgramService = new AtsProgramService(this);
       atsTeamDefinitionService = new AtsTeamDefinitionService(this);
 

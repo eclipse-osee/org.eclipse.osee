@@ -60,8 +60,8 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       this(comment, AtsClientService.get().getUserService().getCurrentUser());
    }
 
-   public AtsChangeSet(String comment, IAtsUser atsUser) {
-      super(comment, atsUser);
+   public AtsChangeSet(String comment, IAtsUser asUser) {
+      super(comment, asUser);
    }
 
    @Override
@@ -76,7 +76,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
          if (obj instanceof IAtsWorkItem) {
             IAtsWorkItem workItem = (IAtsWorkItem) obj;
             if (workItem.getStateMgr().isDirty()) {
-               AtsClientService.get().getStateFactory().writeToStore(user, workItem, this);
+               AtsClientService.get().getStateFactory().writeToStore(asUser, workItem, this);
                ((Artifact) workItem.getStoreObject()).persist(transaction);
             }
             if (workItem.getLog().isDirty()) {

@@ -30,6 +30,7 @@ import org.eclipse.osee.ats.api.workflow.WorkItemType;
 import org.eclipse.osee.ats.client.demo.DemoUtil;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.IAtsClient;
+import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.demo.api.DemoUsers;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -93,7 +94,8 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(1, workItems.size());
       Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
 
-      IAtsChangeSet changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup");
+      IAtsChangeSet changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
+         AtsCoreUsers.SYSTEM_USER);
       changes.deleteArtifact(task);
       changes.execute();
 
@@ -117,7 +119,8 @@ public class AtsTaskEndpointImplTest {
       Assert.assertEquals(1, workItems.size());
       Assert.assertEquals(codeTeamWfUuid, workItems.iterator().next().getUuid().longValue());
 
-      changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup");
+      changes = client.getStoreService().createAtsChangeSet(getClass().getSimpleName() + " - cleanup",
+         AtsCoreUsers.SYSTEM_USER);
       changes.deleteArtifact(task);
       changes.execute();
 

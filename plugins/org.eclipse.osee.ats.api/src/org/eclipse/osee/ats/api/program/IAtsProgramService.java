@@ -20,6 +20,7 @@ import org.eclipse.osee.ats.api.ev.IAtsWorkPackage;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertion;
 import org.eclipse.osee.ats.api.insertion.IAtsInsertionActivity;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
+import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.IArtifactType;
@@ -66,7 +67,7 @@ public interface IAtsProgramService {
    // work package
    IAtsWorkPackage getWorkPackage(Long workPackageUuid);
 
-   void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems);
+   void setWorkPackage(IAtsWorkPackage workPackage, List<IAtsWorkItem> workItems, IAtsUser asUser);
 
    // program
    String getDescription(IAtsProgram program);

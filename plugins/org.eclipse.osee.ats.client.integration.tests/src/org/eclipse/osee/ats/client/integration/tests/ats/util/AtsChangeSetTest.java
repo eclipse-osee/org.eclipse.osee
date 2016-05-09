@@ -84,7 +84,7 @@ public class AtsChangeSetTest {
       Artifact genDocArt3 = getGenDocArt(3);
 
       // setRelations
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = createAtsChangeSet();
       changes.setRelations(folderArt, CoreRelationTypes.Default_Hierarchical__Child,
          Arrays.asList(genDocArt0, genDocArt1, genDocArt2));
       changes.execute();
@@ -95,7 +95,7 @@ public class AtsChangeSetTest {
       Assert.assertTrue(folderArt.getChildren().contains(genDocArt2));
 
       // setRelations - remove one and add one
-      changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      changes = createAtsChangeSet();
       changes.setRelations(folderArt, CoreRelationTypes.Default_Hierarchical__Child,
          Arrays.asList(genDocArt0, genDocArt3, genDocArt2));
       changes.execute();
@@ -107,7 +107,7 @@ public class AtsChangeSetTest {
       Assert.assertTrue(folderArt.getChildren().contains(genDocArt3));
 
       // setRelation - remove one and add one
-      changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      changes = createAtsChangeSet();
       changes.setRelation(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt2);
       changes.execute();
 
@@ -122,7 +122,7 @@ public class AtsChangeSetTest {
       Artifact genDocArt2 = getGenDocArt(2);
 
       // Relate
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = createAtsChangeSet();
       changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt0);
       changes.execute();
 
@@ -131,7 +131,7 @@ public class AtsChangeSetTest {
       Assert.assertEquals(folderArt, genDocArt0.getParent());
 
       // Add 2 more children
-      changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      changes = createAtsChangeSet();
       changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt1);
       changes.relate(folderArt, CoreRelationTypes.Default_Hierarchical__Child, genDocArt2);
       changes.execute();
@@ -145,7 +145,7 @@ public class AtsChangeSetTest {
       Assert.assertEquals(folderArt, genDocArt2.getParent());
 
       // UnRelate All
-      changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      changes = createAtsChangeSet();
       changes.unrelateAll(folderArt, CoreRelationTypes.Default_Hierarchical__Child);
       changes.execute();
 
@@ -155,7 +155,7 @@ public class AtsChangeSetTest {
       Assert.assertNull(genDocArt2.getParent());
 
       // Relate using opposite side
-      changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      changes = createAtsChangeSet();
       changes.relate(genDocArt0, CoreRelationTypes.Default_Hierarchical__Parent, folderArt);
       changes.execute();
 
@@ -174,7 +174,7 @@ public class AtsChangeSetTest {
          }
       }
 
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = createAtsChangeSet();
       changes.setAttribute(folderArt, staticIdAttr.getId(), "new id");
       changes.execute();
 
@@ -184,7 +184,7 @@ public class AtsChangeSetTest {
 
    @Test
    public void testSetSoleAttributeById() {
-      IAtsChangeSet changes = AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName());
+      IAtsChangeSet changes = createAtsChangeSet();
       changes.setSoleAttributeValue(folderArt, CoreAttributeTypes.StaticId, "newest id");
       changes.execute();
 
@@ -192,4 +192,8 @@ public class AtsChangeSetTest {
       Assert.assertEquals("newest id", folderArt.getSoleAttributeValue(CoreAttributeTypes.StaticId, null));
    }
 
+   private IAtsChangeSet createAtsChangeSet() {
+      return AtsClientService.get().getStoreService().createAtsChangeSet(getClass().getSimpleName(),
+         AtsClientService.get().getUserService().getCurrentUser());
+   }
 }

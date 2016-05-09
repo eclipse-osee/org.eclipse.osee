@@ -35,16 +35,16 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    protected final Set<Object> objects = new CopyOnWriteArraySet<>();
    protected final Set<Object> deleteObjects = new CopyOnWriteArraySet<>();
    protected final Set<IExecuteListener> listeners = new CopyOnWriteArraySet<>();
-   protected final IAtsUser user;
+   protected final IAtsUser asUser;
    protected final AtsNotificationCollector notifications = new AtsNotificationCollector();
    protected final List<IAtsWorkItem> workItemsCreated = new ArrayList<>();
    protected boolean execptionIfEmpty = true;
 
-   public AbstractAtsChangeSet(String comment, IAtsUser user) {
+   public AbstractAtsChangeSet(String comment, IAtsUser asUser) {
       this.comment = comment;
-      this.user = user;
+      this.asUser = asUser;
       Conditions.checkNotNullOrEmpty(comment, "comment");
-      Conditions.checkNotNull(user, "user");
+      Conditions.checkNotNull(asUser, "user");
    }
 
    @Override
@@ -136,6 +136,11 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    public void executeIfNeeded() {
       execptionIfEmpty = false;
       execute();
+   }
+
+   @Override
+   public IAtsUser getAsUser() {
+      return asUser;
    }
 
 }
