@@ -28,6 +28,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
 
    Set<User> selectedUsers = new HashSet<>();
    private final Collection<User> users;
+   private final Collection<User> teamMembers = new HashSet<>();
 
    public XHyperlabelMemberSelection(String label) {
       this(label, UserManager.getUsers());
@@ -36,6 +37,13 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    public XHyperlabelMemberSelection(String label, Collection<User> users) {
       super(label, false, 80);
       this.users = users;
+   }
+
+   /**
+    * If set, team members will be shown prior to rest of un-checked users
+    */
+   public void setTeamMembers(Collection<? extends User> teamMembers) {
+      this.teamMembers.addAll(teamMembers);
    }
 
    public Set<User> getSelectedUsers() {
@@ -63,6 +71,7 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
          UserCheckTreeDialog uld =
             new UserCheckTreeDialog("Select Users", "Select to assign.\nDeSelect to un-assign.", users);
          uld.setInitialSelections(selectedUsers);
+         uld.setTeamMembers(teamMembers);
          if (uld.open() != 0) {
             return false;
          }

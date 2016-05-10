@@ -12,8 +12,11 @@ package org.eclipse.osee.ats.util.widgets.role;
 
 import java.util.Collection;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.review.Role;
+import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.user.IAtsUser;
+import org.eclipse.osee.ats.core.client.review.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -33,6 +36,7 @@ public class NewRoleDialog extends MessageDialog {
 
    private XCombo roleCombo;
    private XHyperlabelMemberSelection users;
+   private PeerToPeerReviewArtifact reviewArt;
 
    public NewRoleDialog() {
       super(Displays.getActiveShell(), "New Role", null, "Enter New Roles", MessageDialog.QUESTION,
@@ -55,6 +59,21 @@ public class NewRoleDialog extends MessageDialog {
          new XHyperlabelMemberSelection("Select User(s)", AtsClientService.get().getUserServiceClient().getOseeUsers(
             AtsClientService.get().getUserService().getUsers(Active.Active)));
       users.createWidgets(comp, 2);
+      IAtsTeamDefinition teamDef = null;
+      if (reviewArt != null && reviewArt.getParentTeamWorkflow() != null) {
+         teamDef = reviewArt.getParentTeamWorkflow().getTeamDefinition();
+      }
+      if (teamDef == null && !reviewArt.getActionableItems().isEmpty()) {
+         for (IAtsActionableItem ai : reviewArt.getActionableItems()) {
+            if (ai.getTeamDefinition() != null) {
+               teamDef = ai.getTeamDefinition();
+               break;
+            }
+         }
+      }
+      if (teamDef != null) {
+         users.setTeamMembers(AtsClientService.get().getUserServiceClient().getOseeUsers(teamDef.getMembersAndLeads()));
+      }
 
       return customArea;
    }
@@ -71,6 +90,10 @@ public class NewRoleDialog extends MessageDialog {
 
    public Collection<IAtsUser> getUsers() throws OseeCoreException {
       return AtsClientService.get().getUserServiceClient().getAtsUsers(users.getSelectedUsers());
+   }
+
+   public void setReview(PeerToPeerReviewArtifact reviewArt) {
+      this.reviewArt = reviewArt;
    }
 
 }

@@ -319,6 +319,7 @@ public class XUserRoleViewer extends GenericXWidget implements IArtifactWidget, 
    public void handleNewUserRole() {
 
       NewRoleDialog dialog = new NewRoleDialog();
+      dialog.setReview(reviewArt);
       if (dialog.open() == Window.OK) {
          if (dialog.getRole() == null) {
             AWorkbench.popup("Role not selected");
