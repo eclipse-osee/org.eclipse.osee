@@ -82,6 +82,8 @@ public final class AtsAttributeTypes {
    public static final IAttributeType MeetingLocation = createType(0x10000000000000F8L, "Meeting Location", "Location meeting is held.");
    public static final IAttributeType MeetingAttendee = createType(0x10000000000000F9L, "Meeting Attendee", "Attendee of meeting.");
    public static final IAttributeType MeetingLength = createType(0x10000000000000D4L, "Meeting Length", "Length of meeting.");
+   public static final IAttributeType MeetingDate = createType(0x4DC906AB42E58516L, "Meeting Date");
+   public static final IAttributeType VerificationCodeInspection = createType(0x2FF28193877A9AB6L, "Verification Code Inspection");
 
    public static final IAttributeType NeedBy = createType(0x10000000000000BBL, "Need By", "Hard schedule date that workflow must be completed.");
    public static final IAttributeType NextVersion = createType(0x10000000000000B5L, "Next Version", "True if version artifact is \"Next\" version to be released.");

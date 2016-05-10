@@ -16,12 +16,10 @@ workDefinition "WorkDef_Review_PeerToPeer" {
 
    widgetDefinition "Meeting Length" {
       attributeName "ats.Meeting Length"
-      option REQUIRED_FOR_TRANSITION
    }
 
    widgetDefinition "Meeting Location" {
       attributeName "ats.Meeting Location"
-      option REQUIRED_FOR_TRANSITION
    }
 
    widgetDefinition "Related To State" {
@@ -41,11 +39,28 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       attributeName "ats.Description"
       xWidgetName "XTextDam"
       option FILL_VERTICALLY
+      option REQUIRED_FOR_TRANSITION
    }
 
    widgetDefinition "Meeting Attendees" {
       attributeName "ats.Meeting Attendee"	
       xWidgetName "XHyperlabelMemberSelDam"
+   }
+
+   widgetDefinition "CSCI" {
+      attributeName "ats.CSCI"	
+      xWidgetName "XTextDam"
+      option REQUIRED_FOR_TRANSITION
+   }
+
+   widgetDefinition "Meeting Date" {
+      attributeName "ats.Meeting Date"	
+      xWidgetName "XDateDam"
+   }
+
+   widgetDefinition "Verification Code Inspection" {
+      attributeName "ats.Verification Code Inspection"	
+      xWidgetName "XCheckBoxDam"
       option REQUIRED_FOR_TRANSITION
    }
 
@@ -87,23 +102,20 @@ workDefinition "WorkDef_Review_PeerToPeer" {
          widget "Role"
          widget "Location"
          composite {
-         	numColumns 8
+         	numColumns 6
             widget "Review Blocks"
             widget "Review Formal Type" 
             attributeWidget "ats.Need By"
+         }
+         composite {
+         	numColumns 4
+            widget "CSCI"
             widget "Related To State"
          }
          composite {
          	numColumns 4
             attributeWidget "ats.Estimated Hours"
             attributeWidget "ats.Estimated Completion Date"
-         }
-         composite {
-            numColumns 8
-            attributeWidget "ats.LOC Changed"
-            attributeWidget "ats.LOC Reviewed"
-            attributeWidget "ats.Pages Changed"
-            attributeWidget "ats.Pages Reviewed"
          }
       }
    }
@@ -117,8 +129,10 @@ workDefinition "WorkDef_Review_PeerToPeer" {
       to "Prepare" OverrideAttributeValidation
       layout {
          widget "Description"	
+         widget "CSCI"
          widget "Role"
-         widget "Review Defect"         
+         widget "Review Defect" 
+         widget "Verification Code Inspection"    
          composite {
          	numColumns 4
             attributeWidget "ats.Estimated Hours"
@@ -132,6 +146,14 @@ workDefinition "WorkDef_Review_PeerToPeer" {
             attributeWidget "ats.Pages Changed"
             attributeWidget "ats.Pages Reviewed"
          }
+         
+         composite {
+            numColumns 6
+            widget "Meeting Date"
+            widget "Meeting Length"
+            widget "Meeting Location"
+         }
+         
          widget "Resolution"
       }
    }
@@ -150,7 +172,8 @@ workDefinition "WorkDef_Review_PeerToPeer" {
             attributeWidget "ats.Estimated Completion Date"
          }
          composite {
-            numColumns 4
+            numColumns 6
+            widget "Meeting Date"
             widget "Meeting Length"
             widget "Meeting Location"
          }

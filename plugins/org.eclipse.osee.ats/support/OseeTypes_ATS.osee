@@ -85,6 +85,9 @@ artifactType "PeerToPeer Review" extends "ats.Review" {
 	attribute "ats.Meeting Attendee"
 	attribute "ats.Meeting Length"
 	attribute "ats.Meeting Location"
+	attribute "ats.Meeting Date"
+	attribute "ats.Verification Code Inspection"
+   attribute "ats.CSCI"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
@@ -1356,6 +1359,23 @@ attributeType "ats.Location" extends StringAttribute {
 	max 1
 	taggerId DefaultAttributeTaggerProvider
 	fileExtension "txt"
+	mediaType "text/plain"
+}
+
+attributeType "ats.Meeting Date"  extends DateAttribute {
+	uuid 0x4DC906AB42E58516
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	mediaType "text/calendar"	
+}
+
+attributeType "ats.Verification Code Inspection" extends BooleanAttribute {
+	uuid 0x2FF28193877A9AB6
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	taggerId DefaultAttributeTaggerProvider
 	mediaType "text/plain"
 }
 
