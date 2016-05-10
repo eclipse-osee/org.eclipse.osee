@@ -14,7 +14,6 @@ import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -34,7 +33,6 @@ import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.loader.processor.AbstractLoadProcessor;
 import org.eclipse.osee.orcs.db.internal.loader.processor.ArtifactLoadProcessor;
@@ -67,15 +65,13 @@ public class SqlObjectLoader {
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
-   private final SqlProvider sqlProvider;
    private final SqlHandlerFactory handlerFactory;
 
-   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
+   public SqlObjectLoader(Log logger, JdbcClient jdbcClient, SqlJoinFactory joinFactory, SqlHandlerFactory handlerFactory, OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicProcessor) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.joinFactory = joinFactory;
-      this.sqlProvider = sqlProvider;
       this.handlerFactory = handlerFactory;
       this.dynamicProcessor = dynamicProcessor;
 
@@ -88,10 +84,6 @@ public class SqlObjectLoader {
 
    public SqlHandlerFactory getFactory() {
       return handlerFactory;
-   }
-
-   public SqlProvider getProvider() {
-      return sqlProvider;
    }
 
    public JdbcClient getJdbcClient() {
@@ -115,7 +107,7 @@ public class SqlObjectLoader {
    private void writeSql(Criteria criteria, LoadSqlContext context) throws OseeCoreException {
       context.clear();
       SqlHandler<?> handler = handlerFactory.createHandler(criteria);
-      AbstractSqlWriter writer = new LoadSqlWriter(logger, joinFactory, sqlProvider, context);
+      AbstractSqlWriter writer = new LoadSqlWriter(logger, joinFactory, jdbcClient, context);
       writer.build(handler);
    }
 
@@ -229,7 +221,7 @@ public class SqlObjectLoader {
    }
 
    protected int loadHeadTransactionId(Long branchId) throws OseeCoreException {
-      String sql = sqlProvider.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
+      String sql = "SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?";
       return getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql, branchId);
    }
 

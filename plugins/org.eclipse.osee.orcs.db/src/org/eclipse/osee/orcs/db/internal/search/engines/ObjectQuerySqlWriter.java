@@ -25,13 +25,13 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DynamicData;
 import org.eclipse.osee.orcs.core.ds.DynamicObject;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.core.ds.QueryData;
 import org.eclipse.osee.orcs.core.ds.ResultObjectDescription;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.handlers.SqlHandlerPriority;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraAttributeDataSqlHandler;
 import org.eclipse.osee.orcs.db.internal.search.handlers.XtraBranchDataSqlHandler;
@@ -60,8 +60,8 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
 
    private WithClauseTxFilterData withTxFilterClause;
 
-   public ObjectQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType, QueryData queryData) {
-      super(logger, joinFactory, sqlProvider, context, queryType);
+   public ObjectQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, QueryData queryData) {
+      super(logger, joinFactory, jdbcClient, context, queryType);
       this.logger = logger;
       this.fieldResolver = new SqlFieldResolver(getAliasManager(), queryData.getSelectSets());
    }
@@ -178,10 +178,9 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
       StringBuilder sb = new StringBuilder();
 
       if (deletedPredicate) {
-         boolean allowDeleted = //
-            OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-            OptionsUtil.areDeletedRelationsIncluded(getOptions());
+         boolean allowDeleted =
+            OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || OptionsUtil.areDeletedAttributesIncluded(
+               getOptions()) || OptionsUtil.areDeletedRelationsIncluded(getOptions());
          writeTxFilter(txsAlias, sb, allowDeleted);
       } else {
          if (OptionsUtil.isHistorical(getOptions())) {
@@ -218,8 +217,8 @@ public class ObjectQuerySqlWriter extends AbstractSqlWriter {
    public String getTxBranchFilter(String txsAlias) {
       boolean allowDeleted = //
          OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-         OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-         OptionsUtil.areDeletedRelationsIncluded(getOptions());
+            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
+            OptionsUtil.areDeletedRelationsIncluded(getOptions());
       return getTxBranchFilter(txsAlias, allowDeleted);
    }
 

@@ -26,7 +26,6 @@ import org.eclipse.osee.orcs.db.internal.branch.KeyValueModule;
 import org.eclipse.osee.orcs.db.internal.loader.DataProxyFactoryProvider;
 import org.eclipse.osee.orcs.db.internal.loader.LoaderModule;
 import org.eclipse.osee.orcs.db.internal.search.QueryModule;
-import org.eclipse.osee.orcs.db.internal.sql.StaticSqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
 import org.eclipse.osee.orcs.db.internal.transaction.TxModule;
 import org.eclipse.osee.orcs.db.internal.types.TypesModule;
@@ -49,7 +48,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    private DataModuleFactory dataModuleFactory;
    private QueryModule queryModule;
    private IdentityManager idManager;
-   private SqlProvider sqlProvider;
    private SqlJoinFactory joinFactory;
 
    public void setLogger(Log logger) {
@@ -83,17 +81,14 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    public void start(BundleContext context) throws Exception {
       JdbcClient jdbcClient = jdbcService.getClient();
 
-      sqlProvider = createSqlProvider();
-
       idManager = new IdentityManagerImpl(jdbcClient);
 
       TypesModule typesModule = new TypesModule(logger, jdbcClient, joinFactory, resourceManager);
       typesDataStore = typesModule.createTypesDataStore();
 
-      LoaderModule loaderModule =
-         new LoaderModule(logger, jdbcClient, idManager, sqlProvider, proxyProvider, joinFactory);
+      LoaderModule loaderModule = new LoaderModule(logger, jdbcClient, idManager, proxyProvider, joinFactory);
 
-      queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory, idManager, sqlProvider);
+      queryModule = new QueryModule(logger, executorAdmin, jdbcClient, joinFactory, idManager);
       queryModule.startIndexer(resourceManager);
 
       BranchModule branchModule =
@@ -112,13 +107,6 @@ public class OrcsDataStoreImpl implements OrcsDataStore {
    public void stop() throws Exception {
       queryModule.stopIndexer();
       queryModule = null;
-   }
-
-   private SqlProvider createSqlProvider() {
-      StaticSqlProvider toReturn = new StaticSqlProvider();
-      toReturn.setLogger(logger);
-      toReturn.setPreferences(preferences);
-      return toReturn;
    }
 
    @Override

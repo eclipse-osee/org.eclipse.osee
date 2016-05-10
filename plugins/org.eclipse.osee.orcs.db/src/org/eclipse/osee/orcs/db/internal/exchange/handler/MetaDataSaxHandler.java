@@ -146,7 +146,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             while (resultSet.next()) {
                String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
                int dataType = resultSet.getInt("DATA_TYPE");
-               if (JdbcDbType.isDatabaseType(dbMetaData, JdbcDbType.foxpro)) {
+               if (JdbcDbType.getDbType(dbMetaData).equals(JdbcDbType.foxpro)) {
                   if (dataType == Types.CHAR) {
                      dataType = Types.VARCHAR;
                   }

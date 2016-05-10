@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.jdbc;
 
-import java.io.Closeable;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -22,7 +21,7 @@ import org.eclipse.osee.framework.jdk.core.type.IVariantData;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public interface JdbcStatement extends Closeable {
+public interface JdbcStatement extends AutoCloseable {
 
    void runPreparedQuery(String query, Object... data);
 
@@ -109,10 +108,6 @@ public interface JdbcStatement extends Closeable {
     * should not be used by application code because it is less readable than using the column name
     */
    String getString(int columnIndex);
-
-   String getComplementSql();
-
-   boolean isDatabaseType(JdbcDbType type);
 
    void updateObject(String columnName, Object value);
 

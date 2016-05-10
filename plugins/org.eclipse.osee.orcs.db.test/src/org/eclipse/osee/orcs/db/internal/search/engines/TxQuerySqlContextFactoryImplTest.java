@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.logger.Log;
@@ -38,7 +37,6 @@ import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIdWithOperator;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxIds;
 import org.eclipse.osee.orcs.core.ds.criteria.CriteriaTxType;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.Engines;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
@@ -55,7 +53,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link QuerySqlContextFactoryImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class TxQuerySqlContextFactoryImplTest {
@@ -73,9 +71,8 @@ public class TxQuerySqlContextFactoryImplTest {
 
    // @formatter:off
    @Mock private Log logger;
-   @Mock private SqlProvider sqlProvider;
    @Mock private IdentityLocator identityService;
-   
+
    @Mock private OrcsSession session;
    @Mock private SqlJoinFactory joinFactory;
    @Mock private IdJoinQuery idJoinQuery;
@@ -91,13 +88,12 @@ public class TxQuerySqlContextFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      queryEngine = Engines.newTxSqlContextFactory(logger, joinFactory, identityService, sqlProvider);
+      queryEngine = Engines.newTxSqlContextFactory(logger, joinFactory, identityService, null);
 
       CriteriaSet criteriaSet = new CriteriaSet();
       Options options = OptionsUtil.createOptions();
       queryData = new QueryData(criteriaSet, options);
 
-      when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
       when(joinFactory.createIdJoinQuery()).thenAnswer(new Answer<IdJoinQuery>() {
 
          @Override
@@ -111,10 +107,10 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testCount() throws Exception {
       String expected = "SELECT/*+ ordered */ count(txd1.transaction_id)\n" + //
-      " FROM \n" + //
-      "osee_join_id jid1, osee_tx_details txd1\n" + //
-      " WHERE \n" + //
-      "txd1.transaction_id = jid1.id AND jid1.query_id = ?";
+         " FROM \n" + //
+         "osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id = jid1.id AND jid1.query_id = ?";
       queryData.addCriteria(IDS);
 
       QuerySqlContext context = queryEngine.createCountContext(session, queryData);
@@ -134,11 +130,11 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryTxIds() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_join_id jid1, osee_tx_details txd1\n" + //
-      " WHERE \n" + //
-      "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(IDS);
 
@@ -159,11 +155,11 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testComment() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_tx_details txd1\n" + //
-      " WHERE \n" + //
-      "txd1.osee_comment = ?\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.osee_comment = ?\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(COMMENT);
 
@@ -179,11 +175,11 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchType() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_join_id jid1, osee_tx_details txd1\n" + //
-      " WHERE \n" + //
-      "txd1.tx_type = jid1.id AND jid1.query_id = ?\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_join_id jid1, osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.tx_type = jid1.id AND jid1.query_id = ?\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(TYPES);
 
@@ -206,13 +202,13 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testBranchTypeAndTxId() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
-      " WHERE \n" + //
-      "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
-      " AND \n" + //
-      "txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_join_id jid1, osee_tx_details txd1, osee_join_id jid2\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id = jid1.id AND jid1.query_id = ?\n" + //
+         " AND \n" + //
+         "txd1.tx_type = jid2.id AND jid2.query_id = ?\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(TYPES, IDS);
 
@@ -237,19 +233,19 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testSixItemQuery() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
-      " WHERE \n" + //
-      "txd1.transaction_id < ?\n" + //
-      " AND \n" + //
-      "txd1.author = jid1.id AND jid1.query_id = ?\n" + //
-      " AND \n" + //
-      "txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
-      " AND \n" + //
-      "txd1.time < ?\n" + //
-      " AND \n" + //
-      "txd1.branch_id = jid3.id AND jid3.query_id = ?\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_tx_details txd1, osee_join_id jid1, osee_join_id jid2, osee_join_id jid3\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id < ?\n" + //
+         " AND \n" + //
+         "txd1.author = jid1.id AND jid1.query_id = ?\n" + //
+         " AND \n" + //
+         "txd1.commit_art_id = jid2.id AND jid2.query_id = ?\n" + //
+         " AND \n" + //
+         "txd1.time < ?\n" + //
+         " AND \n" + //
+         "txd1.branch_id = jid3.id AND jid3.query_id = ?\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(BRANCHIDS, IDS_WITH_OPERATOR, DATE_WITH_OPERATOR, AUTHORS, COMMITS);
 
@@ -279,11 +275,11 @@ public class TxQuerySqlContextFactoryImplTest {
    @Test
    public void testQueryTxPrior() throws Exception {
       String expected = "SELECT/*+ ordered */ txd1.*\n" + //
-      " FROM \n" + //
-      "osee_tx_details txd1\n" + //
-      " WHERE \n" + //
-      "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
-      " ORDER BY txd1.transaction_id";
+         " FROM \n" + //
+         "osee_tx_details txd1\n" + //
+         " WHERE \n" + //
+         "txd1.transaction_id = (SELECT max(td2.transaction_id) FROM osee_tx_details td1,osee_tx_details td2 WHERE td1.transaction_id = ? AND td1.branch_id = td2.branch_id AND td1.transaction_id > td2.transaction_id)\n" + //
+         " ORDER BY txd1.transaction_id";
 
       queryData.addCriteria(prior(3));
 

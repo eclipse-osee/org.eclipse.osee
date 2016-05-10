@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.server.internal.session;
 
-import java.sql.DatabaseMetaData;
 import java.util.Date;
 import java.util.Properties;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
@@ -21,10 +20,7 @@ import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
-import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
-import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 
@@ -62,26 +58,11 @@ public final class SessionFactory implements IOseeTypeFactory {
       sessionGrant.setUserToken(userToken);
       sessionGrant.setDatabaseInfo(getDatabaseInfo());
 
-      Properties properties = getSQLProperties(jdbcService.getClient(), session.getClientVersion());
+      Properties properties = OseeSql.getSqlProperties(jdbcService.getClient().getDbType().areHintsSupported());
       sessionGrant.setSqlProperties(properties);
 
       sessionGrant.setDataStorePath(OseeServerProperties.getOseeApplicationServerData(logger));
       return sessionGrant;
-   }
-
-   private static Properties getSQLProperties(JdbcClient jdbcClient, String clientVersion) throws OseeCoreException {
-      Properties properties = null;
-      JdbcConnection connection = jdbcClient.getConnection();
-      try {
-         DatabaseMetaData metaData = connection.getMetaData();
-         boolean areHintsSupported = JdbcDbType.areHintsSupported(metaData);
-         properties = OseeSql.getSqlProperties(areHintsSupported);
-      } finally {
-         if (connection != null) {
-            connection.close();
-         }
-      }
-      return properties;
    }
 
    private IDatabaseInfo getDatabaseInfo() {

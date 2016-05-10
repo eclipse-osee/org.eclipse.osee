@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -27,7 +26,6 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -187,7 +185,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       jdbcClient.runPreparedUpdate(connection, INSERT_BRANCH, toInsert);
 
       if (inheritAccessControl != 0) {
-         copyAccessRules(connection, newBranchData.getUserArtifactId(), parentBranch, uuid);
+         copyAccessRules(newBranchData.getUserArtifactId(), parentBranch, uuid);
       }
 
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
@@ -246,25 +244,20 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void copyAccessRules(JdbcConnection connection, int userArtId, BranchId parentBranch, Long branchUuid) {
+   private void copyAccessRules(int userArtId, BranchId parentBranch, Long branchUuid) {
       int lock = PermissionEnum.LOCK.getPermId();
       int deny = PermissionEnum.DENY.getPermId();
 
       List<Object[]> data = new ArrayList<>();
-      JdbcStatement chStmt = jdbcClient.getStatement(connection);
-      try {
-         chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);
-         while (chStmt.next()) {
-            int permissionId = chStmt.getInt("permission_id");
-            int priviledgeId = chStmt.getInt("privilege_entity_id");
-            if (priviledgeId == userArtId && permissionId < lock && permissionId != deny) {
-               permissionId = lock;
-            }
-            data.add(new Object[] {permissionId, priviledgeId, branchUuid});
+      jdbcClient.runQuery(stmt -> {
+         int permissionId = stmt.getInt("permission_id");
+         int priviledgeId = stmt.getInt("privilege_entity_id");
+         if (priviledgeId == userArtId && permissionId < lock && permissionId != deny) {
+            permissionId = lock;
          }
-      } finally {
-         Lib.close(chStmt);
-      }
+         data.add(new Object[] {permissionId, priviledgeId, branchUuid});
+      }, JdbcConstants.JDBC__MAX_FETCH_SIZE, GET_BRANCH_ACCESS_CONTROL_LIST, parentBranch);
+
       if (!data.isEmpty()) {
          jdbcClient.runBatchUpdate(INSERT_INTO_BRANCH_ACL, data);
       }

@@ -14,7 +14,6 @@ import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_TX_ROW_COUNT;
 import static org.eclipse.osee.jdbc.JdbcConstants.JDBC__MAX_VARCHAR_LENGTH;
 import static org.eclipse.osee.jdbc.JdbcException.newJdbcException;
 import java.sql.CallableStatement;
-import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -63,14 +62,10 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public JdbcDbType getDatabaseType() {
+   public JdbcDbType getDbType() {
       if (dbType == null) {
-         JdbcConnectionImpl connection = getConnection();
-         try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            dbType = JdbcDbType.getDatabaseType(metaData);
-         } finally {
-            connection.close();
+         try (JdbcConnection connection = getConnection()) {
+            dbType = JdbcDbType.getDbType(connection);
          }
       }
       return dbType;
@@ -260,12 +255,7 @@ public final class JdbcClientImpl implements JdbcClient {
       if (defaultValue == null) {
          throw newJdbcException("defaultValue cannot be null");
       }
-      String sql;
-      if (JdbcDbType.oracle == getDatabaseType()) {
-         sql = String.format("{ ? = call %s }", function);
-      } else {
-         sql = String.format("call %s", function);
-      }
+      String sql = getDbType().getFunctionCallSql(function);
       JdbcConnectionImpl connection = getConnection();
       try {
          CallableStatement stmt = null;
@@ -292,7 +282,7 @@ public final class JdbcClientImpl implements JdbcClient {
                   defaultValue);
             }
 
-            if (JdbcDbType.oracle == getDatabaseType()) {
+            if (getDbType().equals(JdbcDbType.oracle)) {
                stmt.registerOutParameter(1, dataType.getSQLTypeNumber());
                JdbcUtil.setInputParametersForStatement(stmt, 2, data);
             } else {
@@ -451,21 +441,8 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    private void setConstraintChecking(JdbcConnection connection, boolean enable) throws JdbcException {
-      String cmd = null;
-      JdbcDbType dbType = JdbcDbType.getDatabaseType(connection.getMetaData());
-      switch (dbType) {
-         case h2:
-            cmd = String.format("SET REFERENTIAL_INTEGRITY = %s", Boolean.toString(enable).toUpperCase());
-            break;
-         case hsql:
-            cmd = String.format("SET DATABASE REFERENTIAL INTEGRITY %s", Boolean.toString(enable).toUpperCase());
-            break;
-         default:
-            // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-            cmd = String.format("SET CONSTRAINTS ALL %s", enable ? "IMMEDIATE" : "DEFERRED");
-            break;
-      }
-      runPreparedUpdate(connection, cmd);
+      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
+      runPreparedUpdate(connection, getDbType().getConstraintCheckingSql(enable));
    }
 
    @Override

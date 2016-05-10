@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
-import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -45,7 +44,6 @@ import org.eclipse.osee.orcs.core.ds.Options;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.criteria.CriteriaOrcsLoad;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.ArtifactJoinQuery;
@@ -76,7 +74,6 @@ public class DataLoaderFactoryImplTest {
    @Mock private JdbcStatement chStmt;
 
    @Mock private IdentityManager identityService;
-   @Mock private SqlProvider sqlProvider;
 
    @Mock private LoadDataHandler builder;
 
@@ -106,13 +103,11 @@ public class DataLoaderFactoryImplTest {
       String sessionId = GUID.create();
       when(session.getGuid()).thenReturn(sessionId);
 
-      LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, sqlProvider, null, joinFactory);
+      LoaderModule module = new LoaderModule(logger, jdbcClient, identityService, null, joinFactory);
       SqlObjectLoader loader = module.createSqlObjectLoader(rowDataFactory, null);
 
       spyLoader = spy(loader);
       factory = module.createDataLoaderFactory(spyLoader);
-
-      when(sqlProvider.getSql(OseeSql.QUERY_BUILDER)).thenReturn("/*+ ordered */");
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
       when(jdbcClient.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(COMMON_ID))).thenReturn(
@@ -209,13 +204,13 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
+            " jart1.art_id, art1.art_type_id, art1.guid\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -233,13 +228,13 @@ public class DataLoaderFactoryImplTest {
       LoadLevel expectedLoadLevel = LoadLevel.ARTIFACT_DATA;
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, art1.art_type_id, art1.guid\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
+            " jart1.art_id, art1.art_type_id, art1.guid\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_artifact art1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "art1.art_id = jart1.art_id AND jart1.query_id = ? AND art1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -465,13 +460,13 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -490,13 +485,13 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
+            " jart1.art_id, att1.attr_id, att1.attr_type_id, att1.value, att1.uri\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_attribute att1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "att1.art_id = jart1.art_id AND jart1.query_id = ? AND att1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.transaction_id <= jart1.transaction_id AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, att1.attr_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
@@ -727,13 +722,13 @@ public class DataLoaderFactoryImplTest {
 
       String expected =
          "SELECT/*+ ordered */ txs1.gamma_id, txs1.mod_type, txs1.branch_id, txs1.transaction_id, txs1.app_id, txs1.transaction_id as stripe_transaction_id,\n" + //
-         " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
-         " FROM \n" + //
-         "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
-         " WHERE \n" + //
-         "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
-         " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
-         " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
+            " jart1.art_id, rel1.rel_link_id, rel1.rel_link_type_id, rel1.a_art_id, rel1.b_art_id, rel1.rationale\n" + //
+            " FROM \n" + //
+            "osee_join_artifact jart1, osee_relation_link rel1, osee_txs txs1\n" + //
+            " WHERE \n" + //
+            "(rel1.a_art_id = jart1.art_id OR rel1.b_art_id = jart1.art_id) AND jart1.query_id = ? AND rel1.gamma_id = txs1.gamma_id\n" + //
+            " AND txs1.transaction_id <= jart1.transaction_id AND txs1.mod_type != 3 AND txs1.branch_id = jart1.branch_id\n" + //
+            " ORDER BY txs1.branch_id, jart1.art_id, rel1.rel_link_id, txs1.transaction_id desc";
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);

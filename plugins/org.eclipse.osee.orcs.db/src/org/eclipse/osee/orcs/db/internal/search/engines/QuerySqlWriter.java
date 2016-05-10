@@ -12,8 +12,8 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
 import org.eclipse.osee.orcs.db.internal.sql.SqlContext;
@@ -29,8 +29,8 @@ public class QuerySqlWriter extends AbstractSqlWriter {
    private final TableEnum table;
    private final String idColumn;
 
-   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
-      super(logger, joinFactory, sqlProvider, context, queryType);
+   public QuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, TableEnum table, String idColumn) {
+      super(logger, joinFactory, jdbcClient, context, queryType);
       this.table = table;
       this.idColumn = idColumn;
    }

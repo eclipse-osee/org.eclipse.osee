@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.jdk.core.type.VariantData;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcConstants;
-import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcException;
 import org.eclipse.osee.jdbc.JdbcStatement;
 
@@ -417,18 +416,6 @@ public final class JdbcStatementImpl implements JdbcStatement {
    }
 
    @Override
-   public String getComplementSql() throws JdbcException {
-      allowReuse();
-      return JdbcDbType.getComplementSql(connection.getMetaData());
-   }
-
-   @Override
-   public boolean isDatabaseType(JdbcDbType type) throws JdbcException {
-      allowReuse();
-      return JdbcDbType.isDatabaseType(connection.getMetaData(), type);
-   }
-
-   @Override
    public void updateObject(String columnName, Object value) throws JdbcException {
       try {
          rSet.updateObject(columnName, value);
@@ -464,6 +451,7 @@ public final class JdbcStatementImpl implements JdbcStatement {
       }
    }
 
+   @Override
    public IVariantData parse() {
       IVariantData toReturn = new VariantData();
       int numberOfColumns = getColumnCount() + 1;

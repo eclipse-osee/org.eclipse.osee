@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.io.File;
-import java.sql.DatabaseMetaData;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.OseeClient;
@@ -19,13 +18,10 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.jdbc.JdbcClient;
-import org.eclipse.osee.jdbc.JdbcConnection;
-import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcService;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
 import org.eclipse.osee.orcs.core.ds.KeyValueDataAccessor;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 
 public class OseeInfoDataAccessor implements KeyValueDataAccessor {
 
@@ -37,15 +33,11 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    private static final String ERROR_MESSAGE = "Unsupported modification - attempt to modify [%s].";
    private static final String BINARY_DATA_ERROR_MSG =
       ERROR_MESSAGE + " This can be modified at startup through -D%s=<PATH>.";
-   private static final String DB_KEY_ERROR_MSG = ERROR_MESSAGE + " This is an unmodifiable database specific setting.";
    private static final String INDEX_STARTUP_ERROR_MSG = ERROR_MESSAGE + " This is an launch time setting.";
 
    private Log logger;
    private JdbcClient jdbcClient;
    private boolean wasBinaryDataChecked = false;
-   private Boolean areHintsSupported;
-   private String recursiveKeyword;
-   private String regExpPattern;
 
    public void setLogger(Log logger) {
       this.logger = logger;
@@ -56,13 +48,11 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
    }
 
    public void start() {
-      areHintsSupported = null;
       // Do Nothing
    }
 
    public void stop() {
       wasBinaryDataChecked = false;
-      areHintsSupported = null;
    }
 
    @Override
@@ -70,12 +60,6 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       String toReturn = null;
       if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
          toReturn = getOseeApplicationServerData();
-      } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
-         toReturn = String.valueOf(areHintsSupported());
-      } else if (SqlProvider.SQL_RECURSIVE_WITH_KEY.equals(key)) {
-         toReturn = getSQLRecursiveKeyword();
-      } else if (SqlProvider.SQL_REG_EXP_PATTERN_KEY.equals(key)) {
-         toReturn = getSQLRegExpPattern();
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          toReturn = String.valueOf(isCheckTagQueueOnStartupAllowed());
       } else {
@@ -90,12 +74,6 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       if (OseeClient.OSEE_APPLICATION_SERVER_DATA.equals(key)) {
          throw new OseeStateException(BINARY_DATA_ERROR_MSG, OseeClient.OSEE_APPLICATION_SERVER_DATA,
             OseeClient.OSEE_APPLICATION_SERVER_DATA);
-      } else if (SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY.equals(key)) {
-         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY);
-      } else if (SqlProvider.SQL_RECURSIVE_WITH_KEY.equals(key)) {
-         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_RECURSIVE_WITH_KEY);
-      } else if (SqlProvider.SQL_REG_EXP_PATTERN_KEY.equals(key)) {
-         throw new OseeStateException(DB_KEY_ERROR_MSG, SqlProvider.SQL_REG_EXP_PATTERN_KEY);
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          throw new OseeStateException(INDEX_STARTUP_ERROR_MSG, DataStoreConstants.DATASTORE_INDEX_ON_START_UP);
       } else {
@@ -145,51 +123,10 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       return toReturn;
    }
 
-   private boolean areHintsSupported() throws OseeCoreException {
-      if (areHintsSupported == null) {
-         areHintsSupported = false;
-         JdbcConnection connection = jdbcClient.getConnection();
-         try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            areHintsSupported = JdbcDbType.areHintsSupported(metaData);
-         } finally {
-            connection.close();
-         }
-      }
-      return areHintsSupported;
-   }
-
    @Override
    public Set<String> getKeys() throws OseeCoreException {
       Set<String> keys = new HashSet<>();
       jdbcClient.runQuery(stmt -> keys.add(stmt.getString("osee_key")), GET_KEYS_SQL);
       return keys;
    }
-
-   private String getSQLRecursiveKeyword() throws OseeCoreException {
-      if (recursiveKeyword == null) {
-         JdbcConnection connection = jdbcClient.getConnection();
-         try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            recursiveKeyword = JdbcDbType.getRecursiveWithSql(metaData);
-         } finally {
-            connection.close();
-         }
-      }
-      return recursiveKeyword;
-   }
-
-   private String getSQLRegExpPattern() throws OseeCoreException {
-      if (regExpPattern == null) {
-         JdbcConnection connection = jdbcClient.getConnection();
-         try {
-            DatabaseMetaData metaData = connection.getMetaData();
-            regExpPattern = JdbcDbType.getRegularExpMatchSql(metaData);
-         } finally {
-            connection.close();
-         }
-      }
-      return regExpPattern;
-   }
-
 }

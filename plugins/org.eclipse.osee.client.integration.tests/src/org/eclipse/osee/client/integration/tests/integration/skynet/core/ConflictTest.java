@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.utility.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.utility.OseeInfo;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -283,16 +284,12 @@ public class ConflictTest {
    //@formatter:on
 
    private static void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      JdbcStatement chStmt = ConnectionHandler.getStatement();
-      try {
-         String query =
-            String.format(NO_TX_CURRENT_SET, dataId, dataTable, chStmt.getComplementSql(), dataId, dataTable);
-         chStmt.runPreparedQuery(query);
-         if (chStmt.next()) {
-            fail(String.format("No TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
-         }
-      } finally {
-         chStmt.close();
+      JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
+      String complementSql = jdbcClient.getDbType().getComplementSql();
+
+      String query = String.format(NO_TX_CURRENT_SET, dataId, dataTable, complementSql, dataId, dataTable);
+      if (jdbcClient.runPreparedQueryFetchObject(null, query) != null) {
+         fail(String.format("No TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
       }
    }
 

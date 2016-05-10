@@ -15,8 +15,9 @@ import java.sql.DatabaseMetaData;
 /**
  * @author Ryan D. Brooks
  */
-public interface JdbcConnection {
+public interface JdbcConnection extends AutoCloseable {
 
+   @Override
    void close();
 
    boolean isClosed();

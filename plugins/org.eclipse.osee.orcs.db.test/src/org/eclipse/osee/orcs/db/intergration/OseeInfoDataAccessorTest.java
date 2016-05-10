@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.core.data.OseeClient;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 import org.eclipse.osee.orcs.core.ds.DataStoreConstants;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.accessor.OseeInfoDataAccessor;
 import org.eclipse.osee.orcs.db.mocks.MockLog;
 
@@ -31,30 +30,6 @@ public class OseeInfoDataAccessorTest {
       accessor.setLogger(new MockLog());
 
       accessor.putValue(OseeClient.OSEE_APPLICATION_SERVER_DATA, "dummy");
-   }
-
-   @org.junit.Test(expected = OseeStateException.class)
-   public void testSetDatabaseHintsSupported() throws OseeCoreException {
-      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
-      accessor.setLogger(new MockLog());
-
-      accessor.putValue(SqlProvider.SQL_DATABASE_HINTS_SUPPORTED_KEY, "dummy");
-   }
-
-   @org.junit.Test(expected = OseeStateException.class)
-   public void testSetSQLRecursiveKeyword() throws OseeCoreException {
-      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
-      accessor.setLogger(new MockLog());
-
-      accessor.putValue(SqlProvider.SQL_RECURSIVE_WITH_KEY, "dummy");
-   }
-
-   @org.junit.Test(expected = OseeStateException.class)
-   public void testSetSQLRegExpPattern() throws OseeCoreException {
-      OseeInfoDataAccessor accessor = new OseeInfoDataAccessor();
-      accessor.setLogger(new MockLog());
-
-      accessor.putValue(SqlProvider.SQL_REG_EXP_PATTERN_KEY, "dummy");
    }
 
    @org.junit.Test(expected = OseeStateException.class)

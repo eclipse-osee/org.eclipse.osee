@@ -30,7 +30,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.engines.AbstractSimpleQueryCallableFactory;
 import org.eclipse.osee.orcs.db.internal.search.engines.ArtifactQuerySqlContextFactoryImpl;
@@ -68,19 +67,18 @@ public final class Engines {
       //
    }
 
-   public static ObjectQueryCallableFactory newArtifactQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+   public static ObjectQueryCallableFactory newArtifactQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, TaggingEngine taggingEngine, ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
       SqlHandlerFactory handlerFactory =
          createArtifactSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
-         new ArtifactQuerySqlContextFactoryImpl(logger, joinFactory, sqlProvider, handlerFactory);
+         new ArtifactQuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
    }
 
-   public static QueryCallableFactory newBranchQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
-      QuerySqlContextFactory sqlContextFactory =
-         newBranchSqlContextFactory(logger, joinFactory, idService, sqlProvider);
+   public static QueryCallableFactory newBranchQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, DataLoaderFactory objectLoader) {
+      QuerySqlContextFactory sqlContextFactory = newBranchSqlContextFactory(logger, joinFactory, idService, jdbcClient);
       return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
          @Override
          protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
@@ -95,8 +93,8 @@ public final class Engines {
       };
    }
 
-   public static QueryCallableFactory newTxQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider, DataLoaderFactory objectLoader) {
-      QuerySqlContextFactory sqlContextFactory = newTxSqlContextFactory(logger, joinFactory, idService, sqlProvider);
+   public static QueryCallableFactory newTxQueryEngine(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient, DataLoaderFactory objectLoader) {
+      QuerySqlContextFactory sqlContextFactory = newTxSqlContextFactory(logger, joinFactory, idService, jdbcClient);
       return new AbstractSimpleQueryCallableFactory(logger, objectLoader, sqlContextFactory) {
          @Override
          protected LoadDataHandler createCountingHandler(final AtomicInteger counter, LoadDataHandler handler) {
@@ -112,13 +110,13 @@ public final class Engines {
    }
 
    public static QueryCallableFactory newQueryEngine(Log logger, SqlJoinFactory joinFactory, //
-   IdentityLocator idService, SqlProvider sqlProvider, TaggingEngine taggingEngine, //
-   ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
+      IdentityLocator idService, JdbcClient jdbcClient, TaggingEngine taggingEngine, //
+      ExecutorAdmin executorAdmin, DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
 
       SqlHandlerFactory handlerFactory =
          createObjectSqlHandlerFactory(logger, idService, taggingEngine.getTagProcessor());
       QuerySqlContextFactory sqlContextFactory =
-         new ObjectQuerySqlContextFactoryImpl(logger, joinFactory, sqlProvider, handlerFactory);
+         new ObjectQuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory);
       AttributeDataMatcher matcher = new AttributeDataMatcher(logger, taggingEngine, attrTypes);
       QueryFilterFactoryImpl filterFactory = new QueryFilterFactoryImpl(logger, executorAdmin, matcher);
       return new ObjectQueryCallableFactory(logger, objectLoader, sqlContextFactory, filterFactory);
@@ -135,19 +133,19 @@ public final class Engines {
       return new TaggingEngine(taggers, tagProcessor);
    }
 
-   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, TableEnum table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
-      return new QuerySqlContextFactoryImpl(logger, joinFactory, sqlProvider, handlerFactory, table, idColumn, type);
+   public static QuerySqlContextFactory newSqlContextFactory(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, TableEnum table, String idColumn, SqlHandlerFactory handlerFactory, ObjectQueryType type) {
+      return new QuerySqlContextFactoryImpl(logger, joinFactory, jdbcClient, handlerFactory, table, idColumn, type);
    }
 
-   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider) {
+   public static QuerySqlContextFactory newBranchSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createBranchSqlHandlerFactory(logger, idService);
-      return newSqlContextFactory(logger, joinFactory, sqlProvider, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory,
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.BRANCH_TABLE, "branch_id", handlerFactory,
          ObjectQueryType.BRANCH);
    }
 
-   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, SqlProvider sqlProvider) {
+   public static QuerySqlContextFactory newTxSqlContextFactory(Log logger, SqlJoinFactory joinFactory, IdentityLocator idService, JdbcClient jdbcClient) {
       SqlHandlerFactory handlerFactory = createTxSqlHandlerFactory(logger, idService);
-      return newSqlContextFactory(logger, joinFactory, sqlProvider, TableEnum.TX_DETAILS_TABLE, "transaction_id",
+      return newSqlContextFactory(logger, joinFactory, jdbcClient, TableEnum.TX_DETAILS_TABLE, "transaction_id",
          handlerFactory, ObjectQueryType.TX);
    }
 

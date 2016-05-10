@@ -12,10 +12,10 @@ package org.eclipse.osee.orcs.db.internal.search.engines;
 
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext.ObjectQueryType;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
@@ -32,14 +32,14 @@ public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory 
 
    private final Log logger;
    private final SqlHandlerFactory handlerFactory;
-   private final SqlProvider sqlProvider;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
 
-   public ObjectQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory) {
+   public ObjectQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
       super();
       this.logger = logger;
       this.joinFactory = joinFactory;
-      this.sqlProvider = sqlProvider;
+      this.jdbcClient = jdbcClient;
       this.handlerFactory = handlerFactory;
    }
 
@@ -56,7 +56,7 @@ public class ObjectQuerySqlContextFactoryImpl implements QuerySqlContextFactory 
    private QuerySqlContext createQueryContext(OrcsSession session, QueryData queryData, QueryType queryType) throws OseeCoreException {
       QuerySqlContext context = new QuerySqlContext(session, queryData.getOptions(), ObjectQueryType.DYNAMIC_OBJECT);
       AbstractSqlWriter writer =
-         new ObjectQuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, queryData);
+         new ObjectQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, queryData);
       List<SqlHandler<?>> handlers = handlerFactory.createHandlers(queryData.getCriteriaSets());
       writer.build(handlers);
       return context;

@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.HasOptions;
 import org.eclipse.osee.orcs.core.ds.Options;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.join.AbstractJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.CharJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
@@ -44,15 +44,15 @@ public abstract class AbstractSqlWriter implements HasOptions {
 
    private final Log logger;
    private final SqlJoinFactory joinFactory;
-   private final SqlProvider sqlProvider;
+   private final JdbcClient jdbcClient;
    private final SqlContext context;
    private final QueryType queryType;
    private int level = 0;
 
-   public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType) {
+   public AbstractSqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType) {
       this.logger = logger;
       this.joinFactory = joinFactory;
-      this.sqlProvider = sqlProvider;
+      this.jdbcClient = jdbcClient;
       this.context = context;
       this.queryType = queryType;
    }
@@ -102,14 +102,6 @@ public abstract class AbstractSqlWriter implements HasOptions {
       writeGroupAndOrder();
    }
 
-   private void writeRecursiveWith() throws OseeCoreException {
-      String recursiveWith = sqlProvider.getSql(SqlProvider.SQL_RECURSIVE_WITH_KEY);
-      if (Strings.isValid(recursiveWith)) {
-         write(" ");
-         write(recursiveWith);
-      }
-   }
-
    protected void writeWithClause() throws OseeCoreException {
       if (Conditions.hasValues(withClauses)) {
          write("WITH");
@@ -117,7 +109,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
          for (int i = 0; i < size; i++) {
             WithClause clause = withClauses.get(i);
             if (clause.isRecursive()) {
-               writeRecursiveWith();
+               write(jdbcClient.getDbType().getRecursiveWithSql());
             }
             write(" ");
             write(clause.getName());
@@ -368,7 +360,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    protected String getSqlHint() throws OseeCoreException {
       String hint = Strings.EMPTY_STRING;
       if (!Conditions.hasValues(withClauses)) {
-         hint = sqlProvider.getSql(OseeSql.QUERY_BUILDER);
+         hint = OseeSql.Strings.HintsOrdered;
       }
       return hint;
    }
@@ -379,7 +371,7 @@ public abstract class AbstractSqlWriter implements HasOptions {
    }
 
    public void writePatternMatch(String field, String expression) throws OseeCoreException {
-      String pattern = sqlProvider.getSql(SqlProvider.SQL_REG_EXP_PATTERN_KEY);
+      String pattern = jdbcClient.getDbType().getRegularExpMatchSql();
       write(pattern, field, expression);
    }
 

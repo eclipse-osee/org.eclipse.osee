@@ -25,7 +25,6 @@ import org.eclipse.osee.orcs.core.ds.QueryEngine;
 import org.eclipse.osee.orcs.core.ds.QueryEngineIndexer;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityLocator;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.engines.QueryEngineImpl;
 import org.eclipse.osee.orcs.db.internal.search.indexer.IndexerConstants;
 import org.eclipse.osee.orcs.db.internal.search.tagger.TaggingEngine;
@@ -40,20 +39,18 @@ public class QueryModule {
    private final ExecutorAdmin executorAdmin;
    private final JdbcClient jdbcClient;
    private final IdentityLocator idService;
-   private final SqlProvider sqlProvider;
    private final SqlJoinFactory sqlJoinFactory;
 
    private TaggingEngine taggingEngine;
    private QueryEngineIndexer queryIndexer;
 
-   public QueryModule(Log logger, ExecutorAdmin executorAdmin, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityLocator idService, SqlProvider sqlProvider) {
+   public QueryModule(Log logger, ExecutorAdmin executorAdmin, JdbcClient jdbcClient, SqlJoinFactory sqlJoinFactory, IdentityLocator idService) {
       super();
       this.logger = logger;
       this.executorAdmin = executorAdmin;
       this.jdbcClient = jdbcClient;
       this.sqlJoinFactory = sqlJoinFactory;
       this.idService = idService;
-      this.sqlProvider = sqlProvider;
    }
 
    public void startIndexer(IResourceManager resourceManager) throws Exception {
@@ -75,12 +72,11 @@ public class QueryModule {
    }
 
    public QueryEngine createQueryEngine(DataLoaderFactory objectLoader, AttributeTypes attrTypes) {
-      QueryCallableFactory factory1 = newArtifactQueryEngine(logger, sqlJoinFactory, idService, sqlProvider,
+      QueryCallableFactory factory1 = newArtifactQueryEngine(logger, sqlJoinFactory, idService, jdbcClient,
          taggingEngine, executorAdmin, objectLoader, attrTypes);
-      QueryCallableFactory factory2 =
-         newBranchQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
-      QueryCallableFactory factory3 = newTxQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, objectLoader);
-      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, sqlProvider, taggingEngine,
+      QueryCallableFactory factory2 = newBranchQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, objectLoader);
+      QueryCallableFactory factory3 = newTxQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, objectLoader);
+      QueryCallableFactory factory4 = newQueryEngine(logger, sqlJoinFactory, idService, jdbcClient, taggingEngine,
          executorAdmin, objectLoader, attrTypes);
       return new QueryEngineImpl(factory1, factory2, factory3, factory4, jdbcClient, sqlJoinFactory);
    }

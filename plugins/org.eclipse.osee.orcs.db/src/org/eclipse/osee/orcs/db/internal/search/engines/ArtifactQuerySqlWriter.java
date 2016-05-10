@@ -14,9 +14,9 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.core.ds.OptionsUtil;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
 import org.eclipse.osee.orcs.db.internal.sql.ObjectType;
 import org.eclipse.osee.orcs.db.internal.sql.QueryType;
@@ -32,8 +32,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
 
    private final long branchUuid;
 
-   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlContext context, QueryType queryType, long branchUuid) {
-      super(logger, joinFactory, sqlProvider, context, queryType);
+   public ArtifactQuerySqlWriter(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlContext context, QueryType queryType, long branchUuid) {
+      super(logger, joinFactory, jdbcClient, context, queryType);
       this.branchUuid = branchUuid;
    }
 
@@ -86,8 +86,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
    public String getTxBranchFilter(String txsAlias) {
       boolean allowDeleted = //
          OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-         OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-         OptionsUtil.areDeletedRelationsIncluded(getOptions());
+            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
+            OptionsUtil.areDeletedRelationsIncluded(getOptions());
 
       StringBuilder sb = new StringBuilder();
       writeTxFilter(txsAlias, sb, allowDeleted);
@@ -151,8 +151,8 @@ public class ArtifactQuerySqlWriter extends AbstractSqlWriter {
       if (deletedPredicate) {
          boolean allowDeleted = //
             OptionsUtil.areDeletedArtifactsIncluded(getOptions()) || //
-            OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
-            OptionsUtil.areDeletedRelationsIncluded(getOptions());
+               OptionsUtil.areDeletedAttributesIncluded(getOptions()) || //
+               OptionsUtil.areDeletedRelationsIncluded(getOptions());
          writeTxFilter(txsAlias, sb, allowDeleted);
       } else {
          if (OptionsUtil.isHistorical(getOptions())) {

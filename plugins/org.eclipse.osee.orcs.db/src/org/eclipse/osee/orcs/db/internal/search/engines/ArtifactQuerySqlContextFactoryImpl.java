@@ -17,11 +17,11 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.HasBranch;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.ds.Criteria;
 import org.eclipse.osee.orcs.core.ds.QueryData;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContext;
 import org.eclipse.osee.orcs.db.internal.search.QuerySqlContextFactory;
 import org.eclipse.osee.orcs.db.internal.sql.AbstractSqlWriter;
@@ -38,14 +38,14 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
 
    private final Log logger;
    private final SqlHandlerFactory handlerFactory;
-   private final SqlProvider sqlProvider;
+   private final JdbcClient jdbcClient;
    private final SqlJoinFactory joinFactory;
 
-   public ArtifactQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, SqlProvider sqlProvider, SqlHandlerFactory handlerFactory) {
+   public ArtifactQuerySqlContextFactoryImpl(Log logger, SqlJoinFactory joinFactory, JdbcClient jdbcClient, SqlHandlerFactory handlerFactory) {
       super();
       this.logger = logger;
       this.joinFactory = joinFactory;
-      this.sqlProvider = sqlProvider;
+      this.jdbcClient = jdbcClient;
       this.handlerFactory = handlerFactory;
    }
 
@@ -78,7 +78,7 @@ public class ArtifactQuerySqlContextFactoryImpl implements QuerySqlContextFactor
    private AbstractSqlWriter createQueryWriter(SqlContext context, QueryData queryData, QueryType queryType) throws OseeCoreException {
       Long branch = getBranchToSearch(queryData);
       Conditions.checkNotNull(branch, "branch");
-      return new ArtifactQuerySqlWriter(logger, joinFactory, sqlProvider, context, queryType, branch);
+      return new ArtifactQuerySqlWriter(logger, joinFactory, jdbcClient, context, queryType, branch);
    }
 
    private Long getBranchToSearch(QueryData queryData) throws OseeCoreException {

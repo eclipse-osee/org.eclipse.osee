@@ -31,19 +31,15 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
 
       JdbcClient jdbcClient = DatabaseInitActivator.getInstance().getJdbcClient();
-      JdbcDbType dbType = jdbcClient.getDatabaseType();
-      switch (dbType) {
-         case postgresql:
-            OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");
-            jdbcClient.runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
-            break;
-         case oracle:
-            OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Gathering Oracle Statistics");
-            jdbcClient.runPreparedUpdate(ORACLE_GATHER_STATS);
-            break;
-         default:
-            OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "No - postdbinit process to run");
-            break;
+      JdbcDbType dbType = jdbcClient.getDbType();
+      if (dbType.equals(JdbcDbType.postgresql)) {
+         OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");
+         jdbcClient.runPreparedUpdate(POSTGRESQL_VACUUM_AND_STATS);
+      } else if (dbType.equals(JdbcDbType.oracle)) {
+         OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Gathering Oracle Statistics");
+         jdbcClient.runPreparedUpdate(ORACLE_GATHER_STATS);
+      } else {
+         OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "No - postdbinit process to run");
       }
    }
 }

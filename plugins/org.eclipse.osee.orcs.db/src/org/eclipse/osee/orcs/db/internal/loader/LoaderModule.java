@@ -19,7 +19,6 @@ import org.eclipse.osee.orcs.data.ArtifactTypes;
 import org.eclipse.osee.orcs.data.AttributeTypes;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.OrcsObjectFactory;
-import org.eclipse.osee.orcs.db.internal.SqlProvider;
 import org.eclipse.osee.orcs.db.internal.loader.data.OrcsObjectFactoryImpl;
 import org.eclipse.osee.orcs.db.internal.loader.handlers.LoaderSqlHandlerFactoryUtil;
 import org.eclipse.osee.orcs.db.internal.loader.processor.DynamicLoadProcessor;
@@ -34,16 +33,14 @@ public class LoaderModule {
    private final Log logger;
    private final JdbcClient jdbcClient;
    private final IdentityManager idFactory;
-   private final SqlProvider sqlProvider;
    private final DataProxyFactoryProvider proxyProvider;
    private final SqlJoinFactory joinFactory;
 
-   public LoaderModule(Log logger, JdbcClient jdbcClient, IdentityManager idFactory, SqlProvider sqlProvider, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
+   public LoaderModule(Log logger, JdbcClient jdbcClient, IdentityManager idFactory, DataProxyFactoryProvider proxyProvider, SqlJoinFactory joinFactory) {
       super();
       this.logger = logger;
       this.jdbcClient = jdbcClient;
       this.idFactory = idFactory;
-      this.sqlProvider = sqlProvider;
       this.proxyProvider = proxyProvider;
       this.joinFactory = joinFactory;
    }
@@ -75,8 +72,7 @@ public class LoaderModule {
 
    protected SqlObjectLoader createSqlObjectLoader(OrcsObjectFactory objectFactory, DynamicLoadProcessor dynamicLoadProcessor) {
       SqlHandlerFactory handlerFactory = LoaderSqlHandlerFactoryUtil.createHandlerFactory(logger, idFactory);
-      return new SqlObjectLoader(logger, jdbcClient, joinFactory, sqlProvider, handlerFactory, objectFactory,
-         dynamicLoadProcessor);
+      return new SqlObjectLoader(logger, jdbcClient, joinFactory, handlerFactory, objectFactory, dynamicLoadProcessor);
    }
 
 }

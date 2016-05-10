@@ -52,7 +52,7 @@ public class JdbcConnectionFactoryManager {
          DatabaseMetaData metadata = connection.getMetaData();
          metaData.setTxIsolationLevelSupported(
             metadata.supportsTransactionIsolationLevel(Connection.TRANSACTION_READ_COMMITTED));
-         metaData.setValidationQuery(JdbcDbType.getValidationSql(metadata));
+         metaData.setValidationQuery(JdbcDbType.getDbType(metadata).getValidationSql());
       } catch (SQLException ex) {
          throw JdbcException.newJdbcException(ex);
       } finally {

@@ -20,7 +20,7 @@ import java.util.function.Function;
  */
 public interface JdbcClient {
 
-   JdbcDbType getDatabaseType();
+   JdbcDbType getDbType();
 
    JdbcClientConfig getConfig();
 
