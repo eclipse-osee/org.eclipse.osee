@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewer
  */
 public class DefectXViewerFactory extends SkynetXViewerFactory {
 
-   public static XViewerColumn Severity_Col = new XViewerColumn("osee.defect.severity", "Severity", 70,
+   public static XViewerColumn Severity_Col = new XViewerColumn("osee.defect.severity", "Severity", 85,
       XViewerAlign.Left, true, SortDataType.String, false, null);
    public static XViewerColumn Disposition_Col = new XViewerColumn("osee.defect.disposition", "Disposition", 70,
       XViewerAlign.Center, true, SortDataType.String, false, null);
@@ -33,11 +33,11 @@ public class DefectXViewerFactory extends SkynetXViewerFactory {
       XViewerAlign.Left, true, SortDataType.Date, false, null);
    public static XViewerColumn Injection_Activity_Col = new XViewerColumn("osee.defect.injectionActivity",
       "Injection Activity", 35, XViewerAlign.Left, true, SortDataType.String, false, null);
-   public static XViewerColumn Description_Col = new XViewerColumn("osee.defect.description", "Description", 200,
+   public static XViewerColumn Description_Col = new XViewerColumn("osee.defect.description", "Description", 100,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
-   public static XViewerColumn Location_Col = new XViewerColumn("osee.defect.location", "Location", 200,
+   public static XViewerColumn Location_Col = new XViewerColumn("osee.defect.location", "Location", 100,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
-   public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 200,
+   public static XViewerColumn Resolution_Col = new XViewerColumn("osee.defect.resolution", "Resolution", 100,
       XViewerAlign.Left, true, SortDataType.String_MultiLine, false, null);
 
    private final static String NAMESPACE = "osee.ats.DefectXViewer";
