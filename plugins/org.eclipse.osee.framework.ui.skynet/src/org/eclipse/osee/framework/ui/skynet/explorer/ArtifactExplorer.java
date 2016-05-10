@@ -287,7 +287,7 @@ public class ArtifactExplorer extends GenericViewPart implements IArtifactExplor
       }
 
       setPartName("Artifact Explorer: " + artifact.getBranchToken().getShortName());
-      if (branch != null && artifact.getBranch().equals(branch)) {
+      if (branch != null && !artifact.getBranch().equals(branch)) {
          explore(Arrays.asList(artifact));
          return;
       }
