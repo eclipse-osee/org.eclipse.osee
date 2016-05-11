@@ -41,8 +41,8 @@ public class Branch extends NamedId implements IOseeBranch, Adaptable {
    private Branch parent;
    private ArtifactId associatedArtifact;
 
-   public Branch(Long uuid, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
-      super(uuid, name);
+   public Branch(Long id, String name, BranchType branchType, BranchState branchState, boolean isArchived, boolean inheritsAccessControl) {
+      super(id, name);
       this.branchType = branchType;
       this.branchState = branchState;
       this.isArchived = isArchived;

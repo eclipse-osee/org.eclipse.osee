@@ -58,8 +58,8 @@ public class ReportResource {
 
    @GET
    @Produces(MediaType.APPLICATION_OCTET_STREAM)
-   public Response getTypeCount(@QueryParam("branchUuid") long branchUuid, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) throws OseeCoreException {
-      List<ChangeItem> changes = getChanges(branchUuid);
+   public Response getTypeCount(@QueryParam("branchUuid") BranchId branch, @QueryParam("artTypes") List<Long> artTypes, @QueryParam("attrTypes") List<Long> attrTypes) throws OseeCoreException {
+      List<ChangeItem> changes = getChanges(branch);
       Set<Long> newArts = new HashSet<>();
       Set<Long> modArts = new HashSet<>();
       Set<Long> deletedArts = new HashSet<>();
@@ -76,7 +76,7 @@ public class ReportResource {
 
          @Override
          public void write(OutputStream outputStream) throws WebApplicationException, IOException {
-            writer.write(branchUuid, newArts, modArts, deletedArts, artTypes, attrTypes, outputStream);
+            writer.write(branch, newArts, modArts, deletedArts, artTypes, attrTypes, outputStream);
             outputStream.flush();
          }
       };
@@ -149,15 +149,13 @@ public class ReportResource {
       return toReturn;
    }
 
-   private List<ChangeItem> getChanges(long branchUuid) {
+   private List<ChangeItem> getChanges(BranchId branch) {
       TransactionQuery transactionQuery2 = orcsApi.getQueryFactory().transactionQuery();
       TransactionQuery transactionQuery3 = orcsApi.getQueryFactory().transactionQuery();
-      BranchId branchReadable =
-         orcsApi.getQueryFactory().branchQuery().andUuids(branchUuid).getResults().getExactlyOne();
 
-      BranchId parentBranch = atsServer.getBranchService().getParentBranch(branchReadable);
+      BranchId parentBranch = atsServer.getBranchService().getParentBranch(branch);
 
-      TransactionReadable startTx = transactionQuery2.andIsHead(branchReadable).getResults().getExactlyOne();
+      TransactionReadable startTx = transactionQuery2.andIsHead(branch).getResults().getExactlyOne();
 
       TransactionReadable endTx = transactionQuery3.andIsHead(parentBranch).getResults().getExactlyOne();
 

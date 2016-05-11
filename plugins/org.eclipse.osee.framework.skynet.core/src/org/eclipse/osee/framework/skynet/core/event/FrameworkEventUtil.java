@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicGuidArtifact;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelationReorder;
 import org.eclipse.osee.framework.core.model.event.RelationOrderModType;
@@ -179,8 +180,8 @@ public final class FrameworkEventUtil {
    public static DefaultBasicUuidRelationReorder getDefaultBasicGuidRelationReorder(RemoteBasicGuidRelationReorder1 guidRelOrder) {
       DefaultBasicUuidRelationReorder guidArt =
          new DefaultBasicUuidRelationReorder(RelationOrderModType.getType(guidRelOrder.getModTypeGuid()),
-            getBranchUuidFromRemoteEvent(guidRelOrder.getBranchGuid()), guidRelOrder.getRelTypeGuid(),
-            getBasicGuidArtifact(guidRelOrder.getParentArt()));
+            TokenFactory.createBranch(getBranchUuidFromRemoteEvent(guidRelOrder.getBranchGuid())),
+            guidRelOrder.getRelTypeGuid(), getBasicGuidArtifact(guidRelOrder.getParentArt()));
       return guidArt;
    }
 

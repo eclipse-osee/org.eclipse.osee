@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
+import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -34,7 +36,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
-import org.eclipse.osee.orcs.data.BranchReadable;
 import org.eclipse.osee.orcs.search.BranchQuery;
 import org.eclipse.osee.orcs.search.QueryBuilder;
 import org.eclipse.osee.orcs.search.QueryFactory;
@@ -44,7 +45,7 @@ import org.eclipse.osee.orcs.search.QueryFactory;
  */
 public final class DataRightsStreamingOutput implements StreamingOutput {
    private final QueryFactory queryFactory;
-   private final BranchReadable branch;
+   private final IOseeBranch branch;
    private final String codeRoot;
    private final TraceAccumulator traceAccumulator;
    private final Map<CaseInsensitiveString, ArtifactReadable> nameToReqMap =
@@ -54,10 +55,10 @@ public final class DataRightsStreamingOutput implements StreamingOutput {
    private final Log logger;
    private static final IArtifactType WCAFE = TokenFactory.createArtifactType(204509162766367L, "WCAFE");
 
-   public DataRightsStreamingOutput(OrcsApi orcsApi, long branchUuid, String codeRoot, TraceAccumulator traceAccumulator, Log logger) {
+   public DataRightsStreamingOutput(OrcsApi orcsApi, BranchId branch, String codeRoot, TraceAccumulator traceAccumulator, Log logger) {
       this.queryFactory = orcsApi.getQueryFactory();
       BranchQuery branchQuery = orcsApi.getQueryFactory().branchQuery();
-      this.branch = branchQuery.andUuids(branchUuid).getResults().getExactlyOne();
+      this.branch = branchQuery.andIds(branch).getResults().getExactlyOne();
       this.codeRoot = codeRoot.trim();
       this.traceAccumulator = traceAccumulator;
       this.logger = logger;

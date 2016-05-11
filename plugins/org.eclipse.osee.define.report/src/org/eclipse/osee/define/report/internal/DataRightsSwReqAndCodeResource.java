@@ -25,6 +25,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -67,11 +68,11 @@ public final class DataRightsSwReqAndCodeResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getDataRightspReport(@QueryParam("branch") Long branchUuid, @QueryParam("code_root") String codeRoot) {
+   public Response getDataRightspReport(@QueryParam("branch") BranchId branch, @QueryParam("code_root") String codeRoot) {
       TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", null);
       TraceAccumulator traceAccumulator = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
       StreamingOutput streamingOutput =
-         new DataRightsStreamingOutput(orcsApi, branchUuid, codeRoot, traceAccumulator, logger);
+         new DataRightsStreamingOutput(orcsApi, branch, codeRoot, traceAccumulator, logger);
 
       ResponseBuilder builder = Response.ok(streamingOutput);
       String fileName = "Req_Code_Data_Rights_Trace_Report.xml";
@@ -104,7 +105,7 @@ public final class DataRightsSwReqAndCodeResource {
    @Path("validate")
    @GET
    @Produces(MediaType.TEXT_HTML)
-   public String check(@QueryParam("branchId") Long branchId) {
+   public String check(@QueryParam("branchId") BranchId branchId) {
       ResultSet<ArtifactReadable> results =
          queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.AbstractSoftwareRequirement).getResults();
 
@@ -118,8 +119,8 @@ public final class DataRightsSwReqAndCodeResource {
          String subsystem = art.getSoleAttributeValue(CoreAttributeTypes.Subsystem, "");
          String sme = art.getSoleAttributeValue(CoreAttributeTypes.SubjectMatterExpert, "");
          if (subsystem.equals("Controls and Displays") || subsystem.equals(
-            "Mission System Management") || subsystem.equals("Data Management") || subsystem.equals(
-               "Unmanned Systems Management")) {
+            "Mission System Management") || subsystem.equals(
+               "Data Management") || subsystem.equals("Unmanned Systems Management")) {
             if (classification.isEmpty()) {
                appendDetails("missing classification", strb, art, subsystem, classification);
             }
@@ -145,8 +146,8 @@ public final class DataRightsSwReqAndCodeResource {
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.TEXT_PLAIN)
    public Response copySWReqDataRights(@Context HttpHeaders httpHeaders, //
-   @FormParam("sourceBranch") Long sourceBranch, //
-   @FormParam("destinationBranch") Long destinationBranch) throws Exception {
+      @FormParam("sourceBranch") BranchId sourceBranch, //
+      @FormParam("destinationBranch") BranchId destinationBranch) throws Exception {
 
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.AbstractSoftwareRequirement);
    }
@@ -163,17 +164,17 @@ public final class DataRightsSwReqAndCodeResource {
    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
    @Produces(MediaType.TEXT_PLAIN)
    public Response copySSDDataRights(@Context HttpHeaders httpHeaders, //
-   @FormParam("sourceBranch") Long sourceBranch, //
-   @FormParam("destinationBranch") Long destinationBranch) throws Exception {
+      @FormParam("sourceBranch") BranchId sourceBranch, //
+      @FormParam("destinationBranch") BranchId destinationBranch) throws Exception {
       return copyDataRights(sourceBranch, destinationBranch, CoreArtifactTypes.SubsystemDesign);
    }
 
-   private Response copyDataRights(long sourceBranch, long destinationBranch, IArtifactType artifactType) throws Exception {
+   private Response copyDataRights(BranchId sourceBranch, BranchId destinationBranch, IArtifactType artifactType) throws Exception {
       ResultSet<ArtifactReadable> results =
          queryFactory.fromBranch(destinationBranch).andIsOfType(artifactType).getResults();
 
       String branchName =
-         orcsApi.getQueryFactory().branchQuery().andUuids(sourceBranch).getResults().getExactlyOne().getName();
+         orcsApi.getQueryFactory().branchQuery().andIds(sourceBranch).getResults().getExactlyOne().getName();
 
       String txMsg = "Copy data rights for " + artifactType + " from " + branchName;
       TransactionBuilder txBuilder = createTxBuilder(txMsg, destinationBranch);
@@ -213,7 +214,7 @@ public final class DataRightsSwReqAndCodeResource {
          msg + "|" + subsystem + "|" + classification + " |" + art.getArtifactType() + "| " + art.getName() + "| " + art.getLocalId() + "| " + art.getLastModifiedTransaction() + "<br />");
    }
 
-   private TransactionBuilder createTxBuilder(String comment, long branchId) {
+   private TransactionBuilder createTxBuilder(String comment, BranchId branchId) {
       TransactionFactory txFactory = orcsApi.getTransactionFactory();
       ArtifactReadable userArtifact =
          orcsApi.getQueryFactory().fromBranch(CoreBranches.COMMON).andUuid(50).getResults().getExactlyOne();

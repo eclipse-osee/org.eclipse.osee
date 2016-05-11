@@ -51,7 +51,7 @@ public class BranchAccessObject extends AccessObject {
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branch);
    }
 
-   public static BranchAccessObject getBranchAccessObject(BranchId branch) throws OseeCoreException {
+   public static BranchAccessObject getBranchAccessObject(BranchId branch) {
       BranchAccessObject branchAccessObject;
       if (cache.containsKey(branch)) {
          branchAccessObject = cache.get(branch);

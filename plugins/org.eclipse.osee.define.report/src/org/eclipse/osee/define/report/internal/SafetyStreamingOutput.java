@@ -16,6 +16,7 @@ import java.io.Writer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.define.report.SafetyReportGenerator;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
 
@@ -25,14 +26,14 @@ import org.eclipse.osee.orcs.OrcsApi;
  */
 public final class SafetyStreamingOutput implements StreamingOutput {
    private final OrcsApi orcsApi;
-   private final long branchUuid;
+   private final BranchId branchId;
    private final String codeRoot;
    private final Log logger;
 
-   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String codeRoot) {
+   public SafetyStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branchId, String codeRoot) {
       this.logger = logger;
       this.orcsApi = orcsApi;
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.codeRoot = codeRoot;
    }
 
@@ -41,7 +42,7 @@ public final class SafetyStreamingOutput implements StreamingOutput {
       try {
          Writer writer = new OutputStreamWriter(output);
          SafetyReportGenerator safetyReport = new SafetyReportGenerator(logger);
-         safetyReport.runOperation(orcsApi, branchUuid, codeRoot, writer);
+         safetyReport.runOperation(orcsApi, branchId, codeRoot, writer);
       } catch (Exception ex) {
          throw new WebApplicationException(ex);
       }

@@ -132,7 +132,7 @@ public class XWorkingBranchButtonLock extends XWorkingBranchButtonAbstract imple
       BranchId branch = getTeamArt().getWorkingBranch();
       if (branch != null) {
          AccessTopicEventPayload accessEvent = EventUtil.getTopicJson(event, AccessTopicEventPayload.class);
-         if (branch.getUuid().equals(accessEvent.getBranchUuid())) {
+         if (branch.equals(accessEvent.getBranch())) {
             refreshWorkingBranchWidget();
          }
       }

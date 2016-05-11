@@ -475,7 +475,7 @@ public class AccessControlService implements IAccessControlService {
          ArtifactAccessObject artifactAccessObject = (ArtifactAccessObject) data.getObject();
 
          AccessTopicEventPayload event = new AccessTopicEventPayload();
-         event.setBranchUuid(artifactAccessObject.getBranchId());
+         event.setBranch(artifactAccessObject.getBranch());
 
          persistPermissionForArtifact(data, artifactAccessObject, recurse, event);
          cacheAccessControlData(data);
@@ -490,7 +490,7 @@ public class AccessControlService implements IAccessControlService {
          cacheAccessControlData(data);
 
          AccessTopicEventPayload event = new AccessTopicEventPayload();
-         event.setBranchUuid(branchAccessObject.getBranchId());
+         event.setBranch(branchAccessObject.getBranch());
          OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_BRANCH_MODIFIED);
 
       }
@@ -645,7 +645,7 @@ public class AccessControlService implements IAccessControlService {
       deCacheAccessControlData(data);
 
       AccessTopicEventPayload event = new AccessTopicEventPayload();
-      event.setBranchUuid(accessControlledObject.getBranchId());
+      event.setBranch(accessControlledObject.getBranch());
       if (isArtifact) {
          event.addArtifact(((ArtifactAccessObject) accessControlledObject).getArtId());
       }
@@ -691,7 +691,7 @@ public class AccessControlService implements IAccessControlService {
       Conditions.checkNotNullOrEmpty(objects, "objects");
       ensurePopulated();
       AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
-      event.setBranchUuid(objects.iterator().next().getBranchId());
+      event.setBranch(objects.iterator().next().getBranch());
       event.setLocked(true);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
@@ -717,7 +717,7 @@ public class AccessControlService implements IAccessControlService {
    public void unLockObjects(Collection<Artifact> objects, Artifact subject) throws OseeCoreException, OseeAuthenticationRequiredException {
       ensurePopulated();
       AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
-      event.setBranchUuid(objects.iterator().next().getBranchId());
+      event.setBranch(objects.iterator().next().getBranch());
       event.setLocked(false);
       Set<Artifact> lockedArts = new HashSet<>();
       for (Artifact object : objects) {
@@ -746,7 +746,7 @@ public class AccessControlService implements IAccessControlService {
 
       try {
          AccessTopicEventPayload event = new AccessTopicEventPayload();
-         event.setBranchUuid(branch.getUuid());
+         event.setBranch(branch);
          OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_BRANCH_MODIFIED);
       } catch (Exception ex) {
          OseeLog.log(AccessControlHelper.class, Level.SEVERE, ex);

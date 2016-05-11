@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.StringTokenizer;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.StreamingOutput;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -59,11 +60,11 @@ public final class PublishLowHighReqStreamingOutput implements StreamingOutput {
    private final String ALLOCATION_TRACE_TYPE = "Allocation Trace";
    private final Map<String, IArtifactType> allTypesMap = new HashMap<>();
 
-   public PublishLowHighReqStreamingOutput(Log logger, OrcsApi orcsApi, long branchUuid, String selectedTypes) {
+   public PublishLowHighReqStreamingOutput(Log logger, OrcsApi orcsApi, BranchId branch, String selectedTypes) {
       this.logger = logger;
       this.queryApi = orcsApi.getQueryFactory();
       BranchQuery query = orcsApi.getQueryFactory().branchQuery();
-      this.branch = query.andUuids(branchUuid).getResults().getExactlyOne();
+      this.branch = query.andIds(branch).getResults().getExactlyOne();
       this.types = orcsApi.getOrcsTypes();
       includeOnlyArtifactTypes = convertStringTypes(selectedTypes);
    }

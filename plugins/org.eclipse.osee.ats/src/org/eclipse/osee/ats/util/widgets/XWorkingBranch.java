@@ -473,7 +473,7 @@ public class XWorkingBranch extends GenericXWidget implements IArtifactWidget, I
       BranchId branch = teamArt.getBranch();
       if (branch != null) {
          AccessTopicEventPayload accessEvent = EventUtil.getTopicJson(event, AccessTopicEventPayload.class);
-         if (branch.getUuid().equals(accessEvent.getBranchUuid())) {
+         if (branch.equals(accessEvent.getBranch())) {
             refreshOnBranchEvent();
          }
       }

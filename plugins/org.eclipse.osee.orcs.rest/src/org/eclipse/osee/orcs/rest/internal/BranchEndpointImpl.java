@@ -252,9 +252,9 @@ public class BranchEndpointImpl implements BranchEndpoint {
    }
 
    @Override
-   public CompareResults compareBranches(BranchId branchUuid, BranchId branchUuid2) {
-      TransactionToken sourceTx = newTxQuery().andIsHead(branchUuid).getResults().getExactlyOne();
-      TransactionToken destinationTx = newTxQuery().andIsHead(branchUuid2).getResults().getExactlyOne();
+   public CompareResults compareBranches(BranchId branch, BranchId branch2) {
+      TransactionToken sourceTx = newTxQuery().andIsHead(branch).getResults().getExactlyOne();
+      TransactionToken destinationTx = newTxQuery().andIsHead(branch2).getResults().getExactlyOne();
 
       Callable<List<ChangeItem>> op = getBranchOps().compareBranch(sourceTx, destinationTx);
       List<ChangeItem> changes = executeCallable(op);
@@ -273,7 +273,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
 
    @Override
    public Response createBranch(NewBranch data) {
-      return createBranchWithId(TokenFactory.createBranch(), data);
+      return createBranch(new CreateBranchData(), data);
    }
 
    @Override
@@ -283,6 +283,10 @@ public class BranchEndpointImpl implements BranchEndpoint {
       }
 
       CreateBranchData createData = new CreateBranchData(branch);
+      return createBranch(createData, data);
+   }
+
+   private Response createBranch(CreateBranchData createData, NewBranch data) {
       createData.setName(data.getBranchName());
       createData.setBranchType(data.getBranchType());
       createData.setCreationComment(data.getCreationComment());
@@ -308,8 +312,8 @@ public class BranchEndpointImpl implements BranchEndpoint {
          activityLog.createEntry(Activity.BRANCH_OPERATION, ActivityLog.INITIAL_STATUS,
             String.format(
                "Branch Operation Create Branch {branchUUID: %s, branchName: %s accountId: %s serverId: %s clientId: %s}",
-               branch, data.getBranchName(), RestUtil.getAccountId(httpHeaders), RestUtil.getServerId(httpHeaders),
-               RestUtil.getClientId(httpHeaders)));
+               createData.getBranch(), data.getBranchName(), RestUtil.getAccountId(httpHeaders),
+               RestUtil.getServerId(httpHeaders), RestUtil.getClientId(httpHeaders)));
       } catch (OseeCoreException ex) {
          OseeLog.log(ActivityLog.class, OseeLevel.SEVERE_POPUP, ex);
       }

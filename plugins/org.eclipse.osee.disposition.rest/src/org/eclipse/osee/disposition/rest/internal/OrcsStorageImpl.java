@@ -12,6 +12,7 @@ package org.eclipse.osee.disposition.rest.internal;
 
 import static org.eclipse.osee.disposition.rest.DispoConstants.DISPO_ARTIFACT;
 import static org.eclipse.osee.framework.core.enums.CoreAttributeTypes.UriGeneralStringData;
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,7 +38,6 @@ import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -71,13 +71,9 @@ public class OrcsStorageImpl implements Storage {
       this.orcsApi = orcsApi;
    }
 
-   private BranchId getAdminBranch() {
-      return CoreBranches.COMMON;
-   }
-
    @SuppressWarnings("unchecked")
    private ArtifactReadable getDispoUser() throws OseeCoreException {
-      return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return getQuery().fromBranch(COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    private QueryFactory getQuery() {
@@ -97,7 +93,7 @@ public class OrcsStorageImpl implements Storage {
    }
 
    private ResultSet<ArtifactReadable> getDispoTypesArtifact() throws OseeCoreException {
-      return getQuery().fromBranch(getAdminBranch()).andUuid(DISPO_ARTIFACT.getUuid()).andTypeEquals(
+      return getQuery().fromBranch(COMMON).andUuid(DISPO_ARTIFACT.getUuid()).andTypeEquals(
          DISPO_ARTIFACT.getArtifactType()).getResults();
    }
 
@@ -114,8 +110,7 @@ public class OrcsStorageImpl implements Storage {
 
    @Override
    public void storeTypes(IResource resource) {
-      TransactionBuilder tx =
-         getTxFactory().createTransaction(getAdminBranch(), getDispoUser(), "Initialize Dispo Types");
+      TransactionBuilder tx = getTxFactory().createTransaction(COMMON, getDispoUser(), "Initialize Dispo Types");
       ArtifactId artifactId = tx.createArtifact(DISPO_ARTIFACT);
       InputStream stream = null;
       try {
@@ -131,17 +126,17 @@ public class OrcsStorageImpl implements Storage {
    @SuppressWarnings("unchecked")
    @Override
    public ArtifactReadable findUser() {
-      return getQuery().fromBranch(getAdminBranch()).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
+      return getQuery().fromBranch(COMMON).andIds(SystemUser.OseeSystem).getResults().getExactlyOne();
    }
 
    @Override
    public ArtifactReadable findUser(String userId) {
-      return getQuery().fromBranch(getAdminBranch()).andGuid(userId).getResults().getExactlyOne();
+      return getQuery().fromBranch(COMMON).andGuid(userId).getResults().getExactlyOne();
    }
 
    @Override
    public ArtifactReadable findUnassignedUser() {
-      return getQuery().fromBranch(getAdminBranch()).andNameEquals("UnAssigned").andTypeEquals(
+      return getQuery().fromBranch(COMMON).andNameEquals("UnAssigned").andTypeEquals(
          CoreArtifactTypes.User).getResults().getExactlyOne();
    }
 

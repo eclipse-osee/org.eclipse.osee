@@ -256,7 +256,7 @@ public class PolicyDialog extends Dialog {
             boolean isArtifactLockedAfterDialog = AccessControlManager.hasLock(artifact);
             if (isArtifactLockedAfterDialog != isArtifactLockedBeforeDialog) {
                AccessArtifactLockTopicEvent event = new AccessArtifactLockTopicEvent();
-               event.setBranchUuid(artifact.getBranchId());
+               event.setBranch(artifact.getBranch());
                event.addArtifact(artifact.getUuid());
                OseeEventManager.kickAccessTopicEvent(this, event, AccessTopicEvent.ACCESS_ARTIFACT_LOCK_MODIFIED);
                System.err.println("kicked access control event " + event);

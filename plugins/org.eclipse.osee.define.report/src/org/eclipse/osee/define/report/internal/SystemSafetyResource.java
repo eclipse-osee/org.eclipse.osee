@@ -19,6 +19,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.logger.Log;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -41,16 +42,16 @@ public final class SystemSafetyResource {
 
    /**
     * Produce the System Safety Report
-    * 
-    * @param branchUuid The Branch to run the System Safety Report on.
+    *
+    * @param branchId The Branch to run the System Safety Report on.
     * @param codeRoot The root directory accessible on the server for the code traces.
     * @return Produces a streaming xml file containing the System Safety Report
     */
    @Path("safety")
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getSystemSafetyReport(@QueryParam("branch") Long branchUuid, @QueryParam("code_root") String codeRoot) {
-      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchUuid, codeRoot);
+   public Response getSystemSafetyReport(@QueryParam("branch") BranchId branchId, @QueryParam("code_root") String codeRoot) {
+      StreamingOutput streamingOutput = new SafetyStreamingOutput(logger, orcsApi, branchId, codeRoot);
       ResponseBuilder builder = Response.ok(streamingOutput);
       builder.header("Content-Disposition", "attachment; filename=" + "Safety_Report.xml");
       return builder.build();
@@ -58,7 +59,7 @@ public final class SystemSafetyResource {
 
    /**
     * Provides the user interface for the System Safety Report
-    * 
+    *
     * @return Returns the html page for the System Safety Report
     */
    @Path("ui/safety")

@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.internal.ServiceUtil;
 import org.eclipse.osee.jaxrs.client.JaxRsExceptions;
-import org.eclipse.osee.orcs.rest.client.OseeClient;
 import org.eclipse.osee.orcs.rest.model.BranchEndpoint;
 import org.eclipse.osee.orcs.rest.model.NewBranch;
 
@@ -50,19 +49,18 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
    private final BranchId destinationBranch;
    private IOseeBranch newBranch;
    private boolean txCopyBranchType;
-   private final long branchUuid;
+   private final BranchId branch;
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment) {
-      this(branchType, parentTransaction, branchName, branchUuid, associatedArtifact, creationComment, -1,
-         BranchId.SENTINEL);
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, IOseeBranch branch, ArtifactId associatedArtifact, String creationComment) {
+      this(branchType, parentTransaction, branch, associatedArtifact, creationComment, -1, BranchId.SENTINEL);
    }
 
-   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, String branchName, long branchUuid, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
-      super("Create branch " + branchName, Activator.PLUGIN_ID);
+   public CreateBranchHttpRequestOperation(BranchType branchType, TransactionToken parentTransaction, IOseeBranch branch, ArtifactId associatedArtifact, String creationComment, int mergeAddressingQueryId, BranchId destinationBranch) {
+      super("Create branch " + branch.getName(), Activator.PLUGIN_ID);
       this.branchType = branchType;
       this.parentTransaction = parentTransaction;
-      this.branchName = branchName;
-      this.branchUuid = branchUuid;
+      this.branchName = branch.getName();
+      this.branch = branch;
       this.associatedArtifact = associatedArtifact;
       this.creationComment = creationComment;
       this.mergeAddressingQueryId = mergeAddressingQueryId;
@@ -72,12 +70,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws OseeCoreException {
-      if (branchUuid <= 0) {
-         throw new OseeArgumentException("branchUuid [%d] uuid must be > 0", branchUuid);
-      }
-
-      OseeClient client = ServiceUtil.getOseeClient();
-      BranchEndpoint proxy = client.getBranchEndpoint();
+      BranchEndpoint proxy = ServiceUtil.getOseeClient().getBranchEndpoint();
 
       NewBranch data = new NewBranch();
       data.setAssociatedArtifact(associatedArtifact.isValid() ? associatedArtifact : OseeSystem);
@@ -92,10 +85,9 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setTxCopyBranchType(isTxCopyBranchType());
 
       try {
-         Response response = proxy.createBranchWithId(BranchId.valueOf(branchUuid), data);
+         Response response = branch.isValid() ? proxy.createBranchWithId(branch, data) : proxy.createBranch(data);
          if (Status.CREATED.getStatusCode() == response.getStatus()) {
-            long branchId = getBranchUuid(response);
-            newBranch = BranchManager.getBranch(branchId); // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
+            newBranch = getBranchUuid(response); // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
             OseeEventManager.kickBranchEvent(getClass(), new BranchEvent(BranchEventType.Added, newBranch));
          }
       } catch (Exception ex) {
@@ -103,8 +95,8 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       }
    }
 
-   private long getBranchUuid(Response response) {
-      long toReturn = -1;
+   private Branch getBranchUuid(Response response) {
+      Long toReturn = -1L;
       if (response.hasEntity()) {
          org.eclipse.osee.orcs.rest.model.Branch branch =
             response.readEntity(org.eclipse.osee.orcs.rest.model.Branch.class);
@@ -117,12 +109,13 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
             if (index > 0 && index < path.length()) {
                String value = path.substring(index);
                if (Strings.isNumeric(value)) {
-                  toReturn = Integer.parseInt(value);
+                  toReturn = Long.parseLong(value);
                }
             }
          }
       }
-      return toReturn;
+      // can't use TokenFactory here because some places assume branch will be cached such as getBranchesByName
+      return BranchManager.getBranch(toReturn);
    }
 
    public IOseeBranch getNewBranch() {

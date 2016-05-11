@@ -12,6 +12,7 @@ package org.eclipse.osee.define.report.internal.util;
 
 import static org.eclipse.osee.framework.core.enums.CoreRelationTypes.Allocation__Component;
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.orcs.OrcsApi;
@@ -21,15 +22,15 @@ import org.eclipse.osee.orcs.data.ArtifactReadable;
  * @author Ryan D. Brooks
  */
 public class ComponentUtil {
-   private final long branchUuid;
+   private final BranchId branchId;
    private final OrcsApi orcsApi;
    private ArtifactReadable mpCsci;
    private Collection<ArtifactReadable> mpComponents;
    private boolean wasLoaded;
 
-   public ComponentUtil(long branchUuid, OrcsApi providedOrcs) {
+   public ComponentUtil(BranchId branchId, OrcsApi providedOrcs) {
       super();
-      this.branchUuid = branchUuid;
+      this.branchId = branchId;
       this.mpComponents = null;
       this.wasLoaded = false;
       this.mpCsci = null;
@@ -38,7 +39,7 @@ public class ComponentUtil {
 
    private synchronized void load() {
       wasLoaded = true;
-      mpCsci = orcsApi.getQueryFactory().fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
+      mpCsci = orcsApi.getQueryFactory().fromBranch(branchId).andIsOfType(CoreArtifactTypes.Component).andNameEquals(
          "MP CSCI").getResults().getExactlyOne();
       mpComponents = mpCsci.getDescendants();
    }

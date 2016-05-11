@@ -19,6 +19,7 @@ import org.eclipse.osee.define.report.internal.SafetyInformationAccumulator;
 import org.eclipse.osee.define.report.internal.TraceAccumulator;
 import org.eclipse.osee.define.report.internal.TraceMatch;
 import org.eclipse.osee.define.report.internal.util.ComponentUtil;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -37,7 +38,6 @@ public class SafetyReportGenerator {
    private ComponentUtil componentUtil;
    private final TraceMatch match = new TraceMatch("\\^SRS\\s*([^;]+);?", "\\[?(\\{[^\\}]+\\})(.*)");
    private final TraceAccumulator traces = new TraceAccumulator(".*\\.(java|ada|ads|adb|c|h)", match);
-   private long branchUuid;
    private final Log logger;
 
    public static int SYSTEM_REQUIREMENT_INDEX = 8;
@@ -80,17 +80,16 @@ public class SafetyReportGenerator {
       this.logger = logger;
    }
 
-   private void init(OrcsApi orcsApi, long branchUuid, ISheetWriter writer) {
+   private void init(OrcsApi orcsApi, BranchId branchId, ISheetWriter writer) {
       accumulator = new SafetyInformationAccumulator(this, writer);
       queryFactory = orcsApi.getQueryFactory();
-      this.branchUuid = branchUuid;
-      componentUtil = new ComponentUtil(branchUuid, orcsApi);
+      componentUtil = new ComponentUtil(branchId, orcsApi);
    }
 
-   public void runOperation(OrcsApi providedOrcs, long branchUuid, String codeRoot, Writer providedWriter) throws IOException {
+   public void runOperation(OrcsApi providedOrcs, BranchId branchId, String codeRoot, Writer providedWriter) throws IOException {
       ISheetWriter writer = new ExcelXmlWriter(providedWriter);
 
-      init(providedOrcs, branchUuid, writer);
+      init(providedOrcs, branchId, writer);
 
       boolean doTracability = false;
       if (codeRoot != null && codeRoot.isEmpty() != true) {
@@ -102,7 +101,7 @@ public class SafetyReportGenerator {
          traces.extractTraces(root);
       }
       ArtifactReadable functionsFolder =
-         queryFactory.fromBranch(branchUuid).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
+         queryFactory.fromBranch(branchId).andIsOfType(CoreArtifactTypes.Folder).andNameEquals(
             "System Functions").getResults().getExactlyOne();
       processSystemFunctions(functionsFolder, writer);
 

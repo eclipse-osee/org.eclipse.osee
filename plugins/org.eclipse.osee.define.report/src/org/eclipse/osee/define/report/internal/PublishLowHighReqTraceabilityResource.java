@@ -21,6 +21,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.StreamingOutput;
 import org.eclipse.osee.app.OseeAppletPage;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.IResourceRegistry;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -53,12 +54,11 @@ public final class PublishLowHighReqTraceabilityResource {
     */
    @GET
    @Produces(MediaType.APPLICATION_XML)
-   public Response getLowHighReqReport(@QueryParam("branch") long branchUuid, @QueryParam("selected_types") String selectedTypes) {
-      Conditions.checkNotNull(branchUuid, "branch query param");
+   public Response getLowHighReqReport(@QueryParam("branch") BranchId branch, @QueryParam("selected_types") String selectedTypes) {
+      Conditions.checkNotNull(branch, "branch query param");
       Conditions.checkNotNull(selectedTypes, "selected_types query param");
 
-      StreamingOutput streamingOutput =
-         new PublishLowHighReqStreamingOutput(logger, orcsApi, branchUuid, selectedTypes);
+      StreamingOutput streamingOutput = new PublishLowHighReqStreamingOutput(logger, orcsApi, branch, selectedTypes);
       String fileName = "Requirement_Trace_Report.xml";
 
       ResponseBuilder builder = Response.ok(streamingOutput);
