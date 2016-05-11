@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.validator;
 import static org.mockito.MockitoAnnotations.initMocks;
 import java.util.Arrays;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -24,16 +25,21 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
 
 /**
  * Test unit for {@link AtsXComboBooleanValidator}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsXComboBooleanValidatorTest {
 
    private AtsXComboBooleanValidator validator;
    private IAtsServices atsServices;
+
+   // @formatter:off
+   @Mock IAtsWorkItem workItem;
+   // @formatter:on
 
    @Before
    public void setUp() {
@@ -54,36 +60,36 @@ public class AtsXComboBooleanValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
-      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, atsServices);
+      WidgetResult result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef,
+         fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XComboBooleanDam");
 
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid if widgetDef required and no values set
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
 
       // Check for "true" value
       MockValueProvider valueProvider = new MockValueProvider(Arrays.asList("true"));
-      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
       // Check for "false" value
       valueProvider = new MockValueProvider(Arrays.asList("false"));
-      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
       // Check for "junk" value
       valueProvider = new MockValueProvider(Arrays.asList("junk"));
-      result = validator.validateTransition(valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result = validator.validateTransition(workItem, valueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Range, result.getStatus());
    }
 

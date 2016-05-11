@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.review.role;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.review.Role;
 import org.eclipse.osee.ats.api.review.UserRole;
 import org.eclipse.osee.ats.api.workdef.StateType;
@@ -24,12 +25,16 @@ import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
+import org.mockito.Mock;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsXUserRoleValidatorTest {
    private IAtsServices atsServices;
+   // @formatter:off
+   @Mock IAtsWorkItem workItem;
+   // @formatter:on
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
@@ -44,23 +49,23 @@ public class AtsXUserRoleValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XIntegerDam
-      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, atsServices);
+      WidgetResult result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef,
+         fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XUserRoleViewer");
 
       // Not valid to have no roles
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Not valid to have no roles
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.OneRoleEntryRequired.getError(), result.getDetails());
    }
@@ -84,20 +89,21 @@ public class AtsXUserRoleValidatorTest {
       MockUserRoleValueProvider provider = new MockUserRoleValueProvider(roles);
 
       // Valid Roles
-      WidgetResult result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      WidgetResult result =
+         validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       // Not valid to have no author
       roles = Arrays.asList(reviewer);
       provider = new MockUserRoleValueProvider(roles);
-      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneAuthor.getError(), result.getDetails());
 
       // Not valid to have no reviewer
       roles = Arrays.asList(author);
       provider = new MockUserRoleValueProvider(roles);
-      result = validator.validateTransition(provider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result = validator.validateTransition(workItem, provider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(UserRoleError.MustHaveAtLeastOneReviewer.getError(), result.getDetails());
 

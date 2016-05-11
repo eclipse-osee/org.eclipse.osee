@@ -13,15 +13,15 @@ package org.eclipse.osee.ats.core.validator;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
 import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidator;
+import org.eclipse.osee.ats.api.workflow.transition.IAtsXWidgetValidatorProvider;
 
 /**
  * @author Donald G. Dunne
  */
 public class AtsCoreXWidgetValidatorProvider implements IAtsXWidgetValidatorProvider {
+
    private static List<IAtsXWidgetValidator> atsValidators;
-   public static AtsCoreXWidgetValidatorProvider instance = new AtsCoreXWidgetValidatorProvider();
 
    @Override
    public Collection<IAtsXWidgetValidator> getValidators() {

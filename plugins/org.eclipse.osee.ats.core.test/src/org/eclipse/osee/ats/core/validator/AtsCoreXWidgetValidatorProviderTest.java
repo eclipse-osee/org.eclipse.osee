@@ -22,8 +22,7 @@ public class AtsCoreXWidgetValidatorProviderTest {
 
    @Test
    public void testGetValidators() {
-      Assert.assertNotNull(AtsCoreXWidgetValidatorProvider.instance.getValidators());
-      Assert.assertNotNull(AtsCoreXWidgetValidatorProvider.instance.getValidators());
+      Assert.assertNotNull(new AtsCoreXWidgetValidatorProvider().getValidators());
    }
 
 }

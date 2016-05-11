@@ -106,7 +106,7 @@ public class AtsWorkItemServiceImpl implements IAtsWorkItemService {
 
    @Override
    public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) throws OseeStateException {
-      return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef);
+      return AtsXWidgetValidateManager.validateTransition(workItem, toStateDef, services);
    }
 
    @Override

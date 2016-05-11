@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.client.review.defect;
 import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.workdef.StateType;
 import org.eclipse.osee.ats.api.workdef.WidgetOption;
 import org.eclipse.osee.ats.api.workdef.WidgetResult;
@@ -24,14 +25,19 @@ import org.eclipse.osee.ats.mocks.MockStateDefinition;
 import org.eclipse.osee.ats.mocks.MockWidgetDefinition;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.junit.Assert;
+import org.mockito.Mock;
 
 /**
  * Test unit for {@link AtsXDefectValidator}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsXDefectValidatorTest {
    private IAtsServices atsServices;
+
+   // @formatter:off
+   @Mock IAtsWorkItem workItem;
+   // @formatter:on
 
    @org.junit.Test
    public void testValidateTransition() throws OseeCoreException {
@@ -46,21 +52,21 @@ public class AtsXDefectValidatorTest {
       toStateDef.setStateType(StateType.Working);
 
       // Valid for anything not XDefectViewer
-      WidgetResult result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
-         toStateDef, atsServices);
+      WidgetResult result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef,
+         fromStateDef, toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.setXWidgetName("XDefectViewer");
 
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       ValidatorTestUtil.assertValidResult(result);
 
       widgetDef.getOptions().add(WidgetOption.REQUIRED_FOR_TRANSITION);
 
       // Reviews do not require Defects to be entered, even if required for transition
-      result = validator.validateTransition(ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef, toStateDef,
-         atsServices);
+      result = validator.validateTransition(workItem, ValidatorTestUtil.emptyValueProvider, widgetDef, fromStateDef,
+         toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
    }
 
@@ -81,14 +87,15 @@ public class AtsXDefectValidatorTest {
 
       // Valid defect
       WidgetResult result =
-         validator.validateTransition(itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+         validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Valid, result.getStatus());
 
       // Invalid Severity
       item = getValidItem();
       item.setSeverity(Severity.None);
       itemValueProvider = new MockDefectValueProvider(Arrays.asList(item));
-      result = validator.validateTransition(itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result =
+         validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(ReviewDefectError.AllItemsMustBeMarkedAndClosed.getError(), result.getDetails());
 
@@ -96,7 +103,8 @@ public class AtsXDefectValidatorTest {
       item = getValidItem();
       item.setDisposition(Disposition.None);
       itemValueProvider = new MockDefectValueProvider(Arrays.asList(item));
-      result = validator.validateTransition(itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result =
+         validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(ReviewDefectError.AllItemsMustBeMarkedAndClosed.getError(), result.getDetails());
 
@@ -104,7 +112,8 @@ public class AtsXDefectValidatorTest {
       item = getValidItem();
       item.setClosed(false);
       itemValueProvider = new MockDefectValueProvider(Arrays.asList(item));
-      result = validator.validateTransition(itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
+      result =
+         validator.validateTransition(workItem, itemValueProvider, widgetDef, fromStateDef, toStateDef, atsServices);
       Assert.assertEquals(WidgetStatus.Invalid_Incompleted, result.getStatus());
       Assert.assertEquals(ReviewDefectError.AllItemsMustBeMarkedAndClosed.getError(), result.getDetails());
 

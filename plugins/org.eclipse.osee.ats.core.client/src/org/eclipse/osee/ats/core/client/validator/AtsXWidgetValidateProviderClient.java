@@ -21,7 +21,7 @@ import org.eclipse.osee.ats.core.client.review.role.AtsXUserRoleValidator;
 /**
  * @author Donald G. Dunne
  */
-public class AtsXWidgetValidateManagerClient implements IAtsXWidgetValidatorProvider {
+public class AtsXWidgetValidateProviderClient implements IAtsXWidgetValidatorProvider {
 
    private static List<IAtsXWidgetValidator> atsValidators;
 
