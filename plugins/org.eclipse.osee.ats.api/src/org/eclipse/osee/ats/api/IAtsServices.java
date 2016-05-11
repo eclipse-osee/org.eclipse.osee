@@ -29,11 +29,10 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -96,8 +95,6 @@ public interface IAtsServices {
 
    Collection<ITransitionListener> getTransitionListeners();
 
-   Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef);
-
    void clearImplementersCache(IAtsWorkItem workItem);
 
    IArtifactResolver getArtifactResolver();
@@ -121,6 +118,8 @@ public interface IAtsServices {
    IAtsImplementerService getImplementerService();
 
    IAtsColumnService getColumnService();
+   
+   IAtsWorkDefinitionAdmin getWorkDefinitionAdmin();
 
    IAtsUtilService getUtilService();
 

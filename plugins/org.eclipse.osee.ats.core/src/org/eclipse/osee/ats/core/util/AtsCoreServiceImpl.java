@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.core.util;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -21,6 +22,8 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  * @author Donald G. Dunne
  */
 public abstract class AtsCoreServiceImpl implements IAtsServices {
+
+   protected IAtsWorkDefinitionAdmin workDefAdmin;
 
    @Override
    public String getAtsId(ArtifactId artifact) {
@@ -43,6 +46,10 @@ public abstract class AtsCoreServiceImpl implements IAtsServices {
          toReturn = artifact.getGuid();
       }
       return toReturn;
+   }
+
+   public IAtsWorkDefinitionAdmin getWorkDefAdmin() {
+      return workDefAdmin;
    }
 
 }

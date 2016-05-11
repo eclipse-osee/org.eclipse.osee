@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.validator;
+package org.eclipse.osee.ats.api.workflow.transition;
 
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.util.IValueProvider;

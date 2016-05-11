@@ -52,12 +52,10 @@ import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -100,7 +98,6 @@ import org.eclipse.osee.ats.core.client.task.AtsTaskService;
 import org.eclipse.osee.ats.core.client.team.AtsTeamDefinitionService;
 import org.eclipse.osee.ats.core.client.util.AtsUtilClient;
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
-import org.eclipse.osee.ats.core.client.validator.AtsXWidgetValidateManagerClient;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.client.workflow.ChangeTypeUtil;
 import org.eclipse.osee.ats.core.client.workflow.transition.TransitionListeners;
@@ -151,7 +148,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    private IAtsClientVersionService versionService;
    private IAtsArtifactStore artifactStore;
    private CacheProvider<AtsArtifactConfigCache> configCacheProvider;
-   private IAtsWorkDefinitionAdmin workDefAdmin;
    private IActionableItemFactory actionableItemFactory;
    private ITeamDefinitionFactory teamDefFactory;
    private IVersionFactory versionFactory;
@@ -796,12 +792,6 @@ public class AtsClientImpl extends AtsCoreServiceImpl implements IAtsClient {
    @Override
    public Collection<ITransitionListener> getTransitionListeners() {
       return TransitionListeners.getListeners();
-   }
-
-   @Override
-   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
-      return AtsXWidgetValidateManagerClient.instance.validateTransition((AbstractWorkflowArtifact) workItem,
-         toStateDef);
    }
 
    @Override

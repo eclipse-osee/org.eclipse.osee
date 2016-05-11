@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 
 /**
  * @author Donald G. Dunne
@@ -152,6 +153,11 @@ public class AtsStoreService implements IAtsStoreService {
    @Override
    public IArtifactType getArtifactType(ArtifactId artifact) {
       return ((Artifact) artifact).getArtifactType();
+   }
+   
+   @Override
+   public boolean isDateType(IAttributeType attributeType) {
+      return AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType);
    }
 
 }

@@ -8,14 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.validator;
+package org.eclipse.osee.ats.api.workflow.transition;
 
 import java.util.Collection;
 
 /**
  * @author Donald G. Dunne
  */
-public interface AtsXWidgetValidatorProvider {
+public interface IAtsXWidgetValidatorProvider {
 
    public Collection<IAtsXWidgetValidator> getValidators();
 }

@@ -3,6 +3,7 @@
    <implementation class="org.eclipse.osee.ats.rest.internal.AtsServerImpl"/>
    <service>
       <provide interface="org.eclipse.osee.ats.rest.IAtsServer"/>
+      <provide interface="org.eclipse.osee.ats.api.IAtsServices"/>
    </service>
    <reference bind="addNotifier" cardinality="1..n" interface="org.eclipse.osee.ats.rest.util.IAtsNotifierServer" name="IAtsNotifierServer" policy="dynamic" unbind="removeNotifier"/>
    <reference bind="addAtsDatabaseConversion" cardinality="0..n" interface="org.eclipse.osee.ats.api.util.IAtsDatabaseConversion" name="IAtsDatabaseConversion" policy="dynamic" unbind="removeAtsDatabaseConversion"/>

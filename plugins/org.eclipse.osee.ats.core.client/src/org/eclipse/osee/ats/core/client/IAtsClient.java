@@ -36,7 +36,6 @@ import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionServiceProvider;
 import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolverProvider;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -104,8 +103,6 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    void reloadAllCaches() throws OseeCoreException;
 
    void invalidateAllCaches();
-
-   IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() throws OseeStateException;
 
    @Override
    IAtsUserService getUserService() throws OseeStateException;

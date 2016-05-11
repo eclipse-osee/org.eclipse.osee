@@ -48,12 +48,10 @@ import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.util.IAtsUtilService;
 import org.eclipse.osee.ats.api.util.ISequenceProvider;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
-import org.eclipse.osee.ats.api.workdef.IAtsStateDefinition;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionAdmin;
 import org.eclipse.osee.ats.api.workdef.IAtsWorkDefinitionService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
 import org.eclipse.osee.ats.api.workdef.IRelationResolver;
-import org.eclipse.osee.ats.api.workdef.WidgetResult;
 import org.eclipse.osee.ats.api.workflow.IAtsAction;
 import org.eclipse.osee.ats.api.workflow.IAtsActionFactory;
 import org.eclipse.osee.ats.api.workflow.IAtsBranchService;
@@ -594,11 +592,6 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
    }
 
    @Override
-   public Collection<WidgetResult> validateWidgetTransition(IAtsWorkItem workItem, IAtsStateDefinition toStateDef) {
-      return Collections.emptyList();
-   }
-
-   @Override
    public void clearImplementersCache(IAtsWorkItem workItem) {
       // do nothing; no cache on server
    }
@@ -712,6 +705,11 @@ public class AtsServerImpl extends AtsCoreServiceImpl implements IAtsServer {
          implementerService = new AtsImplementersService(this);
       }
       return implementerService;
+   }
+
+   @Override
+   public IAtsWorkDefinitionAdmin getWorkDefinitionAdmin() {
+      return workDefAdmin;
    }
 
 }
