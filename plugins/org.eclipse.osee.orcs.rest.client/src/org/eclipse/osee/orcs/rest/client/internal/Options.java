@@ -10,16 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.client.internal;
 
+import static org.eclipse.osee.framework.core.data.TransactionId.SENTINEL;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 
 /**
  * @author Roberto E. Escobar
  */
 public class Options implements Cloneable {
-   private static final int TRANSACTION_SENTINEL = -1;
-
    private DeletionFlag includeDeleted;
-   private int transactionId;
+   private TransactionId transactionId;
 
    public Options() {
       super();
@@ -28,7 +28,7 @@ public class Options implements Cloneable {
 
    public void reset() {
       includeDeleted = DeletionFlag.EXCLUDE_DELETED;
-      transactionId = TRANSACTION_SENTINEL;
+      transactionId = TransactionId.SENTINEL;
    }
 
    public boolean areDeletedIncluded() {
@@ -43,23 +43,20 @@ public class Options implements Cloneable {
       return includeDeleted;
    }
 
-   public void setFromTransaction(int transactionId) {
+   public void setFromTransaction(TransactionId transactionId) {
       this.transactionId = transactionId;
-      if (transactionId < -1) {
-         this.transactionId = TRANSACTION_SENTINEL;
-      }
    }
 
-   public int getFromTransaction() {
+   public TransactionId getFromTransaction() {
       return transactionId;
    }
 
    public void setHeadTransaction() {
-      transactionId = TRANSACTION_SENTINEL;
+      transactionId = TransactionId.SENTINEL;
    }
 
    public boolean isHeadTransaction() {
-      return TRANSACTION_SENTINEL == getFromTransaction();
+      return transactionId.equals(TransactionId.SENTINEL);
    }
 
    public boolean isHistorical() {
@@ -78,5 +75,4 @@ public class Options implements Cloneable {
    public String toString() {
       return "Options [includeDeleted=" + includeDeleted + ", transactionId=" + transactionId + "]";
    }
-
 }

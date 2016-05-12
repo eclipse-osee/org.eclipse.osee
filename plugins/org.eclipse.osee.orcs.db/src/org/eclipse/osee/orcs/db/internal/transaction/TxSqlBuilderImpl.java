@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -45,7 +46,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
    private final SqlJoinFactory sqlJoinFactory;
    private final IdentityManager idManager;
 
-   private int txId;
+   private TransactionId txId;
    private List<DaoToSql> binaryStores;
    private HashCollection<SqlOrderEnum, Object[]> dataItemInserts;
    private Map<SqlOrderEnum, IdJoinQuery> txNotCurrentsJoin;
@@ -78,7 +79,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void clear() {
-      txId = RelationalConstants.TRANSACTION_SENTINEL;
+      txId = TransactionId.SENTINEL;
       dataItemInserts = null;
       txNotCurrentsJoin = null;
       binaryStores = null;
@@ -86,7 +87,7 @@ public class TxSqlBuilderImpl implements OrcsVisitor, TxSqlBuilder {
 
    @Override
    public void accept(TransactionReadable tx, OrcsChangeSet changeSet) throws OseeCoreException {
-      txId = tx.getGuid();
+      txId = tx;
       binaryStores = new ArrayList<>();
       dataItemInserts = new HashCollection<>();
       txNotCurrentsJoin = new HashMap<>();

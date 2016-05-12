@@ -144,7 +144,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    private TransactionId addCommitTransactionToDatabase(int userArtId, JdbcConnection connection) throws OseeCoreException {
-      TransactionId newTransactionNumber = TransactionId.valueOf(idManager.getNextTransactionId());
+      TransactionId newTransactionNumber = idManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = COMMIT_COMMENT + sourceBranch.getName();

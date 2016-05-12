@@ -163,7 +163,7 @@ public class TransactionWriter {
          try {
             chStmt.runPreparedQuery(query, join.getQueryId(), branchUuid);
             while (chStmt.next()) {
-               results.add(new Object[] {branchUuid, chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+               results.add(new Object[] {branchUuid, chStmt.getLong("transaction_id"), chStmt.getLong("gamma_id")});
             }
          } finally {
             chStmt.close();

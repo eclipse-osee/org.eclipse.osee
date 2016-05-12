@@ -15,13 +15,13 @@ import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecord extends BaseIdentity<Integer> implements TransactionToken, Adaptable {
+public class TransactionRecord extends BaseId implements TransactionToken, Adaptable {
    private final TransactionDetailsType txType;
    private final BranchId branch;
    private String comment;
@@ -29,18 +29,14 @@ public class TransactionRecord extends BaseIdentity<Integer> implements Transact
    private int authorArtId;
    private int commitArtId;
 
-   public TransactionRecord(int transactionNumber, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
-      super(transactionNumber);
+   public TransactionRecord(Long id, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+      super(id);
       this.branch = branch;
       this.comment = Strings.intern(comment);
       this.time = time;
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
       this.txType = txType;
-   }
-
-   public TransactionRecord(int transactionNumber) {
-      this(transactionNumber, BranchId.SENTINEL, "INVALID", new Date(0), -1, -1, TransactionDetailsType.INVALID);
    }
 
    @Override
@@ -86,10 +82,6 @@ public class TransactionRecord extends BaseIdentity<Integer> implements Transact
 
    @Override
    public String toString() {
-      return getGuid().toString();
-   }
-
-   public boolean isIdValid() {
-      return getId() > 0;
+      return String.valueOf(getId());
    }
 }

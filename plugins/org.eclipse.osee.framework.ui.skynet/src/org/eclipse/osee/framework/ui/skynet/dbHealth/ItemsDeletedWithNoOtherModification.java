@@ -36,10 +36,10 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
       public int artId;
       public int attributeId;
       public int gammaId;
-      public int transactionId;
+      public long transactionId;
       public long branchUuid;
 
-      public LocalValues(int artId, int attributeId, long branchUuid, int gammaId, int relLinkId, int transactionId) {
+      public LocalValues(int artId, int attributeId, long branchUuid, int gammaId, int relLinkId, long transactionId) {
          super();
          this.artId = artId;
          this.attributeId = attributeId;
@@ -75,7 +75,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
          while (chStmt.next()) {
             addressing.add(
                new LocalValues(chStmt.getInt("art_id"), chStmt.getInt("attr_id"), chStmt.getLong("branch_id"),
-                  chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"), chStmt.getInt("transaction_id")));
+                  chStmt.getInt("gamma_id"), chStmt.getInt("rel_link_id"), chStmt.getLong("transaction_id")));
          }
       } finally {
          chStmt.close();

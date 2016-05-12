@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.rest.model;
 
+import static org.eclipse.osee.framework.core.data.TransactionId.SENTINEL;
 import java.util.Date;
 import javax.xml.bind.annotation.XmlRootElement;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 
 /**
@@ -20,7 +22,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 @XmlRootElement
 public class Transaction {
 
-   private int txId = -1;
+   private TransactionId txId = TransactionId.SENTINEL;
    private long branchUuid;
    private TransactionDetailsType txType;
    private String comment;
@@ -28,11 +30,11 @@ public class Transaction {
    private int authorId;
    private int commitArtId;
 
-   public int getTxId() {
+   public TransactionId getTxId() {
       return txId;
    }
 
-   public void setTxId(int txId) {
+   public void setTxId(TransactionId txId) {
       this.txId = txId;
    }
 

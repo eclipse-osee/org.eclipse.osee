@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
 
@@ -18,6 +19,6 @@ import org.eclipse.osee.orcs.OrcsSession;
  */
 public interface GraphProvider {
 
-   GraphData getGraph(OrcsSession session, Long branch, int transactionId) throws OseeCoreException;
+   GraphData getGraph(OrcsSession session, Long branch, TransactionId transactionId) throws OseeCoreException;
 
 }

@@ -13,20 +13,21 @@ package org.eclipse.osee.define.report.api;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 /**
  * @author David W. Miller
  */
 public class WordUpdateChange {
-   private Integer tx;
+   private TransactionId tx;
    private List<WordArtifactChange> changedArts = new LinkedList<>();
    private BranchId branch;
 
-   public Integer getTx() {
+   public TransactionId getTx() {
       return tx;
    }
 
-   public void setTx(Integer tx) {
+   public void setTx(TransactionId tx) {
       this.tx = tx;
    }
 

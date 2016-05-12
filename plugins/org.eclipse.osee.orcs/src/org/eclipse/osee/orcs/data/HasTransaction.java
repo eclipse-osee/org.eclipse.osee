@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.data;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface HasTransaction {
 
-   int getTransaction();
+   TransactionId getTransaction();
 }

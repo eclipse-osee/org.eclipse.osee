@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.action;
 import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,13 +47,12 @@ public class EditTransactionComment extends Action {
          AWorkbench.popup("Transaction Record must be selected.");
          return;
       }
-      List<TransactionRecord> records = provider.getSelectedTransactionRecords();
+      List<TransactionId> records = provider.getSelectedTransactionRecords();
       EntryDialog ed = new EntryDialog("Edit Transaction Record Comment", "Enter Transaction Record comment");
       if (ed.open() == 0) {
-         for (TransactionRecord record : records) {
+         for (TransactionId record : records) {
             try {
                TransactionManager.setTransactionComment(record, ed.getEntry());
-               record.setComment(ed.getEntry());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
@@ -61,6 +60,5 @@ public class EditTransactionComment extends Action {
          provider.refreshUI(records);
          AWorkbench.popup("Transaction Record comment(s) updated.");
       }
-
    }
 }

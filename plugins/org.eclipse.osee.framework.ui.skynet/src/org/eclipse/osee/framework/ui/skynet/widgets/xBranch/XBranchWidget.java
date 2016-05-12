@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -237,8 +238,8 @@ public class XBranchWidget extends GenericXWidget implements IOseeTreeReportProv
    }
 
    @SuppressWarnings("rawtypes")
-   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      ArrayList<TransactionRecord> items = new ArrayList<>();
+   public ArrayList<TransactionId> getSelectedTransactionRecords() {
+      ArrayList<TransactionId> items = new ArrayList<>();
       if (branchXViewer == null || branchXViewer.getSelection().isEmpty()) {
          return items;
       }

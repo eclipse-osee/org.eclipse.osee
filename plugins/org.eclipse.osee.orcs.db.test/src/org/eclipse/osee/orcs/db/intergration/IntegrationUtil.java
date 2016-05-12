@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.core.ds.ArtifactData;
 import org.eclipse.osee.orcs.core.ds.AttributeData;
@@ -42,22 +44,18 @@ public class IntegrationUtil {
 
    public static void verifyData(ArtifactData data, Object... values) {
       int index = 0;
-      assertEquals(values[index++], data.getLocalId());
-      assertEquals(values[index++], data.getGuid());
-      assertEquals(values[index++], data.getModType());
-      assertEquals(values[index++], data.getTypeUuid());
+      assertEquals(data.getLocalId(), values[index++]);
+      assertEquals(data.getGuid(), values[index++]);
 
-      verifyData(data.getVersion(), index, values);
+      verifyData(data, index, values);
    }
 
    public static void verifyData(AttributeData data, Object... values) throws OseeCoreException {
       int index = 0;
-      assertEquals(values[index++], data.getLocalId());
-      assertEquals(values[index++], data.getArtifactId());
-      assertEquals(values[index++], data.getModType());
-      assertEquals(values[index++], data.getTypeUuid());
+      assertEquals(data.getLocalId(), values[index++]);
+      assertEquals(data.getArtifactId(), values[index++]);
 
-      index = verifyData(data.getVersion(), index, values);
+      index = verifyData(data, index, values);
 
       Object[] proxied = data.getDataProxy().getData();
       assertEquals(values[index++], proxied[0]); // value
@@ -66,23 +64,24 @@ public class IntegrationUtil {
 
    public static void verifyData(RelationData data, Object... values) {
       int index = 0;
-      assertEquals(values[index++], data.getLocalId());
+      assertEquals(data.getLocalId(), values[index++]);
 
-      assertEquals(values[index++], data.getArtIdA());
-      assertEquals(values[index++], data.getArtIdB());
-      assertEquals(values[index++], data.getRationale());
+      assertEquals(data.getArtIdA(), values[index++]);
+      assertEquals(data.getArtIdB(), values[index++]);
+      assertEquals(data.getRationale(), values[index++]);
 
-      assertEquals(values[index++], data.getModType());
-      assertEquals(values[index++], data.getTypeUuid());
-
-      verifyData(data.getVersion(), index, values);
+      verifyData(data, index, values);
    }
 
-   public static int verifyData(VersionData version, int index, Object... values) {
-      assertEquals(values[index++], version.getBranchId());
-      assertEquals(values[index++], version.getTransactionId());
-      assertEquals(values[index++], version.getStripeId());
-      assertEquals(values[index++], version.getGammaId());
+   private static int verifyData(OrcsData orcsData, int index, Object... values) {
+      assertEquals(orcsData.getModType(), values[index++]);
+      assertEquals(orcsData.getTypeUuid(), values[index++]);
+
+      VersionData version = orcsData.getVersion();
+      assertEquals(version.getBranchId(), ((BranchId) values[index++]).getId());
+      assertEquals(version.getTransactionId(), values[index++]);
+      assertEquals(version.getStripeId(), TransactionId.SENTINEL);
+      assertEquals(version.getGammaId(), values[index++]);
       return index;
    }
 
@@ -93,5 +92,4 @@ public class IntegrationUtil {
          return arg0.getLocalId() - arg1.getLocalId();
       }
    };
-
 }

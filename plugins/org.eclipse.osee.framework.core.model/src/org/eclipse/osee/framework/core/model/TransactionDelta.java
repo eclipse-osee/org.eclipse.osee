@@ -10,24 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.data.TransactionToken;
+
 /**
  * @author Roberto E. Escobar
  */
 public final class TransactionDelta {
-   private final TransactionRecord startTx;
-   private final TransactionRecord endTx;
+   private final TransactionToken startTx;
+   private final TransactionToken endTx;
 
-   public TransactionDelta(TransactionRecord startTx, TransactionRecord endTx) {
+   public TransactionDelta(TransactionToken startTx, TransactionToken endTx) {
       super();
       this.startTx = startTx;
       this.endTx = endTx;
    }
 
-   public TransactionRecord getStartTx() {
+   public TransactionToken getStartTx() {
       return startTx;
    }
 
-   public TransactionRecord getEndTx() {
+   public TransactionToken getEndTx() {
       return endTx;
    }
 

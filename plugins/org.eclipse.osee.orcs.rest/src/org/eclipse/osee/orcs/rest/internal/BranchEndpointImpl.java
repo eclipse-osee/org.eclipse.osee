@@ -302,7 +302,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
       createData.setUserArtifact(getArtifactById(COMMON_ID, data.getAuthorId()));
       createData.setAssociatedArtifact(getArtifactById(COMMON_ID, data.getAssociatedArtifactId()));
 
-      createData.setFromTransaction(TransactionId.valueOf(data.getSourceTransactionId()));
+      createData.setFromTransaction(data.getSourceTransaction());
       createData.setParentBranch(data.getParentBranch());
 
       createData.setMergeDestinationBranchId(data.getMergeDestinationBranchId());
@@ -769,7 +769,7 @@ public class BranchEndpointImpl implements BranchEndpoint {
    @Override
    public Response purgeTxs(long branchUuid, String txIds) {
       boolean modified = false;
-      List<Integer> txsToDelete = OrcsRestUtil.asIntegerList(txIds);
+      List<Long> txsToDelete = OrcsRestUtil.asLongList(txIds);
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results =
             newTxQuery().andBranchIds(branchUuid).andTxIds(txsToDelete).getResults();
@@ -794,13 +794,13 @@ public class BranchEndpointImpl implements BranchEndpoint {
       return asResponse(modified);
    }
 
-   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Integer> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxFoundAreOnBranch(String opName, long branchUuid, List<Long> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
-         Set<Integer> found = new HashSet<>();
+         Set<Long> found = new HashSet<>();
          for (TransactionId tx : result) {
             found.add(tx.getId());
          }
-         SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
+         SetView<Long> difference = Sets.difference(Sets.newHashSet(txIds), found);
          if (!difference.isEmpty()) {
             throw new OseeWebApplicationException(Status.BAD_REQUEST,
                "%s Error - The following transactions from %s were not found on branch [%s] - txs %s - Please remove them from the request and try again.",

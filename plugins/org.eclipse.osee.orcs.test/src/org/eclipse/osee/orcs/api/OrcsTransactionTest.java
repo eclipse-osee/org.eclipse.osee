@@ -643,7 +643,7 @@ public class OrcsTransactionTest {
       TransactionId startingTx = tx.commit();
 
       ArtifactReadable artifact = query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
-      assertEquals(startingTx, TransactionId.valueOf(artifact.getTransaction()));
+      assertEquals(startingTx, artifact.getTransaction());
 
       TransactionBuilder tx2 = createTx();
       tx2.setName(artifact, "Modified - component");
@@ -652,7 +652,7 @@ public class OrcsTransactionTest {
       assertFalse(startingTx.equals(lastTx));
 
       ArtifactReadable currentArtifact = query.fromBranch(COMMON_ID).andGuid(guid).getResults().getExactlyOne();
-      assertEquals(lastTx, TransactionId.valueOf(currentArtifact.getTransaction()));
+      assertEquals(lastTx, currentArtifact.getTransaction());
    }
 
    @Test
@@ -696,7 +696,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable artifact = art1Query.getResults().getExactlyOne();
       assertEquals("A component", artifact.getName());
-      assertEquals(tx1Id, TransactionId.valueOf(artifact.getTransaction()));
+      assertEquals(tx1Id, artifact.getTransaction());
 
       ResultSet<ArtifactReadable> children = artifact.getChildren();
       assertEquals(2, children.size());
@@ -712,7 +712,7 @@ public class OrcsTransactionTest {
 
       ArtifactReadable artifact21 = art1Query.getResults().getExactlyOne();
       assertEquals("A component", artifact21.getName());
-      assertEquals(tx2Id, TransactionId.valueOf(artifact21.getTransaction()));
+      assertEquals(tx2Id, artifact21.getTransaction());
 
       ResultSet<ArtifactReadable> children2 = artifact21.getChildren();
       assertEquals(3, children2.size());

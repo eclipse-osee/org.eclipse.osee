@@ -337,7 +337,7 @@ public class ConflictManagerInternal {
       boolean isValidConflict = true;
       // We just need the largest value at first so the complete source branch
       // will be searched
-      TransactionId parentTransactionNumber = TransactionId.valueOf(Long.MAX_VALUE);
+      TransactionId parentTransactionNumber = TransactionId.valueOf(Integer.MAX_VALUE);
 
       for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
          if (!BranchManager.isParentSystemRoot(branch)) {
@@ -370,7 +370,8 @@ public class ConflictManagerInternal {
          ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
          try {
             for (Conflict conflict : conflicts) {
-               joinQuery.add(conflict.getObjectId(), branchUuid, conflict.getConflictType().getValue());
+               joinQuery.add(conflict.getObjectId(), branchUuid,
+                  TransactionId.valueOf(conflict.getConflictType().getValue()));
             }
             joinQuery.store();
             ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchUuid, joinQuery.getQueryId());

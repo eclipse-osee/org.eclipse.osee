@@ -18,6 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -49,7 +50,7 @@ import org.mockito.Mock;
 public class GraphBuilderImplTest {
 
    private static final IRelationType TYPE_1 = TokenFactory.createRelationType(123456789L, "TYPE_1");
-   private static final int TRANSACTION_ID = 231214214;
+   private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();

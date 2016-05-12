@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -150,12 +151,12 @@ public class ChangeReportEditor extends FormEditor implements IChangeReportView 
       @Override
       public void handleTransactionEvent(Sender sender, TransactionEvent transEvent) {
          ChangeUiData changeUiData = getEditorInput().getChangeData();
-         int[] txDeltas = new int[2];
-         txDeltas[0] = changeUiData.getTxDelta().getStartTx().getId();
-         txDeltas[1] = changeUiData.getTxDelta().getEndTx().getId();
-         for (int transactionIdToMatch : txDeltas) {
+         TransactionId[] txDeltas = new TransactionId[2];
+         txDeltas[0] = changeUiData.getTxDelta().getStartTx();
+         txDeltas[1] = changeUiData.getTxDelta().getEndTx();
+         for (TransactionId transactionIdToMatch : txDeltas) {
             for (TransactionChange transChange : transEvent.getTransactionChanges()) {
-               if (transactionIdToMatch == transChange.getTransactionId()) {
+               if (transactionIdToMatch.equals(transChange.getTransactionId())) {
                   close(false);
                   break;
                }

@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -69,7 +70,7 @@ public class ArtifactQueryContextLoadExecutor extends AbstractLoadExecutor {
             join.store();
             checkCancelled(cancellation);
          }
-         Integer transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
+         TransactionId transactionId = OptionsUtil.getFromTransaction(queryContext.getOptions());
          Consumer<JdbcStatement> consumer = stmt -> {
             checkCancelled(cancellation);
             Integer artId = stmt.getInt("art_id");

@@ -14,6 +14,7 @@ import static org.eclipse.osee.framework.core.enums.DirtyState.APPLICABILITY_ONL
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.EditState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -74,16 +75,19 @@ public class ArtifactImpl extends AttributeManagerImpl implements Artifact {
    }
 
    @Override
-   public int getLastModifiedTransaction() {
-      int maxTransactionId = getOrcsData().getVersion().getTransactionId();
+   public TransactionId getLastModifiedTransaction() {
+      TransactionId maxTransactionId = getOrcsData().getVersion().getTransactionId();
       for (Attribute<?> attribute : getAllAttributes()) {
-         maxTransactionId = Math.max(maxTransactionId, attribute.getOrcsData().getVersion().getTransactionId());
+         TransactionId tx = attribute.getOrcsData().getVersion().getTransactionId();
+         if (maxTransactionId.isOlderThan(tx)) {
+            maxTransactionId = tx;
+         }
       }
       return maxTransactionId;
    }
 
    @Override
-   public int getTransaction() {
+   public TransactionId getTransaction() {
       return graph.getTransaction();
    }
 

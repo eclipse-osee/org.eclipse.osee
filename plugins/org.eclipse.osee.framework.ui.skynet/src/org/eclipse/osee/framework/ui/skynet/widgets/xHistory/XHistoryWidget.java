@@ -25,9 +25,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -373,8 +373,8 @@ public class XHistoryWidget extends GenericXWidget {
    }
 
    @SuppressWarnings("rawtypes")
-   public ArrayList<TransactionRecord> getSelectedTransactionRecords() {
-      ArrayList<TransactionRecord> items = new ArrayList<>();
+   public ArrayList<TransactionId> getSelectedTransactionRecords() {
+      ArrayList<TransactionId> items = new ArrayList<>();
       if (xHistoryViewer == null) {
          return items;
       }

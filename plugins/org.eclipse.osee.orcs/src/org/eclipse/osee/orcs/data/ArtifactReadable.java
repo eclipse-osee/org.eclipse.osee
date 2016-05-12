@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -30,7 +31,7 @@ import org.eclipse.osee.framework.jdk.core.type.ResultSet;
  */
 public interface ArtifactReadable extends ArtifactId, HasLocalId<Integer>, HasTransaction, OrcsReadable, HasBranch {
 
-   int getLastModifiedTransaction();
+   TransactionId getLastModifiedTransaction();
 
    IArtifactType getArtifactType() throws OseeCoreException;
 

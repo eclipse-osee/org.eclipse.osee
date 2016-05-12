@@ -49,7 +49,7 @@ public class TxIdsSqlHandler extends SqlHandler<CriteriaTxIds> {
 
    @Override
    public boolean addPredicates(AbstractSqlWriter writer) throws OseeCoreException {
-      Collection<Integer> ids = criteria.getIds();
+      Collection<Long> ids = criteria.getIds();
       if (ids.size() > 1) {
          AbstractJoinQuery joinQuery = writer.writeIdJoin(ids);
          writer.write(txdAlias);

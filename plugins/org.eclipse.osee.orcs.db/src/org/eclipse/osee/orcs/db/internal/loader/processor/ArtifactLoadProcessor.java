@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -45,12 +46,12 @@ public class ArtifactLoadProcessor extends LoadProcessor<ArtifactData, ArtifactO
          boolean historical = OptionsUtil.isHistorical(options);
          if (!historical || OptionsUtil.areDeletedArtifactsIncluded(options) || modType != ModificationType.DELETED) {
             long gamma = chStmt.getInt("gamma_id");
-            int txId = chStmt.getInt("transaction_id");
+            TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
             VersionData version = factory.createVersion(branchUuid, txId, gamma, historical);
 
             if (historical) {
-               version.setStripeId(chStmt.getInt("stripe_transaction_id"));
+               version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
             }
 
             long typeId = chStmt.getLong("art_type_id");

@@ -62,7 +62,7 @@ public class PurgeTransactionCommand implements ConsoleCommand {
             String[] stringIds = params.getArray("txIds");
             final List<TransactionId> transactions = new ArrayList<>();
             for (String arg : stringIds) {
-               TransactionId tx = TokenFactory.createTransaction(Integer.parseInt(arg));
+               TransactionId tx = TransactionId.valueOf(Integer.parseInt(arg));
                transactions.add(tx);
             }
             console.writeln();

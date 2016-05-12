@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.skynet.core.utility.DatabaseJoinAccessor.JoinItem;
 import org.eclipse.osee.jdbc.SQL3DataType;
@@ -24,9 +25,9 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
    private final class Entry implements IJoinRow {
       private final Integer artId;
       private final Long branchUuid;
-      private final Integer transactionId;
+      private final TransactionId transactionId;
 
-      private Entry(Integer artId, Long branchUuid, Integer transactionId) {
+      private Entry(Integer artId, Long branchUuid, TransactionId transactionId) {
          this.artId = artId;
          this.branchUuid = branchUuid;
          this.transactionId = transactionId;
@@ -38,7 +39,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
             getQueryId(),
             artId,
             branchUuid,
-            transactionId != null ? transactionId : SQL3DataType.INTEGER};
+            transactionId.isValid() ? transactionId : SQL3DataType.BIGINT};
       }
 
       @Override
@@ -75,11 +76,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          } else if (!branchUuid.equals(other.branchUuid)) {
             return false;
          }
-         if (transactionId == null) {
-            if (other.transactionId != null) {
-               return false;
-            }
-         } else if (!transactionId.equals(other.transactionId)) {
+         if (!transactionId.equals(other.transactionId)) {
             return false;
          }
          return true;
@@ -92,7 +89,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
          result = prime * result + getOuterType().hashCode();
          result = prime * result + (artId == null ? 0 : artId.hashCode());
          result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
-         result = prime * result + (transactionId == null ? 0 : transactionId.hashCode());
+         result = prime * result + transactionId.hashCode();
          return result;
       }
 
@@ -106,7 +103,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
       this.maxJoinSize = maxJoinSize;
    }
 
-   public void add(Integer art_id, Long branchUuid, Integer transactionId) {
+   public void add(Integer art_id, Long branchUuid, TransactionId transactionId) {
       entries.add(new Entry(art_id, branchUuid, transactionId));
       if (entries.size() > maxJoinSize) {
          throw new OseeDataStoreException("Exceeded max artifact join size of [%d]", maxJoinSize);
@@ -114,7 +111,7 @@ public class ArtifactJoinQuery extends AbstractJoinQuery {
    }
 
    public void add(Integer art_id, Long branchUuid) {
-      add(art_id, branchUuid, null);
+      add(art_id, branchUuid, TransactionId.SENTINEL);
    }
 
 }

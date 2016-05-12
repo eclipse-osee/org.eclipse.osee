@@ -135,7 +135,7 @@ public class TransactionFactoryImpl implements TransactionFactory {
    @Override
    public boolean purgeTxs(String txIds) {
       boolean modified = false;
-      List<Integer> txsToDelete = OrcsTransactionUtil.asIntegerList(txIds);
+      List<Long> txsToDelete = OrcsTransactionUtil.asLongList(txIds);
       if (!txsToDelete.isEmpty()) {
          ResultSet<? extends TransactionId> results =
             queryFactory.transactionQuery().andTxIds(txsToDelete).getResults();
@@ -174,13 +174,13 @@ public class TransactionFactoryImpl implements TransactionFactory {
       return queryFactory.transactionQuery().andTxId(tx).getResults().getExactlyOne();
    }
 
-   private void checkAllTxsFound(String opName, List<Integer> txIds, ResultSet<? extends TransactionId> result) {
+   private void checkAllTxsFound(String opName, List<Long> txIds, ResultSet<? extends TransactionId> result) {
       if (txIds.size() != result.size()) {
-         Set<Integer> found = new HashSet<>();
+         Set<Long> found = new HashSet<>();
          for (TransactionId tx : result) {
             found.add(tx.getId());
          }
-         SetView<Integer> difference = Sets.difference(Sets.newHashSet(txIds), found);
+         SetView<Long> difference = Sets.difference(Sets.newHashSet(txIds), found);
          if (!difference.isEmpty()) {
             throw new OseeCoreException(
                "%s Error - The following transactions from %s were not found - txs %s - Please remove them from the request and try again.",

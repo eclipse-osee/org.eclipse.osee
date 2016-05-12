@@ -14,11 +14,11 @@ import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 
@@ -35,9 +35,9 @@ public class LoadAssociatedArtifactOperation extends AbstractOperation {
       Artifact associatedArtifact = null;
       TransactionDelta txDelta = changeData.getTxDelta();
       if (changeData.getCompareType().areSpecificTxs()) {
-         TransactionRecord txRecord = txDelta.getEndTx();
-         int commitId = txRecord.getCommit();
-         if (commitId != 0) {
+
+         Long commitId = TransactionManager.getCommitArtId(txDelta.getEndTx());
+         if (!commitId.equals(0)) {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitId, COMMON);
          }
       } else {

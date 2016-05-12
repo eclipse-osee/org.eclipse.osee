@@ -30,8 +30,8 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.access.AccessControlManager;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -51,6 +50,7 @@ import org.eclipse.osee.framework.skynet.core.event.listener.IBranchEventListene
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEvent;
 import org.eclipse.osee.framework.skynet.core.event.model.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.model.Sender;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.HelpUtil;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -88,7 +88,7 @@ import org.eclipse.ui.progress.UIJob;
 
 /**
  * Displays persisted changes made to an artifact.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class HistoryView extends GenericViewPart implements IBranchEventListener, ITransactionRecordSelectionProvider, IRebuildMenuListener {
@@ -280,8 +280,9 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
          @Override
          public void menuShown(MenuEvent e) {
             List<?> selections = ((IStructuredSelection) xHistoryWidget.getXViewer().getSelection()).toList();
-            changeReportMenuItem.setEnabled(
-               selections.size() == 1 && ((Change) selections.iterator().next()).getTxDelta().getStartTx().getTxType() != TransactionDetailsType.Baselined);
+            TransactionId tx = ((Change) selections.iterator().next()).getTxDelta().getStartTx();
+            changeReportMenuItem.setEnabled(selections.size() == 1 && TransactionManager.getTransaction(
+               tx).getTxType() != TransactionDetailsType.Baselined);
          }
 
       });
@@ -337,7 +338,7 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
                   String branchUuidStr = memento.getString(BRANCH_ID);
                   if (Strings.isValid(branchUuidStr)) {
                      Long branchUuid = Long.valueOf(branchUuidStr);
-                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid,TokenFactory.createBranch(branchUuid));
+                     Artifact artifact = ArtifactQuery.getArtifactFromId(guid, TokenFactory.createBranch(branchUuid));
                      openViewUpon(artifact, false);
                   }
                } else {
@@ -392,12 +393,12 @@ public class HistoryView extends GenericViewPart implements IBranchEventListener
    }
 
    @Override
-   public List<TransactionRecord> getSelectedTransactionRecords() {
-      return isInitialized() ? xHistoryWidget.getSelectedTransactionRecords() : Collections.<TransactionRecord> emptyList();
+   public List<TransactionId> getSelectedTransactionRecords() {
+      return isInitialized() ? xHistoryWidget.getSelectedTransactionRecords() : Collections.<TransactionId> emptyList();
    }
 
    @Override
-   public void refreshUI(List<TransactionRecord> records) {
+   public void refreshUI(List<TransactionId> records) {
       if (isInitialized()) {
          setPartName("History: " + artifact.getName());
          xHistoryWidget.refresh();

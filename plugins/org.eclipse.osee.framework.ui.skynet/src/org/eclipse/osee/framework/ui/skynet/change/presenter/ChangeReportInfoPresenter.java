@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change.presenter;
 
 import java.text.DateFormat;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.change.view.EditorSection;
@@ -121,7 +123,8 @@ public class ChangeReportInfoPresenter implements EditorSection.IWidget {
       sb.append(String.format("<b>Associated With: </b> %s<br/>", message));
    }
 
-   public static void addTransactionInfo(StringBuilder sb, TransactionRecord transaction) {
+   public static void addTransactionInfo(StringBuilder sb, TransactionId tx) {
+      TransactionRecord transaction = TransactionManager.getTransaction(tx);
       String author;
       try {
          User user = UserManager.getUserByArtId(transaction.getAuthor());

@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.core.ds;
 
 import static org.junit.Assert.assertEquals;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.junit.Before;
@@ -18,11 +19,11 @@ import org.junit.Test;
 
 /**
  * Test Case for {@link OptionsUtil}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class OptionsUtilTest {
-
+   private static final TransactionId tx = TransactionId.valueOf(1231);
    private Options options;
 
    @Before
@@ -34,7 +35,7 @@ public class OptionsUtilTest {
    public void testDefaults() {
       Options defaults = OptionsUtil.createOptions();
 
-      assertEquals(-1, OptionsUtil.getFromTransaction(defaults));
+      assertEquals(TransactionId.SENTINEL, OptionsUtil.getFromTransaction(defaults));
       assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(defaults));
       assertEquals(LoadLevel.ALL, OptionsUtil.getLoadLevel(defaults));
       assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(defaults));
@@ -57,19 +58,19 @@ public class OptionsUtilTest {
 
    @Test
    public void testSetGetFromTransaction() {
-      assertEquals(-1, OptionsUtil.getFromTransaction(options));
+      assertEquals(TransactionId.SENTINEL, OptionsUtil.getFromTransaction(options));
       assertEquals(true, OptionsUtil.isHeadTransaction(options));
       assertEquals(false, OptionsUtil.isHistorical(options));
 
-      OptionsUtil.setFromTransaction(options, 1231);
+      OptionsUtil.setFromTransaction(options, tx);
 
-      assertEquals(1231, OptionsUtil.getFromTransaction(options));
+      assertEquals(tx, OptionsUtil.getFromTransaction(options));
       assertEquals(false, OptionsUtil.isHeadTransaction(options));
       assertEquals(true, OptionsUtil.isHistorical(options));
 
       OptionsUtil.setHeadTransaction(options);
 
-      assertEquals(-1, OptionsUtil.getFromTransaction(options));
+      assertEquals(TransactionId.SENTINEL, OptionsUtil.getFromTransaction(options));
       assertEquals(true, OptionsUtil.isHeadTransaction(options));
       assertEquals(false, OptionsUtil.isHistorical(options));
    }
@@ -105,13 +106,13 @@ public class OptionsUtilTest {
 
    @Test
    public void testReset() {
-      OptionsUtil.setFromTransaction(options, 1231);
+      OptionsUtil.setFromTransaction(options, tx);
       OptionsUtil.setLoadLevel(options, LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA);
       OptionsUtil.setIncludeDeletedArtifacts(options, true);
       OptionsUtil.setIncludeDeletedBranches(options, true);
       OptionsUtil.setIncludeCache(options, true);
 
-      assertEquals(1231, OptionsUtil.getFromTransaction(options));
+      assertEquals(tx, OptionsUtil.getFromTransaction(options));
       assertEquals(DeletionFlag.INCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
       assertEquals(LoadLevel.ARTIFACT_AND_ATTRIBUTE_DATA, OptionsUtil.getLoadLevel(options));
       assertEquals(true, OptionsUtil.areDeletedArtifactsIncluded(options));
@@ -122,7 +123,7 @@ public class OptionsUtilTest {
 
       OptionsUtil.reset(options);
 
-      assertEquals(-1, OptionsUtil.getFromTransaction(options));
+      assertEquals(TransactionId.SENTINEL, OptionsUtil.getFromTransaction(options));
       assertEquals(DeletionFlag.EXCLUDE_DELETED, OptionsUtil.getIncludeDeletedArtifacts(options));
       assertEquals(LoadLevel.ALL, OptionsUtil.getLoadLevel(options));
       assertEquals(false, OptionsUtil.areDeletedArtifactsIncluded(options));

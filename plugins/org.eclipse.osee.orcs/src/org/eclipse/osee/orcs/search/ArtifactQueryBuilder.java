@@ -49,7 +49,7 @@ public interface ArtifactQueryBuilder<T> {
 
    boolean areDeletedRelationsIncluded();
 
-   T fromTransaction(TransactionId transactionId);
+   T fromTransaction(TransactionId transaction);
 
    TransactionId getFromTransaction();
 

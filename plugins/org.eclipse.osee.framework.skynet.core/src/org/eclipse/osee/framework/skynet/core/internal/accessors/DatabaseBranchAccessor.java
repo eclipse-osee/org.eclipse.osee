@@ -49,8 +49,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    @Override
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       Map<Branch, Long> childToParent = new HashMap<>();
-      Map<Branch, Integer> branchToBaseTx = new HashMap<>();
-      Map<Branch, Integer> branchToSourceTx = new HashMap<>();
+      Map<Branch, Long> branchToBaseTx = new HashMap<>();
+      Map<Branch, Long> branchToSourceTx = new HashMap<>();
 
       loadBranches(cache, childToParent, branchToBaseTx, branchToSourceTx);
       loadBranchHierarchy(cache, childToParent);
@@ -58,15 +58,15 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       loadBranchRelatedTransactions(branchToBaseTx, branchToSourceTx);
    }
 
-   private void loadBranches(IOseeCache<Branch> cache, Map<Branch, Long> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) {
+   private void loadBranches(IOseeCache<Branch> cache, Map<Branch, Long> childToParent, Map<Branch, Long> branchToBaseTx, Map<Branch, Long> branchToSourceTx) {
       getJdbcClient().runQuery(stmt -> {
          Branch branch = load(cache, stmt);
          cache.cache(branch);
          if (!SYSTEM_ROOT.equals(branch)) {
             childToParent.put(branch, stmt.getLong("parent_branch_id"));
          }
-         branchToSourceTx.put(branch, stmt.getInt("parent_transaction_id"));
-         branchToBaseTx.put(branch, stmt.getInt("baseline_transaction_id"));
+         branchToSourceTx.put(branch, stmt.getLong("parent_transaction_id"));
+         branchToBaseTx.put(branch, stmt.getLong("baseline_transaction_id"));
       }, JDBC__MAX_FETCH_SIZE, SELECT_BRANCHES);
    }
 
@@ -126,13 +126,13 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       return branch;
    }
 
-   private void loadBranchRelatedTransactions(Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
-      Set<Integer> transactionIds = new HashSet<>();
+   private void loadBranchRelatedTransactions(Map<Branch, Long> branchToBaseTx, Map<Branch, Long> branchToSourceTx) throws OseeCoreException {
+      Set<Long> transactionIds = new HashSet<>();
       transactionIds.addAll(branchToSourceTx.values());
       transactionIds.addAll(branchToBaseTx.values());
       txCache.loadTransactions(transactionIds);
 
-      for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
+      for (Entry<Branch, Long> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getBaseTransaction() == null) {
             TransactionRecord baseTx = txCache.getById(entry.getValue());
@@ -140,7 +140,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          }
       }
 
-      for (Entry<Branch, Integer> entry : branchToSourceTx.entrySet()) {
+      for (Entry<Branch, Long> entry : branchToSourceTx.entrySet()) {
          Branch branch = entry.getKey();
          if (BranchManager.getSourceTransaction(branch) == null) {
             TransactionRecord srcTx = txCache.getById(entry.getValue());

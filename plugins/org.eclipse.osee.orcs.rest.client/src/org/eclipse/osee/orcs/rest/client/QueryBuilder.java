@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.rest.model.search.artifact.RequestType;
@@ -38,9 +39,9 @@ public interface QueryBuilder {
 
    boolean areDeletedIncluded();
 
-   QueryBuilder fromTransaction(int transactionId);
+   QueryBuilder fromTransaction(TransactionId transactionId);
 
-   int getFromTransaction();
+   TransactionId getFromTransaction();
 
    QueryBuilder headTransaction();
 
@@ -120,28 +121,28 @@ public interface QueryBuilder {
 
    /**
     * Search criteria that follows the relation link ending on the given side
-    * 
+    *
     * @param relationType the type to start following the link from
     */
    QueryBuilder andExists(IRelationType relationType) throws OseeCoreException;
 
    /**
     * Search criteria that follows the relation link ending on the given side
-    * 
+    *
     * @param relationTypeSide the type to start following the link from
     */
    QueryBuilder andExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
 
    /**
     * Search criteria that checks for non-existence of a relation type
-    * 
+    *
     * @param relationType the type to check for non-existence
     */
    QueryBuilder andNotExists(IRelationType relationType) throws OseeCoreException;
 
    /**
     * Search criteria that checks for non-existence of a relation type
-    * 
+    *
     * @param relationTypeSide the type to check for non-existence
     */
    QueryBuilder andNotExists(IRelationTypeSide relationTypeSide) throws OseeCoreException;
@@ -173,35 +174,35 @@ public interface QueryBuilder {
 
    /**
     * Search for related artifacts
-    * 
+    *
     * @param relationTypeSide the type-side to search on
     */
    QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, IArtifactToken... artifacts) throws OseeCoreException;
 
    /**
     * Search for related artifacts
-    * 
+    *
     * @param relationTypeSide the type-side to search on
     */
    QueryBuilder andRelatedTo(IRelationTypeSide relationTypeSide, Collection<? extends IArtifactToken> artifacts) throws OseeCoreException;
 
    /**
     * Search for related artifacts
-    * 
+    *
     * @param relationTypeSide the type-side to search on
     */
    QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, int... artifactIds) throws OseeCoreException;
 
    /**
     * Search for related artifacts
-    * 
+    *
     * @param relationTypeSide the type-side to search on
     */
    QueryBuilder andRelatedToLocalIds(IRelationTypeSide relationTypeSide, Collection<Integer> artifactIds) throws OseeCoreException;
 
    /**
     * Executes query
-    * 
+    *
     * @return artifact search results
     */
    SearchResult getSearchResult(RequestType request) throws OseeCoreException;
@@ -213,7 +214,7 @@ public interface QueryBuilder {
 
    /**
     * Convenience method for getting art ids of results
-    * 
+    *
     * @return artifact search ids
     */
    List<Integer> getIds();

@@ -33,8 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    private ITransactionDataAccessor accessor;
 
-   private final Map<Integer, TransactionRecord> transactionIdCache =
-      new ConcurrentHashMap<Integer, TransactionRecord>();
+   private final Map<Long, TransactionRecord> transactionIdCache = new ConcurrentHashMap<>();
 
    private final OseeCacheEnum cacheId;
    private final AtomicBoolean wasLoaded;
@@ -76,7 +75,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    @Override
    public void decache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
-      if (type.isIdValid()) {
+      if (type.isValid()) {
          transactionIdCache.remove(type.getId());
       }
    }
@@ -87,7 +86,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
       return new ArrayList<TransactionRecord>(transactionIdCache.values());
    }
 
-   public TransactionRecord getOrLoad(int txId) throws OseeCoreException {
+   public TransactionRecord getOrLoad(long txId) throws OseeCoreException {
       TransactionRecord transactionRecord = getById(txId);
       if (transactionRecord == null) {
          loadTransactions(Collections.singletonList(txId));
@@ -102,7 +101,7 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    @Override
    public TransactionRecord getById(Number txId) throws OseeCoreException {
       ensurePopulated();
-      return transactionIdCache.get(txId.intValue());
+      return transactionIdCache.get(txId);
    }
 
    @Override
@@ -121,14 +120,14 @@ public class TransactionCache implements IOseeLoadingCache<TransactionRecord> {
    }
 
    public TransactionRecord getPriorTransaction(TransactionToken transactionId) throws OseeCoreException {
-      return accessor.getOrLoadPriorTransaction(this, transactionId.getId(), transactionId.getBranchId());
+      return accessor.getOrLoadPriorTransaction(this, transactionId, transactionId.getBranchId());
    }
 
-   public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
+   public void loadTransactions(Collection<Long> transactionIds) throws OseeCoreException {
       ensurePopulated();
 
-      List<Integer> toLoad = new LinkedList<>();
-      for (Integer txId : transactionIds) {
+      List<Long> toLoad = new LinkedList<>();
+      for (Long txId : transactionIds) {
          if (getById(txId) == null) {
             toLoad.add(txId);
          }

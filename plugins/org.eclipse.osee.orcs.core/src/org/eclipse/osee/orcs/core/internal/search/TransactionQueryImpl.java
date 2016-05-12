@@ -55,7 +55,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public ResultSet<Integer> getResultsAsIds() throws OseeCoreException {
+   public ResultSet<Long> getResultsAsIds() throws OseeCoreException {
       try {
          return createSearchResultsAsIds().call();
       } catch (Exception ex) {
@@ -83,7 +83,7 @@ public class TransactionQueryImpl extends TxQueryBuilderImpl<TransactionQuery> i
    }
 
    @Override
-   public CancellableCallable<ResultSet<Integer>> createSearchResultsAsIds() throws OseeCoreException {
+   public CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() throws OseeCoreException {
       return queryFactory.createTransactionAsIdSearch(session, buildAndCopy());
    }
 

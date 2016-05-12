@@ -65,7 +65,7 @@ public class TransactionFactoryImplTest {
    public void init() {
       initMocks(this);
       factory = new TransactionFactoryImpl(session, txDataManager, txCallableFactory, query, queryFactory, orcsBranch,
-         txDataStore, keyValueOps);
+         keyValueOps, txDataStore);
 
    }
 

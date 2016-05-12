@@ -25,7 +25,7 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.operation.OperationBuilder;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -232,12 +232,12 @@ public class BranchTransactionPage extends FormPage implements IBranchWidgetMenu
    }
 
    @Override
-   public List<TransactionRecord> getSelectedTransactionRecords() {
-      return isInitialized() ? xBranchWidget.getSelectedTransactionRecords() : Collections.<TransactionRecord> emptyList();
+   public List<TransactionId> getSelectedTransactionRecords() {
+      return isInitialized() ? xBranchWidget.getSelectedTransactionRecords() : Collections.emptyList();
    }
 
    @Override
-   public void refreshUI(List<TransactionRecord> records) {
+   public void refreshUI(List<TransactionId> records) {
       if (isInitialized()) {
          xBranchWidget.loadData(branch);
       }

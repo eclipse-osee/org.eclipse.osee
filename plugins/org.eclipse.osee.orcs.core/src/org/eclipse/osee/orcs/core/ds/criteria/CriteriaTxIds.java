@@ -21,9 +21,9 @@ import org.eclipse.osee.orcs.core.ds.Options;
  */
 public class CriteriaTxIds extends Criteria implements TxCriteria {
 
-   private final Collection<Integer> ids;
+   private final Collection<Long> ids;
 
-   public CriteriaTxIds(Collection<Integer> ids) {
+   public CriteriaTxIds(Collection<Long> ids) {
       super();
       this.ids = ids;
    }
@@ -33,7 +33,7 @@ public class CriteriaTxIds extends Criteria implements TxCriteria {
       Conditions.checkNotNullOrEmpty(ids, "tx ids");
    }
 
-   public Collection<Integer> getIds() {
+   public Collection<Long> getIds() {
       return ids;
    }
 

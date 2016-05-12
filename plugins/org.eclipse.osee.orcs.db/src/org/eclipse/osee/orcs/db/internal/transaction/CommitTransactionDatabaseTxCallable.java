@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.db.internal.transaction;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -52,7 +53,7 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       this.transactionData = transactionData;
    }
 
-   private int getNextTransactionId() {
+   private TransactionId getNextTransactionId() {
       return identityManager.getNextTransactionId();
    }
 
@@ -109,17 +110,17 @@ public final class CommitTransactionDatabaseTxCallable extends AbstractDatastore
       process(TxWritePhaseEnum.AFTER_TX_WRITE);
    }
 
-   private TransactionReadable createTransactionRecord(Long branchId, ArtifactId author, String comment, int transactionNumber) throws OseeCoreException {
+   private TransactionReadable createTransactionRecord(Long branchId, ArtifactId author, String comment, TransactionId transaction) throws OseeCoreException {
+
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
 
-      TransactionDataImpl created = new TransactionDataImpl();
+      TransactionDataImpl created = new TransactionDataImpl(transaction.getId());
       created.setAuthorId(author.getUuid().intValue());
       created.setBranchId(branchId);
       created.setComment(comment);
       created.setCommit(RelationalConstants.ART_ID_SENTINEL);
       created.setDate(transactionTime);
-      created.setLocalId(transactionNumber);
       created.setTxType(txType);
 
       return created;

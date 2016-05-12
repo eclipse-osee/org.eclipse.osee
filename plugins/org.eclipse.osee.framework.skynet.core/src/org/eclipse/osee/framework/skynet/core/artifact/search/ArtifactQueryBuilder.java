@@ -245,7 +245,7 @@ public class ArtifactQueryBuilder {
       }
 
       if (transactionId.isValid()) {
-         builder.fromTransaction(transactionId.getId());
+         builder.fromTransaction(transactionId);
       }
 
       return builder;
@@ -361,7 +361,7 @@ public class ArtifactQueryBuilder {
 
       private final Set<Integer> localIds = new LinkedHashSet<>();
       private DeletionFlag allowDeleted = EXCLUDE_DELETED;
-      private int txId = -1;
+      private TransactionId txId = TransactionId.SENTINEL;
       private final BranchId branch;
 
       public LocalIdQueryBuilder(BranchId branch) {
@@ -400,7 +400,7 @@ public class ArtifactQueryBuilder {
       }
 
       @SuppressWarnings("unused")
-      public void fromTransaction(int transactionId) {
+      public void fromTransaction(TransactionId transactionId) {
          txId = transactionId;
       }
 
@@ -423,14 +423,11 @@ public class ArtifactQueryBuilder {
 
       @SuppressWarnings("unused")
       public int getCount() throws OseeCoreException {
-         TransactionId tx;
-         if (txId == -1) {
-            tx = TransactionManager.getHeadTransaction(branch);
-         } else {
-            tx = TransactionManager.getTransactionId(txId);
+         if (txId.isInvalid()) {
+            txId = TransactionManager.getHeadTransaction(branch);
          }
          List<Artifact> results = ArtifactLoader.loadArtifacts(localIds, branch, LoadLevel.ARTIFACT_DATA,
-            LoadType.INCLUDE_CACHE, allowDeleted, tx);
+            LoadType.INCLUDE_CACHE, allowDeleted, txId);
          return results.size();
       }
 
@@ -452,5 +449,4 @@ public class ArtifactQueryBuilder {
       }
 
    }
-
 }

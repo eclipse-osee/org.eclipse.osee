@@ -23,15 +23,15 @@ import org.eclipse.osee.framework.jdk.core.util.Conditions;
  */
 public class TransactionRecordFactory implements IOseeTypeFactory {
 
-   public TransactionRecord create(int transactionNumber, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
-      return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+   public TransactionRecord create(Long transaction, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+      return new TransactionRecord(transaction, branch, comment, timestamp, authorArtId, commitArtId, txType);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache txCache, int transactionNumber, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord createOrUpdate(TransactionCache txCache, Long transaction, BranchId branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       Conditions.checkNotNull(txCache, "txCache");
-      TransactionRecord record = txCache.getById(transactionNumber);
+      TransactionRecord record = txCache.getById(transaction);
       if (record == null) {
-         record = create(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+         record = create(transaction, branch, comment, timestamp, authorArtId, commitArtId, txType);
       } else {
          txCache.decache(record);
          record.setAuthor(authorArtId);
@@ -40,16 +40,6 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
          record.setTimeStamp(timestamp);
       }
       txCache.cache(record);
-      return record;
-   }
-
-   public TransactionRecord getOrCreate(TransactionCache txCache, int transactionNumber) throws OseeCoreException {
-      Conditions.checkNotNull(txCache, "txCache");
-      TransactionRecord record = txCache.getById(transactionNumber);
-      if (record == null) {
-         record = new TransactionRecord(transactionNumber);
-         txCache.cache(record);
-      }
       return record;
    }
 }

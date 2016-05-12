@@ -12,6 +12,8 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -29,8 +31,8 @@ public class Branch {
    private BranchId parentBranch;
 
    private int associatedArtifactId = DEFAULT_INT;
-   private int baseTransaction = DEFAULT_INT;
-   private int sourceTransaction = DEFAULT_INT;
+   private TransactionId baseTransaction = TransactionId.SENTINEL;
+   private TransactionId sourceTransaction = TransactionId.SENTINEL;
 
    private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
    private BranchState branchState = BranchState.CREATED;
@@ -65,19 +67,19 @@ public class Branch {
       associatedArtifactId = artId;
    }
 
-   public int getBaseTransactionId() {
+   public TransactionId getBaseTransactionId() {
       return baseTransaction;
    }
 
-   public void setBaseTransactionId(int baseTx) {
+   public void setBaseTransactionId(TransactionId baseTx) {
       baseTransaction = baseTx;
    }
 
-   public int getSourceTransactionId() {
+   public TransactionId getSourceTransactionId() {
       return sourceTransaction;
    }
 
-   public void setSourceTransactionId(int sourceTx) {
+   public void setSourceTransactionId(TransactionId sourceTx) {
       sourceTransaction = sourceTx;
    }
 

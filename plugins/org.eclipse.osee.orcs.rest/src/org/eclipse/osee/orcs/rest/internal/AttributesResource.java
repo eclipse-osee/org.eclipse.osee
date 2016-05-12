@@ -72,7 +72,7 @@ public class AttributesResource {
 
    @Path("type/{attributeTypeId}/version/{transactionId}")
    @Produces(MediaType.TEXT_HTML)
-   public AttributeTypeResource getAttributeTypeValuesForTransaction(@PathParam("attributeTypeId") Long attributeTypeId, @PathParam("transactionId") int transactionId) {
+   public AttributeTypeResource getAttributeTypeValuesForTransaction(@PathParam("attributeTypeId") Long attributeTypeId, @PathParam("transactionId") TransactionId transactionId) {
       return new AttributeTypeResource(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, transactionId);
    }
 

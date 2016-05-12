@@ -29,7 +29,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 
 /**
  * {@link RelationIntegrityCheckTest }
- * 
+ *
  * @author Theron Virgin
  */
 public class RelationIntegrityCheck extends DatabaseHealthOperation {
@@ -128,8 +128,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       "%s Relation Links that have been created new on deleted artifacts (subset)",
       "%s Relation Links that are unknown (subset)"};
 
-   private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> deleteMap;
-   private DoubleKeyHashMap<Integer, Integer, LocalRelationLink> updateMap;
+   private DoubleKeyHashMap<Long, Long, LocalRelationLink> deleteMap;
+   private DoubleKeyHashMap<Long, Long, LocalRelationLink> updateMap;
    private IProgressMonitor monitor;
    private StringBuffer sbFull;
    private boolean fix;
@@ -276,7 +276,7 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map) throws IOException {
+   private void displayData(int x, StringBuffer sbFull, Appendable builder, boolean verify, DoubleKeyHashMap<Long, Long, LocalRelationLink> map) throws IOException {
       displayData(x, sbFull, builder, verify, map.allValues());
    }
 
@@ -288,8 +288,8 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
          count++;
          sbFull.append(AHTML.addRowMultiColumnTable(new String[] {
             Integer.toString(relLink.relLinkId),
-            Integer.toString(relLink.gammaId),
-            Integer.toString(relLink.relTransId),
+            Long.toString(relLink.gammaId),
+            Long.toString(relLink.relTransId),
             Long.toString(relLink.branchUuid),
             Integer.toString(relLink.aArtId),
             Integer.toString(relLink.bArtId),
@@ -305,15 +305,15 @@ public class RelationIntegrityCheck extends DatabaseHealthOperation {
    private void loadData(String description, String sql, boolean forDelete) throws OseeCoreException {
       monitor.subTask(description);
       JdbcStatement chStmt = ConnectionHandler.getStatement();
-      DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
+      DoubleKeyHashMap<Long, Long, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
             //@formatter:off
-            int gamma_id =             chStmt.getInt("gamma_id");
-            int transactionId =        chStmt.getInt("transaction_id");
+            Long gamma_id =            chStmt.getLong("gamma_id");
+            Long transactionId =       chStmt.getLong("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
-            long branchUuid =            chStmt.getLong("branch_id");
+            long branchUuid =          chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");
             int b_sideArtifactId =     chStmt.getInt("b_art_id");
             int deletedTransaction =   chStmt.getInt("deleted_tran");

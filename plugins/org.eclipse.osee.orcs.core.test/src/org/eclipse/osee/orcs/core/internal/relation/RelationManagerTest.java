@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
@@ -143,6 +144,8 @@ public class RelationManagerTest {
       when(node4.getGraph()).thenReturn(graph);
       when(node5.getGraph()).thenReturn(graph);
       when(node6.getGraph()).thenReturn(graph);
+
+      when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
 
       when(node1.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);
       when(node2.getArtifactType()).thenReturn(CoreArtifactTypes.SoftwareRequirement);

@@ -186,7 +186,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          TransactionDetailsType type = TransactionDetailsType.toEnum(stmt.getInt("tx_type"));
          ApplicabilityId appId = ApplicabilityId.valueOf(stmt.getLong("app_id"));
          Address address = new Address(type.isBaseline(), stmt.getLong("branch_id"), stmt.getInt(columnName),
-            stmt.getInt("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
+            stmt.getLong("transaction_id"), stmt.getLong("gamma_id"), modType, appId, txCurrent);
 
          if (!address.isSimilar(previousAddress[0])) {
             if (!addresses.isEmpty()) {

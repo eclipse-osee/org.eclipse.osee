@@ -56,8 +56,7 @@ public class RelationIntegrityCheckTest {
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
 
-   private final DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map =
-      new DoubleKeyHashMap<Integer, Integer, LocalRelationLink>();
+   private final DoubleKeyHashMap<Long, Long, LocalRelationLink> map = new DoubleKeyHashMap<>();
    private BranchId parentBranch;
    private BranchId workingBranch;
 
@@ -127,8 +126,8 @@ public class RelationIntegrityCheckTest {
          chStmt.runPreparedQuery(sqlQuery);
          while (chStmt.next()) {
             //@formatter:off
-            int gammaId =              chStmt.getInt("gamma_id");
-            int transactionId =        chStmt.getInt("transaction_id");
+            Long gammaId =              chStmt.getLong("gamma_id");
+            Long transactionId =        chStmt.getLong("transaction_id");
             int relationId =           chStmt.getInt("rel_link_id");
             long branchUuid =             chStmt.getLong("branch_id");
             int a_sideArtifactId =     chStmt.getInt("a_art_id");

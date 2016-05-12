@@ -250,7 +250,7 @@ public final class ArtifactLoader {
 
          ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
          for (Pair<Integer, Long> pair : toLoad) {
-            joinQuery.add(pair.getFirst(), pair.getSecond(), transactionId.getId());
+            joinQuery.add(pair.getFirst(), pair.getSecond(), transactionId);
          }
          loadArtifacts(artifacts, joinQuery, loadLevel, null, reload, transactionId, allowDeleted, isArchived);
       }

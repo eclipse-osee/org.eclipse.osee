@@ -84,7 +84,7 @@ public final class OrcsRestUtil {
 
    public static Transaction asTransaction(TransactionReadable tx) {
       Transaction data = new Transaction();
-      data.setTxId(tx.getGuid());
+      data.setTxId(tx);
       data.setAuthorId(tx.getAuthorId());
       data.setBranchUuid(tx.getBranchId());
       data.setComment(tx.getComment());
@@ -92,21 +92,6 @@ public final class OrcsRestUtil {
       data.setTimeStamp(tx.getDate());
       data.setTxType(tx.getTxType());
       return data;
-   }
-
-   public static List<Integer> asIntegerList(String rawValue) {
-      List<Integer> toReturn;
-      if (Strings.isValid(rawValue)) {
-         String[] entries = rawValue.split(",");
-         toReturn = new ArrayList<>();
-         for (String entry : entries) {
-            Integer value = Integer.parseInt(entry.trim());
-            toReturn.add(value);
-         }
-      } else {
-         toReturn = Collections.emptyList();
-      }
-      return toReturn;
    }
 
    public static List<Long> asLongList(String rawValue) {

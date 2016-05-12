@@ -148,7 +148,7 @@ public class PurgeArtifacts extends AbstractDbTxOperation {
       try {
          chStmt.runPreparedQuery(query, queryId);
          while (chStmt.next()) {
-            txJoin.add(chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id"), chStmt.getLong("branch_id"));
+            txJoin.add(chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id"), chStmt.getLong("branch_id"));
          }
       } finally {
          chStmt.close();

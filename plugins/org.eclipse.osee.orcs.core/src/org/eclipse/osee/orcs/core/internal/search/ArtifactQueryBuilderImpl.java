@@ -114,14 +114,14 @@ public class ArtifactQueryBuilderImpl<T> implements ArtifactQueryBuilder<T> {
 
    @SuppressWarnings("unchecked")
    @Override
-   public T fromTransaction(TransactionId transactionId) {
-      OptionsUtil.setFromTransaction(getOptions(), transactionId.getId());
+   public T fromTransaction(TransactionId transaction) {
+      OptionsUtil.setFromTransaction(getOptions(), transaction);
       return (T) this;
    }
 
    @Override
    public TransactionId getFromTransaction() {
-      return TransactionId.valueOf(OptionsUtil.getFromTransaction(getOptions()));
+      return OptionsUtil.getFromTransaction(getOptions());
    }
 
    @SuppressWarnings("unchecked")

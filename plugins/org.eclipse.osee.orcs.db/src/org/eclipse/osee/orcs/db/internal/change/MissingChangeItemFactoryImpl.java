@@ -92,7 +92,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranchId(), artIds);
       final Set<Integer> missingArtIds = new LinkedHashSet<>(artIds);
       loader.includeDeletedArtifacts();
-      loader.fromTransaction(destTx.getGuid());
+      loader.fromTransaction(destTx);
 
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
@@ -111,7 +111,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
       DataLoader loader = dataLoaderFactory.newDataLoaderFromIds(session, sourceTx.getBranchId(), missingArtIds);
       loader.withLoadLevel(LoadLevel.ALL);
       loader.includeDeletedArtifacts();
-      loader.fromTransaction(sourceTx.getGuid());
+      loader.fromTransaction(sourceTx);
 
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
@@ -167,7 +167,7 @@ public class MissingChangeItemFactoryImpl implements MissingChangeItemFactory {
 
       DataLoader loader =
          dataLoaderFactory.newDataLoaderFromIds(session, destTx.getBranchId(), relationChangesToAdd.keySet());
-      loader.fromTransaction(destTx.getGuid());
+      loader.fromTransaction(destTx);
       loader.load(cancellation, new LoadDataHandlerAdapter() {
 
          @Override

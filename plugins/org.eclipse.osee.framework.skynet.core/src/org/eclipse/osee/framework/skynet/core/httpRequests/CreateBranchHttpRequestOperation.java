@@ -89,7 +89,7 @@ public final class CreateBranchHttpRequestOperation extends AbstractOperation {
       data.setMergeAddressingQueryId(mergeAddressingQueryId);
       data.setMergeDestinationBranchId(destinationBranch);
       data.setParentBranchId(parentTransaction.getBranch());
-      data.setSourceTransactionId(parentTransaction.getId());
+      data.setSourceTransactionId(parentTransaction);
       data.setTxCopyBranchType(isTxCopyBranchType());
 
       try {

@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
@@ -105,14 +106,14 @@ public final class ChangeManager {
       for (Artifact artifact : artifacts) {
          BranchId branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
-         int transactionNumber = TransactionManager.getHeadTransaction(branch).getId();
-         joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
+         TransactionId transaction = TransactionManager.getHeadTransaction(branch);
+         joinQuery.add(artifact.getArtId(), branch.getUuid(), transaction);
 
          // for each combination of artifact and its branch hierarchy
          while (!branch.equals(CoreBranches.SYSTEM_ROOT)) {
-            transactionNumber = BranchManager.getSourceTransaction(branch).getId();
+            transaction = BranchManager.getSourceTransaction(branch);
             branch = BranchManager.getParentBranch(branch);
-            joinQuery.add(artifact.getArtId(), branch.getUuid(), transactionNumber);
+            joinQuery.add(artifact.getArtId(), branch.getUuid(), transaction);
          }
       }
 
@@ -126,7 +127,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
-               transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
+               transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
             }
          } finally {
             chStmt.close();

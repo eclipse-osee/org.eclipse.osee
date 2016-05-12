@@ -34,7 +34,7 @@ import org.eclipse.osee.orcs.rest.model.TransactionEndpoint;
  */
 public class PurgeTransactionOperation extends AbstractOperation {
 
-   private final List<Integer> txIdsToDelete;
+   private final List<Long> txIdsToDelete;
    public static interface PurgeTransactionListener {
       void onPurgeTransactionSuccess(Collection<TransactionRecord> transactions);
    }
@@ -42,7 +42,7 @@ public class PurgeTransactionOperation extends AbstractOperation {
    private final Set<PurgeTransactionListener> listeners = new CopyOnWriteArraySet<>();
    private final Collection<TransactionRecord> changedTransactions = new ArrayList<>();
 
-   public PurgeTransactionOperation(List<Integer> txIdsToDelete) {
+   public PurgeTransactionOperation(List<Long> txIdsToDelete) {
       super("Purge transactions " + txIdsToDelete, Activator.PLUGIN_ID, NullOperationLogger.getSingleton());
       this.txIdsToDelete = txIdsToDelete;
    }

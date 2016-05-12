@@ -55,8 +55,8 @@ public class TransactionWriterTest {
    private static final int QUERY_ID_1 = 88;
    private static final int QUERY_ID_2 = 89;
 
-   private static final int TX_1 = 51;
-   private static final int TX_2 = 52;
+   private static final long TX_1 = 51;
+   private static final long TX_2 = 52;
 
    private static final long GAMMA_1 = 80000L;
    private static final long GAMMA_2 = 80001L;
@@ -111,7 +111,7 @@ public class TransactionWriterTest {
       when(jdbcClient.getStatement(connection)).thenReturn(chStmt);
 
       when(chStmt.next()).thenReturn(true).thenReturn(true).thenReturn(false);
-      when(chStmt.getInt("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
+      when(chStmt.getLong("transaction_id")).thenReturn(TX_1).thenReturn(TX_2);
       when(chStmt.getLong("gamma_id")).thenReturn(GAMMA_1).thenReturn(GAMMA_2);
    }
 

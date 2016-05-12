@@ -99,7 +99,7 @@ public final class MockDataFactory {
          value++;
       }
       IOseeBranch branch = TokenFactory.createBranch(branchUuid, "fake test branch");
-      return new TransactionRecord(value * 47, branch, "comment_" + value, new Date(), value * 37, value * 42, type);
+      return new TransactionRecord(value * 47L, branch, "comment_" + value, new Date(), value * 37, value * 42, type);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

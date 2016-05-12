@@ -15,10 +15,12 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.swt.Displays;
@@ -45,9 +47,10 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       try {
          if (element instanceof Change) {
             Change data = (Change) element;
+            TransactionRecord endTx = TransactionManager.getTransaction(data.getTxDelta().getEndTx());
 
             if (cCol.equals(HistoryXViewerFactory.transaction)) {
-               toReturn = String.valueOf(data.getTxDelta().getEndTx().getId());
+               toReturn = String.valueOf(endTx.getId());
             } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
                toReturn = String.valueOf(data.getGamma());
             } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
@@ -67,12 +70,11 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
             } else if (cCol.equals(HistoryXViewerFactory.is)) {
                toReturn = data.getIsValue();
             } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-               toReturn =
-                  new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(data.getTxDelta().getEndTx().getTimeStamp());
+               toReturn = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a").format(endTx.getTimeStamp());
             } else if (cCol.equals(HistoryXViewerFactory.author)) {
-               toReturn = UserManager.getSafeUserNameById(data.getTxDelta().getEndTx().getAuthor());
+               toReturn = UserManager.getSafeUserNameById(endTx.getAuthor());
             } else if (cCol.equals(HistoryXViewerFactory.comment)) {
-               toReturn = data.getTxDelta().getEndTx().getComment();
+               toReturn = endTx.getComment();
             } else {
                toReturn = "unhandled column";
             }
@@ -94,7 +96,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
       }
       Change data = (Change) element;
       if (xCol.equals(HistoryXViewerFactory.timeStamp)) {
-         return data.getTxDelta().getEndTx().getTimeStamp();
+         return TransactionManager.getTransaction(data.getTxDelta().getEndTx()).getTimeStamp();
       }
       return super.getBackingData(element, xCol, columnIndex);
    }

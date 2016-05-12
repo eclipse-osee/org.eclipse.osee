@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -19,8 +20,6 @@ public final class OptionsUtil {
    private OptionsUtil() {
       // Utility method
    }
-   private static final int TRANSACTION_SENTINEL = -1;
-
    private static final String FROM_TRANSACTION = "from.transaction";
    private static final String INCLUDE_DELETED_BRANCHES = "include.deleted.branches";
    private static final String INCLUDE_DELETED_ARTIFACTS = "include.deleted.artifacts";
@@ -129,31 +128,24 @@ public final class OptionsUtil {
       options.put(LOAD_LEVEL, loadLevel.name());
    }
 
-   public static void setFromTransaction(Options options, int transactionId) {
-      int transactionToSet = transactionId;
-      if (transactionToSet < -1) {
-         transactionToSet = TRANSACTION_SENTINEL;
-      }
-      options.put(FROM_TRANSACTION, transactionToSet);
+   public static void setFromTransaction(Options options, TransactionId transactionId) {
+      options.put(FROM_TRANSACTION, transactionId);
    }
 
-   public static int getFromTransaction(Options options) {
-      int transactionId = TRANSACTION_SENTINEL;
+   public static TransactionId getFromTransaction(Options options) {
+      TransactionId transactionId = TransactionId.SENTINEL;
       if (!options.isEmpty(FROM_TRANSACTION)) {
-         transactionId = options.getInt(FROM_TRANSACTION);
-      }
-      if (transactionId < -1) {
-         transactionId = TRANSACTION_SENTINEL;
+         transactionId = options.getObject(TransactionId.class, FROM_TRANSACTION);
       }
       return transactionId;
    }
 
    public static void setHeadTransaction(Options options) {
-      setFromTransaction(options, TRANSACTION_SENTINEL);
+      setFromTransaction(options, TransactionId.SENTINEL);
    }
 
    public static boolean isHeadTransaction(Options options) {
-      return TRANSACTION_SENTINEL == getFromTransaction(options);
+      return TransactionId.SENTINEL.equals(getFromTransaction(options));
    }
 
    public static boolean isHistorical(Options options) {

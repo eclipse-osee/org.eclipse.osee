@@ -162,14 +162,10 @@ public class TxDataManager {
    }
 
    private boolean isFromSameStripe(TxData txData, Artifact artifact) {
-      boolean result = false;
-      if (txData.isOnSameBranch(artifact)) {
-         int txId = txData.getGraph().getTransaction();
-         if (txId == artifact.getTransaction()) {
-            result = true;
-         }
+      if (artifact == null) {
+         return false;
       }
-      return result;
+      return artifact.getTransaction().equals(txData.getGraph().getTransaction());
    }
 
    private boolean includesDeletedData(Artifact artifact) {

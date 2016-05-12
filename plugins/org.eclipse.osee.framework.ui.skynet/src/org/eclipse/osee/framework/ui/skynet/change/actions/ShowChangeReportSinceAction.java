@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -41,14 +42,14 @@ public class ShowChangeReportSinceAction extends Action {
 
    @Override
    public void run() {
-      List<TransactionRecord> selectedTransactionRecords = selectionProvider.getSelectedTransactionRecords();
+      List<TransactionId> selectedTransactionRecords = selectionProvider.getSelectedTransactionRecords();
       if (selectedTransactionRecords.size() != 1) {
          AWorkbench.popup("Must select 1 transaction to show Change Report Since");
          return;
       }
       ChangeReportHandler handler = new ChangeReportHandler();
       TransactionRecord headTransaction = TransactionManager.getHeadTransaction(branch);
-      List<TransactionRecord> records = Arrays.asList(selectedTransactionRecords.iterator().next(), headTransaction);
+      List<TransactionId> records = Arrays.asList(selectedTransactionRecords.iterator().next(), headTransaction);
       handler.executeWithException(null, new StructuredSelection(records));
    }
 

@@ -10,9 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -183,16 +184,16 @@ public class SqlObjectLoader {
    protected void loadDescription(LoadDataHandler builder, final LoadSqlContext loadContext) throws OseeCoreException {
       OrcsSession session = loadContext.getSession();
       Options options = loadContext.getOptions();
-      Long branchId = loadContext.getBranchId();
+      BranchId branch = loadContext.getBranch();
 
-      int transactionLoaded;
+      TransactionId transactionLoaded;
       if (OptionsUtil.isHeadTransaction(options)) {
-         transactionLoaded = loadHeadTransactionId(branchId);
+         transactionLoaded = loadHeadTransactionId(branch);
       } else {
          transactionLoaded = OptionsUtil.getFromTransaction(options);
       }
 
-      LoadDescription description = createDescription(session, options, branchId, transactionLoaded);
+      LoadDescription description = createDescription(session, options, branch, transactionLoaded);
       builder.onLoadDescription(description);
    }
 
@@ -220,9 +221,9 @@ public class SqlObjectLoader {
       }
    }
 
-   protected int loadHeadTransactionId(Long branchId) throws OseeCoreException {
-      String sql = "SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?";
-      return getJdbcClient().fetch(TRANSACTION_SENTINEL, sql, branchId);
+   protected TransactionId loadHeadTransactionId(BranchId branch) throws OseeCoreException {
+      String sql = "SELECT max(transaction_id) FROM osee_tx_details WHERE branch_id = ?";
+      return getJdbcClient().fetch(TransactionId.SENTINEL, sql, branch);
    }
 
    protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {
@@ -262,18 +263,18 @@ public class SqlObjectLoader {
    }
 
    private static LoadDescription createDescription(final OrcsSession session, final Options options) {
-      return createDescription(session, options, null, -1, null);
+      return createDescription(session, options, null, TransactionId.SENTINEL, null);
    }
 
    private static LoadDescription createDescription(final OrcsSession session, final Options options, final ResultObjectDescription data) {
-      return createDescription(session, options, null, -1, data);
+      return createDescription(session, options, null, TransactionId.SENTINEL, data);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final Long branchId, final int transactionLoaded) {
-      return createDescription(session, options, branchId, transactionLoaded, null);
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final BranchId branch, final TransactionId transactionLoaded) {
+      return createDescription(session, options, branch, transactionLoaded, null);
    }
 
-   private static LoadDescription createDescription(final OrcsSession session, final Options options, final Long branchId, final int transactionLoaded, final ResultObjectDescription data) {
+   private static LoadDescription createDescription(final OrcsSession session, final Options options, final BranchId branch, final TransactionId transactionLoaded, final ResultObjectDescription data) {
       return new LoadDescription() {
 
          @Override
@@ -287,12 +288,12 @@ public class SqlObjectLoader {
          }
 
          @Override
-         public Long getBranchId() {
-            return branchId;
+         public BranchId getBranch() {
+            return branch;
          }
 
          @Override
-         public int getTransaction() {
+         public TransactionId getTransaction() {
             return transactionLoaded;
          }
 

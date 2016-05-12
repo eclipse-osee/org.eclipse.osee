@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -151,6 +152,9 @@ public class TxDataManagerTest {
       when(artifact1.getGuid()).thenReturn(r1Guid);
       when(artifact2.getGuid()).thenReturn(r2Guid);
       when(artifact3.getGuid()).thenReturn(r3Guid);
+
+      when(artifact1.getTransaction()).thenReturn(TransactionId.SENTINEL);
+      when(graph.getTransaction()).thenReturn(TransactionId.SENTINEL);
    }
 
    @Test
@@ -262,7 +266,6 @@ public class TxDataManagerTest {
 
       verify(txData).getWriteable(readable1);
       verify(proxyManager).asInternalArtifact(readable1);
-      verify(txData).isOnSameBranch(artifact1);
 
       assertEquals(artifact2, actual);
    }
@@ -295,10 +298,10 @@ public class TxDataManagerTest {
       when(artifact1.getOrcsData()).thenReturn(data);
       when(artifact2.getOrcsData()).thenReturn(data);
       when(data.isExistingVersionUsed()).thenReturn(false);
+      when(artifact1.getTransaction()).thenReturn(TransactionId.valueOf(3));
 
       Artifact actual = txDataManager.getForWrite(txDataReal, artifact1);
 
-      verify(artifact1).getBranchId();
       verify(loader).loadArtifacts(eq(session), eq(graph), idCaptor.capture());
 
       assertEquals(artifact1, idCaptor.getValue().iterator().next());

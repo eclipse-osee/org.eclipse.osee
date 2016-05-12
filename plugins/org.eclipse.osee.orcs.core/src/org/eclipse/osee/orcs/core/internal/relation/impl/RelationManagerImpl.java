@@ -254,7 +254,8 @@ public class RelationManagerImpl implements RelationManager {
 
    private GraphData getGraph(RelationNode aNode, RelationNode bNode) {
       checkBranch(aNode, bNode);
-      return aNode.getGraph().getTransaction() > bNode.getGraph().getTransaction() ? aNode.getGraph() : bNode.getGraph();
+      return aNode.getGraph().getTransaction().isOlderThan(
+         bNode.getGraph().getTransaction()) ? bNode.getGraph() : aNode.getGraph();
    }
 
    private void checkMultiplicityCanAdd(OrcsSession session, IRelationType type, RelationNode aNode, RelationNode bNode) {

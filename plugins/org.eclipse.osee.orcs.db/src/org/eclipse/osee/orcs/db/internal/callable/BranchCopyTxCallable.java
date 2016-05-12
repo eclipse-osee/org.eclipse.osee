@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -69,7 +70,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       new CreateBranchDatabaseTxCallable(jdbcClient, idManager, branchData).handleTxWork(connection);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      int nextTransactionId = idManager.getNextTransactionId();
+      TransactionId nextTransactionId = idManager.getNextTransactionId();
 
       String creationComment = branchData.getCreationComment();
 
@@ -77,14 +78,14 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
          creationComment, timestamp, branchData.getUserArtifactId(), TransactionDetailsType.NonBaselined.getId());
 
       populateTransaction(0.30, connection, nextTransactionId, branchData.getParentBranch(),
-         branchData.getSavedTransaction().getGuid());
+         branchData.getSavedTransaction());
 
       UpdatePreviousTxCurrent updater =
          new UpdatePreviousTxCurrent(jdbcClient, joinFactory, connection, branchData.getUuid());
       updater.updateTxNotCurrentsFromTx(nextTransactionId);
    }
 
-   private void populateTransaction(double workAmount, JdbcConnection connection, int intoTx, BranchId parentBranch, int copyTxId) throws OseeCoreException {
+   private void populateTransaction(double workAmount, JdbcConnection connection, TransactionId intoTx, BranchId parentBranch, TransactionId copyTxId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<>();
       HashSet<Long> gammas = new HashSet<>(100000);
 
@@ -95,7 +96,7 @@ public final class BranchCopyTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, int baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, List<Object[]> data, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);

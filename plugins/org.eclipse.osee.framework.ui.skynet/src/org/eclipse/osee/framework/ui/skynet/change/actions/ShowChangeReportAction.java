@@ -14,7 +14,7 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.action.ITransactionRecordSelectionProvider;
@@ -36,7 +36,7 @@ public class ShowChangeReportAction extends Action {
 
    @Override
    public void run() {
-      List<TransactionRecord> selectedTransactionRecords = selectionProvider.getSelectedTransactionRecords();
+      List<TransactionId> selectedTransactionRecords = selectionProvider.getSelectedTransactionRecords();
       if (selectedTransactionRecords.size() == 0) {
          AWorkbench.popup("Must select transaction(s) to show Change Report");
       }

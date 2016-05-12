@@ -154,7 +154,7 @@ public class HtmlWriter {
 
    public Map<String, Object> toData(TransactionReadable txRecord) throws OseeCoreException {
       Map<String, Object> data = new LinkedHashMap<>();
-      data.put("TxId", txRecord.getLocalId());
+      data.put("TxId", txRecord);
       data.put("TxType", txRecord.getTxType());
       data.put("Date", txRecord.getDate());
       data.put("Comment", txRecord.getComment());

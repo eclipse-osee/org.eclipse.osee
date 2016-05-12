@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -17,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public interface IdentityManager extends IdentityLocator {
 
-   int getNextTransactionId();
+   TransactionId getNextTransactionId();
 
    int getNextArtifactId();
 

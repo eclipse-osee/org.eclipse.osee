@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.executors;
 
 import java.util.Collection;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -48,7 +49,7 @@ public class LoadExecutor extends AbstractLoadExecutor {
       checkCancelled(cancellation);
 
       ArtifactJoinQuery join = joinFactory.createArtifactJoinQuery();
-      Integer transactionId = OptionsUtil.getFromTransaction(options);
+      TransactionId transactionId = OptionsUtil.getFromTransaction(options);
       for (Integer artId : artifactIds) {
          join.add(artId, branchId, transactionId);
       }

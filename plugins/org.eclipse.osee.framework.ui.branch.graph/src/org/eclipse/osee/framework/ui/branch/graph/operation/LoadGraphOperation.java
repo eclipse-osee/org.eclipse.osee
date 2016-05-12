@@ -101,7 +101,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
 
    private void updateView(IProgressMonitor monitor, BranchId branch, TransactionRecord revision) throws OseeCoreException {
       monitor.setTaskName("Finding root node");
-      int unitWork = TASK_STEPS / revision.getId();
+      int unitWork = (int) (TASK_STEPS / revision.getId());
       if (unitWork < 1) {
          unitWork = 1;
       }

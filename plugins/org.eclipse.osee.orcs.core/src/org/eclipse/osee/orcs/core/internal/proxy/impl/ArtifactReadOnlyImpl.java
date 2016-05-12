@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -77,12 +78,12 @@ public class ArtifactReadOnlyImpl extends AbstractProxied<Artifact> implements A
    }
 
    @Override
-   public int getTransaction() {
+   public TransactionId getTransaction() {
       return getProxiedObject().getTransaction();
    }
 
    @Override
-   public int getLastModifiedTransaction() {
+   public TransactionId getLastModifiedTransaction() {
       return getProxiedObject().getLastModifiedTransaction();
    }
 

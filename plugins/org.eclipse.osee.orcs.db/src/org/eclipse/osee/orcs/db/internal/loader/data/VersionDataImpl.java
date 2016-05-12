@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader.data;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.GAMMA_SENTINEL;
+import static org.eclipse.osee.framework.core.data.RelationalConstants.IS_HISTORICAL_DEFAULT;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.core.ds.VersionData;
 
 /**
@@ -20,10 +22,10 @@ import org.eclipse.osee.orcs.core.ds.VersionData;
 public class VersionDataImpl implements VersionData {
 
    private Long branchId = BranchId.SENTINEL.getId();
-   private int txId = RelationalConstants.TRANSACTION_SENTINEL;
-   private long gamma = RelationalConstants.GAMMA_SENTINEL;
-   private boolean historical = RelationalConstants.IS_HISTORICAL_DEFAULT;
-   private int stripeId = RelationalConstants.TRANSACTION_SENTINEL;
+   private TransactionId txId = TransactionId.SENTINEL;
+   private long gamma = GAMMA_SENTINEL;
+   private boolean historical = IS_HISTORICAL_DEFAULT;
+   private TransactionId stripeId = TransactionId.SENTINEL;
 
    public VersionDataImpl() {
       super();
@@ -40,22 +42,22 @@ public class VersionDataImpl implements VersionData {
    }
 
    @Override
-   public int getTransactionId() {
+   public TransactionId getTransactionId() {
       return txId;
    }
 
    @Override
-   public void setTransactionId(int txId) {
+   public void setTransactionId(TransactionId txId) {
       this.txId = txId;
    }
 
    @Override
-   public int getStripeId() {
+   public TransactionId getStripeId() {
       return stripeId;
    }
 
    @Override
-   public void setStripeId(int stripeId) {
+   public void setStripeId(TransactionId stripeId) {
       this.stripeId = stripeId;
    }
 
@@ -71,7 +73,7 @@ public class VersionDataImpl implements VersionData {
 
    @Override
    public boolean isInStorage() {
-      return RelationalConstants.TRANSACTION_SENTINEL != txId;
+      return TransactionId.SENTINEL != txId;
    }
 
    @Override
@@ -91,8 +93,8 @@ public class VersionDataImpl implements VersionData {
       result = prime * result + branchId.hashCode();
       result = prime * result + (int) (gamma ^ gamma >>> 32);
       result = prime * result + (historical ? 1231 : 1237);
-      result = prime * result + stripeId;
-      result = prime * result + txId;
+      result = prime * result + stripeId.hashCode();
+      result = prime * result + txId.hashCode();
       return result;
    }
 

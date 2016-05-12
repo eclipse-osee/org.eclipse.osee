@@ -112,7 +112,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
       long toReturn = -1;
       if (response.hasEntity()) {
          Transaction tx = response.readEntity(Transaction.class);
-         toReturn = tx.getTxId();
+         toReturn = tx.getTxId().getId();
       } else {
          URI location = response.getLocation();
          if (location != null) {

@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.accessor;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -100,7 +101,7 @@ public class UpdatePreviousTxCurrent {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, queryId, branchUuid,
             TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
          }
       } finally {
          chStmt.close();
@@ -109,14 +110,14 @@ public class UpdatePreviousTxCurrent {
       jdbcClient.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
    }
 
-   public void updateTxNotCurrentsFromTx(int transaction_id) throws OseeCoreException {
+   public void updateTxNotCurrentsFromTx(TransactionId transaction_id) throws OseeCoreException {
       List<Object[]> updateData = new ArrayList<>();
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TXS_AND_GAMMAS_FROM_TXS, branchUuid,
             transaction_id, branchUuid, transaction_id, TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
-            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getInt("transaction_id")});
+            updateData.add(new Object[] {branchUuid, chStmt.getLong("gamma_id"), chStmt.getLong("transaction_id")});
          }
       } finally {
          chStmt.close();

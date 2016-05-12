@@ -624,9 +624,8 @@ public final class BranchManager {
    public static Artifact getAssociatedArtifact(TransactionDelta txDelta) throws OseeCoreException {
       Artifact associatedArtifact = null;
       if (txDelta.areOnTheSameBranch()) {
-         TransactionRecord txRecord = txDelta.getEndTx();
-         int commitArtId = txRecord.getCommit();
-         if (commitArtId != 0) {
+         Long commitArtId = TransactionManager.getCommitArtId(txDelta.getEndTx());
+         if (!commitArtId.equals(0)) {
             associatedArtifact = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
          }
       } else {

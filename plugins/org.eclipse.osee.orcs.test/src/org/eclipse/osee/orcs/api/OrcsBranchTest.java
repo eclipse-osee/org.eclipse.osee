@@ -83,7 +83,7 @@ public class OrcsBranchTest {
 
       ArtifactReadable author = getSystemUser();
 
-      TransactionId tx = TokenFactory.createTransaction(SOURCE_TX_ID);
+      TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
       Callable<BranchReadable> callable = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       assertNotNull(callable);
@@ -107,7 +107,7 @@ public class OrcsBranchTest {
       // create the branch with the copied transaction
       IOseeBranch postbranch = TokenFactory.createBranch("PostBranch");
 
-      TransactionId tx1 = TokenFactory.createTransaction(CHANGED_TX_ID);
+      TransactionId tx1 = TransactionId.valueOf(CHANGED_TX_ID);
       Callable<BranchReadable> postCallable = branchOps.createCopyTxBranch(postbranch, author, tx1, null);
 
       assertNotNull(postCallable);
@@ -135,7 +135,7 @@ public class OrcsBranchTest {
 
       ArtifactReadable author = getSystemUser();
 
-      TransactionId tx = TokenFactory.createTransaction(SOURCE_TX_ID);
+      TransactionId tx = TransactionId.valueOf(SOURCE_TX_ID);
       Callable<BranchReadable> callableBranch = branchOps.createCopyTxBranch(branch, author, tx, null);
 
       // the new branch will contain two transactions - these should have the same change report as the original branch

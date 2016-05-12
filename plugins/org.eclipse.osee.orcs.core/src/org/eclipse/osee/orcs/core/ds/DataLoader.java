@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.ds;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
@@ -25,15 +26,13 @@ public interface DataLoader extends Loader {
    @Override
    DataLoader setOptions(Options sourceOptions);
 
-   DataLoader fromTransaction(int transactionId);
+   DataLoader fromTransaction(TransactionId transactionId);
 
    DataLoader fromHeadTransaction();
 
    DataLoader withLoadLevel(LoadLevel loadLevel);
 
    LoadLevel getLoadLevel();
-
-   int getFromTransaction();
 
    boolean isHeadTransaction();
 

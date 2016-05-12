@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.action;
 
+import static org.eclipse.osee.framework.core.data.TransactionId.SENTINEL;
 import java.net.URI;
 import java.util.List;
 import javax.ws.rs.core.MediaType;
@@ -20,6 +21,8 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -76,16 +79,16 @@ public class WasIsCompareEditorAction extends Action {
             Change change = localChanges.iterator().next();
             List<TransactionRecord> transactionsFromStructuredSelection =
                Handlers.getTransactionsFromStructuredSelection(structuredSelection);
-            int transactionId = transactionsFromStructuredSelection.iterator().next().getId();
+            TransactionId transactionId = transactionsFromStructuredSelection.iterator().next();
             List<Artifact> artifactsFromStructuredSelection =
                Handlers.getArtifactsFromStructuredSelection(structuredSelection);
             Artifact artifact = artifactsFromStructuredSelection.iterator().next();
 
             String was = change.getWasValue();
             int attrId = ((AttributeChange) change).getAttrId();
-            Integer previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
+            TransactionId previousTransaction = getPreviousTransaction(artifact.getBranchId(), attrId, transactionId);
             if (!Strings.isValid(was) && change instanceof AttributeChange) {
-               if (previousTransaction > 0) {
+               if (previousTransaction.isValid()) {
                   was = loadAttributeValue(attrId, previousTransaction, artifact);
                }
             }
@@ -95,7 +98,7 @@ public class WasIsCompareEditorAction extends Action {
                is = loadAttributeValue(attrId, transactionId, artifact);
             }
             CompareHandler compareHandler = new CompareHandler(String.format("Compare [%s]", change),
-               new CompareItem(String.format("Was [Transaction: %d]", previousTransaction), was,
+               new CompareItem(String.format("Was [Transaction: %s]", previousTransaction), was,
                   System.currentTimeMillis()),
                new CompareItem(String.format("Is [Transaction: %s]", transactionId), is, System.currentTimeMillis()),
                null);
@@ -106,18 +109,18 @@ public class WasIsCompareEditorAction extends Action {
       }
    }
 
-   private Integer getPreviousTransaction(long branchUuid, int attrId, int transactionId) {
-      Integer previousTransaction = 0;
+   private TransactionId getPreviousTransaction(long branchUuid, int attrId, TransactionId transactionId) {
+      TransactionId previousTransaction = TransactionId.SENTINEL;
       boolean found = false;
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ATTRIBUTE_TRANSACTIONS_QUERY_DESC, attrId, branchUuid);
          while (chStmt.next()) {
-            int transaction = chStmt.getInt("transaction_id");
+            TransactionId transaction = TransactionId.valueOf(chStmt.getLong("transaction_id"));
             if (found) {
                return transaction;
             }
-            if (transaction == transactionId) {
+            if (transactionId.equals(transaction)) {
                found = true;
             }
          }
@@ -127,7 +130,7 @@ public class WasIsCompareEditorAction extends Action {
       return previousTransaction;
    }
 
-   private String loadAttributeValue(int attrId, int transactionId, Artifact artifact) {
+   private String loadAttributeValue(int attrId, TransactionId transactionId, Artifact artifact) {
       String appServer = OseeClientProperties.getOseeApplicationServer();
       URI uri =
          UriBuilder.fromUri(appServer).path("orcs").path("branch").path(String.valueOf(artifact.getBranchId())).path(

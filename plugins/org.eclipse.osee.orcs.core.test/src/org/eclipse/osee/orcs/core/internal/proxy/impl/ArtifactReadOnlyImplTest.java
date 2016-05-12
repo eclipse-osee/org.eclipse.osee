@@ -35,6 +35,8 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -146,12 +148,9 @@ public class ArtifactReadOnlyImplTest {
 
    @Test
    public void testGetTransaction() {
-      int transaction = 411232;
+      TransactionId transaction = TransactionId.valueOf(411232);
       when(proxiedObject.getTransaction()).thenReturn(transaction);
-
-      int actual = readOnly.getTransaction();
-
-      assertEquals(transaction, actual);
+      assertEquals(transaction, readOnly.getTransaction());
       verify(proxiedObject).getTransaction();
    }
 

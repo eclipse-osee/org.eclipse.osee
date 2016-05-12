@@ -94,7 +94,8 @@ public class OrcsBranchImpl implements OrcsBranch {
 
    @Override
    public Callable<List<ChangeItem>> compareBranch(BranchId branch) throws OseeCoreException {
-      int baseTransaction = queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne().getBaseTransaction();
+      TransactionId baseTransaction =
+         queryFactory.branchQuery().andIds(branch).getResults().getExactlyOne().getBaseTransaction();
       TransactionToken fromTx = queryFactory.transactionQuery().andTxId(baseTransaction).getResults().getExactlyOne();
       TransactionToken toTx = queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
       return branchStore.compareBranch(session, fromTx, toTx);

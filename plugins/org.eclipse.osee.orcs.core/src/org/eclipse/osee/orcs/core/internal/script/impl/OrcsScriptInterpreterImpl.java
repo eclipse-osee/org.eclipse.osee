@@ -20,9 +20,9 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.core.data.TokenFactory;
@@ -348,7 +348,7 @@ public class OrcsScriptInterpreterImpl implements OrcsScriptInterpreter {
 
       @Override
       public Void caseOsTxIdEqualsClause(OsTxIdEqualsClause object) {
-         Collection<Integer> ids = resolver.resolve(Integer.class, object.getIds());
+         Collection<Long> ids = resolver.resolve(Long.class, object.getIds());
          getTxQuery().andTxIds(ids);
          return null;
       }

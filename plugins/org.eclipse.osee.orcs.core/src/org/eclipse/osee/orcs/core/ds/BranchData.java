@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.core.ds;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -25,13 +26,13 @@ public interface BranchData extends IOseeBranch {
 
    void setAssociatedArtifactId(int artId);
 
-   int getBaseTransaction();
+   TransactionId getBaseTransaction();
 
-   void setBaseTransaction(int baseTx);
+   void setBaseTransaction(TransactionId baseTx);
 
-   int getSourceTransaction();
+   TransactionId getSourceTransaction();
 
-   void setSourceTransaction(int sourceTx);
+   void setSourceTransaction(TransactionId sourceTx);
 
    BranchId getParentBranch();
 

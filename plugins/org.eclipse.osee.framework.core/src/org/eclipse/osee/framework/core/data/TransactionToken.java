@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.Id;
 
 /**
@@ -24,10 +24,10 @@ public interface TransactionToken extends TransactionId, HasBranch {
    }
 
    public static TransactionToken valueOf(long id, BranchId branch) {
-      final class TransactionTokenImpl extends BaseIdentity<Integer> implements TransactionToken {
+      final class TransactionTokenImpl extends BaseId implements TransactionToken {
          private final BranchId branch;
 
-         public TransactionTokenImpl(Integer txId, BranchId branch) {
+         public TransactionTokenImpl(Long txId, BranchId branch) {
             super(txId);
             this.branch = branch;
          }
@@ -37,6 +37,6 @@ public interface TransactionToken extends TransactionId, HasBranch {
             return branch;
          }
       }
-      return new TransactionTokenImpl((int) id, branch);
+      return new TransactionTokenImpl(id, branch);
    }
 }

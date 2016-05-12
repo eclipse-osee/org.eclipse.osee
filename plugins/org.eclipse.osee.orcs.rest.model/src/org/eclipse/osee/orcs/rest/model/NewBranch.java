@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.rest.model;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchType;
 
 /**
@@ -26,7 +27,7 @@ public class NewBranch {
    private BranchType branchType;
 
    private int authorId;
-   private int sourceTransactionId;
+   private TransactionId sourceTransaction;
    private String creationComment;
    private int mergeAddressingQueryId;
    private long mergeDestinationBranchId;
@@ -56,8 +57,8 @@ public class NewBranch {
       return authorId;
    }
 
-   public int getSourceTransactionId() {
-      return sourceTransactionId;
+   public TransactionId getSourceTransaction() {
+      return sourceTransaction;
    }
 
    public String getCreationComment() {
@@ -96,8 +97,8 @@ public class NewBranch {
       this.authorId = authorId;
    }
 
-   public void setSourceTransactionId(int sourceTransactionId) {
-      this.sourceTransactionId = sourceTransactionId;
+   public void setSourceTransactionId(TransactionId sourceTransaction) {
+      this.sourceTransaction = sourceTransaction;
    }
 
    public void setCreationComment(String creationComment) {
@@ -118,7 +119,7 @@ public class NewBranch {
 
    @Override
    public String toString() {
-      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifactId + ", branchType=" + branchType + ", authorId=" + authorId + ", sourceTransactionId=" + sourceTransactionId + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
+      return "NewBranch [branchName=" + branchName + ", parentBranchId=" + parentBranch + ", associatedArtifactId=" + associatedArtifactId + ", branchType=" + branchType + ", authorId=" + authorId + ", sourceTransactionId=" + sourceTransaction + ", creationComment=" + creationComment + ", mergeAddressingQueryId=" + mergeAddressingQueryId + ", mergeDestinationBranchId=" + mergeDestinationBranchId + ", txCopyBranchType=" + txCopyBranchType + "]";
    }
 
 }

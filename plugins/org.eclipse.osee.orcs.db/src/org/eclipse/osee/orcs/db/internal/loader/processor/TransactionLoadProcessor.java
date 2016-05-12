@@ -30,7 +30,7 @@ public class TransactionLoadProcessor extends LoadProcessor<TxOrcsData, Transact
    @Override
    protected TxOrcsData createData(Object conditions, TransactionObjectFactory factory, JdbcStatement chStmt, Options options) throws OseeCoreException {
       long branchUuid = chStmt.getLong("branch_id");
-      int localId = chStmt.getInt("transaction_id");
+      Long localId = chStmt.getLong("transaction_id");
       TransactionDetailsType type = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
       String comment = chStmt.getString("osee_comment");
       Date date = chStmt.getTimestamp("time");

@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
@@ -86,7 +85,7 @@ public final class TransactionManager {
       try {
          chStmt.runPreparedQuery(SELECT_TRANSACTION_COMMENTS, comment);
          while (chStmt.next()) {
-            transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
+            transactions.add(getTransactionId(chStmt));
          }
       } finally {
          chStmt.close();
@@ -94,8 +93,8 @@ public final class TransactionManager {
       return transactions;
    }
 
-   public static void setTransactionComment(TransactionRecord transaction, String comment) throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction.getId());
+   public static void setTransactionComment(TransactionId transaction, String comment) throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction);
    }
 
    private static IOseeCachingService getCacheService() throws OseeCoreException {
@@ -114,12 +113,16 @@ public final class TransactionManager {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, SELECT_TRANSACTIONS, branch.getUuid());
 
          while (chStmt.next()) {
-            transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
+            transactions.add(getTransactionId(chStmt));
          }
       } finally {
          chStmt.close();
       }
       return transactions;
+   }
+
+   public static Long getCommitArtId(TransactionId tx) {
+      return (long) getTransaction(tx).getCommit();
    }
 
    public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
@@ -132,7 +135,7 @@ public final class TransactionManager {
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
             while (chStmt.next()) {
-               transactionIds.add(getTransactionId(chStmt.getInt("transaction_id")));
+               transactionIds.add(getTransactionId(chStmt.getLong("transaction_id")));
             }
 
             commitArtifactIdMap.put(artifact.getArtId(), transactionIds);
@@ -166,24 +169,24 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     */
    public static TransactionRecord getHeadTransaction(BranchId branch) throws OseeCoreException {
-      int transaction = ConnectionHandler.getJdbcClient().fetch(RelationalConstants.TRANSACTION_SENTINEL,
+      TransactionId transaction = ConnectionHandler.getJdbcClient().fetch(TransactionId.SENTINEL,
          ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch);
-      if (transaction == RelationalConstants.TRANSACTION_SENTINEL) {
+      if (transaction.isInvalid()) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: %s", branch);
       }
-      return getTransactionId(transaction);
+      return getTransaction(transaction);
    }
 
-   private static int getNextTransactionId() {
+   private static Long getNextTransactionId() {
       //keep transaction id's sequential in the face of concurrent transaction by multiple users
-      return (int) ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ, false);
+      return ConnectionHandler.getNextSequence(TRANSACTION_ID_SEQ, false);
    }
 
    public static synchronized TransactionRecord internalCreateTransactionRecord(BranchId branch, User userToBlame, String comment) throws OseeCoreException {
       if (comment == null) {
          comment = "";
       }
-      Integer transactionNumber = getNextTransactionId();
+      Long transactionNumber = getNextTransactionId();
       int authorArtId = userToBlame.getArtId();
       TransactionDetailsType txType = TransactionDetailsType.NonBaselined;
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
@@ -210,13 +213,12 @@ public final class TransactionManager {
          chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION_BY_DATE, branchUuid,
             new Timestamp(maxDateExclusive.getTime()));
          if (chStmt.next()) {
-            int transactionId = chStmt.getInt("transaction_id");
             if (chStmt.wasNull()) {
                DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG);
                throw new TransactionDoesNotExist("Cannot find transaction for [%s] - the transation id was null",
                   dateFormat.format(maxDateExclusive));
             }
-            txRecord = getTransactionId(transactionId, chStmt);
+            txRecord = getTransactionId(chStmt);
          }
       } finally {
          chStmt.close();
@@ -224,20 +226,16 @@ public final class TransactionManager {
       return txRecord;
    }
 
-   public static TransactionRecord getTransaction(TransactionId tx) {
-      return getTransactionId(tx.getId(), null);
+   public static TransactionRecord getTransaction(TransactionId transaction) throws OseeCoreException {
+      return getTransactionId(transaction.getId(), null);
    }
 
    public static TransactionRecord getTransactionId(long transaction) throws OseeCoreException {
-      return getTransactionId((int) transaction);
-   }
-
-   public static TransactionRecord getTransactionId(int transactionNumber) throws OseeCoreException {
-      return getTransactionId(transactionNumber, null);
+      return getTransactionId(transaction, null);
    }
 
    public static TransactionRecord getTransactionId(JdbcStatement chStmt) throws OseeCoreException {
-      return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
+      return getTransactionId(chStmt.getLong("transaction_id"), chStmt);
    }
 
    public static void deCache(int txId) throws OseeCoreException {
@@ -248,7 +246,7 @@ public final class TransactionManager {
       }
    }
 
-   private synchronized static TransactionRecord getTransactionId(int txId, JdbcStatement chStmt) throws OseeCoreException {
+   private synchronized static TransactionRecord getTransactionId(Long txId, JdbcStatement chStmt) throws OseeCoreException {
       TransactionCache txCache = getTransactionCache();
       TransactionRecord transactionRecord = txCache.getById(txId);
 

@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.action;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionId;
 
 public interface ITransactionRecordSelectionProvider {
 
-   public List<TransactionRecord> getSelectedTransactionRecords();
+   public List<TransactionId> getSelectedTransactionRecords();
 
-   public void refreshUI(List<TransactionRecord> records);
+   public void refreshUI(List<TransactionId> records);
 }

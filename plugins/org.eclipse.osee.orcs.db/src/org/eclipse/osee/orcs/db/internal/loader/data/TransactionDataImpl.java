@@ -13,14 +13,14 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.orcs.core.ds.TxOrcsData;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOrcsData {
+public class TransactionDataImpl extends BaseId implements TxOrcsData {
 
    private int authorId = RelationalConstants.ART_ID_SENTINEL;
    private Long branchId = BranchId.SENTINEL.getId();
@@ -29,8 +29,8 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
    private TransactionDetailsType type = TransactionDetailsType.INVALID;
    private Date date;
 
-   public TransactionDataImpl() {
-      super();
+   public TransactionDataImpl(Long id) {
+      super(id);
    }
 
    @Override
@@ -95,19 +95,6 @@ public class TransactionDataImpl extends OrcsObjectImpl<Integer> implements TxOr
 
    @Override
    public String toString() {
-      return "TransactionDataImpl [id=" + getGuid() + ", authorId=" + authorId + ", branchUuid=" + branchId + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
-   }
-
-   @Override
-   public Integer getGuid() {
-      return super.getLocalId();
-   }
-
-   @Override
-   public boolean equals(Object other) {
-      if (other instanceof TransactionId) {
-         return getId().equals(((TransactionId) other).getId());
-      }
-      return false;
+      return "TransactionDataImpl [id=" + getId() + ", authorId=" + authorId + ", branchUuid=" + branchId + ", comment=" + comment + ", commitId=" + commitId + ", date=" + date + ", type=" + type + "]";
    }
 }

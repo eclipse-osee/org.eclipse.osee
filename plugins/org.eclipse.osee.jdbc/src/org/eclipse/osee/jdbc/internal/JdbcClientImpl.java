@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -381,8 +380,6 @@ public final class JdbcClientImpl implements JdbcClient {
          toReturn = Boolean.parseBoolean(value);
       } else if (BaseId.class.isAssignableFrom(clazz)) {
          toReturn = ((BaseId) defaultValue).clone(stmt.getLong(1));
-      } else if (TransactionId.class.isAssignableFrom(clazz)) {
-         toReturn = TransactionId.valueOf(stmt.getLong(1));
       } else {
          toReturn = stmt.getObject(1);
       }

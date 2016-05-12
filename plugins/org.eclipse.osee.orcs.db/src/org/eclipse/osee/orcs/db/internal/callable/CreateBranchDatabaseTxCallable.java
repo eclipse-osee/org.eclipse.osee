@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -155,22 +155,21 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       final String truncatedName = Strings.truncate(newBranchData.getName(), 195, true);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      int nextTransactionId = idManager.getNextTransactionId();
-      int tobeTransactionId = nextTransactionId;
-      boolean needsUpdate =
-         jdbcClient.getDbType().equals(JdbcDbType.hsql) || jdbcClient.getDbType().equals(JdbcDbType.mysql);
+      TransactionId nextTransactionId = idManager.getNextTransactionId();
+      TransactionId tobeTransactionId = nextTransactionId;
+      boolean needsUpdate = jdbcClient.getDbType().matches(JdbcDbType.hsql, JdbcDbType.mysql);
       if (needsUpdate) {
-         nextTransactionId = 1;
+         nextTransactionId = TransactionId.valueOf(1);
       }
 
-      int sourceTx;
+      TransactionId sourceTx;
       if (newBranchData.getBranchType().isSystemRootBranch()) {
          sourceTx = tobeTransactionId;
       } else {
-         sourceTx = RelationalConstants.TRANSACTION_SENTINEL;
+         sourceTx = TransactionId.SENTINEL;
 
          if (BranchType.SYSTEM_ROOT != newBranchData.getBranchType()) {
-            sourceTx = newBranchData.getFromTransaction().getGuid();
+            sourceTx = newBranchData.getFromTransaction();
          }
       }
 
@@ -216,7 +215,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateBaseTransaction(double workAmount, JdbcConnection connection, int baseTxId, int sourceTxId) throws OseeCoreException {
+   private void populateBaseTransaction(double workAmount, JdbcConnection connection, TransactionId baseTxId, TransactionId sourceTxId) throws OseeCoreException {
       if (newBranchData.getBranchType() != BranchType.SYSTEM_ROOT) {
          HashSet<Long> gammas = new HashSet<>(100000);
          BranchId parentBranch = newBranchData.getParentBranch();
@@ -236,7 +235,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
       }
    }
 
-   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, int baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
+   private void populateAddressingToCopy(JdbcConnection connection, OseePreparedStatement addressing, TransactionId baseTxId, HashSet<Long> gammas, String query, Object... parameters) throws OseeCoreException {
       JdbcStatement chStmt = jdbcClient.getStatement(connection);
       try {
          chStmt.runPreparedQuery(JdbcConstants.JDBC__MAX_FETCH_SIZE, query, parameters);

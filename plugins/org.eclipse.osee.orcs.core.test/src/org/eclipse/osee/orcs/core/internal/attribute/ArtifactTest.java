@@ -21,6 +21,8 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -168,22 +170,17 @@ public class ArtifactTest {
 
    @Test
    public void testGetTransactionId() {
-      when(graph.getTransaction()).thenReturn(4321);
-
-      int actual = artifact.getTransaction();
-
-      assertEquals(4321, actual);
+      TransactionId expected = TransactionId.valueOf(4321);
+      when(graph.getTransaction()).thenReturn(expected);
+      assertEquals(expected, artifact.getTransaction());
       verify(graph).getTransaction();
    }
 
    @Test
    public void testLastModifiedTransaction() {
-      when(graph.getTransaction()).thenReturn(4321);
-      when(version.getTransactionId()).thenReturn(10);
-
-      int actual = artifact.getLastModifiedTransaction();
-
-      assertEquals(10, actual);
+      TransactionId expected = TransactionId.valueOf(10);
+      when(version.getTransactionId()).thenReturn(expected);
+      assertEquals(expected, artifact.getLastModifiedTransaction());
       verify(version).getTransactionId();
    }
 

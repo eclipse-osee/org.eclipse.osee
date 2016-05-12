@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
 import org.eclipse.osee.framework.jdk.core.type.NamedIdentity;
@@ -131,16 +130,6 @@ public final class TokenFactory {
       @Override
       public Long getGuid() {
          return getId();
-      }
-   }
-
-   public static TransactionId createTransaction(int txId) {
-      return new TransactionToken(txId);
-   }
-
-   private static final class TransactionToken extends BaseIdentity<Integer> implements TransactionId {
-      public TransactionToken(Integer txId) {
-         super(txId);
       }
    }
 

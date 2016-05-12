@@ -20,10 +20,10 @@ public final class TransactionJoinQuery extends AbstractJoinQuery {
 
    private final class TempTransactionEntry implements IJoinRow {
       private final Long gammaId;
-      private final Integer transactionId;
+      private final Long transactionId;
       private final Long branchUuid;
 
-      private TempTransactionEntry(Long gammaId, Integer transactionId, Long branchUuid) {
+      private TempTransactionEntry(Long gammaId, Long transactionId, Long branchUuid) {
          this.gammaId = gammaId;
          this.transactionId = transactionId;
          this.branchUuid = branchUuid;
@@ -45,7 +45,7 @@ public final class TransactionJoinQuery extends AbstractJoinQuery {
          result = prime * result + getOuterType().hashCode();
          result = prime * result + (branchUuid == null ? 0 : branchUuid.hashCode());
          result = prime * result + (gammaId == null ? 0 : gammaId.hashCode());
-         result = prime * result + (transactionId == null ? 0 : transactionId.hashCode());
+         result = prime * result + transactionId.hashCode();
          return result;
       }
 
@@ -102,11 +102,7 @@ public final class TransactionJoinQuery extends AbstractJoinQuery {
       super(joinAccessor, JoinItem.TRANSACTION, expiresIn, queryId);
    }
 
-   public void add(Long gammaId, Integer transactionId) {
-      add(gammaId, transactionId, null);
-   }
-
-   public void add(Long gammaId, Integer transactionId, Long branchUuid) {
+   public void add(Long gammaId, Long transactionId, Long branchUuid) {
       entries.add(new TempTransactionEntry(gammaId, transactionId, branchUuid));
    }
 }

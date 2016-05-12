@@ -28,6 +28,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -40,11 +41,11 @@ import org.eclipse.osee.orcs.core.ds.OrcsChangeSet;
 import org.eclipse.osee.orcs.core.ds.OrcsData;
 import org.eclipse.osee.orcs.core.ds.RelationData;
 import org.eclipse.osee.orcs.core.ds.VersionData;
-import org.eclipse.osee.orcs.data.TransactionReadable;
 import org.eclipse.osee.orcs.db.internal.IdentityManager;
 import org.eclipse.osee.orcs.db.internal.loader.data.ArtifactDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.AttributeDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.RelationDataImpl;
+import org.eclipse.osee.orcs.db.internal.loader.data.TransactionDataImpl;
 import org.eclipse.osee.orcs.db.internal.loader.data.VersionDataImpl;
 import org.eclipse.osee.orcs.db.internal.sql.join.IdJoinQuery;
 import org.eclipse.osee.orcs.db.internal.sql.join.SqlJoinFactory;
@@ -59,7 +60,7 @@ import org.mockito.stubbing.Answer;
 
 /**
  * Test Case for {@link TxSqlBuilderImpl}
- * 
+ *
  * @author Roberto E. Escobar
  */
 public class TxSqlBuilderTest {
@@ -68,8 +69,8 @@ public class TxSqlBuilderTest {
    private static final List<ModificationType> MODS_REUSE_ROW =
       Arrays.asList(ARTIFACT_DELETED, DELETED, INTRODUCED, REPLACED_WITH_VERSION);
 
-   private static final int EXPECTED_TX_ID = 10000;
-   private static final int LOADED_TX_ID = 567;
+   private static final TransactionId EXPECTED_TX = TransactionId.valueOf(10000);
+   private static final TransactionId LOADED_TX_ID = TransactionId.valueOf(567);
    private static final int EXPECTED_COMMIT_ID = 46;
    private static final long EXPECTED_BRANCH_ID = 65L;
    private static final int EXPECTED_AUTHOR_ID = 89;
@@ -94,8 +95,7 @@ public class TxSqlBuilderTest {
    // @formatter:off
    @Mock private SqlJoinFactory joinFactory;
    @Mock private IdentityManager idManager;
-   
-   @Mock private TransactionReadable tx;
+
    @Mock private OrcsChangeSet txData;
 
    @Mock private DataProxy dataProxy;
@@ -108,6 +108,7 @@ public class TxSqlBuilderTest {
    private ArtifactData artData;
    private AttributeData attrData;
    private RelationData relData;
+   private final TransactionDataImpl tx = new TransactionDataImpl(EXPECTED_TX.getId());
 
    @Before
    public void setUp() throws OseeCoreException {
@@ -140,13 +141,12 @@ public class TxSqlBuilderTest {
       relData.setArtIdB(B_ART_ID);
       relData.setRationale(RATIONALE);
 
-      when(tx.getGuid()).thenReturn(EXPECTED_TX_ID);
-      when(tx.getAuthorId()).thenReturn(EXPECTED_AUTHOR_ID);
-      when(tx.getBranchId()).thenReturn(EXPECTED_BRANCH_ID);
-      when(tx.getComment()).thenReturn(EXPECTED_COMMENT);
-      when(tx.getCommit()).thenReturn(EXPECTED_COMMIT_ID);
-      when(tx.getDate()).thenReturn(EXPECTED_TX_TIME);
-      when(tx.getTxType()).thenReturn(EXPECTED_TX_TYPE);
+      tx.setAuthorId(EXPECTED_AUTHOR_ID);
+      tx.setBranchId(EXPECTED_BRANCH_ID);
+      tx.setComment(EXPECTED_COMMENT);
+      tx.setCommit(EXPECTED_COMMIT_ID);
+      tx.setDate(EXPECTED_TX_TIME);
+      tx.setTxType(EXPECTED_TX_TYPE);
 
       when(idManager.getNextGammaId()).thenReturn(NEXT_GAMMA_ID);
 
@@ -181,7 +181,7 @@ public class TxSqlBuilderTest {
       assertEquals(1, datas.size());
       Object[] data = datas.iterator().next();
       int index = 0;
-      assertEquals(EXPECTED_TX_ID, data[index++]);
+      assertEquals(EXPECTED_TX, data[index++]);
       assertEquals(EXPECTED_COMMENT, data[index++]);
       assertEquals(EXPECTED_TX_TIME, data[index++]);
       assertEquals(EXPECTED_AUTHOR_ID, data[index++]);
@@ -202,7 +202,7 @@ public class TxSqlBuilderTest {
 
          // @formatter:off
          verifyRow(SqlOrderEnum.ARTIFACTS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, EXP_GUID);
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on
 
@@ -224,7 +224,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ARTIFACTS);
          // @formatter:on
 
@@ -238,7 +238,7 @@ public class TxSqlBuilderTest {
 
       // test new artData that is deleted adds no rows
       artData.setModType(ModificationType.DELETED);
-      artData.getVersion().setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+      artData.getVersion().setTransactionId(TransactionId.SENTINEL);
 
       builder.visit(artData);
 
@@ -272,7 +272,7 @@ public class TxSqlBuilderTest {
 
          // @formatter:off
          verifyRow(SqlOrderEnum.RELATIONS, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, A_ART_ID, B_ART_ID, RATIONALE);
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
 
@@ -294,7 +294,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.RELATIONS);
          // @formatter:on
 
@@ -316,7 +316,7 @@ public class TxSqlBuilderTest {
 
          // @formatter:off
          verifyRow(SqlOrderEnum.ATTRIBUTES, ITEM_ID, TYPE_UUID, NEXT_GAMMA_ID, ATTR_ARTIFACT_ID,  ATTR_VALUE, ATTR_URI);
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, NEXT_GAMMA_ID, modType.getValue(), TxChange.CURRENT.getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
 
@@ -350,7 +350,7 @@ public class TxSqlBuilderTest {
          ModificationType expectedType = modType != REPLACED_WITH_VERSION ? modType : MODIFIED;
 
          // @formatter:off
-         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX_ID, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
+         verifyRow(SqlOrderEnum.TXS, EXPECTED_TX, -1L, expectedType.getValue(), TxChange.getCurrent(expectedType).getValue(), EXPECTED_BRANCH_ID);
          verifyQuery(SqlOrderEnum.ATTRIBUTES);
          // @formatter:on
 

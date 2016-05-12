@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -48,8 +49,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public VersionData createVersion(Long branchId, int txId, long gamma, boolean historical) {
-      return createVersion(branchId, txId, gamma, historical, RelationalConstants.TRANSACTION_SENTINEL);
+   public VersionData createVersion(Long branchId, TransactionId txId, long gamma, boolean historical) {
+      return createVersion(branchId, txId, gamma, historical, TransactionId.SENTINEL);
    }
 
    @Override
@@ -57,10 +58,10 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       // @formatter:off
       return createVersion(
          BranchId.SENTINEL.getId(),
-         RelationalConstants.TRANSACTION_SENTINEL,
+         TransactionId.SENTINEL,
          RelationalConstants.GAMMA_SENTINEL,
          RelationalConstants.IS_HISTORICAL_DEFAULT,
-         RelationalConstants.TRANSACTION_SENTINEL);
+         TransactionId.SENTINEL);
       // @formatter:on
    }
 
@@ -76,7 +77,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
       // @formatter:on
    }
 
-   private VersionData createVersion(Long branchId, int txId, long gamma, boolean historical, int stripeId) {
+   private VersionData createVersion(Long branchId, TransactionId txId, long gamma, boolean historical, TransactionId stripeId) {
       VersionData version = new VersionDataImpl();
       version.setBranchId(branchId);
       version.setTransactionId(txId);
@@ -189,7 +190,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, int baseTransaction, int sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
+   public BranchData createBranchData(Long branchUuid, BranchType branchType, String name, BranchId parentBranch, TransactionId baseTransaction, TransactionId sourceTransaction, BranchArchivedState archiveState, BranchState branchState, int associatedArtifactId, boolean inheritAccessControl) {
       BranchData data = new BranchDataImpl(branchUuid, name);
       data.setArchiveState(archiveState);
       data.setAssociatedArtifactId(associatedArtifactId);
@@ -210,9 +211,8 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
    }
 
    @Override
-   public TxOrcsData createTxData(int localId, TransactionDetailsType type, Date date, String comment, Long branchId, int authorId, int commitId) {
-      TxOrcsData data = new TransactionDataImpl();
-      data.setLocalId(localId);
+   public TxOrcsData createTxData(Long localId, TransactionDetailsType type, Date date, String comment, Long branchId, int authorId, int commitId) {
+      TxOrcsData data = new TransactionDataImpl(localId);
       data.setTxType(type);
       data.setDate(date);
       data.setComment(comment);
@@ -224,7 +224,7 @@ public class OrcsObjectFactoryImpl implements OrcsObjectFactory {
 
    @Override
    public TxOrcsData createCopy(TxOrcsData source) {
-      return createTxData(source.getLocalId(), source.getTxType(), source.getDate(), source.getComment(),
+      return createTxData(source.getId(), source.getTxType(), source.getDate(), source.getComment(),
          source.getBranchId(), source.getAuthorId(), source.getCommit());
    }
 

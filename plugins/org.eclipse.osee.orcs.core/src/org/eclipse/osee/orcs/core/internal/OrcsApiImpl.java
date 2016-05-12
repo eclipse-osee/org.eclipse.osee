@@ -18,6 +18,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.LazyObject;
@@ -198,7 +199,7 @@ public class OrcsApiImpl implements OrcsApi {
       GraphProvider graphProvider = new GraphProvider() {
 
          @Override
-         public GraphData getGraph(OrcsSession session, Long branch, int transactionId) throws OseeCoreException {
+         public GraphData getGraph(OrcsSession session, Long branch, TransactionId transactionId) throws OseeCoreException {
             return graphFactory.createGraph(session, branch, transactionId);
          }
       };
@@ -208,9 +209,9 @@ public class OrcsApiImpl implements OrcsApi {
       TransactionProvider txProvider = new TransactionProvider() {
 
          @Override
-         public int getHeadTransaction(OrcsSession session, Long branch) {
+         public TransactionId getHeadTransaction(OrcsSession session, Long branch) {
             QueryFactory queryFactory = queryModule.createQueryFactory(session);
-            return queryFactory.transactionQuery().andIsHead(branch).getResultsAsIds().getExactlyOne();
+            return queryFactory.transactionQuery().andIsHead(branch).getResults().getExactlyOne();
          }
       };
 
@@ -281,7 +282,7 @@ public class OrcsApiImpl implements OrcsApi {
    public TransactionFactory getTransactionFactory() {
       OrcsSession session = getSession();
       return new TransactionFactoryImpl(session, txDataManager, txCallableFactory, queryModule, getQueryFactory(),
-         getBranchOps(), module.getTxDataStore(), getKeyValueOps());
+         getBranchOps(), getKeyValueOps(), module.getTxDataStore());
    }
 
    @Override

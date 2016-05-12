@@ -67,7 +67,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
    long previousNetGammaId;
    long previousObsoleteGammaId;
-   int previousTransactionId;
+   long previousTransactionId;
    long previousBranchId;
    ModificationType netModType;
    TxChange netTxCurrent;
@@ -163,7 +163,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
 
          while (chStmt.next()) {
             long obsoleteGammaId = chStmt.getLong("gamma_id");
-            int transactionId = chStmt.getInt("transaction_id");
+            long transactionId = chStmt.getLong("transaction_id");
             long netGammaId = chStmt.getLong("net_gamma_id");
             int modType = chStmt.getInt("mod_type");
             TxChange txCurrent = TxChange.getChangeType(chStmt.getInt("tx_current"));
@@ -199,7 +199,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
       gammaJoin.delete();
    }
 
-   private boolean isNextAddressing(long netGammaId, int transactionId) {
+   private boolean isNextAddressing(long netGammaId, long transactionId) {
       return previousNetGammaId != netGammaId || previousTransactionId != transactionId;
    }
 
@@ -251,7 +251,7 @@ public class ConsolidateRelationsDatabaseTxCallable extends AbstractDatastoreTxC
          getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_GAMMAS, updateAddressingData));
    }
 
-   private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) {
+   private void writeAddressingBackup(long obsoleteGammaId, long transactionId, long netGammaId, int modType, TxChange txCurrent) {
       StringBuilder strB = new StringBuilder(30);
 
       strB.append(obsoleteGammaId);

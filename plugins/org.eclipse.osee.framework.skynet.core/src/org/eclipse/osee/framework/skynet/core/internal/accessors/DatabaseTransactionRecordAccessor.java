@@ -1,10 +1,10 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
-import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -53,14 +53,14 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public void loadTransactionRecords(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
+   public void loadTransactionRecords(TransactionCache cache, Collection<Long> transactionIds) throws OseeCoreException {
       if (transactionIds.isEmpty()) {
          return;
       }
       if (transactionIds.size() > 1) {
          IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery(jdbcClient);
          try {
-            for (Integer txNumber : transactionIds) {
+            for (Long txNumber : transactionIds) {
                joinQuery.add(txNumber);
             }
             joinQuery.store();
@@ -93,7 +93,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
 
    private TransactionRecord loadInternalTransaction(JdbcStatement stmt) {
       BranchId branch = TokenFactory.createBranch(stmt.getLong("branch_id"));
-      int transactionNumber = stmt.getInt("transaction_id");
+      Long transactionNumber = stmt.getLong("transaction_id");
       String comment = stmt.getString("osee_comment");
       Date timestamp = stmt.getTimestamp("time");
       int authorArtId = stmt.getInt("author");
@@ -117,15 +117,15 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    @Override
-   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchUuid) throws OseeCoreException {
-      int priorTransactionId =
-         jdbcClient.fetch(TRANSACTION_SENTINEL, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
+   public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, TransactionId transactionNumber, long branchUuid) throws OseeCoreException {
+      Long priorTransactionId =
+         jdbcClient.fetch(TransactionId.SENTINEL, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber).getId();
       return cache.getOrLoad(priorTransactionId);
    }
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, BranchId branch) throws OseeCoreException {
       String query = ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return cache.getOrLoad(jdbcClient.fetch(TRANSACTION_SENTINEL, query, branch));
+      return cache.getOrLoad(jdbcClient.fetch(TransactionId.SENTINEL, query, branch).getId());
    }
 }

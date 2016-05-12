@@ -186,7 +186,7 @@ public class WordUpdateArtifact {
    }
 
    private void postProcessChange(TransactionReadable tx, WordUpdateChange updateChange, ArtifactReadable userId) {
-      updateChange.setTx(tx.getId());
+      updateChange.setTx(tx);
       updateChange.setBranch(tx.getBranch());
       if (updateChange.hasSafetyRelatedArtifactChange()) {
          try {

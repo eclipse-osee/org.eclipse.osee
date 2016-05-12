@@ -79,7 +79,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
             @Override
             public int compare(TransactionId o1, TransactionId o2) {
-               return o1.getGuid().compareTo(o2.getGuid());
+               return o1.getId().compareTo(o2.getId());
             }
          });
       }
@@ -93,24 +93,24 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
 
       List<TransactionId> txIds = sortTxs(txIdsToDelete);
       int purgeCount = 0;
-      for (TransactionId tx : txIds) {
-         getLogger().info("Purging Transaction: [%s]", tx);
+      for (TransactionId txIdToDelete : txIds) {
+         getLogger().info("Purging Transaction: [%s]", txIdToDelete);
 
          List<Object[]> txsToDelete = new ArrayList<>();
 
-         BranchId txBranchId = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_TRANSACTION_BRANCH_ID, tx);
+         BranchId txBranchId = getJdbcClient().fetch(BranchId.SENTINEL, SELECT_TRANSACTION_BRANCH_ID, txIdToDelete);
          if (txBranchId.isInvalid()) {
-            throw new OseeArgumentException("Cannot find branch for transaction record [%s]", tx);
+            throw new OseeArgumentException("Cannot find branch for transaction record [%s]", txIdToDelete);
          }
 
-         txsToDelete.add(new Object[] {txBranchId, tx});
+         txsToDelete.add(new Object[] {txBranchId, txIdToDelete});
 
-         int previousTransactionId =
-            getJdbcClient().fetch(RelationalConstants.TRANSACTION_SENTINEL, GET_PRIOR_TRANSACTION, txBranchId, tx);
-         if (previousTransactionId == -1) {
+         TransactionId previousTransactionId =
+            getJdbcClient().fetch(TransactionId.SENTINEL, GET_PRIOR_TRANSACTION, txBranchId, txIdToDelete);
+         if (previousTransactionId.isInvalid()) {
             throw new OseeArgumentException(
                "You are trying to delete transaction [%d] which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.",
-               tx);
+               txIdToDelete);
          }
          //Find affected items
          Map<BranchId, IdJoinQuery> arts = findAffectedItems(connection, "art_id", "osee_artifact", txsToDelete);
@@ -119,7 +119,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
             findAffectedItems(connection, "rel_link_id", "osee_relation_link", txsToDelete);
 
          //Update Baseline txs for Child Branches
-         setChildBranchBaselineTxs(connection, tx.getGuid(), previousTransactionId);
+         setChildBranchBaselineTxs(connection, txIdToDelete, previousTransactionId);
 
          //Remove txs Rows
          getJdbcClient().runBatchUpdate(connection, DELETE_TX_DETAILS, txsToDelete);
@@ -132,7 +132,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
          computeNewTxCurrents(connection, updateData, "rel_link_id", "osee_relation_link", rels);
          getJdbcClient().runBatchUpdate(connection, UPDATE_TX_CURRENT, updateData);
          purgeCount++;
-         getLogger().info("Transaction: [%s] - purged", tx);
+         getLogger().info("Transaction: [%s] - purged", txIdToDelete);
       }
       return purgeCount;
    }
@@ -157,7 +157,7 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
                      updateData.add(new Object[] {
                         txCurrent.getValue(),
                         branch,
-                        statement.getInt("transaction_id"),
+                        statement.getLong("transaction_id"),
                         statement.getLong("gamma_id")});
                      previousItem = currentItem;
                   }
@@ -195,13 +195,13 @@ public class PurgeTransactionTxCallable extends AbstractDatastoreTxCallable<Inte
       return items;
    }
 
-   private void setChildBranchBaselineTxs(JdbcConnection connection, int toDeleteTransactionId, int previousTransactionId) throws OseeCoreException {
+   private void setChildBranchBaselineTxs(JdbcConnection connection, TransactionId toDeleteTransactionId, TransactionId previousTransactionId) throws OseeCoreException {
       List<Object[]> data = new ArrayList<>();
-      if (RelationalConstants.TRANSACTION_SENTINEL != previousTransactionId) {
+      if (previousTransactionId.isValid()) {
          data.add(new Object[] {
-            String.valueOf(toDeleteTransactionId),
+            String.valueOf(toDeleteTransactionId.getId()),
             String.valueOf(previousTransactionId),
-            "%" + toDeleteTransactionId});
+            "%" + toDeleteTransactionId.getId()});
       }
       if (!data.isEmpty()) {
          getJdbcClient().runBatchUpdate(connection, UPDATE_TXS_DETAILS_COMMENT, data);

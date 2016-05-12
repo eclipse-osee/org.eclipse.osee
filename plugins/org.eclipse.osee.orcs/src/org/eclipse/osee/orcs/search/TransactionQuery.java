@@ -26,7 +26,7 @@ public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Quer
 
    ResultSet<TransactionToken> getTokens() throws OseeCoreException;
 
-   ResultSet<Integer> getResultsAsIds() throws OseeCoreException;
+   ResultSet<Long> getResultsAsIds() throws OseeCoreException;
 
    @Override
    int getCount() throws OseeCoreException;
@@ -36,6 +36,6 @@ public interface TransactionQuery extends TxQueryBuilder<TransactionQuery>, Quer
 
    CancellableCallable<ResultSet<TransactionReadable>> createSearch() throws OseeCoreException;
 
-   CancellableCallable<ResultSet<Integer>> createSearchResultsAsIds() throws OseeCoreException;
+   CancellableCallable<ResultSet<Long>> createSearchResultsAsIds() throws OseeCoreException;
 
 }

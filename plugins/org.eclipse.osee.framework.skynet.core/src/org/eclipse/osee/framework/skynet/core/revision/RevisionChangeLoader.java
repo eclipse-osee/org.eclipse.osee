@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
@@ -103,14 +104,14 @@ public final class RevisionChangeLoader {
             artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
+            transactionIds.add(TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
          }
 
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL), artifact.getArtId(),
             artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
+            transactionIds.add(TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
          }
       } finally {
          chStmt.close();
@@ -164,11 +165,10 @@ public final class RevisionChangeLoader {
       monitor.done();
    }
 
-   private CompositeKeyHashMap<TransactionRecord, Integer, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
-      HashCollection<TransactionRecord, Integer> loadMap =
-         new HashCollection<TransactionRecord, Integer>(false, HashSet.class);
+   private CompositeKeyHashMap<TransactionToken, Integer, Artifact> getBulkLoadedArtifacts(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
+      HashCollection<TransactionToken, Integer> loadMap = new HashCollection<>(false, HashSet.class);
       for (ChangeBuilder builder : changeBuilders) {
-         TransactionRecord endTx = builder.getTxDelta().getEndTx();
+         TransactionToken endTx = builder.getTxDelta().getEndTx();
          loadMap.put(endTx, builder.getArtId());
          if (builder instanceof RelationChangeBuilder) {
             RelationChangeBuilder relBuilder = (RelationChangeBuilder) builder;
@@ -176,10 +176,9 @@ public final class RevisionChangeLoader {
          }
       }
 
-      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
-         new CompositeKeyHashMap<TransactionRecord, Integer, Artifact>();
+      CompositeKeyHashMap<TransactionToken, Integer, Artifact> loadedMap = new CompositeKeyHashMap<>();
 
-      for (Entry<TransactionRecord, Collection<Integer>> entry : loadMap.entrySet()) {
+      for (Entry<TransactionToken, Collection<Integer>> entry : loadMap.entrySet()) {
          Collection<Artifact> artifacts;
          if (isHistorical) {
             artifacts = ArtifactQuery.getHistoricalArtifactListFromIds(entry.getValue(), entry.getKey(),
@@ -195,7 +194,7 @@ public final class RevisionChangeLoader {
    }
 
    private Collection<Change> getChanges(BranchId branch, boolean isHistorical, List<ChangeBuilder> changeBuilders) throws OseeCoreException {
-      CompositeKeyHashMap<TransactionRecord, Integer, Artifact> loadedMap =
+      CompositeKeyHashMap<TransactionToken, Integer, Artifact> loadedMap =
          getBulkLoadedArtifacts(branch, isHistorical, changeBuilders);
 
       Collection<Change> changes = new ArrayList<>();

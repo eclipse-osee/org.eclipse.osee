@@ -49,16 +49,16 @@ public class TxQueryBuilderImpl<T> implements TxQueryBuilder<T> {
    }
 
    @Override
-   public T andTxId(int... ids) throws OseeCoreException {
-      Set<Integer> values = new LinkedHashSet<>();
-      for (int value : ids) {
+   public T andTxId(long... ids) throws OseeCoreException {
+      Set<Long> values = new LinkedHashSet<>();
+      for (long value : ids) {
          values.add(value);
       }
       return andTxIds(values);
    }
 
    @Override
-   public T andTxIds(Collection<Integer> ids) throws OseeCoreException {
+   public T andTxIds(Collection<Long> ids) throws OseeCoreException {
       Criteria criteria = criteriaFactory.newByIdsCriteria(ids);
       return addAndCheck(queryData, criteria);
    }

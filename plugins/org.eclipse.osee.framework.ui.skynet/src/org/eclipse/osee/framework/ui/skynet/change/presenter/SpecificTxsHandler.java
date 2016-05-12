@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.change.ChangeUiData;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -46,8 +47,9 @@ public final class SpecificTxsHandler implements IChangeReportUiHandler {
          branchName = "Unknown";
       }
       String toReturn;
-      if (txDelta.getEndTx().getComment() != null) {
-         toReturn = String.format("%s", txDelta.getEndTx().getComment());
+      Long commitArtId = TransactionManager.getCommitArtId(txDelta.getEndTx());
+      if (commitArtId != null) {
+         toReturn = String.format("%s", commitArtId);
       } else {
          toReturn = String.format("%s - Transactions", branchName);
       }

@@ -97,7 +97,7 @@ public class AtsBranchServiceImplTest {
       // clear versions to config item is from teamDef
       teamDef.getVersions().clear();
       //Test TxRecords
-      TransactionRecord txRecord = new TransactionRecord(1234, SAW_Bld_1, "comment", new Date(),
+      TransactionRecord txRecord = new TransactionRecord(1234L, SAW_Bld_1, "comment", new Date(0),
          UserManager.getUser().getArtId(), UserManager.getUser().getArtId(), TransactionDetailsType.Baselined);
       Collection<TransactionToken> commitTxs = new ArrayList<>();
       Collection<ICommitConfigItem> configArtSet = new HashSet<>();

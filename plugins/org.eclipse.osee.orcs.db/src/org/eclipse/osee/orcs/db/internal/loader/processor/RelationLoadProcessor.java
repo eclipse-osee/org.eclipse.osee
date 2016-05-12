@@ -11,6 +11,7 @@
 package org.eclipse.osee.orcs.db.internal.loader.processor;
 
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcStatement;
@@ -50,11 +51,11 @@ public class RelationLoadProcessor extends LoadProcessor<RelationData, RelationO
       if (!condition.isSame(branchUuid, aArtId, bArtId, typeId)) {
          condition.saveConditions(branchUuid, aArtId, bArtId, typeId, gammaId);
 
-         int txId = chStmt.getInt("transaction_id");
+         TransactionId txId = TransactionId.valueOf(chStmt.getLong("transaction_id"));
 
          VersionData version = factory.createVersion(branchUuid, txId, gammaId, historical);
          if (historical) {
-            version.setStripeId(chStmt.getInt("stripe_transaction_id"));
+            version.setStripeId(TransactionId.valueOf(chStmt.getLong("stripe_transaction_id")));
          }
 
          int localId = chStmt.getInt("rel_link_id");

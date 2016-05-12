@@ -22,6 +22,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomMenu;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -238,12 +239,12 @@ public class BranchView extends GenericViewPart implements IBranchWidgetMenuList
    }
 
    @Override
-   public List<TransactionRecord> getSelectedTransactionRecords() {
-      return isInitialized() ? xBranchWidget.getSelectedTransactionRecords() : Collections.<TransactionRecord> emptyList();
+   public List<TransactionId> getSelectedTransactionRecords() {
+      return isInitialized() ? xBranchWidget.getSelectedTransactionRecords() : Collections.emptyList();
    }
 
    @Override
-   public void refreshUI(List<TransactionRecord> records) {
+   public void refreshUI(List<TransactionId> records) {
       if (isInitialized()) {
          xBranchWidget.getXViewer().update(records.toArray(new TransactionRecord[records.size()]), null);
       }

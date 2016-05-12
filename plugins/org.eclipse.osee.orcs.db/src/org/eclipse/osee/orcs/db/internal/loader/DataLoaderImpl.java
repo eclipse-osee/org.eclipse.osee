@@ -17,6 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.executor.admin.HasCancellation;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -148,14 +149,9 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    @Override
-   public DataLoader fromTransaction(int transactionId) {
+   public DataLoader fromTransaction(TransactionId transactionId) {
       OptionsUtil.setFromTransaction(getOptions(), transactionId);
       return this;
-   }
-
-   @Override
-   public int getFromTransaction() {
-      return OptionsUtil.getFromTransaction(getOptions());
    }
 
    @Override
@@ -187,8 +183,8 @@ public class DataLoaderImpl implements DataLoader {
    }
 
    private DataLoader withArtifactGuids(Collection<String> artifactGuids) {
-      loadExecutor = new UuidsLoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId,
-         artifactGuids);
+      loadExecutor =
+         new UuidsLoadExecutor(sqlLoader, sqlLoader.getJdbcClient(), joinFactory, session, branchId, artifactGuids);
       return this;
    }
 

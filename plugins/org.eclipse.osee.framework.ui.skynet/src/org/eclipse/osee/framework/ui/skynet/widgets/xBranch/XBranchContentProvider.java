@@ -159,7 +159,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       Collections.sort(transactions, new Comparator<TransactionRecord>() {
          @Override
          public int compare(TransactionRecord o1, TransactionRecord o2) {
-            return o1.getId() - o2.getId();
+            return (int) (o1.getId().longValue() - o2.getId().longValue());
          }
       });
       if (transactions != null) {

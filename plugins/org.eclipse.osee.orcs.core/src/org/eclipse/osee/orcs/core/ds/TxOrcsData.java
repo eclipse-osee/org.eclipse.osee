@@ -34,8 +34,6 @@ public interface TxOrcsData extends TransactionReadable {
    @Override
    TransactionDetailsType getTxType();
 
-   void setLocalId(Integer localId);
-
    void setAuthorId(int authorId);
 
    void setBranchId(Long branchId);

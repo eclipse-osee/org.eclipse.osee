@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
-import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -37,7 +37,7 @@ public class UpdateChangeUiData extends AbstractOperation {
 
       CompareType compareType = changeData.getCompareType();
       if (!compareType.areSpecificTxs()) {
-         TransactionRecord startTx = txDelta.getStartTx();
+         TransactionToken startTx = txDelta.getStartTx();
          if (!compareType.isBaselineTxIncluded()) {
             startTx = TransactionManager.getHeadTransaction(startTx.getBranch());
          }
@@ -56,7 +56,7 @@ public class UpdateChangeUiData extends AbstractOperation {
       changeData.setAreBranchesValid(areBranchesValid);
    }
 
-   private boolean hasBeenRebaselined(TransactionRecord tx) throws OseeCoreException {
+   private boolean hasBeenRebaselined(TransactionToken tx) throws OseeCoreException {
       return BranchManager.getState(tx.getBranch()).isRebaselined();
    }
 }

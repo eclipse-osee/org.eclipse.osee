@@ -35,7 +35,7 @@ import org.junit.runners.Parameterized.Parameters;
 public class TransactionRecordTest {
 
    private final TransactionRecord transaction;
-   private final Integer transactionNumber;
+   private final Long transactionNumber;
    private final BranchId branch;
    private final TransactionDetailsType txType;
 
@@ -45,7 +45,7 @@ public class TransactionRecordTest {
    private final int commitArtId;
 
    public TransactionRecordTest(int transactionNumber, BranchId branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
-      this.transactionNumber = transactionNumber;
+      this.transactionNumber = (long) transactionNumber;
       this.branch = branch;
       this.comment = comment;
       this.time = time;
@@ -54,7 +54,7 @@ public class TransactionRecordTest {
       this.txType = txType;
 
       this.transaction =
-         new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
+         new TransactionRecord(this.transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
    }
 
    @Test
@@ -116,7 +116,7 @@ public class TransactionRecordTest {
    @Test
    public void testEqualsAndHashCode() {
       TransactionRecord tx2 = MockDataFactory.createTransaction(99, 2);
-      TransactionId tx1 = TokenFactory.createTransaction(tx2.getId());
+      TransactionId tx1 = TransactionId.valueOf(tx2.getId());
 
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
       tx2.setAuthor(0);

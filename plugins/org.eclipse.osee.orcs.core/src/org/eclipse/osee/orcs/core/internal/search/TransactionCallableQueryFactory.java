@@ -82,16 +82,16 @@ public class TransactionCallableQueryFactory {
       };
    }
 
-   public CancellableCallable<ResultSet<Integer>> createTransactionAsIdSearch(OrcsSession session, QueryData queryData) {
-      return new AbstractSearchCallable<ResultSet<Integer>>(session, queryData) {
+   public CancellableCallable<ResultSet<Long>> createTransactionAsIdSearch(OrcsSession session, QueryData queryData) {
+      return new AbstractSearchCallable<ResultSet<Long>>(session, queryData) {
 
          @Override
-         protected ResultSet<Integer> innerCall() throws Exception {
-            final Set<Integer> txs = new LinkedHashSet<>();
+         protected ResultSet<Long> innerCall() throws Exception {
+            final Set<Long> txs = new LinkedHashSet<>();
             LoadDataHandler handler = new LoadDataHandlerAdapter() {
                @Override
                public void onData(TxOrcsData data) {
-                  txs.add(data.getLocalId());
+                  txs.add(data.getId());
                }
             };
             OptionsUtil.setLoadLevel(getQueryData().getOptions(), LoadLevel.ALL);
@@ -103,7 +103,7 @@ public class TransactionCallableQueryFactory {
    }
    private abstract class TransactionBuilder<T> extends LoadDataHandlerAdapter {
 
-      private Map<Integer, T> dataMap;
+      private Map<Long, T> dataMap;
       private LinkedList<T> results;
 
       @Override
@@ -121,7 +121,7 @@ public class TransactionCallableQueryFactory {
 
       @Override
       public void onData(TxOrcsData data) throws OseeCoreException {
-         Integer key = data.getLocalId();
+         Long key = data.getId();
          T branch = dataMap.get(key);
          if (branch == null) {
             branch = create(data);

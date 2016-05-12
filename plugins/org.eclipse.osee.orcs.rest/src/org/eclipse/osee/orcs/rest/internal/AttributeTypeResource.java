@@ -24,6 +24,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.ResponseBuilder;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.IAttributeType;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -49,17 +50,17 @@ public class AttributeTypeResource {
    private final Long branchUuid;
    private final Long artifactUuid;
    private final Long attributeTypeId;
-   private final int transactionId;
+   private final TransactionId transactionId;
 
    public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid) {
-      this(uriInfo, request, branchUuid, artifactUuid, -1L, -1);
+      this(uriInfo, request, branchUuid, artifactUuid, -1L, TransactionId.valueOf(-1));
    }
 
    public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, Long attributeTypeId) {
-      this(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, -1);
+      this(uriInfo, request, branchUuid, artifactUuid, attributeTypeId, TransactionId.valueOf(-1));
    }
 
-   public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, Long attributeTypeId, int transactionId) {
+   public AttributeTypeResource(UriInfo uriInfo, Request request, Long branchUuid, Long artifactUuid, Long attributeTypeId, TransactionId transactionId) {
       this.uriInfo = uriInfo;
       this.request = request;
       this.branchUuid = branchUuid;
@@ -75,7 +76,7 @@ public class AttributeTypeResource {
       try {
          QueryFactory factory = OrcsApplication.getOrcsApi().getQueryFactory();
          QueryBuilder queryBuilder = factory.fromBranch(branchUuid).andUuid(artifactUuid);
-         if (transactionId > 0) {
+         if (transactionId.getId() > 0) {
             queryBuilder.fromTransaction(transactionId);
          }
          ArtifactReadable exactlyOne = queryBuilder.getResults().getExactlyOne();

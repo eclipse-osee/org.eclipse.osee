@@ -42,7 +42,7 @@ public class TransactionCriteriaFactory {
       return new CriteriaAllTxs();
    }
 
-   public Criteria newByIdsCriteria(Collection<Integer> ids) {
+   public Criteria newByIdsCriteria(Collection<Long> ids) {
       return new CriteriaTxIds(ids);
    }
 

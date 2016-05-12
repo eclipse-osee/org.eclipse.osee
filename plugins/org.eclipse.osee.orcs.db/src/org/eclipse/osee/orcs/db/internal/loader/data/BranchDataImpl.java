@@ -12,6 +12,7 @@ package org.eclipse.osee.orcs.db.internal.loader.data;
 
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -24,8 +25,8 @@ import org.eclipse.osee.orcs.data.BranchReadable;
  */
 public class BranchDataImpl extends NamedId implements BranchData, BranchReadable {
    private int associatedArtifactId = RelationalConstants.ART_ID_SENTINEL;
-   private int baseTransaction = RelationalConstants.TRANSACTION_SENTINEL;
-   private int sourceTransaction = RelationalConstants.TRANSACTION_SENTINEL;
+   private TransactionId baseTransaction = TransactionId.SENTINEL;
+   private TransactionId sourceTransaction = TransactionId.SENTINEL;
    private BranchId parentBranch = BranchId.SENTINEL;
    private BranchArchivedState archiveState = BranchArchivedState.UNARCHIVED;
    private BranchState branchState = BranchState.CREATED;
@@ -47,22 +48,22 @@ public class BranchDataImpl extends NamedId implements BranchData, BranchReadabl
    }
 
    @Override
-   public int getBaseTransaction() {
+   public TransactionId getBaseTransaction() {
       return baseTransaction;
    }
 
    @Override
-   public void setBaseTransaction(int baseTx) {
+   public void setBaseTransaction(TransactionId baseTx) {
       baseTransaction = baseTx;
    }
 
    @Override
-   public int getSourceTransaction() {
+   public TransactionId getSourceTransaction() {
       return sourceTransaction;
    }
 
    @Override
-   public void setSourceTransaction(int sourceTx) {
+   public void setSourceTransaction(TransactionId sourceTx) {
       sourceTransaction = sourceTx;
    }
 

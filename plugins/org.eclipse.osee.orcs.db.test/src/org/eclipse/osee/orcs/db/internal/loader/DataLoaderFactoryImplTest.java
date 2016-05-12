@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON;
 import static org.eclipse.osee.framework.core.enums.CoreBranches.COMMON_ID;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.EXCLUDE_DELETED;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
@@ -26,6 +27,7 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.HasCancellation;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -90,8 +92,8 @@ public class DataLoaderFactoryImplTest {
    @Mock private OrcsSession session;
    //@formatter:on
 
-   private final static int EXPECTED_TX_ID = 45678;
-   private final static int EXPECTED_HEAD_TX_ID = 50000;
+   private final static TransactionId EXPECTED_TX = TransactionId.valueOf(45678);
+   private final static TransactionId EXPECTED_HEAD_TX = TransactionId.valueOf(50000);
 
    private DataLoaderFactory factory;
    private SqlObjectLoader spyLoader;
@@ -110,8 +112,7 @@ public class DataLoaderFactoryImplTest {
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.fetch(eq(-1), Matchers.anyString(), eq(COMMON_ID))).thenReturn(
-         EXPECTED_HEAD_TX_ID);
+      when(jdbcClient.fetch(eq(TransactionId.SENTINEL), Matchers.anyString(), eq(COMMON))).thenReturn(EXPECTED_HEAD_TX);
 
       when(joinFactory.createArtifactJoinQuery()).thenAnswer(new Answer<ArtifactJoinQuery>() {
 
@@ -138,14 +139,14 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
       // @formatter:off
-      verify(spyLoader, times(0)).loadHeadTransactionId(COMMON_ID);
+      verify(spyLoader, times(0)).loadHeadTransactionId(COMMON);
       verify(spyLoader, times(1)).loadArtifacts(eq(builder), criteriaCaptor.capture(), contextCaptor.capture(), eq(200));
       verify(spyLoader, times(1)).loadAttributes(eq(builder), criteriaCaptor.capture(), contextCaptor.capture(), eq(200));
       verify(spyLoader, times(1)).loadRelations(eq(builder), criteriaCaptor.capture(), contextCaptor.capture(), eq(200));
@@ -172,7 +173,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -196,7 +197,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, INCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, INCLUDE_DELETED, expected);
    }
 
    @Test
@@ -214,13 +215,13 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -238,14 +239,14 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
       dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, INCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_TX, expectedLoadLevel, INCLUDE_DELETED, expected);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -270,7 +271,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -295,7 +296,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
          CoreAttributeTypes.Annotation.getGuid());
    }
 
@@ -321,7 +322,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
          list(data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
    }
 
@@ -347,7 +348,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45);
    }
 
    @Test
@@ -372,7 +373,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID), list(data(45, 55)));
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID), list(data(45, 55)));
    }
 
    @Test
@@ -398,7 +399,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
          list(data(45, 55), data(CoreAttributeTypes.Annotation.getGuid(), CoreAttributeTypes.Category.getGuid())));
    }
 
@@ -425,7 +426,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
          CoreAttributeTypes.Annotation.getGuid());
    }
 
@@ -451,7 +452,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, INCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, INCLUDE_DELETED, expected);
    }
 
    @Test
@@ -470,13 +471,13 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -495,14 +496,14 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
       dataLoader.includeDeletedArtifacts();
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, INCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_TX, expectedLoadLevel, INCLUDE_DELETED, expected);
    }
 
    ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -528,7 +529,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -553,7 +554,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, INCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, INCLUDE_DELETED, expected);
    }
 
    @Test
@@ -578,7 +579,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
          CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
@@ -605,7 +606,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID),
          list(data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(),
             CoreRelationTypes.Dependency__Artifact.getGuid())));
    }
@@ -632,7 +633,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45);
    }
 
    @Test
@@ -657,7 +658,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID), list(data(45, 55)));
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID), list(data(45, 55)));
    }
 
    @Test
@@ -684,9 +685,8 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID),
-         list(data(45, 55),
-            data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), CoreRelationTypes.Dependency__Artifact)));
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, data(JQID, JQID), list(data(45, 55),
+         data(CoreRelationTypes.Default_Hierarchical__Child.getGuid(), CoreRelationTypes.Dependency__Artifact)));
    }
 
    @Test
@@ -712,7 +712,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected, 45,
          CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
@@ -732,13 +732,13 @@ public class DataLoaderFactoryImplTest {
 
       DataLoader dataLoader = factory.newDataLoaderFromIds(session, COMMON_ID, Arrays.asList(1, 2, 3));
       dataLoader.withLoadLevel(expectedLoadLevel);
-      dataLoader.fromTransaction(EXPECTED_TX_ID);
+      dataLoader.fromTransaction(EXPECTED_TX);
 
       assertEquals(expectedLoadLevel, dataLoader.getLoadLevel());
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -764,7 +764,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected);
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected);
    }
 
    @Test
@@ -789,7 +789,7 @@ public class DataLoaderFactoryImplTest {
 
       dataLoader.load(cancellation, builder);
 
-      verifyCommon(EXPECTED_HEAD_TX_ID, expectedLoadLevel, EXCLUDE_DELETED, expected,
+      verifyCommon(EXPECTED_HEAD_TX, expectedLoadLevel, EXCLUDE_DELETED, expected,
          CoreRelationTypes.Default_Hierarchical__Child.getGuid());
    }
 
@@ -805,23 +805,23 @@ public class DataLoaderFactoryImplTest {
       return data;
    }
 
-   private void verifyCommon(int txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params) throws OseeCoreException {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object... params) throws OseeCoreException {
       verifyCommon(txId, level, includeDeleted, expectedSQL, params, list());
    }
 
-   private void verifyCommon(int txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas) throws OseeCoreException {
+   private void verifyCommon(TransactionId txId, LoadLevel level, DeletionFlag includeDeleted, String expectedSQL, Object[] params, List<Object[]> joinDatas) throws OseeCoreException {
       verify(spyLoader).loadArtifacts(eq(cancellation), eq(builder), joinCaptor.capture(), criteriaCaptor.capture(),
          contextCaptor.capture(), eq(200));
 
       verify(builder, times(1)).onLoadDescription(descriptionCaptor.capture());
       LoadDescription descriptor = descriptionCaptor.getValue();
 
-      boolean isHeadTx = EXPECTED_HEAD_TX_ID == txId;
+      boolean isHeadTx = EXPECTED_HEAD_TX.equals(txId);
 
       assertEquals(session, descriptor.getSession());
       Options options = descriptor.getOptions();
 
-      assertEquals(COMMON_ID, descriptor.getBranchId());
+      assertEquals(COMMON, descriptor.getBranch());
       assertEquals(txId, descriptor.getTransaction());
 
       assertEquals(isHeadTx, OptionsUtil.isHeadTransaction(options));

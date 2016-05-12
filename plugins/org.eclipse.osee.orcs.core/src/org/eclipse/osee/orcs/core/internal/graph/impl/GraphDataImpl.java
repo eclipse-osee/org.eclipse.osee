@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.graph.impl;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.data.HasLocalId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -29,10 +30,10 @@ public class GraphDataImpl implements GraphData {
    private final Map<Integer, GraphAdjacencies> adjacenciesById = new ConcurrentHashMap<>();
 
    private final Long branchId;
-   private final int txId;
+   private final TransactionId txId;
    private final OrcsSession orcsSession;
 
-   public GraphDataImpl(OrcsSession session, Long branchId, int txId) {
+   public GraphDataImpl(OrcsSession session, Long branchId, TransactionId txId) {
       super();
       this.orcsSession = session;
       this.branchId = branchId;
@@ -40,7 +41,7 @@ public class GraphDataImpl implements GraphData {
    }
 
    @Override
-   public int getTransaction() {
+   public TransactionId getTransaction() {
       return txId;
    }
 
@@ -128,7 +129,7 @@ public class GraphDataImpl implements GraphData {
    public int hashCode() {
       final int prime = 31;
       int result = getBranchId().hashCode();
-      result = prime * result + getTransaction();
+      result = prime * result + getTransaction().hashCode();
       return result;
    }
 

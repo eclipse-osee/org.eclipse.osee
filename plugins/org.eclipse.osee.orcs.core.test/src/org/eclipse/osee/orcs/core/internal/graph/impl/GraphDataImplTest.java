@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.logger.Log;
@@ -91,7 +92,7 @@ public class GraphDataImplTest {
    // @formatter:on
 
    private GraphDataImpl graph;
-   private static final int TRANSACTION_ID = 231214214;
+   private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
 
    @Before
    public void setUp() throws Exception {

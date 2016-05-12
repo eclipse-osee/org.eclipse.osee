@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.ArtifactId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.ResultSet;
@@ -42,7 +43,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
    private final TransactionProvider txProvider;
 
    public static interface TransactionProvider {
-      int getHeadTransaction(OrcsSession session, Long branch);
+      TransactionId getHeadTransaction(OrcsSession session, Long branch);
    }
 
    public TxDataLoaderImpl(DataLoaderFactory dataLoaderFactory, GraphFactory graphFactory, GraphBuilderFactory graphBuilderFactory, GraphProvider graphProvider, TransactionProvider txProvider) {
@@ -85,7 +86,7 @@ public class TxDataLoaderImpl implements TxDataLoader {
 
    @Override
    public GraphData createGraph(OrcsSession session, Long branch) throws OseeCoreException {
-      int headTransaction = txProvider.getHeadTransaction(session, branch);
+      TransactionId headTransaction = txProvider.getHeadTransaction(session, branch);
       return graphFactory.createGraph(session, branch, headTransaction);
    }
 

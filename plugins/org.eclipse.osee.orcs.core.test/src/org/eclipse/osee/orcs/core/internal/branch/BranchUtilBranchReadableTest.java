@@ -13,6 +13,7 @@ package org.eclipse.osee.orcs.core.internal.branch;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -80,13 +81,13 @@ public class BranchUtilBranchReadableTest {
       }
 
       @Override
-      public int getBaseTransaction() {
-         return 0;
+      public TransactionId getBaseTransaction() {
+         return null;
       }
 
       @Override
-      public int getSourceTransaction() {
-         return 0;
+      public TransactionId getSourceTransaction() {
+         return null;
       }
 
       @Override

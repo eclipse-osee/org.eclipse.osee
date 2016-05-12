@@ -18,7 +18,7 @@ import org.eclipse.osee.jdbc.JdbcStatement;
 /**
  * Updates commit transactions so new and then modified objects will be committed with a mod type of new. This BLAM
  * operation also removes attribute from deleted artifacts from committed transactions.
- * 
+ *
  * @author Jeff C. Phillips
  */
 public class CommitTransactions extends DatabaseHealthOperation {
@@ -52,7 +52,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
             monitor.worked(calculateWork(0.50));
 
             while (chStmt.next()) {
-               int transactionNumber = chStmt.getInt("transaction_id");
+               Long transactionNumber = chStmt.getLong("transaction_id");
                int updateCount = ConnectionHandler.runPreparedUpdate(UPDATE_NEW_TRANSACTIONS_TO_CURRENT,
                   transactionNumber, transactionNumber);
                int deleteAttrCount = ConnectionHandler.runPreparedUpdate(DELETE_ORPHAN_ATTRIBUTES, transactionNumber);

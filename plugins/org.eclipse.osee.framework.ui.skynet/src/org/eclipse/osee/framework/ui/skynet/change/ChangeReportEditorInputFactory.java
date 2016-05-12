@@ -13,12 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.TokenFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
@@ -46,8 +44,8 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
             if (SkynetViews.isSourceValid(memento)) {
                CompareType compareType = CompareType.valueOf(memento.getString(COMPARE_TYPE));
 
-               int startTxId = memento.getInteger(START_TX_KEY);
-               int endTxId = memento.getInteger(END_TX_KEY);
+               Long startTxId = Long.parseLong(memento.getString(START_TX_KEY));
+               Long endTxId = Long.parseLong(memento.getString(END_TX_KEY));
 
                TransactionRecord startTx = TransactionManager.getTransactionId(startTxId);
                TransactionRecord endTx = TransactionManager.getTransactionId(endTxId);
@@ -76,8 +74,8 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
 
    public static void saveState(IMemento memento, ChangeReportEditorInput input) {
       TransactionDelta txDelta = input.getChangeData().getTxDelta();
-      memento.putInteger(START_TX_KEY, txDelta.getStartTx().getId());
-      memento.putInteger(END_TX_KEY, txDelta.getEndTx().getId());
+      memento.putString(START_TX_KEY, txDelta.getStartTx().getId().toString());
+      memento.putString(END_TX_KEY, txDelta.getEndTx().getId().toString());
       memento.putString(COMPARE_TYPE, input.getChangeData().getCompareType().name());
       if (input.getBranch() != null) {
          memento.putString(BRANCH_ID_KEY, String.valueOf(input.getBranch().getUuid()));

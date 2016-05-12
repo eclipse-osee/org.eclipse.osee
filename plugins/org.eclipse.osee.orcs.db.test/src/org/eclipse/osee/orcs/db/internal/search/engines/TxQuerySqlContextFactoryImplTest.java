@@ -59,7 +59,7 @@ import org.mockito.stubbing.Answer;
  */
 public class TxQuerySqlContextFactoryImplTest {
 
-   private static final Criteria IDS = id(1, 2, 3, 4, 5);
+   private static final Criteria IDS = id(1L, 2L, 3L, 4l, 5L);
    private static final Criteria COMMENT = comment("SimpleTemplateProviderTask", false);
    private static final Criteria TYPES =
       type(Arrays.asList(TransactionDetailsType.Baselined, TransactionDetailsType.NonBaselined));
@@ -298,7 +298,7 @@ public class TxQuerySqlContextFactoryImplTest {
       assertEquals(tx, iterator.next());
    }
 
-   private static Criteria id(Integer... values) {
+   private static Criteria id(Long... values) {
       return new CriteriaTxIds(Arrays.asList(values));
    }
 

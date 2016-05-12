@@ -76,7 +76,7 @@ public class ComodificationCheck implements TransactionProcessor {
 
       private void checkCoModified(OrcsData was, OrcsData is) throws OseeCoreException {
          if (was != null && is != null) {
-            if (was.getVersion().getTransactionId() != is.getVersion().getTransactionId()) {
+            if (was.getVersion().getTransactionId().notEqual(is.getVersion().getTransactionId())) {
                // TX_TODO can collect and then error with all data that was co-modified but for now just exception on first error
                throw new OseeStateException("Comodification error");
             }

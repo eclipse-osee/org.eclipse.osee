@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.internal.graph.impl;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.orcs.OrcsSession;
 import org.eclipse.osee.orcs.core.internal.graph.GraphData;
 import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
@@ -20,7 +21,7 @@ import org.eclipse.osee.orcs.core.internal.graph.GraphFactory;
 public class GraphFactoryImpl implements GraphFactory {
 
    @Override
-   public GraphData createGraph(OrcsSession session, Long branch, int transactionId) {
+   public GraphData createGraph(OrcsSession session, Long branch, TransactionId transactionId) {
       return new GraphDataImpl(session, branch, transactionId);
    }
 

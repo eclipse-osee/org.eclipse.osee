@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
@@ -49,7 +50,7 @@ public final class ChangeUiUtil {
       open(editorInput);
    }
 
-   public static void open(TransactionRecord transactionId) throws OseeCoreException {
+   public static void open(TransactionToken transactionId) throws OseeCoreException {
       Conditions.checkNotNull(transactionId, "TransactionId");
       open(createInput(transactionId, true));
    }
@@ -64,9 +65,9 @@ public final class ChangeUiUtil {
       open(createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, true));
    }
 
-   public static ChangeReportEditorInput createInput(TransactionRecord transactionId, boolean loadOnOpen) throws OseeCoreException {
+   public static ChangeReportEditorInput createInput(TransactionToken transactionId, boolean loadOnOpen) throws OseeCoreException {
       TransactionRecord startTx = TransactionManager.getPriorTransaction(transactionId);
-      TransactionRecord endTx = transactionId;
+      TransactionToken endTx = transactionId;
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, loadOnOpen);
    }

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IAttributeType;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.RelationalConstants;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -174,8 +175,8 @@ public class DataFactoryImpl implements DataFactory {
    private void updateDataForCopy(Long destination, OrcsData data) throws OseeCoreException {
       VersionData version = data.getVersion();
       version.setBranchId(destination);
-      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
-      version.setStripeId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setTransactionId(TransactionId.SENTINEL);
+      version.setStripeId(TransactionId.SENTINEL);
       version.setHistorical(false);
       version.setGammaId(RelationalConstants.GAMMA_SENTINEL);
 
@@ -186,7 +187,7 @@ public class DataFactoryImpl implements DataFactory {
       VersionData version = data.getVersion();
       version.setBranchId(destination);
       version.setHistorical(false);
-      version.setTransactionId(RelationalConstants.TRANSACTION_SENTINEL);
+      version.setTransactionId(TransactionId.SENTINEL);
       // do not clear gammaId for introduce case so we reuse the same version
    }
 }

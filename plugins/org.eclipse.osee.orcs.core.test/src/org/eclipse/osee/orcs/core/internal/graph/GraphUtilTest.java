@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.orcs.OrcsSession;
@@ -31,7 +33,7 @@ import org.mockito.Mock;
  * @author Megumi Telles
  */
 public class GraphUtilTest {
-   private static final int TRANSACTION_ID = 231214214;
+   private static final TransactionId TRANSACTION_ID = TransactionId.valueOf(231214214);
 
    @Rule
    public ExpectedException thrown = ExpectedException.none();
@@ -66,7 +68,7 @@ public class GraphUtilTest {
    public void testAsProviderTxIdNotSame() throws OseeCoreException {
       assertNotNull(provider);
 
-      int txId = 123456789;
+      TransactionId txId = TransactionId.valueOf(123456789);
 
       thrown.expect(OseeArgumentException.class);
       thrown.expectMessage(

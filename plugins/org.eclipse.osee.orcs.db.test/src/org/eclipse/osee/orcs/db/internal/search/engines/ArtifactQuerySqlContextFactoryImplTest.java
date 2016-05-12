@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.executor.admin.ExecutorAdmin;
+import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
@@ -120,7 +122,7 @@ public class ArtifactQuerySqlContextFactoryImplTest {
    // @formatter:on
 
    private final static long EXPECTED_BRANCH_ID = 570;
-   private final static int EXPECTED_TX_ID = 45678;
+   private final static TransactionId EXPECTED_TX_ID = TransactionId.valueOf(45678);
 
    private QuerySqlContextFactory queryEngine;
    private QueryData queryData;

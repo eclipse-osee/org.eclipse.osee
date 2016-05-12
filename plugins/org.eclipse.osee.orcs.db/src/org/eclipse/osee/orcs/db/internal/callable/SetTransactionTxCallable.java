@@ -42,7 +42,7 @@ public class SetTransactionTxCallable extends AbstractDatastoreTxCallable<Void> 
       checkNotNull(txs, "transaction");
       checkNotNullOrEmpty(comment, "comment");
 
-      getJdbcClient().runPreparedUpdate(connection, UPDATE_TRANSACTION_COMMENT, comment, txs.getGuid());
+      getJdbcClient().runPreparedUpdate(connection, UPDATE_TRANSACTION_COMMENT, comment, txs);
 
       return null;
    }

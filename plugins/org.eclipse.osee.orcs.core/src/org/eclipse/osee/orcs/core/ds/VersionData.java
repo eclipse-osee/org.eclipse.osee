@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.core.ds;
 
+import org.eclipse.osee.framework.core.data.TransactionId;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -19,13 +21,13 @@ public interface VersionData extends Cloneable {
 
    void setGammaId(long gamma);
 
-   int getTransactionId();
+   TransactionId getTransactionId();
 
-   void setTransactionId(int txId);
+   void setTransactionId(TransactionId txId);
 
-   int getStripeId();
+   TransactionId getStripeId();
 
-   void setStripeId(int stripeId);
+   void setStripeId(TransactionId stripeId);
 
    Long getBranchId();
 
