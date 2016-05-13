@@ -47,6 +47,6 @@ public interface AtsWorkPackageEndpointApi {
    @DELETE
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
-   Response deleteWorkPackageItems(JaxWorkPackageData workPackageData);
+   Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData);
 
 }

@@ -108,7 +108,7 @@ public class ActivityIdColumnUI extends XViewerAtsColumn implements IMultiColumn
       return modified;
    }
 
-   private static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) throws OseeCoreException {
+   public static boolean promptChangeActivityId(AbstractWorkflowArtifact teamWf, boolean persist) throws OseeCoreException {
       return promptChangeActivityIds(Arrays.asList(teamWf));
    }
 

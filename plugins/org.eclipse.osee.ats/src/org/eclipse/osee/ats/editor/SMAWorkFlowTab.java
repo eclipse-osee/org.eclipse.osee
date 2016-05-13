@@ -394,6 +394,7 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          workflowMetricsHeader =
             new SMAWorkflowMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
          int headerCompColumns = 4;
+         createWorkPacakageHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, editor);
          createWorkDefHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
          createSMANotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
          createStateNotesHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, null);
@@ -659,6 +660,19 @@ public class SMAWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, "Exception resolving annotations", ex);
+      }
+   }
+
+   public static void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact awa, int horizontalSpan, SMAEditor editor) {
+      boolean show =
+         awa.isTeamWorkflow() && !AtsClientService.get().getEarnedValueService().getWorkPackageOptions(awa).isEmpty();
+
+      if (show) {
+         Composite comp = toolkit.createContainer(parent, 6);
+         comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+         comp.setLayout(ALayout.getZeroMarginLayout(6, false));
+
+         new WfeWorkPackage(comp, SWT.NONE, awa, editor);
       }
    }
 

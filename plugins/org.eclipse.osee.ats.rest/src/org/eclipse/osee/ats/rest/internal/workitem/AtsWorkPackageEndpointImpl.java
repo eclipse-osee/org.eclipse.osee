@@ -150,7 +150,7 @@ public class AtsWorkPackageEndpointImpl implements AtsWorkPackageEndpointApi {
    @Path("{workPackageId}/workitem")
    @Consumes({MediaType.APPLICATION_JSON})
    @Override
-   public Response deleteWorkPackageItems(JaxWorkPackageData workPackageData) {
+   public Response deleteWorkPackageItems(@PathParam("workPackageId") long workPackageId, JaxWorkPackageData workPackageData) {
       IAtsUser asUser = atsServer.getUserService().getUserById(workPackageData.getAsUserId());
       if (asUser == null) {
          throw new OseeArgumentException("Author with id [%s] Not Found", workPackageData.getAsUserId());
