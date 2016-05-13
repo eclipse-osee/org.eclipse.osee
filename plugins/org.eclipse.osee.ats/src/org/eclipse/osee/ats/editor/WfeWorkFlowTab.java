@@ -391,8 +391,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
          if (awa.isTeamWorkflow()) {
             actionableItemHeader = new WfeActionableItemHeader(headerComp, editor.getToolkit(), awa, editor);
          }
-         workflowMetricsHeader =
-            new WfeMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
+         workflowMetricsHeader = new WfeMetricsHeader(headerComp, editor.getToolkit(), awa, editor, managedForm);
          int headerCompColumns = 4;
          createWorkPacakageHeader(headerComp, editor.getToolkit(), awa, headerCompColumns, editor);
          createWorkDefHeader(headerComp, editor.getToolkit(), awa, headerCompColumns);
@@ -663,7 +662,7 @@ public class WfeWorkFlowTab extends FormPage implements IWorldViewerEventHandler
       }
    }
 
-   public static void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact awa, int horizontalSpan, SMAEditor editor) {
+   public static void createWorkPacakageHeader(Composite parent, XFormToolkit toolkit, AbstractWorkflowArtifact awa, int horizontalSpan, WorkflowEditor editor) {
       boolean show =
          awa.isTeamWorkflow() && !AtsClientService.get().getEarnedValueService().getWorkPackageOptions(awa).isEmpty();
 

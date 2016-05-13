@@ -45,7 +45,7 @@ public class WfeWorkPackage extends Composite {
    Label label;
    Hyperlink link;
 
-   public WfeWorkPackage(Composite parent, int style, final AbstractWorkflowArtifact sma, final SMAEditor editor) {
+   public WfeWorkPackage(Composite parent, int style, final AbstractWorkflowArtifact sma, final WorkflowEditor editor) {
       super(parent, style);
       setLayoutData(new GridData());
       setLayout(ALayout.getZeroMarginLayout(2, false));
