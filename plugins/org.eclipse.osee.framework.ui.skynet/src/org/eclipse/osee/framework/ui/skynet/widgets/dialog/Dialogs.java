@@ -95,7 +95,7 @@ public class Dialogs {
          AWorkbench.popup("ERROR", "Save data is empty.  Nothing to export.");
          return Result.FalseResult;
       }
-      return new HtmlExportTable(title.equals("") ? "Exported Text" : title, htmlText, openInSystem).exportExcelCsv();
+      return new HtmlExportTable(title.equals("") ? "Exported Text" : title, htmlText, openInSystem).exportExcelXml();
    }
 
    public static IStructuredSelection getCurrentSelection() throws Exception {

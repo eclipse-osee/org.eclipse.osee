@@ -139,7 +139,7 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab, IBrowserActi
          excelImage = ImageManager.getProgramImage("xlsx");
       }
       item.setImage(excelImage);
-      item.setToolTipText("Export as Excel csv");
+      item.setToolTipText("Export as Excel xml");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent event) {

@@ -13,12 +13,15 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -64,9 +67,9 @@ public class HtmlExportTable {
       return export(",", "csv");
    }
 
-   public Result exportExcelCsv() {
+   public Result exportExcelXml() {
       excelTextFields = true;
-      return export(",", "csv");
+      return exportAsExcelXml(",", "xml");
    }
 
    public Result exportTsv() {
@@ -88,7 +91,6 @@ public class HtmlExportTable {
                Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(csv);
             while (rowM.find()) {
                String row = rowM.group(1);
-               row = row.replaceAll("[\n\r]*", "");
                // Handle all the headers
                for (String tag : elementTags) {
                   Matcher thM = Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
@@ -101,6 +103,7 @@ public class HtmlExportTable {
                   }
                   if (!csvRow.equals("")) {
                      csvRow = csvRow.replaceFirst(speratorChar + "$", "\n");
+                     csvRow = csvRow.replaceAll("<br/>", "\n");
                      sb.append(csvRow);
                   }
                }
@@ -120,6 +123,72 @@ public class HtmlExportTable {
                try {
                   File file = new File(path);
                   Lib.writeStringToFile(sb.toString(), file);
+                  if (openInSystem) {
+                     Program.launch(file.getAbsolutePath());
+                  }
+                  return Result.TrueResult;
+               } catch (IOException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+               }
+            }
+         } else {
+            AWorkbench.popup("ERROR", "Can't find table in results.\n\nNothing to export");
+         }
+      }
+      return Result.FalseResult;
+   }
+
+   public Result exportAsExcelXml(String speratorChar, String fileExtension) {
+      if (!popupConfirm || popupConfirm && MessageDialog.openConfirm(Displays.getActiveShell(), "Export Table",
+         String.format("Export Table to %s ?", fileExtension))) {
+         String htmlStr = AHTML.htmlToText(html);
+         Matcher m =
+            Pattern.compile("<table.*?</table>", Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(
+               htmlStr);
+         if (m.find()) {
+            String path = "";
+            if (popupConfirm) {
+               FileDialog dialog = new FileDialog(Displays.getActiveShell(), SWT.SAVE | SWT.SINGLE);
+               dialog.setFilterExtensions(new String[] {"*." + fileExtension});
+               dialog.setFilterPath(System.getProperty("user.home"));
+               dialog.setFileName("table." + fileExtension);
+               path = dialog.open();
+            } else {
+               path = System.getProperty("user.home") + File.separator + "table." + fileExtension;
+            }
+
+            if (path != null) {
+               try {
+                  String csv = m.group();
+                  Matcher rowM = Pattern.compile("<tr.*?>(.*?)</tr>",
+                     Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(csv);
+                  File file = new File(path);
+                  ExcelXmlWriter writer = null;
+
+                  while (rowM.find()) {
+                     String row = rowM.group(1);
+                     List<String> cells = new LinkedList<>();
+                     // Handle all the headers
+                     for (String tag : elementTags) {
+                        Matcher thM = Pattern.compile("<" + tag + ".*?>(.*?)</" + tag + ">",
+                           Pattern.CASE_INSENSITIVE | Pattern.DOTALL | Pattern.MULTILINE).matcher(row);
+                        while (thM.find()) {
+                           String cellStr = thM.group(1);
+                           cells.add(cellStr);
+                        }
+                     }
+                     if (writer == null) {
+                        writer = new ExcelXmlWriter(file);
+                        writer.startSheet(title, cells.size());
+                     }
+                     for (String cell : cells) {
+                        writer.writeCell(cell);
+                     }
+                     writer.endRow();
+                  }
+                  writer.endSheet();
+                  writer.endWorkbook();
+
                   if (openInSystem) {
                      Program.launch(file.getAbsolutePath());
                   }
