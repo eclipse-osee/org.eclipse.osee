@@ -217,16 +217,17 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
    }
 
    private static final String getAttributeValue(String attributeName, String attributeStorage) {
-
       attributeName += "=\"";
+      String attribute = "";
 
       int index = attributeStorage.indexOf(attributeName);
-      if (index == -1) {
-         return "";
-      } else {
-         int startIndex = index + attributeName.length();
-         return attributeStorage.substring(startIndex, attributeStorage.indexOf('"', startIndex + 1)).trim();
+      if (index != -1) {
+         int startIndex = 1 + index + attributeName.length();
+         if (startIndex < attributeStorage.length()) {
+            attribute = attributeStorage.substring(startIndex, attributeStorage.indexOf('"', startIndex)).trim();
+         }
       }
+      return attribute;
    }
 
    private boolean isListStyle(Stack<String> parentElementNames) {

@@ -21,7 +21,8 @@ import org.junit.runners.Suite;
    DoorsTableRowTest.class,
    OutlineResolutionAndNumberTest.class,
    RoughArtifactMetaDataTest.class,
-   WordMLExtractorDelegateTableOfContentsTest.class})
+   WordMLExtractorDelegateTableOfContentsTest.class,
+   WordMLExtractorDelegateNoNumberTest.class})
 public class ParsersSuite {
    // do nothing
 }
