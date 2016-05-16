@@ -51,7 +51,7 @@ public class ClientResource {
    private final JdbcService jdbcService;
    private final OrcsApi orcsApi;
    private static final String NEWEST_SESSIONS_BY_USER =
-      "select * from (select row_number() over (order by created_on desc) as rownumber, client_address, user_id, created_on, client_port, client_version, session_id from osee_session where  user_id = ? order by created_on desc) where rownumber <= 10";
+      "select client_address, user_id, created_on, client_port, client_version, session_id from osee_session where user_id = ? order by created_on desc";
 
    public ClientResource(JdbcService jdbcService, OrcsApi orcsApi) {
       this.jdbcService = jdbcService;
@@ -110,7 +110,7 @@ public class ClientResource {
          }
       };
 
-      jdbcService.getClient().runQuery(consumer, NEWEST_SESSIONS_BY_USER, userId);
+      jdbcService.getClient().runQueryWithLimit(consumer, 10, NEWEST_SESSIONS_BY_USER, userId);
       return Response.ok(sessions).build();
    }
 

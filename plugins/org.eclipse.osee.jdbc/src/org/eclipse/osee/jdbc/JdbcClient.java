@@ -32,6 +32,8 @@ public interface JdbcClient {
 
    int runQuery(Consumer<JdbcStatement> consumer, int fetchSize, String query, Object... data);
 
+   int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data);
+
    <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);

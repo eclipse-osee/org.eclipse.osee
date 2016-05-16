@@ -370,6 +370,27 @@ public final class JdbcClientImpl implements JdbcClient {
       return rowCount;
    }
 
+   private static final String LimitStart = "select * from (";
+   private static final String LimitEnd = ") where rownum <= ?";
+
+   @Override
+   public int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data) {
+      StringBuilder strB = new StringBuilder(query.length() + LimitStart.length() + LimitEnd.length());
+      if (getDbType().equals(JdbcDbType.oracle)) {
+         strB.append(LimitStart);
+         strB.append(query);
+         strB.append(LimitEnd);
+      } else {
+         strB.append(query);
+         strB.append(" limit ?");
+      }
+
+      Object[] fullData = new Object[data.length + 1];
+      System.arraycopy(data, 0, fullData, 0, data.length);
+      fullData[data.length] = limit;
+      return runQuery(consumer, limit, strB.toString(), fullData);
+   }
+
    @Override
    public <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
       try (JdbcStatement chStmt = getStatement()) {
