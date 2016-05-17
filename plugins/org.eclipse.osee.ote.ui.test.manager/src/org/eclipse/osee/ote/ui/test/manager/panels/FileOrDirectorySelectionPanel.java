@@ -121,7 +121,7 @@ public class FileOrDirectorySelectionPanel extends Composite {
 
    private boolean isValidFile(String text) {
       File file = new File(text);
-      return file != null && file.exists() != false && file.canWrite() != false;
+      return file.exists() && file.canWrite();
    }
 
    public boolean isValid() {

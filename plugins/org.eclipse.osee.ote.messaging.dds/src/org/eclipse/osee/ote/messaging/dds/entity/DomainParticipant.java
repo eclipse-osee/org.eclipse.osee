@@ -559,7 +559,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
 
       }
 
-      if (writer == null || writer != null && writer.isPublishBackToLocalDDSReaders()) {
+      if (writer != null && writer.isPublishBackToLocalDDSReaders()) {
          // Notify all of the subscribers in our domain
          for (Subscriber domainSubscribers : subscribers) {
             domainSubscribers.processNewData(dataStoreItem);

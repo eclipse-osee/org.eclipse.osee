@@ -11,7 +11,6 @@
 package org.eclipse.osee.ote.ui.define.viewers.actions;
 
 import java.net.URL;
-
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredViewer;
@@ -67,13 +66,12 @@ public class OpenAssociatedScript extends AbstractActionHandler {
    private void openRemoteScript(String scriptUrl, String revision) {
       try {
          URL urlToOpen = new URL(scriptUrl);
-         if (urlToOpen != null) {
-            IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
-            IWebBrowser browser =
-               browserSupport.createBrowser(IWorkbenchBrowserSupport.AS_EDITOR, "org.eclipse.ui.browser.editor",
-                  scriptUrl, "");
-            browser.openURL(urlToOpen);
-         }
+
+         IWorkbenchBrowserSupport browserSupport = PlatformUI.getWorkbench().getBrowserSupport();
+         IWebBrowser browser = browserSupport.createBrowser(IWorkbenchBrowserSupport.AS_EDITOR,
+            "org.eclipse.ui.browser.editor", scriptUrl, "");
+         browser.openURL(urlToOpen);
+
       } catch (Exception ex) {
          handleException();
       }

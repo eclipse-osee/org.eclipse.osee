@@ -859,9 +859,8 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          accessor.getTestScript().getTestCase(),
          new CheckPoint(this.getMessageName(), "No Transmissions",
             result ? "No Transmissions" : "Transmissions Occurred", result, time));
-      if (accessor != null) {
-         accessor.getLogger().methodEnded(accessor);
-      }
+
+      accessor.getLogger().methodEnded(accessor);
       return result;
    }
 

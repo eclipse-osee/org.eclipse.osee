@@ -361,7 +361,7 @@ public class WorkspaceBundleLoadCoordinator {
                bundlesToOperateOn.add(bundleInfo);
             } else {
                boolean newBundle = true;
-               if (bundleList != null && bundleList.size() > 0) {
+               if (bundleList.size() > 0) {
                   byte[] digest1 = bundleInfo.getMd5Digest();
                   for (BundleInfoLite bundle : bundleList) {
                      byte[] digest2 = bundle.getMd5Digest();

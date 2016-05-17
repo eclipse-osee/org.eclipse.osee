@@ -41,16 +41,14 @@ public class ScriptItem extends DataItem implements IXViewerItem {
 
    private void setScriptUrlAndRevision(String scriptUrl, String revision) {
       boolean wasThereAnError = false;
+
       try {
          URI url = new URI(scriptUrl);
-         if (url != null) {
-            this.scriptUrl = scriptUrl;
-         } else {
-            wasThereAnError = true;
-         }
+         this.scriptUrl = scriptUrl;
       } catch (Exception ex) {
          wasThereAnError = true;
       }
+
       try {
          if (Strings.isValid(revision)) {
             this.revision = revision;
@@ -85,7 +83,8 @@ public class ScriptItem extends DataItem implements IXViewerItem {
    public String getLabel(int index) {
       String toReturn = "";
       if (index == 0) {
-         if (scriptUrl.equals(DEFAULT_SCRIPT_NAME) != true && revision.equals(DEFAULT_REVISION) != true && isFullDescriptionModeEnabled() != false) {
+         if (scriptUrl.equals(DEFAULT_SCRIPT_NAME) != true && revision.equals(
+            DEFAULT_REVISION) != true && isFullDescriptionModeEnabled() != false) {
             toReturn = getFullLabel();
          } else {
             toReturn = getShortLabel();

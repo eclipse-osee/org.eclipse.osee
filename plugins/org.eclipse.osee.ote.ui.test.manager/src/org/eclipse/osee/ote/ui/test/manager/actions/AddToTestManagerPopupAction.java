@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.ui.test.manager.actions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
 import org.eclipse.core.resources.IResource;
 import org.eclipse.jdt.core.ICompilationUnit;
 import org.eclipse.jface.action.IAction;
@@ -31,19 +30,15 @@ public class AddToTestManagerPopupAction implements IWorkbenchWindowActionDelega
       StructuredSelection sel = AWorkspace.getSelection();
       Iterator<?> i = sel.iterator();
       List<String> selection = new ArrayList<>();
-      
+
       while (i.hasNext()) {
          Object obj = i.next();
          if (obj instanceof IResource) {
             IResource resource = (IResource) obj;
-            if (resource != null) {
-               selection.add(resource.getLocation().toOSString());
-            }
+            selection.add(resource.getLocation().toOSString());
          } else if (obj instanceof ICompilationUnit) {
             ICompilationUnit resource = (ICompilationUnit) obj;
-            if (resource != null) {
-            	selection.add(resource.getResource().getLocation().toOSString());
-            }
+            selection.add(resource.getResource().getLocation().toOSString());
          }
       }
       return selection.toArray(new String[0]);

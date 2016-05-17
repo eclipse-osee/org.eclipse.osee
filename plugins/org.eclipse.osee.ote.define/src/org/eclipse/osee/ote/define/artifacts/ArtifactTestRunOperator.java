@@ -34,11 +34,11 @@ import org.eclipse.osee.ote.define.AUTOGEN.OteAttributeTypes;
  * @author Roberto E. Escobar
  */
 public class ArtifactTestRunOperator implements TestRunOperator {
-   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER = new OteArtifactFetcher<>(
-      CoreArtifactTypes.TestRun);
+   private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER =
+      new OteArtifactFetcher<>(CoreArtifactTypes.TestRun);
 
-   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER = new OteArtifactFetcher<>(
-      CoreArtifactTypes.TestCase);
+   private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
+      new OteArtifactFetcher<>(CoreArtifactTypes.TestCase);
 
    private final Artifact artifact;
 
@@ -149,12 +149,12 @@ public class ArtifactTestRunOperator implements TestRunOperator {
       boolean toReturn = false;
       try {
          URI url = new URI(getScriptUrl());
-         if (url != null) {
-            String revision = getScriptRevision();
-            if (Strings.isValid(revision)) {
-               toReturn = true;
-            }
+
+         String revision = getScriptRevision();
+         if (Strings.isValid(revision)) {
+            toReturn = true;
          }
+
       } catch (Exception ex) {
       }
       return toReturn;
@@ -163,9 +163,8 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    public boolean hasNotBeenCommitted() {
       Artifact fetched = null;
       try {
-         fetched =
-            getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM, getChecksum(),
-               artifact.getBranch());
+         fetched = getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributeTypes.CHECKSUM, getChecksum(),
+            artifact.getBranch());
       } catch (Exception ex) {
       }
       return fetched == null;
@@ -180,9 +179,8 @@ public class ArtifactTestRunOperator implements TestRunOperator {
    }
 
    public void createTestScriptSoftLink() throws OseeCoreException {
-      Artifact testScript =
-         getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.Name, artifact.getName(),
-            artifact.getBranch());
+      Artifact testScript = getTestScriptFetcher().searchForUniqueArtifactMatching(CoreAttributeTypes.Name,
+         artifact.getName(), artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(CoreAttributeTypes.TestScriptGuid, testScript.getGuid());
       }

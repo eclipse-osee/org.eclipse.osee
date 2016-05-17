@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.framework.testrun;
 
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -61,9 +60,9 @@ public class TestRunThread extends OseeTestThread {
                if (testCase == null) {
                   continue;
                }
-               
-               rb.append(listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test,
-                  testCase)));
+
+               rb.append(
+                  listenerProvider.notifyPreTestCase(dataProvider.createOnPreTestCase(propertyStore, test, testCase)));
                try {
                   testCase.baseDoTestCase(getEnvironment());
                   if (Thread.interrupted()) {
@@ -80,22 +79,21 @@ public class TestRunThread extends OseeTestThread {
                      if (!ex.getClass().getName().startsWith("java")) {
                         String msg = ex.getClass().getName();
                         if (ex.getMessage() != null && !ex.getMessage().isEmpty()) {
-                           msg += ": "+ex.getMessage();
+                           msg += ": " + ex.getMessage();
                         }
                         Throwable removeThisOnceWeGetRidOfSerializationOnAssociatedException = new Throwable(msg);
                         removeThisOnceWeGetRidOfSerializationOnAssociatedException.setStackTrace(ex.getStackTrace());
                         clientSideThrowable = removeThisOnceWeGetRidOfSerializationOnAssociatedException;
                      }
-                     methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, clientSideThrowable));
+                     methodresult.addStatus(
+                        new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, clientSideThrowable));
                      rb.append(methodresult);
-                     OseeLog.log(
-                        Activator.class,
-                        Level.SEVERE,
-                        "Exception running Test Case [" + testCase != null ? testCase.getClass().getName() : "unknown (null test case)" + "]",
-                        ex);
+                     OseeLog.log(Activator.class, Level.SEVERE,
+                        "Exception running Test Case [" + testCase.getClass().getName() + "]", ex);
                   }
-               } 
-               rb.append(listenerProvider.notifyPostTestCase(dataProvider.createOnPostTestCase(propertyStore, test, testCase)));
+               }
+               rb.append(listenerProvider.notifyPostTestCase(
+                  dataProvider.createOnPostTestCase(propertyStore, test, testCase)));
             }
          }
       } finally {
@@ -125,26 +123,26 @@ public class TestRunThread extends OseeTestThread {
       if (Thread.currentThread() == this.getThread()) {
          throw new TestException("", Level.SEVERE);
       }
-      if(OtePropertiesCore.abortMultipleInterrupt.getBooleanValue()){
-    	  this.interrupt();
-    	  try{
-    		  this.join(1000*60);
-    	  } catch (InterruptedException ex){
-    	  }
+      if (OtePropertiesCore.abortMultipleInterrupt.getBooleanValue()) {
+         this.interrupt();
+         try {
+            this.join(1000 * 60);
+         } catch (InterruptedException ex) {
+         }
       } else {
-    	  int count = 0;
-    	  do{
-    		  this.interrupt();
-    		  try{
-    			  this.join(10);
-    		  } catch (InterruptedException ex){
-    		  }
-    		  count++;
-    	  } while (this.isAlive() && count < 200);
+         int count = 0;
+         do {
+            this.interrupt();
+            try {
+               this.join(10);
+            } catch (InterruptedException ex) {
+            }
+            count++;
+         } while (this.isAlive() && count < 200);
       }
       if (this.isAlive()) {
          OseeLog.reportStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE,
-               "Waited 60s for test to abort but the thread did not die."));
+            "Waited 60s for test to abort but the thread did not die."));
          return false;
       }
       return true;

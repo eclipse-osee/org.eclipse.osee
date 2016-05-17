@@ -147,7 +147,7 @@ class CommitJobDialog extends UIJob {
          if (columnIndex >= DUMMY_COLUMNS) {
             if (element instanceof Artifact) {
                Artifact artifact = (Artifact) element;
-               if (artifact != null && artifact.isDeleted() != true) {
+               if (!artifact.isDeleted()) {
                   CommitColumnEnum column = CommitColumnEnum.values()[columnIndex - DUMMY_COLUMNS];
                   switch (column) {
                      case Branch:
