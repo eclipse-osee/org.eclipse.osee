@@ -216,10 +216,6 @@ public final class ArtifactCache {
       return artifacts;
    }
 
-   public static void deCache(Long uuid, Long branchUuid) {
-      ACTIVE_CACHE.deCache(uuid, branchUuid);
-   }
-
    public static Artifact getActive(Long uuid, Long branchUuid) {
       return ACTIVE_CACHE.getById(uuid.intValue(), branchUuid);
    }

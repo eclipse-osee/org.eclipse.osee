@@ -18,12 +18,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 
@@ -161,17 +160,4 @@ public class ActiveArtifactCache extends AbstractArtifactCache {
       return builder.toString();
    }
 
-   public void deCache(Long uuid, Long branchUuid) {
-      ArtifactKey artifactKey = uuidToArtifactKey.get(uuid);
-      if (artifactKey != null) {
-         BranchId branch = artifactKey.getBranch();
-         keyedArtifactCache.remove(uuid, branch);
-      }
-      String guid = uuidBranchUuidToGuid.get(uuid, branchUuid);
-      if (Strings.isValid(guid)) {
-         keyedArtifactCache.removeAndGet(guid, branchUuid);
-      }
-      uuidToArtifactKey.remove(uuid);
-      uuidBranchUuidToGuid.remove(uuid, branchUuid);
-   }
 }
