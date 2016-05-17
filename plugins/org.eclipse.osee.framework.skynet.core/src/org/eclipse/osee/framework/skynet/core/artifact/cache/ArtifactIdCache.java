@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
@@ -22,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractArtifactCache {
+public class ArtifactIdCache {
    private final CompositeKeyHashMap<Integer, Long, Object> idCache;
    private final CompositeKeyHashMap<String, Long, Object> guidCache;
 
@@ -31,9 +32,29 @@ public abstract class AbstractArtifactCache {
       NONE;
    }
 
-   protected AbstractArtifactCache(int initialCapacity) {
+   public ArtifactIdCache(int initialCapacity) {
       idCache = new CompositeKeyHashMap<>(initialCapacity, true);
       guidCache = new CompositeKeyHashMap<>(initialCapacity, true);
+   }
+
+   private Long getKey2(Artifact artifact) {
+      try {
+         return artifact.getBranchId();
+      } catch (OseeCoreException ex) {
+         return -1L;
+      }
+   }
+
+   public Artifact getById(Integer artId, Long branchUuid) {
+      return asArtifact(getObjectById(artId, branchUuid));
+   }
+
+   public Artifact getByGuid(String artGuid, Long branchUuid) {
+      return asArtifact(getObjectByGuid(artGuid, branchUuid));
+   }
+
+   public Artifact getByUuid(Long uuid, Long branchUuid) {
+      return asArtifact(getObjectById(uuid.intValue(), branchUuid));
    }
 
    public Object cache(Artifact artifact) {
@@ -78,8 +99,6 @@ public abstract class AbstractArtifactCache {
       }
       return artifacts;
    }
-
-   protected abstract Long getKey2(Artifact artifact);
 
    protected Object getObjectByGuid(String guid, Long key2) {
       return guidCache.get(guid, key2);
