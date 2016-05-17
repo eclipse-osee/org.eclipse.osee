@@ -268,7 +268,7 @@ public class AccessControlService implements IAccessControlService {
             Integer groupMember = stmt.getInt("b_art_id");
             subjectToGroupCache.put(groupMember, groupId);
             groupToSubjectsCache.put(groupId, groupMember);
-         } , USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
+         }, USER_GROUP_MEMBERS, groupId, CoreRelationTypes.Users_User.getGuid());
       }
    }
 
@@ -422,7 +422,7 @@ public class AccessControlService implements IAccessControlService {
 
       if (accessObject == null) {
          userPermission = PermissionEnum.FULLACCESS;
-      } else if (userPermission == null) {
+      } else {
          userPermission = acquirePermissionRank(subject, accessObject);
       }
       return userPermission;

@@ -298,10 +298,9 @@ public class DomainParticipant extends Entity implements EntityFactory {
             } else {
                // There is a violation, and no topic will be returned since a topic
                // with this name already exists, but the types do not match
-               throw new RuntimeException(
-                  String.format(
-                     "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
-                     name, namespace, topic.getTypeName(), topic.getName(), typeName));
+               throw new RuntimeException(String.format(
+                  "found topic name:[%s] namespace:[%s] but there was a type incompatibility between [%s] (from topic [%s]) and [%s].",
+                  name, namespace, topic.getTypeName(), topic.getName(), typeName));
             }
          } else { // Otherwise, the topic did not already exist
             topic = new Topic(this, typeSignature, name, namespace, this.isEnabled(), topicListener, this);
@@ -335,11 +334,6 @@ public class DomainParticipant extends Entity implements EntityFactory {
       // Check the pre-condition
       if (topic.hasDataWriters()) {
          return ReturnCode.PRECONDITION_NOT_MET;
-      }
-
-      // Check that a topic was supplied
-      if (topic == null) {
-         return ReturnCode.ERROR;
       }
 
       // Attempt to remove, if it did not exist in our list then return an error,

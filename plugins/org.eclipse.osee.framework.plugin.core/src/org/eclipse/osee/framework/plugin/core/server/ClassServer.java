@@ -255,7 +255,7 @@ public class ClassServer extends Thread {
                out.flush();
                return;
             }
-            String[] args = null;
+
             boolean get = req.startsWith("GET ");
             if (!get && !req.startsWith("HEAD ")) {
                OseeLog.log(PluginCoreActivator.class, Level.FINE, "bad request \"{0}\" from {1}:{2}");
@@ -275,9 +275,7 @@ public class ClassServer extends Thread {
                out.flush();
                return;
             }
-            if (args != null) {
-               args[0] = path;
-            }
+
             OseeLog.log(PluginCoreActivator.class, Level.FINER,
                get ? "{0} requested from {1}:{2}" : "{0} probed from {1}:{2}");
             byte[] bytes;
