@@ -322,7 +322,14 @@ public class WorldComposite extends ScrolledComposite implements ISelectedAtsArt
    @Override
    public void refreshActionHandler() {
       try {
-         iWorldEditor.reSearch();
+         Displays.ensureInDisplayThread(new Runnable() {
+
+            @Override
+            public void run() {
+               iWorldEditor.reSearch();
+            }
+
+         });
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

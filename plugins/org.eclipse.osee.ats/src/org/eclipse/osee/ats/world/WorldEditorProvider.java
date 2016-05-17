@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.CursorManager;
@@ -149,7 +149,7 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
             }
 
             if (searchType == SearchType.ReSearch) {
-               deCacheAndReload(worldEditor, selectedName, forcePend, artifacts);
+               reload(worldEditor, selectedName, forcePend, artifacts);
             } else {
                worldEditor.getWorldComposite().load(selectedName != null ? selectedName : "", artifacts, customizeData,
                   tableLoadOptions);
@@ -171,16 +171,19 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       }
    }
 
-   public void deCacheAndReload(WorldEditor worldEditor, String name, boolean forcePend, Collection<Artifact> artifacts) {
+   /**
+    * Background job to reload artifacts and then reload viewer
+    */
+   public void reload(WorldEditor worldEditor, String name, boolean forcePend, Collection<Artifact> artifacts) {
 
       if (forcePend) {
-         deCacheAndReload(worldEditor, name, artifacts);
+         reload(worldEditor, name, artifacts);
       } else {
-         Job job = new Job("Re-Loading " + name) {
+         Job job = new Job("Loading " + name) {
 
             @Override
             protected IStatus run(IProgressMonitor monitor) {
-               deCacheAndReload(worldEditor, name, artifacts);
+               reload(worldEditor, name, artifacts);
                return Status.OK_STATUS;
             }
 
@@ -190,10 +193,11 @@ public abstract class WorldEditorProvider implements IWorldEditorProvider {
       }
    }
 
-   private void deCacheAndReload(WorldEditor worldEditor, String name, Collection<Artifact> artifacts) {
-      for (Artifact art : artifacts) {
-         ArtifactCache.deCache(art);
-      }
+   /**
+    * Reload artifacts and then reload viewer
+    */
+   private void reload(WorldEditor worldEditor, String name, Collection<Artifact> artifacts) {
+      ArtifactQuery.reloadArtifacts(artifacts);
       worldEditor.getWorldComposite().load(name != null ? name : "", artifacts, customizeData);
 
    }
