@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.program.IAtsProgram;
@@ -22,6 +23,7 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinitionService;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.IAtsClient;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -67,6 +69,15 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
    @Override
    public IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program) {
       return atsClient.getProgramService().getTeamDefHoldingVersions(program);
+   }
+	  
+   public IAtsTeamDefinition getTeamDefinition(String name) {
+      IAtsTeamDefinition teamDef = null;
+      ArtifactId teamDefArt = AtsClientService.get().getArtifactByName(AtsArtifactTypes.TeamDefinition, name);
+      if (teamDefArt != null) {
+         teamDef = AtsClientService.get().getConfigItemFactory().getTeamDef(teamDefArt);
+      }
+      return teamDef;
    }
 
 }

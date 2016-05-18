@@ -113,9 +113,15 @@ public interface IAtsChangeSet {
 
    /**
     * User making these changes
-    * 
-    * @return
     */
    IAtsUser getAsUser();
+   
+   void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2);
+
+   void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, IAtsObject atsObjec2);
+
+   void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, IAtsObject atsObject);
+
+   void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, ArtifactId artifact);
 
 }

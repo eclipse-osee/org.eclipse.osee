@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013 Boeing.
+ * Copyright (c) 2016 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
 package org.eclipse.osee.ats.rest.internal.util;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
@@ -209,7 +209,11 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    public void relate(Object object1, IRelationTypeSide relationSide, Object object2) {
       ArtifactId artifact = getArtifact(object1);
       ArtifactId artifact2 = getArtifact(object2);
-      getTransaction().relate(artifact, relationSide, artifact2);
+      if (relationSide.getSide().isSideA()) {
+         getTransaction().relate(artifact2, relationSide, artifact);
+      } else {
+         getTransaction().relate(artifact, relationSide, artifact2);
+      }
       add(artifact);
       add(artifact2);
    }
@@ -227,36 +231,46 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void unrelateAll(Object object, IRelationTypeSide relationType) {
       ArtifactReadable artifact = getArtifact(object);
-      getTransaction().unrelateFromAll(relationType, artifact);
-      add(object);
+      add(artifact);
+      for (ArtifactReadable otherArt : artifact.getRelated(relationType)) {
+         if (relationType.getSide().isSideA()) {
+            getTransaction().unrelate(otherArt, relationType, artifact);
+         } else {
+            getTransaction().unrelate(artifact, relationType, otherArt);
+         }
+         add(otherArt);
+      }
    }
 
    @Override
-   public void setRelation(Object object1, IRelationTypeSide relationType, Object object2) {
-      ArtifactId artifact = getArtifact(object1);
-      ArtifactId artifact2 = getArtifact(object2);
-      unrelateAll(artifact, relationType);
-      relate(artifact, relationType, artifact2);
-      add(artifact);
-      add(artifact2);
+   public void setRelation(Object object1, IRelationTypeSide relationSide, Object object2) {
+      setRelations(object1, relationSide, Collections.singleton(object2));
    }
 
    @Override
    public void setRelations(Object object, IRelationTypeSide relationSide, Collection<? extends Object> objects) {
-      if (!relationSide.getSide().isSideA()) {
-         throw new UnsupportedOperationException("Can only set relations from A to B side");
-      }
       ArtifactReadable artifact = getArtifact(object);
-      Set<ArtifactReadable> artifacts = new HashSet<>(objects.size());
+      List<ArtifactReadable> artifacts = new LinkedList<>();
       for (Object obj : objects) {
          ArtifactReadable art = getArtifact(obj);
          if (art != null) {
             artifacts.add(art);
-            add(art);
          }
       }
-      getTransaction().setRelations(artifact, relationSide, artifacts);
-      add(object);
+
+      // add all relations that do not exist
+      for (Object obj : objects) {
+         ArtifactReadable art = getArtifact(obj);
+         if (!art.areRelated(relationSide, art)) {
+            relate(object, relationSide, obj);
+         }
+      }
+      // unrelate all objects that are not in set
+      for (ArtifactReadable art : artifact.getRelated(relationSide)) {
+         if (!artifacts.contains(art)) {
+            unrelate(artifact, relationSide, art);
+         }
+      }
    }
 
    public void unrelate(Object object1, IRelationTypeSide relationType, Object object2) {
@@ -315,5 +329,18 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       AttributeId attribute = ((ArtifactReadable) artifact).getAttributeById(attr.getId());
       getTransaction().deleteByAttributeId(artifact, attribute);
       add(artifact);
+   }
+
+   @Override
+   public void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2) {
+      ArtifactReadable art = getArtifact(artifact);
+      ArtifactReadable art2 = getArtifact(artifact2);
+      if (relationSide.getSide().isSideA()) {
+         getTransaction().unrelate(art2, relationSide, art);
+      } else {
+         getTransaction().unrelate(art, relationSide, art2);
+      }
+      add(art);
+      add(art2);
    }
 }

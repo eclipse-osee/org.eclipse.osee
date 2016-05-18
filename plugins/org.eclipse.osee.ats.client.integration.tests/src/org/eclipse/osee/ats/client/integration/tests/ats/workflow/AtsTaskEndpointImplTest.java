@@ -50,7 +50,7 @@ import org.junit.Test;
 public class AtsTaskEndpointImplTest {
 
    private AtsTaskEndpointApi taskEp;
-   private long taskUuid1, taskUuid2, taskUuid3, codeTeamWfUuid;
+   private long taskUuid1, taskUuid2, taskUuid3, taskUuid4, codeTeamWfUuid;
    private IAtsClient client;
 
    @Before
@@ -60,6 +60,7 @@ public class AtsTaskEndpointImplTest {
       taskUuid1 = Lib.generateArtifactIdAsInt();
       taskUuid2 = Lib.generateArtifactIdAsInt();
       taskUuid3 = Lib.generateArtifactIdAsInt();
+      taskUuid4 = Lib.generateArtifactIdAsInt();
       codeTeamWfUuid = DemoUtil.getSawCodeUnCommittedWf().getUuid();
    }
 
@@ -68,6 +69,7 @@ public class AtsTaskEndpointImplTest {
       taskEp.delete(taskUuid1);
       taskEp.delete(taskUuid2);
       taskEp.delete(taskUuid3);
+      taskEp.delete(taskUuid4);
    }
 
    @Test
@@ -104,7 +106,9 @@ public class AtsTaskEndpointImplTest {
       Assert.assertTrue(workItems.isEmpty());
 
       // Test add relation where task on B side
-      newTask = createJaxAtsTask(taskUuid1, "Task 4", "description", createdByUserId, createdDate, null);
+      data = NewTaskDataFactory.get("Create Tasks via - " + getClass().getSimpleName(), DemoUsers.Joe_Smith.getUserId(),
+         codeTeamWfUuid);
+      newTask = createJaxAtsTask(taskUuid4, "Task 4", "description", createdByUserId, createdDate, null);
       newTask.setTaskWorkDef("WorkDef_Task_Default");
       data.getNewTasks().add(newTask);
       newTask.addRelation(CoreRelationTypes.SupportingInfo_SupportingInfo, codeTeamWfUuid);

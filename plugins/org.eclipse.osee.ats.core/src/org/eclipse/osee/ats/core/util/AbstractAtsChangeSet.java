@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsWorkItem;
 import org.eclipse.osee.ats.api.notify.AtsNotificationCollector;
 import org.eclipse.osee.ats.api.user.IAtsUser;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.api.util.IExecuteListener;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactToken;
+import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 
@@ -141,6 +143,21 @@ public abstract class AbstractAtsChangeSet implements IAtsChangeSet {
    @Override
    public IAtsUser getAsUser() {
       return asUser;
+   }
+   
+   @Override
+   public void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, IAtsObject atsObjec2) {
+      unrelate(atsObject.getStoreObject(), relationSide, atsObjec2.getStoreObject());
+   }
+
+   @Override
+   public void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, IAtsObject atsObject) {
+      unrelate(artifact, relationSide, atsObject.getStoreObject());
+   }
+
+   @Override
+   public void unrelate(IAtsObject atsObject, IRelationTypeSide relationSide, ArtifactId artifact) {
+      unrelate(atsObject.getStoreObject(), relationSide, artifact);
    }
 
 }

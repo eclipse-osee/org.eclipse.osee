@@ -384,4 +384,13 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
       add(artifact);
    }
 
+   @Override
+   public void unrelate(ArtifactId artifact, IRelationTypeSide relationSide, ArtifactId artifact2) {
+      Artifact art = getArtifact(artifact);
+      Artifact art2 = getArtifact(artifact2);
+      art.deleteRelation(relationSide, art2);
+      add(art);
+      add(art2);
+   }
+
 }

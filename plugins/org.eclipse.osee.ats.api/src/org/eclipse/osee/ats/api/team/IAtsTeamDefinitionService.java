@@ -26,4 +26,6 @@ public interface IAtsTeamDefinitionService {
 
    IAtsTeamDefinition getTeamDefHoldingVersions(IAtsProgram program);
 
+   IAtsTeamDefinition getTeamDefinition(String name);
+
 }

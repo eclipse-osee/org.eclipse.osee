@@ -65,3 +65,4 @@ Import-Package: com.google.common.cache,
 Require-Bundle: org.eclipse.osee.ats.api
 Export-Package: org.eclipse.osee.ats.rest,
  org.eclipse.osee.ats.rest.util
+Bundle-ActivationPolicy: lazy

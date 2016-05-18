@@ -20,6 +20,6 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses({AtsImpl_Notify_Suite.class, AtsImpl_Util_Suite.class})
-public class AllAtsImplTestSuite {
+public class AtsServer_JUnit_TestSuite {
    // Test Suite
 }
