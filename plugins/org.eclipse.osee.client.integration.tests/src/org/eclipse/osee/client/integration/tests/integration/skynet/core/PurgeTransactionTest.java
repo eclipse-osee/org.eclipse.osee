@@ -21,7 +21,6 @@ import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.A
 import org.eclipse.osee.client.integration.tests.integration.skynet.core.utils.TestUtil;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
-import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -49,8 +48,6 @@ public class PurgeTransactionTest {
 
    @Rule
    public OseeLogMonitorRule monitorRule = new OseeLogMonitorRule();
-
-   private static final BranchId BRANCH = SAW_Bld_2;
 
    private static final String[] TABLES =
       new String[] {"osee_attribute", "osee_artifact", "osee_relation_link", "osee_tx_details", "osee_txs"};
@@ -83,9 +80,9 @@ public class PurgeTransactionTest {
    }
 
    private int createArtifacts() throws Exception {
-      SkynetTransaction createTransaction = TransactionManager.createTransaction(BRANCH, "Purge Transaction Test");
-      softArts =
-         TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(), BRANCH);
+      SkynetTransaction createTransaction = TransactionManager.createTransaction(SAW_Bld_2, "Purge Transaction Test");
+      softArts = TestUtil.createSimpleArtifacts(CoreArtifactTypes.SoftwareRequirement, 10, getClass().getSimpleName(),
+         SAW_Bld_2);
       for (Artifact softArt : softArts) {
          softArt.persist(createTransaction);
       }
@@ -94,7 +91,7 @@ public class PurgeTransactionTest {
    }
 
    private int modifyArtifacts() throws Exception {
-      SkynetTransaction modifyTransaction = TransactionManager.createTransaction(BRANCH, "Purge Transaction Test");
+      SkynetTransaction modifyTransaction = TransactionManager.createTransaction(SAW_Bld_2, "Purge Transaction Test");
       for (Artifact softArt : softArts) {
          softArt.addAttribute(CoreAttributeTypes.StaticId, getClass().getSimpleName());
          softArt.persist(modifyTransaction);
@@ -112,6 +109,6 @@ public class PurgeTransactionTest {
 
    private int getCurrentRows(int createTxId) throws OseeCoreException {
       final String query = "select count(*) from osee_txs where transaction_id=? and tx_current=1";
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, query, createTxId);
+      return ConnectionHandler.getJdbcClient().fetch(-1, query, createTxId);
    }
 }

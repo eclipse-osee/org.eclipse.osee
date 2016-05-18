@@ -346,7 +346,7 @@ public class ConflictManagerInternal {
       // We just need the largest value at first so the complete source branch
       // will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
- 
+
       for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
          if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
@@ -369,8 +369,7 @@ public class ConflictManagerInternal {
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, BranchId branch, int endTransactionNumber) throws OseeCoreException {
       String sql =
          "SELECT count(1) FROM osee_txs txs WHERE txs.gamma_id = ? AND txs.branch_id = ? AND txs.transaction_id <= ?";
-      return ConnectionHandler.runPreparedQueryFetchInt(0, sql, destinationGammaId, branch.getId(),
-         endTransactionNumber) == 0;
+      return ConnectionHandler.getJdbcClient().fetch(0, sql, destinationGammaId, branch, endTransactionNumber) == 0;
    }
 
    private static void cleanUpConflictDB(Collection<Conflict> conflicts, long branchUuid, IProgressMonitor monitor) throws OseeCoreException {

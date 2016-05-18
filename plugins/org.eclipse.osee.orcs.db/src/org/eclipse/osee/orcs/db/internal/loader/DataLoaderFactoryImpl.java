@@ -68,7 +68,7 @@ public class DataLoaderFactoryImpl implements DataLoaderFactory {
          if (cancellation != null) {
             cancellation.checkForCancelled();
          }
-         count = jdbcClient.runPreparedQueryFetchObject(-1, context.getSql(), context.getParameters().toArray());
+         count = jdbcClient.fetch(-1, context.getSql(), context.getParameters().toArray());
       } finally {
          for (AbstractJoinQuery join : context.getJoins()) {
             try {

@@ -1,5 +1,6 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -107,7 +108,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private TransactionRecord loadTransaction(String query, Object... parameters) throws OseeCoreException {
-      return jdbcClient.fetchObject(null, this::loadInternalTransaction, query, parameters);
+      return jdbcClient.fetch(null, this::loadInternalTransaction, query, parameters);
    }
 
    @Override
@@ -118,13 +119,13 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    @Override
    public TransactionRecord getOrLoadPriorTransaction(TransactionCache cache, int transactionNumber, long branchUuid) throws OseeCoreException {
       int priorTransactionId =
-         jdbcClient.runPreparedQueryFetchObject(-1, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
+         jdbcClient.fetch(TRANSACTION_SENTINEL, GET_PRIOR_TRANSACTION, branchUuid, transactionNumber);
       return cache.getOrLoad(priorTransactionId);
    }
 
    @Override
    public TransactionRecord getHeadTransaction(TransactionCache cache, BranchId branch) throws OseeCoreException {
       String query = ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX);
-      return cache.getOrLoad(jdbcClient.runPreparedQueryFetchObject(-1, query, branch.getId()));
+      return cache.getOrLoad(jdbcClient.fetch(TRANSACTION_SENTINEL, query, branch));
    }
 }

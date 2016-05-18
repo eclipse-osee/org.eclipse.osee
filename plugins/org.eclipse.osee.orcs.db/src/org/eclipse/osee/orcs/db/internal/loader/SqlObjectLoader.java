@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.loader;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.concurrent.CancellationException;
 import org.eclipse.osee.executor.admin.HasCancellation;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -222,7 +222,7 @@ public class SqlObjectLoader {
 
    protected int loadHeadTransactionId(Long branchId) throws OseeCoreException {
       String sql = "SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?";
-      return getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL, sql, branchId);
+      return getJdbcClient().fetch(TRANSACTION_SENTINEL, sql, branchId);
    }
 
    protected <H> void load(AbstractLoadProcessor<H> processor, H handler, SqlContext loadContext, int fetchSize) throws OseeCoreException {

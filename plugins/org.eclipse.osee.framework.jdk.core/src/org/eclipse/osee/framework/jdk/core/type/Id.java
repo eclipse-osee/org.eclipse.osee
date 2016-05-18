@@ -36,6 +36,10 @@ public interface Id {
    }
 
    default boolean isValid() {
-      return !getId().equals(-1L);
+      return !isInvalid();
+   }
+
+   default boolean isInvalid() {
+      return getId().equals(SENTINEL);
    }
 }

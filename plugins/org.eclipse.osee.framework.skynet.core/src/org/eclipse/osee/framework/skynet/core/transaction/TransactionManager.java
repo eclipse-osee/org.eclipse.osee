@@ -18,6 +18,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
@@ -163,13 +164,12 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     */
    public static TransactionRecord getHeadTransaction(BranchId branch) throws OseeCoreException {
-      long branchUuid = branch.getUuid();
-      int transactionNumber = ConnectionHandler.runPreparedQueryFetchInt(-1,
-         ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchUuid);
-      if (transactionNumber == -1) {
-         throw new TransactionDoesNotExist("No transactions where found in the database for branch: %d", branchUuid);
+      int transaction = ConnectionHandler.getJdbcClient().fetch(RelationalConstants.TRANSACTION_SENTINEL,
+         ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch);
+      if (transaction == RelationalConstants.TRANSACTION_SENTINEL) {
+         throw new TransactionDoesNotExist("No transactions where found in the database for branch: %s", branch);
       }
-      return getTransactionId(transactionNumber);
+      return getTransactionId(transaction);
    }
 
    private static int getNextTransactionId() {

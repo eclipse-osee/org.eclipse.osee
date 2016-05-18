@@ -14,8 +14,8 @@ package org.eclipse.osee.framework.jdk.core.type;
 /**
  * @author Ryan D. Brooks
  */
-public class BaseId implements Id {
-   private final Long id;
+public class BaseId implements Id, Cloneable {
+   private Long id;
 
    public BaseId(Long id) {
       this.id = id;
@@ -45,5 +45,24 @@ public class BaseId implements Id {
    @Override
    public Long getId() {
       return id;
+   }
+
+   @Override
+   public BaseId clone() {
+      try {
+         return (BaseId) super.clone();
+      } catch (CloneNotSupportedException ex) {
+         return null;
+      }
+   }
+
+   /**
+    * Use this method to construct an instance of an Id that is of the same type as the object this is called on (likely
+    * a subclass of BaseId). It will set the numeric id to the given value.
+    */
+   public BaseId clone(Long id) {
+      BaseId newId = clone();
+      newId.id = id;
+      return newId;
    }
 }

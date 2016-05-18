@@ -35,8 +35,8 @@ public class IndexerDatabaseStatisticsCallable extends AbstractDatastoreCallable
       IndexerData indexerData = new IndexerData();
 
       indexerData.setTotalItemsInQueue(
-         getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE));
-      indexerData.setTotalTags(getJdbcClient().runPreparedQueryFetchObject(-1L, SELECT_TOTAL_TAGS));
+         getJdbcClient().fetch(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE));
+      indexerData.setTotalTags(getJdbcClient().fetch(-1L, SELECT_TOTAL_TAGS));
 
       return indexerData;
    }

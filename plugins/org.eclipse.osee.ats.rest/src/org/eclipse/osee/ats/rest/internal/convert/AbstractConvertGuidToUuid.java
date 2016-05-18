@@ -70,7 +70,7 @@ public abstract class AbstractConvertGuidToUuid implements IAtsDatabaseConversio
     * Temporary method till all code uses branch uuid. Remove after 0.17.0
     */
    private long getBranchIdLegacy(String branchGuid) {
-      Long longId = getJdbcClient().runPreparedQueryFetchObject(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
+      Long longId = getJdbcClient().fetch(0L, SELECT_BRANCH_ID_BY_GUID, branchGuid);
       Conditions.checkExpressionFailOnTrue(longId <= 0, "Error getting branch_id for branch: [%s]", branchGuid);
       return longId;
    }

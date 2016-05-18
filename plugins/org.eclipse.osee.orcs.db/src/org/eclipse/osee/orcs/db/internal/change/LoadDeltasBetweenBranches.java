@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.orcs.db.internal.change;
 
+import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.eclipse.osee.framework.core.data.ApplicabilityId;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.RelationalConstants;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
@@ -229,8 +229,7 @@ public class LoadDeltasBetweenBranches extends AbstractDatastoreCallable<List<Ch
    }
 
    private int getBaseTxId(BranchId branch) throws OseeCoreException {
-      return getJdbcClient().runPreparedQueryFetchObject(RelationalConstants.TRANSACTION_SENTINEL,
-         SELECT_BASE_TRANSACTION, branch);
+      return getJdbcClient().fetch(TRANSACTION_SENTINEL, SELECT_BASE_TRANSACTION, branch);
    }
 
 }

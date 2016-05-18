@@ -143,7 +143,7 @@ public class DatabaseActivityStorage implements ActivityStorage {
 
    @Override
    public boolean typeExists(Long typeId) {
-      return getJdbcClient().runPreparedQueryFetchObject(-1L, COUNT_TYPE, typeId) > 0;
+      return getJdbcClient().fetch(-1L, COUNT_TYPE, typeId) > 0;
    }
 
 }

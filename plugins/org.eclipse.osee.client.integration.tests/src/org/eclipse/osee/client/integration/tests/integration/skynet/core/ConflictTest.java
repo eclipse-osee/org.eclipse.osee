@@ -285,7 +285,7 @@ public class ConflictTest {
       String complementSql = jdbcClient.getDbType().getComplementSql();
 
       String query = String.format(NO_TX_CURRENT_SET, dataId, dataTable, complementSql, dataId, dataTable);
-      if (jdbcClient.runPreparedQueryFetchObject(null, query) != null) {
+      if (jdbcClient.fetch(null, query) != null) {
          fail(String.format("No TX Current Set Failed for dataId = %s and dataTable = %s", dataId, dataTable));
       }
    }

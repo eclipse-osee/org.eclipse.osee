@@ -110,7 +110,7 @@ public class DataLoaderFactoryImplTest {
       factory = module.createDataLoaderFactory(spyLoader);
 
       when(jdbcClient.getStatement()).thenReturn(chStmt);
-      when(jdbcClient.runPreparedQueryFetchObject(eq(-1), Matchers.anyString(), eq(COMMON_ID))).thenReturn(
+      when(jdbcClient.fetch(eq(-1), Matchers.anyString(), eq(COMMON_ID))).thenReturn(
          EXPECTED_HEAD_TX_ID);
 
       when(joinFactory.createArtifactJoinQuery()).thenAnswer(new Answer<ArtifactJoinQuery>() {

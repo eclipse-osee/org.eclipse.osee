@@ -105,7 +105,7 @@ public final class IndexBranchesDatabaseCallable extends AbstractDatastoreCallab
          branchJoin.store();
 
          if (collector != null) {
-            int totalAttributes = getJdbcClient().runPreparedQueryFetchObject(-1, countQuery, params);
+            int totalAttributes = getJdbcClient().fetch(-1, countQuery, params);
             collector.onIndexTotalTaskItems(totalAttributes);
          }
 

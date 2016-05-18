@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcClientConfig;
@@ -209,46 +211,6 @@ public final class JdbcClientImpl implements JdbcClient {
       }
    }
 
-   @Override
-   public <T> T runPreparedQueryFetchObject(T defaultValue, String query, Object... data) throws JdbcException {
-      return runPreparedQueryFetchObject(getStatement(), defaultValue, query, data);
-   }
-
-   @Override
-   public <T> T runPreparedQueryFetchObject(JdbcConnection connection, T defaultValue, String query, Object... data) throws JdbcException {
-      return runPreparedQueryFetchObject(getStatement(connection), defaultValue, query, data);
-   }
-
-   @SuppressWarnings("unchecked")
-   private <T> T runPreparedQueryFetchObject(JdbcStatement chStmt, T defaultValue, String query, Object... data) throws JdbcException {
-      if (defaultValue == null) {
-         throw newJdbcException("default value cannot be null");
-      }
-      try {
-         chStmt.runPreparedQuery(1, query, data);
-         if (chStmt.next()) {
-            Object toReturn = null;
-            Class<?> classValue = defaultValue.getClass();
-            if (classValue.isAssignableFrom(Integer.class)) {
-               toReturn = chStmt.getInt(1);
-            } else if (classValue.isAssignableFrom(String.class)) {
-               toReturn = chStmt.getString(1);
-            } else if (classValue.isAssignableFrom(Long.class)) {
-               toReturn = chStmt.getLong(1);
-            } else if (classValue.isAssignableFrom(Boolean.class)) {
-               String value = chStmt.getObject(1).toString();
-               toReturn = Boolean.parseBoolean(value);
-            } else {
-               toReturn = chStmt.getObject(1);
-            }
-            return (T) toReturn;
-         }
-         return defaultValue;
-      } finally {
-         chStmt.close();
-      }
-   }
-
    @SuppressWarnings("unchecked")
    @Override
    public <T> T runFunction(T defaultValue, String function, Object... data) {
@@ -392,13 +354,72 @@ public final class JdbcClientImpl implements JdbcClient {
    }
 
    @Override
-   public <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
-      try (JdbcStatement chStmt = getStatement()) {
+   public <R> R fetch(R defaultValue, String query, Object... data) {
+      return fetch(null, defaultValue, query, data);
+   }
+
+   @Override
+   public <R> R fetch(JdbcConnection connection, R defaultValue, String query, Object... data) {
+      return fetch(connection, defaultValue, stmt -> fetch(stmt, defaultValue), query, data);
+   }
+
+   private static <R> R fetch(JdbcStatement stmt, R defaultValue) {
+      Object toReturn = null;
+      if (defaultValue == null) {
+         return (R) stmt.getObject(1);
+      }
+      Class<?> clazz = defaultValue.getClass();
+      if (Integer.class.isAssignableFrom(clazz)) {
+         toReturn = stmt.getInt(1);
+      } else if (Long.class.isAssignableFrom(clazz)) {
+         toReturn = stmt.getLong(1);
+      } else if (String.class.isAssignableFrom(clazz)) {
+         toReturn = stmt.getString(1);
+      } else if (Boolean.class.isAssignableFrom(clazz)) {
+         String value = stmt.getObject(1).toString();
+         toReturn = Boolean.parseBoolean(value);
+      } else if (BaseId.class.isAssignableFrom(clazz)) {
+         toReturn = ((BaseId) defaultValue).clone(stmt.getLong(1));
+      } else {
+         toReturn = stmt.getObject(1);
+      }
+      return (R) toReturn;
+   }
+
+   @Override
+   public <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, String query, Object... data) {
+      return fetchOrException(null, exSupplier, stmt -> fetch(stmt, null), query, data);
+   }
+
+   @Override
+   public <R> R fetch(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
+      return fetch(null, defaultValue, function, query, data);
+   }
+
+   @Override
+   public <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query, Object... data) {
+      try (JdbcStatement chStmt = getStatement(connection)) {
          chStmt.runPreparedQuery(query, data);
          if (chStmt.next()) {
             return function.apply(chStmt);
          }
          return defaultValue;
+      }
+   }
+
+   @Override
+   public <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data) {
+      return fetchOrException(null, exSupplier, function, query, data);
+   }
+
+   @Override
+   public <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data) {
+      try (JdbcStatement chStmt = getStatement(connection)) {
+         chStmt.runPreparedQuery(query, data);
+         if (chStmt.next()) {
+            return function.apply(chStmt);
+         }
+         throw exSupplier.get();
       }
    }
 

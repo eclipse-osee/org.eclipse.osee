@@ -66,10 +66,6 @@ public final class ConnectionHandler {
       return getJdbcClient().getStatement();
    }
 
-   public static JdbcStatement getStatement(JdbcConnection connection) throws OseeDataStoreException {
-      return getJdbcClient().getStatement(connection);
-   }
-
    /**
     * This method should only be used when not contained in a DB transaction
     *
@@ -97,16 +93,7 @@ public final class ConnectionHandler {
       return getJdbcClient().runPreparedUpdate(connection, query, data);
    }
 
-   public static int runPreparedQueryFetchInt(int defaultValue, String query, Object... data) throws OseeCoreException {
-      return getJdbcClient().runPreparedQueryFetchObject(defaultValue, query, data);
-   }
-
-   public static String runPreparedQueryFetchString(String defaultValue, String query, Object... data) throws OseeCoreException {
-      return getJdbcClient().runPreparedQueryFetchObject(defaultValue, query, data);
-   }
-
    public static long getNextSequence(String sequenceName, boolean aggressiveFetch) {
       return getJdbcClient().getNextSequence(sequenceName, aggressiveFetch);
    }
-
 }

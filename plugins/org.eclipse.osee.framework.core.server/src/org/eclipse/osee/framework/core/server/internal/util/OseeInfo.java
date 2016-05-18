@@ -24,7 +24,7 @@ public class OseeInfo {
    private static Map<String, String> cache = new HashMap<>();
 
    public static String getValue(JdbcClient jdbcClient, String key) {
-      String toReturn = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+      String toReturn = jdbcClient.fetch("", GET_VALUE_SQL, key);
       cache.put(key, toReturn);
       return toReturn;
    }

@@ -114,7 +114,7 @@ public abstract class AbstractDatabaseStorage<T> {
 
          @Override
          protected Long innerCall() throws Exception {
-            return jdbcClient.runPreparedQueryFetchObject(-1L, query, data);
+            return jdbcClient.fetch(-1L, query, data);
          }
       };
    }

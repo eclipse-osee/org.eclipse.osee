@@ -47,7 +47,7 @@ public class OseeInfo {
       Pair<Long, String> pair = cache.get(key);
       String value;
       if (pair == null || pair.getFirst() + maxStaleness < System.currentTimeMillis()) {
-         value = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+         value = jdbcClient.fetch("", GET_VALUE_SQL, key);
          cacheValue(key, value);
       } else {
          value = pair.getSecond();

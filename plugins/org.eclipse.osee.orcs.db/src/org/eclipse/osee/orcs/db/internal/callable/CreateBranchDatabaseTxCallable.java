@@ -108,8 +108,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
    private void checkPreconditions(JdbcConnection connection, BranchId parentBranch, Long destinationBranch) throws OseeCoreException {
       if (newBranchData.getBranchType().isMergeBranch()) {
-         if (jdbcClient.runPreparedQueryFetchObject(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch,
-            destinationBranch) > 0) {
+         if (jdbcClient.fetch(connection, 0, TEST_MERGE_BRANCH_EXISTENCE, parentBranch, destinationBranch) > 0) {
             throw new OseeStateException("Existing merge branch detected for [%s] and [%d]", parentBranch,
                destinationBranch);
          }
@@ -118,7 +117,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
          // this checks to see if there are any branches that aren't either DELETED or REBASELINED with the same artifact ID
          if (associatedArtifactId > -1 && !SystemUser.OseeSystem.getUuid().equals((long) associatedArtifactId)) {
-            int count = jdbcClient.runPreparedQueryFetchObject(connection, 0,
+            int count = jdbcClient.fetch(connection, 0,
                "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?)",
                newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
                BranchState.REBASELINED.getValue());
@@ -128,7 +127,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
                // port branch with the same artifact ID - if the type is port type, then we need an additional check
                if (newBranchData.getBranchType().equals(BranchType.PORT)) {
 
-                  int portcount = jdbcClient.runPreparedQueryFetchObject(connection, 0,
+                  int portcount = jdbcClient.fetch(connection, 0,
                      "SELECT (1) FROM osee_branch WHERE associated_art_id = ? AND branch_state NOT IN (?, ?) AND branch_type = ?",
                      newBranchData.getAssociatedArtifactId(), BranchState.DELETED.getValue(),
                      BranchState.REBASELINED.getValue(), BranchType.PORT.getValue());
@@ -175,8 +174,7 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          }
       }
 
-      int inheritAccessControl =
-         jdbcClient.runPreparedQueryFetchObject(connection, 0, SELECT_INHERIT_ACCESS_CONTROL, parentBranch);
+      int inheritAccessControl = jdbcClient.fetch(connection, 0, SELECT_INHERIT_ACCESS_CONTROL, parentBranch);
 
       //write to branch table
       Object[] toInsert = new Object[] {

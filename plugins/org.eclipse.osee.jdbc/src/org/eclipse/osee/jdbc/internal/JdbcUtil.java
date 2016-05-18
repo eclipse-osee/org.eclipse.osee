@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.type.Id;
+import org.eclipse.osee.framework.jdk.core.type.Identity;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.network.PortUtil;
@@ -98,6 +99,9 @@ public final class JdbcUtil {
          } else if (dataValue instanceof Id) {
             Id id = (Id) dataValue;
             statement.setLong(preparedIndex, id.getId());
+         } else if (dataValue instanceof Identity<?>) {// remove once Id is fully utilized
+            Identity<?> id = (Identity<?>) dataValue;
+            statement.setInt(preparedIndex, (int) id.getGuid());
          } else {
             statement.setObject(preparedIndex, dataValue);
          }

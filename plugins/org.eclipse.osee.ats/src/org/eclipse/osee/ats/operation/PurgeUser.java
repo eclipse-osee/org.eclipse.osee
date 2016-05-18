@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.results.XResultDataUI;
 import org.eclipse.osee.framework.ui.swt.Displays;
+import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 
@@ -51,6 +52,7 @@ public class PurgeUser extends AbstractBlam {
    private static final String UPDATE_AUTHORED_TRANSACTIONS = "update osee_tx_details set author=? where author=?";
    private static final String UPDATE_RELATIONS_ASIDE = "update osee_relation_link set a_art_id=? where a_art_id=?";
    private static final String UPDATE_RELATIONS_BSIDE = "update osee_relation_link set b_art_id=? where b_art_id=?";
+   private final JdbcClient jdbcClient = ConnectionHandler.getJdbcClient();
 
    @Override
    public String getName() {
@@ -76,8 +78,7 @@ public class PurgeUser extends AbstractBlam {
                   return;
                }
                //handle roll-backs and exception handling
-               ConnectionHandler.getJdbcClient().runTransaction(new JdbcTransaction() {
-
+               jdbcClient.runTransaction(new JdbcTransaction() {
                   @Override
                   public void handleTxWork(JdbcConnection connection) {
                      // start replacing all transactions, relations, etc.
@@ -111,10 +112,9 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void findAndUpdateAuthoredTransactions(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfAuthoredTransactions = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue,
-         GET_AUTHORED_TRANSACTIONS, new Object[] {fromUser.getArtId()});
-      numOfUpdatedAuthoredTransactions = ConnectionHandler.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS,
-         new Object[] {toUser.getArtId(), fromUser.getArtId()});
+      numOfAuthoredTransactions = jdbcClient.fetch(-1, GET_AUTHORED_TRANSACTIONS, fromUser.getArtId());
+      numOfUpdatedAuthoredTransactions =
+         jdbcClient.runPreparedUpdate(connection, UPDATE_AUTHORED_TRANSACTIONS, toUser.getArtId(), fromUser.getArtId());
    }
 
    private void findAndUpdateRelations(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
@@ -123,17 +123,15 @@ public class PurgeUser extends AbstractBlam {
    }
 
    private void updateRelationA(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfASideRelations = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_ASIDE,
-         new Object[] {fromUser.getArtId()});
-      numOfUpdatedASideRelations = ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE,
-         new Object[] {toUser.getArtId(), fromUser.getArtId()});
+      numOfASideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_ASIDE, fromUser.getArtId());
+      numOfUpdatedASideRelations =
+         jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_ASIDE, toUser.getArtId(), fromUser.getArtId());
    }
 
    private void updateRelationB(JdbcConnection connection, final User fromUser, final User toUser) throws OseeCoreException {
-      numOfBSideRelations = ConnectionHandler.runPreparedQueryFetchInt(defaultUpdateValue, GET_RELATIONS_BSIDE,
-         new Object[] {fromUser.getArtId()});
-      numOfUpdatedBSideRelations = ConnectionHandler.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE,
-         new Object[] {toUser.getArtId(), fromUser.getArtId()});
+      numOfBSideRelations = jdbcClient.fetch(defaultUpdateValue, GET_RELATIONS_BSIDE, fromUser.getArtId());
+      numOfUpdatedBSideRelations =
+         jdbcClient.runPreparedUpdate(connection, UPDATE_RELATIONS_BSIDE, toUser.getArtId(), fromUser.getArtId());
    }
 
    private void deleteArtifact(final User fromUser) throws OseeCoreException {

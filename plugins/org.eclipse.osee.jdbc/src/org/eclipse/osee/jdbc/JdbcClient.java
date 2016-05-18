@@ -14,6 +14,8 @@ import java.sql.SQLException;
 import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -34,7 +36,19 @@ public interface JdbcClient {
 
    int runQueryWithLimit(Consumer<JdbcStatement> consumer, int limit, String query, Object... data);
 
-   <R> R fetchObject(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
+   <R> R fetch(R defaultValue, String query, Object... data);
+
+   <R> R fetch(JdbcConnection connection, R defaultValue, String query, Object... data);
+
+   <R> R fetch(R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
+
+   <R> R fetch(JdbcConnection connection, R defaultValue, Function<JdbcStatement, R> function, String query, Object... data);
+
+   <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data);
+
+   <R> R fetchOrException(JdbcConnection connection, Supplier<OseeCoreException> exSupplier, Function<JdbcStatement, R> function, String query, Object... data);
+
+   <R> R fetchOrException(Supplier<OseeCoreException> exSupplier, String query, Object... data);
 
    int runBatchUpdate(String query, Iterable<Object[]> dataList);
 
@@ -43,8 +57,6 @@ public interface JdbcClient {
    OseePreparedStatement getBatchStatement(String query, int batchIncrementSize) throws SQLException;
 
    int runPreparedUpdate(String query, Object... data);
-
-   <T> T runPreparedQueryFetchObject(T defaultValue, String query, Object... data);
 
    /**
     * <pre>
@@ -72,8 +84,6 @@ public interface JdbcClient {
    OseePreparedStatement getBatchStatement(JdbcConnection connection, String query);
 
    OseePreparedStatement getBatchStatement(JdbcConnection connection, String query, int batchIncrementSize);
-
-   <T> T runPreparedQueryFetchObject(JdbcConnection connection, T defaultValue, String query, Object... data);
 
    //////////////////////////////////////////////////
 

@@ -80,8 +80,7 @@ public class JdbcSequenceProvider {
             long lastValue = -1L;
             boolean gotSequence = false;
             while (!gotSequence) {
-               long currentValue =
-                  client.runPreparedQueryFetchObject(connection, lastValue, QUERY_SEQUENCE, sequenceName);
+               long currentValue = client.fetch(connection, lastValue, QUERY_SEQUENCE, sequenceName);
                if (currentValue == lastValue) {
                   internalInitializeSequence(connection, sequenceName);
                   lastValue = 0;

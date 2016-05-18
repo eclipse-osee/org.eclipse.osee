@@ -106,7 +106,7 @@ public class CommitBranchDatabaseTxCallable extends AbstractDatastoreTxCallable<
    }
 
    public synchronized void checkPreconditions() throws OseeCoreException {
-      int count = getJdbcClient().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch,
+      int count = getJdbcClient().fetch(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch,
          BranchState.COMMIT_IN_PROGRESS.getValue());
       if (sourceBranch.getBranchState().isCommitInProgress() || sourceBranch.getArchiveState().isArchived() || count > 0) {
          throw new OseeStateException("Commit completed or in progress for [%s]", sourceBranch);

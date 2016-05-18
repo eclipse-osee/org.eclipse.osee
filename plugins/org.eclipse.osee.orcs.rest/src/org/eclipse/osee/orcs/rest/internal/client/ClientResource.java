@@ -195,7 +195,7 @@ public class ClientResource {
    }
 
    private ClientSession getClientSession(String sessionId) {
-      return jdbcService.getClient().fetchObject(null, stmt -> createSession(stmt),
+      return jdbcService.getClient().fetch(null, stmt -> createSession(stmt),
          "select * from osee_session where session_id = ?", sessionId);
    }
 

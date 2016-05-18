@@ -11,12 +11,12 @@
 package org.eclipse.osee.orcs.db.internal.callable;
 
 import static org.eclipse.osee.framework.core.data.RelationalConstants.BRANCH_SENTINEL;
+import static org.eclipse.osee.framework.core.data.RelationalConstants.TRANSACTION_SENTINEL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 import org.eclipse.osee.executor.admin.CancellableCallable;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.model.change.ChangeIgnoreType;
 import org.eclipse.osee.framework.core.model.change.ChangeItem;
 import org.eclipse.osee.jdbc.JdbcClient;
@@ -67,7 +67,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
    }
 
    private List<ChangeItem> callComputeChanges(BranchId mergeBranch) throws Exception {
-      Integer mergeTxId = getJdbcClient().runPreparedQueryFetchObject(-1, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranch);
+      Integer mergeTxId = getJdbcClient().fetch(TRANSACTION_SENTINEL, SELECT_MERGE_BRANCH_HEAD_TX, mergeBranch);
 
       Callable<List<ChangeItem>> loadChanges =
          new LoadDeltasBetweenBranches(getLogger(), getSession(), getJdbcClient(), joinFactory, sourceHead.getBranch(),
@@ -94,9 +94,7 @@ public class CommitBranchDatabaseCallable extends AbstractDatastoreCallable<Inte
 
    @Override
    public Integer call() throws Exception {
-      Long mergeBranchId = getJdbcClient().runPreparedQueryFetchObject(BRANCH_SENTINEL.getId(),
-         SELECT_MERGE_BRANCH_UUID, source, destination);
-      BranchId mergeBranch = TokenFactory.createBranch(mergeBranchId);
+      BranchId mergeBranch = getJdbcClient().fetch(BRANCH_SENTINEL, SELECT_MERGE_BRANCH_UUID, source, destination);
       List<ChangeItem> changes = callComputeChanges(mergeBranch);
 
       CancellableCallable<Integer> commitCallable = new CommitBranchDatabaseTxCallable(getLogger(), getSession(),

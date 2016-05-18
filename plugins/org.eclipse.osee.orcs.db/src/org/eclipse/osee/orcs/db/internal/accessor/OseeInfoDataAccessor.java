@@ -63,7 +63,7 @@ public class OseeInfoDataAccessor implements KeyValueDataAccessor {
       } else if (DataStoreConstants.DATASTORE_INDEX_ON_START_UP.equals(key)) {
          toReturn = String.valueOf(isCheckTagQueueOnStartupAllowed());
       } else {
-         toReturn = jdbcClient.runPreparedQueryFetchObject("", GET_VALUE_SQL, key);
+         toReturn = jdbcClient.fetch("", GET_VALUE_SQL, key);
       }
       return toReturn;
    }

@@ -177,7 +177,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
             int branchType = chStmt.getInt("branch_type");
             int branchState = chStmt.getInt("branch_state");
             boolean isArchived = chStmt.getInt("archived") == 1 ? true : false;
-            int numberOfTxs = ConnectionHandler.runPreparedQueryFetchInt(0,
+            int numberOfTxs = ConnectionHandler.getJdbcClient().fetch(0,
                "select count(1) from osee_tx_details where branch_id = ?", branchUuid);
             data.put(branchUuid, new BranchData(branchUuid, chStmt.getString("branch_name"),
                BranchType.valueOf(branchType), BranchState.getBranchState(branchState), isArchived, numberOfTxs));

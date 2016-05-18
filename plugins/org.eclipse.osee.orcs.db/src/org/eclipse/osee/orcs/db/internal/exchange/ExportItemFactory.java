@@ -129,7 +129,7 @@ public class ExportItemFactory {
    }
 
    private void processTxOptions(PropertyStore options) throws OseeCoreException {
-      long maxTx = getDbService().runPreparedQueryFetchObject(-1L, GET_MAX_TX);
+      long maxTx = getDbService().fetch(-1L, GET_MAX_TX);
       long userMaxTx = getMaxTransaction(options);
       if (userMaxTx == Long.MIN_VALUE || userMaxTx > maxTx) {
          options.put(ExportOptions.MAX_TXS.name(), Long.toString(maxTx));

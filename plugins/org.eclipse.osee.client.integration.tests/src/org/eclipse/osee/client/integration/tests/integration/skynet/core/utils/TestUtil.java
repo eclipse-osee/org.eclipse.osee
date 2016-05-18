@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -78,7 +78,7 @@ public final class TestUtil {
    }
 
    private static int getTableRowCount(String tableName) throws OseeCoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(0, "SELECT count(1) FROM " + tableName);
+      return ConnectionHandler.getJdbcClient().fetch(0, "SELECT count(1) FROM " + tableName);
    }
 
    public static Branch createBranch(int index, long branchUuid) {
