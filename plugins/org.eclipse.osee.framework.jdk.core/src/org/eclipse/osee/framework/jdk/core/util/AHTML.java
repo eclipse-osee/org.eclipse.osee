@@ -67,12 +67,27 @@ public class AHTML {
     * Remove (X|HT)ML like comments of form:<br/>
     * <code>&lt;!--\\s*.*\\s*--&gt;</code><br/>
     * </p>
-    * 
+    *
     * @param value &lt;tagA&gt;&lt;!-- Comment -->aValue&lt;/tagA&gt;
     * @return &lt;tagA&gt;aValue&lt;/tagA&gt;
     */
    public static String removeComments(String value) {
       return Strings.isValid(value) ? value.replaceAll("<!--\\s*.*\\s*-->", "") : value;
+   }
+
+   /**
+    *
+    */
+   public static Exception isUrlValid(String urlStr, InetSocketAddress addr) {
+      try {
+         URL url = new URL(urlStr);
+         URLConnection connection = url.openConnection(new Proxy(Proxy.Type.HTTP, addr));
+         connection.setReadTimeout(5000);
+         connection.connect();
+      } catch (Exception ex) {
+         return ex;
+      }
+      return null;
    }
 
    public static String getUrlPageHtml(String urlStr, InetSocketAddress addr) {
@@ -235,7 +250,7 @@ public class AHTML {
 
    /**
     * Create target for hyperlink to jump to
-    * 
+    *
     * @return Return name target string
     */
    public static String nameTarget(String str) {
@@ -247,7 +262,7 @@ public class AHTML {
 
    /**
     * Create &lt;a href> hyperlink to nameTarget
-    * 
+    *
     * @return Return name link string
     */
    public static String nameLink(int num, String text) {
@@ -256,7 +271,7 @@ public class AHTML {
 
    /**
     * Create &lt;a href> hyperlink to nameTarget
-    * 
+    *
     * @return Return name link string
     */
    public static String nameLink(String name, String text) {
@@ -265,7 +280,7 @@ public class AHTML {
 
    /**
     * Create &lt;a href> hyperlink to nameTarget using name as hyperlink tag and display text
-    * 
+    *
     * @return Return name link string
     */
    public static String nameLink(String name) {
@@ -278,7 +293,7 @@ public class AHTML {
 
    /**
     * Create a table with one row/colum containing str
-    * 
+    *
     * @return return simple table string
     */
    public static String simpleTable(String str, int width) {
@@ -287,7 +302,7 @@ public class AHTML {
 
    /**
     * Create a table with one row/colum containing str
-    * 
+    *
     * @return Return border table string
     */
    public static String borderTable(String str, int width, String bgcolor, String caption) {
@@ -308,7 +323,7 @@ public class AHTML {
 
    /**
     * Create a table with one row multi column containing str[]
-    * 
+    *
     * @param str = array of strings for columns
     * @return Return multi-column table string
     */
@@ -318,7 +333,7 @@ public class AHTML {
 
    /**
     * Create a table with one row multi column containing str[]
-    * 
+    *
     * @param str - array of strings for columns
     * @param width - percent (1..100) of screen for table
     * @return Return multi-column table string
