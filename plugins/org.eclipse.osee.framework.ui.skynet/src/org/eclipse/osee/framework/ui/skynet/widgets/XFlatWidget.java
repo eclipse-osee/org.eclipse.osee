@@ -275,9 +275,12 @@ public abstract class XFlatWidget<T> extends XLabel {
          setToolTipText("Adds a page");
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       public void run() {
-         flatControl.addPage((T) null);
+         Object obj = null;
+         T object = (T) obj;
+         flatControl.addPage(object);
       }
    }
 

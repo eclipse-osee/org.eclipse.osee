@@ -328,12 +328,15 @@ public abstract class XStackedWidget<T> extends XLabel {
          setToolTipText("Adds a page");
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       public void run() {
          if (stackedControl.getTotalPages() >= maxPage) {
             MessageDialog.openError(AWorkbench.getActiveShell(), "Add Attribute", "Already at maximum allowed.");
          } else {
-            addPage((T) null);
+            Object obj = null;
+            T object = (T) obj;
+            addPage(object);
          }
       }
    }
