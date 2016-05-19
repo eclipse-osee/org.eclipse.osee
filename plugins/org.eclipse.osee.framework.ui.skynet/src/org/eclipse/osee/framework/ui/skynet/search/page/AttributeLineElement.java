@@ -96,6 +96,9 @@ public class AttributeLineElement implements IAdaptable {
       } else if (type == Attribute.class) {
          return (T) Integer.valueOf(getAttribute());
       }
-      return null;
+
+      Object obj = null;
+      T object = (T) obj;
+      return object;
    }
 }

@@ -65,10 +65,12 @@ public class ArtifactEditorInput implements IEditorInput {
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getAdapter(Class<T> type) {
-      if (type != null && type.isAssignableFrom(Artifact.class)) {
-         return (T) getArtifact();
+      if (type != null && type.isAssignableFrom(getClass())) {
+         return (T) this;
       }
-      return null;
+      Object obj = null;
+      T object = (T) obj;
+      return object;
    }
 
    public Artifact getArtifact() {

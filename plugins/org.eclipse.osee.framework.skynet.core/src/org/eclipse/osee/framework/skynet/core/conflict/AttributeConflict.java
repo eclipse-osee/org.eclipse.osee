@@ -185,19 +185,20 @@ public class AttributeConflict extends Conflict {
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getAdapter(Class<T> type) {
+      T toReturn = null;
       if (type != null && type.isAssignableFrom(getClass())) {
-         return (T) this;
+         toReturn = (T) this;
       }
 
       if (type.isInstance(attribute)) {
          try {
-            return (T) getSourceAttribute(true);
+            toReturn = (T) getSourceAttribute(true);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
 
-      return null;
+      return toReturn;
    }
 
    public int getAttrId() {

@@ -62,6 +62,9 @@ class WrapperForRelationLink implements IAdaptable {
       if (type != null && type.isAssignableFrom(Artifact.class)) {
          return (T) other;
       }
-      return null;
+
+      Object obj = null;
+      T object = (T) obj;
+      return object;
    }
 }

@@ -71,6 +71,9 @@ public class AttributeMatch extends Match implements IAdaptable {
       if (type != null && type.isAssignableFrom(Artifact.class)) {
          return (T) getArtifact();
       }
-      return null;
+
+      Object obj = null;
+      T object = (T) obj;
+      return object;
    }
 }

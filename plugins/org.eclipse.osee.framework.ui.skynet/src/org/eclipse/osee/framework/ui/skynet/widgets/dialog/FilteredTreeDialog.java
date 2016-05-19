@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.dialog;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -106,7 +107,7 @@ public class FilteredTreeDialog extends MessageDialog {
    }
 
    @SuppressWarnings("unchecked")
-   public <T> T getSelectedFirst() {
+   public @Nullable <T> T getSelectedFirst() {
       if (selected.size() > 0) {
          return (T) selected.iterator().next();
       }

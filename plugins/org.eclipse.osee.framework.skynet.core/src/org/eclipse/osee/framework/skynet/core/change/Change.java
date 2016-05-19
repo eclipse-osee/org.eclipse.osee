@@ -68,13 +68,13 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
             }
             return areDeltasEqual && change.getArtId() == getArtId() &&
             //
-            change.getGamma() == getGamma() &&
-            //
-            change.getChangeArtifact().equals(getChangeArtifact()) &&
-            //
-            change.getModificationType() == getModificationType() &&
-            //
-            change.getTxDelta().equals(getTxDelta());
+               change.getGamma() == getGamma() &&
+               //
+               change.getChangeArtifact().equals(getChangeArtifact()) &&
+               //
+               change.getModificationType() == getModificationType() &&
+               //
+               change.getTxDelta().equals(getTxDelta());
          }
       }
       return false;
@@ -168,14 +168,18 @@ public abstract class Change implements IAdaptable, Comparable<Change>, HasBranc
    @SuppressWarnings("unchecked")
    @Override
    public <T> T getAdapter(Class<T> type) {
-      if (type != null && type.isAssignableFrom(Artifact.class)) {
-         return (T) getChangeArtifact();
-      } else if (isHistorical() && type.isInstance(getTxDelta().getEndTx())) {
-         return (T)getTxDelta().getEndTx();
-      } else if (type.isAssignableFrom(getClass())) {
-         return (T) this;
+      T toReturn = null;
+      if (type != null) {
+         if (type.isAssignableFrom(Artifact.class)) {
+            toReturn = (T) getChangeArtifact();
+         } else if (isHistorical() && type.isInstance(getTxDelta().getEndTx())) {
+            toReturn = (T) getTxDelta().getEndTx();
+         } else if (type.isAssignableFrom(getClass())) {
+            toReturn = (T) this;
+         }
       }
-      return null;
+
+      return toReturn;
    }
 
    @Override
