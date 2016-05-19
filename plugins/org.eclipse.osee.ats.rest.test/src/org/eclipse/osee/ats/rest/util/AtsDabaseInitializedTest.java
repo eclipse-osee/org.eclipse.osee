@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.rest.util;
 
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.db.mocks.AtsIntegrationRule;
+import org.eclipse.osee.ats.db.mocks.AtsIntegrationByMethodRule;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
 import org.junit.Assert;
@@ -25,7 +25,7 @@ import org.junit.rules.TestRule;
 public class AtsDabaseInitializedTest {
 
    @Rule
-   public TestRule db = AtsIntegrationRule.integrationRule(this);
+   public TestRule db = AtsIntegrationByMethodRule.integrationRule(this);
 
    // @formatter:off
    @OsgiService public IAtsServer atsServer;

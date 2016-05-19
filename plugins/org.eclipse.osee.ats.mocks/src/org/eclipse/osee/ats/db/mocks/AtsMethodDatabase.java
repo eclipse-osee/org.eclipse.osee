@@ -19,11 +19,11 @@ import org.junit.runners.model.Statement;
 /**
  * @author Donald G. Dunne
  */
-public class AtsDatabase implements TestRule {
+public class AtsMethodDatabase implements TestRule {
 
    private final String[] osgiBindings;
 
-   public AtsDatabase(String... osgiBindings) {
+   public AtsMethodDatabase(String... osgiBindings) {
       this.osgiBindings = osgiBindings;
    }
 
@@ -36,7 +36,7 @@ public class AtsDatabase implements TestRule {
             Assert.assertNotNull("Description cannot be null", description);
             Assert.assertTrue("Osgi Binding cannot be empty", osgiBindings.length > 0);
             AtsTestDatabase db =
-               new AtsTestDatabase(description.getClassName(), description.getMethodName(), osgiBindings);
+               new AtsTestDatabase(description.getClassName(), description.getMethodName(), false, osgiBindings);
             try {
                db.initialize();
                base.evaluate();

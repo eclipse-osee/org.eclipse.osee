@@ -21,7 +21,7 @@ import java.util.Hashtable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.db.mocks.AtsDatabase;
+import org.eclipse.osee.ats.db.mocks.AtsMethodDatabase;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.jdbc.JdbcConstants;
@@ -47,23 +47,30 @@ public class AtsTestDatabase {
 
    private Configuration configuration;
    private JdbcService jdbcService;
+   private final boolean asClass;
 
-   public AtsTestDatabase(String className, String methodName, String... osgiBindings) {
+   public AtsTestDatabase(String className, String methodName, boolean asClass, String... osgiBindings) {
       this.className = className;
       this.methodName = methodName;
+      this.asClass = asClass;
       this.osgiBindings = osgiBindings;
    }
 
    private File createTempFolder() {
       String tempDir = System.getProperty("user.home");
-      String folderName = String.format("%s_%s_%s", className, methodName, Lib.getDateTimeString());
+      String folderName = null;
+      if (asClass) {
+         folderName = String.format("%s_%s", className, Lib.getDateTimeString());
+      } else {
+         folderName = String.format("%s_%s_%s", className, methodName, Lib.getDateTimeString());
+      }
       File tempFolder = new File(tempDir, folderName);
       tempFolder.mkdir();
       return tempFolder;
    }
 
    public void initialize() throws Exception {
-      Bundle bundle = FrameworkUtil.getBundle(AtsDatabase.class);
+      Bundle bundle = FrameworkUtil.getBundle(AtsMethodDatabase.class);
       Assert.assertNotNull("Bundle cannot be null", bundle);
       int state = bundle.getState();
       if (state != Bundle.STARTING || state != Bundle.ACTIVE) {

@@ -19,7 +19,8 @@ import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
-import org.eclipse.osee.ats.db.mocks.AtsIntegrationRule;
+import org.eclipse.osee.ats.db.mocks.AtsClassDatabase;
+import org.eclipse.osee.ats.db.mocks.AtsIntegrationByClassRule;
 import org.eclipse.osee.ats.rest.IAtsServer;
 import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.orcs.data.ArtifactReadable;
 import org.eclipse.osee.orcs.db.mock.OsgiService;
+import org.junit.AfterClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -38,9 +40,14 @@ import org.junit.rules.TestRule;
 public class AtsChangeSetTest {
 
    // @formatter:off
-   @Rule public TestRule db = AtsIntegrationRule.integrationRule(this);
+   @Rule public TestRule db = AtsIntegrationByClassRule.integrationRule(this);
    @OsgiService public IAtsServer atsServer;
    // @formatter:on
+
+   @AfterClass
+   public static void setup() throws Exception {
+      AtsClassDatabase.cleanup();
+   }
 
    @Test
    public void testCreateArtifact() {

@@ -23,16 +23,19 @@ import org.junit.rules.TestRule;
 import org.osgi.service.event.EventAdmin;
 
 /**
+ * Rule to provide one AtsDatabase per class. Test Class must provide @AfterClass method and call
+ * AtsClassDatabase.cleanup().
+ *
  * @author Donald G. Dunne
  */
-public final class AtsIntegrationRule extends OsgiRule {
+public final class AtsIntegrationByClassRule extends OsgiRule {
 
-   private AtsIntegrationRule() {
+   private AtsIntegrationByClassRule() {
       // Utility
    }
 
    public static TestRule integrationRule(Object testObject) {
-      return RuleChain.outerRule(new AtsDatabase("orcs.jdbc.service")).around(
+      return RuleChain.outerRule(new AtsClassDatabase("orcs.jdbc.service")).around(
          new OsgiRule(new CheckServices(), testObject));
    }
 
