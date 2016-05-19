@@ -36,9 +36,11 @@ public class NavigateViewLinksTopicEventHandler implements EventHandler {
 
             @Override
             public void run() {
-               XNavigateItem linkItem = NavigateView.getNavigateView().getItem(TOP_LINK_ID, true);
-               LinksNavigateViewItems.reloadLinks(linkItem);
-               NavigateView.getNavigateView().refresh(linkItem);
+               if (NavigateView.getNavigateView() != null) {
+                  XNavigateItem linkItem = NavigateView.getNavigateView().getItem(TOP_LINK_ID, true);
+                  LinksNavigateViewItems.reloadLinks(linkItem);
+                  NavigateView.getNavigateView().refresh(linkItem);
+               }
             }
          });
       } catch (Exception ex) {
