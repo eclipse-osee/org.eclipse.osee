@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.OseeData;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -83,7 +83,7 @@ public abstract class ArtifactFactory {
 
    public synchronized Artifact reflectExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, ModificationType modificationType) throws OseeCoreException {
       Artifact toReturn = internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modificationType, false,
-         TransactionId.SENTINEL, true);
+         TransactionToken.SENTINEL, true);
       ArtifactCache.cache(toReturn);
       return toReturn;
    }
@@ -91,7 +91,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, ModificationType modType, boolean historical, TransactionId transactionId, boolean useBackingData) throws OseeCoreException {
+   private Artifact internalExistingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, ModificationType modType, boolean historical, TransactionToken transactionId, boolean useBackingData) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, branch, artifactType, true);
 
       artifact.setArtId(artId);
@@ -103,7 +103,7 @@ public abstract class ArtifactFactory {
    /**
     * This method does not cache the artifact, ArtifactLoader will cache existing artifacts
     */
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, TransactionId transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, IArtifactType artifactType, int gammaId, BranchId branch, TransactionToken transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, artifactType, gammaId, branch, modType, historical, transactionId,
          false);
    }

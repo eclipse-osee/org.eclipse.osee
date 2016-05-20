@@ -17,9 +17,9 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -119,11 +119,12 @@ public final class CompareArtifactAction extends Action {
    }
 
    private TransactionDelta asTxDelta(Change first, Change second) throws OseeCoreException {
-      TransactionRecord startTx = first.getChangeArtifact().getTransactionRecord();
-      TransactionRecord endTx = second.getChangeArtifact().getTransactionRecord();
-      if (startTx.getId() > endTx.getId()) {
-         startTx = second.getChangeArtifact().getTransactionRecord();
-         endTx = first.getChangeArtifact().getTransactionRecord();
+      TransactionToken startTx = first.getChangeArtifact().getTransaction();
+      TransactionToken endTx = second.getChangeArtifact().getTransaction();
+      if (endTx.isOlderThan(startTx)) {
+         TransactionToken tempTx = startTx;
+         startTx = endTx;
+         endTx = tempTx;
       }
       return new TransactionDelta(startTx, endTx);
    }

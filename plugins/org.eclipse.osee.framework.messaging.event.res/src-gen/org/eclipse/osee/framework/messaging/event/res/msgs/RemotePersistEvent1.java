@@ -15,6 +15,7 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.messaging.event.res.RemoteEvent;
 
 /**
@@ -78,8 +79,8 @@ public class RemotePersistEvent1 extends RemoteEvent {
    /**
     * Gets the value of the transactionId property.
     */
-   public int getTransactionId() {
-      return transactionId;
+   public TransactionToken getTransaction() {
+      return TransactionToken.valueOf(transactionId, BranchId.valueOf(branchGuid));
    }
 
    /**

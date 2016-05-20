@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.column;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
-import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
+import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Donald G. Dunne
@@ -50,14 +51,14 @@ public class LastModifiedCommentColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return ((Artifact) element).getTransactionRecord().getComment();
+            return TransactionManager.getTransaction(((Artifact) element).getTransaction()).getComment();
          } else if (element instanceof Change) {
-            return ((Change) element).getChangeArtifact().getTransactionRecord().getComment();
+            return TransactionManager.getTransaction(
+               ((Change) element).getChangeArtifact().getTransaction()).getComment();
          }
       } catch (OseeCoreException ex) {
          return XViewerCells.getCellExceptionString(ex);
       }
       return "";
    }
-
 }

@@ -31,10 +31,8 @@ import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.data.TransactionToken;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -205,8 +203,8 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       return changes;
    }
 
-   private TransactionRecord pickTransaction(IArtifact workflow) throws OseeCoreException {
-      TransactionId minTransactionId = TransactionId.SENTINEL;
+   private TransactionToken pickTransaction(IArtifact workflow) throws OseeCoreException {
+      TransactionToken minTransactionId = TransactionToken.SENTINEL;
       for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {
             minTransactionId = transaction;
@@ -215,7 +213,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
       if (!minTransactionId.isValid()) {
          throw new OseeStateException("no transaction records found for [%s]", workflow);
       }
-      return TransactionManager.getTransaction(minTransactionId);
+      return minTransactionId;
    }
 
 }

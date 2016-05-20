@@ -18,7 +18,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAttributeType;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -181,7 +181,7 @@ public class AttributeLoader {
    }
 
    private static void setLastAttributePersistTransaction(Artifact artifact, List<Long> transactionNumbers) {
-      artifact.setTransactionId(TransactionId.valueOf(Collections.max(transactionNumbers)));
+      artifact.setTransactionId(TransactionToken.valueOf(Collections.max(transactionNumbers), artifact.getBranch()));
    }
 
    private static String getSql(DeletionFlag allowDeletedArtifacts, LoadLevel loadLevel, boolean historical, boolean isArchived) throws OseeCoreException {

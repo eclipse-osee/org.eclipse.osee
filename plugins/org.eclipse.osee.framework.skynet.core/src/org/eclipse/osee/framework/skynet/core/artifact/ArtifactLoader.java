@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.LoadLevel;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -315,9 +316,9 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(JdbcStatement chStmt, LoadType reload, boolean historical, boolean isArchived) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
-      TransactionId transactionId = TransactionId.SENTINEL;
+      TransactionToken transactionId = TransactionToken.SENTINEL;
       if (historical) {
-         transactionId = TransactionId.valueOf(chStmt.getLong("stripe_transaction_id"));
+         transactionId = TransactionToken.valueOf(chStmt.getLong("stripe_transaction_id"), branch);
       }
 
       Artifact artifact = historical ? null : ArtifactCache.getActive(artifactId, branch);

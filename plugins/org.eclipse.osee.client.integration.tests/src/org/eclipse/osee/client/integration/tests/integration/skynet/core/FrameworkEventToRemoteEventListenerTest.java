@@ -18,6 +18,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.messaging.event.res.msgs.RemoteBasicGuidArtifact1;
@@ -89,7 +90,7 @@ public class FrameworkEventToRemoteEventListenerTest {
 
       RemotePersistEvent1 remoteEvent = createRemoteEvent(artifact);
       remoteEvent.setTransaction(newArtTx);
-      TransactionId origArtTx = artifact.getTransaction();
+      TransactionToken origArtTx = artifact.getTransaction();
 
       OseeEventManager.addListener(listener);
       OseeEventManager.setDisableEvents(false);

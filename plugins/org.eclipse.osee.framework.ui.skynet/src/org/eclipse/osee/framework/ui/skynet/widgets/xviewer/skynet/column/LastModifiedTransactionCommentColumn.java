@@ -14,9 +14,11 @@ import org.eclipse.nebula.widgets.xviewer.XViewerValueColumn;
 import org.eclipse.nebula.widgets.xviewer.core.model.SortDataType;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerAlign;
 import org.eclipse.nebula.widgets.xviewer.core.model.XViewerColumn;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.util.LogUtil;
 
 /**
@@ -45,16 +47,20 @@ public class LastModifiedTransactionCommentColumn extends XViewerValueColumn {
 
    @Override
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
+      String toReturn = "";
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(((Artifact) element).getTransactionRecord().getComment());
+            TransactionId transactionId = ((Artifact) element).getTransaction();
+            toReturn = TransactionManager.getTransaction(transactionId).getComment();
          } else if (element instanceof Change) {
-            return String.valueOf(((Change) element).getChangeArtifact().getTransactionRecord().getComment());
+            TransactionId transactionId = ((Change) element).getChangeArtifact().getTransaction();
+            toReturn = TransactionManager.getTransaction(transactionId).getComment();
+
          }
       } catch (OseeCoreException ex) {
          return LogUtil.getCellExceptionString(ex);
       }
-      return "";
+      return toReturn;
    }
 
 }

@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -179,7 +179,7 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<Artifact> findArtifacts(TransactionRecord transactionId, BranchId branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<Artifact> findArtifacts(TransactionToken transactionId, BranchId branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
          artifactsFromSearch =
@@ -204,7 +204,7 @@ public class WordMlLinkHandler {
       List<Artifact> artifactsFromSearch = null;
       List<String> guidsFromLinks = new ArrayList<>(matchMap.keySet());
 
-      artifactsFromSearch = findArtifacts(source.getTransactionRecord(), branch, source.isHistorical(), guidsFromLinks);
+      artifactsFromSearch = findArtifacts(source.getTransaction(), branch, source.isHistorical(), guidsFromLinks);
       if (guidsFromLinks.size() != artifactsFromSearch.size() && BranchManager.getType(branch).isMergeBranch()) {
          BranchId sourceBranch = BranchManager.getParentBranch(branch);
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);

@@ -46,7 +46,7 @@ public class LastModifiedTransactionColumn extends XViewerValueColumn {
    public String getColumnText(Object element, XViewerColumn column, int columnIndex) {
       try {
          if (element instanceof Artifact) {
-            return String.valueOf(((Artifact) element).getTransactionRecord().getId());
+            return String.valueOf(((Artifact) element).getTransaction().getId());
          } else if (element instanceof Change) {
             return String.valueOf(((Change) element).getChangeArtifact().getId());
          }

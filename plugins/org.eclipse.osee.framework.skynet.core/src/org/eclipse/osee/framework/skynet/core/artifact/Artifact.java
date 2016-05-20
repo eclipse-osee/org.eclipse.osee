@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.IRelationType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
-import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
@@ -101,7 +101,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    private final Set<DefaultBasicUuidRelationReorder> relationOrderRecords =
       new HashSet<DefaultBasicUuidRelationReorder>();
    private final BranchId branch;
-   private TransactionId transaction = TransactionId.SENTINEL;
+   private TransactionToken transaction = TransactionToken.SENTINEL;
    private int artId;
    private int gammaId;
    private boolean linksLoaded;
@@ -1472,15 +1472,8 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * @return the transaction number that was set when this artifact was loaded
     */
-   public final TransactionId getTransaction() {
+   public final TransactionToken getTransaction() {
       return transaction;
-   }
-
-   public final TransactionRecord getTransactionRecord() throws OseeCoreException {
-      if (transaction.isValid()) {
-         return TransactionManager.getTransaction(transaction);
-      }
-      return null;
    }
 
    /**
@@ -1644,7 +1637,7 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
+   void internalSetPersistenceData(int gammaId, TransactionToken transactionId, ModificationType modType, boolean historical, boolean useBackingData) {
       this.gammaId = gammaId;
       this.transaction = transactionId;
       this.historical = historical;
@@ -1655,22 +1648,22 @@ public class Artifact extends FullyNamedIdentity<String> implements IArtifact, A
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   public final void setTransactionId(TransactionId transaction) {
+   public final void setTransactionId(TransactionToken transaction) {
       this.transaction = transaction;
    }
 
    public final Date getLastModified() throws OseeCoreException {
       if (transaction.isValid()) {
-         return getTransactionRecord().getTimeStamp();
+         return TransactionManager.getTransaction(transaction).getTimeStamp();
       }
       return new Date();
    }
 
    public final User getLastModifiedBy() throws OseeCoreException {
-      TransactionRecord transactionRecord = getTransactionRecord();
-      if (transactionRecord == null || transactionRecord.getAuthor() == 0) {
+      if (transaction.isInvalid()) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
+      TransactionRecord transactionRecord = TransactionManager.getTransaction(transaction);
       return UserManager.getUserByArtId(transactionRecord.getAuthor());
    }
 
