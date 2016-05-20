@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
 import org.eclipse.osee.framework.core.sql.OseeSql;
+import org.eclipse.osee.framework.jdk.core.type.Id;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -129,7 +130,7 @@ public final class TransactionManager {
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
             while (chStmt.next()) {
-               transactionIds.add(getTransactionId(chStmt.getLong("transaction_id")));
+               transactionIds.add(getTransaction(chStmt.getLong("transaction_id")));
             }
 
             commitArtifactIdMap.put(artifact.getArtId(), transactionIds);
@@ -151,11 +152,11 @@ public final class TransactionManager {
       }
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionRecord transactionId) throws OseeCoreException {
+   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionToken transactionId) throws OseeCoreException {
       Collection<TransactionToken> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
          transactionIds.add(transactionId);
-         getTransactionCache().cache(transactionId);
+         getTransactionCache().cache(getTransaction(transactionId));
       }
    }
 
@@ -163,12 +164,13 @@ public final class TransactionManager {
     * @return the largest (most recent) transaction on the given branch
     */
    public static TransactionToken getHeadTransaction(BranchId branch) throws OseeCoreException {
-      TransactionId transaction = ConnectionHandler.getJdbcClient().fetch(TransactionId.SENTINEL,
+      Long txId = ConnectionHandler.getJdbcClient().fetch(Id.SENTINEL,
          ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch);
+      TransactionToken transaction = TransactionToken.valueOf(txId, branch);
       if (transaction.isInvalid()) {
          throw new TransactionDoesNotExist("No transactions where found in the database for branch: %s", branch);
       }
-      return getTransaction(transaction);
+      return transaction;
    }
 
    private static Long getNextTransactionId() {
@@ -195,7 +197,7 @@ public final class TransactionManager {
          transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
-   public static TransactionId getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
+   public static TransactionToken getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
       long branchUuid = branch.getUuid();
@@ -224,7 +226,11 @@ public final class TransactionManager {
       return getTransactionId(transaction.getId(), null);
    }
 
-   public static TransactionRecord getTransactionId(long transaction) throws OseeCoreException {
+   public static TransactionToken getTransaction(long transaction) throws OseeCoreException {
+      return getTransactionId(transaction, null);
+   }
+
+   public static TransactionRecord getTransactionRecord(long transaction) throws OseeCoreException {
       return getTransactionId(transaction, null);
    }
 

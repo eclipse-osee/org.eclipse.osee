@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -101,7 +100,7 @@ public final class ChangeManager {
     *
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     */
-   public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
       ArtifactJoinQuery joinQuery = JoinUtility.createArtifactJoinQuery();
       CompositeKeyHashMap<Integer, BranchId, Artifact> artifactMap = new CompositeKeyHashMap<>();
       for (Artifact artifact : artifacts) {
@@ -118,7 +117,7 @@ public final class ChangeManager {
          }
       }
 
-      HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<>();
+      HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<>();
       try {
          joinQuery.store();
          JdbcStatement chStmt = ConnectionHandler.getStatement();
@@ -128,7 +127,7 @@ public final class ChangeManager {
             while (chStmt.next()) {
                BranchId branch = TokenFactory.createBranch(chStmt.getLong("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
-               transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
+               transactionMap.put(artifact, TransactionManager.getTransaction(chStmt.getLong("transaction_id")));
             }
          } finally {
             chStmt.close();

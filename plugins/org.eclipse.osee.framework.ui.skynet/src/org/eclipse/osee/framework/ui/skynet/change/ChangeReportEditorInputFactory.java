@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.ui.skynet.change;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -47,8 +47,8 @@ public class ChangeReportEditorInputFactory implements IElementFactory {
                Long startTxId = Long.parseLong(memento.getString(START_TX_KEY));
                Long endTxId = Long.parseLong(memento.getString(END_TX_KEY));
 
-               TransactionRecord startTx = TransactionManager.getTransactionId(startTxId);
-               TransactionRecord endTx = TransactionManager.getTransactionId(endTxId);
+               TransactionToken startTx = TransactionManager.getTransaction(startTxId);
+               TransactionToken endTx = TransactionManager.getTransaction(endTxId);
                TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
                toReturn = ChangeUiUtil.createInput(compareType, txDelta, false);
                String branchUuid = memento.getString(BRANCH_ID_KEY);

@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.core.client.search.AtsArtifactQuery;
 import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.ats.internal.AtsClientService;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +53,7 @@ public class CreateWorkingBranchFromTxBlam extends AbstractBlam {
          String[] pairs = idTx.split("[,\\s]+");
          if (pairs.length == PAIR_SIZE) {
             String idNumber = pairs[0];
-            TransactionRecord parentTransactionId = TransactionManager.getTransactionId(Integer.valueOf(pairs[1]));
+            TransactionToken parentTransactionId = TransactionManager.getTransaction(Long.valueOf(pairs[1]));
             try {
                Artifact art = AtsArtifactQuery.getArtifactFromId(idNumber);
                if (art.isOfType(AtsArtifactTypes.TeamWorkflow)) {

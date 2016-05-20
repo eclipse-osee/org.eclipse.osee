@@ -22,9 +22,9 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.SystemUser;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.event.DefaultBasicUuidRelation;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
@@ -130,7 +130,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
    }
 
    private void handleResponse(Long newTxId, IProgressMonitor monitor, BranchId sourceBranch, BranchId destinationBranch) throws OseeCoreException {
-      TransactionRecord newTransaction = TransactionManager.getTransactionId(newTxId);
+      TransactionToken newTransaction = TransactionManager.getTransaction(newTxId);
       AccessPolicy accessPolicy = ServiceUtil.getAccessPolicy();
       accessPolicy.removePermissions(sourceBranch);
 
@@ -153,7 +153,7 @@ public final class CommitBranchHttpRequestOperation extends AbstractOperation {
          new BranchEvent(BranchEventType.Committed, sourceBranch, destinationBranch));
    }
 
-   private void handleArtifactEvents(TransactionRecord newTransaction, Collection<Change> changes) throws OseeCoreException {
+   private void handleArtifactEvents(TransactionToken newTransaction, Collection<Change> changes) throws OseeCoreException {
       ArtifactEvent artifactEvent = new ArtifactEvent(newTransaction);
       Map<Integer, EventModifiedBasicGuidArtifact> artEventMap = new HashMap<>();
       Set<Artifact> artifacts = new HashSet<>();

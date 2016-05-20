@@ -72,20 +72,20 @@ public final class RevisionChangeLoader {
     */
    private Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       BranchId branch = artifact.getBranch();
-      Set<TransactionRecord> transactionIds = new LinkedHashSet<>();
+      Set<TransactionToken> transactionIds = new LinkedHashSet<>();
       boolean recurseThroughBranchHierarchy = true;
       loadBranchTransactions(branch, artifact, transactionIds, TransactionManager.getHeadTransaction(branch),
          recurseThroughBranchHierarchy);
 
       Collection<Change> changes = new ArrayList<>();
 
-      for (TransactionRecord transactionId : transactionIds) {
+      for (TransactionToken transactionId : transactionIds) {
          loadChanges(null, transactionId, monitor, artifact, changes, loadChangeTypes);
       }
       return changes;
    }
 
-   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionId transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionToken> transactionIds, TransactionId transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
       loadTransactions(branch, artifact, transactionId, transactionIds);
 
       if (recurseThroughBranchHierarchy) {
@@ -98,21 +98,21 @@ public final class RevisionChangeLoader {
       }
    }
 
-   private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
+   private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionToken> transactionIds) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),
             artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
+            transactionIds.add(TransactionManager.getTransaction(chStmt.getLong("transaction_id")));
          }
 
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_REL), artifact.getArtId(),
             artifact.getArtId(), branch.getUuid(), transactionId.getId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionManager.getTransactionId(chStmt.getLong("transaction_id")));
+            transactionIds.add(TransactionManager.getTransaction(chStmt.getLong("transaction_id")));
          }
       } finally {
          chStmt.close();
@@ -123,7 +123,7 @@ public final class RevisionChangeLoader {
     * Not Part of Change Report Acquires artifact, relation and attribute changes from a source branch since its
     * creation.
     */
-   private void loadChanges(BranchId sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
+   private void loadChanges(BranchId sourceBranch, TransactionToken transactionId, IProgressMonitor monitor, Artifact specificArtifact, Collection<Change> changes, LoadChangeType... loadChangeTypes) throws OseeCoreException {
       if (monitor == null) {
          monitor = new NullProgressMonitor();
       }

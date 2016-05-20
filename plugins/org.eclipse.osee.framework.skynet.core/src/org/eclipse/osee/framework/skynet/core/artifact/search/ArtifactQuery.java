@@ -670,7 +670,7 @@ public class ArtifactQuery {
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {
-            tx = TransactionManager.getTransactionId(searchParameters.getFromTx());
+            tx = TransactionManager.getTransaction(searchParameters.getFromTx());
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;
@@ -697,7 +697,7 @@ public class ArtifactQuery {
 
          TransactionId tx = TransactionId.SENTINEL;
          if (searchParameters.getFromTx() > 0) {
-            tx = TransactionManager.getTransactionId(searchParameters.getFromTx());
+            tx = TransactionManager.getTransaction(searchParameters.getFromTx());
          }
          DeletionFlag deletionFlag =
             searchParameters.isIncludeDeleted() ? DeletionFlag.INCLUDE_DELETED : DeletionFlag.EXCLUDE_DELETED;

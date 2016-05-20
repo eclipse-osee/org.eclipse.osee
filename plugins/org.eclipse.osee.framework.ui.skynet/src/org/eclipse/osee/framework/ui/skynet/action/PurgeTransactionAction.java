@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.PurgeTransactionOperationWithListener;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.internal.Activator;
@@ -57,7 +57,7 @@ public class PurgeTransactionAction extends Action {
 
    @Override
    public void run() {
-      final List<TransactionRecord> useTransactions = new ArrayList<>(transactions);
+      final List<TransactionId> useTransactions = new ArrayList<>(transactions);
       if (useTransactions.isEmpty()) {
          if (!getTransactions(useTransactions)) {
             return;
@@ -92,14 +92,14 @@ public class PurgeTransactionAction extends Action {
 
    }
 
-   private boolean getTransactions(List<TransactionRecord> transactions) {
+   private boolean getTransactions(List<TransactionId> transactions) {
       EntryDialog dialog = new EntryDialog(NAME, "Enter Transaction(s), comma delimited");
       boolean success = false;
       if (dialog.open() == 0) {
          for (String transId : dialog.getEntry().split(",")) {
             transId = transId.trim();
             if (Strings.isValid(transId)) {
-               transactions.add(TransactionManager.getTransactionId(Integer.valueOf(transId)));
+               transactions.add(TransactionId.valueOf(transId));
             }
          }
          success = !transactions.isEmpty();
@@ -107,7 +107,7 @@ public class PurgeTransactionAction extends Action {
       return success;
    }
 
-   private String getTransactionListStr(List<TransactionRecord> transactions) {
+   private String getTransactionListStr(List<TransactionId> transactions) {
       if (transactions.size() == 1) {
          return "the transaction: " + transactions.iterator().next().toString();
       }

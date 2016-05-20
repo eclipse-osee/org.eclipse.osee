@@ -25,8 +25,8 @@ import org.eclipse.osee.ats.core.client.team.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.internal.Activator;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.QueryOption;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.plugin.xnavigate.XNavigateItemAction;
@@ -118,8 +119,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          int x = 1;
          rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getId() + "\"");
 
-         HashCollection<Artifact, TransactionRecord> transactionMap =
-            ChangeManager.getModifingTransactions(processArts);
+         HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, BranchId> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
@@ -155,14 +155,15 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             }
             // Add committed changes
             boolean committedChanges = false;
-            Collection<TransactionRecord> transactions = transactionMap.getValues(srchArt);
+            Collection<TransactionId> transactions = transactionMap.getValues(srchArt);
             if (transactions != null) {
-               for (TransactionRecord transactionId : transactions) {
+               for (TransactionId transactionId : transactions) {
                   String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
                   // System.out.println(transStr);
                   monitor.subTask(transStr);
-                  if (transactionId.getCommit() > 0) {
-                     Artifact assocArt = ArtifactQuery.getArtifactFromId(transactionId.getCommit(), COMMON);
+                  Long commitArtId = TransactionManager.getCommitArtId(transactionId);
+                  if (commitArtId > 0) {
+                     Artifact assocArt = ArtifactQuery.getArtifactFromId(commitArtId, COMMON);
                      if (assocArt.isOfType(AtsArtifactTypes.TeamWorkflow)) {
                         TeamWorkFlowArtifact twf = (TeamWorkFlowArtifact) assocArt;
                         rd.addRaw(AHTML.addRowMultiColumnTable(

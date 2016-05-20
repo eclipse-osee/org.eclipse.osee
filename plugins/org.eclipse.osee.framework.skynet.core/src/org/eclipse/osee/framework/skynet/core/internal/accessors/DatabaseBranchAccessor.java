@@ -118,8 +118,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
    private static Branch fetchBranch(IOseeCache<Branch> cache, JdbcStatement stmt) {
       Branch branch = load(cache, stmt);
-      branch.setBaseTransaction(TransactionManager.getTransactionId(stmt.getInt("baseline_transaction_id")));
-      branch.setSourceTransaction(TransactionManager.getTransactionId(stmt.getInt("parent_transaction_id")));
+      branch.setBaseTransaction(TransactionManager.getTransactionRecord(stmt.getLong("baseline_transaction_id")));
+      branch.setSourceTransaction(TransactionManager.getTransactionRecord(stmt.getLong("parent_transaction_id")));
       if (!SYSTEM_ROOT.equals(branch)) {
          branch.setParentBranch(BranchManager.getBranch(stmt.getLong("parent_branch_id")));
       }

@@ -17,11 +17,10 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.server.HttpResponse;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -48,7 +47,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
             final BranchId branch;
             if (Strings.isValid(transactionIdStr)) {
                int transactionNumber = Integer.parseInt(transactionIdStr);
-               TransactionRecord transactionId = TransactionManager.getTransactionId(transactionNumber);
+               TransactionToken transactionId = TransactionManager.getTransaction(transactionNumber);
                branch = transactionId.getBranch();
                artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, searchDeleted);
             } else {

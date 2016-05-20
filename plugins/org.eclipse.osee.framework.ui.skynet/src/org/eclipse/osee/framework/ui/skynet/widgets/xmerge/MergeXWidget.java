@@ -29,10 +29,10 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.SystemUser;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -97,8 +97,8 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
    private Action completeCommitAction;
    private IOseeBranch sourceBranch;
    private IOseeBranch destBranch;
-   private TransactionRecord commitTrans;
-   private TransactionRecord tranId;
+   private TransactionToken commitTrans;
+   private TransactionToken tranId;
    private MergeView mergeView;
    private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
@@ -354,16 +354,16 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
       this.editor = editor;
    }
 
-   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, boolean showConflicts) {
+   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTrans, boolean showConflicts) {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, String loadingText, final boolean showConflicts) {
+   public void setInputData(final IOseeBranch sourceBranch, final IOseeBranch destBranch, final TransactionToken tranId, final MergeView mergeView, final TransactionToken commitTx, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;
       this.mergeView = mergeView;
-      this.commitTrans = commitTrans;
+      this.commitTrans = commitTx;
       extraInfoLabel.setText(LOADING + loadingText);
       Job job = new Job("Loading Merge Manager") {
          @Override
@@ -371,12 +371,12 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             try {
                if (showConflicts) {
                   Conflict[] conflicts;
-                  if (commitTrans == null) {
+                  if (commitTx == null) {
                      conflicts = ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId,
                         monitor).toArray(new Conflict[0]);
                   } else {
                      conflicts =
-                        ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
+                        ConflictManagerInternal.getConflictsPerBranch(commitTx, monitor).toArray(new Conflict[0]);
                   }
                   mergeXViewer.setConflicts(conflicts);
                }
@@ -458,7 +458,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
             builder.append("Commit Transaction ID :  ");
             builder.append(commitTrans);
             builder.append(" ");
-            builder.append(commitTrans.getComment());
+            builder.append(TransactionManager.getTransaction(commitTrans).getComment());
          }
          displayLabelText = builder.toString();
 
@@ -635,7 +635,7 @@ public class MergeXWidget extends GenericXWidget implements IOseeTreeReportProvi
                }
             } else {
                try {
-                  ChangeUiUtil.open(TransactionManager.getTransaction(firstConflict.getCommitTransactionId()));
+                  ChangeUiUtil.open(firstConflict.getCommitTransactionId());
                } catch (Exception ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

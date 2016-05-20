@@ -22,6 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TokenFactory;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.Id;
@@ -71,8 +72,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
    private MergeXWidget mergeXWidget;
    private IOseeBranch sourceBranch;
    private IOseeBranch destBranch;
-   private TransactionRecord transactionId;
-   private TransactionRecord commitTrans;
+   private TransactionToken transactionId;
+   private TransactionToken commitTrans;
    private boolean showConflicts;
    private BranchId mergeBranch;
 
@@ -88,7 +89,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       openViewUpon(null, null, null, commitTrans, true);
    }
 
-   private static void openViewUpon(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord tranId, final TransactionRecord commitTrans, final boolean showConflicts) {
+   private static void openViewUpon(final BranchId sourceBranch, final BranchId destBranch, final TransactionToken tranId, final TransactionToken commitTrans, final boolean showConflicts) {
       Job job = new Job("Open Merge View") {
 
          @Override
@@ -157,7 +158,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
       setFocusWidget(mergeXWidget.getControl());
    }
 
-   public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionRecord transactionId, final TransactionRecord commitTrans, boolean showConflicts) {
+   public void explore(final BranchId sourceBranch, final BranchId destBranch, final TransactionToken transactionId, final TransactionToken commitTrans, boolean showConflicts) {
       this.sourceBranch = BranchManager.getBranchToken(sourceBranch);
       this.destBranch = BranchManager.getBranchToken(destBranch);
       this.transactionId = transactionId;
@@ -197,7 +198,7 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
 
                   String commitTx = memento.getString(COMMIT_NUMBER);
                   if (commitTx != null) {
-                     openViewUpon(null, null, null, TransactionManager.getTransactionId(Long.parseLong(commitTx)),
+                     openViewUpon(null, null, null, TransactionManager.getTransaction(Long.parseLong(commitTx)),
                         false);
                      return;
                   }
@@ -218,8 +219,8 @@ public class MergeView extends GenericViewPart implements IBranchEventListener, 
                      return;
                   }
                   try {
-                     TransactionRecord transactionId =
-                        TransactionManager.getTransactionId(Long.parseLong(memento.getString(TRANSACTION_NUMBER)));
+                     TransactionToken transactionId =
+                        TransactionManager.getTransaction(Long.parseLong(memento.getString(TRANSACTION_NUMBER)));
                      openViewUpon(sourceBranch, destBranch, transactionId, null, false);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.WARNING,

@@ -38,7 +38,7 @@ public class OpenChangeReportByTransactionIdAction extends Action {
       if (dialog.open() == 0) {
          String entry = dialog.getEntry();
          if (Strings.isNumeric(entry)) {
-            ChangeUiUtil.open(TransactionManager.getTransactionId(Integer.valueOf(entry)));
+            ChangeUiUtil.open(TransactionManager.getTransaction(Long.valueOf(entry)));
          } else {
             AWorkbench.popup("Entry must be numeric.");
          }
