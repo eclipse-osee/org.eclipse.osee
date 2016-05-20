@@ -78,8 +78,8 @@ public final class ChangeUiUtil {
    }
 
    public static ChangeReportEditorInput createInput(BranchId branch, BranchId parentBranch, boolean loadOnOpen) throws OseeCoreException {
-      TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(parentBranch);
+      TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
+      TransactionToken endTx = TransactionManager.getHeadTransaction(parentBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       ChangeReportEditorInput input = createInput(CompareType.COMPARE_CURRENTS_AGAINST_PARENT, txDelta, loadOnOpen);
       input.setBranch(branch);

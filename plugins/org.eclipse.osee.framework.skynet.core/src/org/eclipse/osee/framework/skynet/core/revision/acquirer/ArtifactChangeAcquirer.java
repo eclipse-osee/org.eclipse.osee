@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -43,8 +44,8 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
       Map<Integer, ArtifactChangeBuilder> artifactChangeBuilders = new HashMap<>();
       boolean hasBranch = getSourceBranch() != null;
-      TransactionRecord fromTransactionId;
-      TransactionRecord toTransactionId;
+      TransactionToken fromTransactionId;
+      TransactionToken toTransactionId;
 
       if (getMonitor() != null) {
          getMonitor().subTask("Gathering New or Deleted Artifacts");

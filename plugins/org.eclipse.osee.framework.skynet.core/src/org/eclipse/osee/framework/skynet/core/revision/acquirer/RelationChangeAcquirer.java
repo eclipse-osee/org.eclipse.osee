@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -41,8 +42,8 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
-      TransactionRecord fromTransactionId;
-      TransactionRecord toTransactionId;
+      TransactionToken fromTransactionId;
+      TransactionToken toTransactionId;
 
       if (getMonitor() != null) {
          getMonitor().subTask("Gathering Relation Changes");

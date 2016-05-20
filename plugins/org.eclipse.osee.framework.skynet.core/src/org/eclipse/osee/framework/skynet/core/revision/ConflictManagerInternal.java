@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -142,7 +141,7 @@ public class ConflictManagerInternal {
          destinationBranch.getUuid()), 100);
       monitor.subTask("Finding Database stored conflicts");
 
-      TransactionRecord commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
+      TransactionToken commonTransaction = findCommonTransaction(sourceBranch, destinationBranch);
 
       // check for multiplicity conflicts
       Collection<IAttributeType> singleMultiplicityTypes = AttributeTypeManager.getSingleMultiplicityTypes();
@@ -240,7 +239,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionRecord commonTransaction) throws OseeCoreException {
+   private static void loadArtifactVersionConflicts(String sql, IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, TransactionToken commonTransaction) throws OseeCoreException {
       boolean hadEntries = false;
 
       monitor.subTask("Finding Artifact Version Conflicts");
@@ -290,7 +289,7 @@ public class ConflictManagerInternal {
       }
    }
 
-   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionRecord commonTransaction) throws OseeCoreException {
+   private static void loadAttributeConflictsNew(IOseeBranch sourceBranch, IOseeBranch destinationBranch, TransactionToken baselineTransaction, Collection<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, TransactionToken commonTransaction) throws OseeCoreException {
       monitor.subTask("Finding the Attribute Conflicts");
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
@@ -342,7 +341,7 @@ public class ConflictManagerInternal {
       for (BranchId branch : BranchManager.getAncestors(sourceBranch)) {
          if (!BranchManager.isParentSystemRoot(branch)) {
             isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-            TransactionRecord sourceTx = BranchManager.getSourceTransaction(branch);
+            TransactionId sourceTx = BranchManager.getSourceTransaction(branch);
             if (sourceTx != null) {
                parentTransactionNumber = sourceTx;
             }
@@ -422,7 +421,7 @@ public class ConflictManagerInternal {
     * branches that share a common history. If two branches share the same history than the point at which they diverged
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
-   public static TransactionRecord findCommonTransaction(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
+   public static TransactionToken findCommonTransaction(BranchId sourceBranch, BranchId destBranch) throws OseeCoreException {
       Collection<BranchId> sourceBranches = BranchManager.getAncestors(sourceBranch);
       Collection<BranchId> destBranches = BranchManager.getAncestors(destBranch);
       BranchId commonAncestor = null;
@@ -436,8 +435,8 @@ public class ConflictManagerInternal {
          throw new OseeCoreException("Cannot find a common ancestor for Branch %s and Branch %s",
             sourceBranch.getUuid(), destBranch.getUuid());
       }
-      TransactionRecord sourceTransaction = null;
-      TransactionRecord destTransaction = null;
+      TransactionToken sourceTransaction = null;
+      TransactionToken destTransaction = null;
       if (commonAncestor.equals(destBranch)) {
          destTransaction = TransactionManager.getHeadTransaction(commonAncestor);
       } else {
@@ -455,7 +454,7 @@ public class ConflictManagerInternal {
          }
       }
 
-      TransactionRecord toReturn = null;
+      TransactionToken toReturn = null;
       if (sourceTransaction == null && destTransaction != null) {
          toReturn = destTransaction;
       } else if (sourceTransaction != null && destTransaction == null) {

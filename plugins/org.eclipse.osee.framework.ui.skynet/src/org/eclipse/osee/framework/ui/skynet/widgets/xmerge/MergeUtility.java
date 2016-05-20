@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.xmerge;
 import static org.eclipse.osee.framework.core.enums.DeletionFlag.INCLUDE_DELETED;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.help.ui.OseeHelpContext;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -150,7 +150,7 @@ public class MergeUtility {
       Artifact toReturn = null;
       try {
          if (Conditions.notNull(conflict.getSourceBranch())) {
-            TransactionRecord baseTransaction = BranchManager.getBaseTransaction(conflict.getSourceBranch());
+            TransactionToken baseTransaction = BranchManager.getBaseTransaction(conflict.getSourceBranch());
             toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), baseTransaction,
                INCLUDE_DELETED);
          }
@@ -164,7 +164,7 @@ public class MergeUtility {
       Artifact toReturn = null;
       try {
          if (Conditions.notNull(conflict.getSourceBranch())) {
-            TransactionRecord commonTransaction =
+            TransactionToken commonTransaction =
                ConflictManagerInternal.findCommonTransaction(conflict.getSourceBranch(), conflict.getDestBranch());
             toReturn = ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), commonTransaction,
                INCLUDE_DELETED);

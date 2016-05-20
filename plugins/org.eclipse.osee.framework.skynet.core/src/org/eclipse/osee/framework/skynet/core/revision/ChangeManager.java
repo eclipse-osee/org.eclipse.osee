@@ -82,16 +82,16 @@ public final class ChangeManager {
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     */
    public static IOperation comparedToParent(BranchId branch, Collection<Change> changes) throws OseeCoreException {
-      TransactionRecord startTx = TransactionManager.getHeadTransaction(branch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranch(branch));
+      TransactionToken startTx = TransactionManager.getHeadTransaction(branch);
+      TransactionToken endTx = TransactionManager.getHeadTransaction(BranchManager.getParentBranch(branch));
 
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return new ChangeDataLoader(changes, txDelta);
    }
 
    public static IOperation compareTwoBranchesHead(BranchId sourceBranch, BranchId destinationBranch, Collection<Change> changes) throws OseeCoreException {
-      TransactionRecord startTx = TransactionManager.getHeadTransaction(sourceBranch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(destinationBranch);
+      TransactionToken startTx = TransactionManager.getHeadTransaction(sourceBranch);
+      TransactionToken endTx = TransactionManager.getHeadTransaction(destinationBranch);
       return new ChangeDataLoader(changes, new TransactionDelta(startTx, endTx));
    }
 

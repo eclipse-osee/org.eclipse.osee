@@ -23,9 +23,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -68,7 +68,7 @@ public final class WordTemplateFileDiffer {
 
       IOseeBranch compareBranch = renderer.getBranchOption("compareBranch");
 
-      TransactionRecord startTransaction;
+      TransactionToken startTransaction;
 
       if (compareBranch == null) {
          startTransaction = BranchManager.getBaseTransaction(endBranch);
@@ -77,7 +77,7 @@ public final class WordTemplateFileDiffer {
          startTransaction = TransactionManager.getHeadTransaction(compareBranch);
       }
 
-      TransactionRecord endTransaction = TransactionManager.getHeadTransaction(endBranch);
+      TransactionToken endTransaction = TransactionManager.getHeadTransaction(endBranch);
       TransactionDelta txDelta;
 
       boolean maintainOrder = renderer.getBooleanOption("Maintain Order");

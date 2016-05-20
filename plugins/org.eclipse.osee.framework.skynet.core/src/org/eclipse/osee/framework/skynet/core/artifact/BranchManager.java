@@ -417,7 +417,7 @@ public final class BranchManager {
       try {
          joinQuery.store();
 
-         TransactionRecord parentTx = getBaseTransaction(sourceBranch);
+         TransactionToken parentTx = getBaseTransaction(sourceBranch);
          String creationComment = String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(),
             parentTx.getId(), destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
@@ -463,7 +463,7 @@ public final class BranchManager {
       return operation.getNewBranch();
    }
 
-   public static IOseeBranch createPortBranchFromTx(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static IOseeBranch createPortBranchFromTx(TransactionToken parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       String creationComment = String.format("New port branch, copy of %s from transaction %s",
          getBranchName(parentTransactionId), parentTransactionId.getId());
 
@@ -484,7 +484,7 @@ public final class BranchManager {
       Conditions.checkNotNull(parentBranch, "Parent Branch");
       Conditions.checkNotNull(childBranchName, "Child Branch Name");
       Conditions.checkNotNull(associatedArtifact, "Associated Artifact");
-      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, Lib.generateUuid(), associatedArtifact);
    }
 
@@ -493,7 +493,7 @@ public final class BranchManager {
    }
 
    public static IOseeBranch createWorkingBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranch.getName(), childBranch.getUuid(), associatedArtifact);
    }
 
@@ -505,7 +505,7 @@ public final class BranchManager {
    }
 
    public static BranchId createBaselineBranch(BranchId parentBranch, IOseeBranch childBranch, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       String creationComment = String.format("Branch Creation for %s", childBranch.getName());
       return createBranch(BranchType.BASELINE, parentTransactionId, childBranch.getName(), childBranch.getUuid(),
          associatedArtifact, creationComment);
@@ -667,7 +667,7 @@ public final class BranchManager {
       return getBranch(branch).getBranchType();
    }
 
-   public static BranchType getType(TransactionRecord tx) {
+   public static BranchType getType(TransactionToken tx) {
       return getBranch(tx.getBranch()).getBranchType();
    }
 

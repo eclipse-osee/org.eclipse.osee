@@ -15,7 +15,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.data.TransactionId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -66,7 +67,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       monitor.beginTask(getName(), TOTAL_STEPS);
       monitor.worked(SHORT_TASK_STEPS);
       try {
-         TransactionRecord transaction = TransactionManager.getHeadTransaction(resource);
+         TransactionToken transaction = TransactionManager.getHeadTransaction(resource);
          if (editor != null) {
             ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }
@@ -99,7 +100,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       return Status.OK_STATUS;
    }
 
-   private void updateView(IProgressMonitor monitor, BranchId branch, TransactionRecord revision) throws OseeCoreException {
+   private void updateView(IProgressMonitor monitor, BranchId branch, TransactionId revision) throws OseeCoreException {
       monitor.setTaskName("Finding root node");
       int unitWork = (int) (TASK_STEPS / revision.getId());
       if (unitWork < 1) {

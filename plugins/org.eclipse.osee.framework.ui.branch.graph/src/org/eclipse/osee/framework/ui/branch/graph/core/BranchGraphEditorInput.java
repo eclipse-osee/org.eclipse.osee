@@ -14,8 +14,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.data.Adaptable;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
@@ -26,7 +26,7 @@ import org.eclipse.ui.PlatformUI;
 public class BranchGraphEditorInput implements IEditorInput, Adaptable {
 
    private final IOseeBranch branch;
-   private TransactionRecord transactionId;
+   private TransactionId transactionId;
 
    public BranchGraphEditorInput(IOseeBranch branch) {
       this.branch = branch;
@@ -61,12 +61,8 @@ public class BranchGraphEditorInput implements IEditorInput, Adaptable {
       return getName();
    }
 
-   public void setTransactionId(TransactionRecord transactionId) {
+   public void setTransactionId(TransactionId transactionId) {
       this.transactionId = transactionId;
-   }
-
-   public TransactionRecord getTransactionId() {
-      return transactionId;
    }
 
    public BranchId getBranch() {

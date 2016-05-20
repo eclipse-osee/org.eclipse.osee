@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -84,7 +85,7 @@ public final class RevisionChangeLoader {
       return changes;
    }
 
-   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionRecord transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
+   private void loadBranchTransactions(BranchId branch, Artifact artifact, Set<TransactionRecord> transactionIds, TransactionId transactionId, boolean recurseThroughBranchHierarchy) throws OseeCoreException {
       loadTransactions(branch, artifact, transactionId, transactionIds);
 
       if (recurseThroughBranchHierarchy) {
@@ -97,7 +98,7 @@ public final class RevisionChangeLoader {
       }
    }
 
-   private void loadTransactions(BranchId branch, Artifact artifact, TransactionRecord transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
+   private void loadTransactions(BranchId branch, Artifact artifact, TransactionId transactionId, Set<TransactionRecord> transactionIds) throws OseeCoreException {
       JdbcStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(ServiceUtil.getSql(OseeSql.LOAD_REVISION_HISTORY_TRANSACTION_ATTR),

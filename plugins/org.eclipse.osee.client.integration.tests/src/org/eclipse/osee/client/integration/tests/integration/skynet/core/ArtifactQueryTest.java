@@ -26,6 +26,7 @@ import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.core.enums.QueryOption;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.MatchLocation;
@@ -208,14 +208,14 @@ public class ArtifactQueryTest {
       BranchId branch = BranchManager.createTopLevelBranch(testInfo.getTestName() + " branch");
 
       List<Integer> newIdsInOrder = new LinkedList<>();
-      Map<Integer, TransactionRecord> idToTxId = new HashMap<>();
+      Map<Integer, TransactionToken> idToTxId = new HashMap<>();
       //create 3 artifacts, decache them
       for (int i = 0; i < 2; i++) {
          Artifact created = ArtifactTypeManager.addArtifact(CoreArtifactTypes.Folder, branch);
          created.persist(testInfo.getTestName());
          ArtifactCache.deCache(created);
          newIdsInOrder.add(created.getArtId());
-         TransactionRecord tx = TransactionManager.getHeadTransaction(branch);
+         TransactionToken tx = TransactionManager.getHeadTransaction(branch);
          idToTxId.put(created.getArtId(), tx);
       }
 
@@ -232,7 +232,7 @@ public class ArtifactQueryTest {
       Assert.assertNotNull(toCheck);
       ArtifactCache.deCache(toCheck);
 
-      TransactionRecord beforeDelete = idToTxId.get(newIdsInOrder.get(1));
+      TransactionToken beforeDelete = idToTxId.get(newIdsInOrder.get(1));
       Assert.assertNotNull(ArtifactQuery.checkHistoricalArtifactFromId(firstCreated.getArtId(), beforeDelete,
          DeletionFlag.EXCLUDE_DELETED));
    }

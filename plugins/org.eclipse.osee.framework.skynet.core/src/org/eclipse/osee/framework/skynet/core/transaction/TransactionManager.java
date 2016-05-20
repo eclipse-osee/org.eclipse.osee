@@ -162,7 +162,7 @@ public final class TransactionManager {
    /**
     * @return the largest (most recent) transaction on the given branch
     */
-   public static TransactionRecord getHeadTransaction(BranchId branch) throws OseeCoreException {
+   public static TransactionToken getHeadTransaction(BranchId branch) throws OseeCoreException {
       TransactionId transaction = ConnectionHandler.getJdbcClient().fetch(TransactionId.SENTINEL,
          ServiceUtil.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch);
       if (transaction.isInvalid()) {

@@ -17,7 +17,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionId;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -48,7 +47,7 @@ public class ShowChangeReportSinceAction extends Action {
          return;
       }
       ChangeReportHandler handler = new ChangeReportHandler();
-      TransactionRecord headTransaction = TransactionManager.getHeadTransaction(branch);
+      TransactionId headTransaction = TransactionManager.getHeadTransaction(branch);
       List<TransactionId> records = Arrays.asList(selectedTransactionRecords.iterator().next(), headTransaction);
       handler.executeWithException(null, new StructuredSelection(records));
    }

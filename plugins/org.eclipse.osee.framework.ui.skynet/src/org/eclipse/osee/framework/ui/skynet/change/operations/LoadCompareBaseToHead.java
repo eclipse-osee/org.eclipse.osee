@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -33,8 +33,8 @@ public class LoadCompareBaseToHead extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       BranchId branch = uiData.getTxDelta().getStartTx().getBranch();
-      TransactionRecord startTx = BranchManager.getBaseTransaction(branch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(branch);
+      TransactionToken startTx = BranchManager.getBaseTransaction(branch);
+      TransactionToken endTx = TransactionManager.getHeadTransaction(branch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       uiData.setTxDelta(txDelta);
       uiData.setCompareType(CompareType.COMPARE_BASE_TO_HEAD);

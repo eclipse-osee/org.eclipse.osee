@@ -33,8 +33,8 @@ import org.eclipse.osee.ats.core.client.workflow.stateitem.AtsStateItemCoreManag
 import org.eclipse.osee.ats.core.client.workflow.stateitem.IAtsStateItemCore;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
@@ -126,8 +126,7 @@ public class AtsBranchUtil {
     * except in test cases or automated tools. Use createWorkingBranchWithPopups
     */
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, boolean pend) throws OseeCoreException {
-      final BranchId parentBranch =
-         AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
+      final BranchId parentBranch = AtsClientService.get().getBranchService().getConfiguredBranchForWorkflow(teamArt);
       return createWorkingBranch_Create(teamArt, parentBranch, pend);
    }
 
@@ -138,11 +137,11 @@ public class AtsBranchUtil {
    public static Job createWorkingBranch_Create(final TeamWorkFlowArtifact teamArt, final BranchId parentBranch, boolean pend) throws OseeCoreException {
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");
       Conditions.checkNotNull(parentBranch, "Parent Branch");
-      TransactionRecord parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
+      TransactionToken parentTransactionId = TransactionManager.getHeadTransaction(parentBranch);
       return createWorkingBranch(teamArt, parentTransactionId, pend);
    }
 
-   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionRecord parentTransactionId, boolean pend) throws OseeCoreException {
+   public static Job createWorkingBranch(final TeamWorkFlowArtifact teamArt, final TransactionToken parentTransactionId, boolean pend) throws OseeCoreException {
       final String branchName =
          Strings.truncate(AtsClientService.get().getBranchService().getBranchName(teamArt), 195, true);
       Conditions.checkNotNull(teamArt, "Parent Team Workflow");

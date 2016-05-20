@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.change.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -42,8 +42,8 @@ public class LoadCompareBranchToBranch extends AbstractOperation {
 
       Conditions.checkNotNull(otherBranch, "other branch to compare to");
 
-      TransactionRecord startTx = TransactionManager.getHeadTransaction(startBranch);
-      TransactionRecord endTx = TransactionManager.getHeadTransaction(otherBranch);
+      TransactionToken startTx = TransactionManager.getHeadTransaction(startBranch);
+      TransactionToken endTx = TransactionManager.getHeadTransaction(otherBranch);
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       uiData.setTxDelta(txDelta);
 

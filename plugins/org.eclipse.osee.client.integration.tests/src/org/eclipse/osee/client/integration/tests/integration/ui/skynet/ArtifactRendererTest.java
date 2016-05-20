@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.eclipse.osee.client.test.framework.OseeClientIntegrationRule;
 import org.eclipse.osee.client.test.framework.OseeLogMonitorRule;
 import org.eclipse.osee.client.test.framework.TestInfo;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -54,7 +55,7 @@ public class ArtifactRendererTest {
    private static final String EXPECTED_NAME = "Name with quote";
    private static Artifact artifact1;
    private static Artifact artifact2;
-   private static TransactionRecord startTx;
+   private static TransactionToken startTx;
    private static TransactionRecord endTx1;
    private static TransactionRecord endTx2;
 

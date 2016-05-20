@@ -14,7 +14,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -41,7 +40,7 @@ public class UpdateChangeUiData extends AbstractOperation {
          if (!compareType.isBaselineTxIncluded()) {
             startTx = TransactionManager.getHeadTransaction(startTx.getBranch());
          }
-         TransactionRecord endTx = TransactionManager.getHeadTransaction(txDelta.getEndTx().getBranch());
+         TransactionToken endTx = TransactionManager.getHeadTransaction(txDelta.getEndTx().getBranch());
 
          txDelta = new TransactionDelta(startTx, endTx);
          changeData.setTxDelta(txDelta);
