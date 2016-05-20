@@ -18,7 +18,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionDelta;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -66,7 +65,7 @@ public final class ChangeUiUtil {
    }
 
    public static ChangeReportEditorInput createInput(TransactionToken transactionId, boolean loadOnOpen) throws OseeCoreException {
-      TransactionRecord startTx = TransactionManager.getPriorTransaction(transactionId);
+      TransactionToken startTx = TransactionManager.getPriorTransaction(transactionId);
       TransactionToken endTx = transactionId;
       TransactionDelta txDelta = new TransactionDelta(startTx, endTx);
       return createInput(CompareType.COMPARE_SPECIFIC_TRANSACTIONS, txDelta, loadOnOpen);

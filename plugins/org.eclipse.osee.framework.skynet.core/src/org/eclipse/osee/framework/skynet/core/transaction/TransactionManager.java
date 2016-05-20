@@ -195,7 +195,7 @@ public final class TransactionManager {
          transactionRecord.getBranchId(), transactionRecord.getTxType().getId());
    }
 
-   public static TransactionRecord getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
+   public static TransactionId getTransactionAtDate(BranchId branch, Date maxDateExclusive) throws OseeCoreException {
       Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(maxDateExclusive, "max date exclusive");
       long branchUuid = branch.getUuid();
@@ -228,7 +228,7 @@ public final class TransactionManager {
       return getTransactionId(transaction, null);
    }
 
-   public static TransactionRecord getTransactionId(JdbcStatement chStmt) throws OseeCoreException {
+   private static TransactionRecord getTransactionId(JdbcStatement chStmt) throws OseeCoreException {
       return getTransactionId(chStmt.getLong("transaction_id"), chStmt);
    }
 
@@ -270,9 +270,8 @@ public final class TransactionManager {
       return transactionRecord;
    }
 
-   public static TransactionRecord getPriorTransaction(TransactionToken transactionId) throws OseeCoreException {
+   public static TransactionToken getPriorTransaction(TransactionToken transactionId) {
       TransactionCache txCache = getTransactionCache();
       return txCache.getPriorTransaction(transactionId);
    }
-
 }
