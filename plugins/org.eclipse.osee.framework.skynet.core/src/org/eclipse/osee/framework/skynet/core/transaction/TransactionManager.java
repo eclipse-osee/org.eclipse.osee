@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.model.cache.TransactionCache;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.sql.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -68,8 +67,7 @@ public final class TransactionManager {
 
    private static final TransactionRecordFactory factory = new TransactionRecordFactory();
 
-   private static final HashMap<Integer, List<TransactionRecord>> commitArtifactIdMap =
-      new HashMap<Integer, List<TransactionRecord>>();
+   private static final HashMap<Integer, List<TransactionToken>> commitArtifactIdMap = new HashMap<>();
 
    private static final TxMonitorImpl<BranchId> txMonitor = new TxMonitorImpl<>(new TxMonitorCache<>());
 
@@ -97,12 +95,8 @@ public final class TransactionManager {
       ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_COMMENTS, comment, transaction);
    }
 
-   private static IOseeCachingService getCacheService() throws OseeCoreException {
-      return ServiceUtil.getOseeCacheService();
-   }
-
    private static TransactionCache getTransactionCache() throws OseeCoreException {
-      return getCacheService().getTransactionCache();
+      return ServiceUtil.getOseeCacheService().getTransactionCache();
    }
 
    public static List<TransactionRecord> getTransactionsForBranch(BranchId branch) throws OseeCoreException {
@@ -125,8 +119,8 @@ public final class TransactionManager {
       return (long) getTransaction(tx).getCommit();
    }
 
-   public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
-      List<TransactionRecord> transactionIds = commitArtifactIdMap.get(artifact.getArtId());
+   public synchronized static List<TransactionToken> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
+      List<TransactionToken> transactionIds = commitArtifactIdMap.get(artifact.getArtId());
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
@@ -158,7 +152,7 @@ public final class TransactionManager {
    }
 
    public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionRecord transactionId) throws OseeCoreException {
-      Collection<TransactionRecord> transactionIds = getCommittedArtifactTransactionIds(artifact);
+      Collection<TransactionToken> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
          transactionIds.add(transactionId);
          getTransactionCache().cache(transactionId);

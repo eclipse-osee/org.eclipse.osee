@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.BranchId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.TransactionId;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.type.ArtifactType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -206,7 +207,7 @@ public final class ExportChangeReportOperation extends AbstractOperation {
 
    private TransactionRecord pickTransaction(IArtifact workflow) throws OseeCoreException {
       TransactionId minTransactionId = TransactionId.SENTINEL;
-      for (TransactionRecord transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
+      for (TransactionToken transaction : TransactionManager.getCommittedArtifactTransactionIds(workflow)) {
          if (minTransactionId.isOlderThan(transaction) && !BranchManager.isArchived(transaction.getBranch())) {
             minTransactionId = transaction;
          }

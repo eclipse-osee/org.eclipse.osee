@@ -10,9 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.branch.internal;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.core.util.AbstractAtsBranchService;
@@ -22,7 +20,6 @@ import org.eclipse.osee.framework.core.data.IOseeBranch;
 import org.eclipse.osee.framework.core.data.TransactionToken;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.cache.BranchFilter;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -72,12 +69,7 @@ public class AtsBranchServiceImpl extends AbstractAtsBranchService {
 
    @Override
    public Collection<TransactionToken> getCommittedArtifactTransactionIds(IAtsTeamWorkflow teamWf) {
-      List<TransactionToken> transactions = new ArrayList<>();
-      for (TransactionRecord trans : TransactionManager.getCommittedArtifactTransactionIds(
-         (Artifact) teamWf.getStoreObject())) {
-         transactions.add(trans);
-      }
-      return transactions;
+      return TransactionManager.getCommittedArtifactTransactionIds((Artifact) teamWf.getStoreObject());
    }
 
    /**
