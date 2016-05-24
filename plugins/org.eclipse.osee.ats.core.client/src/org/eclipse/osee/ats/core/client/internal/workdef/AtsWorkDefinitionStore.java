@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.DeletionFlag;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 
 /**
@@ -61,6 +62,7 @@ public class AtsWorkDefinitionStore implements IAtsWorkDefinitionStore {
       String modelText = null;
       if (artifact != null) {
          modelText = artifact.getAttributesToString(AtsAttributeTypes.DslSheet);
+         ArtifactCache.deCache(artifact);
       }
       return modelText;
    }
