@@ -1704,14 +1704,14 @@ public final class Lib {
    }
 
    /**
-    * @return unique > 0 long
+    * @return randomly generated unique long > 0
     */
    public static Long generateUuid() {
-      long next = 0;
-      while (next <= 0) {
-         next = RANDOM.nextLong();
+      long id = Math.abs(RANDOM.nextLong());
+      if (id == 0) {
+         return generateUuid();
       }
-      return next;
+      return id;
    }
 
    /**
