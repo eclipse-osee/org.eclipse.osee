@@ -29,29 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
  */
 public class ActionableItems {
 
-   public static Collection<String> getNames(Collection<? extends IAtsActionableItem> ais) {
-      ArrayList<String> names = new ArrayList<>();
-      for (IAtsActionableItem ai : ais) {
-         names.add(ai.getName());
-      }
-      return names;
-   }
-
-   /**
-    * Recurses default hierarchy and collections children of parentAI that are of type class
-    */
-   @SuppressWarnings("unchecked")
-   public static <A extends IAtsActionableItem> void getChildrenOfType(IAtsActionableItem parentAi, Collection<A> children, Class<A> clazz, boolean recurse) throws OseeCoreException {
-      for (IAtsActionableItem child : parentAi.getChildrenActionableItems()) {
-         if (clazz.isInstance(child)) {
-            children.add((A) child);
-            if (recurse) {
-               getChildrenOfType(child, children, clazz, recurse);
-            }
-         }
-      }
-   }
-
    public static Set<IAtsActionableItem> getAIsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
       ais.add(ai);
@@ -59,10 +36,6 @@ public class ActionableItems {
          ais.addAll(getAIsFromItemAndChildren(art));
       }
       return ais;
-   }
-
-   public static Set<IAtsTeamDefinition> getTeamsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
-      return TeamDefinitions.getTeamsFromItemAndChildren(ai);
    }
 
    public static Set<IAtsActionableItem> getActionableItemsFromItemAndChildren(IAtsActionableItem ai) throws OseeCoreException {
