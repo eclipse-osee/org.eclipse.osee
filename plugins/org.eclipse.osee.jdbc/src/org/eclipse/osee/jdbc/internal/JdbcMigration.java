@@ -45,6 +45,7 @@ public class JdbcMigration {
    private static final String DB_TABLESPACE = "db.tablespace";
    private static final String DB_PCTTHRESHOLD = "db.pctthreshold";
    private static final String DB_OVERFLOW = "db.overflow";
+   private static final String DB_DEFERRABLE = "db.deferrable";
 
    private static final String LOCATION_TEMPLATE = "filesystem:%s";
    private boolean baselineOnMigrate = false;
@@ -124,6 +125,7 @@ public class JdbcMigration {
       placeholders.put(DB_TABLESPACE, "");
       placeholders.put(DB_PCTTHRESHOLD, "");
       placeholders.put(DB_OVERFLOW, "");
+	  placeholders.put(DB_DEFERRABLE, "");
 
       if (JdbcDriverType.postgresql.getDriver().equals(driver)) {
          placeholders.put(DB_BLOB, "bytea");
@@ -139,6 +141,7 @@ public class JdbcMigration {
          placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
          placeholders.put(DB_PCTTHRESHOLD, "");
          placeholders.put(DB_OVERFLOW, "");
+		 placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
 
       } else if (JdbcDriverType.oracle_thin.getDriver().equals(driver)) {
          placeholders.put(DB_BIGINT, "number");
@@ -156,6 +159,7 @@ public class JdbcMigration {
          placeholders.put(DB_TABLESPACE, "TABLESPACE osee_data");
          placeholders.put(DB_PCTTHRESHOLD, "PCTTHRESHOLD 20");
          placeholders.put(DB_OVERFLOW, "OVERFLOW TABLESPACE osee_data");
+		 placeholders.put(DB_DEFERRABLE, "DEFERRABLE INITIALLY DEFERRED");
       }
 
    }

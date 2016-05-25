@@ -410,7 +410,6 @@ public final class JdbcClientImpl implements JdbcClient {
       try {
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
-         setConstraintChecking(connection, false);
          dbWork.handleTxWork(connection);
 
          connection.commit();
@@ -426,29 +425,11 @@ public final class JdbcClientImpl implements JdbcClient {
             }
          }
       } finally {
-         try {
-            try {
-               if (!connection.isClosed()) {
-                  try {
-                     setConstraintChecking(connection, true);
-                  } catch (Exception ex) {
-                     if (saveException == null) {
-                        saveException = ex;
-                     }
-                  } finally {
-                     connection.setAutoCommit(initialAutoCommit);
-                     connection.close();
-                  }
-               }
-            } finally {
-               dbWork.handleTxFinally();
-            }
-         } catch (Exception ex) {
-            if (saveException == null) {
-               saveException = ex;
-            }
+         if (!connection.isClosed()) {
+            connection.setAutoCommit(initialAutoCommit);
+            connection.close();
          }
-
+         dbWork.handleTxFinally();
          if (saveException != null) {
             throw OseeCoreException.wrap(saveException);
          }
@@ -459,11 +440,6 @@ public final class JdbcClientImpl implements JdbcClient {
    public void runTransaction(JdbcTransaction dbWork) throws JdbcException {
       runTransaction(getConnection(), dbWork);
 
-   }
-
-   private void setConstraintChecking(JdbcConnection connection, boolean enable) throws JdbcException {
-      // NOTE: this must be a PreparedStatement to play correctly with DB Transactions.
-      runPreparedUpdate(connection, getDbType().getConstraintCheckingSql(enable));
    }
 
    @Override

@@ -98,13 +98,17 @@ public class PurgeUnusedBackingDataAndTransactions extends AbstractDbTxOperation
 
    private void processEmptyTransactions(JdbcConnection connection) throws OseeCoreException {
       List<Object[]> emptyTransactions = new LinkedList<>();
+      int transactionId;
 
       JdbcStatement chStmt = getJdbcClient().getStatement(connection);
       try {
          chStmt.runPreparedQuery(EMPTY_TRANSACTIONS);
          while (chStmt.next()) {
-            emptyTransactions.add(new Object[] {chStmt.getLong("branch_id"), chStmt.getInt("transaction_id")});
-            log(String.valueOf(chStmt.getInt("transaction_id")));
+            transactionId = chStmt.getInt("transaction_id");
+            if (transactionId != 1) {
+               emptyTransactions.add(new Object[] {chStmt.getLong("branch_id"), transactionId});
+               log(String.valueOf(chStmt.getInt("transaction_id")));
+            }
          }
       } finally {
          chStmt.close();

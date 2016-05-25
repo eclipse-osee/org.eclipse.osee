@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.jdbc.JdbcClient;
 import org.eclipse.osee.jdbc.JdbcConnection;
 import org.eclipse.osee.jdbc.JdbcConstants;
+import org.eclipse.osee.jdbc.JdbcDbType;
 import org.eclipse.osee.jdbc.JdbcStatement;
 import org.eclipse.osee.jdbc.JdbcTransaction;
 import org.eclipse.osee.jdbc.OseePreparedStatement;
@@ -45,6 +46,8 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
    private static final String INSERT_TX_DETAILS =
       "INSERT INTO osee_tx_details (branch_id, transaction_id, osee_comment, time, author, tx_type) VALUES (?,?,?,?,?,?)";
 
+   private static final String UPDATE_BASELINE_BRANCH_TX =
+      "UPDATE osee_branch SET baseline_transaction_id = ? WHERE branch_id = ? AND baseline_transaction_id = 1";
    // @formatter:off
    private static final String SELECT_ADDRESSING = "with\n"+
 "txs as (select transaction_id, gamma_id, mod_type, app_id from osee_txs where branch_id = ? and transaction_id <= ?),\n\n"+
@@ -154,10 +157,16 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       int nextTransactionId = idManager.getNextTransactionId();
+      int tobeTransactionId = nextTransactionId;
+      boolean needsUpdate =
+         jdbcClient.getDbType().equals(JdbcDbType.hsql) || jdbcClient.getDbType().equals(JdbcDbType.mysql);
+      if (needsUpdate) {
+         nextTransactionId = 1;
+      }
 
       int sourceTx;
       if (newBranchData.getBranchType().isSystemRootBranch()) {
-         sourceTx = nextTransactionId;
+         sourceTx = tobeTransactionId;
       } else {
          sourceTx = RelationalConstants.TRANSACTION_SENTINEL;
 
@@ -188,9 +197,14 @@ public class CreateBranchDatabaseTxCallable extends JdbcTransaction {
          copyAccessRules(newBranchData.getUserArtifactId(), parentBranch, uuid);
       }
 
+      nextTransactionId = tobeTransactionId;
       jdbcClient.runPreparedUpdate(connection, INSERT_TX_DETAILS, uuid, nextTransactionId,
          newBranchData.getCreationComment(), timestamp, newBranchData.getUserArtifactId(),
          TransactionDetailsType.Baselined.getId());
+
+      if (needsUpdate) {
+         jdbcClient.runPreparedUpdate(connection, UPDATE_BASELINE_BRANCH_TX, nextTransactionId, uuid);
+      }
 
       populateBaseTransaction(0.30, connection, nextTransactionId, sourceTx);
 

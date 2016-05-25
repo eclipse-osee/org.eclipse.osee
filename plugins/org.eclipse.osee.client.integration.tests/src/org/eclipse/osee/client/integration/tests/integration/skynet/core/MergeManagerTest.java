@@ -281,9 +281,6 @@ public class MergeManagerTest {
       assertTrue("Branch is not in Rebaselined", BranchManager.getState(workingBranch).isRebaselined());
 
       // Clean up this test
-      // Purge art from new Updated Branch
-      Artifact artOnUpdateBranch = ArtifactQuery.getArtifactFromToken(NewArtifactToken, branchForUpdate);
-      Operations.executeWorkAndCheckStatus(new PurgeArtifacts(Arrays.asList(artOnUpdateBranch)));
       BranchManager.purgeBranch(branchForUpdate);
    }
 
