@@ -224,21 +224,19 @@ public class AccountOpsTest {
 
    @Test
    public void testGetAccountData() {
-      ArtifactId artId = ArtifactId.valueOf(456);
-      Account account = mockAccount(artId, "DEF", "acc2", "acc2@email.com", "u2", true);
+      Account account = mockAccount(ArtifactId.valueOf(456L), "DEF", "acc2", "acc2@email.com", "u2", true);
       ResultSet<Account> accounts = ResultSets.singleton(account);
       when(accountAdmin.getAccountById(ACCOUNT_UID)).thenReturn(accounts);
 
       AccountInfoData actual = ops.getAccountData(ACCOUNT_UID);
 
-      assertAccount(actual, artId, "DEF", "acc2", "acc2@email.com", "u2", true);
+      assertAccount(actual, ArtifactId.valueOf(456L), "DEF", "acc2", "acc2@email.com", "u2", true);
       verify(accountAdmin).getAccountById(ACCOUNT_UID);
    }
 
    @Test
    public void testGetAccountDetailsData() {
-      ArtifactId artId = ArtifactId.valueOf(789);
-      Account account = mockAccount(artId, "GHI", "acc3", "acc3@email.com", "u3", true);
+      Account account = mockAccount(ArtifactId.valueOf(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
       Map<String, String> map = new HashMap<>();
       map.put("a", "1");
       map.put("b", "2");
@@ -246,7 +244,7 @@ public class AccountOpsTest {
 
       AccountPreferences preferences = mock(AccountPreferences.class);
       when(preferences.asMap()).thenReturn(map);
-      when(preferences.getId()).thenReturn(artId.getId());
+      when(preferences.getId()).thenReturn(ArtifactId.valueOf(789L).getId());
       when(account.getPreferences()).thenReturn(preferences);
 
       ResultSet<Account> accounts = ResultSets.singleton(account);
@@ -254,7 +252,7 @@ public class AccountOpsTest {
 
       AccountDetailsData actual = ops.getAccountDetailsData(ACCOUNT_UID);
 
-      assertAccount(actual, artId, "GHI", "acc3", "acc3@email.com", "u3", true);
+      assertAccount(actual, ArtifactId.valueOf(789L), "GHI", "acc3", "acc3@email.com", "u3", true);
       AccountPreferencesData actualPrefs = actual.getPreferences();
       Map<String, String> actualMap = actualPrefs.getMap();
 
