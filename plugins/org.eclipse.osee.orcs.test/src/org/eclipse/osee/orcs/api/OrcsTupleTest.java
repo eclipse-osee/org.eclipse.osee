@@ -11,7 +11,6 @@
 package org.eclipse.osee.orcs.api;
 
 import static org.eclipse.osee.framework.core.enums.SystemUser.OseeSystem;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -69,7 +68,7 @@ public class OrcsTupleTest {
 
    @Test(expected = JdbcException.class)
    public void testAddTuple2() throws OseeCoreException {
-      TupleTypeId createTuple2Type = TokenFactory.createTupleType(24L);
+      TupleTypeId createTuple2Type = TupleTypeId.valueOf(24L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple2 Test");
       Long gamma_id = transaction.addTuple(createTuple2Type, 234L, "t");
@@ -83,7 +82,7 @@ public class OrcsTupleTest {
 
    @Test(expected = JdbcException.class)
    public void testAddTuple3() throws OseeCoreException {
-      TupleTypeId createTuple3Type = TokenFactory.createTupleType(44L);
+      TupleTypeId createTuple3Type = TupleTypeId.valueOf(44L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple3 Test");
       Long gamma_id = transaction.addTuple(createTuple3Type, 244L, 12L, "three");
@@ -97,7 +96,7 @@ public class OrcsTupleTest {
 
    @Test(expected = JdbcException.class)
    public void testAddTuple4() throws OseeCoreException {
-      TupleTypeId createTuple4Type = TokenFactory.createTupleType(44L);
+      TupleTypeId createTuple4Type = TupleTypeId.valueOf(44L);
       TransactionBuilder transaction =
          orcsApi.getTransactionFactory().createTransaction(CoreBranches.COMMON_ID, OseeSystem, "Add Tuple4 Test");
       Long gamma_id = transaction.addTuple(createTuple4Type, 244L, 12L, "four", "four2");

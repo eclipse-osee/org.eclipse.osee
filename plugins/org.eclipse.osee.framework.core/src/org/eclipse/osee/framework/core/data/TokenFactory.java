@@ -14,7 +14,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.jdk.core.type.BaseId;
 import org.eclipse.osee.framework.jdk.core.type.BaseIdentity;
 import org.eclipse.osee.framework.jdk.core.type.FullyNamedIdentity;
 import org.eclipse.osee.framework.jdk.core.type.NamedId;
@@ -110,26 +109,6 @@ public final class TokenFactory {
 
    public static IRelationSorterId createSorterId(String guid, String name) {
       return new SorterIdToken(guid, name);
-   }
-
-   public static TupleTypeId createTupleType(Long tupleTypeId) {
-      return new TupleTypeImpl(tupleTypeId);
-   }
-
-   public static <E1, E2> Tuple2Type<E1, E2> createTuple2Type(TupleFamilyId family, Long tupleTypeId) {
-      return new Tuple2TypeImpl<E1, E2>(family, tupleTypeId);
-   }
-
-   public static <E1, E2, E3> Tuple3Type<E1, E2, E3> createTuple3Type(TupleFamilyId family, Long tupleTypeId) {
-      return new Tuple3TypeImpl<E1, E2, E3>(family, tupleTypeId);
-   }
-
-   public static <E1, E2, E3, E4> Tuple4Type<E1, E2, E3, E4> createTuple4Type(TupleFamilyId family, Long tupleTypeId) {
-      return new Tuple4TypeImpl<E1, E2, E3, E4>(family, tupleTypeId);
-   }
-
-   public static TupleFamilyId createTupleFamilyType(Long tupleFamilyTypeId) {
-      return new TupleFailyTypeImpl(tupleFamilyTypeId);
    }
 
    private final static class SorterIdToken extends NamedIdentity<String> implements IRelationSorterId {
@@ -331,30 +310,6 @@ public final class TokenFactory {
       @Override
       public String toString() {
          return String.format("RelationTypeSide - uuid=[%s] type=[%s] side=[%s]", getGuid(), getName(), getSide());
-      }
-   }
-
-   private static final class Tuple2TypeImpl<E1, E2> extends TupleTypeImpl implements Tuple2Type<E1, E2> {
-      public Tuple2TypeImpl(TupleFamilyId family, Long tupleTypeId) {
-         super(family, tupleTypeId);
-      }
-   }
-
-   private static final class Tuple3TypeImpl<E1, E2, E3> extends TupleTypeImpl implements Tuple3Type<E1, E2, E3> {
-      public Tuple3TypeImpl(TupleFamilyId family, Long tupleTypeId) {
-         super(family, tupleTypeId);
-      }
-   }
-
-   private static final class Tuple4TypeImpl<E1, E2, E3, E4> extends TupleTypeImpl implements Tuple4Type<E1, E2, E3, E4> {
-      public Tuple4TypeImpl(TupleFamilyId family, Long tupleTypeId) {
-         super(family, tupleTypeId);
-      }
-   }
-
-   private static final class TupleFailyTypeImpl extends BaseId implements TupleFamilyId {
-      public TupleFailyTypeImpl(Long tupleFamilyTypeId) {
-         super(tupleFamilyTypeId);
       }
    }
 

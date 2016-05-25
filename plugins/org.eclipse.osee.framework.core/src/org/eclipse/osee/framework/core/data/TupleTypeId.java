@@ -17,4 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.Id;
  */
 public interface TupleTypeId extends Id {
 
+   public static TupleTypeId valueOf(long tupleTypeId) {
+      return new TupleTypeImpl(tupleTypeId);
+   }
 }

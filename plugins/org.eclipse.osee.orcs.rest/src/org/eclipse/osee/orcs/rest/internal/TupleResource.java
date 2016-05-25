@@ -16,7 +16,6 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
 import org.eclipse.osee.framework.core.data.BranchId;
-import org.eclipse.osee.framework.core.data.TokenFactory;
 import org.eclipse.osee.framework.core.data.TupleTypeId;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.SystemUser;
@@ -55,7 +54,7 @@ public class TupleResource {
          element2 = Long.parseLong(e2);
       }
 
-      TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
+      TupleTypeId typleTypeId = TupleTypeId.valueOf(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 2");
       toReturn = tx.addTuple(typleTypeId, element1, element2);
@@ -79,7 +78,7 @@ public class TupleResource {
       if (Strings.isNumeric(e3)) {
          element3 = Long.parseLong(e3);
       }
-      TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
+      TupleTypeId typleTypeId = TupleTypeId.valueOf(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 3");
       toReturn = tx.addTuple(typleTypeId, element1, element2, element3);
@@ -107,7 +106,7 @@ public class TupleResource {
       if (Strings.isNumeric(e4)) {
          element4 = Long.parseLong(e4);
       }
-      TupleTypeId typleTypeId = TokenFactory.createTupleType(tupleType);
+      TupleTypeId typleTypeId = TupleTypeId.valueOf(tupleType);
 
       TransactionBuilder tx = orcsApi.getTransactionFactory().createTransaction(branch, getUser(), "Add Tuple 4");
       toReturn = tx.addTuple(typleTypeId, element1, element2, element3, element4);

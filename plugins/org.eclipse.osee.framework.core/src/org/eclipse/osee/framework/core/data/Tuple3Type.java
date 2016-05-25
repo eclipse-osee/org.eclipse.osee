@@ -10,8 +10,29 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import static org.eclipse.osee.framework.core.enums.CoreTupleFamilyTypes.DefaultFamily;
+import org.codehaus.jackson.annotate.JsonCreator;
+
 /**
  * @author Ryan D. Brooks
  */
 public interface Tuple3Type<E1, E2, E3> extends TupleTypeId {
+
+   public static <E1, E2, E3> Tuple3Type<E1, E2, E3> valueOf(TupleFamilyId family, long tupleTypeId) {
+      final class Tuple3TypeImpl extends TupleTypeImpl implements Tuple3Type<E1, E2, E3> {
+         public Tuple3TypeImpl(TupleFamilyId family, Long tupleTypeId) {
+            super(family, tupleTypeId);
+         }
+
+         public Tuple3TypeImpl(Long tupleTypeId) {
+            super(tupleTypeId);
+         }
+      }
+      return new Tuple3TypeImpl(family, tupleTypeId);
+   }
+
+   @JsonCreator
+   public static <E1, E2, E3> Tuple3Type<E1, E2, E3> valueOf(long tupleTypeId) {
+      return valueOf(DefaultFamily, tupleTypeId);
+   }
 }
