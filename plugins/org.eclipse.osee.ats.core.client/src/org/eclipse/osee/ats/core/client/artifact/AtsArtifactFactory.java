@@ -92,6 +92,8 @@ public class AtsArtifactFactory extends ArtifactFactory {
    public boolean isUserCreationEnabled(IArtifactType artifactType) {
       if (getDisabledUserCreationArtifactTypes().contains(artifactType)) {
          return false;
+      } else if (ArtifactTypeManager.inheritsFrom(artifactType, AtsArtifactTypes.TeamWorkflow)) {
+         return false;
       }
       return true;
    }
