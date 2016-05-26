@@ -56,16 +56,10 @@ public class FilteredTreeArtifactTypeEntryDialog extends FilteredTreeArtifactTyp
       xText.createWidgets(parent, 2);
    }
 
-   /**
-    * @return the entryValue
-    */
    public String getEntryValue() {
       return entryValue;
    }
 
-   /**
-    * @param entryValue the entryValue to set
-    */
    public void setEntryValue(String entryValue) {
       this.entryValue = entryValue;
    }

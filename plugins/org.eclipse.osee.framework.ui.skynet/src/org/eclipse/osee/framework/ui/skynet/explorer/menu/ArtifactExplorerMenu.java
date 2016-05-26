@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.model.access.PermissionStatus;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.AccessPolicy;
@@ -282,6 +283,14 @@ public class ArtifactExplorerMenu {
                if (dialog.open() == Window.OK) {
                   IArtifactType type = dialog.getSelection();
                   String name = dialog.getEntryValue();
+
+                  if (type == null) {
+                     AWorkbench.popup("Type not selected.");
+                     return;
+                  } else if (!Strings.isValid(name)) {
+                     AWorkbench.popup("Name can not be empty.");
+                     return;
+                  }
 
                   SkynetTransaction transaction = TransactionManager.createTransaction(getBranch(),
                      String.format("Created new %s \"%s\" in artifact explorer", type.getName(), name));
