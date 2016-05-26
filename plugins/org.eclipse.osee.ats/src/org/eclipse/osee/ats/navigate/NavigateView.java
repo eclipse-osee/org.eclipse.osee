@@ -262,12 +262,14 @@ public class NavigateView extends ViewPart implements IXNavigateEventListener, I
    }
 
    public static NavigateView getNavigateView() {
-      IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-      try {
-         return (NavigateView) page.showView(NavigateView.VIEW_ID);
-      } catch (PartInitException e1) {
-         MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(), "Launch Error",
-            "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+      if (PlatformUI.getWorkbench() != null && PlatformUI.getWorkbench().getActiveWorkbenchWindow() != null) {
+         IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
+         try {
+            return (NavigateView) page.showView(NavigateView.VIEW_ID);
+         } catch (PartInitException e1) {
+            MessageDialog.openInformation(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
+               "Launch Error", "Couldn't Launch OSEE ATS NavigateView " + e1.getMessage());
+         }
       }
       return null;
    }

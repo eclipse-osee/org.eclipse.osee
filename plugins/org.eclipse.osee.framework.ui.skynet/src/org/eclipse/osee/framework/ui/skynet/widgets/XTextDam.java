@@ -107,8 +107,10 @@ public class XTextDam extends XText implements IAttributeWidget {
       IStatus status = super.isValid();
       if (status.isOK()) {
          try {
-            status =
-               OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
+            if (getArtifact() != null && getAttributeType() != null) {
+               status =
+                  OseeValidator.getInstance().validate(IOseeValidator.SHORT, getArtifact(), getAttributeType(), get());
+            }
          } catch (OseeCoreException ex) {
             status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error getting Artifact", ex);
          }
