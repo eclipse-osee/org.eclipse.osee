@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.client.integration.tests.ats.core.client.AtsTestUtil;
@@ -52,7 +53,7 @@ public class CopyAtsConfigurationOperationTest {
       Assert.assertFalse(rd.isErrors());
 
       Collection<IAtsTeamDefinition> teamDefs =
-         TeamDefinitions.getTeamDefinitionsNameStartsWith("CISv2", AtsClientService.get().getConfig());
+         TeamDefinitions.getTeamDefinitionsNameStartsWith("CISv2", AtsClientService.get().getQueryService());
       Assert.assertEquals(5, teamDefs.size());
 
       Collection<IAtsActionableItem> ais = getActionableItemsNameStartsWith("CISv2");
@@ -66,7 +67,8 @@ public class CopyAtsConfigurationOperationTest {
 
    public static Set<IAtsActionableItem> getActionableItemsNameStartsWith(String prefix) throws OseeCoreException {
       Set<IAtsActionableItem> artifacts = new HashSet<>();
-      for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
          if (aia.getName().startsWith(prefix)) {
             artifacts.add(aia);
          }

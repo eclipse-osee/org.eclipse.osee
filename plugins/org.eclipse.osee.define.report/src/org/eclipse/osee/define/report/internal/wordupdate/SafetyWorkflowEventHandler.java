@@ -128,12 +128,12 @@ public class SafetyWorkflowEventHandler implements EventHandler {
    private IAtsTeamWorkflow createSafetyAction(IAtsTeamWorkflow teamWf, ArtifactReadable userArt) {
       IAtsTeamWorkflow teamWorkflow = null;
       try {
-         IAtsActionableItem ai = atsServer.getConfig().getSoleByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(),
+         IAtsActionableItem ai = atsServer.getCache().getByUuid(AtsArtifactToken.SafetyActionableItem.getUuid(),
             IAtsActionableItem.class);
          if (ai == null) {
             throw new OseeCoreException("Safety Actionable Item not configured");
          }
-         IAtsTeamDefinition teamDef = atsServer.getConfig().getSoleByUuid(
+         IAtsTeamDefinition teamDef = atsServer.getCache().getByUuid(
             AtsArtifactToken.SafetyTeamDefinition.getUuid(), IAtsTeamDefinition.class);
          if (teamDef == null) {
             throw new OseeCoreException("Safety Team Definition not configured");

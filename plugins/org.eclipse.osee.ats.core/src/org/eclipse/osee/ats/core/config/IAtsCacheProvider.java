@@ -8,17 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.core.util;
+package org.eclipse.osee.ats.core.config;
 
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
+import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.framework.jdk.core.type.OseeStateException;
 
 /**
  * @author Donald G. Dunne
  */
-public interface CacheProvider<T> {
+public interface IAtsCacheProvider {
 
-   T get() throws OseeCoreException;
-
-   void invalidate();
+   IAtsCache getCache() throws OseeStateException;
 
 }

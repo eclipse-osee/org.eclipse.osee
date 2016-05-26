@@ -43,7 +43,7 @@ import org.junit.Test;
 
 /**
  * Test unit for {@link StateResource}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class StateResourceTest extends AbstractRestTest {
@@ -90,7 +90,7 @@ public class StateResourceTest extends AbstractRestTest {
       ActionArtifact action = ActionManager.createAction(null, StateResourceTest.class.getName(), "description",
          ChangeType.Improvement, "1", false, null,
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-            AtsClientService.get().getConfig()),
+            AtsClientService.get()),
          new Date(), AtsClientService.get().getUserServiceClient().getUserFromToken(DemoUsers.Joe_Smith), null,
          changes);
       TeamWorkFlowArtifact teamWf = action.getFirstTeam();

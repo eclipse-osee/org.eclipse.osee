@@ -70,7 +70,7 @@ public class PublishFullVersionReportItem extends XNavigateItemAction {
       if (useTeamDef == null) {
          List<IAtsTeamDefinition> teamDefinitions = null;
          try {
-            teamDefinitions = TeamDefinitions.getTeamDefinitions(Active.Both, AtsClientService.get().getConfig());
+            teamDefinitions = TeamDefinitions.getTeamDefinitions(Active.Both, AtsClientService.get().getQueryService());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
          }

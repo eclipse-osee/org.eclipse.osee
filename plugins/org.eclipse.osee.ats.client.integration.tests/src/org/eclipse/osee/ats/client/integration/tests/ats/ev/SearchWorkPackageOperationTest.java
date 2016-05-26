@@ -33,7 +33,7 @@ import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test case for {@link SearchWorkPackageOperation}
- * 
+ *
  * @author Donald G. Dunne
  */
 @RunWith(Parameterized.class)
@@ -101,13 +101,13 @@ public class SearchWorkPackageOperationTest {
       List<IAtsTeamDefinition> teamDefs = new ArrayList<>();
       for (Long teamDefUuid : teamDefUuids) {
          IAtsTeamDefinition teamDef =
-            (IAtsTeamDefinition) AtsClientService.get().getConfig().getSoleByUuid(teamDefUuid);
+            AtsClientService.get().getCache().getByUuid(teamDefUuid, IAtsTeamDefinition.class);
          teamDefs.add(teamDef);
       }
 
       List<IAtsActionableItem> ais = new ArrayList<>();
       for (Long aiUuid : aiUuids) {
-         IAtsActionableItem ai = (IAtsActionableItem) AtsClientService.get().getConfig().getSoleByUuid(aiUuid);
+         IAtsActionableItem ai = AtsClientService.get().getCache().getByUuid(aiUuid, IAtsActionableItem.class);
          ais.add(ai);
       }
 

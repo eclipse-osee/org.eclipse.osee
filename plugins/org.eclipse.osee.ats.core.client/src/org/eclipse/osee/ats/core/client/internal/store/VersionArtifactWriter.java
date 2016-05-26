@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.Date;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
@@ -18,7 +19,6 @@ import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -29,14 +29,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion> {
 
    @Override
-   public Artifact store(IAtsVersion ai, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsVersion ai, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.Version, ai, changes);
       store(ai, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsVersion version, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsVersion version, Artifact artifact, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(version.getName());
       boolean allowCommitBranch = artifact.getSoleAttributeValue(AtsAttributeTypes.AllowCreateBranch, true);
       if (allowCommitBranch != version.isAllowCommitBranch()) {
@@ -76,7 +76,7 @@ public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion
       // set parent artifact to top team def
       IAtsTeamDefinition teamDefinition = AtsClientService.get().getVersionService().getTeamDefinition(version);
       if (teamDefinition != null) {
-         Artifact teamDefArt = cache.getArtifact(teamDefinition);
+         Artifact teamDefArt = (Artifact) cache.getArtifact(teamDefinition);
          if (teamDefArt != null) {
             if (!teamDefArt.getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version).contains(artifact)) {
                teamDefArt.addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, artifact);
@@ -85,7 +85,7 @@ public class VersionArtifactWriter extends AbstractAtsArtifactWriter<IAtsVersion
          }
       }
       changes.add(artifact);
-      cache.cache(version);
+      cache.cacheAtsObject(version);
       return artifact;
    }
 

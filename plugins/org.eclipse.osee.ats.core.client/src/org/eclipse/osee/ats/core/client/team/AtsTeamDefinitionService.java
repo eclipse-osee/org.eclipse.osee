@@ -46,7 +46,7 @@ public class AtsTeamDefinitionService implements IAtsTeamDefinitionService {
          ((Artifact) workItem.getStoreObject()).getSoleAttributeValue(AtsAttributeTypes.TeamDefinition, "");
       if (Strings.isValid(teamDefGuid)) {
          Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(teamDefGuid);
-         teamDef = (IAtsTeamDefinition) atsClient.getConfig().getSoleByUuid(uuid);
+         teamDef = atsClient.getCache().getByUuid(uuid, IAtsTeamDefinition.class);
       }
       return teamDef;
    }

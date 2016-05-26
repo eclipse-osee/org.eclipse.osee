@@ -104,7 +104,7 @@ public class ExcelAtsActionArtifactExtractor {
                   for (Artifact aiaArt : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.ActionableItem,
                      actionableItemName, AtsUtilCore.getAtsBranch())) {
                      IAtsActionableItem ai =
-                        AtsClientService.get().getConfig().getSoleByUuid(aiaArt.getUuid(), IAtsActionableItem.class);
+                        AtsClientService.get().getCache().getByUuid(aiaArt.getUuid(), IAtsActionableItem.class);
                      if (ai != null) {
                         aias.add(ai);
                      }
@@ -181,15 +181,15 @@ public class ExcelAtsActionArtifactExtractor {
             if (actionArt == null) {
                actionArt = ActionManager.createAction(null, aData.title, aData.desc,
                   ChangeType.getChangeType(aData.changeType), aData.priorityStr, false, null,
-                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig()),
-                  createdDate, createdBy, null, changes);
+                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get()), createdDate,
+                  createdBy, null, changes);
                newTeamArts = ActionManager.getTeams(actionArt);
                addToGoal(newTeamArts, changes);
                actionNameToAction.put(aData.title, actionArt);
                actionArts.add(actionArt);
             } else {
                Set<IAtsActionableItem> aias =
-                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get().getConfig());
+                  ActionableItems.getActionableItems(aData.actionableItems, AtsClientService.get());
                Map<IAtsTeamDefinition, Collection<IAtsActionableItem>> teamDefToAias = getTeamDefToAias(aias);
                for (Entry<IAtsTeamDefinition, Collection<IAtsActionableItem>> entry : teamDefToAias.entrySet()) {
 

@@ -66,7 +66,7 @@ public class FirstTimeQualityMetricReportItem extends XNavigateItemAction {
       Set<IAtsTeamDefinition> teamReleaseableDefinitions = null;
       try {
          teamReleaseableDefinitions =
-            TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig());
+            TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getQueryService());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }

@@ -42,7 +42,7 @@ public class ActionableItemManager {
       Set<IAtsActionableItem> ais = new HashSet<>();
       if (!artifact.isDeleted()) {
          for (Long uuid : getActionableItemUuids()) {
-            IAtsActionableItem aia = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
+            IAtsActionableItem aia = AtsClientService.get().getCache().getByUuid(uuid, IAtsActionableItem.class);
             if (aia == null && !artifact.isDeleted()) {
                OseeLog.logf(Activator.class, Level.SEVERE,
                   "Actionable Item Uuid [%d] from [%s] doesn't match item in AtsConfigCache", uuid,

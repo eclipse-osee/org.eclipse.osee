@@ -12,6 +12,7 @@ Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.core.runtime,
  org.eclipse.osee.ats,
  org.eclipse.osee.ats.api,
+ org.eclipse.osee.ats.api.config,
  org.eclipse.osee.ats.api.data,
  org.eclipse.osee.ats.api.team,
  org.eclipse.osee.ats.api.version,

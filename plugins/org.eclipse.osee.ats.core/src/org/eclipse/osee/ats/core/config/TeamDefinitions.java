@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,8 +37,8 @@ public class TeamDefinitions {
       return names;
    }
 
-   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(config);
+   public static List<IAtsTeamDefinition> getTopLevelTeamDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
@@ -72,25 +74,27 @@ public class TeamDefinitions {
       return children;
    }
 
-   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
-      return Collections.castAll(getActive(config.get(IAtsTeamDefinition.class), active));
+   public static List<IAtsTeamDefinition> getTeamDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+      return Collections.castAll(
+         getActive(queryService.createQuery(AtsArtifactTypes.TeamDefinition).getItems(), active));
    }
 
-   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
-      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(config);
+   public static List<IAtsTeamDefinition> getTeamTopLevelDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
+      IAtsTeamDefinition topTeamDef = getTopTeamDefinition(queryService);
       if (topTeamDef == null) {
          return java.util.Collections.emptyList();
       }
       return Collections.castAll(getActive(getChildren(topTeamDef, false), active));
    }
 
-   public static IAtsTeamDefinition getTopTeamDefinition(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByUuid(AtsArtifactToken.TopTeamDefinition.getUuid(), IAtsTeamDefinition.class);
+   public static IAtsTeamDefinition getTopTeamDefinition(IAtsQueryService queryService) throws OseeCoreException {
+      return queryService.createQuery(AtsArtifactTypes.TeamDefinition).andUuids(
+         AtsArtifactToken.TopTeamDefinition.getUuid()).getOneOrNull(IAtsTeamDefinition.class);
    }
 
-   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsConfig config) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamReleaseableDefinitions(Active active, IAtsQueryService queryService) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, config)) {
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(active, queryService)) {
          if (teamDef.getVersions().size() > 0) {
             teamDefs.add(teamDef);
          }
@@ -121,9 +125,9 @@ public class TeamDefinitions {
       }
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsConfig config) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitions(Collection<String> teamDefNames, IAtsQueryService queryService) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both, queryService)) {
          if (teamDefNames.contains(teamDef.getName())) {
             teamDefs.add(teamDef);
          }
@@ -131,9 +135,9 @@ public class TeamDefinitions {
       return teamDefs;
    }
 
-   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsConfig config) throws OseeCoreException {
+   public static Set<IAtsTeamDefinition> getTeamDefinitionsNameStartsWith(String prefix, IAtsQueryService queryService) throws OseeCoreException {
       Set<IAtsTeamDefinition> teamDefs = new HashSet<>();
-      for (IAtsTeamDefinition teamDef : config.get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition teamDef : getTeamDefinitions(Active.Both, queryService)) {
          if (teamDef.getName().startsWith(prefix)) {
             teamDefs.add(teamDef);
          }

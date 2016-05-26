@@ -21,8 +21,8 @@ import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.ats.demo.api.DemoActionableItems;
 import org.eclipse.osee.ats.demo.api.DemoWorkType;
-import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.data.BranchId;
+import org.eclipse.osee.framework.core.data.IAccessContextId;
 import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -102,7 +102,7 @@ public class AtsBranchAccessManagerTest {
       String aiContextId = "ai.context.1";
       Artifact aiArt = AtsClientService.get().getConfigArtifact(
          ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Requirements.getName()),
-            AtsClientService.get().getConfig()).iterator().next());
+            AtsClientService.get()).iterator().next());
       aiArt.setAttributeValues(CoreAttributeTypes.AccessContextId, Arrays.asList(aiContextId));
       aiArt.persist(getClass().getSimpleName());
 

@@ -40,7 +40,7 @@ public class TeamDefinitionTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    protected Composite dialogComp;
 
    public TeamDefinitionTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, TeamDefinitions.getTeamTopLevelDefinitions(active, AtsClientService.get().getConfig()));
+      this(active, TeamDefinitions.getTeamTopLevelDefinitions(active, AtsClientService.get().getQueryService()));
    }
 
    public TeamDefinitionTreeWithChildrenDialog(Active active, Collection<IAtsTeamDefinition> TeamDefinitions) {

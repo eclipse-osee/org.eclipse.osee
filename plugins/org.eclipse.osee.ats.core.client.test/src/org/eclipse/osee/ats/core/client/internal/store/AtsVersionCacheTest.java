@@ -14,10 +14,12 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.IAtsCache;
+import org.eclipse.osee.ats.api.team.IAtsConfigItemFactory;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.util.CacheProvider;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -25,17 +27,20 @@ import org.mockito.MockitoAnnotations;
 
 /**
  * Test case for {@link AtsVersionCache}
- * 
+ *
  * @author Megumi Telles
  */
 
 public class AtsVersionCacheTest {
 
    // @formatter:off
-   @Mock private CacheProvider<AtsArtifactConfigCache> cacheProvider;
+   @Mock private IAtsCache atsCache;
    @Mock private IAtsTeamWorkflow teamWf;
    @Mock private IAtsVersion atsVersion;
    @Mock private IAtsConfigObject atsConfig;
+   @Mock private IAtsServices services;
+   @Mock private IAtsConfigItemFactory configItemFactory;
+   @Mock private ArtifactId verArt;
    // @formatter:on
 
    private AtsVersionCache atsVersionCache;
@@ -48,13 +53,12 @@ public class AtsVersionCacheTest {
       when(teamWf.getAtsId()).thenReturn("ZAQWS");
       when(atsVersion.getName()).thenReturn("Test Version");
       when(atsVersion.getUuid()).thenReturn(99L);
+      when(services.getConfigItemFactory()).thenReturn(configItemFactory);
+      when(configItemFactory.getVersion(verArt)).thenReturn(atsVersion);
+      when(services.getArtifact(35L)).thenReturn(verArt);
 
-      AtsArtifactConfigCache cache = new AtsArtifactConfigCache();
-      cache.cacheById(teamWf.getUuid(), atsVersion);
-
-      when(cacheProvider.get()).thenReturn(cache);
-
-      atsVersionCache = new AtsVersionCache(cacheProvider);
+      atsVersionCache = new AtsVersionCache(services);
+      atsVersionCache.cache(teamWf, atsVersion);
    }
 
    @Test

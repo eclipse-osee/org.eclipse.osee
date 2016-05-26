@@ -41,7 +41,7 @@ public class ActionableItemTreeWithChildrenDialog extends FilteredCheckboxTreeDi
    protected Composite dialogComp;
 
    public ActionableItemTreeWithChildrenDialog(Active active) throws OseeCoreException {
-      this(active, ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getConfig()));
+      this(active, ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getQueryService()));
    }
 
    public ActionableItemTreeWithChildrenDialog(Active active, Collection<IAtsActionableItem> actionableItems) {

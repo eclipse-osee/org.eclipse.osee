@@ -14,6 +14,7 @@ import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.config.AtsBulkLoad;
@@ -29,13 +30,13 @@ public class AtsActionableItemToTeamDefinitionTest {
       boolean error = false;
       StringBuffer sb = new StringBuffer("Actionable Actionable Items with no Team Def associated:\n");
       AtsBulkLoad.reloadConfig(true);
-      for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
          if (aia.isActionable()) {
             Collection<IAtsTeamDefinition> impactedTeamDefs = TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia));
             if (impactedTeamDefs.isEmpty()) {
                System.out.println(" ");
                sb.append("[" + aia + "]");
-               AtsClientService.get().getConfig().get(IAtsTeamDefinition.class);
                error = true;
             }
          }

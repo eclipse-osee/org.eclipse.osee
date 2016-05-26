@@ -34,7 +34,7 @@ public class MassEditTeamVersionItemTest {
    @Test
    public void test() {
       IAtsTeamDefinition teamDef = TeamDefinitions.getTeamDefinitions(Arrays.asList("SAW SW"),
-         AtsClientService.get().getConfig()).iterator().next();
+         AtsClientService.get().getQueryService()).iterator().next();
 
       MassEditTeamVersionItem search = new MassEditTeamVersionItem("Search", null, AtsImage.ACTION);
       search.setSelectedTeamDef(teamDef);

@@ -103,7 +103,7 @@ public class DemoTestUtil {
       Artifact actionArt =
          ActionManager.createAction(null, title, "Description", ChangeType.Improvement, "2", false, null,
             ActionableItems.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName()),
-               AtsClientService.get().getConfig()),
+               AtsClientService.get()),
             new Date(), AtsClientService.get().getUserService().getCurrentUser(), null, changes);
 
       TeamWorkFlowArtifact teamArt = null;
@@ -116,8 +116,7 @@ public class DemoTestUtil {
    }
 
    public static Set<IAtsActionableItem> getActionableItems(DemoActionableItems demoActionableItems) throws OseeCoreException {
-      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()),
-         AtsClientService.get().getConfig());
+      return ActionableItems.getActionableItems(Arrays.asList(demoActionableItems.getName()), AtsClientService.get());
    }
 
    public static IAtsActionableItem getActionableItem(DemoActionableItems demoActionableItems) throws OseeCoreException {
@@ -233,7 +232,7 @@ public class DemoTestUtil {
       // Add check to keep exception from occurring for OSEE developers running against production
       if (!ClientSessionManager.isProductionDataStore()) {
          try {
-            results = AtsClientService.get().getConfig().getSoleByUuid(team.getTeamDefToken().getUuid(),
+            results = AtsClientService.get().getCache().getByUuid(team.getTeamDefToken().getUuid(),
                IAtsTeamDefinition.class);
          } catch (Exception ex) {
             OseeLog.log(DemoTestUtil.class, Level.SEVERE, ex);

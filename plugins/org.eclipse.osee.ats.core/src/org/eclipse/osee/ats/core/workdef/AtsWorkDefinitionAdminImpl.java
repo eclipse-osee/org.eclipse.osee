@@ -39,7 +39,6 @@ import org.eclipse.osee.ats.api.workdef.NullRuleDefinition;
 import org.eclipse.osee.ats.api.workflow.IAtsGoal;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -54,27 +53,27 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class AtsWorkDefinitionAdminImpl implements IAtsWorkDefinitionAdmin {
 
-   private final CacheProvider<AtsWorkDefinitionCache> cacheProvider;
+   private final AtsWorkDefinitionCache workDefCache;
    private final IAtsWorkDefinitionService workDefinitionService;
    private final IAttributeResolver attributeResolver;
    private final ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy;
    private final Cache<String, IAtsRuleDefinition> ruleDefinitionCache =
       CacheBuilder.newBuilder().expireAfterAccess(5, TimeUnit.MINUTES).build();
 
-   public AtsWorkDefinitionAdminImpl(CacheProvider<AtsWorkDefinitionCache> workDefCacheProvider, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
-      this.cacheProvider = workDefCacheProvider;
+   public AtsWorkDefinitionAdminImpl(AtsWorkDefinitionCache workDefCache, IAtsWorkDefinitionService workDefinitionService, IAttributeResolver attributeResolver, ITeamWorkflowProvidersLazy teamWorkflowProvidersLazy) {
+      this.workDefCache = workDefCache;
       this.workDefinitionService = workDefinitionService;
       this.attributeResolver = attributeResolver;
       this.teamWorkflowProvidersLazy = teamWorkflowProvidersLazy;
    }
 
    private AtsWorkDefinitionCache getCache() throws OseeCoreException {
-      return cacheProvider.get();
+      return workDefCache;
    }
 
    @Override
    public void clearCaches() {
-      cacheProvider.invalidate();
+      workDefCache.invalidate();
    }
 
    @Override

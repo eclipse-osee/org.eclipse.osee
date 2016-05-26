@@ -47,7 +47,7 @@ public class XTeamDefinitionCombo extends XComboViewer {
 
       Collection<IAtsTeamDefinition> teamDefs = null;
       try {
-         teamDefs = TeamDefinitions.getTeamDefinitions(Active.Active, AtsClientService.get().getConfig());
+         teamDefs = TeamDefinitions.getTeamDefinitions(Active.Active, AtsClientService.get().getQueryService());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
       }

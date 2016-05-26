@@ -24,7 +24,7 @@ import org.junit.Assert;
 
 /**
  * Test case for {@link ConfigData}
- * 
+ *
  * @author Donald G. Dunne
  */
 public class ConfigDataTest {
@@ -73,7 +73,7 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()),
+      Assert.assertEquals(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()),
          data.getParentTeamDef());
    }
 
@@ -86,7 +86,7 @@ public class ConfigDataTest {
 
       tda = DemoTestUtil.getTeamDef(DemoTeam.CIS_SW);
       data.setTeamDef(tda);
-      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()),
+      Assert.assertEquals(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()),
          data.getParentActionableItem());
 
    }

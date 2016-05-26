@@ -33,7 +33,6 @@ import org.eclipse.osee.ats.api.workdef.IWorkDefinitionMatch;
 import org.eclipse.osee.ats.api.workflow.IAtsTask;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.api.workflow.IAtsWorkItemService;
-import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.ats.core.workflow.ITeamWorkflowProvidersLazy;
 import org.eclipse.osee.framework.core.util.XResultData;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -68,7 +67,7 @@ public class AtsWorkDefinitionAdminImplTest {
    @Mock IAtsWorkDefinition myPeerToPeerWorkDef;
    @Mock IAtsWorkDefinition myTaskWorkDef;
    @Mock ITeamWorkflowProvidersLazy teamWorkflowProviders;
-   @Mock CacheProvider<AtsWorkDefinitionCache> cacheProvider;
+   @Mock AtsWorkDefinitionCache workDefCache;
    @Mock IAttributeResolver attributeResolver;
    @Mock IAtsTask task;
    @Mock IAtsServices services;
@@ -90,11 +89,8 @@ public class AtsWorkDefinitionAdminImplTest {
       when(workDefinitionService.getWorkDef(eq(MyPeerToPeerWorkDefId), any(XResultData.class))).thenReturn(
          myPeerToPeerWorkDef);
 
-      AtsWorkDefinitionCache cache = new AtsWorkDefinitionCache();
-      when(cacheProvider.get()).thenReturn(cache);
-
       workDefAmin =
-         new AtsWorkDefinitionAdminImpl(cacheProvider, workDefinitionService, attributeResolver, teamWorkflowProviders);
+         new AtsWorkDefinitionAdminImpl(workDefCache, workDefinitionService, attributeResolver, teamWorkflowProviders);
    }
 
    @Test

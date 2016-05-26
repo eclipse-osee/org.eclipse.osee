@@ -17,8 +17,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsArtifactToken;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -53,10 +56,11 @@ public class ActionableItems {
       }
    }
 
-   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsConfig config) throws OseeCoreException {
+   public static Set<IAtsActionableItem> getActionableItems(Collection<String> actionableItemNames, IAtsServices services) throws OseeCoreException {
       Set<IAtsActionableItem> ais = new HashSet<>();
       for (String actionableItemName : actionableItemNames) {
-         for (IAtsActionableItem ai : config.get(IAtsActionableItem.class)) {
+         for (IAtsActionableItem ai : services.getQueryService().createQuery(AtsArtifactTypes.ActionableItem).getItems(
+            IAtsActionableItem.class)) {
             if (ai.getName().equals(actionableItemName)) {
                ais.add(ai);
             }
@@ -69,24 +73,26 @@ public class ActionableItems {
       return TeamDefinitions.getImpactedTeamDefs(ais);
    }
 
-   public static List<IAtsActionableItem> getActionableItems(Active active, IAtsConfig config) throws OseeCoreException {
-      return Collections.castAll(getActive(config.get(IAtsActionableItem.class), active));
+   public static List<IAtsActionableItem> getActionableItems(Active active, IAtsQueryService queryService) throws OseeCoreException {
+      return Collections.castAll(
+         getActive(queryService.createQuery(AtsArtifactTypes.ActionableItem).getItems(), active));
    }
 
    public static String getNotActionableItemError(IAtsConfigObject configObject) {
       return "Action can not be written against " + configObject.getName() + " \"" + configObject + "\" (" + configObject.getUuid() + ").\n\nChoose another item.";
    }
 
-   public static IAtsActionableItem getTopActionableItem(IAtsConfig config) throws OseeCoreException {
-      return config.getSoleByUuid(AtsArtifactToken.TopActionableItem.getUuid(), IAtsActionableItem.class);
+   public static IAtsActionableItem getTopActionableItem(IAtsQueryService queryService) throws OseeCoreException {
+      return queryService.createQuery(AtsArtifactTypes.ActionableItem).andUuids(
+         AtsArtifactToken.TopActionableItem.getUuid()).getItems(IAtsActionableItem.class).iterator().next();
    }
 
-   public static List<IAtsActionableItem> getActionableItemsAll(IAtsConfig config) throws OseeCoreException {
-      return getActionableItems(Active.Both, config);
+   public static List<IAtsActionableItem> getActionableItemsAll(IAtsQueryService queryService) throws OseeCoreException {
+      return getActionableItems(Active.Both, queryService);
    }
 
-   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsConfig config) throws OseeCoreException {
-      IAtsActionableItem topAi = getTopActionableItem(config);
+   public static List<IAtsActionableItem> getTopLevelActionableItems(Active active, IAtsQueryService queryService) throws OseeCoreException {
+      IAtsActionableItem topAi = getTopActionableItem(queryService);
       if (topAi == null) {
          return java.util.Collections.emptyList();
       }

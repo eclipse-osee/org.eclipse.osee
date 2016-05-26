@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.TeamDefinitionOptions;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
@@ -345,11 +344,6 @@ public class TeamDefinition extends AtsConfigObject implements IAtsTeamDefinitio
    @Override
    public void setRelatedTaskWorkDefinition(String name) {
       throw new UnsupportedOperationException("TeamDefinition.setRelatedTaskWorkDefinition not implemented");
-   }
-
-   @Override
-   public void initialize(String fullname, String description, Collection<IAtsUser> leads, Collection<IAtsUser> members, Collection<IAtsActionableItem> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) {
-      throw new UnsupportedOperationException("TeamDefinition.setActionable not implemented");
    }
 
    @Override

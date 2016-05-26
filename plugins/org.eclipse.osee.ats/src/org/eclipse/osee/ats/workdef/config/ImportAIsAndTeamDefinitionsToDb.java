@@ -79,9 +79,9 @@ public class ImportAIsAndTeamDefinitionsToDb {
    public void execute() throws OseeCoreException {
       importUserDefinitions(atsDsl.getUserDef());
       importTeamDefinitions(atsDsl.getTeamDef(), AtsClientService.get().getConfigArtifact(
-         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig())));
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService())));
       importActionableItems(atsDsl.getActionableItemDef(), AtsClientService.get().getConfigArtifact(
-         ActionableItems.getTopActionableItem(AtsClientService.get().getConfig())));
+         ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService())));
       importProgram(atsDsl.getProgram());
    }
 
@@ -367,10 +367,10 @@ public class ImportAIsAndTeamDefinitionsToDb {
       if (parent == null) {
          if (isTeamDef) {
             parent = AtsClientService.get().storeConfigObject(
-               TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), changes);
+               TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), changes);
          } else {
             parent = AtsClientService.get().storeConfigObject(
-               ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()), changes);
+               ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()), changes);
          }
          changes.execute();
       }

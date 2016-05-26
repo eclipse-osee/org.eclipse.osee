@@ -156,8 +156,8 @@ public class AtsBranchConfigurationTest {
             "Create new Action and target for version " + versionToTarget);
       }
 
-      Collection<IAtsActionableItem> selectedActionableItems = ActionableItems.getActionableItems(
-         appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get().getConfig());
+      Collection<IAtsActionableItem> selectedActionableItems =
+         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_VERSIONS, "A1"), AtsClientService.get());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.clear();
@@ -265,8 +265,8 @@ public class AtsBranchConfigurationTest {
       if (DEBUG) {
          OseeLog.log(AtsBranchConfigurationTest.class, Level.INFO, "Create new Action");
       }
-      Collection<IAtsActionableItem> selectedActionableItems = ActionableItems.getActionableItems(
-         appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"), AtsClientService.get().getConfig());
+      Collection<IAtsActionableItem> selectedActionableItems =
+         ActionableItems.getActionableItems(appendToName(BRANCH_VIA_TEAM_DEFINITION, "A1"), AtsClientService.get());
       assertFalse(selectedActionableItems.isEmpty());
 
       changes.reset("Test branch via team definition: create action");
@@ -335,14 +335,15 @@ public class AtsBranchConfigurationTest {
       // Delete VersionArtifacts
       SkynetTransaction transaction =
          TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(), "Branch Configuration Test");
-      for (IAtsVersion version : AtsClientService.get().getConfig().get(IAtsVersion.class)) {
+      for (IAtsVersion version : AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.Version).getItems(IAtsVersion.class)) {
          if (version.getName().contains(branch.getName())) {
             Artifact artifact = AtsClientService.get().getConfigArtifact(version);
             if (artifact != null) {
                artifact.deleteAndPersist(transaction);
             }
          }
-         AtsClientService.get().getConfig().invalidate(version);
+         AtsClientService.get().getCache().deCacheAtsObject(version);
       }
       transaction.execute();
 
@@ -352,9 +353,9 @@ public class AtsBranchConfigurationTest {
          branch.getName(), AtsUtilCore.getAtsBranch())) {
          teamDefArt.deleteAndPersist(transaction, false);
          IAtsTeamDefinition soleByUuid =
-            AtsClientService.get().getConfig().getSoleByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getCache().getByUuid(teamDefArt.getUuid(), IAtsTeamDefinition.class);
          if (soleByUuid != null) {
-            AtsClientService.get().getConfig().invalidate(soleByUuid);
+            AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
          }
       }
       transaction.execute();
@@ -366,16 +367,19 @@ public class AtsBranchConfigurationTest {
          for (Artifact childArt : aiaArt.getChildren()) {
             childArt.deleteAndPersist(transaction, false);
             IAtsActionableItem soleByUuid =
-               AtsClientService.get().getConfig().getSoleByUuid(childArt.getUuid(), IAtsActionableItem.class);
+               AtsClientService.get().getCache().getByUuid(childArt.getUuid(), IAtsActionableItem.class);
             if (soleByUuid != null) {
-               AtsClientService.get().getConfig().invalidate(soleByUuid);
+               AtsClientService.get().getCache().deCacheAtsObject(soleByUuid);
             }
          }
 
          aiaArt.deleteAndPersist(transaction, false);
 
-         AtsClientService.get().getConfig().invalidate(
-            AtsClientService.get().getConfig().getSoleByUuid(aiaArt.getUuid(), IAtsActionableItem.class));
+         IAtsActionableItem ai =
+            AtsClientService.get().getCache().getByUuid(aiaArt.getUuid(), IAtsActionableItem.class);
+         if (ai != null) {
+            AtsClientService.get().getCache().deCacheAtsObject(ai);
+         }
          transaction.execute();
       }
 

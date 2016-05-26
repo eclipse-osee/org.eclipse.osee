@@ -86,8 +86,8 @@ public class NewActionPage1 extends WizardPage {
 
    protected String getWidgetXml() {
       return "<WorkPage>" + //
-      "<XWidget displayName=\"" + TITLE + "\" storageName=\"Name\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
-      "</WorkPage>";
+         "<XWidget displayName=\"" + TITLE + "\" storageName=\"Name\" required=\"true\" xwidgetType=\"XText\" toolTip=\"" + AtsAttributeTypes.Title.getDescription() + "\"/>" + //
+         "</WorkPage>";
    }
 
    @Override
@@ -123,7 +123,7 @@ public class NewActionPage1 extends WizardPage {
          treeViewer.getViewer().setLabelProvider(new AtsObjectLabelProvider());
          try {
             List<IAtsActionableItem> topLevelActionableItems =
-               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getConfig());
+               ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getQueryService());
             treeViewer.getViewer().setInput(topLevelActionableItems);
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -183,7 +183,7 @@ public class NewActionPage1 extends WizardPage {
          if (atsAi == null) {
             Long uuid = AtsClientService.get().getStoreService().getUuidFromGuid(
                ATS_Actionable_Item_Guid_For_Training_And_Demos);
-            atsAi = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
+            atsAi = AtsClientService.get().getCache().getByUuid(uuid, IAtsActionableItem.class);
             if (atsAi != null) {
                treeViewer.getViewer().setSelection(new StructuredSelection(Arrays.asList(atsAi)));
                treeViewer.setInitalChecked(Arrays.asList(atsAi));

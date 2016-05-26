@@ -45,7 +45,6 @@ import org.eclipse.osee.ats.api.workflow.log.LogType;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateFactory;
 import org.eclipse.osee.ats.api.workflow.state.IAtsStateManager;
 import org.eclipse.osee.ats.core.ai.ActionableItemManager;
-import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.users.AtsCoreUsers;
 import org.eclipse.osee.ats.core.workflow.state.StateManagerUtility;
@@ -72,17 +71,15 @@ public class ActionFactory implements IAtsActionFactory {
    private final ActionableItemManager actionableItemManager;
    private final IAttributeResolver attrResolver;
    private final IAtsStateFactory stateFactory;
-   private final IAtsConfig config;
    private final IAtsServices services;
 
-   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsConfig config, IAtsServices atsServices) {
+   public ActionFactory(IAtsWorkItemFactory workItemFactory, IAtsUtilService utilService, ISequenceProvider sequenceProvider, ActionableItemManager actionableItemManager, IAttributeResolver attrResolver, IAtsStateFactory stateFactory, IAtsServices atsServices) {
       this.workItemFactory = workItemFactory;
       this.utilService = utilService;
       this.sequenceProvider = sequenceProvider;
       this.actionableItemManager = actionableItemManager;
       this.attrResolver = attrResolver;
       this.stateFactory = stateFactory;
-      this.config = config;
       this.services = atsServices;
    }
 
@@ -94,7 +91,7 @@ public class ActionFactory implements IAtsActionFactory {
 
       Object actionArt = changes.createArtifact(AtsArtifactTypes.Action, title);
       IAtsAction action = workItemFactory.getAction((ArtifactId) actionArt);
-      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(config);
+      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(services.getQueryService());
       utilService.setAtsId(sequenceProvider, action, topTeamDefinition, changes);
       changes.add(action);
       setArtifactIdentifyData(action, title, desc, changeType, priority, validationRequired, needByDate, changes);

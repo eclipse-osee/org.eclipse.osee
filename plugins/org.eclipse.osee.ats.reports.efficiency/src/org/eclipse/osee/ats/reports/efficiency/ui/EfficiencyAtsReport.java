@@ -44,7 +44,8 @@ public class EfficiencyAtsReport implements AtsReport<IAtsTeamDefinition, Object
       IAtsTeamDefinition atsTeamDefinition = null;
       TeamDefinitionDialog dialog =
          new TeamDefinitionDialog("Team Efficiency Report", "Please Select the Team Definition");
-      dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
+      dialog.setInput(
+         TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getQueryService()));
       int open = dialog.open();
       if (open == 0) {
          atsTeamDefinition = dialog.getSelectedFirst();

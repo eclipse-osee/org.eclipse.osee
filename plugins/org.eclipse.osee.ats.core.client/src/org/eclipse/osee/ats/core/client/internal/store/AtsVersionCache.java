@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.store;
 
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import java.util.concurrent.TimeUnit;
+import org.eclipse.osee.ats.api.IAtsServices;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.workflow.IAtsTeamWorkflow;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
-import org.eclipse.osee.ats.core.util.CacheProvider;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 
 /**
@@ -24,34 +27,42 @@ import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
  */
 public class AtsVersionCache {
 
-   CacheProvider<AtsArtifactConfigCache> configCacheProvider;
+   private final IAtsServices services;
+   public final CacheLoader<Long, IAtsVersion> teamWfUuidToVersionCacheLoader = new CacheLoader<Long, IAtsVersion>() {
+      @Override
+      public IAtsVersion load(Long uuid) {
+         return services.getConfigItemFactory().getVersion(services.getArtifact(uuid));
+      }
+   };
+   private final LoadingCache<Long, IAtsVersion> teamWfUuidToVersionCache = CacheBuilder.newBuilder() //
+      .expireAfterWrite(15, TimeUnit.MINUTES) //
+      .build(teamWfUuidToVersionCacheLoader);
 
-   public AtsVersionCache(CacheProvider<AtsArtifactConfigCache> configCacheProvider) {
-      this.configCacheProvider = configCacheProvider;
+   public AtsVersionCache(IAtsServices services) {
+      this.services = services;
    }
 
-   public IAtsVersion getVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      return configCacheProvider.get().getSoleByUuid(teamWf.getUuid(), IAtsVersion.class);
+   public IAtsVersion getVersion(IAtsTeamWorkflow teamWf) {
+      return teamWfUuidToVersionCache.getIfPresent(teamWf.getUuid());
    }
 
    public boolean hasVersion(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      IAtsVersion version = getVersion(teamWf);
-      return version != null;
+      return getVersion(teamWf) != null;
    }
 
    public IAtsVersion cache(IAtsTeamWorkflow teamWf, IAtsVersion version) throws OseeCoreException {
       if (version != null) {
-         configCacheProvider.get().cacheById(teamWf.getUuid(), version);
+      teamWfUuidToVersionCache.put(teamWf.getUuid(), version);
       }
       return version;
    }
 
    public void deCache(IAtsTeamWorkflow teamWf) throws OseeCoreException {
-      configCacheProvider.get().invalidateByUuid(teamWf.getUuid());
+      teamWfUuidToVersionCache.invalidate(teamWf.getUuid());
    }
 
    public void invalidateCache() {
-      configCacheProvider.invalidate();
+      teamWfUuidToVersionCache.invalidateAll();
    }
 
 }

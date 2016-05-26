@@ -115,7 +115,7 @@ public class VersionTargetedForTeamSearchItem extends WorldUISearchItem {
          if (versionArt == null && selectedTeamDef == null) {
             TeamDefinitionDialog dialog = new TeamDefinitionDialog();
             dialog.setInput(
-               TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getConfig()));
+               TeamDefinitions.getTeamReleaseableDefinitions(Active.Both, AtsClientService.get().getQueryService()));
             int result = dialog.open();
             if (result == 0) {
                selectedTeamDef = dialog.getSelectedFirst();

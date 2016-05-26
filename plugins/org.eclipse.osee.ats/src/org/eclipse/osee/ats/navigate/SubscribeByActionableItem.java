@@ -45,10 +45,12 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          "Select Actionable Items\n\nEmail will be sent for every Action created against these AIs.", Active.Active);
       try {
          List<IAtsActionableItem> objs = new ArrayList<>();
-         objs.addAll(AtsClientService.get().getConfigObjects(
-            AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
-               AtsRelationTypes.SubscribedUser_Artifact),
-            IAtsActionableItem.class));
+         for (Artifact artifact : AtsClientService.get().getUserServiceClient().getCurrentOseeUser().getRelatedArtifacts(
+            AtsRelationTypes.SubscribedUser_Artifact)) {
+            if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
+               objs.add(AtsClientService.get().getConfigItemFactory().getActionableItem(artifact));
+            }
+         }
          diag.setInitialAias(objs);
          if (diag.open() != 0) {
             return;

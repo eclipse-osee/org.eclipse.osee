@@ -79,7 +79,7 @@ public class AtsDeleteManagerTest {
       // Create Action
       TeamWorkFlowArtifact teamArt =
          createAction(TestNames.TeamArtDeleteOneWorkflow, ActionableItems.getActionableItems(
-            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()));
+            Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
 
       // Verify exists
       verifyExists(TestNames.TeamArtDeleteOneWorkflow, 1, 1, 0, 2, 1);
@@ -101,7 +101,7 @@ public class AtsDeleteManagerTest {
       TeamWorkFlowArtifact teamArt = createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
          ActionableItems.getActionableItems(
             Arrays.asList(DemoActionableItems.SAW_Code.getName(), DemoActionableItems.SAW_Requirements.getName()),
-            AtsClientService.get().getConfig()));
+            AtsClientService.get()));
 
       // Verify exists
       verifyExists(TestNames.TeamArtDeleteWithTwoWorkflows, 1, 1, 1, 2, 1);
@@ -117,7 +117,7 @@ public class AtsDeleteManagerTest {
    public void testTeamArtPurge() throws Exception {
       // Create Action
       TeamWorkFlowArtifact teamArt = createAction(TestNames.TeamArtPurge, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()));
+         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
 
       // Verify exists
       verifyExists(TestNames.TeamArtPurge, 1, 1, 0, 2, 1);
@@ -133,7 +133,7 @@ public class AtsDeleteManagerTest {
    public void testActionDelete() throws Exception {
       // Create Action
       TeamWorkFlowArtifact teamArt = createAction(TestNames.ActionDelete, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()));
+         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
 
       // Verify exists
       verifyExists(TestNames.ActionDelete, 1, 1, 0, 2, 1);
@@ -149,7 +149,7 @@ public class AtsDeleteManagerTest {
    public void testActionPurge() throws Exception {
       // Create Action
       TeamWorkFlowArtifact teamArt = createAction(TestNames.ActionPurge, ActionableItems.getActionableItems(
-         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get().getConfig()));
+         Arrays.asList(DemoActionableItems.SAW_Code.getName()), AtsClientService.get()));
 
       // Verify exists
       verifyExists(TestNames.ActionPurge, 1, 1, 0, 2, 1);

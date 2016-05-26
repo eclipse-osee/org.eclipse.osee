@@ -55,12 +55,12 @@ public class ConvertAIsAndTeamsToAtsDsl {
       try {
          // Add all TeamDef definitions
          TeamDef topTeam =
-            convertTeamDef(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()), null);
+            convertTeamDef(TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()), null);
          atsDsl.getTeamDef().add(topTeam);
 
          // Add all AI definitions
          ActionableItemDef topAi =
-            convertAIDef(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()), null);
+            convertAIDef(ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()), null);
          atsDsl.getActionableItemDef().add(topAi);
 
       } catch (OseeCoreException ex) {

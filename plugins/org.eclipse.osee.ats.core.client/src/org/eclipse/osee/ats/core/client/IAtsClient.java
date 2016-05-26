@@ -15,6 +15,7 @@ import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.IAtsServices;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.notify.IAtsNotifier;
@@ -53,7 +54,7 @@ import org.eclipse.osee.ats.core.client.internal.IAtsWorkItemArtifactServiceProv
 import org.eclipse.osee.ats.core.client.util.IArtifactMembersCache;
 import org.eclipse.osee.ats.core.client.workflow.AbstractWorkflowArtifact;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
-import org.eclipse.osee.ats.core.config.IAtsConfigProvider;
+import org.eclipse.osee.ats.core.config.IAtsCacheProvider;
 import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
 import org.eclipse.osee.ats.core.workflow.TeamWorkflowProviders;
 import org.eclipse.osee.framework.core.data.BranchId;
@@ -66,7 +67,7 @@ import org.eclipse.osee.logger.Log;
 /**
  * @author Donald G. Dunne
  */
-public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsConfigProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
+public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolverProvider, IAtsReviewServiceProvider, IAtsBranchServiceProvider, IAtsWorkItemArtifactServiceProvider, IAtsWorkItemServiceProvider, IAtsCacheProvider, ITeamDefinitionFactory, IActionableItemFactory, IArtifactProvider, IAtsVersionServiceProvider, IAtsEarnedValueServiceProvider {
 
    <T extends IAtsConfigObject> Artifact storeConfigObject(T configObject, IAtsChangeSet changes) throws OseeCoreException;
 
@@ -90,11 +91,7 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
 
    List<Artifact> getConfigArtifacts(Collection<? extends IAtsObject> atsObjects) throws OseeCoreException;
 
-   <T extends IAtsConfigObject> Collection<T> getConfigObjects(Collection<? extends Artifact> artifacts, Class<T> clazz) throws OseeCoreException;
-
-   void invalidateConfigCache();
-
-   void reloadConfigCache() throws OseeCoreException;
+   void invalidateCache();
 
    void reloadWorkDefinitionCache() throws OseeCoreException;
 
@@ -189,4 +186,9 @@ public interface IAtsClient extends IAtsServices, IAtsNotifier, IAttributeResolv
    Log getLogger();
 
    IAtsEventService getEventService();
+
+   @Override
+   IAtsCache getCache();
+
+   void reloadConfigCache();
 }

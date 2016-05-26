@@ -118,8 +118,8 @@ public class CreateTaskRuleTest {
       IAtsChangeSet changes = atsClient.getStoreService().createAtsChangeSet(getClass().getSimpleName(), currentUser);
       Pair<IAtsAction, Collection<IAtsTeamWorkflow>> pair = atsClient.getActionFactory().createAction(currentUser,
          getClass().getSimpleName(), title, ChangeType.Improvement, "priority", false, null,
-         ActionableItems.getActionableItems(Arrays.asList(actionableItem.getName()), atsClient.getConfig()), new Date(),
-         currentUser, null, changes);
+         ActionableItems.getActionableItems(Arrays.asList(actionableItem.getName()), AtsClientService.get()),
+         new Date(), currentUser, null, changes);
       changes.execute();
 
       // verify that tasks have been created

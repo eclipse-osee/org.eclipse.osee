@@ -139,7 +139,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact fromTeamDefArt : fromAiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team,
          Artifact.class)) {
          IAtsConfigObject fromTeamDef =
-            AtsClientService.get().getConfig().getSoleByUuid(fromTeamDefArt.getUuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getCache().getByUuid(fromTeamDefArt.getUuid(), IAtsTeamDefinition.class);
          IAtsTeamDefinition newTeamDef = fromTeamDefToNewTeamDefMap.get(fromTeamDef);
 
          if (newTeamDef == null) {
@@ -184,7 +184,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
       for (Artifact childFromTeamDefArt : fromTeamDefArt.getChildren()) {
          if (childFromTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition childFromTeamDef = AtsClientService.get().getConfigObject(childFromTeamDefArt);
-            AtsClientService.get().getConfig().getSoleByUuid(childFromTeamDefArt.getUuid(), IAtsTeamDefinition.class);
+            AtsClientService.get().getCache().getByUuid(childFromTeamDefArt.getUuid(), IAtsTeamDefinition.class);
             createTeamDefinitions(changes, childFromTeamDef, newTeamDef);
          }
       }
@@ -226,7 +226,7 @@ public class CopyAtsConfigurationOperation extends AbstractOperation {
    private void persistOrUndoChanges(AtsChangeSet changes) throws OseeCoreException {
       if (data.isPersistChanges()) {
          changes.execute();
-         AtsClientService.get().invalidateConfigCache();
+         AtsClientService.get().invalidateCache();
       } else {
          resultData.log("\n\nCleanup of created / modified artifacts\n\n");
          for (Artifact artifact : newArtifacts) {

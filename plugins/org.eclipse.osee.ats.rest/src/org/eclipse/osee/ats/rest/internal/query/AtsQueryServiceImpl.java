@@ -27,11 +27,11 @@ import org.eclipse.osee.framework.core.data.IArtifactType;
 /**
  * @author Donald G. Dunne
  */
-public class AtsQueryServiceIimpl implements IAtsQueryService {
+public class AtsQueryServiceImpl implements IAtsQueryService {
 
    private final IAtsServer atsServer;
 
-   public AtsQueryServiceIimpl(IAtsServer atsServer) {
+   public AtsQueryServiceImpl(IAtsServer atsServer) {
       this.atsServer = atsServer;
    }
 

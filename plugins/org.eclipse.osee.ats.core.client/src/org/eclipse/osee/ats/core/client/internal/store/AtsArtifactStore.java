@@ -12,11 +12,11 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.Map;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactReader;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactWriter;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Conditions;
@@ -36,7 +36,7 @@ public class AtsArtifactStore implements IAtsArtifactStore {
    }
 
    @Override
-   public <T extends IAtsConfigObject> Artifact store(AtsArtifactConfigCache cache, T configObject, IAtsChangeSet changes) throws OseeCoreException {
+   public <T extends IAtsConfigObject> Artifact store(IAtsCache cache, T configObject, IAtsChangeSet changes) throws OseeCoreException {
       Conditions.checkNotNull(cache, "cache");
       Conditions.checkNotNull(configObject, "configObject");
       Conditions.checkNotNull(changes, "transaction");
@@ -50,7 +50,7 @@ public class AtsArtifactStore implements IAtsArtifactStore {
    }
 
    @Override
-   public <T extends IAtsConfigObject> T load(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
+   public <T extends IAtsConfigObject> T load(IAtsCache cache, Artifact artifact) throws OseeCoreException {
       Conditions.checkNotNull(cache, "cache");
       Conditions.checkNotNull(artifact, "artifact");
 

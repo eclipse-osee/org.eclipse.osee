@@ -12,12 +12,12 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.ActionableItems;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -35,14 +35,14 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAtsActionableItem> {
 
    @Override
-   public Artifact store(IAtsActionableItem ai, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsActionableItem ai, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.ActionableItem, ai, changes);
       store(ai, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsActionableItem ai, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsActionableItem ai, Artifact artifact, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(ai.getName());
       artifact.setSoleAttributeValue(AtsAttributeTypes.Active, ai.isActive());
       boolean actionable = artifact.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
@@ -60,7 +60,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
 
       // set new team definition if necessary
       if (ai.getTeamDefinition() != null) {
-         Artifact teamDefArt = cache.getArtifact(ai.getTeamDefinition());
+         Artifact teamDefArt = cache.getArtifact(ai.getTeamDefinition().getUuid());
          if (teamDefArt != null && !teamDefArt.getRelatedArtifacts(
             AtsRelationTypes.TeamActionableItem_ActionableItem).contains(artifact)) {
             artifact.deleteRelations(AtsRelationTypes.TeamActionableItem_Team);
@@ -103,10 +103,10 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
 
       // set parent artifact to top team def
       if (ai.getParentActionableItem() == null && !ai.getUuid().equals(
-         ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()).getUuid())) {
+         ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()).getUuid())) {
          // if parent is null, add to top team definition
          Artifact topAIArt =
-            cache.getArtifact(ActionableItems.getTopActionableItem(AtsClientService.get().getConfig()));
+            (Artifact) ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService()).getStoreObject();
          topAIArt.addChild(artifact);
          changes.add(topAIArt);
       } else {
@@ -115,7 +115,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
          if (parentAiArt != null) {
             if (parentAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
                if (!parentAiArt.getUuid().equals(ai.getParentActionableItem().getUuid())) {
-                  Artifact newParentAIArt = cache.getArtifact(ai);
+                  Artifact newParentAIArt = cache.getArtifact(ai.getUuid());
                   newParentAIArt.addChild(artifact);
                   changes.add(newParentAIArt);
                   changes.add(parentAiArt);
@@ -124,7 +124,7 @@ public class ActionableItemArtifactWriter extends AbstractAtsArtifactWriter<IAts
          }
       }
       changes.add(artifact);
-      cache.cache(ai);
+      cache.cacheAtsObject(ai);
       return artifact;
    }
 

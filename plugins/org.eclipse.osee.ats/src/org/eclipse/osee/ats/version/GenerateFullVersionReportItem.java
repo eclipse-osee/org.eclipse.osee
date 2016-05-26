@@ -73,7 +73,7 @@ public class GenerateFullVersionReportItem extends XNavigateItemAction {
          Set<IAtsTeamDefinition> teamDefinitions = null;
          try {
             teamDefinitions =
-               TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig());
+               TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService());
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading team definitions", ex);
          }

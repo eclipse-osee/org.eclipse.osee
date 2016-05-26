@@ -54,7 +54,7 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * This class creates a simple configuration of ATS given team definition name, version names (if desired), actionable
  * items and workflow id.
- * 
+ *
  * @author Donald G. Dunne
  */
 public class AtsConfigOperation extends AbstractOperation {
@@ -143,7 +143,7 @@ public class AtsConfigOperation extends AbstractOperation {
       }
       teamDef.getLeads().add(AtsClientService.get().getUserService().getCurrentUser());
       teamDef.getMembers().add(AtsClientService.get().getUserService().getCurrentUser());
-      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig()).getChildrenTeamDefinitions().add(
+      TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService()).getChildrenTeamDefinitions().add(
          teamDef);
       AtsClientService.get().storeConfigObject(teamDef, changes);
       return teamDef;

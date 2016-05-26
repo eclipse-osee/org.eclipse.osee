@@ -13,13 +13,13 @@ package org.eclipse.osee.ats.client.integration.tests.ats.core.client.config.sto
 import java.util.Arrays;
 import java.util.Date;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.client.integration.tests.AtsClientService;
 import org.eclipse.osee.ats.core.client.util.AtsChangeSet;
-import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -43,15 +43,17 @@ public class VersionArtifactStoreTest {
       SkynetTransaction transaction = TransactionManager.createTransaction(AtsUtilCore.getAtsBranch(),
          VersionArtifactStoreTest.class.getSimpleName() + " - cleanup");
 
-      IAtsConfig config = AtsClientService.get().getConfig();
+      IAtsCache cache = AtsClientService.get().getCache();
       for (String name : Arrays.asList("VersionArtifactStoreTest - version 1", "VersionArtifactStoreTest - version 2",
          "VersionArtifactStoreTest - version 3")) {
          for (Artifact art : ArtifactQuery.getArtifactListFromTypeAndName(AtsArtifactTypes.Version, name,
             AtsUtilCore.getAtsBranch())) {
             art.deleteAndPersist(transaction);
 
-            IAtsConfigObject soleByGuid = config.getSoleByUuid(art.getUuid());
-            config.invalidate(soleByGuid);
+            IAtsConfigObject atsObject = cache.getByUuid(art.getUuid(), IAtsConfigObject.class);
+            if (atsObject != null) {
+               cache.deCacheAtsObject(atsObject);
+            }
          }
       }
       transaction.execute();

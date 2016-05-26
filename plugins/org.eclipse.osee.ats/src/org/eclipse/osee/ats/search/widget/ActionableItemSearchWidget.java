@@ -71,7 +71,7 @@ public class ActionableItemSearchWidget {
    public void set(AtsSearchData data) {
       List<IAtsActionableItem> ais = new LinkedList<>();
       for (Long uuid : data.getAiUuids()) {
-         IAtsActionableItem ai = AtsClientService.get().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
+         IAtsActionableItem ai = AtsClientService.get().getCache().getByUuid(uuid, IAtsActionableItem.class);
          if (ai != null) {
             ais.add(ai);
          }

@@ -52,7 +52,7 @@ public class XActionableItemCombo extends XComboViewer {
 
       Collection<IAtsActionableItem> ais = null;
       try {
-         ais = ActionableItems.getActionableItems(active, AtsClientService.get().getConfig());
+         ais = ActionableItems.getActionableItems(active, AtsClientService.get().getQueryService());
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, "Error loading actionable items", ex);
       }

@@ -133,10 +133,7 @@ public class AtsChangeSet extends AbstractAtsChangeSet {
    @Override
    public void setSoleAttributeValue(IAtsWorkItem workItem, IAttributeType attributeType, String value) throws OseeCoreException {
       ArtifactReadable artifact = getArtifact(workItem);
-      if (!artifact.getSoleAttributeValue(attributeType, "").equals(value)) {
-         getTransaction().setSoleAttributeValue(artifact, attributeType, value);
-         add(workItem);
-      }
+      setSoleAttributeValue(artifact, attributeType, value);
    }
 
    @Override

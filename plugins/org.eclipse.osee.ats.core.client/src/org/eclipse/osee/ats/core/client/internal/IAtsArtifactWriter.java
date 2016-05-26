@@ -11,8 +11,8 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -21,8 +21,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsArtifactWriter<T extends IAtsConfigObject> {
 
-   Artifact store(T atsConfgObject, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException;
+   Artifact store(T atsConfgObject, Artifact artifact, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException;
 
-   Artifact store(T atsConfgObject, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException;
+   Artifact store(T atsConfgObject, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException;
 
 }

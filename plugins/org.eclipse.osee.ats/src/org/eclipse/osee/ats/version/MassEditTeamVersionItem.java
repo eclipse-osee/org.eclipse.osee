@@ -45,7 +45,8 @@ public class MassEditTeamVersionItem extends XNavigateItemAction {
          return selectedTeamDef;
       }
       TeamDefinitionDialog dialog = new TeamDefinitionDialog();
-      dialog.setInput(TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getConfig()));
+      dialog.setInput(
+         TeamDefinitions.getTeamReleaseableDefinitions(Active.Active, AtsClientService.get().getQueryService()));
       int result = dialog.open();
       if (result == 0) {
          return dialog.getSelectedFirst();

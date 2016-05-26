@@ -16,11 +16,12 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.IAtsObject;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
+import org.eclipse.osee.ats.api.query.IAtsQueryService;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.api.util.IAtsStoreService;
 import org.eclipse.osee.ats.api.workdef.IAttributeResolver;
-import org.eclipse.osee.ats.core.config.IAtsConfig;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.util.Result;
@@ -32,12 +33,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class ActionableItemManager {
 
-   private final IAtsConfig atsConfig;
+   private final IAtsQueryService queryService;
    private final IAttributeResolver attrResolver;
    private final IAtsStoreService atsStoreService;
 
-   public ActionableItemManager(IAtsConfig atsConfig, IAttributeResolver attrResolver, IAtsStoreService atsStoreService) {
-      this.atsConfig = atsConfig;
+   public ActionableItemManager(IAtsQueryService queryService, IAttributeResolver attrResolver, IAtsStoreService atsStoreService) {
+      this.queryService = queryService;
       this.attrResolver = attrResolver;
       this.atsStoreService = atsStoreService;
    }
@@ -47,7 +48,9 @@ public class ActionableItemManager {
       if (!atsStoreService.isDeleted(atsObject)) {
          for (String guid : getActionableItemGuids(atsObject)) {
             long uuid = atsStoreService.getUuidFromGuid(guid);
-            IAtsActionableItem aia = atsConfig.getSoleByUuid(uuid, IAtsActionableItem.class);
+            IAtsActionableItem aia =
+               queryService.createQuery(AtsArtifactTypes.ActionableItem).andUuids(uuid).getOneOrNull(
+                  IAtsActionableItem.class);
             if (aia == null) {
                OseeLog.logf(ActionableItemManager.class, Level.SEVERE,
                   "Actionable Item Guid [%s] from [%s] doesn't match item in AtsConfigCache", guid,

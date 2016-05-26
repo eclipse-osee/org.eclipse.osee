@@ -292,4 +292,13 @@ public abstract class AbstractAtsConfigQueryImpl implements IAtsConfigQuery {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(getItems());
    }
 
+   @Override
+   public <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz) {
+      Collection<T> items = getItems(clazz);
+      if (!items.isEmpty()) {
+         return items.iterator().next();
+      }
+      return null;
+   }
+
 }

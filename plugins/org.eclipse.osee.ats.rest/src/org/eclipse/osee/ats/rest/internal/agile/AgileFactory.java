@@ -165,7 +165,7 @@ public class AgileFactory {
       IAgileSprint sprint = atsServer.getWorkItemFactory().getAgileSprint(sprintArt);
 
       atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), sprint,
-         TeamDefinitions.getTopTeamDefinition(atsServer.getConfig()), changes);
+         TeamDefinitions.getTopTeamDefinition(atsServer.getQueryService()), changes);
 
       // Initialize state machine
       atsServer.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),
@@ -195,7 +195,7 @@ public class AgileFactory {
       IAgileBacklog sprint = atsServer.getWorkItemFactory().getAgileBacklog(backlogArt);
 
       atsServer.getUtilService().setAtsId(atsServer.getSequenceProvider(), sprint,
-         TeamDefinitions.getTopTeamDefinition(atsServer.getConfig()), changes);
+         TeamDefinitions.getTopTeamDefinition(atsServer.getQueryService()), changes);
 
       // Initialize state machine
       atsServer.getActionFactory().initializeNewStateMachine(sprint, Arrays.asList(AtsCoreUsers.UNASSIGNED_USER),

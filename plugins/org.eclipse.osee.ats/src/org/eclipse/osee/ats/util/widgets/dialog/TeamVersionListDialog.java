@@ -68,7 +68,7 @@ public class TeamVersionListDialog extends SelectionDialog {
       ArrayList<Object> objs = new ArrayList<>();
       try {
          for (IAtsTeamDefinition art : TeamDefinitions.getTeamReleaseableDefinitions(active,
-            AtsClientService.get().getConfig())) {
+            AtsClientService.get().getQueryService())) {
             objs.add(art);
          }
       } catch (Exception ex) {

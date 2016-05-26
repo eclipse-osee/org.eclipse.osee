@@ -12,13 +12,13 @@ package org.eclipse.osee.ats.core.client.internal.store;
 
 import java.util.List;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.config.TeamDefinitions;
 import org.eclipse.osee.ats.core.util.AtsObjects;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
@@ -36,14 +36,14 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAtsTeamDefinition> {
 
    @Override
-   public Artifact store(IAtsTeamDefinition teamDef, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsTeamDefinition teamDef, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       Artifact artifact = getArtifactOrCreate(cache, AtsArtifactTypes.TeamDefinition, teamDef, changes);
       store(teamDef, artifact, cache, changes);
       return artifact;
    }
 
    @Override
-   public Artifact store(IAtsTeamDefinition teamDef, Artifact artifact, AtsArtifactConfigCache cache, IAtsChangeSet changes) throws OseeCoreException {
+   public Artifact store(IAtsTeamDefinition teamDef, Artifact artifact, IAtsCache cache, IAtsChangeSet changes) throws OseeCoreException {
       artifact.setName(teamDef.getName());
       artifact.setSoleAttributeValue(AtsAttributeTypes.Active, teamDef.isActive());
       boolean actionable = artifact.getSoleAttributeValue(AtsAttributeTypes.Actionable, false);
@@ -80,8 +80,8 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
 
       // set new actionable items if necessary
       for (IAtsActionableItem aia : teamDef.getActionableItems()) {
-         Artifact aiaArt = cache.getArtifact(aia);
-         if (aiaArt != null && aiaArt.getRelatedArtifact(AtsRelationTypes.TeamActionableItem_Team) != null) {
+         Artifact aiaArt = (Artifact) cache.getArtifact(aia);
+         if (aiaArt != null && aiaArt.getRelatedArtifactOrNull(AtsRelationTypes.TeamActionableItem_Team) != null) {
             aiaArt.addRelation(AtsRelationTypes.TeamActionableItem_Team, artifact);
          }
       }
@@ -125,10 +125,11 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
       }
 
       // set parent artifact to top team def
-      IAtsTeamDefinition topTeamDefinition = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig());
+      IAtsTeamDefinition topTeamDefinition =
+         TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService());
       if (teamDef.getParentTeamDef() == null && !teamDef.getUuid().equals(topTeamDefinition.getUuid())) {
          // if parent is null, add to top team definition
-         Artifact topTeamDefArt = cache.getArtifact(topTeamDefinition);
+         Artifact topTeamDefArt = (Artifact) cache.getArtifact(topTeamDefinition);
          topTeamDefArt.addChild(artifact);
          changes.add(topTeamDefArt);
       } else {
@@ -137,7 +138,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
          if (parentTeamDefArt != null) {
             if (parentTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
                if (!parentTeamDefArt.getUuid().equals(teamDef.getParentTeamDef().getUuid())) {
-                  Artifact newParentTeamDefArt = cache.getArtifact(teamDef);
+                  Artifact newParentTeamDefArt = (Artifact) cache.getArtifact(teamDef);
                   newParentTeamDefArt.addChild(artifact);
                   changes.add(newParentTeamDefArt);
                   changes.add(parentTeamDefArt);
@@ -146,8 +147,7 @@ public class TeamDefinitionArtifactWriter extends AbstractAtsArtifactWriter<IAts
          }
       }
       changes.add(artifact);
-
-      cache.cache(teamDef);
+      cache.cacheAtsObject(teamDef);
       return artifact;
    }
 }

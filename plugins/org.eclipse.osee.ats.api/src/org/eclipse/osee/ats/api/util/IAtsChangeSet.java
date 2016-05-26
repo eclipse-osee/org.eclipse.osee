@@ -58,6 +58,8 @@ public interface IAtsChangeSet {
 
    void setSoleAttributeValue(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
+   void setSoleAttributeValue(ArtifactId artifact, IAttributeType attributeType, String value);
+
    void addAttribute(IAtsObject atsObject, IAttributeType attributeType, Object value) throws OseeCoreException;
 
    <T> void setValue(IAtsWorkItem workItem, IAttribute<String> attr, IAttributeType attributeType, T value) throws OseeCoreException;
@@ -103,8 +105,6 @@ public interface IAtsChangeSet {
    String getComment();
 
    <T> void setAttribute(ArtifactId artifact, int attrId, T value);
-
-   void setSoleAttributeValue(ArtifactId artifact, IAttributeType attrType, String value);
 
    /**
     * Will check if anything is to be stored, else return quietly.

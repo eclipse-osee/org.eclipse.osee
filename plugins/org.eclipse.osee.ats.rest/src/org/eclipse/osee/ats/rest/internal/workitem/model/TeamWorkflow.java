@@ -37,7 +37,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
          String aiGuid = (String) aiGuidObj;
          Long uuid = getAtsServer().getStoreService().getUuidFromGuid(aiGuid);
          if (uuid != null) {
-            IAtsActionableItem ai = getAtsServer().getConfig().getSoleByUuid(uuid, IAtsActionableItem.class);
+            IAtsActionableItem ai = getAtsServer().getCache().getByUuid(uuid, IAtsActionableItem.class);
             if (ai == null) {
                ArtifactReadable aiArt = getAtsServer().getArtifactByGuid(aiGuid);
                ai = getAtsServer().getConfigItemFactory().getActionableItem(aiArt);
@@ -54,7 +54,7 @@ public class TeamWorkflow extends WorkItem implements IAtsTeamWorkflow {
       String teamDefGuid = artifact.getSoleAttributeValue(AtsAttributeTypes.TeamDefinition);
       Long uuid = getAtsServer().getStoreService().getUuidFromGuid(teamDefGuid);
       if (uuid != null) {
-         teamDef = getAtsServer().getConfig().getSoleByUuid(uuid, IAtsTeamDefinition.class);
+         teamDef = getAtsServer().getCache().getByUuid(uuid, IAtsTeamDefinition.class);
          if (teamDef == null) {
             ArtifactReadable teamDefArt = getAtsServer().getArtifactByGuid(teamDefGuid);
             teamDef = getAtsServer().getConfigItemFactory().getTeamDef(teamDefArt);

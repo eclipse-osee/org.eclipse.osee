@@ -10,76 +10,37 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.core.client.internal.store;
 
-import java.util.Collection;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
-import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
-import org.eclipse.osee.ats.api.data.AtsRelationTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.user.IAtsUser;
-import org.eclipse.osee.ats.api.version.IVersionFactory;
-import org.eclipse.osee.ats.core.client.IAtsUserServiceClient;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
+import org.eclipse.osee.ats.core.client.internal.IAtsArtifactReader;
 import org.eclipse.osee.ats.core.config.IActionableItemFactory;
-import org.eclipse.osee.ats.core.config.ITeamDefinitionFactory;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class ActionableItemArtifactReader extends AbstractAtsArtifactReader<IAtsActionableItem> {
+public class ActionableItemArtifactReader implements IAtsArtifactReader<IAtsActionableItem> {
 
-   private final IAtsUserServiceClient userAdmin;
+   private final IActionableItemFactory actionableItemFactory;
 
-   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory, ITeamDefinitionFactory teamDefFactory, IVersionFactory versionFactory, IAtsUserServiceClient userAdmin) {
-      super(actionableItemFactory, teamDefFactory, versionFactory);
-      this.userAdmin = userAdmin;
+   public ActionableItemArtifactReader(IActionableItemFactory actionableItemFactory) {
+      this.actionableItemFactory = actionableItemFactory;
    }
 
    @Override
-   public IAtsActionableItem load(AtsArtifactConfigCache cache, Artifact aiArt) throws OseeCoreException {
-      IAtsActionableItem aia = getOrCreateActionableItem(cache, aiArt);
+   public IAtsActionableItem load(IAtsCache cache, Artifact aiArt) throws OseeCoreException {
+      IAtsActionableItem aia =
+         actionableItemFactory.createActionableItem(aiArt.getGuid(), aiArt.getName(), aiArt.getUuid());
+      aia.setStoreObject(aiArt);
+      cache.cacheAtsObject(aia);
+
       aia.setName(aiArt.getName());
       aia.setActive(aiArt.getSoleAttributeValue(AtsAttributeTypes.Active, false));
       aia.setAllowUserActionCreation(aiArt.getSoleAttributeValue(AtsAttributeTypes.AllowUserActionCreation, true));
       aia.setActionable(aiArt.getSoleAttributeValue(AtsAttributeTypes.Actionable, false));
       aia.setDescription(aiArt.getSoleAttributeValue(AtsAttributeTypes.Description, ""));
-      Collection<Artifact> teamDefArts = aiArt.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team);
-      if (!teamDefArts.isEmpty()) {
-         Artifact teamDefArt = teamDefArts.iterator().next();
-         IAtsTeamDefinition teamDef = getOrCreateTeamDefinition(cache, teamDefArt);
-         aia.setTeamDefinition(teamDef);
-         if (!teamDef.getActionableItems().contains(aia)) {
-            teamDef.getActionableItems().add(aia);
-         }
-      }
-      for (String staticId : aiArt.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-         aia.getStaticIds().add(staticId);
-      }
-      Artifact parentAiArt = aiArt.getParent();
-      if (parentAiArt != null && parentAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-         IAtsActionableItem parentAi = getOrCreateActionableItem(cache, parentAiArt);
-         aia.setParentActionableItem(parentAi);
-         parentAi.getChildrenActionableItems().add(aia);
-      }
-      for (Artifact userArt : aiArt.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
-         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
-         aia.getSubscribed().add(user);
-      }
-      for (Artifact userArt : aiArt.getRelatedArtifacts(AtsRelationTypes.ActionableItemLead_Lead)) {
-         IAtsUser user = userAdmin.getUserFromOseeUser((User) userArt);
-         aia.getLeads().add(user);
-      }
-      for (Artifact childAiArt : aiArt.getChildren()) {
-         if (childAiArt.isOfType(AtsArtifactTypes.ActionableItem)) {
-            IAtsActionableItem childAi = getOrCreateActionableItem(cache, childAiArt);
-            aia.getChildrenActionableItems().add(childAi);
-            childAi.setParentActionableItem(aia);
-         }
-      }
       return aia;
    }
 }

@@ -66,7 +66,7 @@ public class CreateActionUsingAllActionableItems extends XNavigateItemAction {
    public static ActionArtifact createActionWithAllAis() throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (IAtsActionableItem aia : ActionableItems.getActionableItems(Active.Active,
-         AtsClientService.get().getConfig())) {
+         AtsClientService.get().getQueryService())) {
          if (aia.isActionable() && aia.isAllowUserActionCreation()) {
             aias.add(aia);
          }

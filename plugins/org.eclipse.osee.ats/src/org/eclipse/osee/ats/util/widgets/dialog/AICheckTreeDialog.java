@@ -53,7 +53,7 @@ public class AICheckTreeDialog extends FilteredCheckboxTreeDialog {
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(
-            ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getConfig()));
+            ActionableItems.getTopLevelActionableItems(active, AtsClientService.get().getQueryService()));
          getTreeViewer().getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
             public void selectionChanged(SelectionChangedEvent event) {

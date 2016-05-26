@@ -170,7 +170,7 @@ public final class AtsActionEndpointImpl implements AtsActionEndpointApi {
       if (aiArt == null) {
          return RestUtil.returnBadRequest(String.format("actionableItems [%s] is not valid", actionableItems));
       }
-      IAtsActionableItem aia = (IAtsActionableItem) atsServer.getConfig().getSoleByUuid(aiArt.getUuid());
+      IAtsActionableItem aia = atsServer.getCache().getByUuid(aiArt.getUuid(), IAtsActionableItem.class);
       aias.add(aia);
 
       // validate userId

@@ -12,70 +12,43 @@ package org.eclipse.osee.ats.core.client.internal.config;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.Callable;
-import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
-import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.version.IAtsVersion;
+import org.eclipse.osee.ats.api.data.AtsAttributeTypes;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactStore;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
 import org.eclipse.osee.framework.core.data.IArtifactType;
-import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
-import org.eclipse.osee.framework.core.enums.DeletionFlag;
-import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.artifact.search.QueryBuilderArtifact;
 
 /**
  * @author Donald G. Dunne
  */
-public class LoadAtsConfigCacheCallable implements Callable<AtsArtifactConfigCache> {
+public class LoadAtsConfigCacheCallable {
 
    private final IAtsArtifactStore artifactStore;
+   private final IAtsCache cache;
 
-   public LoadAtsConfigCacheCallable(IAtsArtifactStore artifactStore) {
+   public LoadAtsConfigCacheCallable(IAtsArtifactStore artifactStore, IAtsCache cache) {
       this.artifactStore = artifactStore;
+      this.cache = cache;
    }
 
-   @Override
-   public AtsArtifactConfigCache call() throws Exception {
-      AtsArtifactConfigCache cache = new AtsArtifactConfigCache();
+   public void run() throws Exception {
 
       List<IArtifactType> typesToLoad = getTypesToLoad();
-      List<Artifact> artifactListFromType =
-         ArtifactQuery.getArtifactListFromType(typesToLoad, AtsUtilCore.getAtsBranch(), DeletionFlag.EXCLUDE_DELETED);
+      QueryBuilderArtifact query = ArtifactQuery.createQueryBuilder(AtsUtilCore.getAtsBranch());
+      query.andTypeEquals(typesToLoad).and(AtsAttributeTypes.Active, "true");
+      List<Artifact> artifactListFromType = query.getResults().getList();
 
       for (Artifact artifact : artifactListFromType) {
-         loadAtsConfigCacheArtifacts(artifactStore, cache, artifact);
+         artifactStore.load(cache, artifact);
       }
-      return cache;
    }
 
    private List<IArtifactType> getTypesToLoad() {
       return Arrays.asList(AtsArtifactTypes.TeamDefinition, AtsArtifactTypes.ActionableItem, AtsArtifactTypes.Version);
    }
 
-   private void loadAtsConfigCacheArtifacts(IAtsArtifactStore artifactStore, AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException {
-      if (artifact.isOfType(AtsArtifactTypes.TeamDefinition)) {
-         IAtsTeamDefinition teamDef = artifactStore.load(cache, artifact);
-
-         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            cache.cacheByTag(staticId, teamDef);
-         }
-      }
-      if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
-         IAtsActionableItem ai = artifactStore.load(cache, artifact);
-
-         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            cache.cacheByTag(staticId, ai);
-         }
-      }
-      if (artifact.isOfType(AtsArtifactTypes.Version)) {
-         IAtsVersion version = artifactStore.load(cache, artifact);
-
-         for (String staticId : artifact.getAttributesToStringList(CoreAttributeTypes.StaticId)) {
-            cache.cacheByTag(staticId, version);
-         }
-      }
-   }
 }

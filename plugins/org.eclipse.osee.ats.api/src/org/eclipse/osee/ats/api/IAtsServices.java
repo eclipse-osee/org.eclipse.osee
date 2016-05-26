@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.api;
 import java.util.Collection;
 import org.eclipse.osee.ats.api.column.IAtsColumnService;
 import org.eclipse.osee.ats.api.config.AtsConfigurations;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueService;
 import org.eclipse.osee.ats.api.ev.IAtsEarnedValueServiceProvider;
 import org.eclipse.osee.ats.api.program.IAtsProgramService;
@@ -120,6 +121,8 @@ public interface IAtsServices {
    IAtsColumnService getColumnService();
    
    IAtsWorkDefinitionAdmin getWorkDefinitionAdmin();
+   
+   IAtsCache getCache();
 
    IAtsUtilService getUtilService();
 

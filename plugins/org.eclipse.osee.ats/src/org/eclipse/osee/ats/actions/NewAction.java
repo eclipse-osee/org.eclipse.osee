@@ -44,7 +44,7 @@ public class NewAction extends AbstractAtsAction {
       NewActionWizard wizard = new NewActionWizard();
       if (actionableItem != null) {
          wizard.setInitialAias(
-            ActionableItems.getActionableItems(Arrays.asList(actionableItem), AtsClientService.get().getConfig()));
+            ActionableItems.getActionableItems(Arrays.asList(actionableItem), AtsClientService.get()));
       }
       if (initialDescription != null) {
          wizard.setInitialDescription(initialDescription);

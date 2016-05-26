@@ -58,7 +58,7 @@ public class AtsWorkDefinitionCache {
       workDefIdToWorkDefintion.remove(workDef.getName());
    }
 
-   public void invalidateAll() {
+   public void invalidate() {
       awaUuidToWorkDefinition.clear();
       workDefIdToWorkDefintion.clear();
    }

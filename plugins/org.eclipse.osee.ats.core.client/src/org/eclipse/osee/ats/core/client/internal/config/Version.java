@@ -14,21 +14,25 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.api.commit.ICommitConfigItem;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.IAtsVersionService;
 import org.eclipse.osee.ats.core.client.internal.Activator;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -49,8 +53,8 @@ public class Version extends AtsObject implements IAtsVersion {
    private Date releaseDate;
    private Date estimatedReleaseDate;
 
-   private List<IAtsVersion> parallelVersions = new ArrayList<>();
-   private final Set<String> staticIds = new HashSet<>();
+   private List<IAtsVersion> parallelVersions = null;;
+   private Set<String> staticIds = null;
 
    private final IAtsVersionService versionService;
 
@@ -62,7 +66,7 @@ public class Version extends AtsObject implements IAtsVersion {
    @Override
    public void getParallelVersions(Set<ICommitConfigItem> configArts) {
       configArts.add(this);
-      for (IAtsVersion childArt : parallelVersions) {
+      for (IAtsVersion childArt : getParallelVersions()) {
          childArt.getParallelVersions(configArts);
       }
    }
@@ -209,6 +213,15 @@ public class Version extends AtsObject implements IAtsVersion {
 
    @Override
    public List<IAtsVersion> getParallelVersions() {
+      if (parallelVersions == null) {
+         parallelVersions = new LinkedList<>();
+         if (getArtifact() != null) {
+            for (Artifact parallelVerArt : getArtifact().getRelatedArtifacts(AtsRelationTypes.ParallelVersion_Child)) {
+               IAtsVersion parallelVer = AtsClientService.get().getCache().getAtsObject(parallelVerArt.getUuid());
+               parallelVersions.add(parallelVer);
+            }
+         }
+      }
       return parallelVersions;
    }
 
@@ -244,7 +257,19 @@ public class Version extends AtsObject implements IAtsVersion {
 
    @Override
    public Collection<String> getStaticIds() {
+      if (staticIds == null) {
+         staticIds = new HashSet<>();
+         if (getArtifact() != null) {
+            for (String staticId : getArtifact().getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+               staticIds.add(staticId);
+            }
+         }
+      }
       return staticIds;
+   }
+
+   private Artifact getArtifact() {
+      return (Artifact) getStoreObject();
    }
 
    @Override

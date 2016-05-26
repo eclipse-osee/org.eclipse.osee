@@ -122,7 +122,8 @@ public class DemoDbUtil {
    public static Collection<IAtsActionableItem> getActionableItems(String[] aiasNames) throws OseeCoreException {
       Set<IAtsActionableItem> aias = new HashSet<>();
       for (String str : aiasNames) {
-         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll(AtsClientService.get().getConfig())) {
+         for (IAtsActionableItem aia : ActionableItems.getActionableItemsAll(
+            AtsClientService.get().getQueryService())) {
             if (str.equals(aia.getName())) {
                aias.add(aia);
             }

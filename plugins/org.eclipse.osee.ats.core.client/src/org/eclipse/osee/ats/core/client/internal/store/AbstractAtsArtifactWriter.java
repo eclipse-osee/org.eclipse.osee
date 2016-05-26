@@ -15,10 +15,11 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.api.IAtsConfigObject;
 import org.eclipse.osee.ats.api.IAtsObject;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.ats.api.util.IAtsChangeSet;
 import org.eclipse.osee.ats.core.client.internal.IAtsArtifactWriter;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
 import org.eclipse.osee.ats.core.util.AtsUtilCore;
+import org.eclipse.osee.framework.core.data.ArtifactId;
 import org.eclipse.osee.framework.core.data.IArtifactType;
 import org.eclipse.osee.framework.core.data.IRelationTypeSide;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
@@ -35,28 +36,34 @@ public abstract class AbstractAtsArtifactWriter<T extends IAtsConfigObject> impl
    /**
     * Overwrite current relations of type side with new atsObject artifact. Artifacts must already exist in system for
     * this method to work. Persist must be done outside this method
-    * 
+    *
     * @return collection of artifacts that were related
     */
-   protected Collection<Artifact> setRelationsOfType(AtsArtifactConfigCache cache, Artifact artifact, Collection<? extends IAtsObject> atsObjects, IRelationTypeSide side) throws OseeCoreException {
+   protected Collection<Artifact> setRelationsOfType(IAtsCache cache, Artifact artifact, Collection<? extends IAtsObject> atsObjects, IRelationTypeSide side) throws OseeCoreException {
       Conditions.checkNotNull(artifact, "artifact");
       List<Artifact> newArts = new ArrayList<>();
       for (IAtsObject version : atsObjects) {
-         Artifact verArt = cache.getArtifact(version);
-         newArts.add(verArt);
+         ArtifactId verArt = version.getStoreObject();
+         if (verArt == null) {
+            cache.getArtifact(version.getUuid());
+         }
+         newArts.add((Artifact) verArt);
       }
       artifact.setRelations(side, newArts);
       return newArts;
    }
 
-   protected Artifact getArtifactOrCreate(AtsArtifactConfigCache cache, IArtifactType artifactType, IAtsConfigObject atsObject, IAtsChangeSet changes) throws OseeCoreException {
-      Artifact artifact = cache.getArtifact(atsObject);
+   protected Artifact getArtifactOrCreate(IAtsCache cache, IArtifactType artifactType, IAtsConfigObject atsObject, IAtsChangeSet changes) throws OseeCoreException {
+      ArtifactId artifact = atsObject.getStoreObject();
+      if (artifact == null) {
+         artifact = cache.getArtifact(atsObject.getUuid());
+      }
       if (artifact == null) {
          artifact = ArtifactTypeManager.addArtifact(artifactType, AtsUtilCore.getAtsBranch(), atsObject.getName(),
             GUID.create(), atsObject.getUuid());
          changes.add(artifact);
       }
-      return artifact;
+      return (Artifact) artifact;
    }
 
 }

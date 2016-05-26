@@ -616,7 +616,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             IAtsVersion version =
-               AtsClientService.get().getConfig().getSoleByUuid(artifact.getUuid(), IAtsVersion.class);
+               AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsVersion.class);
             if (version != null) {
                try {
                   long parentBranchUuid = version.getBaselineBranchUuid();
@@ -646,7 +646,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (artifact.isOfType(AtsArtifactTypes.Version)) {
             IAtsVersion version =
-               AtsClientService.get().getConfig().getSoleByUuid(artifact.getUuid(), IAtsVersion.class);
+               AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsVersion.class);
             if (version != null) {
                for (IAtsVersion parallelVersion : version.getParallelVersions()) {
                   if (parallelVersion != null) {
@@ -675,7 +675,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
          if (art.isOfType(AtsArtifactTypes.TeamDefinition)) {
             IAtsTeamDefinition teamDef =
-               AtsClientService.get().getConfig().getSoleByUuid(art.getUuid(), IAtsTeamDefinition.class);
+               AtsClientService.get().getCache().getByUuid(art.getUuid(), IAtsTeamDefinition.class);
             try {
                long parentBranchUuid = teamDef.getBaselineBranchUuid();
                if (parentBranchUuid > 0) {
@@ -1005,7 +1005,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          try {
             if (artifact.isOfType(AtsArtifactTypes.ActionableItem)) {
                IAtsActionableItem aia =
-                  AtsClientService.get().getConfig().getSoleByUuid(artifact.getUuid(), IAtsActionableItem.class);
+                  AtsClientService.get().getCache().getByUuid(artifact.getUuid(), IAtsActionableItem.class);
                if (aia.isActionable() && TeamDefinitions.getImpactedTeamDefs(Arrays.asList(aia)).isEmpty()) {
                   results.log(artifact, "testActionableItemToTeamDefinition",
                      "Error: ActionableItem " + XResultDataUI.getHyperlink(artifact.getName(),

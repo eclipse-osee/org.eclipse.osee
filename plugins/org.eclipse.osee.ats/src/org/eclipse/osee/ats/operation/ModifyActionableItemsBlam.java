@@ -242,8 +242,8 @@ public class ModifyActionableItemsBlam extends AbstractBlam {
                   }
                   otherTree.getViewer().setInput(ais);
 
-                  newTree.getViewer().setInput(
-                     ActionableItems.getTopLevelActionableItems(Active.Active, AtsClientService.get().getConfig()));
+                  newTree.getViewer().setInput(ActionableItems.getTopLevelActionableItems(Active.Active,
+                     AtsClientService.get().getQueryService()));
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
                }

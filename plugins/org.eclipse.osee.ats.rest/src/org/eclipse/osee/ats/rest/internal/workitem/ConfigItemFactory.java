@@ -236,8 +236,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
    public IAtsInsertion updateInsertion(JaxInsertion updatedInsertion) {
       AtsChangeSet changes = (AtsChangeSet) atsServer.getStoreService().createAtsChangeSet("Update Insertion",
          atsServer.getUserService().getCurrentUser());
-      changes.setSoleAttributeValue(atsServer.getConfig().getSoleByUuid(updatedInsertion.getUuid()),
-         CoreAttributeTypes.Name, updatedInsertion.getName());
+      ArtifactId artifact = atsServer.getCache().getArtifact(updatedInsertion.getUuid());
+      changes.setSoleAttributeValue(artifact, CoreAttributeTypes.Name, updatedInsertion.getName());
       changes.execute();
       return getInsertion(atsServer.getQuery().andUuid(updatedInsertion.getUuid()).getResults().getExactlyOne());
    }
@@ -274,8 +274,8 @@ public class ConfigItemFactory extends AbstractConfigItemFactory {
 
       changes.getTransaction().setSoleAttributeValue(insertionActivityArt, CoreAttributeTypes.Name,
          updatedActivity.getName());
-      changes.setSoleAttributeValue(atsServer.getConfig().getSoleByUuid(updatedActivity.getUuid()),
-         CoreAttributeTypes.Name, updatedActivity.getName());
+      ArtifactId artifact = atsServer.getCache().getArtifact(updatedActivity.getUuid());
+      changes.setSoleAttributeValue(artifact, CoreAttributeTypes.Name, updatedActivity.getName());
       changes.execute();
       return getInsertionActivity(atsServer.getQuery().andUuid(updatedActivity.getUuid()).getResults().getExactlyOne());
    }

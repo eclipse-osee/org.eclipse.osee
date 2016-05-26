@@ -54,7 +54,7 @@ public class TeamDefinitionCheckTreeDialog extends FilteredCheckboxTreeDialog {
       Control comp = super.createDialogArea(container);
       try {
          getTreeViewer().getViewer().setInput(
-            TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getConfig()));
+            TeamDefinitions.getTopLevelTeamDefinitions(active, AtsClientService.get().getQueryService()));
          if (getInitialTeamDefs() != null) {
             getTreeViewer().setInitalChecked(getInitialTeamDefs());
          }

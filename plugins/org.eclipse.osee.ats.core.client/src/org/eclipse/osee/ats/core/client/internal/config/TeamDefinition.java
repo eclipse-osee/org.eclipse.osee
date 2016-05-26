@@ -16,20 +16,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.api.ai.IAtsActionableItem;
+import org.eclipse.osee.ats.api.data.AtsArtifactTypes;
+import org.eclipse.osee.ats.api.data.AtsRelationTypes;
 import org.eclipse.osee.ats.api.team.IAtsTeamDefinition;
-import org.eclipse.osee.ats.api.team.TeamDefinitionOptions;
 import org.eclipse.osee.ats.api.user.IAtsUser;
 import org.eclipse.osee.ats.api.version.IAtsVersion;
 import org.eclipse.osee.ats.api.version.VersionLockedType;
 import org.eclipse.osee.ats.api.version.VersionReleaseType;
-import org.eclipse.osee.ats.api.workdef.RuleDefinitionOption;
 import org.eclipse.osee.ats.core.client.internal.AtsClientService;
 import org.eclipse.osee.ats.core.config.RuleManager;
 import org.eclipse.osee.ats.core.model.impl.AtsObject;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.util.Result;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Donald G. Dunne
@@ -39,26 +42,24 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
    private boolean actionable = false;
    private boolean allowCreateBranch = false;
    private boolean allowCommitBranch = false;
-
    private long baselineBranchUuid = 0;
    private String description = null;
    private String fullName = null;
    private String workflowDefinitionName;
    private String relatedTaskWorkDefinition;
-
    private IAtsTeamDefinition parentTeamDef;
 
-   private final Set<String> staticIds = new HashSet<>();
+   private Set<String> staticIds = null;
    private final RuleManager ruleMgr = new RuleManager();
 
-   private final Set<IAtsUser> leads = new HashSet<>();
-   private final Set<IAtsUser> members = new HashSet<>();
-   private final Set<IAtsUser> priviledgedMembers = new HashSet<>();
-   private final Set<IAtsUser> subscribed = new HashSet<>();
+   private Set<IAtsUser> leads = null;
+   private Set<IAtsUser> members = null;
+   private Set<IAtsUser> priviledgedMembers = null;
+   private Set<IAtsUser> subscribed = null;
 
-   private final Set<IAtsTeamDefinition> childrenTeamDefinitions = new HashSet<>();
-   private final Set<IAtsActionableItem> actionableItems = new HashSet<>();
-   private final Set<IAtsVersion> versions = new HashSet<>();
+   private Set<IAtsTeamDefinition> childrenTeamDefinitions = null;
+   private Set<IAtsActionableItem> actionableItems = null;
+   private Set<IAtsVersion> versions = null;
    private String relatedPeerWorkflowDefinition;
 
    @Override
@@ -90,21 +91,6 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
          return new Result(false, "Parent Branch not configured for Team Definition [" + this + "]");
       }
       return Result.TrueResult;
-   }
-
-   @Override
-   public void initialize(String fullname, String description, Collection<IAtsUser> leads, Collection<IAtsUser> members, Collection<IAtsActionableItem> actionableItems, TeamDefinitionOptions... teamDefinitionOptions) {
-      List<Object> teamDefOptions = Collections.getAggregate((Object[]) teamDefinitionOptions);
-
-      setDescription(description);
-      setFullName(fullname);
-      leads.addAll(leads);
-      members.addAll(members);
-
-      if (teamDefOptions.contains(TeamDefinitionOptions.RequireTargetedVersion)) {
-         addRule(RuleDefinitionOption.RequireTargetedVersion.name());
-      }
-      actionableItems.addAll(actionableItems);
    }
 
    /**
@@ -158,11 +144,33 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsUser> getLeads() {
+      if (leads == null) {
+         leads = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact userArt : getArtifact().getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead)) {
+               IAtsUser user = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) userArt);
+               leads.add(user);
+            }
+         }
+      }
       return leads;
+   }
+
+   private Artifact getArtifact() {
+      return (Artifact) getStoreObject();
    }
 
    @Override
    public Collection<IAtsUser> getPrivilegedMembers() {
+      if (priviledgedMembers == null) {
+         priviledgedMembers = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact userArt : getArtifact().getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member)) {
+               IAtsUser user = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) userArt);
+               priviledgedMembers.add(user);
+            }
+         }
+      }
       return priviledgedMembers;
    }
 
@@ -202,6 +210,15 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsUser> getMembers() {
+      if (members == null) {
+         members = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact userArt : getArtifact().getRelatedArtifacts(AtsRelationTypes.TeamMember_Member)) {
+               IAtsUser user = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) userArt);
+               members.add(user);
+            }
+         }
+      }
       return members;
    }
 
@@ -217,6 +234,16 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsVersion> getVersions() {
+      if (versions == null) {
+         versions = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact verArt : getArtifact().getRelatedArtifacts(
+               AtsRelationTypes.TeamDefinitionToVersion_Version)) {
+               IAtsVersion version = AtsClientService.get().getCache().getAtsObject(verArt.getUuid());
+               versions.add(version);
+            }
+         }
+      }
       return versions;
    }
 
@@ -329,6 +356,13 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public IAtsTeamDefinition getParentTeamDef() {
+      if (parentTeamDef == null && getArtifact() != null) {
+         Artifact parentTeamDefArt = getArtifact().getParent();
+         if (parentTeamDefArt != null && parentTeamDefArt.isOfType(AtsArtifactTypes.TeamDefinition)) {
+            IAtsTeamDefinition parent = AtsClientService.get().getCache().getAtsObject(parentTeamDefArt.getUuid());
+            this.parentTeamDef = parent;
+         }
+      }
       return parentTeamDef;
    }
 
@@ -349,6 +383,17 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsTeamDefinition> getChildrenTeamDefinitions() {
+      if (childrenTeamDefinitions == null) {
+         childrenTeamDefinitions = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact child : getArtifact().getChildren()) {
+               if (child.isOfType(AtsArtifactTypes.TeamDefinition)) {
+                  IAtsTeamDefinition childTeamDef = AtsClientService.get().getCache().getAtsObject(child.getUuid());
+                  childrenTeamDefinitions.add(childTeamDef);
+               }
+            }
+         }
+      }
       return childrenTeamDefinitions;
    }
 
@@ -364,11 +409,29 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<String> getStaticIds() {
+      if (staticIds == null) {
+         staticIds = new HashSet<>();
+         if (getArtifact() != null) {
+            for (String staticId : getArtifact().getAttributesToStringList(CoreAttributeTypes.StaticId)) {
+               staticIds.add(staticId);
+            }
+         }
+      }
       return staticIds;
    }
 
    @Override
    public Collection<IAtsActionableItem> getActionableItems() {
+      if (actionableItems == null) {
+         actionableItems = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact aiArt : getArtifact().getRelatedArtifacts(
+               AtsRelationTypes.TeamActionableItem_ActionableItem)) {
+               IAtsActionableItem ai = AtsClientService.get().getCache().getAtsObject(aiArt.getUuid());
+               actionableItems.add(ai);
+            }
+         }
+      }
       return actionableItems;
    }
 
@@ -387,6 +450,15 @@ public class TeamDefinition extends AtsObject implements IAtsTeamDefinition {
 
    @Override
    public Collection<IAtsUser> getSubscribed() {
+      if (subscribed == null) {
+         subscribed = new HashSet<>();
+         if (getArtifact() != null) {
+            for (Artifact userArt : getArtifact().getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
+               IAtsUser user = AtsClientService.get().getUserServiceClient().getUserFromOseeUser((User) userArt);
+               subscribed.add(user);
+            }
+         }
+      }
       return subscribed;
    }
 

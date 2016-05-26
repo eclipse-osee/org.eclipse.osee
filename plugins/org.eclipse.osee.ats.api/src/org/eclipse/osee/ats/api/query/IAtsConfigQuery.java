@@ -60,4 +60,6 @@ public interface IAtsConfigQuery {
 
    IAtsConfigQuery andActive(boolean active);
 
+   <T extends IAtsConfigObject> T getOneOrNull(Class<T> clazz);
+
 }

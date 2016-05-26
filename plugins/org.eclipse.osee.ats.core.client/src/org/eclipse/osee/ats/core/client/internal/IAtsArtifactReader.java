@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.core.client.internal;
 
 import org.eclipse.osee.ats.api.IAtsConfigObject;
-import org.eclipse.osee.ats.core.client.internal.config.AtsArtifactConfigCache;
+import org.eclipse.osee.ats.api.config.IAtsCache;
 import org.eclipse.osee.framework.jdk.core.type.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -20,6 +20,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  */
 public interface IAtsArtifactReader<T extends IAtsConfigObject> {
 
-   public T load(AtsArtifactConfigCache cache, Artifact artifact) throws OseeCoreException;
+   public T load(IAtsCache cache, Artifact artifact) throws OseeCoreException;
 
 }

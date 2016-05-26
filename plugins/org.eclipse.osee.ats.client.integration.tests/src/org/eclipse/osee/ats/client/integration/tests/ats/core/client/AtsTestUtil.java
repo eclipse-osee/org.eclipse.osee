@@ -260,19 +260,22 @@ public class AtsTestUtil {
       verArt4 = null;
       decRevArt = null;
       peerRevArt = null;
-      for (IAtsActionableItem aia : AtsClientService.get().getConfig().get(IAtsActionableItem.class)) {
+      for (IAtsActionableItem aia : AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.ActionableItem).getItems(IAtsActionableItem.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getConfig().invalidate(aia);
+            AtsClientService.get().getCache().deCacheAtsObject(aia);
          }
       }
-      for (IAtsTeamDefinition aia : AtsClientService.get().getConfig().get(IAtsTeamDefinition.class)) {
+      for (IAtsTeamDefinition aia : AtsClientService.get().getQueryService().createQuery(
+         AtsArtifactTypes.TeamDefinition).getItems(IAtsTeamDefinition.class)) {
          if (aia.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getConfig().invalidate(aia);
+            AtsClientService.get().getCache().deCacheAtsObject(aia);
          }
       }
-      for (IAtsVersion ver : AtsClientService.get().getConfig().get(IAtsVersion.class)) {
+      for (IAtsVersion ver : AtsClientService.get().getQueryService().createQuery(AtsArtifactTypes.Version).getItems(
+         IAtsVersion.class)) {
          if (ver.getName().contains("AtsTestUtil")) {
-            AtsClientService.get().getConfig().invalidate(ver);
+            AtsClientService.get().getCache().deCacheAtsObject(ver);
          }
       }
    }
@@ -795,7 +798,7 @@ public class AtsTestUtil {
       version.setAllowCommitBranch(true);
       version.setBaselineBranchUuid(SAW_Bld_1.getUuid());
       ((Artifact) version.getStoreObject()).persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");
-      AtsClientService.get().getConfig().invalidate(version);
+      AtsClientService.get().getCache().deCacheAtsObject(version);
       if (!AtsClientService.get().getVersionService().hasTargetedVersion(getTeamWf())) {
          AtsClientService.get().getVersionService().setTargetedVersion(getTeamWf(), getVerArt1());
          getTeamWf().persist(AtsTestUtil.class.getSimpleName() + "-SetTeamWfTargetedVer1");

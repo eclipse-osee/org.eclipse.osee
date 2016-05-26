@@ -96,7 +96,7 @@ public class ConfigData {
       if (teamDef.getParentTeamDef() != null) {
          parentTeamDef = teamDef.getParentTeamDef();
       } else {
-         parentTeamDef = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getConfig());
+         parentTeamDef = TeamDefinitions.getTopTeamDefinition(AtsClientService.get().getQueryService());
       }
       return parentTeamDef;
    }
@@ -108,7 +108,7 @@ public class ConfigData {
       if (fromAias.size() == 1) {
          parentActionableItem = fromAias.iterator().next().getParentActionableItem();
       } else {
-         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get().getConfig());
+         parentActionableItem = ActionableItems.getTopActionableItem(AtsClientService.get().getQueryService());
       }
       return parentActionableItem;
    }
