@@ -24,8 +24,9 @@ import org.junit.runners.Suite;
    ActionUiResourceTest.class,
    ConvertResourceTest.class,
    UserResourceTest.class,
-   StateResourceTest.class,
-   WordUpdateEndpointImplTest.class})
+   StateResourceTest.class
+   //WordUpdateEndpointImplTest.class
+})
 /**
  * This test suite contains test that can be run against any production db
  *
