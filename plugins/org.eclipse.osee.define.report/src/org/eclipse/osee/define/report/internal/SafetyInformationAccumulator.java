@@ -170,7 +170,7 @@ public final class SafetyInformationAccumulator {
          SafetyReportGenerator.SUBSYSTEM_INDEX);
       writer.writeCell(subsystemRequirement.getName());
       writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRational, ""));
+      writer.writeCell(subsystemRequirement.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
 
       String currentCriticality = writeCriticalityWithDesignCheck(subsystemRequirement, criticality,
          CoreAttributeTypes.FunctionalDAL, CoreRelationTypes.Design__Design, CoreAttributeTypes.SeverityCategory);
@@ -234,10 +234,10 @@ public final class SafetyInformationAccumulator {
       String softwareRequirementDAL =
          writeCriticalityWithDesignCheck(softwareRequirement, sevCat, CoreAttributeTypes.ItemDAL,
             CoreRelationTypes.Requirement_Trace__Higher_Level, CoreAttributeTypes.FunctionalDAL);
-      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRational, ""));
+      writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.ItemDALRationale, ""));
       writer.writeCell(softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategory, ""));
       writer.writeCell(
-         softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRational, ""));
+         softwareRequirement.getSoleAttributeAsString(CoreAttributeTypes.SoftwareControlCategoryRationale, ""));
 
       writer.writeCell(functionalCategory);
 

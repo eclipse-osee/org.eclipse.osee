@@ -754,9 +754,9 @@ abstract artifactType "Abstract Software Requirement" extends "Abstract Spec Req
 artifactType "Software Requirement" extends "MS Word Template" , "Direct Software Requirement" {
 	uuid 0x0000000000000018
 	attribute "IDAL"
-	attribute "IDAL Rational"
+	attribute "IDAL Rationale"
 	attribute "Software Control Category"
-	attribute "Software Control Category Rational"
+	attribute "Software Control Category Rationale"
 }
 
 artifactType "Plain Text" extends "Artifact" {
@@ -832,8 +832,8 @@ abstract artifactType "Abstract Subsystem Requirement" extends "Abstract Spec Re
 	attribute "Verification Level"
 	attribute "Verification Event"
 	attribute "Effectivity"
-	attribute "FDAL"
-	attribute "FDAL Rational"
+	attribute "IDAL"
+	attribute "IDAL Rationale"
 }
 
 artifactType "Subsystem Requirement - MS Word" extends "Abstract Subsystem Requirement" , "MS Word Template" {
@@ -859,7 +859,7 @@ abstract artifactType "Function" extends "MS Word Template" {
 	attribute "Severity Category"
 	attribute "Software Safety Impact"
 	attribute "FDAL"
-	attribute "FDAL Rational"
+	attribute "FDAL Rationale"
 }
 
 artifactType "System Function" extends "Function" , "System Design" {
@@ -1159,7 +1159,7 @@ attributeType "Software Control Category" extends EnumeratedAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "Software Control Category Rational" extends StringAttribute {
+attributeType "Software Control Category Rationale" extends StringAttribute {
 	uuid 0x0A6BD62623697536
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -1296,7 +1296,7 @@ attributeType "FDAL" extends EnumeratedAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "FDAL Rational" extends StringAttribute {
+attributeType "FDAL Rationale" extends StringAttribute {
 	uuid 0x0CDAC9ABD75FE496
 	dataProvider DefaultAttributeDataProvider
 	min 0
@@ -1315,7 +1315,7 @@ attributeType "IDAL" extends EnumeratedAttribute {
 	mediaType "text/plain"
 }
 
-attributeType "IDAL Rational" extends StringAttribute {
+attributeType "IDAL Rationale" extends StringAttribute {
 	uuid 0x22F0D27FE668912D
 	dataProvider DefaultAttributeDataProvider
 	min 0

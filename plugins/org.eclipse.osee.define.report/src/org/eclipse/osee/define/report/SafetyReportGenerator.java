@@ -48,25 +48,25 @@ public class SafetyReportGenerator {
    private final String[] columnHeadings = {
       "System Function",
       "Severity Category",
-      "System FDAL",
-      "System FDAL Rational",
       "SFHA Hazard(s)",
       "Hazard Level Test",
+      "System FDAL",
+      "System FDAL Rationale",
       "System Requirement Name",
       "Subsystem Function",
       "Subsystem Severity Category",
       "Subsystem FDAL",
-      "Subsystem FDAL Rational",
+      "Subsystem FDAL Rationale",
       CoreAttributeTypes.Subsystem.getName(),
       "Subsystem Requirement Name",
       "Subsystem Requirement FDAL",
-      "Subsystem Requirement FDAL Rational",
+      "Subsystem Requirement FDAL Rationale",
       "Subsystem Requirement Level Check",
       CoreArtifactTypes.SoftwareRequirement.getName(),
       "IDAL",
-      "IDAL Rational",
+      "IDAL Rationale",
       "Software Control Category",
-      "Software Control Category Rational",
+      "Software Control Category Rationale",
       "Functional Category",
       "SW Partition",
       "SW CSU",
@@ -125,7 +125,7 @@ public class SafetyReportGenerator {
             writer.writeCell(sevCat);
             writeSFHAInfo(systemFunction, sevCat, writer);
             writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDAL, ""));
-            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRational, ""));
+            writer.writeCell(systemFunction.getSoleAttributeAsString(CoreAttributeTypes.FunctionalDALRationale, ""));
             for (ArtifactReadable systemRequirement : systemFunction.getRelated(
                CoreRelationTypes.Design__Requirement)) {
                writer.writeCell(systemRequirement.getName(), SYSTEM_REQUIREMENT_INDEX);
